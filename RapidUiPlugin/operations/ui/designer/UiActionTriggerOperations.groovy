@@ -16,7 +16,7 @@ class UiActionTriggerOperations extends AbstractDomainOperation{
         Map metaData = [
                 designerType:"ActionTrigger",
                 canBeDeleted: true,
-                display: "ActionTrigger",
+                display: "Trigger",
                 propertyConfiguration: [
                         name:[descr:""],
                         component:[descr:"", formatter:{object-> return object.component?object.component.name:""}],

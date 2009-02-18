@@ -17,10 +17,9 @@ public class UiActionOperations extends AbstractDomainOperation
                                 designerType: "ActionTriggers",
                                 metaData: [
                                         designerType: "ActionTriggers",
-                                        display: "ActionTriggers",
+                                        display: "Triggers",
                                         canBeDeleted: false,
                                         propertyConfiguration: [
-                                                designerHidden: [descr: "", type: "String", formatter:{object-> return true;}]
                                         ],
                                         childrenConfiguration: [
                                                 [designerType: "ActionTrigger", isMultiple: true, propertyName: "triggers"]

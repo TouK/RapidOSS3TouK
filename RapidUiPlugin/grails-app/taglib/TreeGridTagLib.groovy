@@ -28,15 +28,29 @@ class TreeGridTagLib {
     static def fTreeGrid(attrs, bodyString) {
         def treeGridId = attrs["id"];
         def onNodeClick = attrs["onNodeClicked"];
-        def nodeClickJs;
+        def onSelectionChanged = attrs["onSelectionChanged"];
+        def nodeClickJs = "";
+        def selectionChangedJs = "";
         def menuEventsJs;
         if (onNodeClick != null) {
-            nodeClickJs = """
+            getActionsArray(onNodeClick).each {actionName ->
+                nodeClickJs += """
                ${treeGridId}tg.events['nodeClicked'].subscribe(function(xmlData){
                    var params = {data:xmlData.getAttributes()};
-                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params);
+                   YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                 }, this, true);
             """
+            }
+        }
+        if (onSelectionChanged != null) {
+           getActionsArray(onSelectionChanged).each {actionName ->
+                selectionChangedJs += """
+               ${treeGridId}tg.events['selectionChanged'].subscribe(function(xmlData){
+                   var params = {data:xmlData.getAttributes()};
+                   YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                }, this, true);
+            """
+            }
         }
         def configXML = "<TreeGrid>${bodyString}</TreeGrid>";
         def menuEvents = [:]
@@ -44,12 +58,15 @@ class TreeGridTagLib {
         if (menuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            menuEvents.each {id, action ->
+            menuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(id == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(id == '${id}'){""";
+                actionArray.each {actionName ->
+                    innerJs += """
+                          YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             menuEventsJs = """
@@ -65,7 +82,8 @@ class TreeGridTagLib {
                var ${treeGridId}c = ${configStr};
                var ${treeGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${treeGridId}tg = new YAHOO.rapidjs.component.TreeGrid(${treeGridId}container, ${treeGridId}c);
-               ${nodeClickJs ? nodeClickJs : ""}
+               ${nodeClickJs}
+               ${selectionChangedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${treeGridId}tg.pollingInterval > 0){
                    ${treeGridId}tg.poll();
@@ -119,7 +137,7 @@ class TreeGridTagLib {
             def sortBy = column.@sortBy.toString().trim();
             def type = column.@type.toString().trim();
             def images = [];
-            if(type == 'image' || type == "Image"){
+            if (type == 'image' || type == "Image") {
                 images = getColumnImages(column);
             }
             columnArray.add("""{
@@ -135,19 +153,19 @@ class TreeGridTagLib {
         return "{${cArray.join(',\n')}}"
     }
 
-    static def getColumnImages(columnNode){
+    static def getColumnImages(columnNode) {
         def imagesArray = [];
         def images = columnNode.Images?.Image;
-        images.each{image->
+        images.each {image ->
             def imageArray = [];
-            def src = image.@src.toString().trim(); 
-            def visible = image.@visible.toString().trim(); 
+            def src = image.@src.toString().trim();
+            def visible = image.@visible.toString().trim();
             def align = image.@align.toString().trim();
             imageArray.add("src:'${src}'");
-            if(visible != ""){
+            if (visible != "") {
                 imageArray.add("visible:\"${visible}\"")
             }
-            if(align != ""){
+            if (align != "") {
                 imageArray.add("align:'${align}'")
             }
             imagesArray.add("{${imageArray.join(',')}}")
@@ -163,7 +181,17 @@ class TreeGridTagLib {
         def visible = menuItem.@visible.toString().trim();
         def action = menuItem.@action.toString().trim();
         if (action != "") {
-            eventMap.put(id, action);
+            eventMap.put(id, [action]);
+        }
+        else {
+            def actions = menuItem.action.Item;
+            if (actions.size() > 0) {
+                def actionsArray = [];
+                actions.each {
+                    actionsArray.add(it.text())
+                }
+                eventMap.put(id, actionsArray);
+            }
         }
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
@@ -180,7 +208,17 @@ class TreeGridTagLib {
                }""")
                 def subAction = subMenuItem.@action.toString().trim();
                 if (subAction != "") {
-                    eventMap.put(subMenuItem.@id, action)
+                    eventMap.put(subMenuItem.@id, [subAction])
+                }
+                else {
+                    def subActions = subMenuItem.action.Item;
+                    if (subActions.size() > 0) {
+                        def subActionsArray = [];
+                        subActions.each {
+                            subActionsArray.add(it.text())
+                        }
+                        eventMap.put(subMenuItem.@id, subActionsArray);
+                    }
                 }
             }
             if (subMenuItemsArray.size() > 0) {
@@ -252,5 +290,15 @@ class TreeGridTagLib {
     }
     def tgSubmenuItems = {attrs, body ->
         out << fTgSubmenuItems(attrs, body());
+    }
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 }

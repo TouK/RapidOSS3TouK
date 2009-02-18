@@ -27,21 +27,23 @@ class GmapTagLib {
     static def fGmap(attrs, bodyString) {
         def configStr = getConfig(attrs);
         def onMarkerClick = attrs["onMarkerClicked"];
-        def markerClickJs;
+        def markerClickJs = "";
         if (onMarkerClick != null) {
-            markerClickJs = """
-               gmap.events['markerClicked'].subscribe(function(xmlData){
-                   var params = {data:xmlData.getAttributes()};
-                   YAHOO.rapidjs.Actions['${onMarkerClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onMarkerClick).each {actionName ->
+                markerClickJs += """
+                   gmap.events['markerClicked'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
         }
         return """
            <script type="text/javascript">
                var gmapConfig = ${configStr};
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var gmap = new YAHOO.rapidjs.component.GMap(container, gmapConfig);
-               ${markerClickJs ? markerClickJs : ""}
+               ${markerClickJs}
                if(gmap.pollingInterval > 0){
                    gmap.poll();
                }
@@ -49,7 +51,7 @@ class GmapTagLib {
         """;
     }
     def gmap = {attrs, body ->
-         out << fGmap(attrs, "");
+        out << fGmap(attrs, "");
     }
 
     static def getConfig(attrs) {
@@ -67,5 +69,16 @@ class GmapTagLib {
             markerAttributeName:'${attrs["markerField"]}',
             tooltipAttributeName:'${attrs["tooltipField"]}'
         }"""
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 }

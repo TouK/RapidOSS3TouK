@@ -108,20 +108,6 @@ class ActionsTagLib {
                </script>
             """;
         }
-        else if(actionType == "combined"){
-            def actionIds = attrs["actions"];
-            def actionArray = [];
-            actionIds.each{
-                actionArray.add("YAHOO.rapidjs.Actions['${it}']")
-            }
-
-            return """
-               <script type="text/javascript">
-               var actions = [${actionArray.join(',\n')}]
-               var ${actionId}action = new YAHOO.rapidjs.component.action.CombinedAction( '${actionId}', actions, ${attrs["condition"] ? "\"${attrs["condition"]}\"" : "null"});
-               </script>
-            """;
-        }
         else if(actionType == "link"){
             return """
                <script type="text/javascript">

@@ -16,19 +16,19 @@ class UiMenuItemOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                designerType:"MenuItem",
-                displayFromProperty:"name",
-                canBeDeleted:"true",
+                designerType: "MenuItem",
+                displayFromProperty: "name",
+                canBeDeleted: "true",
                 imageExpanded: "images/rapidjs/designer/view_menu.gif",
                 imageCollapsed: "images/rapidjs/designer/view_menu.gif",
                 propertyConfiguration: [
                         name: [descr: "Unique name of the menu item"],
                         label: [descr: "The label of the menu item"],
-                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the item is displayed or not", required:true, type:"Expression"],
+                        visible: [descr: "The JavaScript expression evaluated on row data to determine whether the item is displayed or not", required: true, type: "Expression"],
                 ],
                 childrenConfiguration: [
                         [
-                                designerType: "MenuItem",propertyName:"childMenuItems", isMultiple: true
+                                designerType: "MenuItem", propertyName: "childMenuItems", isMultiple: true
                         ]
                 ]
         ];
@@ -42,17 +42,25 @@ class UiMenuItemOperations extends AbstractDomainOperation
         return DesignerUtils.addUiObject(UiMenuItem, attributes, xmlNode);
     }
 
-    def getAction()
+    def getActions()
     {
-        def menuAction = null;
-        ui.designer.UiActionTrigger.list().each{trigger->
-            if(trigger.component != null && trigger.component.name == component.name && trigger.isMenuItem && trigger.name == name)
+        def menuActions = [];
+        ui.designer.UiActionTrigger.list().each {trigger ->
+            if (trigger.component != null && trigger.component.name == component.name && trigger.isMenuItem && trigger.name == name)
             {
-                menuAction = trigger.action;
-                return;
+                menuActions.add(trigger.action);
             }
         }
-        return menuAction;
+        return menuActions;
+    }
+
+    def getActionString(){
+        def actions = getActions();
+        def actionNames = actions.name;
+        if(actionNames.size() > 0){
+            return "\${['" + actionNames.join("','") + "']}"
+        }
+        return null;
     }
 
 }

@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
 import com.ifountain.rui.util.TagLibUtils
 
 /**
@@ -31,15 +32,28 @@ class ObjectMapTagLib {
         def topoMapId = attrs["id"];
         def configXML = "<ObjectMap>${bodyString}</ObjectMap>";
         def onNodeClick = attrs["onNodeClicked"];
-
-        def nodeClickJs;
+        def onMapInitialized = attrs["onMapInitialized"];
+        def nodeClickJs = "";
+        def mapInitializedJs = "";
         if (onNodeClick != null) {
-            nodeClickJs = """
-               ${topoMapId}tm.events['nodeClicked'].subscribe(function(data, clickedItems){
-                   var params = {data:data, clickedItems:clickedItems};
-                   YAHOO.rapidjs.Actions['${onNodeClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onNodeClick).each {actionName ->
+                nodeClickJs += """
+                   ${topoMapId}tm.events['nodeClicked'].subscribe(function(data, clickedItems){
+                       var params = {data:data, clickedItems:clickedItems};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+        if (onMapInitialized != null) {
+            getActionsArray(onMapInitialized).each {actionName ->
+                mapInitializedJs += """
+                   ${topoMapId}tm.events['mapInitialized'].subscribe(function(){
+                       var params = {};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
         }
         def menuEvents = [:]
         def toolbarMenuEvents = [:]
@@ -49,12 +63,15 @@ class ObjectMapTagLib {
         if (menuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            menuEvents.each {id, action ->
+            menuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(menuId == '${id}'){"""
+                actionArray.each {actionName ->
+                    innerJs += """
+                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             menuEventsJs = """
@@ -68,12 +85,15 @@ class ObjectMapTagLib {
         if (toolbarMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            toolbarMenuEvents.each {id, action ->
+            toolbarMenuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(menuId == '${id}'){"""
+                actionArray.each {actionName ->
+                    innerJs += """
+                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             toolbarMenuEventsJs = """
@@ -89,7 +109,8 @@ class ObjectMapTagLib {
                var ${topoMapId}c = ${configStr};
                var ${topoMapId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${topoMapId}tm = new YAHOO.rapidjs.component.TopologyMap(${topoMapId}container, ${topoMapId}c);
-               ${nodeClickJs ? nodeClickJs : ""}
+               ${nodeClickJs}
+               ${mapInitializedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                ${toolbarMenuEventsJs ? toolbarMenuEventsJs : ""}
            </script>
@@ -178,12 +199,22 @@ class ObjectMapTagLib {
             def visible = menuItem.@visible.toString().trim();
             def action = menuItem.@action.toString().trim();
             def id = menuItem.@id.toString();
-            if(action.length() > 0){
-                menuEvents.put(id, action);
+            if (action.length() > 0) {
+                menuEvents.put(id, [action]);
+            }
+            else {
+                def actions = menuItem.action.Item;
+                if (actions.size() > 0) {
+                    def actionArray = [];
+                    actions.each {
+                        actionArray.add(it.text());
+                    }
+                    menuEvents.put(id, actionArray);
+                }
             }
             menuItemsArray.add("""{
                 id:'${id}',
-                ${visible.length() > 0? "visible:\"${visible}\",":""}
+                ${visible.length() > 0 ? "visible:\"${visible}\"," : ""}
                 text:'${menuItem.@label}'       
             }""")
         }
@@ -192,15 +223,25 @@ class ObjectMapTagLib {
         def toolbarMenus = xml.ToolbarMenus.ToolbarMenu;
         def tMenuArray = [];
         def toolbarMenuIndex = 0;
-        toolbarMenus.each{toolbarMenu ->
+        toolbarMenus.each {toolbarMenu ->
             def label = toolbarMenu.@label;
             def tMenuItems = toolbarMenu.MenuItem;
             def tMenuItemsArray = [];
-            tMenuItems.each{tMenuItem ->
+            tMenuItems.each {tMenuItem ->
                 def action = tMenuItem.@action.toString().trim();
                 def id = tMenuItem.@id.toString();
-                if(action.length() > 0){
-                    toolbarMenuEvents.put(id, action);
+                if (action.length() > 0) {
+                    toolbarMenuEvents.put(id, [action]);
+                }
+                else {
+                    def actions = tMenuItem.action.Item;
+                    if (actions.size() > 0) {
+                        def actionArray = [];
+                        actions.each {
+                            actionArray.add(it.text());
+                        }
+                        toolbarMenuEvents.put(id, actionArray);
+                    }
                 }
                 tMenuItemsArray.add("""{
                     id:'${id}',
@@ -214,7 +255,7 @@ class ObjectMapTagLib {
                     itemdata:[${tMenuItemsArray.join(',\n')}]
                 }
             }""")
-            toolbarMenuIndex ++;
+            toolbarMenuIndex++;
         }
         cArray.add("toolbarMenuItems:[${tMenuArray.join(',\n')}]")
         return "{${cArray.join(',\n')}}"
@@ -294,5 +335,16 @@ class ObjectMapTagLib {
     }
     def omToolbarMenu = {attrs, body ->
         out << fOmToolbarMenu(attrs, body());
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 }

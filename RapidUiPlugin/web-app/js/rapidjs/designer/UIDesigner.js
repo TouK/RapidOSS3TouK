@@ -43,7 +43,6 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.editors['Expression'].move = RenderUtils.textAreaEditorMoveFunc;
     this.editors['DateMock'].attach = RenderUtils.dateEditorAttachFunc;
     RenderUtils.handleFirefoxCursorBugForEditors(this.editors);
-    this.actionDlg = new YAHOO.rapidjs.designer.ActionDefinitionDialog(this);
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
     this.render();
@@ -109,29 +108,17 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     var collapsed = stringToAddToUrl + imageConfig['collapsed']
                     rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
                 }
-                if (item == "Actions") {
-                    menuItems.push({id:'add_Action', label:'Add Action', visible:"params.data." + this.treeTypeAttribute + " =='" + item + "'"});
-                    menuItems.push({id:'edit_Action', label:'Edit',
-                        visible:"params.data." + this.treeTypeAttribute + " =='FunctionAction' || " +
-                                "params.data." + this.treeTypeAttribute + " =='RequestAction' || " +
-                                "params.data." + this.treeTypeAttribute + " =='MergeAction' || " +
-                                "params.data." + this.treeTypeAttribute + " =='CombinedAction' || " +
-                                "params.data." + this.treeTypeAttribute + " =='LinkAction'"});
-                }
-                else {
-                    var children = UIConfig.getChildren(item);
-                    if (children) {
-                        for (var childType in children) {
-                            if (UIConfig.canBeDeleted(childType)) {
-                                var displayName = UIConfig.getDisplayName(childType);
+                var children = UIConfig.getChildren(item);
+                if (children) {
+                    for (var childType in children) {
+                        if (UIConfig.canBeDeleted(childType)) {
+                            var displayName = UIConfig.getDisplayName(childType);
 
-                                var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
-                                menuItems.push({id:'add_' + childType, label:'Add ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
-                            }
+                            var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
+                            menuItems.push({id:'add_' + childType, label:'Add ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
                         }
                     }
                 }
-
             }
             menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
             menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
@@ -363,20 +350,14 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         if (id.indexOf("add_") == 0) {
             var itemType = id.substr(4);
-            if (itemType == "Action") {
-                this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.CREATE_MODE, xmlData);
+            var newNode = this.createTreeNode(xmlData, itemType);
+            var currentTab = xmlData.getAttribute(this.itemTabAtt);
+            this.addExtraAttributesToChildNodes(xmlData, currentTab);
+            if (isClickedDataInCurrentTab.call(this, xmlData) && (id == "add_Layout" || id == "add_TopUnit" || id == "add_BottomUnit" || id == "add_LeftUnit" || id == "add_RightUnit")) {
+                this.refreshLayout(xmlData);
             }
-            else {
-                var newNode = this.createTreeNode(xmlData, itemType);
-                var currentTab = xmlData.getAttribute(this.itemTabAtt);
-                this.addExtraAttributesToChildNodes(xmlData, currentTab);
-                if (isClickedDataInCurrentTab.call(this, xmlData) && (id == "add_Layout" || id == "add_TopUnit" || id == "add_BottomUnit" || id == "add_LeftUnit" || id == "add_RightUnit")) {
-                    this.refreshLayout(xmlData);
-                }
-                this.refreshTree();
-                this.expandTreeNode(row)
-            }
-
+            this.refreshTree();
+            this.expandTreeNode(row)
         }
         else if (id == "delete") {
             var itemType = DesignerUtils.getItemType(this, xmlData);
@@ -401,12 +382,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             this.refreshTree();
         }
-        else if (id == "edit_Action") {
-            this.actionDlg.show(YAHOO.rapidjs.designer.ActionDefinitionDialog.EDIT_MODE, xmlData);
-        }
-        else if (id == 'clone'){
+        else if (id == 'clone') {
             var clonedNode = xmlData.cloneNode(true, true);
-            if(DesignerUtils.getItemType(this, clonedNode) == 'Tab'){
+            if (DesignerUtils.getItemType(this, clonedNode) == 'Tab') {
                 clonedNode.setAttribute(this.itemTabAtt, clonedNode.getAttribute(this.keyAttribute));
             }
             xmlData.parentNode().appendChild(clonedNode);
@@ -598,13 +576,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 el = layout.getUnitByPosition('center').get('wrap');
                 var topHtml = YAHOO.ext.DomHelper.append(document.body, {tag:'div', cls:'r-designer-layout-top', html:'Layout Preview'})
                 YAHOO.util.Dom.generateId(topHtml, 'layouttop')
-                this.helpView = YAHOO.ext.DomHelper.append(document.body, {tag:'div'})
+                this.helpView = YAHOO.ext.DomHelper.append(document.body, {tag:'div', cls:'r-designer-help'})
                 YAHOO.util.Dom.generateId(this.helpView, 'designer_help')
                 var layout3 = new YAHOO.widget.Layout(el, {
                     parent: layout,
                     units: [
                         { position: 'center', gutter:"7px"},
-                        { position: 'bottom', body: this.helpView.id, height: 400},
+                        { position: 'bottom', body: this.helpView.id, height: 400, header:'Help', scroll:true},
                         { position: 'top', body: topHtml.id, height: 25},
                     ]
                 });

@@ -15,60 +15,51 @@ public class UiTabOperations extends AbstractDomainOperation
                 imageCollapsed: 'images/rapidjs/designer/page.png',
                 propertyConfiguration: [
                         name: [descr: 'Name of the tab'],
-                        title: [descr: "Title of tab", required:true],
+                        title: [descr: "Title of tab", required: true],
                         contentFile: [descr: 'The file path relative to web-app that will be embedded to tab, where you can write free form HTML, JavaScript and CSS']
                 ],
                 childrenConfiguration:
                 [
-                    [designerType:"Components",
-                            metaData:[
-                                    designerType:"Components",
-                                    display:"Components",
-                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
-                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
-                                    childrenConfiguration: [
-                                         [designerType:"SearchGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchGrid"}]
-                                        ,[designerType:"SearchList", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiSearchList"}]
-                                        ,[designerType:"TreeGrid", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTreeGrid"}]
-                                        ,[designerType:"Html", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiHtml"}]
-                                        ,[designerType:"FlexPieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiFlexPieChart"}]
-                                        ,[designerType:"PieChart", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiPieChart"}]
-                                        ,[designerType:"ObjectMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiObjectMap"}]
-                                        ,[designerType:"GMap", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiGMap"}]
-                                        ,[designerType:"Timeline", propertyName:"components", isMultiple:true, isVisible:{component-> return component.class.simpleName == "UiTimeline"}]
-                                    ]
-                            ],
-                            propertyName:"layout"
-                    ],
-                    [designerType:"Layout", propertyName:"layout"],
-                    [designerType:"Dialogs",
-                            metaData:[
-                                    designerType:"Dialogs",
-                                    display:"Dialogs",
-                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
-                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
-                                    childrenConfiguration: [
-                                        [designerType:"Dialog", isMultiple:true, propertyName:"dialogs"]
-                                    ]
-                            ],
-                            propertyName:"layout"
-                    ],
-                    [designerType:"Actions",
-                            metaData:[
-                                    designerType:"Actions",
-                                    display:"Actions",
-                                    imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
-                                    imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
-                                    childrenConfiguration: [
-                                        [designerType:"FunctionAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiFunctionAction"}],
-                                        [designerType:"MergeAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiMergeAction"}],
-                                        [designerType:"RequestAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiRequestAction"}],
-                                        [designerType:"CombinedAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiCombinedAction"}],
-                                        [designerType:"LinkAction", isMultiple:true, propertyName:"actions", isVisible:{component-> return component.class.simpleName == "UiLinkAction"}]
-                                    ]
-                            ],
-                            propertyName:"layout"
-                    ],
+                        [designerType: "Components",
+                                metaData: [
+                                        designerType: "Components",
+                                        display: "Components",
+                                        imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                        imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
+                                        childrenConfiguration: [
+                                                [designerType: "SearchGrid", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiSearchGrid"}], [designerType: "SearchList", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiSearchList"}], [designerType: "TreeGrid", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiTreeGrid"}], [designerType: "Html", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiHtml"}], [designerType: "FlexPieChart", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiFlexPieChart"}], [designerType: "PieChart", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiPieChart"}], [designerType: "ObjectMap", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiObjectMap"}], [designerType: "GMap", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiGMap"}], [designerType: "Timeline", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiTimeline"}]
+                                        ]
+                                ],
+                                propertyName: "layout"
+                        ],
+                        [designerType: "Layout", propertyName: "layout"],
+                        [designerType: "Dialogs",
+                                metaData: [
+                                        designerType: "Dialogs",
+                                        display: "Dialogs",
+                                        imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                        imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
+                                        childrenConfiguration: [
+                                                [designerType: "Dialog", isMultiple: true, propertyName: "dialogs"]
+                                        ]
+                                ],
+                                propertyName: "layout"
+                        ],
+                        [designerType: "Actions",
+                                metaData: [
+                                        designerType: "Actions",
+                                        display: "Actions",
+                                        imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                        imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
+                                        childrenConfiguration: [
+                                                [designerType: "FunctionAction", isMultiple: true, propertyName: "actions", isVisible: {component -> return component.class.simpleName == "UiFunctionAction"}],
+                                                [designerType: "MergeAction", isMultiple: true, propertyName: "actions", isVisible: {component -> return component.class.simpleName == "UiMergeAction"}],
+                                                [designerType: "RequestAction", isMultiple: true, propertyName: "actions", isVisible: {component -> return component.class.simpleName == "UiRequestAction"}],
+                                                [designerType: "LinkAction", isMultiple: true, propertyName: "actions", isVisible: {component -> return component.class.simpleName == "UiLinkAction"}]
+                                        ]
+                                ],
+                                propertyName: "layout"
+                        ],
                 ]
         ];
         return metaData;
@@ -83,39 +74,29 @@ public class UiTabOperations extends AbstractDomainOperation
         attributes.layout = uiLayout;
 
         def uiTab = DesignerUtils.addUiObject(UiTab, attributes, xmlNode);
-        def layoutNode = xmlNode.UiElement.find{ it.@designerType == 'Layout' }
-        def componentsNode = xmlNode.UiElement.find{ it.@designerType == 'Components' }
-        def dialogsNode = xmlNode.UiElement.find{ it.@designerType == 'Dialogs' }
-        def actionsNode = xmlNode.UiElement.find{ it.@designerType == 'Actions' }
-        componentsNode.UiElement.each{componentNode->
+        def layoutNode = xmlNode.UiElement.find {it.@designerType == 'Layout'}
+        def componentsNode = xmlNode.UiElement.find {it.@designerType == 'Components'}
+        def dialogsNode = xmlNode.UiElement.find {it.@designerType == 'Dialogs'}
+        def actionsNode = xmlNode.UiElement.find {it.@designerType == 'Actions'}
+        componentsNode.UiElement.each {componentNode ->
             def designerType = componentNode.@designerType.text()
-            def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType);
+            def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui" + designerType);
             def component = domainClass.clazz.addUiElement(componentNode, uiTab);
         }
 
-        actionsNode.UiElement.each{actionNode->
-            if(actionNode.'@designerType'.text() != "CombinedAction")
-            {
-                def designerType = actionNode.@designerType.text()
-                def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType);
-                domainClass.clazz.'addUiElement'(actionNode, uiTab);
-            }
+        actionsNode.UiElement.each {actionNode ->
+            def designerType = actionNode.@designerType.text()
+            def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui" + designerType);
+            domainClass.clazz.'addUiElement'(actionNode, uiTab);
         }
 
-        actionsNode.UiElement.each{actionNode->
-            if(actionNode.'@designerType'.text() == "CombinedAction")
-            {
-                UiCombinedAction.addUiElement(actionNode, uiTab);
-            }
-        }
-
-        dialogsNode.UiElement.each{dialogNode->
+        dialogsNode.UiElement.each {dialogNode ->
             UiDialog.addUiElement(dialogNode, uiTab);
         }
-        if(layoutNode.size() != 0)
+        if (layoutNode.size() != 0)
         {
             def layoutUnitsNode = layoutNode.UiElement;
-            layoutUnitsNode.each{layoutUnitNode->
+            layoutUnitsNode.each {layoutUnitNode ->
                 def layoutUnit = UiLayoutUnit.addUiElement(layoutUnitNode, uiLayout);
             }
         }

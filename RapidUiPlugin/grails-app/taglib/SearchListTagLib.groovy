@@ -30,34 +30,78 @@ class SearchListTagLib {
         def configXML = "<SearchList>${bodyString}</SearchList>";
         def onSaveQueryClick = attrs["onSaveQueryClicked"];
         def onRowDoubleClick = attrs["onRowDoubleClicked"];
+        def onPropertyClicked = attrs["onPropertyClicked"];
         def onRowClick = attrs["onRowClicked"];
-        def saveQueryClickJs;
-        def rowDoubleClickJs;
-        def rowClickJs;
+        def onSelectionChanged = attrs["onSelectionChanged"];
+        def onRowHeaderClick = attrs["onRowHeaderClicked"];
+        def saveQueryClickJs = "";
+        def rowDoubleClickJs = "";
+        def rowClickJs = "";
+        def propertyClickedJs = "";
+        def rowHeaderClickedJs = "";
+        def selectionChangedJs = "";
         if (onSaveQueryClick != null) {
-            saveQueryClickJs = """
-               ${searchListId}sl.events['saveQueryClicked'].subscribe(function(query){
-                   var params = {query:query};
-                   YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onSaveQueryClick).each {actionName ->
+                saveQueryClickJs += """
+                   ${searchListId}sl.events['saveQueryClicked'].subscribe(function(query){
+                       var params = {query:query};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
         }
         if (onRowDoubleClick != null) {
-            rowDoubleClickJs = """
-               ${searchListId}sl.events['rowDoubleClicked'].subscribe(function(xmlData, event){
-                   var params = {data:xmlData.getAttributes(), event:event};
-                   YAHOO.rapidjs.Actions['${onRowDoubleClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onRowDoubleClick).each {actionName ->
+                rowDoubleClickJs += """
+                   ${searchListId}sl.events['rowDoubleClicked'].subscribe(function(xmlData, event){
+                       var params = {data:xmlData.getAttributes(), event:event};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
         }
-         if (onRowClick != null) {
-            rowClickJs = """
-               ${searchListId}sl.events['rowClicked'].subscribe(function(xmlData, event){
-                   var params = {data:xmlData.getAttributes(), event:event};
-                   YAHOO.rapidjs.Actions['${onRowClick}'].execute(params);
-                }, this, true);
-            """
-        } 
+        if (onRowClick != null) {
+            getActionsArray(onRowClick).each {actionName ->
+                rowClickJs += """
+                   ${searchListId}sl.events['rowClicked'].subscribe(function(xmlData, event){
+                       var params = {data:xmlData.getAttributes(), event:event};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+        if (onPropertyClicked != null) {
+            getActionsArray(onPropertyClicked).each {actionName ->
+                propertyClickedJs += """
+                   ${searchListId}sl.events['propertyClicked'].subscribe(function(key, value, xmlData){
+                       var params = {data:xmlData.getAttributes(), key:key, value:value};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+        if (onSelectionChanged != null) {
+            getActionsArray(onSelectionChanged).each {actionName ->
+                selectionChangedJs += """
+                   ${searchListId}sl.events['selectionChanged'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+        if (onRowHeaderClick != null) {
+            getActionsArray(onRowHeaderClick).each {actionName ->
+                rowHeaderClickedJs += """
+                   ${searchListId}sl.events['rowHeaderClicked'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
         def menuEvents = [:]
         def subMenuEvents = [:]
         def propertyMenuEvents = [:]
@@ -67,21 +111,27 @@ class SearchListTagLib {
         if (menuEvents.size() > 0 || subMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            menuEvents.each {id, action ->
+            menuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(menuId == '${id}'){"""
+                actionArray.each {actionName ->
+                    innerJs += """
+                     YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             subMenuEvents.each {parentId, subMap ->
-                subMap.each {id, action ->
+                subMap.each {id, actionArray ->
                     innerJs += index == 0 ? "if" : "else if";
-                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){
-                       YAHOO.rapidjs.Actions['${action}'].execute(params);
+                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){"""
+                    actionArray.each {actionName ->
+                        innerJs += """
+                           YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                        """
                     }
-                    """
+                    innerJs += """}""";
                     index++;
                 }
             }
@@ -96,12 +146,15 @@ class SearchListTagLib {
         if (propertyMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            propertyMenuEvents.each {id, action ->
+            propertyMenuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(menuId == '${id}'){"""
+                actionArray.each {actionName ->
+                    innerJs += """
+                           YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                        """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             propMenuEventsJs = """
@@ -117,9 +170,12 @@ class SearchListTagLib {
                var ${searchListId}c = ${configStr};
                var ${searchListId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchListId}sl = new YAHOO.rapidjs.component.search.SearchList(${searchListId}container, ${searchListId}c);
-               ${saveQueryClickJs ? saveQueryClickJs : ""}
-               ${rowDoubleClickJs ? rowDoubleClickJs : ""}
-               ${rowClickJs ? rowClickJs : ""}
+               ${saveQueryClickJs}
+               ${rowDoubleClickJs}
+               ${rowClickJs}
+               ${propertyClickedJs}
+               ${rowHeaderClickedJs}
+               ${selectionChangedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                ${propMenuEventsJs ? propMenuEventsJs : ""}
                if(${searchListId}sl.pollingInterval > 0){
@@ -214,7 +270,17 @@ class SearchListTagLib {
         def visible = menuItem.@visible.toString().trim();
         def action = menuItem.@action.toString().trim();
         if (action != "") {
-            eventMap.put(id, action);
+            eventMap.put(id, [action]);
+        }
+        else {
+            def actions = menuItem.action.Item;
+            if (actions.size() > 0) {
+                def actionArray = [];
+                actions.each {
+                    actionArray.add(it.text());
+                }
+                eventMap.put(id, actionArray);
+            }
         }
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
@@ -236,7 +302,22 @@ class SearchListTagLib {
                         subMap = [:]
                         subMenuEvents.put(id, subMap);
                     }
-                    subMap.put(subMenuItem.@id, subAction)
+                    subMap.put(subMenuItem.@id, [subAction])
+                }
+                else {
+                    def subActions = subMenuItem.action.Item;
+                    if (subActions.size() > 0) {
+                        def subActionsArray = [];
+                        subActions.each {
+                            subActionsArray.add(it.text())
+                        }
+                        def subMap = subMenuEvents.get(id);
+                        if (!subMap) {
+                            subMap = [:]
+                            subMenuEvents.put(id, subMap);
+                        }
+                        subMap.put(subMenuItem.@id, subActionsArray)
+                    }
                 }
             }
             if (subMenuItemsArray.size() > 0) {
@@ -297,6 +378,17 @@ class SearchListTagLib {
     }
     def slField = {attrs, body ->
         out << fSlField(attrs, "")
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 
 }

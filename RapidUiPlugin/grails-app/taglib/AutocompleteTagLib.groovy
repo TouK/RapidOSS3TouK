@@ -28,14 +28,17 @@ class AutocompleteTagLib {
     static def fAutocomplete(attrs, bodyString) {
         def configString = getConfig(attrs);
         def onSubmit = attrs["onSubmit"];
-        def submitJs;
+        def submitJs = "";
         if (onSubmit != null) {
-            submitJs = """
-               autocomplete.events['submit'].subscribe(function(query){
-                   var params = {query:query};
-                   YAHOO.rapidjs.Actions['${onSubmit}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onSubmit).each {actionName ->
+                submitJs += """
+                   autocomplete.events['submit'].subscribe(function(query){
+                       var params = {query:query};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
         }
         return """
            <script type="text/javascript">
@@ -60,5 +63,16 @@ class AutocompleteTagLib {
             ${attrs["animated"] ? "animated:${attrs["animated"]}," : ""}
             suggestionAttribute:'${attrs["suggestionAttribute"]}'
         }"""
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 }

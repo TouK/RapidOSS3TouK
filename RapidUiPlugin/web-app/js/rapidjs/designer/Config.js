@@ -464,7 +464,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "params.query":"Query written in search input field"
                 }
             },
-            "rowHeaderClick":{
+            "rowHeaderClicked":{
                 descr:"Fired when row header is clicked.",
                 params:{
                     "params.data":"JavaScript object representing the row data"

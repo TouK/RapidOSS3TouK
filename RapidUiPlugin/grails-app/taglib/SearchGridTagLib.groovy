@@ -32,41 +32,63 @@ class SearchGridTagLib {
         def onRowDoubleClick = attrs["onRowDoubleClicked"];
         def onRowClick = attrs["onRowClicked"];
         def onSelectionChange = attrs["onSelectionChanged"];
-        def saveQueryClickJs;
-        def rowDoubleClickJs;
-        def rowClickJs;
-        def selectionChangeJs;
+        def onPropertyClicked = attrs["onPropertyClicked"];
+        def saveQueryClickJs = "";
+        def rowDoubleClickJs = "";
+        def rowClickJs = "";
+        def selectionChangeJs = "";
+        def propertyClickedJs = "";
         if (onSaveQueryClick != null) {
-            saveQueryClickJs = """
+            getActionsArray(onSaveQueryClick).each {actionName ->
+                saveQueryClickJs += """
                ${searchGridId}sg.events['saveQueryClicked'].subscribe(function(query){
                    var params = {query:query};
-                   YAHOO.rapidjs.Actions['${onSaveQueryClick}'].execute(params);
+                   YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                 }, this, true);
             """
+            }
+
         }
         if (onRowDoubleClick != null) {
-            rowDoubleClickJs = """
-               ${searchGridId}sg.events['rowDoubleClicked'].subscribe(function(xmlData, event){
-                   var params = {data:xmlData.getAttributes(), event:event};
-                   YAHOO.rapidjs.Actions['${onRowDoubleClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onRowDoubleClick).each {actionName ->
+                rowDoubleClickJs += """
+                   ${searchGridId}sg.events['rowDoubleClicked'].subscribe(function(xmlData, event){
+                       var params = {data:xmlData.getAttributes(), event:event};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
         }
         if (onRowClick != null) {
-            rowClickJs = """
-               ${searchGridId}sg.events['rowClicked'].subscribe(function(xmlData, event){
-                   var params = {data:xmlData.getAttributes(), event:event};
-                   YAHOO.rapidjs.Actions['${onRowClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onRowClick).each {actionName ->
+                rowClickJs += """
+                   ${searchGridId}sg.events['rowClicked'].subscribe(function(xmlData, event){
+                       var params = {data:xmlData.getAttributes(), event:event};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
         }
         if (onSelectionChange != null) {
-            selectionChangeJs = """
-               ${searchGridId}sg.events['selectionChanged'].subscribe(function(xmlData, event){
-                   var params = {data:xmlData.getAttributes(), event:event};
-                   YAHOO.rapidjs.Actions['${onSelectionChange}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onSelectionChange).each {actionName ->
+                selectionChangeJs += """
+                   ${searchGridId}sg.events['selectionChanged'].subscribe(function(xmlData, event){
+                       var params = {data:xmlData.getAttributes(), event:event};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+        if (onPropertyClicked != null) {
+            getActionsArray(onPropertyClicked).each {actionName ->
+                propertyClickedJs += """
+                   ${searchGridId}sg.events['propertyClicked'].subscribe(function(key, value, xmlData){
+                       var params = {data:xmlData.getAttributes(), key:key, value:value};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
         }
         def menuEvents = [:]
         def subMenuEvents = [:]
@@ -75,21 +97,27 @@ class SearchGridTagLib {
         if (menuEvents.size() > 0 || subMenuEvents.size() > 0) {
             def innerJs = "";
             def index = 0;
-            menuEvents.each {id, action ->
+            menuEvents.each {id, actionArray ->
                 innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){
-                   YAHOO.rapidjs.Actions['${action}'].execute(params);
+                innerJs += """(menuId == '${id}'){""";
+                actionArray.each {actionName ->
+                    innerJs += """
+                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
                 }
-                """
+                innerJs += """}""";
                 index++;
             }
             subMenuEvents.each {parentId, subMap ->
-                subMap.each {id, action ->
+                subMap.each {id, actionArray ->
                     innerJs += index == 0 ? "if" : "else if";
-                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){
-                       YAHOO.rapidjs.Actions['${action}'].execute(params);
+                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){"""
+                    actionArray.each {actionName ->
+                        innerJs += """
+                            YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                        """
                     }
-                    """
+                    innerJs += """}""";
                     index++;
                 }
             }
@@ -106,10 +134,11 @@ class SearchGridTagLib {
                var ${searchGridId}c = ${configStr};
                var ${searchGridId}container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var ${searchGridId}sg = new YAHOO.rapidjs.component.search.SearchGrid(${searchGridId}container, ${searchGridId}c);
-               ${saveQueryClickJs ? saveQueryClickJs : ""}
-               ${rowDoubleClickJs ? rowDoubleClickJs : ""}
-               ${rowClickJs ? rowClickJs : ""}
-               ${selectionChangeJs ? selectionChangeJs : ""}
+               ${saveQueryClickJs}
+               ${rowDoubleClickJs}
+               ${rowClickJs}
+               ${selectionChangeJs}
+               ${propertyClickedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${searchGridId}sg.pollingInterval > 0){
                    ${searchGridId}sg.poll();
@@ -202,7 +231,17 @@ class SearchGridTagLib {
         def visible = menuItem.@visible.toString().trim();
         def action = menuItem.@action.toString().trim();
         if (action != "") {
-            eventMap.put(id, action);
+            eventMap.put(id, [action]);
+        }
+        else {
+            def actions = menuItem.action.Item;
+            if (actions.size() > 0) {
+                def actionArray = [];
+                actions.each {
+                    actionArray.add(it.text());
+                }
+                eventMap.put(id, actionArray);
+            }
         }
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
@@ -224,7 +263,22 @@ class SearchGridTagLib {
                         subMap = [:]
                         subMenuEvents.put(id, subMap);
                     }
-                    subMap.put(subMenuItem.@id, subAction)
+                    subMap.put(subMenuItem.@id, [subAction])
+                }
+                else {
+                    def subActions = subMenuItem.action.Item;
+                    if (subActions.size() > 0) {
+                        def subMap = subMenuEvents.get(id);
+                        if (!subMap) {
+                            subMap = [:]
+                            subMenuEvents.put(id, subMap);
+                        }
+                        def subActionsArray = [];
+                        subActions.each {
+                            subActionsArray.add(it.text())
+                        }
+                        subMap.put(subMenuItem.@id, subActionsArray)
+                    }
                 }
             }
             if (subMenuItemsArray.size() > 0) {
@@ -294,5 +348,16 @@ class SearchGridTagLib {
     }
     def sgRowColor = {attrs, body ->
         out << fSgRowColor(attrs, "")
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 }

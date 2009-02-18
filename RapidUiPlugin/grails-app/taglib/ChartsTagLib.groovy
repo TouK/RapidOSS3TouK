@@ -60,21 +60,24 @@ class ChartsTagLib {
     static def fFlexPieChart(attrs, bodyString) {
         def configStr = getFlexPieConfig(attrs);
         def onItemClick = attrs["onItemClicked"];
-        def itemClickJs;
+        def itemClickJs = "";
         if (onItemClick != null) {
-            itemClickJs = """
-               pieChart.events['itemClicked'].subscribe(function(xmlData){
-                   var params = {data:xmlData.getAttributes()};
-                   YAHOO.rapidjs.Actions['${onItemClick}'].execute(params);
-                }, this, true);
-            """
+            getActionsArray(onItemClick).each {actionName ->
+                itemClickJs += """
+                   pieChart.events['itemClicked'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
         }
         return """
            <script type="text/javascript">
                var chartConfig = ${configStr};
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var pieChart = new YAHOO.rapidjs.component.FlexPieChart(container, chartConfig);
-               ${itemClickJs ? itemClickJs : ""}
+               ${itemClickJs}
                if(pieChart.pollingInterval > 0){
                    pieChart.poll();
                }
@@ -91,6 +94,17 @@ class ChartsTagLib {
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             swfURL:'${attrs["swfURL"]}'
         }"""
+    }
+
+    static def getActionsArray(actionAttribute) {
+        def actions = [];
+        if (actionAttribute instanceof List) {
+            actions.addAll(actionAttribute);
+        }
+        else {
+            actions.add(actionAttribute);
+        }
+        return actions;
     }
 
 }

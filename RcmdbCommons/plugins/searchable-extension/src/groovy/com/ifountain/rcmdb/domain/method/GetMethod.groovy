@@ -1,5 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -61,9 +63,11 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         if(searchParams instanceof Map)
         {
             Map keyMap = [:];
-            if(searchParams.containsKey("id"))
+            if(searchParams.containsKey(RapidCMDBConstants.ID_PROPERTY_STRING) || searchParams.containsKey(RapidCMDBConstants.ID_PROPERTY_GSTRING))
             {
-                keyMap["id"] = searchParams["id"];
+                def idValue = searchParams[RapidCMDBConstants.ID_PROPERTY_STRING];
+                idValue = idValue == null?searchParams.get(RapidCMDBConstants.ID_PROPERTY_GSTRING):idValue;
+                keyMap["id"] = idValue;
                 def result = CompassMethodInvoker.search (clazz.metaClass, keyMap, willTriggerOnLoad)
                 return result.results[0];
             }

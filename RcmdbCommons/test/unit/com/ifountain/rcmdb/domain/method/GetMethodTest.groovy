@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -64,6 +65,12 @@ class GetMethodTest extends RapidCmdbTestCase{
         def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value", id:1000]] as Object[]);
         assertNull (result);
         assertEquals ("id:\"1000\"", GetMethodDomainObject.query);
+
+        result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value", "${RapidCMDBConstants.ID_PROPERTY_STRING}":1000]] as Object[]);
+        assertNull (result);
+        assertEquals ("id:\"1000\"", GetMethodDomainObject.query);
+
+
     }
 
     public void testGetMethodNoKeyAndId()

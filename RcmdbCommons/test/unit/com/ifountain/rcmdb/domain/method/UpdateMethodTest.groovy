@@ -77,13 +77,16 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject, id:5000];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
         assertTrue (update.isWriteOperation());
         AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
-        assertEquals (addedObject.id, updatedObject.id);
+
+        //id property will be ignored
+        assertEquals (objectBeforeAdd.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
         assertEquals(2, addedObject.numberOfFlushCalls);
@@ -92,6 +95,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
         assertEquals (1, AddMethodDomainObject1.indexList.size());
         assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+
+        def propName = "id"
+        props = ["$propName":5000];
+        updatedObject = update.invoke (addedObject, [props] as Object[]);
+        //id property will be ignored
+        assertEquals (objectBeforeAdd.id, updatedObject.id);
     }
 
     

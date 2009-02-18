@@ -56,7 +56,8 @@ class UpdateMethod extends AbstractRapidDomainMethod{
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];
-        props.remove("id");
+        props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
+        props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def relationToBeAddedMap = [:]
         def relationToBeRemovedMap = [:]
         Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());

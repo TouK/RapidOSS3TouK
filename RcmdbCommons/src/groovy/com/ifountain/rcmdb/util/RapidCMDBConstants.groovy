@@ -24,6 +24,8 @@ package com.ifountain.rcmdb.util;
  */
 class RapidCMDBConstants {
     private RapidCMDBConstants(){}
+    public static final String ID_PROPERTY_STRING = "id"
+    public static final ID_PROPERTY_GSTRING = "${ID_PROPERTY_STRING}"
     public static final String RCMDB = "RCMDB";
     public static final String ERRORS_PROPERTY_NAME = "errors";
     public static final String OPERATION_PROPERTY_NAME = "__operation_class__";

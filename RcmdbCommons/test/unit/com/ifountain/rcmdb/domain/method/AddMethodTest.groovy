@@ -18,12 +18,9 @@
 */
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.converter.*
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
-import com.ifountain.rcmdb.converter.DateConverter
-import com.ifountain.rcmdb.converter.DoubleConverter
-import com.ifountain.rcmdb.converter.LongConverter
-import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.text.SimpleDateFormat
@@ -31,11 +28,6 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
-import com.ifountain.rcmdb.converter.BooleanConverter
-import com.ifountain.rcmdb.converter.BooleanConverter
-import com.ifountain.rcmdb.converter.DateConverter
-import com.ifountain.rcmdb.converter.LongConverter
-import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -83,6 +75,22 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject2, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertEquals (prevId+1, addedObject.id);
+
+        AddMethodDomainObject1.indexList.clear();
+        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(prop1:"object3Prop1Value");
+
+        //test ignores id property
+        props = [id:5, prop1:expectedDomainObject3.prop1];
+        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals("prop1:\"object3Prop1Value\"", AddMethodDomainObject1.query);
+
+        AddMethodDomainObject1.indexList.clear();
+        AddMethodDomainObject1.query = null;
+        //test ignores id property whose name is gstring
+        props = ["${"id"}":5, prop1:expectedDomainObject3.prop1];
+        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals("prop1:\"object3Prop1Value\"", AddMethodDomainObject1.query);
+
     }
 
     public void testGetLockName()

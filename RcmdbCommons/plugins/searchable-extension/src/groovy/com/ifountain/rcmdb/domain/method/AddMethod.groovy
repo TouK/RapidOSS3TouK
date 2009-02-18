@@ -71,7 +71,8 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];
-        props.remove("id");
+        props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
+        props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[])
         def instanceOfError = false;
         if(existingInstance != null)

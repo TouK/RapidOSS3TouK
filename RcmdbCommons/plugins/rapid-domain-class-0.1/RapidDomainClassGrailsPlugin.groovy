@@ -43,9 +43,17 @@ import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
 import com.ifountain.rcmdb.domain.method.KeySetMethod
 import com.ifountain.rcmdb.domain.method.GetOperationsMethod
 import com.ifountain.rcmdb.methods.MethodFactory
+import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
 
 class RapidDomainClassGrailsPlugin {
-    private static final Map EXCLUDED_PROPERTIES = ["id":"id", "version":"version", "errors":"errors", "__is_federated_properties_loaded__":RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, "__operation_class__":RapidCMDBConstants.OPERATION_PROPERTY_NAME]
+    private static final Map EXCLUDED_PROPERTIES = [:]
+    static{
+        EXCLUDED_PROPERTIES["id"] = "id";
+        EXCLUDED_PROPERTIES["version"] = "version";
+        EXCLUDED_PROPERTIES["errors"] = "errors";
+        EXCLUDED_PROPERTIES[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
+        EXCLUDED_PROPERTIES[RapidCMDBConstants.OPERATION_PROPERTY_NAME] = RapidCMDBConstants.OPERATION_PROPERTY_NAME;
+    }
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
     def version = 0.1
     def loadAfter = ['searchableExtension']
@@ -201,56 +209,18 @@ class RapidDomainClassGrailsPlugin {
             def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}":[method:MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD), isStatic:true]];
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods);
             operationClassManagers[dc.clazz.name] = manager;
-            ReloadOperationsMethod method = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
+            ReloadOperationsMethod reloadOperationsMethod = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
             mc.methodMissing =  {String name, args ->
-                Class operationClass = manager.getOperationClass();
-                if(operationClass != null)
-                {
-                    if(manager.getOperationClassMethods().containsKey(name))
-                    {
-                        def oprInstance = delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME];
-                        if(oprInstance == null)
-                        {
-                            oprInstance = operationClass.newInstance() ;
-                            operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
-                            delegate.setProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME, oprInstance, false);
-                        }
-                        try {
-                            return oprInstance.invokeMethod(name, args)
-                        } catch (MissingMethodException e) {
-                            if(e.getType().name != oprInstance.class.name || e.getMethod() != name)
-                            {
-                                throw e;
-                            }
-                        }
-                    }
-                }
-                throw new MissingMethodException (name,  mc.theClass, args);
+                return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'._methodMissing = {String methodName, args ->
-                Class operationClass = manager.getOperationClass();
-                if(operationClass != null)
-                {
-                    if(manager.getOperationClassMethods().containsKey(methodName))
-                    {
-                        try {
-                            return operationClass.metaClass.invokeStaticMethod(operationClass, methodName, args);
-                        } catch (MissingMethodException e) {
-                            if(e.getType().name != operationClass.name || e.getMethod() != methodName)
-                            {
-                                throw e;
-                            }
-                        }
-
-                    }
-                }
-                throw new MissingMethodException (methodName,  mc.theClass, args);
+                return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.reloadOperations = {
                 mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
             }
             mc.'static'.reloadOperations = {reloadSubclasses->
-                method.invoke(mc.theClass, [reloadSubclasses] as Object[]);
+                reloadOperationsMethod.invoke(mc.theClass, [reloadSubclasses] as Object[]);
                 getPropertiesMethod.setOperationClass (manager.getOperationClass());
                 getOperationsMethod.setOperationClass (manager.getOperationClass());
             }

@@ -303,10 +303,22 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        def instance = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "add", [[prop1:"prop1Value"]]  as Object[] )
+        def instance = loadedDomainClass.add(prop1:"prop1Value", version:4)
         instance.prop1 = "updatedValue"
-        def reloadedInstance = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "get", [[id:instance.id]] as Object[])
+        def reloadedInstance = loadedDomainClass.get(id:instance.id)
         assertEquals ("updatedValue", reloadedInstance.prop1);
+
+        //check excluded properties will not be persisted
+        def newIdAndVersion = 15555555;
+        reloadedInstance.id = newIdAndVersion;
+        reloadedInstance.version = newIdAndVersion;
+        assertEquals(1, loadedDomainClass.list().size());
+        assertNull(loadedDomainClass.get(id:newIdAndVersion));
+
+        reloadedInstance = loadedDomainClass.get(id:instance.id)
+        assertEquals (instance.id, reloadedInstance.id);
+        assertEquals (instance.version, reloadedInstance.version);
+
 
         def numberOfCalls = 0;
         instance.metaClass.update = {Map props->
@@ -314,6 +326,88 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         }
         instance.prop2 = "transientPropvalueShouldNotUpdate"
         assertEquals (0, numberOfCalls);
+    }
+
+    public void testOperation()
+    {
+        System.setProperty ("base.dir", "../testoutput");
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                def ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+                static searchable = {
+                    except = ["prop2", "${RapidCMDBConstants.OPERATION_PROPERTY_NAME}"]
+                }
+                Long id;
+                Long version;
+                String prop1;
+                String prop2;
+                static transients = ["prop2", "${RapidCMDBConstants.OPERATION_PROPERTY_NAME}"]
+            }
+        """)
+        def operationFile = new File("${System.getProperty ("base.dir")}/operations/${domainClassName}Operations.groovy");
+        operationFile.setText("""
+            class ${domainClassName}Operations extends ${AbstractDomainOperation.class.name}{
+                def method1(arg1, arg2)
+                {
+                    return arg1+arg2;
+                }
+
+                def static method2(arg1, arg2, arg3)
+                {
+                    return arg1+arg2+arg3;
+                }
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass, ObjectId];
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def instance = loadedDomainClass.add(prop1:"prop1Value");
+
+        //test calling a non static operation
+        def args = ["arg1", "arg2"]
+        def res = instance.method1(args[0], args[1]);
+        assertEquals (args.join(""), res);
+        //test calling a static operation
+        args = ["arg1", "arg2", "arg3"]
+        res = loadedDomainClass.method2(args[0], args[1], args[2]);
+        assertEquals (args.join(""), res);
+
+        //We will reload operation and see operations
+        operationFile.setText("""
+            class ${domainClassName}Operations extends ${AbstractDomainOperation.class.name}{
+                def method3(arg1, arg2)
+                {
+                    return arg1+arg2;
+                }
+
+                def static method4(arg1, arg2, arg3)
+                {
+                    return arg1+arg2+arg3;
+                }
+            }
+        """)
+        loadedDomainClass.reloadOperations();
+
+        //We have to reload instance from repository to get new operation since old instance is cached in instance 
+        instance = loadedDomainClass.get(id:instance.id);
+        try
+        {
+            instance.method1(args[0], args[1]);
+            fail("Should throw exception");
+        }
+        catch(groovy.lang.MissingMethodException e)
+        {
+            assertEquals ("method1", e.getMethod());
+            assertEquals (loadedDomainClass, e.getType());
+        }
+
+        args = ["arg1", "arg2"]
+        res = instance.method3(args[0], args[1]);
+        assertEquals (args.join(""), res);
+        args = ["arg1", "arg2", "arg3"]
+        res = loadedDomainClass.method4(args[0], args[1], args[2]);
+        assertEquals (args.join(""), res);
     }
 
 }

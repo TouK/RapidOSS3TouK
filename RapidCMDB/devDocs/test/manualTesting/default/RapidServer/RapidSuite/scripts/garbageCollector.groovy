@@ -5,5 +5,5 @@
  * Time: 5:16:33 PM
  * To change this template use File | Settings | File Templates.
  */
-println "Running garbageCollector script"
+logger.warn("Running garbageCollector script");
 Runtime.getRuntime().gc();

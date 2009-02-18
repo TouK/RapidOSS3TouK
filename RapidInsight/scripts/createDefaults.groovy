@@ -31,7 +31,7 @@ def scriptsToAdd=[]
 scriptsToAdd.add([name:"modelCreator"])
 scriptsToAdd.add([name:"removeAll"])
 scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
-scriptsToAdd.add([name: "clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
+scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])
 scriptsToAdd.add([name:"queryList", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createQuery", enabledForAllGroups:true])

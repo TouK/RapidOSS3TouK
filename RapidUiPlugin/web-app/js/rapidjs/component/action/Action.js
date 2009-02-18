@@ -26,7 +26,10 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
-        'error' : new YAHOO.util.CustomEvent('error')
+        'error' : new YAHOO.util.CustomEvent('error'),
+        'timeout' : new YAHOO.util.CustomEvent('timeout'),
+        'unknownUrl' : new YAHOO.util.CustomEvent('unknownUrl'),
+        'serverDown' : new YAHOO.util.CustomEvent('serverDown')
     };
     this.lastConnection = null;
     this.requestParams = requestParams;
@@ -50,17 +53,24 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         return postData
     },
     execute: function(params) {
-        var conditionResult = true;
-        if (this.condition) {
-            var conditionResult = eval(this.condition);
-        }
-        if (conditionResult) {
-            var reqParams = {};
-            for (var param in this.requestParams) {
-                reqParams[param] = eval('(' + this.requestParams[param] + ')');
+        try {
+            var conditionResult = true;
+            if (this.condition) {
+                var conditionResult = eval(this.condition);
             }
-            this._execute(reqParams)
+            if (conditionResult) {
+                var reqParams = {};
+                for (var param in this.requestParams) {
+                    reqParams[param] = eval('(' + this.requestParams[param] + ')');
+                }
+                this._execute(reqParams)
+            }
         }
+        catch(err) {
+            this.events['error'].fireDirect([err.description])
+            throw err.description;
+        }
+
     },
     _execute : function(requestParams) {
         if (this.allowMultipleRequests != true)
@@ -101,12 +111,12 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             else if (YAHOO.rapidjs.Connect.containsError(response) == false)
             {
                 this.handleSuccess(response);
-                this.events['success'].fireDirect(response, response.argument);
+                this.events['success'].fireDirect(response);
             }
             else
             {
                 this.handleErrors(response);
-                this.events['error'].fireDirect(response, response.argument);
+                this.events['error'].fireDirect(YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML));
             }
         }
         catch(e)
@@ -119,12 +129,15 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         var st = response.status;
         if (st == -1) {
             this._fireErrors(response, ['Request received timeout.']);
+            this.events['timeout'].fireDirect();
         }
         else if (st == 404) {
             this._fireErrors(response, ['Specified url cannot be found.']);
+            this.events['unknownUrl'].fireDirect();
         }
         else if (st == 0) {
             YAHOO.rapidjs.ErrorManager.serverDown();
+            this.events['serverDown'].fireDirect();
         }
 
     },
@@ -186,64 +199,64 @@ YAHOO.rapidjs.component.action.FunctionAction = function(id, component, fnc, con
     this.arguments = arguments;
     this.condition = condition;
     this.id = id;
+    this.events = {
+        'success' : new YAHOO.util.CustomEvent('success'),
+        'error' : new YAHOO.util.CustomEvent('error')
+    };
     YAHOO.rapidjs.Actions[this.id] = this;
 };
 
 YAHOO.rapidjs.component.action.FunctionAction.prototype = {
     execute: function(params) {
-        var conditionResult = true;
-        if (this.condition) {
-            var conditionResult = eval(this.condition);
-        }
-        if (conditionResult) {
-            if (this.component.popupWindow) {
-                this.component.popupWindow.show();
+        try {
+            var conditionResult = true;
+            if (this.condition) {
+                var conditionResult = eval(this.condition);
             }
-            var args = [];
-            for (var i = 0; i < this.arguments.length; i++) {
-                args[args.length] = eval('(' + this.arguments[i] + ')');
+            if (conditionResult) {
+                if (this.component.popupWindow) {
+                    this.component.popupWindow.show();
+                }
+                var args = [];
+                for (var i = 0; i < this.arguments.length; i++) {
+                    args[args.length] = eval('(' + this.arguments[i] + ')');
+                }
+                this.targetFunction.apply(this.component, args);
             }
-            this.targetFunction.apply(this.component, args);
+            this.events['success'].fireDirect();
         }
+        catch(err) {
+            this.events['error'].fireDirect([err.description])
+            throw err.description;
+        }
+
     }
 };
 YAHOO.rapidjs.component.action.LinkAction = function(id, urlExp, condition) {
     this.condition = condition;
     this.urlExp = urlExp;
     this.id = id;
+    this.events = {
+        'error' : new YAHOO.util.CustomEvent('error')
+    };
     YAHOO.rapidjs.Actions[this.id] = this;
 };
 
 YAHOO.rapidjs.component.action.LinkAction.prototype = {
     execute: function(params) {
-        var conditionResult = true;
-        if (this.condition) {
-            var conditionResult = eval(this.condition);
-        }
-        if (conditionResult) {
-            var url = eval(this.urlExp)
-            window.location = url;
-        }
-    }
-};
-YAHOO.rapidjs.component.action.CombinedAction = function(id, actions, condition) {
-    this.actions = actions || [];
-    this.id = id;
-    this.condition = condition;
-    YAHOO.rapidjs.Actions[this.id] = this;
-};
-
-YAHOO.rapidjs.component.action.CombinedAction.prototype = {
-    execute: function(params) {
-        var conditionResult = true;
-        if (this.condition) {
-            var conditionResult = eval(this.condition);
-        }
-        if (conditionResult) {
-            for (var i = 0; i < this.actions.length; i++) {
-                var action = this.actions[i];
-                action.execute(params);
+        try {
+            var conditionResult = true;
+            if (this.condition) {
+                var conditionResult = eval(this.condition);
             }
+            if (conditionResult) {
+                var url = eval(this.urlExp)
+                window.location = url;
+            }
+        }
+        catch(err) {
+            this.events['error'].fireDirect([err.description])
+            throw err.description;
         }
     }
 };

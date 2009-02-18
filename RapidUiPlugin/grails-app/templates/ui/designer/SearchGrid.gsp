@@ -2,9 +2,10 @@
         keyAttribute="${uiElement.keyAttribute}" totalCountAttribute="${uiElement.totalCountAttribute}" offsetAttribute="${uiElement.offsetAttribute}" sortOrderAttribute="${uiElement.sortOrderAttribute}" title="${uiElement.title}"
         pollingInterval="${uiElement.pollingInterval}" fieldsUrl="../${uiElement.fieldsUrl}" queryEnabled="${uiElement.queryEnabled}"
     <%
-    uiElement.getActionTrigers().each{actionTrigger->
+    uiElement.getActionTrigers().each{eventName, actionTriggers->
+         def actionString = uiElement.getActionsString(actionTriggers);
     %>
-        on${actionTrigger.name.substring(0,1).toUpperCase()}${actionTrigger.name.substring(1)}="${actionTrigger.action.name}"
+        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
     <%
     }
 %>
@@ -12,9 +13,10 @@
     <rui:sgMenuItems>
     <%
         uiElement.menuItems.each{menuItem->
-            def menuAction = menuItem.getAction();
+            def menuActionString = menuItem.getActionString();
+            def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
     %>
-        <rui:sgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="${menuItem.visible}" ${menuAction?"action='"+menuAction.name+"'":""}>
+        <rui:sgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="${menuItem.visible}" ${actionString}>
             <%
                 if(!menuItem.childMenuItems.isEmpty())
                 {
@@ -22,9 +24,10 @@
                 <rui:sgSubmenuItems>
                     <%
                         menuItem.childMenuItems.each{subMenuItem->
-                            def subMenuAction = subMenuItem.getAction();
+                            def subMenuActionString = subMenuItem.getActionString();
+                            def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                     %>
-                        <rui:sgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:sgMenuItem>
+                        <rui:sgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="${subMenuItem.visible}"></rui:sgMenuItem>
                     <%
                             }
                     %>

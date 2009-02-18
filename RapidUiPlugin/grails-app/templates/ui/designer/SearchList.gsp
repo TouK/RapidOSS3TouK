@@ -2,9 +2,10 @@
     lineSize="${uiElement.lineSize}" title="${uiElement.title}" queryParameter="${uiElement.queryParameter}" totalCountAttribute="${uiElement.totalCountAttribute}" offsetAttribute="${uiElement.offsetAttribute}" sortOrderAttribute="${uiElement.sortOrderAttribute}"
     pollingInterval="${uiElement.pollingInterval}" defaultFields="${uiElement.defaultFields}" ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""}
     <%
-    uiElement.getActionTrigers().each{actionTrigger->
+    uiElement.getActionTrigers().each{eventName, actionTriggers->
+         def actionString = uiElement.getActionsString(actionTriggers);
     %>
-        on${actionTrigger.name.substring(0,1).toUpperCase()}${actionTrigger.name.substring(1)}="${actionTrigger.action.name}"
+        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
     <%
     }
     %>
@@ -12,9 +13,10 @@
     <rui:slMenuItems>
         <%
             uiElement.menuItems.each{menuItem->
-                def menuAction = menuItem.getAction();
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
-        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -22,9 +24,10 @@
                     <rui:slSubmenuItems>
                         <%
                             menuItem.childMenuItems.each{subMenuItem->
-                                def subMenuAction = subMenuItem.getAction();
+                                def subMenuActionString = subMenuItem.getActionString();
+                                def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                         %>
-                            <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:sgMenuItem>
+                            <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="${subMenuItem.visible}"></rui:sgMenuItem>
                         <%
                                 }
                         %>
@@ -40,8 +43,10 @@
     <rui:slPropertyMenuItems>
         <%
             uiElement.propertyMenuItems.each{menuItem->
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
-        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuItem.action?"action='"+menuItem.action.name+"'":""}>
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -49,8 +54,10 @@
                     <rui:slSubmenuItems>
                         <%
                             menuItem.childMenuItems.each{subMenuItem->
+                                def subMenuActionString = subMenuItem.getActionString();
+                                def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                         %>
-                            <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuItem.action?"action='"+subMenuItem.action.name+"'":""} visible="${subMenuItem.visible}"></rui:sgMenuItem>
+                            <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="${subMenuItem.visible}"></rui:sgMenuItem>
                         <%
                                 }
                         %>

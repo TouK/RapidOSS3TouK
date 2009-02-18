@@ -18,13 +18,23 @@
     def edgeColorString = getMap(uiElement.edgeColors);
     def contents = uiElement.nodeContents;
 %>
-<rui:objectMap id="${uiElement.name}" dataTag="${uiElement.dataTag}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}">
+<rui:objectMap id="${uiElement.name}" dataTag="${uiElement.dataTag}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}"
+<%
+    uiElement.getActionTrigers().each{eventName, actionTriggers->
+         def actionString = uiElement.getActionsString(actionTriggers);
+    %>
+        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
+    <%
+    }
+    %>
+>
     <rui:omMenuItems>
         <%
             uiElement.menuItems.each{menuItem->
-                def menuAction = menuItem.getAction();
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
-        <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
+        <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
         </rui:omMenuItem>
         <%
             }
@@ -38,9 +48,10 @@
         <rui:omToolbarMenu label="${toolbarMenu.label}">
             <%
                 toolbarMenu.menuItems.each{menuItem->
-                    def menuAction = menuItem.getAction();
+                    def menuActionString = menuItem.getActionString();
+                    def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
             %>
-            <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${menuAction?"action='"+menuAction.name+"'":""}>
+            <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
             </rui:omMenuItem>
             <%
                 }

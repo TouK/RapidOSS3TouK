@@ -330,7 +330,10 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
 
     public void testOperation()
     {
-        System.setProperty ("base.dir", "../testoutput");
+
+        String baseDir = "../testoutput";
+        FileUtils.deleteDirectory (new File(baseDir));
+        System.setProperty ("base.dir", baseDir);
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
                 def ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
@@ -345,6 +348,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             }
         """)
         def operationFile = new File("${System.getProperty ("base.dir")}/operations/${domainClassName}Operations.groovy");
+        operationFile.parentFile.mkdirs();
         operationFile.setText("""
             class ${domainClassName}Operations extends ${AbstractDomainOperation.class.name}{
                 def method1(arg1, arg2)
@@ -390,7 +394,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         loadedDomainClass.reloadOperations();
 
         //We have to reload instance from repository to get new operation since old instance is cached in instance 
-        instance = loadedDomainClass.get(id:instance.id);
+        instance = loadedDomainClass.get(id:instance.id); 
         try
         {
             instance.method1(args[0], args[1]);

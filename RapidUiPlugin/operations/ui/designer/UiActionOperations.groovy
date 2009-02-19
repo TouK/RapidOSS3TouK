@@ -19,6 +19,8 @@ public class UiActionOperations extends AbstractDomainOperation
                                         designerType: "ActionTriggers",
                                         display: "Triggers",
                                         canBeDeleted: false,
+                                        imageExpanded: "images/rapidjs/designer/bookmark_folder.png",
+                                        imageCollapsed: "images/rapidjs/designer/bookmark_folder.png",
                                         propertyConfiguration: [
                                         ],
                                         childrenConfiguration: [

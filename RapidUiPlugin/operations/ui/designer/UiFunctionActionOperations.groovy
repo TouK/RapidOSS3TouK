@@ -16,8 +16,8 @@ class UiFunctionActionOperations extends UiActionOperations {
                 designerType: "FunctionAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/javascript.gif",
+                imageCollapsed: "images/rapidjs/designer/javascript.gif",
                 propertyConfiguration: [
                         component: [descr: "The name of the component", formatter:{object-> return object.component?object.component.name:""}],
                         function: [descr: "The method of the component that will called."],

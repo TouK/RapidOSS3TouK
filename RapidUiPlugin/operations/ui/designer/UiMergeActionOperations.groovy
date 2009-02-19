@@ -13,8 +13,8 @@ class UiMergeActionOperations extends UiRequestActionOperations {
                 designerType: "MergeAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/connect_established.png",
+                imageCollapsed: "images/rapidjs/designer/connect_established.png",
                 propertyConfiguration: [
                         removeAttribute: [descr: "The attribute in response data which indicates that related components should remove the specified data", required:true]
                 ],

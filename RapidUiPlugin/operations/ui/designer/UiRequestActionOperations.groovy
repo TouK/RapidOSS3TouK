@@ -18,8 +18,8 @@ class UiRequestActionOperations extends UiActionOperations {
                 designerType: "RequestAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/connect_creating.png",
+                imageCollapsed: "images/rapidjs/designer/connect_creating.png",
                 propertyConfiguration: [
                         url: [descr: "The URL to be used for requests to the server"],
                         timeout:[descr: "The time interval in seconds to wait the server request completes successfully before aborting.", required:true],

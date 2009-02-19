@@ -16,8 +16,8 @@ class UiLinkActionOperations extends UiActionOperations {
                 designerType: "LinkAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/link.png",
+                imageCollapsed: "images/rapidjs/designer/link.png",
                 propertyConfiguration: [
                         url: [descr: "JavaScript expression that will be evaluated to determine the URL to redirect to", type:"Expression"]
                 ],

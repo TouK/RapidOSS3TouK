@@ -10,7 +10,7 @@ class UiMenuItem {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "childMenuItems", "parentMenuItem"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "childMenuItems", "parentMenuItem", "subscribedEvents"];
 
 
         storageType "File"
@@ -31,11 +31,13 @@ class UiMenuItem {
     UiComponent component ;
     List childMenuItems = [];
     UiMenuItem parentMenuItem;
+    List subscribedEvents = [];
 
 
     static relations = [
         component:[type:UiComponent, reverseName:"menuItems", isMany:false],
         childMenuItems:[type:UiMenuItem, reverseName:"parentMenuItem", isMany:true],
+        subscribedEvents:[type:UiActionTrigger, reverseName:"menu", isMany:true],
         parentMenuItem:[type:UiMenuItem, reverseName:"childMenuItems", isMany:false]
     ]
 
@@ -55,7 +57,7 @@ class UiMenuItem {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "childMenuItems", "parentMenuItem"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "childMenuItems", "parentMenuItem", "subscribedEvents"];
 
     public String toString()
     {

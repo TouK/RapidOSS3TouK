@@ -45,19 +45,16 @@ class UiMenuItemOperations extends AbstractDomainOperation
     def getActions()
     {
         def menuActions = [];
-        ui.designer.UiActionTrigger.list().each {trigger ->
-            if (trigger.component != null && trigger.component.name == component.name && trigger.isMenuItem && trigger.name == name)
-            {
-                menuActions.add(trigger.action);
-            }
+        subscribedEvents.each {UiActionTrigger trigger ->
+            menuActions.add(trigger.action);
         }
         return menuActions;
     }
 
-    def getActionString(){
+    def getActionString() {
         def actions = getActions();
         def actionNames = actions.name;
-        if(actionNames.size() > 0){
+        if (actionNames.size() > 0) {
             return "\${['" + actionNames.join("','") + "']}"
         }
         return null;

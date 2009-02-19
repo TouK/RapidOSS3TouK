@@ -8,7 +8,7 @@ class UiAction
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "menuItems"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "subscribedEvents"];
         storageType "File"
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"]]]]
@@ -30,12 +30,13 @@ class UiAction
     
     UiTab tab ;
     List triggers = [];
+    List subscribedEvents = [];
 
     
     static relations = [
         tab:[type:UiTab, reverseName:"actions", isMany:false],
-        menuItems:[type:UiMenuItem, reverseName:"action", isMany:true],
-        triggers:[type:UiActionTrigger, reverseName:"action", isMany:true]
+        triggers:[type:UiActionTrigger, reverseName:"action", isMany:true],
+        subscribedEvents:[type:UiActionTrigger, reverseName:"triggeringAction", isMany:true]
     ]
     
     static constraints={
@@ -54,7 +55,7 @@ class UiAction
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "menuItems"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "events", "subscribedEvents"];
     
     public String toString()
     {

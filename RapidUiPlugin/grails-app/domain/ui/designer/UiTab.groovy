@@ -39,7 +39,7 @@ class UiTab
     List dialogs =[];
     
     List actions =[];
-    
+
     
     static relations = [
     
@@ -52,7 +52,7 @@ class UiTab
         ,dialogs:[type:UiDialog, reverseName:"tab", isMany:true]
 
         ,actions:[type:UiAction, reverseName:"tab", isMany:true]
-    
+
     ]
     
     static constraints={

@@ -103,4 +103,22 @@ public class UiTabOperations extends AbstractDomainOperation
         return uiTab;
     }
 
+    def getActionTrigers()
+    {
+        def actionTriggers = [:];
+        def triggers = UiActionTrigger.searchEvery("type:\"${UiActionTrigger.GLOBAL_TYPE}\"");
+        triggers.each {UiActionTrigger actionTrigger ->
+            if (actionTrigger.action.tab.name == name)
+            {
+                def triggerArray = actionTriggers.get(actionTrigger.name);
+                if (triggerArray == null) {
+                    triggerArray = [];
+                    actionTriggers.put(actionTrigger.name, triggerArray)
+                }
+                triggerArray.add(actionTrigger)
+            }
+        }
+        return actionTriggers;
+    }
+
 }

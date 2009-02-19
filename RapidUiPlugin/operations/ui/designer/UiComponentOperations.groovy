@@ -22,19 +22,19 @@ class UiComponentOperations extends UiLayoutUnitOperations {
 
     def getActionTrigers()
     {
-        def triggers = [:];
-        ui.designer.UiActionTrigger.list().each {actionTrigger ->
-            if (actionTrigger.component != null && actionTrigger.component.name == name && !actionTrigger.isMenuItem)
+        def actionTriggers = [:];
+        triggers.each {UiActionTrigger actionTrigger ->
+            if (actionTrigger.type == UiActionTrigger.COMPONENT_TYPE)
             {
-                def triggerArray = triggers.get(actionTrigger.name);
+                def triggerArray = actionTriggers.get(actionTrigger.name);
                 if (triggerArray == null) {
                     triggerArray = [];
-                    triggers.put(actionTrigger.name, triggerArray)
+                    actionTriggers.put(actionTrigger.name, triggerArray)
                 }
                 triggerArray.add(actionTrigger)
             }
         }
-        return triggers;
+        return actionTriggers;
     }
 
     def getActionsString(actionTriggers){

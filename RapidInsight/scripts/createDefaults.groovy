@@ -17,7 +17,7 @@
 * USA.
 */
 import script.CmdbScript
-import org.apache.log4j.Logger
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -72,7 +72,7 @@ scriptsToAdd.each{  scriptParams ->
     }
     catch(e)
     {
-       Logger.getRootLogger().warn("createDefaults: Could not add script with params : ${scriptParams}.Reason:${e}",e)
+       logger.warn("createDefaults: Could not add script with params : ${scriptParams}.Reason:${e}",e)
     }
 }
 
@@ -87,7 +87,7 @@ scriptsToRun.each{  scriptName ->
     }
     catch(e)
     {
-       Logger.getRootLogger().warn("createDefaults:  Could not run script ${scriptName}.Reason:${e}",e)
+       logger.warn("createDefaults:  Could not run script ${scriptName}.Reason:${e}",e)
     }
 }
 

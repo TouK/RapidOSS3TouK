@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.ifountain.rcmdb.converter.datasource.StringConverter
 import com.ifountain.comp.converter.ConverterRegistry
+import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,7 +22,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         clearMetaClasses();
         initialize();
-        ConverterRegistry.getInstance().setDefaultConverter(new StringConverter());
+        DatasourceConversionUtils.registerDefaultConverters();
     }
 
     public void tearDown() {
@@ -96,7 +97,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
 
          assertEquals(ds.convert(null),"") ;
          assertEquals(ds.convert("abc"),"abc") ;
-         assertEquals(ds.convert(5),"5") ;
+         assertEquals(ds.convert(5),5) ;
      }
      public void testConvertWithDefault()
      {
@@ -110,7 +111,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(ds.convertWithDefault(null,["x":5]),["x":5]) ;
          
          assertEquals(ds.convertWithDefault("abc",""),"abc") ;
-         assertEquals(ds.convertWithDefault(5,""),"5") ;
+         assertEquals(ds.convertWithDefault(5,""),5) ;
      }
 
 }

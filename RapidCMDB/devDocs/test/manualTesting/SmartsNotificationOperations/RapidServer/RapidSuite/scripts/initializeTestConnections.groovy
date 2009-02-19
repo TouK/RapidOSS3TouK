@@ -24,7 +24,7 @@
  * To change this template use File | Settings | File Templates.
  */
 import connection.SmartsConnection;
-import connection.SmartsConnectionTemplate;
+import connection.SmartsConnectionData;
 import connector.SmartsListeningNotificationConnector;
 import script.CmdbScript;
 import datasource.SmartsNotificationDatasource;
@@ -33,13 +33,13 @@ import connection.HttpConnection;
 import datasource.HttpDatasource;
 
 // Parameter definitions for smarts Notification Connector
-def smartsConnectionTemplateParams=[:]
-smartsConnectionTemplateParams.name="smartscon"
-smartsConnectionTemplateParams.broker="192.168.1.100:426"
-smartsConnectionTemplateParams.brokerUsername="SecureBroker"
-smartsConnectionTemplateParams.brokerPassword="Secure"
-smartsConnectionTemplateParams.username="admin"
-smartsConnectionTemplateParams.password="changeme"
+def smartsConnectionDataParams=[:]
+smartsConnectionDataParams.name="smartscon"
+smartsConnectionDataParams.broker="192.168.1.100:426"
+smartsConnectionDataParams.brokerUsername="SecureBroker"
+smartsConnectionDataParams.brokerPassword="Secure"
+smartsConnectionDataParams.username="admin"
+smartsConnectionDataParams.password="changeme"
 
 def smartsConnectorParams=[:]
 smartsConnectorParams.name="smnot"
@@ -81,21 +81,21 @@ testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?
 
 //script to initialize and starts smarts notification connector
 
-def smartsConnectionTemplate = SmartsConnectionTemplate.add(smartsConnectionTemplateParams)
+def smartsConnectionData = SmartsConnectionData.add(smartsConnectionDataParams)
 
-if(smartsConnectionTemplate.hasErrors()) {
-    logger.warn("Can not create smartsConnectionTemplate for test. Reason : ${smartsConnectionTemplate.errors}");
-    smartsConnectionTemplate.remove();
+if(smartsConnectionData.hasErrors()) {
+    logger.warn("Can not create smartsConnectionData for test. Reason : ${smartsConnectionData.errors}");
+    smartsConnectionData.remove();
 }
 else{
-    logger.warn("Created smartsConnectionTemplate for test");
-    smartsConnectorParams.connectionTemplate=smartsConnectionTemplate
+    logger.warn("Created smartsConnectionData for test");
+    smartsConnectorParams.connectionTemplate=smartsConnectionData
     def smartsConnector = SmartsListeningNotificationConnector.add(smartsConnectorParams)
     if(smartsConnector.hasErrors())
     {
         logger.warn("Can not create smartsConnector for test. Reason : ${smartsConnector.errors}");
         smartsConnector.remove();
-        smartsConnectionTemplate.remove();
+        smartsConnectionData.remove();
     }
     else
     {
@@ -114,7 +114,7 @@ else{
             logger.warn("Can not create smartsConnection for test. Reason : ${smartsConnection.errors}");
             smartsConnection.remove();
             smartsConnector.remove();
-            smartsConnectionTemplate.remove();
+            smartsConnectionData.remove();
         }
         else{
             logger.warn("Created smartsConnection for test");
@@ -132,7 +132,7 @@ else{
                 script.remove();
                 smartsConnection.remove();
                 smartsConnector.remove();
-                smartsConnectionTemplate.remove();
+                smartsConnectionData.remove();
             }
             else
             {
@@ -151,7 +151,7 @@ else{
                     script.remove();
                     smartsConnection.remove();
                     smartsConnector.remove();
-                    smartsConnectionTemplate.remove();
+                    smartsConnectionData.remove();
                 }
                 else
                 {

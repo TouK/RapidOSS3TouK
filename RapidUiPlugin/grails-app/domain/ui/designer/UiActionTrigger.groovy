@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiActionTrigger{
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction", "menu"];
         storageType "File"
     };
     public static final String MENU_TYPE = "Menu"
@@ -39,6 +39,7 @@ class UiActionTrigger{
         name(blank:false, nullable:false)
         action(nullable:false)
         component(nullable:true)
+        menu(nullable:true)
         triggeringAction(nullable:true)
         type(blank:false, inList:[MENU_TYPE, COMPONENT_TYPE, ACTION_TYPE, GLOBAL_TYPE])
         __operation_class__(nullable:true)
@@ -47,5 +48,5 @@ class UiActionTrigger{
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction", "menu"];
 }

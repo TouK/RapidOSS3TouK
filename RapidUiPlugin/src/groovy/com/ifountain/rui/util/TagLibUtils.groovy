@@ -26,65 +26,73 @@ import groovy.xml.MarkupBuilder
  * Time: 11:29:29 AM
  */
 class TagLibUtils {
-   static def getConfigAsXml(tagName, attrs, validAttrs, innerXML){
+    static def getConfigAsXml(tagName, attrs, validAttrs, innerXML) {
+        return getConfigAsXml(tagName, attrs, validAttrs, innerXML, false)
+    }
+
+    static def getConfigAsXml(tagName, attrs, validAttrs, innerXML, bringAllProperties) {
         def writer = new StringWriter();
         def builder = new MarkupBuilder(writer);
         def attMap = [:]
         def listAttributes = [:]
         def mapAttributes = [:]
-        validAttrs.each{
+        if (bringAllProperties == true)
+        {
+            validAttrs = attrs.keySet();
+        }
+        validAttrs.each {
             def value = attrs.get(it);
-            if(value instanceof List){
+            if (value instanceof List) {
                 listAttributes.put(it, value)
             }
-            else if(value instanceof Map){
+            else if (value instanceof Map) {
                 mapAttributes.put(it, value)
             }
-            else{
-                attMap.put(it, value);    
+            else {
+                attMap.put(it, value);
             }
 
         }
-        if(innerXML != null){
-           builder."${tagName}"(attMap){
-               listAttributes.each{key, valueList ->
-                   builder."${key}"(){
-                       valueList.each{value ->
-                           builder.Item(value)
-                       }
-                   }
-               }
-               mapAttributes.each{key, valueList ->
-                   builder."${key}"(){
-                       valueList.each{k, v ->
-                           builder.Item(key:k, value:v)
-                       }
-                   }
-               }
-               builder.yieldUnescaped(innerXML)
-           }
+        if (innerXML != null) {
+            builder."${tagName}"(attMap) {
+                listAttributes.each {key, valueList ->
+                    builder."${key}"() {
+                        valueList.each {value ->
+                            builder.Item(value)
+                        }
+                    }
+                }
+                mapAttributes.each {key, valueList ->
+                    builder."${key}"() {
+                        valueList.each {k, v ->
+                            builder.Item(key: k, value: v)
+                        }
+                    }
+                }
+                builder.yieldUnescaped(innerXML)
+            }
         }
-        else{
-           builder."${tagName}"(attMap){
-               listAttributes.each{key, valueList ->
-                   builder."${key}"(){
-                       valueList.each{value ->
-                           builder.Item(value)
-                       }
-                   }
-               }
-               mapAttributes.each{key, valueList ->
-                   builder."${key}"(){
-                       valueList.each{k, v ->
-                           builder.Item(key:k, value:v)
-                       }
-                   }
-               }
-           }
+        else {
+            builder."${tagName}"(attMap) {
+                listAttributes.each {key, valueList ->
+                    builder."${key}"() {
+                        valueList.each {value ->
+                            builder.Item(value)
+                        }
+                    }
+                }
+                mapAttributes.each {key, valueList ->
+                    builder."${key}"() {
+                        valueList.each {k, v ->
+                            builder.Item(key: k, value: v)
+                        }
+                    }
+                }
+            }
         }
-        return  writer.toString();
+        return writer.toString();
     }
-    static def getConfigAsXml(tagName, attrs, validAttrs){
+    static def getConfigAsXml(tagName, attrs, validAttrs) {
         return getConfigAsXml(tagName, attrs, validAttrs, null);
     }
 }

@@ -32,6 +32,7 @@ class UiFunctionActionOperations extends UiActionOperations {
                                         imageExpanded: "images/rapidjs/designer/bookmark_folder.png",
                                         imageCollapsed: "images/rapidjs/designer/bookmark_folder.png",
                                         propertyConfiguration: [
+                                            designerHidden: [descr: "", required:true],
                                         ],
                                         childrenConfiguration: [
                                                 [designerType: "FunctionArgument", isMultiple: true, propertyName: "arguments"]

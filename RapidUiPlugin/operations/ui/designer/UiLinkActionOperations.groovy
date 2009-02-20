@@ -13,6 +13,7 @@ class UiLinkActionOperations extends UiActionOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"LinkAction.html",
                 designerType: "LinkAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",

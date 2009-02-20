@@ -14,6 +14,7 @@ class UiGMapOperations extends UiComponentOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"GMap Component.html",
                 designerType: "GMap",
                 canBeDeleted: true,
                 displayFromProperty: "name",

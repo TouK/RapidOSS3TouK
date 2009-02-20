@@ -10,6 +10,7 @@ class UiMergeActionOperations extends UiRequestActionOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"MergeAction.html",
                 designerType: "MergeAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",

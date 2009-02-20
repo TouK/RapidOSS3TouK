@@ -8,6 +8,7 @@ public class UiLayoutOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"Layout.html",
                 designerType:"Layout",
                 canBeDeleted: true,
                 display: "Layout",

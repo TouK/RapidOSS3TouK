@@ -14,6 +14,7 @@ class UiFunctionArgumentOperations extends AbstractDomainOperation{
      public static Map metaData()
     {
         Map metaData = [
+                help:"FunctionAction.html",
                 designerType:"FunctionArgument",
                 canBeDeleted: true,
                 display: "FunctionArgument",

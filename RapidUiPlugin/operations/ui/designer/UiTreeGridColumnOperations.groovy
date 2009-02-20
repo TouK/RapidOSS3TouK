@@ -16,6 +16,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"TreeGrid Component.html",
                 designerType: "TreeGridColumn",
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",
@@ -24,6 +25,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 propertyConfiguration: [:],
                 childrenConfiguration: [
                         [
+                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridColumnImages",
                                 metaData: [
                                         designerType: "TreeGridColumnImages",

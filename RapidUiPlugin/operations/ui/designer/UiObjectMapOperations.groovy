@@ -13,6 +13,7 @@ class UiObjectMapOperations extends UiComponentOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"ObjectMap Component.html",
                 designerType: "ObjectMap",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -33,6 +34,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 designerType: "ObjectMapImageNodeContent",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"ObjectMap Component.html",
                                         designerType: "ObjectMapImageNodeContent",
                                         display: "Images",
                                         imageExpanded: 'images/rapidjs/designer/images.png',
@@ -46,6 +48,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 designerType: "ObjectMapTextNodeContent",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"ObjectMap Component.html",
                                         designerType: "ObjectMapTextNodeContent",
                                         display: "Texts",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
@@ -59,6 +62,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 designerType: "ObjectMapGaugeNodeContent",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"ObjectMap Component.html",
                                         designerType: "ObjectMapGaugeNodeContent",
                                         display: "Gauges",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
@@ -72,6 +76,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 designerType: "ObjectMapToolbarMenus",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"ObjectMap Component.html",
                                         designerType: "ObjectMapToolbarMenus",
                                         display: "ToolbarMenus",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
@@ -85,6 +90,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                                 designerType: "ObjectMapMenuItems",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"ObjectMap Component.html",
                                         designerType: "ObjectMapMenuItems",
                                         display: "MenuItems",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',

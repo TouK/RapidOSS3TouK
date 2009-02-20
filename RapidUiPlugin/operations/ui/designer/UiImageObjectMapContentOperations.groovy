@@ -13,6 +13,7 @@ class UiImageObjectMapContentOperations extends UiObjectMapContentOperations{
     public static Map metaData()
     {
         Map metaData = [
+                help:"ObjectMap Component.html",
                 designerType: "ImageObjectMapContent",
                 canBeDeleted: true,
                 display: "NodeContent",

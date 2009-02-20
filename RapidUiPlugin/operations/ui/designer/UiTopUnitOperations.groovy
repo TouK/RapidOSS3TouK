@@ -5,6 +5,7 @@ public class UiTopUnitOperations extends UiLayoutUnitOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"Layout Panes - Center, Top, Bottom, Left, Right.html",
                 designerType:"TopUnit",
                 canBeDeleted: true,
                 display: "Top",

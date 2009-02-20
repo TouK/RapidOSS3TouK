@@ -7,6 +7,7 @@ public class UiWebPageOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"Web Page.html",
                 designerType: "WebPage",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -17,6 +18,7 @@ public class UiWebPageOperations extends AbstractDomainOperation
                 ],
                 childrenConfiguration: [
                         [
+                                help:"Tabs.html",
                                 designerType: "Tabs",
                                 isMultiple: false,
                                 metaData: [

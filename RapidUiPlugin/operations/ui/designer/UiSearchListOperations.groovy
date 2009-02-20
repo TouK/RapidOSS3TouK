@@ -13,6 +13,7 @@ class UiSearchListOperations extends UiComponentOperations{
     public static Map metaData()
     {
         Map metaData = [
+                help:"SearchList Component.html",
                 designerType: "SearchList",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -39,6 +40,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListFields",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchList Component.html",
                                         designerType: "SearchListFields",
                                         display: "Fields",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
@@ -52,6 +54,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListImages",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchList Component.html",
                                         designerType: "SearchListImages",
                                         display: "Images",
                                         imageExpanded: 'images/rapidjs/designer/images.png',
@@ -65,6 +68,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListMenuItems",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchList Component.html",
                                         designerType: "SearchListMenuItems",
                                         display: "MenuItems",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',
@@ -78,6 +82,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListPropertyMenuItems",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchList Component.html",
                                         designerType: "SearchListPropertyMenuItems",
                                         display: "PropertyMenuItems",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',

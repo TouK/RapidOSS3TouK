@@ -15,6 +15,7 @@ class UiFlexPieChartOperations extends UiComponentOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"FlexPieChart Component.html",
                 designerType: "FlexPieChart",
                 canBeDeleted: true,
                 displayFromProperty: "name",

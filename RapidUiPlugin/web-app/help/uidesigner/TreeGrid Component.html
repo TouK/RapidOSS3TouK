@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>RapidInsight Documentation In-Progress : TreeGrid Component</title>
+	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
+        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
+    </head>
+
+    <body>
+	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
+		    <tr>
+			    <td valign="top" class="pagebody">
+				    <div class="pageheader">
+					    <span class="pagetitle">
+                            RapidInsight Documentation In-Progress : TreeGrid Component
+                                                    </span>
+				    </div>
+				    <div class="pagesubheading">
+					    This page last changed on Feb 13, 2009 by <font color="#0050B2">pinar</font>.
+				    </div>
+
+				    <p>A TreeGrid component is used to display the data in hierarchical form. You can have both a tree structure with expanding/collapsing nodes as well as a grid view attached to the expanding nodes as follows:</p>
+
+<p><img src="download/attachments/2201776/TreeGrid.jpg" align="absmiddle" border="0"/></p>
+
+<h4><a name="TreeGridComponent-AvailableProperties"></a>Available Properties</h4>
+<p><b>url</b> (Required): The default URL to be used for requests to the server to retrieve hierarchical data. ex: <br/>
+<b>rootTag</b> (Required): The root node name of AJAX response which TreeGrid takes as starting point to get its data. ex: "Objects" for the sample data below<br/>
+<b>contentPath</b> (Required): The node names of AJAX response which will be used as row data. ex: "Object" for the sample data below<br/>
+<b>keyAttribute</b> (Required): The attribute name of the row node which uniquely identifies the node. ex: "id" for the sample data below<br/>
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
+<b>name</b> (Required): Default is TreeGrid. The name does not have to be unique.<br/>
+<b>title</b> (Optional): TreeGrid title.</p>
+
+<p>Below is the sample Ajax response in Xml format to a url call:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">&lt;Objects&gt;
+   &lt;<span class="code-object">Object</span> id=<span class="code-quote">"London"</span> name=<span class="code-quote">"London"</span> nodeType=<span class="code-quote">"Container"</span> &gt;
+	&lt;<span class="code-object">Object</span> id=<span class="code-quote">"AM"</span> name=<span class="code-quote">"AM"</span> displayName=<span class="code-quote">"AM"</span> nodeType=<span class="code-quote">"Container"</span> state=<span class="code-quote">"1"</span>&gt;
+	    &lt;<span class="code-object">Object</span> id=<span class="code-quote">"51"</span> name=<span class="code-quote">"ercpsvsyr1"</span> displayName=<span class="code-quote">"ercpsvsyr1"</span> nodeType=<span class="code-quote">"<span class="code-object">Object</span>"</span> rsDatasource=<span class="code-quote">"AM"</span>  state=<span class="code-quote">"1"</span>/&gt;
+	    &lt;<span class="code-object">Object</span> id=<span class="code-quote">"56"</span> name=<span class="code-quote">"ercwsvnyc1"</span> displayName=<span class="code-quote">"ercwsvnyc1"</span> nodeType=<span class="code-quote">"<span class="code-object">Object</span>"</span> rsDatasource=<span class="code-quote">"AM"</span>  state=<span class="code-quote">"1"</span>/&gt;
+	&lt;/<span class="code-object">Object</span>&gt;
+   &lt;/<span class="code-object">Object</span>&gt;
+   &lt;<span class="code-object">Object</span> id=<span class="code-quote">"Paris"</span> name=<span class="code-quote">"Paris"</span> nodeType=<span class="code-quote">"Container"</span>&gt;
+	&lt;<span class="code-object">Object</span> id=<span class="code-quote">"SAM"</span> name=<span class="code-quote">"SAM"</span> displayName=<span class="code-quote">"SAM"</span> nodeType=<span class="code-quote">"Container"</span>  state=<span class="code-quote">"4"</span>&gt;
+	    &lt;<span class="code-object">Object</span> id=<span class="code-quote">"52"</span> name=<span class="code-quote">"erctsvnyc8"</span> displayName=<span class="code-quote">"erctsvnyc8"</span> nodeType=<span class="code-quote">"<span class="code-object">Object</span>"</span> rsDatasource=<span class="code-quote">"SAM"</span>  state=<span class="code-quote">"4"</span>/&gt;
+	    &lt;<span class="code-object">Object</span> id=<span class="code-quote">"53"</span> name=<span class="code-quote">"ercpsvroc"</span> displayName=<span class="code-quote">"ercpsvroc"</span> nodeType=<span class="code-quote">"<span class="code-object">Object</span>"</span> rsDatasource=<span class="code-quote">"SAM"</span>  state=<span class="code-quote">"3"</span>/&gt;
+	&lt;/<span class="code-object">Object</span>&gt;
+   &lt;/<span class="code-object">Object</span>&gt;
+&lt;/Objects&gt;</pre>
+</div></div>
+
+<h4><a name="TreeGridComponent-AdditionalProperties"></a>Additional Properties</h4>
+<p><b>tooltip</b> (Optional): Parameter to display a tooltip over rows. Default is false.<br/>
+<b>expanded</b> (Optional): Parameter to display TreeGrid branches either expanded or collapsed. Default is false. </p>
+
+<h4><a name="TreeGridComponent-AvailableActions"></a>Available Actions</h4>
+<p><b>Delete</b>: Deletes the component</p>
+
+<h4><a name="TreeGridComponent-Events"></a>Events</h4>
+<p><b>onNodeClick</b>: Event fired when a row is clicked. Available parameters:</p>
+<ul>
+	<li>params.data:  JavaScript object representing the row data. While defining an action on this event, the row data can be accessed through params.data object. ex: params.data.state, params.data.id, etc.</li>
+</ul>
+
+
+<h4><a name="TreeGridComponent-ChildNodes"></a>Child Nodes</h4>
+<div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>params.data is available for the visible parameter to write expressions to determine when individual child nodes such as images, menu items are to be displayed.</td></tr></table></div>
+
+<h6><a name="TreeGridComponent-Columns"></a>Columns</h6>
+<p>A TreeGrid component must have at least one TreeGridColumn. A TreeGridColumn can be either text or an image. Default is text. </p>
+<ul>
+	<li>attributeName (Required): The data node attribute which will be shown in the column. This attribute comes with the Ajax response. ex: "displayName" for the sample data above.</li>
+	<li>colLabel (Required): Title of the column.</li>
+	<li>width (Required): Width of the column.<br/>
+Additional Properties:</li>
+	<li>sortBy (Optional): Parameter to render TreeGrid whether sorted according to this column or not. Default is false.</li>
+</ul>
+
+
+<p>If a TreeGridColumn is of type Image, you can add one or more images under Images node. The display of the image depends on an expression defined in "visible" parameter. </p>
+<ul>
+	<li>src (Required): Image url. ex: images/rapidjs/component/states/green.png</li>
+	<li>visible (Optional): The JavaScript expression evaluated on row data to determine whether the image is displayed or not. Default is "true" which means it is always displayed. ex: params.data.state =='0'<br/>
+Additional Properties:</li>
+	<li>align (Optional): Sets the alignment of the image. Available values are "left", 'right" and "center". Default is "left".</li>
+</ul>
+
+
+<h6><a name="TreeGridComponent-Rootimages"></a>Root images</h6>
+<p>These are the images that will be displayed on the left side of each data row in the TreeGrid depending on the row being expanded or collapsed. </p>
+<ul>
+	<li>expanded (Required): The image url which will be shown when the row is expanded. ex: images/rapidjs/component/tools/folder_open.gif</li>
+	<li>collapsed (Required): The image url which will be shown when the row is collapsed. ex: images/rapidjs/component/tools/folder.gif</li>
+	<li>visible (Optional): The JavaScript expression evaluated on row data to determine whether the image is displayed or not. Default is "true". params.data object will be used to write the expression. ex: params.data.nodeType=='Container'</li>
+</ul>
+
+
+<h6><a name="TreeGridComponent-Menuitems"></a>Menu items</h6>
+<p>They are data row menu items. </p>
+<ul>
+	<li>name (Required): The name of the menu item</li>
+	<li>label (Required): The label of the menu item.</li>
+	<li>visible (Optional): The JavaScript expression evaluated on row data to determine whether the item is displayed or not. Default is "true". params.data object will be used to write the expression. ex: params.data.nodeType=='Container'</li>
+</ul>
+
+
+<div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>Note that the actions which will be executed when a menu item is selected are defined in Actions node for the tab.</td></tr></table></div>
+
+				    					    <br/>
+                        <div class="tabletitle">
+                            <a name="attachments">Attachments:</a>
+                        </div>
+
+                        <div class="greybox" align="left">
+                                                            <img src="images/icons/bullet_blue.gif" height="8" width="8" alt=""/>
+                                <a href="download/attachments/2201776/TreeGrid.jpg">TreeGrid.jpg</a> (image/jpeg)
+                                <br/>
+                                                    </div>
+				    
+                    			    </td>
+		    </tr>
+	    </table>
+	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td height="12" background="http://www.ifountain.org/confluence/images/border/border_bottom.gif"><img src="images/border/spacer.gif" width="1" height="1" border="0"/></td>
+			</tr>
+		    <tr>
+			    <td align="center"><font color="grey">Document generated by Confluence on Feb 17, 2009 14:52</font></td>
+		    </tr>
+	    </table>
+    </body>
+</html>

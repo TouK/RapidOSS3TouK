@@ -14,6 +14,7 @@ class UiHtmlOperations extends UiComponentOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"HTML Component.html",
                 designerType: "Html",
                 canBeDeleted: true,
                 displayFromProperty: "name",

@@ -14,6 +14,7 @@ class UiPieChartOperations extends UiComponentOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"PieChart Component.html",
                 designerType: "PieChart",
                 canBeDeleted: true,
                 displayFromProperty: "name",

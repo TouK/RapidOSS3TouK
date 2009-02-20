@@ -13,6 +13,7 @@ class UiDialogOperations extends UiLayoutUnitOperations{
     public static Map metaData()
     {
         Map metaData = [
+                help:"Dialog.html",
                 designerType:"Dialog",
                 imageExpanded:"images/rapidjs/designer/application_double.png",
                 imageCollapsed:"images/rapidjs/designer/application_double.png",

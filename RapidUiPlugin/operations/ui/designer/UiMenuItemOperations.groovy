@@ -16,6 +16,7 @@ class UiMenuItemOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"MenuItem.html",
                 designerType: "MenuItem",
                 displayFromProperty: "name",
                 canBeDeleted: "true",

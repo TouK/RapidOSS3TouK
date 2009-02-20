@@ -16,6 +16,7 @@ class UiRootImageOperations  extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"TreeGrid Component.html",
                 designerType: "RootImage",
                 canBeDeleted: true,
                 display: "RootImage",

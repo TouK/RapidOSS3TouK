@@ -16,6 +16,7 @@ class UiColumnOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"Column.html",
                 designerType: "Column",
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",

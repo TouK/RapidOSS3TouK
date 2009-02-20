@@ -6,6 +6,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import org.apache.commons.io.FileUtils
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -393,6 +394,33 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             controller.reloadTemplates();
         }
 
+    }
+
+    public void testGetHelpContent()
+    {
+        //The help content is html and it may include invalid characters for xml
+        //These should be escaped
+        String helpContent1 = "<This is a help file.>&";
+        String helpContent2 = "<This is a help file.>&2";
+        def helpFile1 = new File("${System.getProperty ("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp1.html");
+        def helpFile2 = new File("${System.getProperty ("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp2.html");
+        helpFile1.parentFile.mkdirs();
+        helpFile1.setText (helpContent1);
+        helpFile2.setText (helpContent2);
+
+        UiDesignerController controller = new UiDesignerController();
+        controller.help();
+
+        def helpContentNode = new XmlParser().parseText(controller.response.contentAsString);
+        assertEquals("Helps", helpContentNode.name());
+        def helpItems = helpContentNode.Help;
+        def helpFile1Node = helpItems.find {it.attributes()["id"] == helpFile1.getName()};
+        assertEquals (helpContent1, helpFile1Node.text());
+
+        def helpFile2Node = helpItems.find {it.attributes()["id"] == helpFile2.getName()};
+        assertEquals (helpContent2, helpFile2Node.text());
+
+//        HELP_FILE_DIRECTORY
     }
 
     def checkGeneratedFiles()

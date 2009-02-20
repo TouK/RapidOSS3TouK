@@ -16,6 +16,7 @@ class UiToolbarMenuOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"Toolbar Menu.html",
                 designerType: "ToolbarMenu",
                 canBeDeleted: true,
                 displayFromProperty: "label",

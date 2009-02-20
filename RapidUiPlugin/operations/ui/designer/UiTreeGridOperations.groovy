@@ -13,6 +13,7 @@ class UiTreeGridOperations extends UiComponentOperations{
     public static Map metaData()
     {
         Map metaData = [
+                help:"TreeGrid Component.html",
                 designerType: "TreeGrid",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -30,6 +31,7 @@ class UiTreeGridOperations extends UiComponentOperations{
                 childrenConfiguration:
                 [
                         [
+                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridColumns",
                                 isMultiple: false,
                                 metaData: [
@@ -43,6 +45,7 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 ]
                         ],
                         [
+                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridRootImages",
                                 isMultiple: false,
                                 metaData: [
@@ -56,6 +59,7 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 ]
                         ],
                         [
+                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridMenuItems",
                                 isMultiple: false,
                                 metaData: [

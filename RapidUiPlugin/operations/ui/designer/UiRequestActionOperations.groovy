@@ -15,6 +15,7 @@ class UiRequestActionOperations extends UiActionOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"RequestAction.html",
                 designerType: "RequestAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -29,6 +30,7 @@ class UiRequestActionOperations extends UiActionOperations {
                         [
                                 designerType: "RequestParameters",
                                 metaData: [
+                                        help:"RequestAction.html",
                                         designerType: "RequestParameters",
                                         display: "RequestParameters",
                                         canBeDeleted: false,

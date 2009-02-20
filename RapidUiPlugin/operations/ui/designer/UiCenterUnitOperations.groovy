@@ -5,6 +5,7 @@ public class UiCenterUnitOperations extends UiLayoutUnitOperations
     public static Map metaData()
     {
         Map metaData = [
+                help:"Layout Panes - Center, Top, Bottom, Left, Right.html",
                 designerType:"CenterUnit",
                 display: "Center",
                 imageExpanded:"images/rapidjs/designer/layout_content.png",

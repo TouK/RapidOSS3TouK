@@ -13,6 +13,7 @@ class UiTimelineOperations extends UiComponentOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"Timeline Component.html",
                 designerType: "Timeline",
                 canBeDeleted: true,
                 displayFromProperty: "name",

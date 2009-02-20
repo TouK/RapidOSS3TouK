@@ -8,6 +8,7 @@ public class UiTabOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
+                help:"Tab.html",
                 designerType: "Tab",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -22,6 +23,7 @@ public class UiTabOperations extends AbstractDomainOperation
                 [
                         [designerType: "Components",
                                 metaData: [
+                                        help:"Components.html",
                                         designerType: "Components",
                                         display: "Components",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
@@ -35,6 +37,7 @@ public class UiTabOperations extends AbstractDomainOperation
                         [designerType: "Layout", propertyName: "layout"],
                         [designerType: "Dialogs",
                                 metaData: [
+                                        help:"Dialogs.html",
                                         designerType: "Dialogs",
                                         display: "Dialogs",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
@@ -47,6 +50,7 @@ public class UiTabOperations extends AbstractDomainOperation
                         ],
                         [designerType: "Actions",
                                 metaData: [
+                                        help:"Actions.html",
                                         designerType: "Actions",
                                         display: "Actions",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',

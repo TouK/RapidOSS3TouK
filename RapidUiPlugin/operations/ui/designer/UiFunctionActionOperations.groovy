@@ -13,6 +13,7 @@ class UiFunctionActionOperations extends UiActionOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"FunctionAction.html",
                 designerType: "FunctionAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -26,6 +27,7 @@ class UiFunctionActionOperations extends UiActionOperations {
                         [
                                 designerType: "FunctionArguments",
                                 metaData: [
+                                        help:"FunctionAction.html",
                                         designerType: "FunctionArguments",
                                         display: "Arguments",
                                         canBeDeleted: false,

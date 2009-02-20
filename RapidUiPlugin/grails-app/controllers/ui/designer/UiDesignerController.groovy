@@ -18,6 +18,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 */
 class UiDesignerController {
     public static final String TEMPLATES_DIRECTORY = "grails-app/templates/ui/designer"
+    public static final String HELP_FILE_DIRECTORY = "web-app/help/uidesigner"
     private static final templateCache = [:];
     static Object uiDefinitionLock = new Object();
     def baseDir = System.getProperty("base.dir")
@@ -45,31 +46,18 @@ class UiDesignerController {
         }
     }
 
-    private loadTemplates()
-    {
-        def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
-        def templateDir = new File("${System.getProperty("base.dir")}/${TEMPLATES_DIRECTORY}");
-        def templates = [:];
-        templateDir.listFiles().each {File templateFile ->
-            def template = templateEngine.createTemplate(templateFile);
-            templates[templateFile.getName()] = template;
-        }
-        return templates;
-    }
-    private getTemplate(String templateName)
-    {
-        synchronized (templateCache)
-        {
-            if (templateCache.isEmpty())
-            {
-                templateCache.clear();
-                templateCache.putAll (loadTemplates());
+    def help = {
+        def sw = new StringWriter();
+        def builder=new MarkupBuilder(sw);
+        def helpFileDirectory = new File("${System.getProperty ("base.dir")}/$HELP_FILE_DIRECTORY");
+        builder.Helps(){
+            helpFileDirectory.listFiles().each{File helpFile->
+                builder.Help([id:helpFile.getName()], helpFile.getText());
             }
-            return templateCache[templateName + ".gsp"]
         }
+        render(text: sw.toString(), contentType: "text/xml");
     }
-
-
+    
     def save = {
         synchronized (uiDefinitionLock)
         {
@@ -318,5 +306,29 @@ class UiDesignerController {
             createMetaXml(builder, childConfiguration);
         }
 
+    }
+
+    private loadTemplates()
+    {
+        def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
+        def templateDir = new File("${System.getProperty("base.dir")}/${TEMPLATES_DIRECTORY}");
+        def templates = [:];
+        templateDir.listFiles().each {File templateFile ->
+            def template = templateEngine.createTemplate(templateFile);
+            templates[templateFile.getName()] = template;
+        }
+        return templates;
+    }
+    private getTemplate(String templateName)
+    {
+        synchronized (templateCache)
+        {
+            if (templateCache.isEmpty())
+            {
+                templateCache.clear();
+                templateCache.putAll (loadTemplates());
+            }
+            return templateCache[templateName + ".gsp"]
+        }
     }
 }

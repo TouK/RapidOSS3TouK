@@ -14,6 +14,7 @@ class UiSearchGridOperations extends UiComponentOperations {
     public static Map metaData()
     {
         Map metaData = [
+                help:"SearchGrid Component.html",
                 designerType: "SearchGrid",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -40,6 +41,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 designerType: "SearchGridImages",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchGrid Component.html",
                                         designerType: "SearchGridImages",
                                         display: "Images",
                                         imageExpanded: 'images/rapidjs/designer/images.png',
@@ -53,6 +55,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 designerType: "SearchGridColumns",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchGrid Component.html",
                                         designerType: "SearchGridColumns",
                                         display: "Columns",
                                         imageExpanded: 'images/rapidjs/designer/text_columns.png',
@@ -66,6 +69,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 designerType: "SearchGridRowColors",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchGrid Component.html",
                                         designerType: "SearchGridRowColors",
                                         display: "RowColors",
                                         imageExpanded: 'images/rapidjs/designer/color_swatch.png',
@@ -79,6 +83,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                 designerType: "SearchGridMenuItems",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"SearchGrid Component.html",
                                         designerType: "SearchGridMenuItems",
                                         display: "MenuItems",
                                         imageExpanded: 'images/rapidjs/designer/tab.png',

@@ -207,15 +207,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         SelectUtils.clear(this.propertySelect);
         SelectUtils.addOption(this.propertySelect, '', '');
         if (itemType == "ActionTrigger") {
-            var triggerType = xmlData.getAttribute("type");
-            data[data.length] = {name:"type", value:triggerType}
-            data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
-            if(triggerType == "Action event"){
-                data[data.length] = {name:"triggeringAction", value:xmlData.getAttribute("triggeringAction") || ""}
-            }
-            else if(triggerType == "Menu" || triggerType == "Component event"){
-                data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
-            }
+            RenderUtils.displayActionTriggerProperties.call(this, xmlData)
         }
         else {
             for (var prop in properties) {
@@ -241,6 +233,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         this.clearPropertyGrid();
         this.propertyGrid.addRows(data)
+        if (itemType == "FunctionAction") {
+            RenderUtils.displayFunctionActionProperties.call(this, xmlData)
+        }
         this.closeCellEditor();
     },
     clearPropertyGrid: function() {

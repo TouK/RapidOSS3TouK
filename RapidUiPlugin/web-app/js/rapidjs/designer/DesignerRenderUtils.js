@@ -135,6 +135,40 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             return null;
         }
+        var createFunctionArgutments = function() {
+            var argumentsNode;
+            var childNodes = this.currentDisplayedItemData.childNodes();
+            for (var i = 0; i < childNodes.length; i++) {
+                var itemType = DesignerUtils.getItemType(this, childNodes[i])
+                if (itemType == "FunctionArguments") {
+                    argumentsNode = childNodes[i];
+                    break;
+                }
+            }
+            childNodes = argumentsNode.childNodes();
+            for (var i = childNodes.length - 1; i >= 0; i--) {
+                argumentsNode.removeChild(childNodes[i]);
+            }
+            var records = this.propertyGrid.getRecordSet().getRecords();
+            for(var i = records.length -1; i >=0; i--){
+                var propName = records[i].getData("name");
+                if(propName.match(/arg\d+/)){
+                    this.propertyGrid.deleteRow(i)
+                }
+            }
+            var method = this.currentDisplayedItemData.getAttribute("function");
+            var compName = this.currentDisplayedItemData.getAttribute("component");
+            var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+            var args = UIConfig.getMethodArguments(currentComponents[compName], method);
+            var argIndex = 0;
+            for (var argName in args) {
+                this.propertyGrid.addRow({name:"arg" + argIndex + ":" + argName, value:""});
+                this.createTreeNode(argumentsNode, "FunctionArgument");
+                argIndex ++;
+            }
+            var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
+            this.addExtraAttributesToChildNodes(argumentsNode, currentTab)
+        }
         var record = oArgs.editor.getRecord();
         var propName = record.getData("name")
         var propValue = record.getData("value")
@@ -250,6 +284,43 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         else if (itemType == "ActionTrigger" && propName == "name") {
             this.showHelp();
         }
+        else if (itemType == "FunctionAction" && propName == "component") {
+            var oldComponent = this.currentDisplayedItemData.getAttribute("component");
+            if (propValue != oldComponent) {
+                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                this.currentDisplayedItemData.setAttribute(propName, propValue);
+                var componentMethods = UIConfig.getComponentMethods(currentComponents[propValue])
+                var method = getFirstItem(componentMethods);
+                this.currentDisplayedItemData.setAttribute("function", method);
+                var funcRecord = this.propertyGrid.findRecord("name", "function");
+                this.propertyGrid.updateCell(funcRecord, "value", method)
+                createFunctionArgutments.call(this);
+                this.showHelp();
+            }
+        }
+        else if (itemType == "FunctionAction" && propName == "function") {
+            var oldMethod = this.currentDisplayedItemData.getAttribute("function");
+            if (propValue != oldMethod) {
+                this.currentDisplayedItemData.setAttribute(propName, propValue);
+                createFunctionArgutments.call(this);
+                this.showHelp();
+            }
+        }
+        else if (itemType == "FunctionAction" && propName.match(/arg\d+/)) {
+            var matchValues = propName.match(/arg\d+/);
+            var argIndex = parseInt(matchValues[0].substring(3), 10)
+            var argumentsNode;
+            var childNodes = this.currentDisplayedItemData.childNodes();
+            for (var i = 0; i < childNodes.length; i++) {
+                var itemType = DesignerUtils.getItemType(this, childNodes[i])
+                if (itemType == "FunctionArguments") {
+                    argumentsNode = childNodes[i];
+                    break;
+                }
+            }
+            childNodes = argumentsNode.childNodes();
+            childNodes[argIndex].setAttribute("value", propValue);
+        }
         this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
         if (UIConfig.isDisplayProperty(itemType, propName)) {
             this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
@@ -257,6 +328,44 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         this.dataChanged = true;
         this.refreshTree();
     };
+
+    this.displayFunctionActionProperties = function(xmlData) {
+        var component = xmlData.getAttribute("component");
+        var method = xmlData.getAttribute("function");
+        if (component && component != "") {
+            var currentCompoents = DesignerUtils.getComponentsOfCurrentTab(this, xmlData);
+            var compMethods = UIConfig.getComponentMethods(currentCompoents[component]);
+            if (compMethods && compMethods[method]) {
+                var args = UIConfig.getMethodArguments(currentCompoents[component], method);
+                var argumentsNode;
+                var childNodes = xmlData.childNodes();
+                for (var i = 0; i < childNodes.length; i++) {
+                    var itemType = DesignerUtils.getItemType(this, childNodes[i])
+                    if (itemType == "FunctionArguments") {
+                        argumentsNode = childNodes[i];
+                        break;
+                    }
+                }
+                childNodes = argumentsNode.childNodes();
+                var argIndex = 0;
+                for (var argName in args) {
+                    this.propertyGrid.addRow({name:"arg" + argIndex + ":" + argName, value:childNodes[argIndex].getAttribute("value")||""})
+                    argIndex ++;
+                }
+            }
+        }
+    }
+    this.displayActionTriggerProperties = function(xmlData) {
+        var triggerType = xmlData.getAttribute("type");
+        data[data.length] = {name:"type", value:triggerType}
+        data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
+        if (triggerType == "Action event") {
+            data[data.length] = {name:"triggeringAction", value:xmlData.getAttribute("triggeringAction") || ""}
+        }
+        else if (triggerType == "Menu" || triggerType == "Component event") {
+            data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
+        }
+    }
     this.propertyGridClickedFuntion = function (oArgs) {
         var target = oArgs.target,
                 record = this.propertyGrid.getRecord(target),

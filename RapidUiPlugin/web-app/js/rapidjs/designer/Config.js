@@ -83,18 +83,33 @@ YAHOO.rapidjs.designer.Config = new function() {
         if (itemType == "Layout" && propertyName == "type") {
             return "Type of the layout"
         }
+        else if (itemType == "FunctionAction" && propertyName.match(/arg\d+/)) {
+            return "";
+        }
         return this.get(itemType)["properties"][propertyName]["descr"]
     };
     this.getPropertyDefaultValue = function(itemType, propertyName) {
+        if (itemType == "FunctionAction" && propertyName.match(/arg\d+/)) {
+            return "";
+        }
         return this.get(itemType)["properties"][propertyName]["defaultValue"]
     };
     this.isPropertyRequired = function(itemType, propertyName) {
+        if (itemType == "FunctionAction" && propertyName.match(/arg\d+/)) {
+            return true;
+        }
         return this.get(itemType)["properties"][propertyName]["required"] == 'true'
     };
     this.getPropertyType = function(itemType, propertyName) {
+        if (itemType == "FunctionAction" && propertyName.match(/arg\d+/)) {
+            return "Expression";
+        }
         return this.get(itemType)["properties"][propertyName]["type"]
     };
     this.getPropertyInList = function(itemType, propertyName) {
+        if (itemType == "FunctionAction" && propertyName.match(/arg\d+/)) {
+            return [];
+        }
         var inList = this.get(itemType)["properties"][propertyName]['inList']
         if (inList != null) {
             return inList.split(',');

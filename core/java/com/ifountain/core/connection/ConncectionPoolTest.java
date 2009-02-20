@@ -44,7 +44,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
         pool.close();
     }
-
+    //TODO: Try to implement a case to test synchronization , when synchronization is off it should fail.
     public void testGetBarrowedObjects() throws Exception
     {
         MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);

@@ -21,27 +21,4 @@ class DesignerTemplateUtils {
         divId = divId.replaceAll("\\\\", ".")
         return divId;
     }
-
-    public static List getLayoutContentFiles(ui.designer.UiLayout layout)
-    {
-        def fileList = [];
-        if(layout)
-        {
-            _getLayoutContentFiles(layout, fileList);
-        }
-        return fileList;
-    }
-    private static void _getLayoutContentFiles(ui.designer.UiLayout layout, List listOfFiles)
-    {
-        layout.units.each{UiLayoutUnit unit->
-            if(unit.contentFile != null && unit.contentFile != "")
-            {
-                listOfFiles.add(new File("web-app/${unit.contentFile}"));
-            }
-            else if(unit.childLayout != null)
-            {
-                _getLayoutContentFiles (unit.childLayout, listOfFiles);
-            }
-        }
-    }
 }

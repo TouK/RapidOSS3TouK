@@ -97,7 +97,7 @@ public class UiTabOperations extends AbstractDomainOperation
         {
             def layoutUnitsNode = layoutNode.UiElement;
             layoutUnitsNode.each {layoutUnitNode ->
-                def layoutUnit = UiLayoutUnit.addUiElement(layoutUnitNode, uiLayout);
+                def layoutUnit = UiLayoutUnit.addUiElement(layoutUnitNode, uiLayout, uiTab);
             }
         }
         return uiTab;

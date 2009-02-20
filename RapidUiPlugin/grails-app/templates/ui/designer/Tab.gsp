@@ -5,13 +5,14 @@
 <body>
 <%
     print tabContent;
-    def contentFiles = com.ifountain.rui.util.DesignerTemplateUtils.getLayoutContentFiles (tab.layout);
+    def layoutUnitsHavingContentFile = ui.designer.UiLayoutUnit.getLayoutUnitHavingContentFile(tab.layout);
 %>
+
 <%
-    contentFiles.each{contentFile->
+    layoutUnitsHavingContentFile.each{layoutUnit->
 %>
-    <div id="${com.ifountain.rui.util.DesignerTemplateUtils.getContentDivId(contentFile)}">
-        ${contentFile.getText()}    
+    <div id="${layoutUnit.getContentFileDivId()}">
+        <rui:include template="${layoutUnit.contentFile}"></rui:include>
     </div>
 <%
     }
@@ -19,27 +20,16 @@
 <%
     if(tab.contentFile != null && tab.contentFile != "")
     {
-        def contentFile = new File("web-app/"+tab.contentFile);
 %>
-        ${contentFile.getText()}
+       <rui:include template="${tab.contentFile}"></rui:include>
 <%
     }
 %>
-<script type="text/javascript">
-    YAHOO.util.Event.onDOMReady(function() {
-        var layout = new YAHOO.widget.Layout({
-            units: [
-                { position: 'top', body: 'top', resize: false, height:45},
-                { position: 'center', resize: false, gutter: '1px' },
-            ]
-        });
-        layout.on('render', function() {
-            var el = layout.getUnitByPosition('center').get('wrap');
-            ${layoutContent}
-        });
-        layout.render();
-        window.layout = layout;
-    });
-</script>
+<rui:layout id="layout">
+    <rui:layoutUnit position="top" body="top" resize="false" height="45"></rui:layoutUnit>
+    <rui:layoutUnit position="center" gutter="1px">
+        ${layoutContent}
+    </rui:layoutUnit>
+</rui:layout>
 </body>
 </html>

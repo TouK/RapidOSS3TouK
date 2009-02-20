@@ -2,6 +2,7 @@ package ui.designer;
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.rui.util.DesignerUtils
+import com.ifountain.rui.util.DesignerTemplateUtils
 
 public class UiLayoutUnitOperations extends AbstractDomainOperation
 {
@@ -22,16 +23,54 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
         return metaData;
     }
 
-    def static addUiElement(xmlNode, parentElement)
+    def static addUiElement(xmlNode, parentElement, tab)
     {
         def attributes = xmlNode.attributes();
         attributes.parentLayout = parentElement;
         def designerType = attributes.designerType;
+        def innerLayouts = xmlNode.UiElement;
         def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType).clazz;
         if(attributes.component != null && attributes.component != "")
         {
-            attributes.component=UiComponent.get(name:attributes.component, tab:parentElement.tab, isActive:true);
+            attributes.component=UiComponent.get(name:attributes.component, tab:tab, isActive:true);
         }
-        return DesignerUtils.addUiObject(domainClass, attributes, xmlNode);
+
+        def layoutUnit = DesignerUtils.addUiObject(domainClass, attributes, xmlNode);
+        innerLayouts.each{innerLayoutNode->
+            def addedLayout = UiLayout.add([:]);
+            def innerLayoutUnitsNode = innerLayoutNode.UiElement;
+            innerLayoutUnitsNode.each {innerLayoutUnitNode ->
+                UiLayoutUnit.addUiElement(innerLayoutUnitNode, addedLayout, tab);
+            }
+            layoutUnit.addRelation(childLayout:addedLayout);
+        }
+    }
+
+    def getContentFileDivId()
+    {
+        return "loyutUnit${id}${DesignerTemplateUtils.getContentDivId(contentFile)}"
+    }
+
+    public static List getLayoutUnitHavingContentFile(ui.designer.UiLayout layout)
+    {
+        def layoutUnitList = [];
+        if(layout)
+        {
+            _getLayoutUnitHavingContentFile(layout, layoutUnitList);
+        }
+        return layoutUnitList;
+    }
+    private static void _getLayoutUnitHavingContentFile(ui.designer.UiLayout layout, List layoutUnitList)
+    {
+        layout.units.each{UiLayoutUnit unit->
+            if(unit.contentFile != null && unit.contentFile != "")
+            {
+                layoutUnitList.add(unit);
+            }
+            else if(unit.childLayout != null)
+            {
+                _getLayoutUnitHavingContentFile (unit.childLayout, layoutUnitList);
+            }
+        }
     }
 }

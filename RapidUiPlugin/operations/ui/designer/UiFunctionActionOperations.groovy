@@ -19,11 +19,26 @@ class UiFunctionActionOperations extends UiActionOperations {
                 imageExpanded: "images/rapidjs/designer/javascript.gif",
                 imageCollapsed: "images/rapidjs/designer/javascript.gif",
                 propertyConfiguration: [
-                        component: [descr: "The name of the component", formatter:{object-> return object.component?object.component.name:""}],
+                        component: [descr: "The name of the component", formatter: {object -> return object.component ? object.component.name : ""}],
                         function: [descr: "The method of the component that will called."],
                 ],
                 childrenConfiguration: [
-                        [designerType: "FunctionArgument", isMultiple: true, propertyName: "arguments"]
+                        [
+                                designerType: "FunctionArguments",
+                                metaData: [
+                                        designerType: "FunctionArguments",
+                                        display: "Arguments",
+                                        canBeDeleted: false,
+                                        imageExpanded: "images/rapidjs/designer/bookmark_folder.png",
+                                        imageCollapsed: "images/rapidjs/designer/bookmark_folder.png",
+                                        propertyConfiguration: [
+                                        ],
+                                        childrenConfiguration: [
+                                                [designerType: "FunctionArgument", isMultiple: true, propertyName: "arguments"]
+                                        ]
+                                ],
+                                isMultiple: false
+                        ]
                 ]
         ];
         def parentMetaData = UiActionOperations.metaData();
@@ -37,12 +52,11 @@ class UiFunctionActionOperations extends UiActionOperations {
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
-        def component = UiComponent.get(tab:parentElement, name:attributes.component, isActive:true);
+        def component = UiComponent.get(tab: parentElement, name: attributes.component, isActive: true);
         attributes.component = component;
         def addedAction = DesignerUtils.addUiObject(UiFunctionAction, attributes, xmlNode);
-        def functionArgumentNodes = xmlNode.UiElement.findAll {it.@designerType.text() == "FunctionArgument"}
-        def functionArguments = [];
-        functionArgumentNodes.each{
+        def functionArgumentsNode = xmlNode.UiElement.find {it.@designerType.text() == "FunctionArguments"}
+        functionArgumentsNode.UiElement.each {
             UiFunctionArgument.addUiElement(it, addedAction);
         }
         addTriggers(xmlNode, addedAction);

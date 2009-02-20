@@ -22,11 +22,26 @@ class UiRequestActionOperations extends UiActionOperations {
                 imageCollapsed: "images/rapidjs/designer/connect_creating.png",
                 propertyConfiguration: [
                         url: [descr: "The URL to be used for requests to the server"],
-                        timeout:[descr: "The time interval in seconds to wait the server request completes successfully before aborting.", required:true],
-                        components:[descr:"The list of component names which are related with this action (For example which components' error dialog should show if an error occurred during request)", required:true, formatter:{object-> return object.components?object.components.name.join(","):""}]
+                        timeout: [descr: "The time interval in seconds to wait the server request completes successfully before aborting.", required: true],
+                        components: [descr: "The list of component names which are related with this action (For example which components' error dialog should show if an error occurred during request)", required: true, formatter: {object -> return object.components ? object.components.name.join(",") : ""}]
                 ],
                 childrenConfiguration: [
-                        [designerType: "RequestParameter", isMultiple: true, propertyName: "parameters"]
+                        [
+                                designerType: "RequestParameters",
+                                metaData: [
+                                        designerType: "RequestParameters",
+                                        display: "RequestParameters",
+                                        canBeDeleted: false,
+                                        imageExpanded: "images/rapidjs/designer/bookmark_folder.png",
+                                        imageCollapsed: "images/rapidjs/designer/bookmark_folder.png",
+                                        propertyConfiguration: [
+                                        ],
+                                        childrenConfiguration: [
+                                                [designerType: "RequestParameter", isMultiple: true, propertyName: "triggers"]
+                                        ]
+                                ],
+                                isMultiple: false
+                        ]
                 ]
         ];
         def parentMetaData = UiActionOperations.metaData();
@@ -44,16 +59,16 @@ class UiRequestActionOperations extends UiActionOperations {
     def static _addUiElement(Class classToBeAdded, xmlNode, parentElement)
     {
         def attributes = [:];
-        attributes.putAll (xmlNode.attributes());
+        attributes.putAll(xmlNode.attributes());
         attributes.tab = parentElement;
         def comps = [];
-        if(attributes.components != null && attributes.components != "")
+        if (attributes.components != null && attributes.components != "")
         {
-            attributes.components.split(",").each{
-                if(it != "")
+            attributes.components.split(",").each {
+                if (it != "")
                 {
-                    def comp = UiComponent.get(name:it, tab:parentElement, isActive:true);
-                    if(comp)
+                    def comp = UiComponent.get(name: it, tab: parentElement, isActive: true);
+                    if (comp)
                     {
                         comps.add(comp);
                     }
@@ -66,8 +81,8 @@ class UiRequestActionOperations extends UiActionOperations {
         }
         attributes.components = comps;
         def addedAction = DesignerUtils.addUiObject(classToBeAdded, attributes, xmlNode);
-        def reqParams = xmlNode.UiElement.findAll {it.@designerType.text() == "RequestParameter"}
-        reqParams.each{
+        def requestParamsNode = xmlNode.UiElement.find {it.@designerType.text() == "RequestParameters"}
+        requestParamsNode.UiElement.each {
             UiRequestParameter.addUiElement(it, addedAction);
         }
         addTriggers(xmlNode, addedAction);

@@ -22,7 +22,7 @@ import org.jsecurity.mgt.SecurityManager
 * To change this template use File | Settings | File Templates.
 */
 class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
-    def transactional = false
+    static transactional = false
 
     public void testAuth()
     {

@@ -67,6 +67,15 @@ YAHOO.rapidjs.ArrayUtils = new function()
         arrayP[index] = arrayP[lastIndex];
         arrayP.splice(lastIndex, 1);
     };
+    this.contains = function(array, element) {
+        for (var i = 0; i < this.length; i++) {
+            if (array[i] == element)
+            {
+                return true;
+            }
+            return false;
+        }
+    };
 }();
 YAHOO.rapidjs.FlashUtils = new function()
 {

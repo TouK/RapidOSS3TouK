@@ -129,19 +129,130 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         }
     };
     this.editorSaveFunc = function(oArgs) {
+        var getFirstItem = function(object) {
+            for (var member in object) {
+                return member;
+            }
+            return null;
+        }
         var record = oArgs.editor.getRecord();
         var propName = record.getData("name")
         var propValue = record.getData("value")
-        this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
         var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
-        if (UIConfig.isDisplayProperty(itemType, propName)) {
-            this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
-        }
         if (itemType == "Layout" && propName == "type") {
             this.createLayoutNode(propValue);
             var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
             this.addExtraAttributesToChildNodes(this.currentDisplayedItemData, currentTab)
             this.refreshLayout(this.currentDisplayedItemData);
+        }
+        else if (itemType == "ActionTrigger" && propName == "type") {
+            var oldType = this.currentDisplayedItemData.getAttribute("type");
+            var oldName = this.currentDisplayedItemData.getAttribute("name");
+            if (oldType != propValue) {
+                this.clearPropertyGrid();
+                if (propValue == "Action event") {
+                    var oldTriggeringAction = this.currentDisplayedItemData.getAttribute("triggeringAction");
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var triggeringAction = oldTriggeringAction;
+                    var name = "";
+                    triggeringAction = "";
+                    for (var actionName in currentActions) {
+                        triggeringAction = actionName;
+                        name = getFirstItem(UIConfig.getItemEvents(currentActions[actionName]))
+                        break;
+                    }
+                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("triggeringAction", triggeringAction);
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"triggeringAction", value:triggeringAction},{name:"name", value:name}])
+                }
+                else if (propValue == "Component event") {
+                    var oldComponent = this.currentDisplayedItemData.getAttribute("component");
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var component = oldComponent;
+                    var name = "";
+                    component = "";
+                    for (var compName in currentComponents) {
+                        component = compName;
+                        name = getFirstItem(UIConfig.getItemEvents(currentComponents[compName])) || "";
+                        break;
+                    }
+                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("component", component);
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"name", value:name}])
+                }
+                else if (propValue == "Menu") {
+                    var oldComponent = this.currentDisplayedItemData.getAttribute("component");
+                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var component = oldComponent;
+                    var name = "";
+                    component = "";
+                    for (var compName in currentComponents) {
+                        component = compName;
+                        var currentCompConfig = currentComponents[compName];
+                        nameLoop:for (var menuType in currentCompConfig) {
+                            var menuNames = currentCompConfig[menuType];
+                            if (menuNames.length > 0) {
+                                name = menuNames[0];
+                                break nameLoop;
+                            }
+                        }
+                        break;
+                    }
+                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("component", component);
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"name", value:name}])
+                }
+                else if (propValue == "Global event") {
+                    var name = getFirstItem(UIConfig.getItemEvents("Global"));
+                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"name", value:name}])
+                }
+                this.showHelp();
+            }
+        }
+        else if (itemType == "ActionTrigger" && propName == "triggeringAction") {
+            var oldAction = this.currentDisplayedItemData.getAttribute("triggeringAction")
+            if (propValue != oldAction) {
+                var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData)
+                var name = getFirstItem(UIConfig.getItemEvents(currentActions[propValue]))
+                var nameRecord = this.propertyGrid.findRecord("name", "name");
+                this.propertyGrid.updateCell(nameRecord, "value", name)
+                this.currentDisplayedItemData.setAttribute("name", name);
+            }
+            this.showHelp();
+        }
+        else if (itemType == "ActionTrigger" && propName == "component") {
+            var oldComponent = this.currentDisplayedItemData.getAttribute("component")
+            if (propValue != oldComponent) {
+                var triggerType = this.currentDisplayedItemData.getAttribute("type")
+                var name;
+                if (triggerType == "Menu") {
+                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var compMenuConfig = currentComponents[propValue];
+                    for (var menuType in compMenuConfig) {
+                        var menuNames = compMenuConfig[menuType];
+                        if (menuNames.length > 0) {
+                            name = menuNames[0];
+                            break;
+                        }
+                    }
+                }
+                else {
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData)
+                    name = getFirstItem(UIConfig.getItemEvents(currentComponents[propValue])) || "";
+                }
+                var nameRecord = this.propertyGrid.findRecord("name", "name");
+                this.propertyGrid.updateCell(nameRecord, "value", name)
+                this.currentDisplayedItemData.setAttribute("name", name);
+            }
+            this.showHelp();
+        }
+        else if (itemType == "ActionTrigger" && propName == "name") {
+            this.showHelp();
+        }
+        this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
+        if (UIConfig.isDisplayProperty(itemType, propName)) {
+            this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
         }
         this.dataChanged = true;
         this.refreshTree();
@@ -173,16 +284,85 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var comps = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
                 editor = this.editors["InList"];
                 if (comps[componentName]) {
-                    var events = UIConfig.getComponentEvents(comps[componentName]);
+                    var methods = UIConfig.getComponentMethods(comps[componentName]);
                     var dOptions = [];
-                    for (var event in events) {
-                        dOptions.push(event);
+                    for (var method in methods) {
+                        dOptions.push(method);
                     }
                     editor.dropdownOptions = dOptions;
                 }
                 else {
                     editor.dropdownOptions = [];
                 }
+                editor.renderForm();
+            }
+            else if (itemType == "ActionTrigger" && propertyName == 'triggeringAction') {
+                editor = this.editors["InList"];
+                var currentActions = DesignerUtils.getActionNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                editor.dropdownOptions = currentActions;
+                editor.renderForm();
+            }
+            else if (itemType == "ActionTrigger" && propertyName == 'component') {
+                editor = this.editors["InList"];
+                var currentComponents;
+                var triggerType = this.currentDisplayedItemData.getAttribute("type")
+                if (triggerType == "Menu") {
+                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    currentComponents = [];
+                    for (var compName in menuConfig) {
+                        currentComponents.push(compName);
+                    }
+                }
+                else {
+                    currentComponents = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                }
+                editor.dropdownOptions = currentComponents;
+                editor.renderForm();
+            }
+            else if (itemType == "ActionTrigger" && propertyName == 'name') {
+                var triggerType = this.currentDisplayedItemData.getAttribute("type")
+                var names = [];
+                if (triggerType == "Component event") {
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var component = this.currentDisplayedItemData.getAttribute("component");
+                    if (currentComponents[component]) {
+                        var events = UIConfig.getItemEvents(currentComponents[component]);
+                        for (var event in events) {
+                            names.push(event);
+                        }
+                    }
+                }
+                else if (triggerType == "Menu") {
+                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var component = this.currentDisplayedItemData.getAttribute("component");
+                    if (menuConfig[component]) {
+                        var compMenuConfig = menuConfig[component]
+                        for (var menuType in compMenuConfig) {
+                            var menuItems = compMenuConfig[menuType];
+                            for (var i = 0; i < menuItems.length; i++) {
+                                names.push(menuItems[i]);
+                            }
+                        }
+                    }
+                }
+                else if (triggerType == "Action event") {
+                    var triggeringAction = this.currentDisplayedItemData("triggeringAction");
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
+                    if (currentActions[triggeringAction]) {
+                        var events = UIConfig.getItemEvents(currentActions[triggeringAction]);
+                        for (var event in events) {
+                            names.push(event);
+                        }
+                    }
+                }
+                else if (triggerType == "Global event") {
+                    var events = UIConfig.getItemEvents("Global");
+                    for (var event in events) {
+                        names.push(event);
+                    }
+                }
+                editor = this.editors["InList"];
+                editor.dropdownOptions = names;
                 editor.renderForm();
             }
             else {

@@ -206,30 +206,46 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         SelectUtils.clear(this.propertySelect);
         SelectUtils.addOption(this.propertySelect, '', '');
-        for (var prop in properties) {
-            var propValue = xmlData.getAttribute(prop);
-            if (UIConfig.isPropertyRequired(itemType, prop)) {
-                var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
-                var gridValue = "";
-                if (propValue != null) {
-                    gridValue = propValue
-                }
-                else if (defaultValue != null) {
-                    gridValue = defaultValue
-                }
-                data[data.length] = {name:prop, value:gridValue}
+        if (itemType == "ActionTrigger") {
+            var triggerType = xmlData.getAttribute("type");
+            data[data.length] = {name:"type", value:triggerType}
+            data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
+            if(triggerType == "Action event"){
+                data[data.length] = {name:"triggeringAction", value:xmlData.getAttribute("triggeringAction") || ""}
             }
-            else if (propValue) {
-                data[data.length] = {name:prop, value:propValue}
-            }
-            else {
-                SelectUtils.addOption(this.propertySelect, prop, prop)
+            else if(triggerType == "Menu" || triggerType == "Component event"){
+                data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
             }
         }
-        var length = this.propertyGrid.getRecordSet().getLength()
-        this.propertyGrid.deleteRows(0, length)
+        else {
+            for (var prop in properties) {
+                var propValue = xmlData.getAttribute(prop);
+                if (UIConfig.isPropertyRequired(itemType, prop)) {
+                    var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
+                    var gridValue = "";
+                    if (propValue != null) {
+                        gridValue = propValue
+                    }
+                    else if (defaultValue != null) {
+                        gridValue = defaultValue
+                    }
+                    data[data.length] = {name:prop, value:gridValue}
+                }
+                else if (propValue) {
+                    data[data.length] = {name:prop, value:propValue}
+                }
+                else {
+                    SelectUtils.addOption(this.propertySelect, prop, prop)
+                }
+            }
+        }
+        this.clearPropertyGrid();
         this.propertyGrid.addRows(data)
         this.closeCellEditor();
+    },
+    clearPropertyGrid: function() {
+        var length = this.propertyGrid.getRecordSet().getLength()
+        this.propertyGrid.deleteRows(0, length)
     },
     closeCellEditor: function() {
         var column = this.propertyGrid.getColumn("value");
@@ -397,7 +413,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     refreshTree: function() {
         this.tree.treeGridView.refreshData();
     },
+    showHelp:function() {
 
+    },
     save : function() {
         var callback = {
             success: this.processSuccess,

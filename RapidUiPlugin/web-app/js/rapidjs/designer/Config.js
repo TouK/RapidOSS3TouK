@@ -97,7 +97,7 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getPropertyInList = function(itemType, propertyName) {
         var inList = this.get(itemType)["properties"][propertyName]['inList']
         if (inList != null) {
-           return inList.split(',');
+            return inList.split(',');
         }
         return [];
     };
@@ -125,14 +125,14 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.getGlobalEvents = function() {
         return this.events["Global"]
     };
-    this.getComponentEvents = function(componentType) {
-        return this.events[componentType];
+    this.getItemEvents = function(itemType) {
+        return this.events[itemType];
     };
-    this.getEventDescription = function(componentType, eventName) {
-        return this.events[componentType][eventName]['descr'];
+    this.getEventDescription = function(itemType, eventName) {
+        return this.events[itemType][eventName]['descr'];
     };
-    this.getEventParameters = function(componentType, eventName) {
-        return this.events[componentType][eventName]['params'];
+    this.getEventParameters = function(itemType, eventName) {
+        return this.events[itemType][eventName]['params'];
     };
     this.getComponentMethods = function(componentType) {
         return this.methods[componentType];
@@ -533,6 +533,78 @@ YAHOO.rapidjs.designer.Config = new function() {
             "mapInitialized":{
                 descr:"Fired when a map's flash object is initalized and ready to response to external calls.",
                 params:{}
+            }
+        },
+        "RequestAction":{
+            "success": {
+                descr:"Fired when server side AJAX call successfully executed.",
+                params:{
+                    "params.response": "JavaScript AJAX response object returned from server."
+                }
+            },
+            "error":{
+                descr:"Fired when server side AJAX response contains error messages",
+                params:{
+                    "params.messages":"List of error messages."
+                }
+            },
+            "timeout":{
+                descr:"Fired when server cannot response to the client in timeout interval",
+                params:{}
+            },
+            "unknownUrl":{
+                descr:"Fired when action's url is not available.",
+                params:{}
+            },
+            "serverDown":{
+                descr:"Fired when server does not response to the AJAX call.",
+                params:{}
+            }
+        },
+        "MergeAction":{
+            "success": {
+                descr:"Fired when server side AJAX call successfully executed.",
+                params:{
+                    "params.response": "JavaScript AJAX response object returned from server."
+                }
+            },
+            "error":{
+                descr:"Fired when server side AJAX response contains error messages",
+                params:{
+                    "params.messages":"List of error messages."
+                }
+            },
+            "timeout":{
+                descr:"Fired when server cannot response to the client in timeout interval",
+                params:{}
+            },
+            "unknownUrl":{
+                descr:"Fired when action's url is not available.",
+                params:{}
+            },
+            "serverDown":{
+                descr:"Fired when server does not response to the AJAX call.",
+                params:{}
+            }
+        },
+        "FunctionAction":{
+            "success": {
+                descr:"Fired when the method call successfully executed.",
+                params:{}
+            },
+            "error":{
+                descr:"Fired when the method call cannot be executed successfully.",
+                params:{
+                    "params.messages":"List of error messages."
+                }
+            }
+        },
+        "LinkAction":{
+            "error":{
+                descr:"Fired when the action cannot be executed successfully.",
+                params:{
+                    "params.messages":"List of error messages."
+                }
             }
         }
     }

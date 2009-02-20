@@ -59,3 +59,14 @@ YAHOO.widget.DropdownCellEditor.prototype.renderForm = function() {
     }
 }
 
+YAHOO.widget.DataTable.prototype.findRecord = function(key, value) {
+    var records = this.getRecordSet().getRecords();
+    for (var i = 0; i < records.length; i++) {
+        var record = records[i];
+        if (value == record.getData(key)) {
+            return record;
+        }
+    }
+    return null;
+}
+

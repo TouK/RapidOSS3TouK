@@ -108,6 +108,16 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
         }
         return actionNames;
     };
+    this.getActionsOfCurrentTab = function(designer, xmlData) {
+        var actions = {};
+        var actionNodes = this.getActionNodesOfCurrentTab(designer, xmlData);
+        for (var i = 0; i < actionNodes.length; i++) {
+            var actionName = actionNodes[i].getAttribute("name");
+            var actionType = actionNodes[i].getAttribute(designer.treeTypeAttribute);
+            actions[actionName] = actionType
+        }
+        return actions;
+    };
     this.getComponentNamesOfCurrentTab = function(designer, xmlData) {
         var compNames = [];
         var componentNodes = this.getComponentNodesOfCurrentTab(designer, xmlData);

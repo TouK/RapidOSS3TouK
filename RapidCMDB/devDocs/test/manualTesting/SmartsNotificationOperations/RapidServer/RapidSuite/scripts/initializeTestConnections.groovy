@@ -89,7 +89,7 @@ if(smartsConnectionData.hasErrors()) {
 }
 else{
     logger.warn("Created smartsConnectionData for test");
-    smartsConnectorParams.connectionTemplate=smartsConnectionData
+    smartsConnectorParams.connectionData=smartsConnectionData
     def smartsConnector = SmartsListeningNotificationConnector.add(smartsConnectorParams)
     if(smartsConnector.hasErrors())
     {
@@ -102,11 +102,11 @@ else{
         logger.warn("Created smartsConnector for test");
 
         smartsConnectionParams.name=smartsConnector.getConnectionName(smartsConnector.name);
-        smartsConnectionParams.broker = smartsConnector.connectionTemplate.broker
-        smartsConnectionParams.username = smartsConnector.connectionTemplate.username
-        smartsConnectionParams.userPassword = smartsConnector.connectionTemplate.password
-        smartsConnectionParams.brokerUsername = smartsConnector.connectionTemplate.brokerUsername
-        smartsConnectionParams.brokerPassword = smartsConnector.connectionTemplate.brokerPassword
+        smartsConnectionParams.broker = smartsConnector.connectionData.broker
+        smartsConnectionParams.username = smartsConnector.connectionData.username
+        smartsConnectionParams.userPassword = smartsConnector.connectionData.password
+        smartsConnectionParams.brokerUsername = smartsConnector.connectionData.brokerUsername
+        smartsConnectionParams.brokerPassword = smartsConnector.connectionData.brokerPassword
 
         SmartsConnection smartsConnection = SmartsConnection.add(smartsConnectionParams)
 

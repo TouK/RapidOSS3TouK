@@ -356,7 +356,6 @@
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Smarts/Smarts.iml" filepath="$PROJECT_DIR$/../Smarts/Smarts.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" filepath="$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" filepath="$PROJECT_DIR$/../ThirdParty/ThirdParty.iml" />
       <module fileurl="file://$PROJECT_DIR$/comp/comp.iml" filepath="$PROJECT_DIR$/comp/comp.iml" />
       <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
@@ -592,7 +591,6 @@
     <library name="ThirdParty">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" />
-        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" />
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/log4j-1.2.13.jar!/" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" />
@@ -600,12 +598,24 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/webservices" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-io-1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-cli-1.0.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-digester-1.7.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-collections-3.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-configuration-1.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-logging.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-betwixt-0.8.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-codec-1.3.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-beanutils.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-httpclient-3.0.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-transaction-1.2.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-lang-2.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-pool-1.4.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
-      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/commons" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" recursive="false" />

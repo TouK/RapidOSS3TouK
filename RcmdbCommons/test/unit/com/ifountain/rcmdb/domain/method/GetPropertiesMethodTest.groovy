@@ -54,7 +54,8 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         method.operationClass = GetPropertiesMethodDomainObjectOperations;
 
         def allProperties = method.getDomainObjectProperties();
-        assertEquals (10, allProperties.size())
+        assertEquals (12, allProperties.size())
+
 
         RapidDomainClassProperty prop = allProperties[0]//propsMap["declaredProp1"];
         assertEquals("declaredProp1", prop.name);
@@ -90,28 +91,42 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         assertEquals (Object, prop.type);
         assertTrue(prop.isOperationProperty);
 
-        prop = allProperties[5]//propsMap["prop1"];
+        prop = allProperties[5]//propsMap["oprProp3"];
+        assertEquals("oprProp4", prop.name);
+        assertFalse (prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals (Object, prop.type);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[6]//propsMap["oprProp3"];
+        assertEquals("oprProp5", prop.name);
+        assertFalse (prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals (Object, prop.type);
+        assertTrue(prop.isOperationProperty);
+
+        prop = allProperties[7]//propsMap["prop1"];
         assertEquals("prop1", prop.name);
         assertTrue (prop.isKey);
         assertFalse (prop.isRelation);
         assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
-        prop = allProperties[6]//propsMap["prop1"];
+        prop = allProperties[8]//propsMap["prop1"];
         assertEquals("prop2", prop.name);
         assertTrue (prop.isKey);
         assertFalse (prop.isRelation);
         assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
-        prop = allProperties[7]//propsMap["prop1"];
+        prop = allProperties[9]//propsMap["prop1"];
         assertEquals("prop3", prop.name);
         assertFalse (prop.isKey);
         assertFalse (prop.isRelation);
         assertEquals (String, prop.type);
         assertFalse (prop.isOperationProperty);
 
-        prop = allProperties[8]//propsMap["rel1"];
+        prop = allProperties[10]//propsMap["rel1"];
         assertTrue (prop instanceof RapidDomainClassRelation);
         assertEquals("rel1", prop.name);
         assertTrue (prop.isRelation);
@@ -121,7 +136,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         assertEquals (RelationMethodDomainObject2, prop.relatedModel);
         assertEquals ("revRel1", prop.reverseName);
 
-        prop = allProperties[9]//propsMap["rel1"];
+        prop = allProperties[11]//propsMap["rel1"];
         assertTrue (prop instanceof RapidDomainClassRelation);
         assertEquals("rel2", prop.name);
         assertTrue (prop.isRelation);
@@ -144,6 +159,8 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         allProperties = method.getDomainObjectProperties();
         assertEquals (6, allProperties.size())
     }
+
+
     public void testGetPropertyIgnoresPropertyWithNotPrimitivePropertiesAndInvalidTypesAccordingToModelGeneration()
     {
       ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
@@ -174,6 +191,71 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
 
       prop = allProperties[7]
       assertEquals("rel2", prop.name);
+
+    }
+
+     public void testGetPropertiesIgnoresIfPropertyHaveGetterInOperations()
+    {
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodIgnorePropertyDomainObject);
+        GetPropertiesMethod method = new GetPropertiesMethod(cls);
+        method.operationClass = GetPropertiesMethodIgnorePropertyDomainObjectOperations;
+
+        def allProperties = method.getDomainObjectProperties();
+        allProperties.each{
+            println it.name + " : " + it.type + " : " + it.isOperationProperty
+        }
+
+        assertEquals(6,allProperties.size());
+
+        RapidDomainClassProperty prop = allProperties[0];
+        assertEquals("id", prop.name);
+        assertFalse (prop.isRelation);
+        assertEquals (Long, prop.type);
+        assertFalse (prop.isKey);
+        assertFalse (prop.isOperationProperty);
+
+
+        prop = allProperties[1];
+        assertEquals("prop1", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+        prop = allProperties[2];
+        assertEquals("prop2", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+        prop = allProperties[3];
+        assertEquals("prop3", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+         prop = allProperties[4]//propsMap["rel1"];
+        assertTrue (prop instanceof RapidDomainClassRelation);
+        assertEquals("rel1", prop.name);
+        assertTrue (prop.isRelation);
+        assertFalse (prop.isKey);
+        assertFalse (prop.isOperationProperty);
+        assertEquals (RelationMetaData.ONE_TO_ONE, prop.type);
+        assertEquals (RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals ("revRel1", prop.reverseName);
+
+        prop = allProperties[5]//propsMap["rel1"];
+        assertTrue (prop instanceof RapidDomainClassRelation);
+        assertEquals("rel2", prop.name);
+        assertTrue (prop.isRelation);
+        assertFalse (prop.isKey);
+        assertFalse (prop.isOperationProperty);
+        assertEquals (RelationMetaData.ONE_TO_MANY, prop.type);
+        assertEquals (RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals ("revRel2", prop.reverseName);
 
     }
 }
@@ -213,6 +295,7 @@ class GetPropertiesMethodDomainObject
     //AUTO_GENERATED_CODE
 }
 
+
 class GetPropertiesMethodDomainObjectWithInvalidProperties extends GetPropertiesMethodDomainObject
 {
   Object invalidProp1;
@@ -237,11 +320,24 @@ class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParen
 //    String privateProperty4;
     def declaredProp2;
 
+    //test with only get
     def getOprProp3()
     {
     }
+    //test with only set
+    def setOprProp4(newValue)
+    {
+    }
+    //test with both get and set
+    def getOprProp5()
+    {
+    }
+    def setOprProp5(newValue)
+    {
+    }
 
-    def getOprProp4(thisIsNotAProp)
+    
+    def getOprProp6(thisIsNotAProp)
     {
     }
 //    @HideProperty
@@ -249,4 +345,58 @@ class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParen
 //    {
 //        return "";
 //    }
+}
+
+
+class GetPropertiesMethodIgnorePropertyDomainObject
+{
+    static searchable = {
+        except = ["rel1", "rel2"];
+    };
+    static cascaded = [:]
+    static datasources = [:]
+    Long id ;
+    Long version ;
+    String prop1;
+    String prop2;
+    String prop3;
+    RelationMethodDomainObject2 rel1;
+    List rel2 = [];
+
+    static constraints={
+     rel1(nullable:true)
+     rel2(nullable:true)
+    }
+    static relations = [
+            rel1:[type:RelationMethodDomainObject2, reverseName:"revRel1", isMany:false],
+            rel2:[isMany:true, reverseName:"revRel2", type:RelationMethodDomainObject2],
+    ]
+    static propertyConfiguration= [:]
+    static transients = [];
+    //AUTO_GENERATED_CODE
+}
+
+class GetPropertiesMethodIgnorePropertyDomainObjectOperations
+{
+
+    def getProp1()
+    {
+    }
+    def setProp2(Object x)
+    {
+    }
+    def getProp3()
+    {
+    }
+    def setProp3(Object x)
+    {
+    }
+
+    def getRel1(){
+        
+    }
+    def getRel2(){
+
+    }
+
 }

@@ -77,9 +77,17 @@ class GetPropertiesMethod
         allProperties.addAll(allDomainClassProperties);
         if (operationClass != null)
         {
-            def propsToBefiltered = ["domainObject", "class", "properties", "metaClass"]
+            def propsToBeFiltered = ["domainObject", "class", "properties", "metaClass"]
+            
+            allDomainClassProperties.each{ RapidDomainClassProperty prop ->
+                 if(!propsToBeFiltered.contains(prop.name))
+                 {
+                     propsToBeFiltered.add(prop.name);
+                 }
+            }
+
             operationClass.metaClass.getProperties().each {MetaBeanProperty prop ->
-                if (!propsToBefiltered.contains(prop.name))
+                if (!propsToBeFiltered.contains(prop.name))
                 {
                     def isPrivate = Modifier.isPrivate(prop.getModifiers())
                     def isMethodsPrivate = true;

@@ -53,6 +53,7 @@ public class ConnectionPool extends GenericObjectPool
     }
     public ConnectionPool(String connectionName, BaseConnectionFactory poolableObjectFactory, int maxNumberOfConnections, long connectionCheckerInterval) {
         super(poolableObjectFactory, maxNumberOfConnections);
+        setMaxIdle(maxNumberOfConnections);
         logger.info("Initializing connection pool "+connectionName);
         this.poolableObjectFactory = poolableObjectFactory;
         this.connectionName = connectionName;
@@ -64,7 +65,10 @@ public class ConnectionPool extends GenericObjectPool
         setTestOnReturn(true);
 
     }
-
+    public synchronized void setMaxActive(int i) {
+        super.setMaxActive(i);
+        super.setMaxIdle(i);
+    }
     public Object borrowObject() throws Exception {
         if(!isPoolConnected)
         {

@@ -114,7 +114,34 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         pool.setPoolConnectionStatus(true);
         assertNotNull(pool.borrowObject());
     }
+    public void testMaxIdleIsEqualToMaxActiveAfterConstructionAndAfterSetMaxIdleCall()
+    {
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);
+        String connectionName = "con1";
+        MockConnection.checkConnectionResult = false;
+        MockConnection.isConnected = false;
+        
+        int maxActive=10;
+        
+        pool = new ConnectionPool(connectionName, fact, maxActive);
 
+        assertEquals(pool.getMaxActive(),maxActive);
+        assertEquals(pool.getMaxIdle(),maxActive);
+        assertEquals(pool.getMinIdle(),0);
+
+        pool = new ConnectionPool(connectionName, fact, maxActive,1000);
+        assertEquals(pool.getMaxActive(),maxActive);
+        assertEquals(pool.getMaxIdle(),maxActive);
+        assertEquals(pool.getMinIdle(),0);
+
+        int newMaxActive=5000;
+        pool.setMaxActive(newMaxActive);
+        assertEquals(pool.getMaxActive(),newMaxActive);
+        assertEquals(pool.getMaxIdle(),newMaxActive);
+        assertEquals(pool.getMinIdle(),0);
+
+
+    }
     public void testIfNoConnectionExistsPollWillBeMarkedAsDisconnected() throws Exception
     {
         MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);

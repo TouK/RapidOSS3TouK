@@ -42,11 +42,11 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [url:"myUrl1", designerType:"Url", id:""]
-        def url2Props = [url:"myUrl2", designerType:"Url", id:""]
+        def url1Props = [name:"myUrl1", designerType:"WebPage", id:""]
+        def url2Props = [name:"myUrl2", designerType:"WebPage", id:""]
         def tabsProps = [[name:"tab1", designerType:"Tab", contentFile:'x.gsp', title:"tab1", id:""], [name:"tab2", designerType:"Tab", contentFile:'y.gsp', title:"tab2", id:""]];
         builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
+            builder.UiElement(designerType:"WebPages"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
@@ -104,7 +104,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
         builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
+            builder.UiElement(designerType:"WebPages"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs")
                     {
@@ -147,19 +147,18 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         def url1Tab2File = new File(baseDir + "/web-app/${url1.name}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
         assertFalse (url1Tab2File.exists());
-        
     }
 
     public void testSaveWithRelationProperty()
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [url:"myUrl1", designerType:"Url"]
+        def url1Props = [name:"myUrl1", designerType:"WebPage"]
         def chart1Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart1", title:"title"]
         def chart2Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart2", title:"title"]
         def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp']];
         builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
+            builder.UiElement(designerType:"WebPages"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs"){
                         tabsProps.each{tab->
@@ -214,10 +213,10 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [url:"myUrl1", designerType:"Url"]
-        def url2Props = [url:"myUrl2", designerType:"Url"]
+        def url1Props = [name:"myUrl1", designerType:"WebPage"]
+        def url2Props = [name:"myUrl2", designerType:"WebPage"]
         builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
+            builder.UiElement(designerType:"WebPages"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs"){
                         builder.UiElement(designerType:"Tab", name:"tab1")
@@ -234,7 +233,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
         builder.UiConfig{
-            builder.UiElement(designerType:"Urls"){
+            builder.UiElement(designerType:"WebPages"){
                 builder.UiElement(url1Props){
                     builder.UiElement(designerType:"Tabs"){
                         builder.UiElement(designerType:"Tab")
@@ -287,22 +286,22 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
                 assertNotNull ("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
             }
         }
-        def urlsComponent = componentMap["Urls"];
-        assertEquals("Urls", urlsComponent.'@designerType'.text());
-        assertEquals("Urls", urlsComponent.'@display'.text());
+        def urlsComponent = componentMap["WebPages"];
+        assertEquals("WebPages", urlsComponent.'@designerType'.text());
+        assertEquals("Web Pages", urlsComponent.'@display'.text());
         assertEquals(1, urlsComponent.Children.size());
-        assertEquals("Url", urlsComponent.Children[0].Child[0].'@designerType'.text());
+        assertEquals("WebPage", urlsComponent.Children[0].Child[0].'@designerType'.text());
         assertEquals("true", urlsComponent.Children[0].Child[0].'@isMultiple'.text());
-        def urlComponent = componentMap["Url"];
+        def urlComponent = componentMap["WebPage"];
         def urlPropertyMetaData = urlComponent.Properties.Property;
         def xmlProperties = [:]
         urlPropertyMetaData.each{
             xmlProperties[it.'@name'.text()] = it;
         }
-        assertEquals("url", xmlProperties["url"].'@name'.text());
-        assertEquals("String", xmlProperties["url"].'@type'.text());
-        assertTrue(xmlProperties["url"].'@descr'.text() != null);
-        assertEquals("true", xmlProperties["url"].'@required'.text());
+        assertEquals("name", xmlProperties["name"].'@name'.text());
+        assertEquals("String", xmlProperties["name"].'@type'.text());
+        assertTrue(xmlProperties["name"].'@descr'.text() != null);
+        assertEquals("true", xmlProperties["name"].'@required'.text());
 
         def urlChildMetaData = urlComponent.Children.Child;
         def xmlChildren = [:]
@@ -331,6 +330,71 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     }
 
+    public void testUiDesignerControllerCachesTemplates()
+    {
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        def url1Props = [name:"myUrl1", designerType:"WebPage", id:""]
+        builder.UiConfig{
+            builder.UiElement(designerType:"WebPages"){
+                builder.UiElement(url1Props){
+                }
+            }
+        }
+        UiDesignerController controller = new UiDesignerController();
+        controller.params.configuration = sw.toString()
+        controller.save();
+        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
+        assertNotNull (url1);
+        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+
+        File uiUrlTemplate = new File("${System.getProperty("base.dir")}/${UiDesignerController.TEMPLATES_DIRECTORY}/WebPage.gsp");
+        assertTrue (uiUrlTemplate.exists());
+        def originalTemplate  = uiUrlTemplate.getText();
+        //test generate gsp files
+        deleteGeneratedFiles();
+        IntegrationTestUtils.resetController (controller);
+        controller.generate();
+        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+
+        File generatedFile = new File("${System.getProperty("base.dir")}/grails-app/views/layouts/"+url1.name+"Layout.gsp");
+        String generatedUrlFileContent = generatedFile.getText();
+        
+        uiUrlTemplate.setText ("contentChanged");
+        try
+        {
+            IntegrationTestUtils.resetController (controller);
+            controller.generate();
+            String generatedContentAfterTemplateChange = generatedFile.getText();
+            assertEquals (generatedUrlFileContent, generatedContentAfterTemplateChange);
+
+            //After reloading templates new content should be generated
+            IntegrationTestUtils.resetController (controller);
+            controller.reloadTemplates();
+            IntegrationTestUtils.resetController (controller);
+            controller.generate();
+            String textAfterReload = generatedFile.getText();
+            assertEquals ("contentChanged",  textAfterReload);
+
+            //if there are some errors in templates reload will not load templates
+            uiUrlTemplate.setText ("\${");
+            IntegrationTestUtils.resetController (controller);
+            controller.reloadTemplates();
+            assertTrue(controller.response.contentAsString.indexOf("<Errors")>=0);
+
+            IntegrationTestUtils.resetController (controller);
+            controller.generate();
+            textAfterReload = generatedFile.getText();
+            assertEquals ("Since template could not be reloaded it should not change", "contentChanged",  textAfterReload);
+            
+        }finally {
+            uiUrlTemplate.setText (originalTemplate);
+            IntegrationTestUtils.resetController (controller);
+            controller.reloadTemplates();
+        }
+
+    }
+
     def checkGeneratedFiles()
     {
         def baseDir =  System.getProperty("base.dir");
@@ -355,5 +419,6 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             new File(baseDir + "/web-app/${url.name}.gsp").delete();
         }
     }
+
 
 }

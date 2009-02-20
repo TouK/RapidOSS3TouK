@@ -17,6 +17,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 * To change this template use File | Settings | File Templates.
 */
 class UiDesignerController {
+    public static final String TEMPLATES_DIRECTORY = "grails-app/templates/ui/designer"
+    private static final templateCache = [:];
     static Object uiDefinitionLock = new Object();
     def baseDir = System.getProperty("base.dir")
     def view = {
@@ -42,6 +44,31 @@ class UiDesignerController {
             }
         }
     }
+
+    private loadTemplates()
+    {
+        def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
+        def templateDir = new File("${System.getProperty("base.dir")}/${TEMPLATES_DIRECTORY}");
+        def templates = [:];
+        templateDir.listFiles().each {File templateFile ->
+            def template = templateEngine.createTemplate(templateFile);
+            templates[templateFile.getName()] = template;
+        }
+        return templates;
+    }
+    private getTemplate(String templateName)
+    {
+        synchronized (templateCache)
+        {
+            if (templateCache.isEmpty())
+            {
+                templateCache.clear();
+                templateCache.putAll (loadTemplates());
+            }
+            return templateCache[templateName + ".gsp"]
+        }
+    }
+
 
     def save = {
         synchronized (uiDefinitionLock)
@@ -70,9 +97,9 @@ class UiDesignerController {
 
 
                 render(contentType: "text/xml")
-                {
-                    Successful("UI configuration saved successfully")
-                }
+                        {
+                            Successful("UI configuration saved successfully")
+                        }
             }
             catch (Throwable ex)
             {
@@ -110,14 +137,30 @@ class UiDesignerController {
         tabFile.delete();
     }
 
+    def reloadTemplates = {
+        try
+        {
+            synchronized (templateCache)
+            {
+                templateCache.clear();
+                templateCache.putAll (loadTemplates());
+            }
+        }
+        catch(Throwable e)
+        {
+            log.warn("Exception occurred while reloading designer templates", e);
+            addError("designer.reload.remplate.exception", [e.message]);
+            render(contentType: "text/xml", text: errorsToXml());
+        }
+    }
+
     def generate = {
         synchronized (uiDefinitionLock)
         {
             try
             {
-                def templateEngine = new SimpleTemplateEngine(ApplicationHolder.application.classLoader);
-                def urlTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/WebPage.gsp"));
-                def tabTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/Tab.gsp"));
+                def urlTemplate = getTemplate("WebPage");
+                def tabTemplate = getTemplate("Tab");
                 UiWebPage.list().each {url ->
                     def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.name}Layout.gsp");
                     def content = urlTemplate.make(url: url).toString()
@@ -141,20 +184,20 @@ class UiDesignerController {
                         StringBuffer tabContent = new StringBuffer();
                         def components = tab.components.sort {it.id};
                         components.each {tabComponent ->
-                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                            tabContent.append(generateTag(tabComponent) + "\n\n");
                         }
                         def actions = tab.actions.sort {it.id};
                         actions.each {tabComponent ->
-                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                            tabContent.append(generateTag(tabComponent) + "\n\n");
                         }
                         def dialogs = tab.dialogs.sort {it.id}
                         dialogs.each {tabComponent ->
-                            tabContent.append(generateTag(tabComponent, templateEngine) + "\n\n");
+                            tabContent.append(generateTag(tabComponent) + "\n\n");
                         }
                         def layoutContent = "";
                         if (tab.layout)
                         {
-                            layoutContent = generateTag(tab.layout, templateEngine);
+                            layoutContent = generateTag(tab.layout);
                         }
                         def tabString = tabTemplate.make(tab: tab, tabContent: tabContent, layoutContent: layoutContent).toString()
                         //                    println tabString
@@ -170,24 +213,24 @@ class UiDesignerController {
                 }
                 RsApplication.reloadViewsAndControllers();
                 render(contentType: "text/xml")
-                {
-                    Successful("UI generated successfully")
-                }
+                        {
+                            Successful("UI generated successfully")
+                        }
             } catch (Throwable t)
             {
                 log.warn("Exception occurred while generating ui", t);
                 addError("designer.generate.exception", [t.message]);
-                render(contentType:"text/xml", text:errorsToXml());
+                render(contentType: "text/xml", text: errorsToXml());
             }
         }
     }
 
-    def generateTag(model, templateEngine)
+    def generateTag(model)
     {
         try
         {
             def baseDir = System.getProperty("base.dir")
-            def tagTemplate = templateEngine.createTemplate(new File("${baseDir}/grails-app/templates/ui/designer/${model.metaData().designerType}.gsp"));
+            def tagTemplate = getTemplate(model.metaData().designerType);
             return tagTemplate.make(uiElement: model).toString();
         }
         catch (Exception e)

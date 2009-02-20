@@ -21,10 +21,7 @@
  */
 package com.ifountain.core.connection;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.commons.pool.ObjectPool;
@@ -48,6 +45,8 @@ public class ConnectionManager
     private static ClassLoader classLoader;
     private static Class timeoutStrategyClass;
     private static Map<ObjectPool, PoolableConnectionFactory> poolFactoryMap = new HashMap<ObjectPool, PoolableConnectionFactory>();
+    private static Object getConnectionLock= new Object();
+    
     private ConnectionManager()
     {
     }
@@ -92,18 +91,23 @@ public class ConnectionManager
         {
             throw new UndefinedConnectionException(connectionName);
         }
-        ConnectionPool pool = pools.get(connectionName);
-        if(pool == null)
-        {
-            PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, connectionName, paramSupplier, timeoutStrategyClass);
-            ConnectionPool newPool = new ConnectionPool(param.getConnectionName(), connectionFactory, param.getMaxNumberOfConnectionsInPool(), poolConnectionCheckerInterval);
-            poolFactoryMap.put(newPool, connectionFactory);
-            pool = newPool;
-            pools.put(connectionName, pool);
+        ConnectionPool pool = null;
+        
+        synchronized (getConnectionLock){
+            pool = pools.get(connectionName);
+            if(pool == null)
+            {
+                PoolableConnectionFactory connectionFactory = new PoolableConnectionFactory(classLoader, connectionName, paramSupplier, timeoutStrategyClass);
+                ConnectionPool newPool = new ConnectionPool(param.getConnectionName(), connectionFactory, param.getMaxNumberOfConnectionsInPool(), poolConnectionCheckerInterval);
+                poolFactoryMap.put(newPool, connectionFactory);
+                pool = newPool;
+                pools.put(connectionName, pool);
+            }
+            else{
+                pool.setMaxActive(param.getMaxNumberOfConnectionsInPool());
+            }
         }
-        else{
-            pool.setMaxActive(param.getMaxNumberOfConnectionsInPool());
-        }
+
         IConnection conn;
         try
         {
@@ -144,6 +148,7 @@ public class ConnectionManager
         }
         else{
             connection._disconnect();
+            System.out.println( "no pool");
         }
     }
 
@@ -213,5 +218,19 @@ public class ConnectionManager
 
     public static ConnectionParameterSupplier getParamSupplier() {
         return paramSupplier;
+    }
+
+    //for testing
+    public static List getBorrowedConnections(String connectionName){
+        synchronized (getConnectionLock)
+        {
+            List result=new ArrayList();
+            ConnectionPool pool = (ConnectionPool) pools.get(connectionName);
+            if(pool != null )
+            {
+                result = pool.getBorrowedConnections();
+            }
+            return result;
+        }
     }
 }

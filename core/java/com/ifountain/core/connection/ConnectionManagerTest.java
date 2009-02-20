@@ -32,8 +32,7 @@ import com.ifountain.core.datasource.mocks.MockConnectionParameterSupplierImpl;
 import com.ifountain.core.test.util.RapidCoreTestCase;
 import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ConnectionManagerTest extends RapidCoreTestCase
 {
@@ -44,7 +43,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        MockTimeoutStrategy.connectionParameterList.clear();;
+        MockTimeoutStrategy.connectionParameterList.clear();
         parameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(parameterSupplier);
         poolConnectionCheckingInterval = 1000;
@@ -148,7 +147,192 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         MockConnectionImpl conn5 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn5.isConnected());
     }
+    public void testGetConnectionThrowsExceptionIfParametersAreNull() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(2);
+        parameterSupplier.setParam(null);
 
+        try
+        {
+            ConnectionManager.getConnection(connectionName);
+            fail("Should throw exception");
+        }
+        catch (UndefinedConnectionException e)
+        {
+            assertEquals(new UndefinedConnectionException(connectionName), e);
+        }
+
+    }
+    
+    class GetConnectionThread extends Thread{
+        String connectionName;
+        int getConnectionLimit=3;
+        public List connections;
+        int sleeptime;
+        public GetConnectionThread(String connectionName,int getConnectionLimit,int sleeptime){
+            this.connectionName=connectionName;
+            this.getConnectionLimit=getConnectionLimit;
+            this.sleeptime=sleeptime;
+            connections =  new ArrayList();
+        }
+         public void run() {
+
+            //System.out.println("* "+getName()+" starts");
+            try {
+                for(int x=0;x<getConnectionLimit;x++){
+                    //System.out.println( "* "+getName()+" will do getConnection");
+                    MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
+                    connections.add(conn1);
+                    Thread.sleep(sleeptime);
+                }
+            }
+            catch(InterruptedException e)
+            {
+                System.out.println(e);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            //System.out.println( "* "+getName()+" stops");
+        }
+    }
+
+     public void testGetConnectionSynchronizesPoolAccessAndCreation() throws Exception
+    {
+        int threadLimit=20;
+        int getConnectionLimit=3;
+        int threadSleepTime=1000;
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(threadLimit*getConnectionLimit);
+        parameterSupplier.setParam(param);
+
+        List threadList=new ArrayList();
+        List connectionList=new ArrayList();
+
+        for(int x=1;x<=threadLimit;x++)
+        {
+            GetConnectionThread t1=new GetConnectionThread(connectionName,getConnectionLimit,threadSleepTime);
+            threadList.add(t1);
+            t1.start();
+
+        }
+
+        Thread.sleep(threadSleepTime*(getConnectionLimit+2));
+        ListIterator listItr = threadList.listIterator();
+        while(listItr.hasNext()) {
+            GetConnectionThread t1 = (GetConnectionThread)listItr.next();
+            connectionList.addAll(t1.connections);
+        }
+
+        List borrowedConnectionList=ConnectionManager.getBorrowedConnections(connectionName);
+        System.out.println (borrowedConnectionList);
+        assertEquals(borrowedConnectionList.size(),threadLimit*getConnectionLimit);
+        
+        ListIterator listItr2 = connectionList.listIterator();
+        while(listItr2.hasNext()) {
+            MockConnectionImpl conn1 = (MockConnectionImpl)listItr2.next();
+            assertTrue(conn1.isConnected());
+            assertEquals(param, conn1.getParam());
+            assertTrue(borrowedConnectionList.contains(conn1));
+        }
+
+    }
+     class ReleaseConnectionThread extends Thread{
+        
+        public List connections;
+        int threadSleepTime;
+        public ReleaseConnectionThread(List connections,int threadSleepTime){
+            this.connections=connections;
+            this.threadSleepTime=threadSleepTime;
+        }
+         public void run() {
+
+            //System.out.println("* "+getName()+" starts");
+            try {
+                for(int x=0;x<connections.size();x++){
+                    //System.out.println( "* "+getName()+" will do releaseConnection");
+                    ConnectionManager.releaseConnection((MockConnectionImpl)connections.get(x));                    
+                    Thread.sleep(threadSleepTime);
+                }
+            }
+            catch(InterruptedException e)
+            {
+                System.out.println(e);
+            }
+            catch(Exception e)
+            {
+                System.out.println(e);
+                e.printStackTrace();
+            }
+            //System.out.println( "* "+getName()+" stops");
+        }
+    }
+    //This test is similar to testGetConnectionSynchronizesPoolAccessAndCreation
+    //Currently there is no syncronization in releaseConnection ( actually there is syncronization in Pool )
+    //This test currenty only tests that release connection is safely executed by multiple threads
+    public void testReleaseConnectionWithMultipleThreads() throws Exception
+    {
+        int threadLimit=20;
+        int getConnectionLimit=3;
+        int threadSleepTime=1000;
+
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        param.setMaxNumberOfConnectionsInPool(threadLimit*getConnectionLimit);
+        parameterSupplier.setParam(param);
+
+        assertEquals(ConnectionManager.getBorrowedConnections(connectionName).size(),0);
+        
+        List connectionList=new ArrayList();
+        for(int x=0;x<threadLimit * getConnectionLimit ;x++)
+        {
+            MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
+            connectionList.add(conn1);
+            assertTrue(conn1.isConnected());
+        }
+
+
+        assertEquals(ConnectionManager.getBorrowedConnections(connectionName).size(),threadLimit*getConnectionLimit);
+
+        //Now we seperate the connections to threadLimit count of groups
+        List threadConnections=new ArrayList();
+        for(int x=0;x<threadLimit;x++)
+        {
+            List connections=new ArrayList();
+            threadConnections.add(connections);
+            for(int y=0;y<getConnectionLimit;y++)
+            {
+                connections.add(connectionList.get((x*getConnectionLimit)+y));
+            }
+            assertEquals(connections.size(),getConnectionLimit);
+        }
+        assertEquals(threadConnections.size(),threadLimit);
+
+        ListIterator listItr = threadConnections.listIterator();
+        while(listItr.hasNext()) {
+            ReleaseConnectionThread t1 = new ReleaseConnectionThread((ArrayList)listItr.next(),threadSleepTime);
+            t1.start();
+        }
+
+
+        Thread.sleep(getConnectionLimit*(threadSleepTime+2));
+
+        
+        assertEquals(ConnectionManager.getBorrowedConnections(connectionName).size(),0);
+        
+        ListIterator listItr2 = connectionList.listIterator();
+        while(listItr2.hasNext()) {
+            MockConnectionImpl conn1 = (MockConnectionImpl)listItr2.next();
+            assertTrue(conn1.isConnected());
+            assertEquals(param, conn1.getParam());
+        }
+        
+    }
     public void testConnectionCheckerMechnism() throws Exception
     {
         String connectionName = "conn1";
@@ -287,32 +471,12 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         assertFalse(conn2.isConnected());
     }
     
-    public void testThrowsExceptionIfParametersAreNull() throws Exception
-    {
-        String connectionName = "conn1";
-        ConnectionParam param = createConnectionParam(connectionName);
-        param.setMaxNumberOfConnectionsInPool(2);
-        parameterSupplier.setParam(param);
-    }
-    
-    public void testReleaseConnection() throws Exception
-    {
-        String connectionName = "conn1";
-        ConnectionParam param = createConnectionParam(connectionName);
-        param.setMaxNumberOfConnectionsInPool(2);
-        parameterSupplier.setParam(null);
-        
-        try
-        {
-            ConnectionManager.getConnection(connectionName);
-            fail("Should throw exception");
-        }
-        catch (UndefinedConnectionException e)
-        {
-            assertEquals(new UndefinedConnectionException(connectionName), e);
-        }
-        
-    }
+
+
+     public void testReleaseConnection() throws Exception
+     {
+        fail("to be implemented");
+     }
     
     public void testInitializeDoesnotInitializesTwice() throws Exception
     {

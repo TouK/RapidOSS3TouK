@@ -71,6 +71,72 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         assertFalse(pool.getBorrowedConnections().contains(borrowedObject2));
     }
 
+    public void testReturningObjectMultipleTimesDoesNotGenerateException() throws Exception
+    {
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);
+        pool = new ConnectionPool("con1", fact, 10);
+        assertEquals(0, pool.getBorrowedConnections().size());
+
+        Object borrowedObject1 = pool.borrowObject();
+        assertEquals(1, pool.getBorrowedConnections().size());
+        assertTrue(pool.getBorrowedConnections().contains(borrowedObject1));
+
+        try{
+            pool.returnObject(borrowedObject1);
+        }
+        catch(Exception e){
+            fail("Shoult not throw Exception");
+        }
+        assertEquals(0, pool.getBorrowedConnections().size());
+        assertFalse(pool.getBorrowedConnections().contains(borrowedObject1));
+
+        try{
+            pool.returnObject(borrowedObject1);
+        }
+        catch(Exception e){
+            fail("Shoult not throw Exception");
+        }
+        assertEquals(0, pool.getBorrowedConnections().size());
+        assertFalse(pool.getBorrowedConnections().contains(borrowedObject1));
+
+        try{
+            pool.returnObject(borrowedObject1);
+        }
+        catch(Exception e){
+            fail("Shoult not throw Exception");
+        }
+        assertEquals(0, pool.getBorrowedConnections().size());
+        assertFalse(pool.getBorrowedConnections().contains(borrowedObject1));
+        
+    }
+
+    public void testReturningAnUnexistingObjectToPoolDoesNotGenerateException() throws Exception
+    {
+        MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);
+        pool = new ConnectionPool("con1", fact, 10);
+        assertEquals(0, pool.getBorrowedConnections().size());
+
+        try{
+            pool.returnObject(new Object());
+        }
+        catch(Exception e){
+            fail("Shoult not throw Exception");
+        }
+        assertEquals(0, pool.getBorrowedConnections().size());
+
+        Object borrowedObject1 = pool.borrowObject();
+        assertEquals(1, pool.getBorrowedConnections().size());
+        assertTrue(pool.getBorrowedConnections().contains(borrowedObject1));
+
+        try{
+            pool.returnObject(new Object());
+        }
+        catch(Exception e){
+            fail("Shoult not throw Exception");
+        }
+        assertEquals(1, pool.getBorrowedConnections().size());
+        
+    }
     public void testThrowsExceptionIfPoolIsUnavailableDueToConnectionLost() throws Exception
     {
         MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);

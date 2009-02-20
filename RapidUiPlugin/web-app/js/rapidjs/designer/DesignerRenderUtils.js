@@ -129,6 +129,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         }
     };
     this.editorSaveFunc = function(oArgs) {
+        var willBeSavedInTreeData = true;
         var getFirstItem = function(object) {
             for (var member in object) {
                 return member;
@@ -150,9 +151,9 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 argumentsNode.removeChild(childNodes[i]);
             }
             var records = this.propertyGrid.getRecordSet().getRecords();
-            for(var i = records.length -1; i >=0; i--){
+            for (var i = records.length - 1; i >= 0; i--) {
                 var propName = records[i].getData("name");
-                if(propName.match(/arg\d+/)){
+                if (propName.match(/arg\d+/)) {
                     this.propertyGrid.deleteRow(i)
                 }
             }
@@ -320,10 +321,13 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             childNodes = argumentsNode.childNodes();
             childNodes[argIndex].setAttribute("value", propValue);
+            willBeSavedInTreeData = false;
         }
-        this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
-        if (UIConfig.isDisplayProperty(itemType, propName)) {
-            this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
+        if (willBeSavedInTreeData) {
+            this.currentDisplayedItemData.setAttribute(propName, "" + propValue);
+            if (UIConfig.isDisplayProperty(itemType, propName)) {
+                this.currentDisplayedItemData.setAttribute(this.treeDisplayAttribute, "" + propValue);
+            }
         }
         this.dataChanged = true;
         this.refreshTree();
@@ -349,21 +353,10 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 childNodes = argumentsNode.childNodes();
                 var argIndex = 0;
                 for (var argName in args) {
-                    this.propertyGrid.addRow({name:"arg" + argIndex + ":" + argName, value:childNodes[argIndex].getAttribute("value")||""})
+                    this.propertyGrid.addRow({name:"arg" + argIndex + ":" + argName, value:childNodes[argIndex].getAttribute("value") || ""})
                     argIndex ++;
                 }
             }
-        }
-    }
-    this.displayActionTriggerProperties = function(xmlData) {
-        var triggerType = xmlData.getAttribute("type");
-        data[data.length] = {name:"type", value:triggerType}
-        data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
-        if (triggerType == "Action event") {
-            data[data.length] = {name:"triggeringAction", value:xmlData.getAttribute("triggeringAction") || ""}
-        }
-        else if (triggerType == "Menu" || triggerType == "Component event") {
-            data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
         }
     }
     this.propertyGridClickedFuntion = function (oArgs) {

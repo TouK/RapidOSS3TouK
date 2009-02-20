@@ -10,12 +10,23 @@ import com.ifountain.rui.util.TagLibUtils
 class LayoutTagLib {
     static namespace = "rui"
     static stringUnitProps = [position:"position", body:"body", gutter:"gutter"]
+    static validUnitProps = ["position", "gutter", "width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "scroll", "useShim", "resize"]
     def layout = {attrs, body ->
         def layoutXmlString = TagLibUtils.getConfigAsXml("Layout", attrs, [], body(), true);
         def layoutXml = new XmlSlurper().parseText(layoutXmlString);
         def layoutConfig = createLayoutMap(layoutXml, null);
         out << render(template:"/tagLibTemplates/layout/layout", model:[layout:layoutConfig]);
     }
+
+
+    def innerLayout = {attrs, body ->
+        out << TagLibUtils.getConfigAsXml("InnerLayout", attrs, [], body(), true);
+    }
+
+    def layoutUnit = {attrs, body ->
+        out << TagLibUtils.getConfigAsXml("LayoutUnit", attrs, [], body(), true);
+    }
+
 
     def createLayoutMap(layoutNode, parentLayout)
     {
@@ -32,11 +43,23 @@ class LayoutTagLib {
         layoutNode.LayoutUnit.each{layoutUnitNode->
             def unitConfig = [:];
             def unitAttributes = layoutUnitNode.attributes();
-            centerExists = unitAttributes.position =="center" ||centerExists; 
+            centerExists = unitAttributes.position =="center" ||centerExists;
             def unitContent = [];
-            unitAttributes.each{attributeName, attributeValue->
-                attributeValue = stringUnitProps.containsKey(attributeName)?"'${attributeValue}'":attributeValue;
-                unitContent.add("${attributeName}:${attributeValue}");
+            validUnitProps.each{attributeName->
+                def attributeValue = unitAttributes[attributeName];
+                if(attributeValue != null)
+                {
+                    attributeValue = stringUnitProps.containsKey(attributeName) || attributeValue == ""?"'${attributeValue}'":attributeValue;
+                    unitContent.add("${attributeName}:${attributeValue}");
+                }
+            }
+            if(unitAttributes.component != null && unitAttributes.component != "")
+            {
+                unitContent.add("body:YAHOO.rapidjs.Components['${unitAttributes.component}'].container.id");                
+            }
+            else if(unitAttributes.body != null && unitAttributes.body != "")
+            {
+                unitContent.add("body:'${unitAttributes.body}'");
             }
             unitConfig.attributes = unitAttributes;
             unitConfig.content = "{${unitContent.join (",")}}";
@@ -50,13 +73,5 @@ class LayoutTagLib {
             units.add([attributes:[position:"center", gutter:""], content:"{position:'center', gutter:''}"])
         }
         return layoutProps;
-    }
-
-    def innerLayout = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("InnerLayout", attrs, [], body(), true);
-    }
-
-    def layoutUnit = {attrs, body ->
-        out << TagLibUtils.getConfigAsXml("LayoutUnit", attrs, [], body(), true);
     }
 }

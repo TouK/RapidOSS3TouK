@@ -17,6 +17,12 @@
 * USA.
 */
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+
+    static notify(Map eventProps) {
+        def event=RsEvent.add(eventProps);
+        return event;
+    }
+
     public void clear() {
 		clear(true);
 	}

@@ -5,6 +5,7 @@ import junit.framework.Test
 import junit.framework.TestResult
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTest
 import org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,11 +19,14 @@ class TestResultsProcessor{
     def statsXml;
     def tests;
     def testName;
+    def logger;
     static String firstMemoryUsedKey="ManualTestingResultsFirstUsedMemory"
     public TestResultsProcessor(testName){
        reportsMap=[:];
        tests=[];
-       this.testName=testName;       
+       this.testName=testName;
+       logger=Logger.getRootLogger();
+       logger.warn("processTestResults started");
        generateCompassStatisticsMap();
     }
     public static long getFirstMemory()
@@ -100,6 +104,7 @@ class TestResultsProcessor{
         }
         catch(Throwable t2)
         {
+            logger.warn("Error occured while generating Results XML",t2);
             new File("${testName}-results.xml").withOutputStream {xmlOut ->
                 def xmlOutput = new XMLJUnitResultFormatter(output: xmlOut)
                 def junitTest = new JUnitTest(testName)
@@ -110,6 +115,29 @@ class TestResultsProcessor{
                 xmlOutput.endTestSuite(junitTest)
 
             }
+
+        }
+
+        try{
+
+            def statsFile=new File("${testName}-stats.xml");
+            statsFile.write(statsXml);
+
+        }
+        catch(Throwable t2)
+        {
+            logger.warn("Error occured while generating Stats XML",t2);
+            new File("${testName}-stats.xml").withOutputStream {xmlOut ->
+                def xmlOutput = new XMLJUnitResultFormatter(output: xmlOut)
+                def junitTest = new JUnitTest(testName)
+                xmlOutput.startTestSuite(junitTest)
+
+                xmlOutput.addError (new ManualTestUnit("${testName}StatsXmlGeneration"),t2);
+                junitTest.setCounts(tests.size(), 0, 1);
+                xmlOutput.endTestSuite(junitTest)
+
+            }
+
         }
     }
     def transferResultsToHudson()

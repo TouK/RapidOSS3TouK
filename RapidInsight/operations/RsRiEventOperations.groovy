@@ -20,7 +20,11 @@ import org.apache.log4j.Logger;
 
 public class RsRiEventOperations  extends RsEventOperations {
 	public static notify(Map originalEventProps) {
-		def eventProps = [:]
+		return _notify(RsRiEvent,originalEventProps);
+	}
+    protected static def _notify(Class eventModel,Map originalEventProps)
+    {
+       def eventProps = [:]
 		eventProps.putAll(originalEventProps)
 		def event = RsEvent.get(name:eventProps.name)
 		def now=Date.now();
@@ -44,18 +48,19 @@ public class RsRiEventOperations  extends RsEventOperations {
             eventProps.changedAt = now
         }
 
-		event = eventModel().add(eventProps)
-		
+		event = eventModel.add(eventProps)
+
 		if (!event.hasErrors()) {
             RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)
 		}
 		else
         {
-           Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");           
+           Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");
         }
         event.propagateElementState();
-		return event;
-	}
+        
+        return event;
+    }
     public void propagateElementState()
     {
         def element = RsComputerSystem.get(id:elementId);
@@ -67,9 +72,6 @@ public class RsRiEventOperations  extends RsEventOperations {
     {
         return RsRiHistoricalEvent;
     }
-    public static Class eventModel()
-    {
-        return RsRiEvent;
-    }
+   
 
 }

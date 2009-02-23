@@ -46,8 +46,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
         
-        assertEquals(RsRiEvent.eventModel(),RsRiEvent);
-        
+
         assertEquals(0,RsRiEvent.list().size());
         assertEquals(0,RsEventJournal.list().size());
 

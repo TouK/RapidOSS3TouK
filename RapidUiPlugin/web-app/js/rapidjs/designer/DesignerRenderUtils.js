@@ -242,6 +242,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                     this.currentDisplayedItemData.setAttribute("name", name);
                     this.propertyGrid.addRows([{name:"type", value:propValue},{name:"name", value:name}])
                 }
+                this.currentDisplayedItemData.setAttribute(propName, propValue);
                 this.showHelp();
             }
         }
@@ -254,6 +255,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 this.propertyGrid.updateCell(nameRecord, "value", name)
                 this.currentDisplayedItemData.setAttribute("name", name);
             }
+            this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
         }
         else if (itemType == "ActionTrigger" && propName == "component") {
@@ -280,9 +282,11 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 this.propertyGrid.updateCell(nameRecord, "value", name)
                 this.currentDisplayedItemData.setAttribute("name", name);
             }
+            this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
         }
         else if (itemType == "ActionTrigger" && propName == "name") {
+            this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
         }
         else if (itemType == "FunctionAction" && propName == "component") {
@@ -296,6 +300,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var funcRecord = this.propertyGrid.findRecord("name", "function");
                 this.propertyGrid.updateCell(funcRecord, "value", method)
                 createFunctionArgutments.call(this);
+                this.currentDisplayedItemData.setAttribute(propName, propValue);
                 this.showHelp();
             }
         }
@@ -304,6 +309,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             if (propValue != oldMethod) {
                 this.currentDisplayedItemData.setAttribute(propName, propValue);
                 createFunctionArgutments.call(this);
+                this.currentDisplayedItemData.setAttribute(propName, propValue);
                 this.showHelp();
             }
         }
@@ -448,7 +454,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                     }
                 }
                 else if (triggerType == "Action event") {
-                    var triggeringAction = this.currentDisplayedItemData("triggeringAction");
+                    var triggeringAction = this.currentDisplayedItemData.getAttribute("triggeringAction");
                     var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
                     if (currentActions[triggeringAction]) {
                         var events = UIConfig.getItemEvents(currentActions[triggeringAction]);
@@ -576,6 +582,167 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 })
             }
         }
+    };
+    this.showHelp = function() {
+        var getTriggerHelp = function(xmlData) {
+            var getEventHelp = function(itemType, eventName) {
+                if (itemType && eventName) {
+                    var eventDescr = UIConfig.getEventDescription(itemType, eventName);
+                    var eventParams = UIConfig.getEventParameters(itemType, eventName);
+                    if (eventDescr && eventParams) {
+                        var eventHelpArray = [];
+                        eventHelpArray.push("<div><h4>" + itemType + " : " + eventName + "</h4>")
+                        var paramCount = 0;
+                        var paramsArray = [];
+                        for (var eventParam in eventParams) {
+                            paramsArray.push('<li><span style="font-weight:bold;font-size:13px">' + eventParam + ':</span><span> ' + eventParams[eventParam] + '</span></li>')
+                            paramCount ++
+                        }
+                        eventHelpArray.push("<p>" + eventDescr + (paramCount ? " Available Parameters:" : "") + "</p>")
+                        if (paramCount) {
+                            eventHelpArray.push('<ul style="padding-left:20px;">')
+                            eventHelpArray.push(paramsArray.join(""))
+                            eventHelpArray.push("</ul>")
+                        }
+                        eventHelpArray.push("</div>")
+                        return eventHelpArray.join("");
+                    }
+                }
+                return ""
+
+            }
+            var getMenuHelp = function(compType, compName, menuType, menuName) {
+                var menuParameters = UIConfig.getMenuParameters(compType, menuType);
+                var menuHelpArray = [];
+                menuHelpArray.push("<div><h4>" + compName + " : " + menuName + "</h4>")
+                menuHelpArray.push("<p>Available Parameters:</p>")
+                menuHelpArray.push('<ul style="padding-left:20px;">')
+                for (var menuParam in menuParameters) {
+                    menuHelpArray.push('<li><span style="font-weight:bold;font-size:13px">' + menuParam + ':</span><span> ' + menuParameters[menuParam] + '</span></li>')
+                }
+                menuHelpArray.push("</ul>")
+                menuHelpArray.push("</div>")
+                return menuHelpArray.join("");
+            }
+            var help = "";
+            var triggerType = xmlData.getAttribute("type");
+            if (triggerType == "Action event") {
+                var triggeringAction = xmlData.getAttribute("triggeringAction");
+                var actionEvent = xmlData.getAttribute("name");
+                if (triggeringAction && actionEvent) {
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, xmlData);
+                    var actionType = currentActions[triggeringAction];
+                    help += getEventHelp(actionType, actionEvent)
+                }
+            }
+            else if (triggerType == "Component event") {
+                var component = xmlData.getAttribute("component");
+                var event = xmlData.getAttribute("name");
+                if (component && event) {
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, xmlData);
+                    var compType = currentComponents[component];
+                    help += getEventHelp(compType, event);
+                }
+            }
+            else if (triggerType == "Menu") {
+                var component = xmlData.getAttribute("component");
+                var menuItem = xmlData.getAttribute("name");
+                if (component && menuItem) {
+                    var currentMenuConfig = DesignerUtils.getComponentsWithMenuItems(this, xmlData);
+                    var compMenuConfig = currentMenuConfig[component];
+                    if (compMenuConfig) {
+                        var menuType;
+                        for (var mType in compMenuConfig) {
+                            var menuNames = compMenuConfig[mType];
+                            if (YAHOO.rapidjs.ArrayUtils.contains(menuNames, menuItem)) {
+                                menuType = mType;
+                                break;
+                            }
+                        }
+                        if (menuType) {
+                            help += getMenuHelp(compType, component, menuType, menuItem);
+                        }
+                    }
+                }
+            }
+            else if (triggerType == "Global event") {
+                var eventName = xmlData.getAttribute("name")
+                if (eventName) {
+                    help += getEventHelp("Global", eventName);
+                }
+            }
+            return help;
+        };
+        var getTriggersHelp = function(actionNode) {
+            var triggersHelp = "";
+            var triggersNode;
+            var childNodes = actionNode.childNodes();
+            for (var i = 0; i < childNodes.length; i++) {
+                var itemType = DesignerUtils.getItemType(this, childNodes[i]);
+                if (itemType == "ActionTriggers") {
+                    triggersNode = childNodes[i]
+                    break;
+                }
+            }
+            childNodes = triggersNode.childNodes();
+            triggersHelp += "<h3>Triggers</h3>"
+            if (childNodes.length > 0) {
+                for (var i = 0; i < childNodes.length; i++) {
+                    triggersHelp += getTriggerHelp(childNodes[i]);
+                }
+            }
+            else {
+               triggersHelp += "<div class=\"panelMacro\">" +
+                               "<table class=\"warningMacro\"><colgroup><col width=\"24\"/><col/></colgroup>" +
+                               "<tbody><tr><td valign=\"top\"><img width=\"16\" height=\"16\" border=\"0\" align=\"absmiddle\" src=\"images/icons/emoticons/forbidden.gif\"/></td>" +
+                               "<td> No trigger has been defined</td></tr></tbody></table></div>"
+            }
+
+            return triggersHelp;
+        };
+        var getMethodHelp = function(actionNode) {
+            var component = actionNode.getAttribute("component");
+            var method = actionNode.getAttribute("function");
+            var help = "";
+            if (component && method) {
+                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, actionNode);
+                var compType = currentComponents[component];
+                if (compType) {
+                    var methodDesc = UIConfig.getMethodDescription(compType, method);
+                    var methodArgs = UIConfig.getMethodArguments(compType, method);
+                    var methodHelpArray = [];
+                    methodHelpArray.push("<h3>Method Description</h3>")
+                    methodHelpArray.push("<div><h4>" + compType + " : " + method + "</h4>")
+                    var nOfArgs = 0;
+                    var methodHtml = []
+                    for (var methodArg in methodArgs) {
+                        methodHtml[methodHtml.length] = '<li><span style="font-weight:bold;font-size:13px">' + methodArg + ':</span><span> ' + methodArgs[methodArg] + '</span></li>'
+                        nOfArgs++;
+                    }
+                    methodHelpArray.push("<p>" + methodDesc + (nOfArgs ? " Method arguments:" : "") + "</p>")
+                    if (nOfArgs) {
+                        methodHelpArray.push('<ul style="padding-left:20px;">')
+                        methodHelpArray.push(methodHtml.join(""))
+                        methodHelpArray.push("</ul>")
+                    }
+                    methodHelpArray.push("</div>")
+                    help += methodHelpArray.join("");
+                }
+            }
+            return help;
+        };
+        var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+        var helpText = UIConfig.getHelp(itemType);
+        if (itemType == "ActionTrigger") {
+            helpText += "<h3>Event Description</h3>" + getTriggerHelp.call(this, this.currentDisplayedItemData)
+        }
+        else if (itemType == "RequestAction" || itemType == "MergeAction" || itemType == "LinkAction") {
+            helpText += getTriggersHelp.call(this, this.currentDisplayedItemData);
+        }
+        else if (itemType == "FunctionAction") {
+            helpText += getMethodHelp.call(this, this.currentDisplayedItemData) + getTriggersHelp.call(this, this.currentDisplayedItemData);
+        }
+        this.helpView.innerHTML = "<div>" + helpText + "</div>";
     }
 };
-var RenderUtils = YAHOO.rapidjs.designer.DesignerRenderUtils; 
+var RenderUtils = YAHOO.rapidjs.designer.DesignerRenderUtils;

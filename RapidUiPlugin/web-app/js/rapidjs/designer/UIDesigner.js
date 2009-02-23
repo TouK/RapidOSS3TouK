@@ -193,6 +193,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     treeSelectionChanged:function(xmlData) {
         this.displayItemProperties(xmlData);
+        this.showHelp();
         this.changeLayout(xmlData);
     },
 
@@ -380,6 +381,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             this.refreshTree();
             this.expandTreeNode(row)
+            if(itemType == "ActionTrigger"){
+                this.showHelp();
+            }
         }
         else if (id == "delete") {
             var itemType = DesignerUtils.getItemType(this, xmlData);
@@ -420,7 +424,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.tree.treeGridView.refreshData();
     },
     showHelp:function() {
-
+        RenderUtils.showHelp.call(this)
     },
     save : function() {
         var callback = {

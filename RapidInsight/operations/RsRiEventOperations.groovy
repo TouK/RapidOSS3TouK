@@ -53,13 +53,16 @@ public class RsRiEventOperations  extends RsEventOperations {
         {
            Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");           
         }
-        def element = RsComputerSystem.get(id:event.elementId);
-        if(element){
-            element.setState(event.severity);
-        }
+        event.propagateElementState();
 		return event;
 	}
-
+    public void propagateElementState()
+    {
+        def element = RsComputerSystem.get(id:elementId);
+        if(element){
+            element.setState(severity);
+        }
+    }
 	public Class historicalEventModel()
     {
         return RsRiHistoricalEvent;

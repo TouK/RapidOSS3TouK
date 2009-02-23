@@ -15,14 +15,23 @@ import com.ifountain.rcmdb.converter.*
 class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
+        clearMetaClasses();
         RapidDateUtilities.registerDateUtils();
         registerDefaultConverters();
+
 
     }
 
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
     }
+    private void clearMetaClasses()
+     {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RsComputerSystem)        
+        ExpandoMetaClass.enableGlobally();
+     }
      def registerDefaultConverters()
     {
         def dateFormat = "yyyy-dd-MM HH:mm:ss";
@@ -31,6 +40,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
         RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
+
      public void testNotifyAddsRsRiEvent()
      {
         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
@@ -136,6 +146,35 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(updatedEvent.count,udpateProps.count);
 
      }
+     public void testPropagateElementStateAndNotifyCallsPropagateElementState(){
+         initialize([RsObjectState,RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
+         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+         
+         def callParams=[:]
+         RsComputerSystem.metaClass.setState = { newPropagatedState ->            
+            callParams.state=newPropagatedState;
+            
+         }
+
+         def element=RsComputerSystem.add(name:"testsys");
+         assertFalse(element.hasErrors());
+
+
+         def event=RsRiEvent.add(name:"testev",elementId:element.id,severity:5);
+         assertFalse(event.hasErrors());
+
+         event.propagateElementState();
+         assertEquals(callParams.state,event.severity)
+
+         callParams=[:];
+
+        def event2=RsRiEvent.notify(name:"testev",elementId:element.id,severity:3);
+        assertFalse(event.hasErrors());
+
+        assertEquals(callParams.state,event2.severity)
+
+     }
+
 
 
 }

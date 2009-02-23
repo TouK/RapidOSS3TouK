@@ -32,6 +32,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.totalColumnWidth = null;
         this.viewBuilder = null;
         this.defaultColumns = YAHOO.rapidjs.ObjectUtils.clone(this.columns, true);
+        var defaultColumnMap = {};
+        for (var index = 0; index < this.defaultColumns.length; index ++) {
+            var columnConfig = this.defaultColumns[index];
+            defaultColumnMap[columnConfig['attributeName']] = columnConfig
+        }
+        this.defaultColumnMap = defaultColumnMap;
         this.lastSortedHeader = null;
         this.bodyId = this.id + "_body";
         this.addMenuColumn(this.columns);
@@ -43,6 +49,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         var colCssName = "#" + this.bodyId + " .rcmdb-searchgrid-col-last";
         this.addColCss(colCssName);
         YAHOO.ext.util.CSS.getRules(true);
+        for (var index = 0; index < this.columns.length; index++) {
+            var defaultColumnConfig = this.defaultColumnMap[this.columns[index]['attributeName']]
+            var isHyperlink = defaultColumnConfig ? defaultColumnConfig['type'] == 'link' : false
+            this.setCssHyperlink(index, isHyperlink);
+        }
         this.numberOfColumnsDrawn = this.columns.length;
     },
     addColCss: function(cssName)
@@ -126,7 +137,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.lastSortedHeader = this.headers[sortColIndex];
             this.lastSortedHeader.sortDir = sortOrder;
             this.params['order'] = sortOrder;
-            var sortAtt = this.columns[sortColIndex]['attributeName'] 
+            var sortAtt = this.columns[sortColIndex]['attributeName']
             this.lastSortAtt = sortAtt;
             this.params['sort'] = sortAtt;
         }
@@ -330,6 +341,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             YAHOO.ext.util.CSS.updateRule(selector, 'left', pos + 'px');
         }
     },
+    setCssHyperlink: function(colIndex, isHyperlink) {
+        var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
+        if (isHyperlink) {
+            YAHOO.ext.util.CSS.updateRule(selector, 'cursor', 'pointer');
+            YAHOO.ext.util.CSS.updateRule(selector, 'text-decoration', 'underline');
+        }
+        else {
+            YAHOO.ext.util.CSS.updateRule(selector, 'cursor', '');
+            YAHOO.ext.util.CSS.updateRule(selector, 'text-decoration', '');
+        }
+
+    },
     getClassName: function() {
         return "rcmdb-searchgrid";
     },
@@ -381,7 +404,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return null;
     },
     addMenuColumn: function(columns) {
-        columns.splice(0, 0, {colLabel:"&#160;", width:19});
+        columns.splice(0, 0, {colLabel:"&#160;", width:19, attributeName:''});
     },
     loadViews: function(response) {
         SelectUtils.clear(this.viewInput);
@@ -495,6 +518,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         for (var index = 0; index < this.columns.length; index++) {
             var header = this.headers[index];
             header.textNode.innerHTML = this.columns[index].colLabel;
+            var defaultColumnConfig = this.defaultColumnMap[this.columns[index]['attributeName']]
+            var isHyperlink = defaultColumnConfig ? defaultColumnConfig['type'] == 'link' : false
+            this.setCssHyperlink(index, isHyperlink);
         }
         this.updateColumns();
         for (var index = 0; index < rowCount; index++) {

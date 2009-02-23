@@ -198,11 +198,13 @@ class SearchGridTagLib {
         columns.each {column ->
             def sortOrder = column.@sortOrder.toString().trim();
             def sortBy = column.@sortBy.toString().trim();
+            def type = column.@type.toString().trim();
             columnArray.add("""{
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
+                    ${type != "" ? "type:'${type}'," : ""}
                     width:${column.@width}
                 }""")
         }
@@ -329,7 +331,7 @@ class SearchGridTagLib {
         out << fSgColumns(attrs, body())
     }
     static def fSgColumn(attrs, bodyString) {
-        def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width"];
+        def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width", "type"];
         return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
     }
     def sgColumn = {attrs, body ->

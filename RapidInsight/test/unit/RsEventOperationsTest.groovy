@@ -33,11 +33,6 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(addedEvent.severity,addProps.severity);
          assertEquals(1,RsEvent.list().size());
 
-         def addedEventFromRepo=RsEvent.get(name:addProps.name);
-         assertEquals(addedEventFromRepo.name,addProps.name);
-         assertEquals(addedEventFromRepo.severity,addProps.severity);
-         assertEquals(addedEvent,addedEventFromRepo);
-
 
          def updateProps=[name:"ev1",severity:1];
          def updatedEvent=RsEvent.notify(updateProps);
@@ -45,14 +40,8 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(updatedEvent.severity,updateProps.severity);
          assertEquals(1,RsEvent.list().size());
 
-         def updatedEventFromRepo=RsEvent.get(name:updateProps.name);
-         assertEquals(updatedEventFromRepo.name,updateProps.name);
-         assertEquals(updatedEventFromRepo.severity,updateProps.severity);
-         assertEquals(updatedEvent,updatedEventFromRepo);
 
          assertNotSame(addedEvent,updatedEvent);
-
-
      }
 
 }

@@ -6,7 +6,6 @@ import com.ifountain.rui.util.DesignerUtils
 import groovy.util.slurpersupport.GPathResult
 import groovy.text.SimpleTemplateEngine
 import org.apache.commons.io.FileUtils
-import application.RsApplication
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
@@ -199,7 +198,7 @@ class UiDesignerController {
                         tabOutputFile.setText(tabString)
                     }
                 }
-                RsApplication.reloadViewsAndControllers();
+                application.RsApplication.reloadViewsAndControllers();
                 render(contentType: "text/xml")
                         {
                             Successful("UI generated successfully")

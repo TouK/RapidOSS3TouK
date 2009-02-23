@@ -2,6 +2,7 @@ YAHOO.namespace("rapidjs", "rapidjs.designer");
 
 YAHOO.rapidjs.designer.Config = new function() {
     this.config = {};
+    this.helpConfig = {};
     this.loadMetaData = function(response) {
         var getAttributes = function(xmlNode) {
             var atts = {};
@@ -45,19 +46,24 @@ YAHOO.rapidjs.designer.Config = new function() {
         }
         this.config = config;
     };
+    this.loadHelp = function(response){
+        var helpNodes = response.responseXML.getElementsByTagName("Help");
+        for(var i = 0; i< helpNodes.length; i++){
+            var helpNode = helpNodes[i]
+            var helpId = helpNode.getAttribute("id");
+            var helpText = helpNode.firstChild.nodeValue;
+            this.helpConfig[helpId] = helpText;
+        }
+    };
     this.get = function(itemType) {
         return this.config[itemType];
     };
     this.getHelp = function(itemType){
-        return "<h4><a name=\"Layout-AvailableProperties\"></a>Available Properties</h4>" +
-"<p><b>type</b>: Pre-configured layouts which will automatically add the necessary panes as children nodes. The position of panes with respect to each other will be displayed at the Layout Preview area (upper right quadrant).</p>" +
-"<p>Instead of selecting a type, you can manually add layout panes. </p>"+
-"<div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src=\"images/icons/emoticons/information.gif\" width=\"16\" height=\"16\" align=\"absmiddle\" alt=\"\" border=\"0\"></td><td>Center pane is mandatory and cannot be deleted</td></tr></table></div>"+
-"<h4><a name=\"Layout-AvailableActionsonaWebPagenode.\"></a>Available Actions on a Web Page node.</h4>"+
-"<p>Add New Top: Adds a new top pane to the layout (above center)<br/>"+
-"Add New Bottom: Adds a new bottom pane to the layout (below center)<br/>"+
-"Add New Left: Adds a new left pane to the layout (left of center)<br/>"+
-"Add New Right: Adds a new right pane to the layout (right of center)</p>"
+        var helpId = this.get(itemType)["help"];
+        if(helpId){
+            return this.helpConfig[helpId] || "";
+        }
+        return "";
     };
     this.getDisplayName = function(itemType, xmlNode) {
         var displayFromProperty = this.get(itemType)["displayFromProperty"]

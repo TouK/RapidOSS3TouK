@@ -70,6 +70,7 @@
     <link rel="stylesheet" type="text/css" href="css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/treegrid/treegrid.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/designer/designer.css"/>
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/designer/help.css"/>
 </head>
 <body class="yui-skin-sam">
     <script>
@@ -82,6 +83,7 @@
             url : "uiDesigner/view",
             saveUrl : "uiDesigner/save",
             generateUrl : "uiDesigner/generate",
+            helpUrl : "uiDesigner/help",
             metaDataUrl : "uiDesigner/metaData"
         }
         var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);

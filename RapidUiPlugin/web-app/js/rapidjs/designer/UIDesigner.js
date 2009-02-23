@@ -9,6 +9,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.metaDataUrl = null
     this.generateUrl = null
     this.treeHideAttribute = null;
+    this.helpUrl = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.treeDisplayAttribute = 'designer_name'
     this.itemTabAtt = 'designer_item_tab';
@@ -46,6 +47,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
     this.render();
+    this.loadingMask.show("Loading...")
     this.getMetaData();
 };
 
@@ -126,7 +128,17 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             this.tree.treeGridView.rootImages = rootImages;
         }
         modifyTreeConfig.call(this)
-        this.getData();
+        this.getHelp();
+    },
+    getHelp: function() {
+        var callback = {
+            success: this.processSuccess,
+            failure: this.handleFailure,
+            scope:this,
+            cache:false,
+            argument:[this.loadHelp]
+        }
+        YAHOO.util.Connect.asyncRequest('GET', this.helpUrl, callback);
     },
     getData: function() {
         var callback = {
@@ -138,7 +150,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         YAHOO.util.Connect.asyncRequest('GET', this.url, callback);
     },
-
+    loadHelp: function(response){
+        UIConfig.loadHelp(response);
+        this.getData();
+    },
     loadData: function(response) {
         var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
         var rootNode = data.getRootNode(this.rootTag)
@@ -152,6 +167,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
         }
         defferedExpandNode.defer(100, this, []);
+        this.loadingMask.hide();
     },
 
     processSuccess: function(response) {
@@ -289,7 +305,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         if (!atts) {
             atts = {};
         }
-        if(UIConfig.getProperties(itemType)[this.treeHideAttribute] != null){
+        if (UIConfig.getProperties(itemType)[this.treeHideAttribute] != null) {
             atts[this.treeHideAttribute] = 'true';
         }
         var id = YAHOO.util.Dom.generateId(null, itemType);
@@ -381,7 +397,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             this.refreshTree();
             this.expandTreeNode(row)
-            if(itemType == "ActionTrigger"){
+            if (itemType == "ActionTrigger") {
                 this.showHelp();
             }
         }

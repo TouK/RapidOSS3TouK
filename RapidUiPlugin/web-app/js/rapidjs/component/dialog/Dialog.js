@@ -28,11 +28,13 @@ YAHOO.rapidjs.component.Dialog = function(config)
     this.close = false;
     this.title = "&#160;";
     this.buttons = null;
+    this._buttons = [];
     this.resizable = true;
     this.x = 0;
     this.y = 0;
     this.fixedcenter = false;
     this.modal = false;
+    this.mask = false;
     YAHOO.ext.util.Config.apply(this, config);
     if (!this.x && !this.y) {
         this.fixedcenter = true;
@@ -71,7 +73,11 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.panel.setBody(this.body);
         this.panel.setFooter(this.footer);
 
-
+        if (this.mask) {
+            this.mask = dh.append(this.container, {tag:'div', cls:'rcmdb-form-mask'}, true);
+            this.maskMessage = dh.append(this.container, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
+            this.hideMask();
+        }
         if (this.buttons)
         {
             for (var i = 0; i < this.buttons.length; i++)
@@ -91,6 +97,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
                     YAHOO.util.Dom.setStyle(oButton.get("element"), 'border-color:', '#304369');
                     YAHOO.util.Dom.setStyle(oButton.get("element").getElementsByTagName('button')[0], 'color', '#FFFFFF');
                 }
+                this._buttons[this._buttons.length] = oButton;
             }
             YAHOO.util.Dom.setStyle(this.body, 'background-color', '#F2F2F2');
             YAHOO.util.Dom.setStyle(this.footer.parentNode, 'border-top', 'medium none');
@@ -137,6 +144,36 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
         this.setTitle(this.title)
     },
+
+    getButtons :function() {
+        return this._buttons;
+    },
+
+    showMask: function() {
+        if (this.mask) {
+            this.mask.show();
+            this.maskMessage.show();
+            var region = getEl(this.panel.body).getRegion();
+            this.mask.setRegion(region)
+            this.maskMessage.center(this.mask.dom);
+            for (var i = 0; i < this._buttons.length; i++) {
+                var button = this._buttons[i];
+                button.set("disabled", true)
+            }
+        }
+
+    },
+    hideMask: function() {
+        if (this.mask) {
+            this.mask.hide();
+            this.maskMessage.hide();
+            for (var i = 0; i < this._buttons.length; i++) {
+                var button = this._buttons[i];
+                button.set("disabled", false)
+            }
+        }
+    },
+
 
     show: function(url)
     {

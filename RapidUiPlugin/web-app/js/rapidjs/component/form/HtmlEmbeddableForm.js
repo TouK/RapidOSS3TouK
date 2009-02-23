@@ -35,6 +35,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         this.cancelButton.appendTo(oSpan);
         if (this.htmlComp.popupWindow) {
             this.htmlComp.popupWindow.dialog.panel.setFooter(oSpan);
+            var buttons = this.htmlComp.popupWindow.dialog.getButtons();
+            buttons[buttons.length] = this.saveButton;
+            buttons[buttons.length] = this.cancelButton;
         }
         else {
             var footer = dh.append(this.container, {tag:'div'});
@@ -65,6 +68,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         }
         this.saveButton.destroy();
         this.cancelButton.destroy();
+        if (this.htmlComp.popupWindow) {
+            this.htmlComp.popupWindow.dialog._buttons = [];
+        }
     },
 
     cancel: function() {

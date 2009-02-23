@@ -28,6 +28,7 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
         minHeight:100,
         resizable: false,
         title: 'View Builder',
+        mask:true,
         buttons:[
             {text:"Save", handler:this.handleSave, scope:this, isDefault:true },
             {text:"Cancel", handler:this.hide, scope:this }]
@@ -35,6 +36,9 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
     this.availableFields = null;
     this.columnsConfig = {};
     this.dialog = new YAHOO.rapidjs.component.Dialog(config);
+    this.events['error'].subscribe(function() {
+        this.dialog.hideMask()
+    }, this, true)
     this.render();
     this.getViews(this.loadViews.createDelegate(this));
 }
@@ -132,9 +136,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             columnsArray[columnsArray.length] = colArray.join(";;");
         }
         parameters['columns'] = columnsArray.join("::");
+        this.dialog.showMask();
         this.doPostRequest(url, parameters, this.saveSuccess.createDelegate(this));
     },
     saveSuccess: function(response) {
+        this.dialog.hideMask();
         if (YAHOO.rapidjs.Connect.containsError(response) == false) {
             var currentView = this.nameInput.value;
             this.dialog.hide();

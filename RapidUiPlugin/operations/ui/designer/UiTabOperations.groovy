@@ -2,6 +2,7 @@ package ui.designer;
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.rui.util.DesignerUtils
+import com.ifountain.rui.util.DesignerTemplateUtils
 
 public class UiTabOperations extends AbstractDomainOperation
 {
@@ -107,7 +108,7 @@ public class UiTabOperations extends AbstractDomainOperation
         return uiTab;
     }
 
-    def getActionTrigers()
+    def getGlobalActionTrigers()
     {
         def actionTriggers = [:];
         def triggers = UiActionTrigger.searchEvery("type:\"${UiActionTrigger.GLOBAL_TYPE}\"");
@@ -123,6 +124,10 @@ public class UiTabOperations extends AbstractDomainOperation
             }
         }
         return actionTriggers;
+    }
+
+    def getActionsString(actionTriggers){
+        return DesignerTemplateUtils.getActionsString(actionTriggers);
     }
 
 }

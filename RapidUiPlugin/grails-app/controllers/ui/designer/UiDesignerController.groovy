@@ -132,6 +132,11 @@ class UiDesignerController {
                 templateCache.clear();
                 templateCache.putAll (loadTemplates());
             }
+            render(contentType: "text/xml")
+            {
+                Successful("Templates reloaded successfully")
+            }
+
         }
         catch(Throwable e)
         {

@@ -25,6 +25,15 @@
 <%
     }
 %>
+<%
+    tab.getGlobalActionTrigers().each{String triggerName, triggers->
+        def eventName = triggerName.substring(0,1).toUpperCase()+triggerName.substring(1);
+        def actionString = tab.getActionsString(triggers); 
+%>
+       <rui:globalEvent on${eventName}="${actionString}"></rui:globalEvent>
+<%
+    }
+%>
 <rui:layout id="layout">
     <rui:layoutUnit position="top" body="top" resize="false" height="45"></rui:layoutUnit>
     <rui:layoutUnit position="center" gutter="1px">

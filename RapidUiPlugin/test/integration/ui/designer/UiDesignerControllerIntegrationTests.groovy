@@ -372,6 +372,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             //After reloading templates new content should be generated
             IntegrationTestUtils.resetController (controller);
             controller.reloadTemplates();
+            assertEqualsXML ("<Successful>Templates reloaded successfully</Successful>", controller.response.contentAsString);
             IntegrationTestUtils.resetController (controller);
             controller.generate();
             String textAfterReload = generatedFile.getText();

@@ -21,4 +21,16 @@ class DesignerTemplateUtils {
         divId = divId.replaceAll("\\\\", ".")
         return divId;
     }
+
+    public static def getActionsString(actionTriggers){
+        def actionNames = actionTriggers.action.name;
+        def actionsString;
+        if(actionNames.size() > 0){
+            return "\${['" + actionNames.join("','") + "']}"
+        }
+        else{
+            return "\${[]}"
+        }
+        return actionsString
+    }
 }

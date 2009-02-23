@@ -36,6 +36,9 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         GroovySystem.metaClassRegistry.removeMetaClass(BaseDatasourceOperations);
         ExpandoMetaClass.enableGlobally();
     }
+
+    
+
     void initialize(){
        
         initialize([BaseDatasource], []);        
@@ -43,34 +46,52 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
      }
      public void testGetOnDemandReturnsNullWhenNoDatasourceIsFound(){
          assertEquals(BaseDatasource.list().size(),0);
-         def onDemandDs=BaseDatasource.getOndemand(name:"testds");
+         def onDemandDs=BaseDatasource.getOnDemand(name:"testds");
          assertNull(onDemandDs);
      }
-     public void testGetOnDemandDoesNotGenerateExceptionWhenAdapterIsNull(){
+     public void testGetOnDemandDoesNotGenerateExceptionWhenGetAdaptersIsNull(){
          def ds=BaseDatasource.add(name:"testds");
          assertFalse(ds.hasErrors())
-         assertNull(ds.adapter);
+         assertNull(ds.getAdapters());
 
-         def onDemandDs=BaseDatasource.getOndemand(name:"testds");
+         def onDemandDs=BaseDatasource.getOnDemand(name:"testds");
          assertEquals(onDemandDs.name,ds.name);
-         assertNull(onDemandDs.adapter);
      }
+
      public void testGetOnDemandSetsReconnectIntervalToZero()
      {
-         BaseDatasource.metaClass.onLoad={ ->
-            adapter = new BaseDatasourceTestAdapter("",5,null);
+         def adapters = [new BaseDatasourceTestAdapter("",5,null), new BaseDatasourceTestAdapter("",5,null)];
+         BaseDatasource.metaClass.getAdapters = {
+             return adapters;
          }
          def ds=BaseDatasource.add(name:"testds");
          assertFalse(ds.hasErrors())
-         assertNotNull (ds.adapter);
-         assertEquals(ds.adapter.getReconnectInterval(),5);
+         assertSame(adapters, ds.getAdapters());
+         ds.getAdapters().each{adapter->
+            assertEquals(5, adapter.getReconnectInterval());    
+         }
 
-         def onDemandDs=BaseDatasource.getOndemand(name:"testds");
+
+         def onDemandDs=BaseDatasource.getOnDemand(name:"testds");
          assertEquals(onDemandDs.name,ds.name);
-         assertEquals(onDemandDs.adapter.getReconnectInterval(),0);
-
+         ds.getAdapters().each{adapter->
+            assertEquals(0, adapter.getReconnectInterval());
+         }
          
-     }      
+     }
+
+     public void testGetOnDemandDoesNotGenerateExceptionWhenOneOfTheAdapterIsNullOrIsNotAnInstanceOfBaseAdapter(){
+        def adapters = [null, new BaseDatasourceTestAdapter("",5,null), null, new Object(), new BaseDatasourceTestAdapter("",5,null)];
+        BaseDatasource.metaClass.getAdapters = {
+         return adapters;
+        }
+        def ds=BaseDatasource.add(name:"testds");
+        assertFalse(ds.hasErrors())
+        def onDemandDs=BaseDatasource.getOnDemand(name:"testds");
+        assertEquals(onDemandDs.name,ds.name);
+        assertEquals(0, adapters[1].getReconnectInterval());
+        assertEquals(0, adapters[4].getReconnectInterval());
+     }
      public void testGetPropertyReturnsNull()
      {
         def ds=BaseDatasource.add(name:"testds");

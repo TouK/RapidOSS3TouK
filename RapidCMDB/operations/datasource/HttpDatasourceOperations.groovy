@@ -29,9 +29,14 @@ import org.apache.log4j.Logger;
 class HttpDatasourceOperations extends BaseDatasourceOperations{
 
 
-    def adapter;
+    HttpAdapter adapter;
     def onLoad(){
        this.adapter = new HttpAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
+    }
+
+    def getAdapters()
+    {
+        return [adapter];
     }
 
     def doRequest(String url, Map params, int type){

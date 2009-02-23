@@ -19,6 +19,7 @@
 package datasource
 
 import com.ifountain.comp.converter.ConverterRegistry
+import com.ifountain.core.datasource.BaseAdapter
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,6 @@ import com.ifountain.comp.converter.ConverterRegistry
  * To change this template use File | Settings | File Templates.
  */
 class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-    def adapter;
     public static Object convert(Object value)
     {
         return ConverterRegistry.getInstance().convert(value)
@@ -42,12 +42,22 @@ class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.Abst
         }
         return result;
     }
-    static def getOndemand(params) {
+    static def getOnDemand(params) {
         def ds = BaseDatasource.get(params);
-        if (ds && ds.adapter) {
-            ds.adapter.setReconnectInterval(0);
+        if (ds) {
+            ds.getAdapters().each{adapter->
+                if(adapter instanceof BaseAdapter)
+                {
+                    adapter.setReconnectInterval(0);
+                }
+            }
         }
         return ds;
+    }
+
+    def getAdapters()
+    {
+        null;
     }
 
     def getProperty(Map keys, String propName)

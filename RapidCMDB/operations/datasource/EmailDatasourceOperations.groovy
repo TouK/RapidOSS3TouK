@@ -14,9 +14,14 @@ import com.ifountain.core.datasource.BaseAdapter
 * To change this template use File | Settings | File Templates.
 */
 class EmailDatasourceOperations extends BaseDatasourceOperations{
-    def adapter;
+    EmailAdapter adapter;
     def onLoad(){
        this.adapter = new EmailAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
+    }
+
+    def getAdapters()
+    {
+        return [adapter];
     }
 
     public void sendEmail(params)

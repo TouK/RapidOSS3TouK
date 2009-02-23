@@ -27,9 +27,13 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 class DatabaseDatasourceOperations extends BaseDatasourceOperations{
-    def adapter;
+    DatabaseAdapter adapter;
     def onLoad(){
        this.adapter = new DatabaseAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
+    }
+    def getAdapters()
+    {
+        return [adapter];
     }
     def runUpdate(sql){
         return this.adapter.executeUpdate(sql, []);

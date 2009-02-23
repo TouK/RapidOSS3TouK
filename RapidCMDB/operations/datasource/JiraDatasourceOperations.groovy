@@ -4,9 +4,14 @@ import datasource.JiraAdapter
 import org.apache.log4j.Logger
 
 class JiraDatasourceOperations extends BaseDatasourceOperations {
-    def adapter;
+    JiraAdapter adapter;
     def onLoad() {
         this.adapter = new JiraAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
+    }
+
+    def getAdapters()
+    {
+        return [adapter];
     }
 
     def getProperty(Map keys, String propName){

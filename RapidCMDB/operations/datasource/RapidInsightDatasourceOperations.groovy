@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * To change this template use File | Settings | File Templates.
  */
 class RapidInsightDatasourceOperations extends BaseDatasourceOperations{
-    def adapter;
+    RapidInsightAdapter adapter;
     def onLoad(){
        this.adapter = new RapidInsightAdapter(getProperty("connection").name, reconnectInterval*1000, Logger.getRootLogger());
     }

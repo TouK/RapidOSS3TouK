@@ -19,7 +19,7 @@
 import org.apache.log4j.Logger;
 
 public class RsRiEventOperations  extends RsEventOperations {
-	static notify(Map originalEventProps) {
+	public static notify(Map originalEventProps) {
 		def eventProps = [:]
 		eventProps.putAll(originalEventProps)
 		def event = RsEvent.get(name:eventProps.name)
@@ -44,7 +44,7 @@ public class RsRiEventOperations  extends RsEventOperations {
             eventProps.changedAt = now
         }
 
-		event = RsRiEvent.add(eventProps)
+		event = eventModel().add(eventProps)
 		
 		if (!event.hasErrors()) {
             RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)
@@ -63,6 +63,10 @@ public class RsRiEventOperations  extends RsEventOperations {
 	public Class historicalEventModel()
     {
         return RsRiHistoricalEvent;
+    }
+    public static Class eventModel()
+    {
+        return RsRiEvent;
     }
 
 }

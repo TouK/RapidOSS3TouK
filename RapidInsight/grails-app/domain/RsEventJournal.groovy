@@ -21,6 +21,9 @@ import com.ifountain.core.domain.annotations.*;
 
 class RsEventJournal {
 
+    public static String MESSAGE_CREATE = "Created event";
+    public static String MESSAGE_UPDATE = "Updated event";
+
     //AUTO_GENERATED_CODE
 
     static searchable = {

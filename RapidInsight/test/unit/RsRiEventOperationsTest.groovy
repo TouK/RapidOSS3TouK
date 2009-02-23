@@ -33,38 +33,72 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
     }
      public void testNotifyAddsRsRiEvent()
      {
-         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
-         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+        initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
+        CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+        //used to check createdAt changedAt time difference with current time
+        
 
-         assertEquals(0,RsRiEvent.list().size());
+        assertEquals(0,RsRiEvent.list().size());
+        assertEquals(0,RsEventJournal.list().size());
 
-         def addProps=[name:"ev1",identifier:"ev1",severity:5];
-         def addedEvent=RsRiEvent.notify(addProps);
-         assertFalse(addedEvent.hasErrors());
-         assertEquals(addedEvent.name,addProps.name);
-         assertEquals(addedEvent.severity,addProps.severity);
-         assertEquals(1,RsRiEvent.list().size());
+        def addProps=[name:"ev1",identifier:"ev1",severity:5];
+        def timeBeforeCall=Date.now();
+        Thread.sleep(100);
+        
+        def addedEvent=RsRiEvent.notify(addProps);
+        assertFalse(addedEvent.hasErrors());
 
-         def addedEventFromRepo=RsRiEvent.get(name:addProps.name);
-         assertEquals(addedEventFromRepo.name,addProps.name);
-         assertEquals(addedEventFromRepo.severity,addProps.severity);
-         assertEquals(addedEvent,addedEventFromRepo);
+        assertEquals(addedEvent.name,addProps.name);
+        assertEquals(addedEvent.severity,addProps.severity);
+        assertEquals(addedEvent.identifier,addProps.identifier);
 
+        assertEquals(1,RsRiEvent.list().size());
 
-         def updateProps=[name:"ev1",severity:1];
-         def updatedEvent=RsRiEvent.notify(updateProps);
-         assertEquals(updatedEvent.name,updateProps.name);
-         assertEquals(updatedEvent.severity,updateProps.severity);
-         assertEquals(1,RsRiEvent.list().size());
+        assertEquals(addedEvent.createdAt,addedEvent.changedAt);
+        assertTrue(addedEvent.changedAt>timeBeforeCall);
+        assertEquals(1,addedEvent.count);
 
-         def updatedEventFromRepo=RsRiEvent.get(name:updateProps.name);
-         assertEquals(updatedEventFromRepo.name,updateProps.name);
-         assertEquals(updatedEventFromRepo.severity,updateProps.severity);
-         assertEquals(updatedEvent,updatedEventFromRepo);
+        def addedEventFromRepo=RsRiEvent.get(name:addProps.name);
 
-         assertNotSame(addedEvent,updatedEvent);
+        assertEquals(addedEvent.name,addedEventFromRepo.name)
+        assertEquals(addedEvent,addedEventFromRepo);
 
+        assertEquals(1,RsEventJournal.list().size());
+        def addedJournal=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[0]
 
+        assertEquals(addedJournal.eventId,addedEvent.id);
+        assertEquals(addedJournal.eventName,addedEvent.identifier);
+        assertEquals(addedJournal.rsTime,Date.toDate(addedEvent.changedAt));
+        assertEquals(addedJournal.details,RsEventJournal.MESSAGE_CREATE);
+
+        //Testing update
+        def timeBeforeCall2=Date.now();
+        Thread.sleep(100);
+        def updateProps=[name:"ev1",identifier:"ev1",severity:1];
+        def updatedEvent=RsRiEvent.notify(updateProps);
+        assertEquals(updatedEvent.name,updateProps.name);
+        assertEquals(updatedEvent.severity,updateProps.severity);
+        assertEquals(updatedEvent.identifier,updateProps.identifier);
+
+        assertTrue(updatedEvent.changedAt>updatedEvent.createdAt);
+        assertTrue(updatedEvent.changedAt>timeBeforeCall2);
+        assertEquals(2,updatedEvent.count);
+        assertEquals(1,RsRiEvent.list().size());
+
+        def updatedEventFromRepo=RsRiEvent.get(name:updateProps.name);
+        assertEquals(updatedEvent.name,updatedEventFromRepo.name)
+        assertEquals(updatedEvent,updatedEventFromRepo);
+
+        assertNotSame(addedEvent,updatedEvent);
+
+        assertEquals(2,RsEventJournal.list().size());
+        def addedJournal2=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[1]
+
+        assertEquals(addedJournal2.eventId,updatedEvent.id);
+        assertEquals(addedJournal2.eventName,updatedEvent.identifier);
+        assertEquals(addedJournal2.rsTime,Date.toDate(updatedEvent.changedAt));
+        assertEquals(addedJournal2.details,RsEventJournal.MESSAGE_UPDATE);
+        
      }
 
 }

@@ -23,16 +23,20 @@ public class RsRiEventOperations  extends RsEventOperations {
 		def eventProps = [:]
 		eventProps.putAll(originalEventProps)
 		def event = RsEvent.get(name:eventProps.name)
+		def now=Date.now();
+		def journalDetails="";
 		if (event == null){
-			eventProps.createdAt = Date.now()
+			eventProps.createdAt = now;
+			journalDetails=RsEventJournal.MESSAGE_CREATE;
 		} else {
 			eventProps.count = event.count + 1;
+			journalDetails=RsEventJournal.MESSAGE_UPDATE;
 		}
-		eventProps.changedAt = Date.now()
+		eventProps.changedAt = now
 		event = RsRiEvent.add(eventProps)
 		
 		if (!event.hasErrors()) {
-            RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:new Date(),details:"Created the event")
+            RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)
 		}
 		else
         {

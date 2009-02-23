@@ -137,7 +137,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 
         if(!configParams.containsKey("rapidcmdb.date.format"))
         {
-            ConfigurationHolder.config.setProperty ("rapidcmdb.date.format", "yyyy-dd-MM HH:mm:ss");
+            ConfigurationHolder.config.setProperty ("rapidcmdb.date.format", "yyyy-dd-MM HH:mm:ss.SSS");
         }
         dependentPlugins*.doWithRuntimeConfiguration(springConfig)
 

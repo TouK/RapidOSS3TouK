@@ -18,7 +18,7 @@
     def edgeColorString = getMap(uiElement.edgeColors);
     def contents = uiElement.nodeContents;
 %>
-<rui:objectMap id="${uiElement.name}" dataTag="${uiElement.dataTag}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}"
+<rui:objectMap id="${uiElement.name}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}"
 <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);

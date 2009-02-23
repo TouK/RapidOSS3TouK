@@ -144,7 +144,7 @@ class TreeGridTagLib {
             columnArray.add("""{
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
-                    ${sortBy != "" ? "sortBy:'${sortBy}'," : ""}
+                    ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
                     ${images.size() > 0 ? "images:[${images.join(',\n')}]," : ""}

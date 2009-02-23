@@ -50,7 +50,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var headerRow = this.header.getElementsByTagName('tr')[0];
 
         var numberOfCols = this.columns.length;
-        var sortColIndex;
+        var sortColIndex, sortOrder;
         for (var index = 0; index < numberOfCols; index++) {
             var colLabel = this.columns[index].colLabel;
             var colWidth = this.columns[index].width;
@@ -61,12 +61,13 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             this.headers[index].events["click"].subscribe(this.headerClicked, this, true);
             if (this.columns[index]['sortBy'] == true) {
                 sortColIndex = index;
+                sortOrder = this.columns[index]['sortOrder'] || 'asc'
             }
         }
         if (sortColIndex != null && this.columns[sortColIndex]) {
             this.sortState['header'] = this.headers[sortColIndex];
-            this.sortState['direction'] = 'ASC';
-            this.headers[sortColIndex].updateSortState('ASC');
+            this.sortState['direction'] = sortOrder;
+            this.headers[sortColIndex].updateSortState(sortOrder);
         }
         this.refreshHeaderWidth();
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'r-tree-body'}, true);

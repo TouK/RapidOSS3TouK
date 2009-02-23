@@ -95,14 +95,14 @@ YAHOO.rapidjs.component.treegrid.TreeHeaderCell.prototype =
     headerClick: function() {
         if (this.treeGridView.isSortingDisabled == false) {
             var direction = null;
-            if (this.sortDirection == 'ASC') {
-                direction = 'DESC';
+            if (this.sortDirection == 'asc') {
+                direction = 'desc';
             }
-            else if (this.sortDirection == 'DESC') {
-                direction = 'ASC';
+            else if (this.sortDirection == 'desc') {
+                direction = 'asc';
             }
             else {
-                direction = 'ASC';
+                direction = 'asc';
             }
             this.events['click'].fireDirect(this, direction);
         }
@@ -110,10 +110,10 @@ YAHOO.rapidjs.component.treegrid.TreeHeaderCell.prototype =
 
     updateSortState: function(direction) {
         this.sortDirection = direction;
-        if (direction == 'ASC') {
+        if (direction == 'asc') {
             YAHOO.util.Dom.setStyle(this.sortAsc, 'display', 'block');
             YAHOO.util.Dom.setStyle(this.sortDesc, 'display', 'none');
-        } else if (direction == 'DESC') {
+        } else if (direction == 'desc') {
             YAHOO.util.Dom.setStyle(this.sortAsc, 'display', 'none');
             YAHOO.util.Dom.setStyle(this.sortDesc, 'display', 'block');
         }

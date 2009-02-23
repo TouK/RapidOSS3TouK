@@ -52,8 +52,11 @@
     <rui:sgColumns>
     <%
         uiElement.columns.each{column->
+        def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
+        def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
+        System.out.println("" + column.sortBy + " " + sortByString + " " + sortOrderString)
     %>
-        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}"></rui:sgColumn>
+        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString}></rui:sgColumn>
     <%
         }
     %>

@@ -125,7 +125,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (sortColIndex != null) {
             this.lastSortedHeader = this.headers[sortColIndex];
             this.lastSortedHeader.sortDir = sortOrder;
-            this.lastSortAtt = this.columns[sortColIndex]['attributeName'];
+            this.params['order'] = sortOrder;
+            var sortAtt = this.columns[sortColIndex]['attributeName'] 
+            this.lastSortAtt = sortAtt;
+            this.params['sort'] = sortAtt;
         }
         YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);

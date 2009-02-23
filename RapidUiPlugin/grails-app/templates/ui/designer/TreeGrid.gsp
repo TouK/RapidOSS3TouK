@@ -12,8 +12,10 @@
     <rui:tgColumns>
 <%
     uiElement.columns.each{column->
+        def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
+        def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
 %>
-        <rui:tgColumn type="${column.type}" attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" sortBy="${column.sortBy}" sortOrder="${column.sortOrder}">
+        <rui:tgColumn type="${column.type}" attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString}>
             <%
                 if(!column.images.isEmpty())
                 {

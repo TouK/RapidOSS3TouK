@@ -26,6 +26,7 @@ class UiColumnOperations extends AbstractDomainOperation
                         attributeName: [descr: "The data node attribute which will be shown in the column"],
                         width: [descr: "Width of the column"],
                         sortBy: [descr: "Parameter to render component whether sorted according to this column or not"],
+                        sortOrder: [descr: "The order of the sort when \"sortBy\" property is \"true\"", required:false],
                         colLabel: [descr: "Title of the column"]
                 ],
                 childrenConfiguration: []

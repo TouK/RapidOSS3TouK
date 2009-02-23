@@ -135,6 +135,7 @@ class TreeGridTagLib {
         def columnArray = [];
         columns.each {column ->
             def sortBy = column.@sortBy.toString().trim();
+            def sortOrder = column.@sortOrder.toString().trim();
             def type = column.@type.toString().trim();
             def images = [];
             if (type == 'image' || type == "Image") {
@@ -144,6 +145,7 @@ class TreeGridTagLib {
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:'${sortBy}'," : ""}
+                    ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
                     ${images.size() > 0 ? "images:[${images.join(',\n')}]," : ""}
                     width:${column.@width}
@@ -235,7 +237,7 @@ class TreeGridTagLib {
         out << fTgColumns(attrs, body())
     }
     static def fTgColumn(attrs, bodyString) {
-        def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width"];
+        def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width", "sortOrder"];
         return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs, bodyString)
     }
     def tgColumn = {attrs, body ->

@@ -227,7 +227,7 @@ class UiDesignerController {
         }
         catch (Exception e)
         {
-            throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType + ".gsp"}", e);
+            throw new Exception("An error occurred while generating html while processing template ${model.metaData().designerType + ".gsp"}. Reason: ${e.getMessage()}", e);
         }
     }
 

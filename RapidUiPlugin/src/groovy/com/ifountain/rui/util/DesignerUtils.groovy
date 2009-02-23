@@ -37,35 +37,52 @@ class DesignerUtils {
             {
                 config.type = config.type == null ? getType(domainProperty) : config.type
 
-                if (constrainedProps[propName] != null)
+                def isRequired = config.required != null ? config.required :isRequired(constrainedProps, propName);
+                config.required = isRequired;
+                config.descr = config.descr != null ? config.descr : "";
+                //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
+                def inlistConstraint = getInList(constrainedProps, propName);
+                if (inlistConstraint != null && !inlistConstraint.isEmpty() && config.inList == null) {
+                    config.inList = inlistConstraint.join(",")
+                }
+                if (!domainPropertiesMap[propName].isRelation)
                 {
-                    def isRequired = config.required != null ? config.required : !constrainedProps[propName].isBlank() || !constrainedProps[propName].isNullable()
-                    config.required = isRequired;
-                    config.descr = config.descr != null ? config.descr : "";
-                    if (!domainPropertiesMap[propName].isRelation)
-                    {
-                        config.defaultValue = config.defaultValue != null ? config.defaultValue : domainInstance[propName] == null ? "" : String.valueOf(domainInstance[propName]);
-                    }
-                    else
-                    {
-                        config.defaultValue = config.defaultValue != null ? config.defaultValue : "";
-                    }
-                    //TODO: could not tested taking inList from constraints will be tested if an appropriate model is constructed
-                    def inlistConstraint = constrainedProps[propName].getInList();
-                    if (inlistConstraint && config.inList == null) {
-                        config.inList = inlistConstraint.join(",")
-                    }
+                    config.defaultValue = config.defaultValue != null ? config.defaultValue : domainInstance[propName] == null ? "" : String.valueOf(domainInstance[propName]);
                 }
                 else
                 {
-                    config.required = true;
-                    config.descr = "";
-                    config.inList = "";
+                    config.defaultValue = config.defaultValue != null ? config.defaultValue : "";
                 }
             }
         }
 
         return clonedPropertiesConfiguration;
+    }
+
+    public static isRequired(Map constrainedProps, String propName)
+    {
+        def containedProp = constrainedProps[propName];
+        if(containedProp)
+        {
+            return !containedProp.isBlank() || !containedProp.isNullable()
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static getInList(constrainedProps, propName)
+    {
+        def containedProp = constrainedProps[propName];
+        if(containedProp)
+        {
+            return constrainedProps[propName].getInList();
+        }
+        else
+        {
+            return [];
+        }
     }
 
     private static String getType(prop)
@@ -107,7 +124,7 @@ class DesignerUtils {
     public static void generateXml(List components, MarkupBuilder builder)
     {
         components.each {component ->
-
+            def defaultPropertyValueInstance = component.class.newInstance();
             def metaData = component.metaData();
             def propsToBeSentToUi = metaData.propertyConfiguration
             propsToBeSentToUi.put("id", [:]);
@@ -116,15 +133,21 @@ class DesignerUtils {
             propsToBeSentToUi.each {String propName, propConfig ->
                 try {
                     def propValue = null;
+                    def defaultPropValue =null;
                     if (propConfig.formatter != null)
                     {
                         propValue = propConfig.formatter(component);
+                        defaultPropValue = propConfig.formatter(defaultPropertyValueInstance);
                     }
                     else
                     {
                         propValue = component.getProperty(propName);
+                        defaultPropValue = defaultPropertyValueInstance.getProperty(propName);
                     }
-                    uiElementProperties[propName] = propValue;
+                    if(defaultPropValue != propValue)
+                    {
+                        uiElementProperties[propName] = propValue;
+                    }
                 } catch (groovy.lang.MissingPropertyException e) {}
             }
             builder.UiElement(uiElementProperties) {

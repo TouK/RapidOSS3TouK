@@ -40,7 +40,14 @@ class UiMenuItemOperations extends AbstractDomainOperation
     {
         def attributes = xmlNode.attributes();
         attributes.component = parentElement;
-        return DesignerUtils.addUiObject(UiMenuItem, attributes, xmlNode);
+        def childMenuItemNodes = xmlNode.UiElement
+        def menuItem = DesignerUtils.addUiObject(UiMenuItem, attributes, xmlNode);
+        def childMenuItems = [];
+        childMenuItemNodes.each{childMenuItem->
+            childMenuItems.add(UiMenuItem.addUiElement(childMenuItem, parentElement));
+        }
+        menuItem.addRelation(childMenuItems:childMenuItems);
+        return menuItem;
     }
 
     def getActions()

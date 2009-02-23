@@ -66,6 +66,7 @@ class UiDialog
         minWidth(nullable: true)
         maxWidth(nullable: true)
         resizable(nullable: true)
+        component(nullable:false)
         title(blank: true, nullable: true)
         __operation_class__(nullable: true)
         __is_federated_properties_loaded__(nullable: true)

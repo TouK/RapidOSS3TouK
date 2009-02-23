@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.converter.DateConverter
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.codehaus.groovy.grails.validation.BlankConstraint
 
 /**
 * Created by IntelliJ IDEA.
@@ -63,12 +65,13 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def model2Class = gcl.getLoadedClasses().findAll {it.name == relatedModelName}[0];
 
         //Configured values will overwrite values defined in model. If no configuration exist description field be left empty
-        def model1Prop1ConfigurationProps = [descr:"desc1"];
+        def model1Prop1ConfigurationProps = [descr:"desc1", inList:"x,y,z"];//inList property should not be overwritten
         def model1Prop2ConfigurationProps = [descr:"desc2"];
-        def model1Prop3ConfigurationProps = [descr:"desc3"];
+        def model1Prop3ConfigurationProps = [:]; //no description specified it should be empty
         def model1Prop4ConfigurationProps = [descr:"desc4"];
         def rel2ConfigurationProps = [descr:"rel2"];
-        def model1Prop6ConfigurationProps = [descr:"desc6", type:"List", inList:"x,y,z", required:true, defaultValue:"defaultValue"];
+        def model1Prop6ConfigurationProps = [descr:"desc6", type:"List", inList:"x,y,z", required:true, defaultValue:"defaultValue"];//inList is not defined in domain and should return configured values
+        def undefinedPropertyConf = [descr:"undefinedProp", type:"String", inList:"x,y,z", required:false, defaultValue:"defaultValue"];
         def metaDataConfiguration  = [
                 "prop1":model1Prop1ConfigurationProps,
                 "prop2":model1Prop2ConfigurationProps,
@@ -76,7 +79,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
                 "prop4":model1Prop4ConfigurationProps,
                 "prop6":model1Prop6ConfigurationProps,
                 "rel2":rel2ConfigurationProps,
-                "undefinedProperty":[:]
+                "undefinedProperty":undefinedPropertyConf
         ]
         DefaultGrailsDomainClass grailsDomainClass = new DefaultGrailsDomainClass(model1Class);
         GetPropertiesMethod method = new GetPropertiesMethod(grailsDomainClass);
@@ -86,6 +89,18 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
         def expectedProperties = metaDataConfiguration.keySet().sort {it}
 
+        DesignerUtils.metaClass.'static'.getInList = {constrainedProps, propName->
+            if(propName == prop4.name || propName == prop1.name)
+            {
+                return ["item1", "item2"]
+            }
+            else if(propName == prop2.name)
+            {
+                return [] 
+            }
+            return null;
+
+        }
         def uiPropertyMetaDatasForUiModel1 = DesignerUtils.addConfigurationParametersFromModel(metaDataConfiguration, grailsDomainClass).entrySet().sort {it.key}.value;
 
 
@@ -99,6 +114,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals ("Date", uiPropertyMetaDatasForUiModel1[3].type);
         assertEquals ("List", uiPropertyMetaDatasForUiModel1[4].type);
         assertEquals ("String", uiPropertyMetaDatasForUiModel1[5].type);
+        assertEquals ("String", uiPropertyMetaDatasForUiModel1[6].type);
 //
 //        //prop1 is key prop and it could not be null or blank so it is a required property
         assertEquals (true, uiPropertyMetaDatasForUiModel1[0].required);
@@ -108,14 +124,16 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         //prop6 is specified as required property
         assertEquals (true, uiPropertyMetaDatasForUiModel1[4].required);
         assertEquals (false, uiPropertyMetaDatasForUiModel1[5].required);
+        assertEquals (false, uiPropertyMetaDatasForUiModel1[6].required);
 //
 //
         assertEquals ("desc1", uiPropertyMetaDatasForUiModel1[0].descr);
         assertEquals ("desc2", uiPropertyMetaDatasForUiModel1[1].descr);
-        assertEquals ("desc3", uiPropertyMetaDatasForUiModel1[2].descr);
+        assertEquals ("", uiPropertyMetaDatasForUiModel1[2].descr);
         assertEquals ("desc4", uiPropertyMetaDatasForUiModel1[3].descr);
         assertEquals ("desc6", uiPropertyMetaDatasForUiModel1[4].descr);
         assertEquals ("rel2", uiPropertyMetaDatasForUiModel1[5].descr);
+        assertEquals ("undefinedProp", uiPropertyMetaDatasForUiModel1[6].descr);
 
         assertEquals ("", uiPropertyMetaDatasForUiModel1[0].defaultValue);
         assertEquals ("0", uiPropertyMetaDatasForUiModel1[1].defaultValue);
@@ -123,14 +141,51 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (String.valueOf(new Date(0)), uiPropertyMetaDatasForUiModel1[3].defaultValue);
         assertEquals ("defaultValue", uiPropertyMetaDatasForUiModel1[4].defaultValue);
         assertEquals ("", uiPropertyMetaDatasForUiModel1[5].defaultValue);
+        assertEquals ("defaultValue", uiPropertyMetaDatasForUiModel1[6].defaultValue);
 //
 
-        assertNull ( uiPropertyMetaDatasForUiModel1[0].inList);
+        assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[0].inList);
         assertNull (uiPropertyMetaDatasForUiModel1[1].inList);
         assertNull (uiPropertyMetaDatasForUiModel1[2].inList);
-        assertNull(uiPropertyMetaDatasForUiModel1[3].inList);
+        assertEquals("item1,item2", uiPropertyMetaDatasForUiModel1[3].inList);
         assertEquals ("x,y,z", uiPropertyMetaDatasForUiModel1[4].inList);
         assertNull (uiPropertyMetaDatasForUiModel1[5].inList);
+        assertEquals (undefinedPropertyConf.inList, uiPropertyMetaDatasForUiModel1[6].inList);
+    }
+
+    public void testIsRequired()
+    {
+
+        String propName = "prop1";
+        assertFalse("Should return false since it is not a constrained property", DesignerUtils.isRequired ([:], propName));
+        def prop = new ConstrainedProperty(Object.class, propName, String.class);
+        prop.setNullable (false);
+        prop.registerNewConstraint (ConstrainedProperty.BLANK_CONSTRAINT, BlankConstraint);
+        def constrainedProps = [:]
+        constrainedProps[propName] = prop;
+        assertTrue("Should return true since it is not nullable", DesignerUtils.isRequired (constrainedProps,propName));
+
+        //check if prop is not blank it will return true
+        prop = new ConstrainedProperty(Object.class, propName, String.class);
+        prop.setNullable (true);
+        prop.registerNewConstraint (ConstrainedProperty.BLANK_CONSTRAINT, BlankConstraint);
+        prop.applyConstraint(ConstrainedProperty.BLANK_CONSTRAINT, false);
+        constrainedProps[propName] = prop;
+        assertTrue("Should return true since it is not blank", DesignerUtils.isRequired (constrainedProps,propName));
+
+        //check if prop is nullable and blank it will return false
+        prop = new ConstrainedProperty(Object.class, propName, String.class);
+        prop.setNullable (true);
+        prop.registerNewConstraint (ConstrainedProperty.BLANK_CONSTRAINT, BlankConstraint);
+        prop.applyConstraint(ConstrainedProperty.BLANK_CONSTRAINT, true);
+        constrainedProps[propName] = prop;
+        assertFalse("Should return false since it is nullable and blank", DesignerUtils.isRequired (constrainedProps,propName));
+
+    }
+
+    public void testInList()
+    {
+        assertFalse("Should return false since it is not a constrained property", DesignerUtils.isRequired ([:], "prop1"));
     }
 
     public void testGenerateXmlWithFormatter()
@@ -178,6 +233,68 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
         assertEquals (model1Instance.prop2, parser.UiElement.'@prop2'.text());
         assertEquals (String.valueOf(model1Instance.prop3), parser.UiElement.'@prop3'.text());
+    }
+
+    public void testGenerateXmlDoesnotAddPropertiesWithDefaultValueToXml()
+    {
+        //Create ui domain objects they should be located under package ui.designer and they should start with Ui
+        def modelName = "UiModel1";
+
+        //All properties will be configured as metadata
+        def prop1 = [name:"prop1", type:ModelGenerator.DATE_TYPE];
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, defaultValue:"defaultalue"];
+        def prop3 = [name:"prop3", type:ModelGenerator.NUMBER_TYPE, defaultValue:100];
+
+        def modelMetaProps = [name:modelName]
+
+        def modelProps = [prop1, prop2, prop3];
+        def keyPropList = [prop1];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
+        def modelClass = gcl.parseClass (modelString);
+        SimpleDateFormat df = new SimpleDateFormat("yyyy MM")
+        modelClass.metaClass.'static'.metaData = {
+            return [
+                designerType: "model1",
+                propertyConfiguration: [
+                        prop1: [descr: '', formatter:{object->return df.format(object["prop1"])}],
+                        prop2: [descr: ''],
+                        prop3: [descr: '']
+                ]
+            ];
+        };
+        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        initialize ([modelClass], [], false);
+        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0);
+
+        def sw = new StringWriter();
+        def markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([model1Instance], markupBuilder);
+        }
+
+        def parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(5, parser.UiElement[0].attributes().size());
+        assertEquals (String.valueOf(model1Instance.id), parser.UiElement.'@id'.text());
+        assertEquals ("model1", parser.UiElement.'@designerType'.text());
+        assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
+        assertEquals (model1Instance.prop2, parser.UiElement.'@prop2'.text());
+        assertEquals (String.valueOf(model1Instance.prop3), parser.UiElement.'@prop3'.text());
+
+
+        model1Instance = modelClass.'add'([prop1:new Date()]);
+
+        sw = new StringWriter();
+        markupBuilder = new MarkupBuilder(sw);
+        markupBuilder.UiElement{
+            DesignerUtils.generateXml([model1Instance], markupBuilder);
+        }
+
+        parser = new XmlParser().parseText(sw.toString());
+        assertEquals(1, parser.UiElement.size());
+        assertEquals(3, parser.UiElement[0].attributes().size());
+        assertEquals (String.valueOf(model1Instance.id), parser.UiElement.'@id'.text());
+        assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
     }
 
     public void testGenerateXmlWithRelatedClass()

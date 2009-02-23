@@ -22,7 +22,7 @@ public class RsRiEventOperations  extends RsEventOperations {
 	public static notify(Map originalEventProps) {
 		return _notify(RsRiEvent,originalEventProps);
 	}
-    protected static def _notify(Class eventModel,Map originalEventProps)
+    public static _notify(Class eventModel,Map originalEventProps)
     {
        def eventProps = [:]
 		eventProps.putAll(originalEventProps)

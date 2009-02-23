@@ -35,7 +35,6 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
      {
         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
-        //used to check createdAt changedAt time difference with current time
         
 
         assertEquals(0,RsRiEvent.list().size());
@@ -58,10 +57,6 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertTrue(addedEvent.changedAt>timeBeforeCall);
         assertEquals(1,addedEvent.count);
 
-        def addedEventFromRepo=RsRiEvent.get(name:addProps.name);
-
-        assertEquals(addedEvent.name,addedEventFromRepo.name)
-        assertEquals(addedEvent,addedEventFromRepo);
 
         assertEquals(1,RsEventJournal.list().size());
         def addedJournal=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[0]
@@ -85,9 +80,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(2,updatedEvent.count);
         assertEquals(1,RsRiEvent.list().size());
 
-        def updatedEventFromRepo=RsRiEvent.get(name:updateProps.name);
-        assertEquals(updatedEvent.name,updatedEventFromRepo.name)
-        assertEquals(updatedEvent,updatedEventFromRepo);
+
 
         assertNotSame(addedEvent,updatedEvent);
 
@@ -100,5 +93,48 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(addedJournal2.details,RsEventJournal.MESSAGE_UPDATE);
         
      }
+     public void testNotifyDoesNotSetCreatedAtAndChangedAtIfGiven()
+     {
+         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
+         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+        
+         def addProps=[name:"ev1",identifier:"ev1",severity:5,createdAt:Date.now()-60000];
+         def addedEvent=RsRiEvent.notify(addProps)
+         assertEquals(addedEvent.name,addProps.name);
+         assertEquals(addedEvent.createdAt,addProps.createdAt);
+
+         RsRiEvent.removeAll();
+         
+         def addProps2=[name:"ev1",identifier:"ev1",severity:5,changedAt:Date.now()-60000];
+         def addedEvent2=RsRiEvent.notify(addProps2)
+         assertEquals(addedEvent2.name,addProps2.name);
+         assertEquals(addedEvent2.changedAt,addProps2.changedAt);
+
+         RsRiEvent.removeAll();
+
+         def addProps3=[name:"ev1",identifier:"ev1",severity:5,createdAt:Date.now()-120000,changedAt:Date.now()-60000];
+         def addedEvent3=RsRiEvent.notify(addProps3)
+         assertEquals(addedEvent3.name,addProps3.name);
+         assertEquals(addedEvent3.createdAt,addProps3.createdAt);
+         assertEquals(addedEvent3.changedAt,addProps3.changedAt);
+     }
+     public void testNotifyDoesNotSetCountIfGiven(){
+         
+         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
+         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+
+         def addProps=[name:"ev1",identifier:"ev1",severity:5];
+         def addedEvent=RsRiEvent.notify(addProps)
+         assertEquals(addedEvent.name,addProps.name);
+         assertEquals(1,addedEvent.count);
+
+
+         def udpateProps=[name:"ev1",identifier:"ev1",severity:5,count:55];
+         def updatedEvent=RsRiEvent.notify(udpateProps)
+         assertEquals(updatedEvent.name,udpateProps.name);
+         assertEquals(updatedEvent.count,udpateProps.count);
+
+     }
+
 
 }

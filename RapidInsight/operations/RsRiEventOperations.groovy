@@ -26,13 +26,24 @@ public class RsRiEventOperations  extends RsEventOperations {
 		def now=Date.now();
 		def journalDetails="";
 		if (event == null){
-			eventProps.createdAt = now;
+            if(!eventProps.containsKey("createdAt"))
+            {
+                eventProps.createdAt = now;
+            }
 			journalDetails=RsEventJournal.MESSAGE_CREATE;
 		} else {
-			eventProps.count = event.count + 1;
+            if(!eventProps.containsKey("count"))
+            {
+                eventProps.count = event.count + 1;
+            }
 			journalDetails=RsEventJournal.MESSAGE_UPDATE;
 		}
-		eventProps.changedAt = now
+
+        if(!eventProps.containsKey("changedAt"))
+        {
+            eventProps.changedAt = now
+        }
+
 		event = RsRiEvent.add(eventProps)
 		
 		if (!event.hasErrors()) {

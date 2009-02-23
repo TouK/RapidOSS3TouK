@@ -8,7 +8,7 @@
 
 import utils.TestResultsProcessor;
 
-def processor=new TestResultsProcessor("SmartsNotificationOperations");
+def processor=new TestResultsProcessor("SmartsNotificationThreadSearch");
 
 processor.checkOperationLessThen("Add",["SmartsNotification"],"AvarageDuration",0.07,true)
 processor.checkOperationLessThen("Search",["RsEvent"],"AvarageDuration",0.03,true)

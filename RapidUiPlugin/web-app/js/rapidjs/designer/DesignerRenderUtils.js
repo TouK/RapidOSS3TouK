@@ -688,7 +688,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             triggersHelp += "<h3>Triggers</h3>"
             if (childNodes.length > 0) {
                 for (var i = 0; i < childNodes.length; i++) {
-                    triggersHelp += getTriggerHelp(childNodes[i]);
+                    triggersHelp += getTriggerHelp.call(this, childNodes[i]);
                 }
             }
             else {

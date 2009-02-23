@@ -20,6 +20,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 designerType: "TreeGridColumn",
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",
+                display:"Column",
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [:],

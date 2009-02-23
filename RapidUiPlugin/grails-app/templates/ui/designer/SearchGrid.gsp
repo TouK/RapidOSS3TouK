@@ -55,7 +55,7 @@
         def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
         def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
     %>
-        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString}></rui:sgColumn>
+        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString} type="${column.type}"></rui:sgColumn>
     <%
         }
     %>

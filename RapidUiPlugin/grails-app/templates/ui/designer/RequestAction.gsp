@@ -6,7 +6,7 @@
     }
     compNameString = "\${["+compNameString+"]}";
 %>
-<rui:action id="${uiElement.name}" type="request" url="../${uiElement.url}" components="${compNameString}" ${uiElement.condition != ""?"condition='"+uiElement.condition+"'":""}
+<rui:action id="${uiElement.name}" type="request" url="../${uiElement.url}" components="${compNameString}" ${uiElement.condition != ""?"condition=\""+uiElement.condition+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

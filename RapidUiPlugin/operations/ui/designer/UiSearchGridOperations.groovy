@@ -61,7 +61,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                         imageExpanded: 'images/rapidjs/designer/text_columns.png',
                                         imageCollapsed: 'images/rapidjs/designer/text_columns.png',
                                         childrenConfiguration: [
-                                                [designerType: "Column", propertyName: "columns", isMultiple: true]
+                                                [designerType: "SearchGridColumn", propertyName: "columns", isMultiple: true]
                                         ]
                                 ]
                         ],
@@ -111,7 +111,7 @@ class UiSearchGridOperations extends UiComponentOperations {
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
         def rowColorsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridRowColors"};
         columnsNode.UiElement.each{
-            UiColumn.addUiElement(it, searchGrid);
+            UiSearchGridColumn.addUiElement(it, searchGrid);
         }
         imagesNode.UiElement.each{
             UiImage.addUiElement(it, searchGrid);

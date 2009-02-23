@@ -246,7 +246,7 @@ class UiDesignerController {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         builder.UiElements {
-            builder.UiElement(designerType: "WebPages", display: "Web Pages", imageExpanded: "images/rapidjs/component/tools/folder_open.gif", imageCollapsed: "images/rapidjs/component/tools/folder.gif") {
+            builder.UiElement(designerType: "WebPages", display: "Web Pages", help:"Web Pages.html", imageExpanded: "images/rapidjs/component/tools/folder_open.gif", imageCollapsed: "images/rapidjs/component/tools/folder.gif") {
                 builder.Children {
                     builder.Child(isMultiple: true, designerType: "WebPage")
                 }

@@ -290,6 +290,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def urlsComponent = componentMap["WebPages"];
         assertEquals("WebPages", urlsComponent.'@designerType'.text());
         assertEquals("Web Pages", urlsComponent.'@display'.text());
+        assertEquals("Web Pages.html", urlsComponent.'@help'.text());
         assertEquals(1, urlsComponent.Children.size());
         assertEquals("WebPage", urlsComponent.Children[0].Child[0].'@designerType'.text());
         assertEquals("true", urlsComponent.Children[0].Child[0].'@isMultiple'.text());

@@ -72,7 +72,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                 return xmlNode.getAttribute(displayFromProperty)
             }
             else {
-                return itemType;
+                return this.get(itemType)["display"] || itemType;
             }
         }
         else {

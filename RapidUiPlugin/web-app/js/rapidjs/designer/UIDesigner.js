@@ -19,6 +19,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.currentLayoutNode = null;
     this.dataChanged = false;
     this.data = null;
+    this.nextNumber = 0;
     this.editors = {
         String: new YAHOO.widget.TextboxCellEditor({disableBtns:true}),
         Number:new YAHOO.widget.TextboxCellEditor({disableBtns:true, validator:function (val) {
@@ -321,7 +322,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                 if (UIConfig.isPropertyRequired(itemType, prop)) {
                     var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
                     if (UIConfig.isDisplayProperty(itemType, prop)) {
-                        var propValue = !defaultValue || defaultValue == '' ? itemType : defaultValue
+                        var propValue = !defaultValue || defaultValue == '' ? itemType + (this.nextNumber ++) : defaultValue
                         newNode.setAttribute(prop, propValue);
                     }
                     else {

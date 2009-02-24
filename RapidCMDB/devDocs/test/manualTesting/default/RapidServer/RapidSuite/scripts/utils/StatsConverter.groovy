@@ -14,26 +14,33 @@ class StatsConverter {
     def statsXml;
     def testName;
     def logger;
-    def logPrefix="statsConverter";    
-     public StatsConverter(testName,statsFile){
+    def logPrefix="statsConverter";
+    def statsFile;
+     public StatsConverter(testName,statsFilePath){
        reportsMap=[:];       
        this.testName=testName;
+       if(statsFilePath!=null)
+       {
+            statsFile=new File(statsFilePath);
+       }
+       this.statsFile=statsFile;
        logger=Logger.getRootLogger();
        logger.warn(logPrefix+"started");
-       generateCompassStatisticsMap(statsFile);
+       generateCompassStatisticsMap();
     }
-    private void generateCompassStatisticsMap(statsFile){
+    private void generateCompassStatisticsMap(){
         try {
+            
             if(statsFile==null)
             {
-                statsXml=application.RsApplication.getCompassStatistics();
+                statsXml=application.RsApplication.getCompassStatistics();                
             }
             else
             {
-                File file=new File(statsFile);
-                statsXml=file.getText();                
-            }
+                statsXml=statsFile.getText();
 
+            }
+            
             def parser = new XmlParser()
             def stats = parser.parseText(statsXml)
     
@@ -53,12 +60,19 @@ class StatsConverter {
         catch(e)
         {
             logger.warn(logPrefix+"Exception occured while generating statistics map. Reason : ${e}",e);
+            e.printStackTrace();
         }
     }
     public void generateTabbedStats(modelsList,propertyList)
     {
         try{
-            File file=new File(testName+"_tabbed_stats.txt");
+            def basePath="";
+            if(statsFile!=null)
+            {                   
+                basePath=statsFile.getParent()+"/";
+            }
+            
+            File file=new File(basePath+testName+"_tabbed_stats.txt");
             file.write("Operation\tModel\t");
             propertyList.each{ property ->
                 file.append("${property}\t");
@@ -101,6 +115,7 @@ class StatsConverter {
          catch(e)
          {
              logger.warn(logPrefix+"Error while generating tabbed stats file. Reason ${e}",e);
+             e.printStackTrace();
          }
     }
 }

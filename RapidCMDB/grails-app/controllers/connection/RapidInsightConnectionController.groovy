@@ -70,8 +70,8 @@ class RapidInsightConnectionController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[RapidInsightConnection, rapidInsightConnection])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [RapidInsightConnection, rapidInsightConnection])
+                flash.errors = this.errors;
                 redirect(action:show, id:rapidInsightConnection.id)
             }
 

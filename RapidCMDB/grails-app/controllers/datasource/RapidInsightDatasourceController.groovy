@@ -70,8 +70,8 @@ class RapidInsightDatasourceController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[RapidInsightDatasource, rapidInsightDatasource])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [RapidInsightDatasource, rapidInsightDatasource])
+                flash.errors = this.errors;
                 redirect(action:show, id:rapidInsightDatasource.id)
             }
 

@@ -68,8 +68,8 @@ class LdapConnectionController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[LdapConnection, ldapConnection])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [LdapConnection, ldapConnection])
+                flash.errors = this.errors;
                 redirect(action:show, id:ldapConnection.id)
             }
 

@@ -54,23 +54,7 @@
 </div>
 <div class="body">
     <h1>Create Script</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:if test="${flash.errors}">
-        <div class="errors">
-            <ul>
-                <g:each var="error" in="${flash?.errors}">
-                    <li>${error}</li>
-                </g:each>
-            </ul>
-        </div>
-    </g:if>
-    <g:hasErrors bean="${cmdbScript}">
-        <div class="errors">
-            <g:renderErrors bean="${cmdbScript}" as="list"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[cmdbScript]]"></g:render>
     <g:form action="save" method="post">
         <div class="dialog">
             <table>

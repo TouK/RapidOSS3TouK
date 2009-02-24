@@ -13,24 +13,7 @@
 </div>
 <div class="body">
     <h1>Edit Model</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${model}">
-        <div class="errors">
-            <g:renderErrors bean="${model}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:if test="${flash.errors}">
-        <div class="errors">
-            <ul>
-                <g:each var="error" in="${flash?.errors}">
-                    <li>${error}</li>
-                </g:each>
-            </ul>
-        </div>
-    </g:if>
-
+    <g:render template="/common/messages" model="[flash:flash, beans:[model]]"></g:render>
     <g:form method="post">
         <input type="hidden" name="id" value="${model?.id}"/>
         <div class="dialog">

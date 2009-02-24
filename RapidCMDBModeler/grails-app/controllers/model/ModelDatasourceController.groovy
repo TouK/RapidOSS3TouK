@@ -76,8 +76,8 @@ class ModelDatasourceController {
                 redirect(action:"show", controller:'model', id:modelId)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[ModelDatasource.class.getName(), modelDatasource])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [ModelDatasource.class.getName(), modelDatasource])
+                flash.errors = this.errors;
                 redirect(action:show, id:modelDatasource.id)
             }
 

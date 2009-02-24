@@ -70,8 +70,8 @@ class ConnectionController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[Connection, connection])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [Connection, connection])
+                flash.errors = this.errors;
                 redirect(action:show, id:connection.id)
             }
 

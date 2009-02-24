@@ -104,8 +104,8 @@ class ModelRelationController {
                 redirect(action:show, controller:'model', id:modelId)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[ModelRelation.class.getName(), modelRelation])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [ModelRelation.class.getName(), modelRelation])
+                flash.errors = this.errors;
                 redirect(action:show, id:modelRelation.id)
             }
         }

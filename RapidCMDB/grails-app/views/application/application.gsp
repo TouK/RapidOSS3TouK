@@ -10,18 +10,7 @@
 </div>
 <div class="body">
     <h1>Application Actions</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:if test="${flash.errors}">
-        <div class="errors">
-            <ul>
-                <g:each var="error" in="${flash?.errors}">
-                    <li>${error}</li>
-                </g:each>
-            </ul>
-        </div>
-    </g:if>
+    <g:render template="/common/messages" model="[flash:flash]"></g:render>
     <g:form method="post">
 	    <div class="buttons">
 	        <span class="button"><g:actionSubmit class="refresh" onclick="return confirm('Are you sure?');" value="ReloadControllers"/></span>

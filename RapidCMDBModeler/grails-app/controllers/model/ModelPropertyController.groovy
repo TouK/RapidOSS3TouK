@@ -112,8 +112,8 @@ class ModelPropertyController {
                 redirect(action: show, controller: 'model', id: modelId)
             }
             catch (e) {
-                def errors = [message(code: "default.couldnot.delete", args: [ModelProperty.class.getName(), modelProperty])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [ModelProperty.class.getName(), modelProperty])
+                flash.errors = this.errors;
                 redirect(action: show, id: modelProperty.id)
             }
         }

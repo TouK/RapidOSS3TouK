@@ -70,8 +70,8 @@ class SnmpDatasourceController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[SnmpDatasource, snmpDatasource])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [SnmpDatasource, snmpDatasource])
+                flash.errors = this.errors;
                 redirect(action:show, id:snmpDatasource.id)
             }
 

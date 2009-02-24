@@ -70,8 +70,8 @@ class DatasourceNameController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[DatasourceName.class.getName(), datasourceName])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [DatasourceName.class.getName(), datasourceName])
+                flash.errors = this.errors;
                 redirect(action:show, id:datasourceName.id)
             }
         }

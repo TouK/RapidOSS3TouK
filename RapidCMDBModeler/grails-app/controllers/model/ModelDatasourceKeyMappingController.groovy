@@ -74,8 +74,8 @@ class ModelDatasourceKeyMappingController {
                 redirect(action:show, controller:'modelDatasource', id:modelDatasourceId)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[ModelDatasourceKeyMapping.class.getName(), modelDatasourceKeyMapping])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [ModelDatasourceKeyMapping.class.getName(), modelDatasourceKeyMapping])
+                flash.errors = this.errors;
                 redirect(action:show, id:modelDatasourceKeyMapping.id)
             }
 

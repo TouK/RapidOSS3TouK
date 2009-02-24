@@ -30,11 +30,13 @@ class RsUserController {
     def allowedMethods = []
 
     def list = {
+        flash.errors = null;
         if (!params.max) params.max = 10
         [userList: RsUser.list(params)]
     }
 
     def show = {
+        flash.errors = null; 
         def rsUser = RsUser.get(id: params.id)
 
         if (!rsUser) {
@@ -55,15 +57,14 @@ class RsUserController {
                     redirect(action: list)
                 }
                 catch (e) {
-                    def errors = [message(code: "default.couldnot.delete", args: [RsUser.class.getName(), rsUser])]
-                    flash.errors = errors;
+                    addError("default.couldnot.delete", [RsUser.class.getName(), rsUser])
+                    flash.errors = this.errors;
                     redirect(action: show, id: rsUser.id)
                 }
             }
             else{
-                def errors = [message(code: "default.custom.error", args: ["Can not delete your own account"])]
-                flash.errors = errors;
-
+                addError("default.custom.error", ["Can not delete your own account"])
+                flash.errors = this.errors;
                 redirect(action: list)
             }
 
@@ -84,62 +85,22 @@ class RsUserController {
             redirect(action: list)
         }
         else {
-            def availableGroups = Group.list();
-            def userGroups = [:];
-            rsUser.groups.each{
-                userGroups[it.name]  = it;
-            };
-            availableGroups = availableGroups .findAll {!userGroups.containsKey (it.name)}
+            def availableGroups = availableGroupsForUser(rsUser);
             return [rsUser: rsUser, availableGroups:availableGroups]
         }
     }
 
-    def editGroups = {
-        def rsUser = RsUser.get(id: params.id)
-
-        if (!rsUser) {
-            flash.message = "User not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def userGroupsMap = [:];
-            rsUser.groups.each{
-                userGroupsMap.put(it.name, it.name);
-            }
-            def groups = Group.list();
-            def availableGroups = groups.findAll{!userGroupsMap.containsKey(it.name)};
-            return [rsUser: rsUser, availableGroups:availableGroups]
-        }
+    def availableGroupsForUser(auth.RsUser rsUser)
+    {
+        def availableGroups = Group.list();
+        def userGroups = [:];
+        rsUser?.groups.each{
+            userGroups[it.name]  = it;
+        };
+        return availableGroups .findAll {!userGroups.containsKey (it.name)}
     }
 
-    def updateGroups = {
-        def rsUser = RsUser.get(id: params.id)
 
-        if (!rsUser) {
-            flash.message = "User not found with id ${params.id}"
-            redirect(action: list)
-        }
-        else {
-            def groups = [];
-            groups.addAll(Arrays.asList(params.groups.split(",")));
-            rsUser.groups.each{
-                if(!groups.contains(it.name)){
-                    rsUser.removeRelation(groups:it);
-                }
-                else{
-                    groups.remove(it.name)
-                }
-           }
-           groups.each{
-               def group = Group.get(name:it);
-               if(group){
-                    rsUser.addRelation(groups:group);
-               }
-           }
-           flash.message = "User groups successfully updated."
-           render(view: 'show', model: [rsUser: rsUser])
-        }
-    }
     def changeProfileData = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
@@ -215,26 +176,41 @@ class RsUserController {
         def rsUser = RsUser.get(id: params.id)
 
         if (rsUser) {
+            def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
             def updateParams=[:]
             def password1 = params["password1"];
             def password2 = params["password2"];
             if (password1 != password2) {
                 addError("default.passwords.dont.match",[])
                 flash.errors = errors;
-                render(view: 'edit', model: [rsUser: rsUser])
+                returnedProps.each{String propName, value->
+                    rsUser.setProperty (propName, value, false);
+                }
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
                 return;
             }
             if (password1 && password1 != "") {
                 params.passwordHash=new Sha1Hash(password1).toHex();
             }
-            def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
-            rsUser.update(returnedProps)
-            if (!rsUser.hasErrors()) {
-                flash.message = "User ${params.id} updated"
-                redirect(action: show, id:rsUser.id)
+            if(returnedProps.groups.isEmpty())
+            {
+                addError("no.group.specified", [])
+                flash.errors = this.errors;
+                returnedProps.each{String propName, value->
+                    rsUser.setProperty (propName, value, false);
+                }
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
             }
-            else {
-                render(view: 'edit', model: [rsUser: rsUser])
+            else
+            {
+                rsUser.update(returnedProps)
+                if (!rsUser.hasErrors()) {
+                    flash.message = "User ${params.id} updated"
+                    redirect(action: show, id:rsUser.id)
+                }
+                else {
+                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+                }
             }
         }
         else {
@@ -251,22 +227,36 @@ class RsUserController {
 
     def save = {
         def password1 = params["password1"];
+        params.passwordHash = new Sha1Hash(password1).toHex();
         def password2 = params["password2"];
+        def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
         if (password1 != password2) {
-            def errors = [message(code: "default.passwords.dont.match", args: [])]
-            flash.errors = errors;
-            render(view: 'create', model: [rsUser: new RsUser(username: params["username"])])
+            addError("default.passwords.dont.match", [])
+            flash.errors = this.errors;
+            returnedProps.remove("id");
+            def tmpUser = new RsUser(returnedProps);
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups:availableGroupsForUser(tmpUser)])
             return;
         }
-        params.passwordHash = new Sha1Hash(password1).toHex();
-        def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
-        def rsUser = RsUser.add(returnedProps);
-        if (!rsUser.hasErrors()) {
-            flash.message = "User ${rsUser.id} created"
-            redirect(action: show, id:rsUser.id)
+
+        if(returnedProps.groups == null || returnedProps.groups.isEmpty())
+        {
+            addError("no.group.specified", [])
+            flash.errors = this.errors;
+            returnedProps.remove("id");
+            def tmpUser = new RsUser(returnedProps);
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups:availableGroupsForUser(tmpUser)])
         }
-        else {
-            render(view: 'create', model: [rsUser: rsUser])
+        else
+        {
+            def rsUser = RsUser.add(returnedProps);
+            if (!rsUser.hasErrors()) {
+                flash.message = "User ${rsUser.id} created"
+                redirect(action: show, id:rsUser.id)
+            }
+            else {
+                render(view: 'create', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+            }
         }
     }
 
@@ -286,9 +276,8 @@ class RsUserController {
         }
         def group = Group.get(name: groupname);
         if (group) {
-            def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex());
+            def rsUser = RsUser.add(username: params["username"], passwordHash: new Sha1Hash(password1).toHex(), groups: group);
             if (!rsUser.hasErrors()) {
-                rsUser.addRelation(groups: group);
                 render(text: ControllerUtils.convertSuccessToXml("User ${params['username']} created"), contentType: "text/xml")
             }
             else {

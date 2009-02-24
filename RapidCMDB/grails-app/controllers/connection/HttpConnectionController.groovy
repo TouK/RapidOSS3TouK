@@ -70,8 +70,8 @@ class HttpConnectionController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[HttpConnection, httpConnection])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [HttpConnection, httpConnection])
+                flash.errors = this.errors;
                 redirect(action:show, id:httpConnection.id)
             }
 

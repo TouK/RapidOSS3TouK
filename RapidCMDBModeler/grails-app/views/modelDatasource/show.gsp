@@ -10,18 +10,7 @@
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'model/show/' + modelDatasource?.model?.id)}">${modelDatasource?.model}</a></span>
 </div>
 <div class="body">
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:if test="${flash.errors}">
-        <div class="errors">
-            <ul>
-                <g:each var="error" in="${flash?.errors}">
-                    <li>${error}</li>
-                </g:each>
-            </ul>
-        </div>
-    </g:if>
+    <g:render template="/common/messages" model="[flash:flash]"></g:render>
     <h1>Show ModelDatasource</h1>
     <div class="dialog">
         <table>

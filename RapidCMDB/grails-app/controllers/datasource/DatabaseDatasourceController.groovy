@@ -70,8 +70,8 @@ class DatabaseDatasourceController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[DatabaseDatasource, databaseDatasource])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [DatabaseDatasource, databaseDatasource])
+                flash.errors = this.errors;
                 redirect(action:show, id:databaseDatasource.id)
             }
 

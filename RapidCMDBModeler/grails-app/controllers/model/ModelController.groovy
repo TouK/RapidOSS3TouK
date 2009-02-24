@@ -80,8 +80,8 @@ class ModelController {
                     }
                 }
                 if (keyMappingReference) {
-                    def errors = [message(code: "model.parent.keymapping.reference", args: [invalidKeyMapping, invalidDatasource, model])]
-                    flash.errors = errors;
+                    addError("model.parent.keymapping.reference", [invalidKeyMapping, invalidDatasource, model])
+                    flash.errors = this.errors;
                     render(view: 'edit', model: [model: model])
                     return;
                 }
@@ -96,8 +96,8 @@ class ModelController {
                     }
                 }
                 if (modelDatasourceReference) {
-                    def errors = [message(code: "model.parent.modelDatasource.reference", args: [invalidProperty, model, invalidDatasource])]
-                    flash.errors = errors;
+                    addError("model.parent.modelDatasource.reference", [invalidProperty, model, invalidDatasource])
+                    flash.errors = this.errors;
                     render(view: 'edit', model: [model: model])
                     return;
                 }
@@ -150,8 +150,8 @@ class ModelController {
                 }
                 catch (e)
                 {
-                    def errors = [message(code: "default.couldnot.delete", args: [Model.class.getName(), model])]
-                    flash.errors = errors;
+                    addError("default.couldnot.delete", [Model.class.getName(), model])
+                    flash.errors = this.errors;
                     redirect(action: show, controller: 'model', id: model?.id)
                     return;
 

@@ -70,8 +70,8 @@ class HttpDatasourceController {
                 redirect(action:list)
             }
             catch(e){
-                def errors =[message(code:"default.couldnot.delete", args:[HttpDatasource, httpDatasource])]
-                flash.errors = errors;
+                addError("default.couldnot.delete", [HttpDatasource, httpDatasource])
+                flash.errors = this.errors;
                 redirect(action:show, id:httpDatasource.id)
             }
 

@@ -232,7 +232,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             else if (triggerType == "Menu" || triggerType == "Component event") {
                 data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
             }
-            data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
+            data[data.length] = {name:"event", value:xmlData.getAttribute("event") || ""}
         }
         else {
             for (var prop in properties) {

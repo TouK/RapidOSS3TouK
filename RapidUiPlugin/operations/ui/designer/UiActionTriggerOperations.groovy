@@ -24,7 +24,7 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
                         type: [descr: "The type of the triggering event"],
                         component: [descr: "", formatter: {object -> return object.component ? object.component.name : ""}],
                         triggeringAction: [descr: "", formatter: {object -> return object.triggeringAction ? object.triggeringAction.name : ""}],
-                        name: [descr: ""]
+                        event: [descr: ""]
 
                 ],
                 childrenConfiguration: []
@@ -44,7 +44,7 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
                 attributes.component = component;
             }
             if (triggerType == UiActionTrigger.MENU_TYPE && component != null) {
-                def menuItem = UiMenuItem.get(component: component, isActive: true, name: attributes.name);
+                def menuItem = UiMenuItem.get(component: component, isActive: true, name: attributes.event);
                 attributes.menu = menuItem;
             }
         }

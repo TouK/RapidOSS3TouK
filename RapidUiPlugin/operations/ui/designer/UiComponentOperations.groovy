@@ -29,10 +29,10 @@ class UiComponentOperations extends UiLayoutUnitOperations {
         triggers.each {UiActionTrigger actionTrigger ->
             if (actionTrigger.type == UiActionTrigger.COMPONENT_TYPE)
             {
-                def triggerArray = actionTriggers.get(actionTrigger.name);
+                def triggerArray = actionTriggers.get(actionTrigger.event);
                 if (triggerArray == null) {
                     triggerArray = [];
-                    actionTriggers.put(actionTrigger.name, triggerArray)
+                    actionTriggers.put(actionTrigger.event, triggerArray)
                 }
                 triggerArray.add(actionTrigger)
             }

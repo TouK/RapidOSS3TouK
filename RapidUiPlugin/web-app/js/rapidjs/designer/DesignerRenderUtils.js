@@ -182,44 +182,44 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         }
         else if (itemType == "ActionTrigger" && propName == "type") {
             var oldType = this.currentDisplayedItemData.getAttribute("type");
-            var oldName = this.currentDisplayedItemData.getAttribute("name");
+            var oldEvent = this.currentDisplayedItemData.getAttribute("event");
             if (oldType != propValue) {
                 this.clearPropertyGrid();
                 if (propValue == "Action event") {
                     var oldTriggeringAction = this.currentDisplayedItemData.getAttribute("triggeringAction");
                     var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
                     var triggeringAction = oldTriggeringAction;
-                    var name = "";
+                    var eventName = "";
                     triggeringAction = "";
                     for (var actionName in currentActions) {
                         triggeringAction = actionName;
-                        name = getFirstItem(UIConfig.getItemEvents(currentActions[actionName]))
+                        eventName = getFirstItem(UIConfig.getItemEvents(currentActions[actionName]))
                         break;
                     }
-                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("event", eventName);
                     this.currentDisplayedItemData.setAttribute("triggeringAction", triggeringAction);
-                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"triggeringAction", value:triggeringAction},{name:"name", value:name}])
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"triggeringAction", value:triggeringAction},{name:"event", value:eventName}])
                 }
                 else if (propValue == "Component event") {
                     var oldComponent = this.currentDisplayedItemData.getAttribute("component");
                     var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
                     var component = oldComponent;
-                    var name = "";
+                    var eventName = "";
                     component = "";
                     for (var compName in currentComponents) {
                         component = compName;
-                        name = getFirstItem(UIConfig.getItemEvents(currentComponents[compName])) || "";
+                        eventName = getFirstItem(UIConfig.getItemEvents(currentComponents[compName])) || "";
                         break;
                     }
-                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("event", eventName);
                     this.currentDisplayedItemData.setAttribute("component", component);
-                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"name", value:name}])
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"event", value:eventName}])
                 }
                 else if (propValue == "Menu") {
                     var oldComponent = this.currentDisplayedItemData.getAttribute("component");
                     var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
                     var component = oldComponent;
-                    var name = "";
+                    var eventName = "";
                     component = "";
                     for (var compName in currentComponents) {
                         component = compName;
@@ -227,20 +227,20 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                         nameLoop:for (var menuType in currentCompConfig) {
                             var menuNames = currentCompConfig[menuType];
                             if (menuNames.length > 0) {
-                                name = menuNames[0];
+                                eventName = menuNames[0];
                                 break nameLoop;
                             }
                         }
                         break;
                     }
-                    this.currentDisplayedItemData.setAttribute("name", name);
+                    this.currentDisplayedItemData.setAttribute("event", eventName);
                     this.currentDisplayedItemData.setAttribute("component", component);
-                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"name", value:name}])
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"component", value:component},{name:"event", value:eventName}])
                 }
                 else if (propValue == "Global event") {
-                    var name = getFirstItem(UIConfig.getItemEvents("Global"));
-                    this.currentDisplayedItemData.setAttribute("name", name);
-                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"name", value:name}])
+                    var eventName = getFirstItem(UIConfig.getItemEvents("Global"));
+                    this.currentDisplayedItemData.setAttribute("event", eventName);
+                    this.propertyGrid.addRows([{name:"type", value:propValue},{name:"event", value:eventName}])
                 }
                 this.currentDisplayedItemData.setAttribute(propName, propValue);
                 this.showHelp();
@@ -250,10 +250,10 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             var oldAction = this.currentDisplayedItemData.getAttribute("triggeringAction")
             if (propValue != oldAction) {
                 var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData)
-                var name = getFirstItem(UIConfig.getItemEvents(currentActions[propValue]))
-                var nameRecord = this.propertyGrid.findRecord("name", "name");
-                this.propertyGrid.updateCell(nameRecord, "value", name)
-                this.currentDisplayedItemData.setAttribute("name", name);
+                var eventName = getFirstItem(UIConfig.getItemEvents(currentActions[propValue]))
+                var eventRecord = this.propertyGrid.findRecord("name", "event");
+                this.propertyGrid.updateCell(eventRecord, "value", eventName)
+                this.currentDisplayedItemData.setAttribute("event", eventName);
             }
             this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
@@ -262,30 +262,30 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             var oldComponent = this.currentDisplayedItemData.getAttribute("component")
             if (propValue != oldComponent) {
                 var triggerType = this.currentDisplayedItemData.getAttribute("type")
-                var name;
+                var eventName;
                 if (triggerType == "Menu") {
                     var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
                     var compMenuConfig = currentComponents[propValue];
                     for (var menuType in compMenuConfig) {
                         var menuNames = compMenuConfig[menuType];
                         if (menuNames.length > 0) {
-                            name = menuNames[0];
+                            eventName = menuNames[0];
                             break;
                         }
                     }
                 }
                 else {
                     var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData)
-                    name = getFirstItem(UIConfig.getItemEvents(currentComponents[propValue])) || "";
+                    eventName = getFirstItem(UIConfig.getItemEvents(currentComponents[propValue])) || "";
                 }
-                var nameRecord = this.propertyGrid.findRecord("name", "name");
-                this.propertyGrid.updateCell(nameRecord, "value", name)
-                this.currentDisplayedItemData.setAttribute("name", name);
+                var eventRecord = this.propertyGrid.findRecord("name", "event");
+                this.propertyGrid.updateCell(eventRecord, "value", eventName)
+                this.currentDisplayedItemData.setAttribute("event", eventName);
             }
             this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
         }
-        else if (itemType == "ActionTrigger" && propName == "name") {
+        else if (itemType == "ActionTrigger" && propName == "event") {
             this.currentDisplayedItemData.setAttribute(propName, propValue);
             this.showHelp();
         }
@@ -427,16 +427,16 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 editor.dropdownOptions = currentComponents;
                 editor.renderForm();
             }
-            else if (itemType == "ActionTrigger" && propertyName == 'name') {
+            else if (itemType == "ActionTrigger" && propertyName == 'event') {
                 var triggerType = this.currentDisplayedItemData.getAttribute("type")
-                var names = [];
+                var eventNames = [];
                 if (triggerType == "Component event") {
                     var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
                     var component = this.currentDisplayedItemData.getAttribute("component");
                     if (currentComponents[component]) {
                         var events = UIConfig.getItemEvents(currentComponents[component]);
                         for (var event in events) {
-                            names.push(event);
+                            eventNames.push(event);
                         }
                     }
                 }
@@ -448,7 +448,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                         for (var menuType in compMenuConfig) {
                             var menuItems = compMenuConfig[menuType];
                             for (var i = 0; i < menuItems.length; i++) {
-                                names.push(menuItems[i]);
+                                eventNames.push(menuItems[i]);
                             }
                         }
                     }
@@ -459,18 +459,18 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                     if (currentActions[triggeringAction]) {
                         var events = UIConfig.getItemEvents(currentActions[triggeringAction]);
                         for (var event in events) {
-                            names.push(event);
+                            eventNames.push(event);
                         }
                     }
                 }
                 else if (triggerType == "Global event") {
                     var events = UIConfig.getItemEvents("Global");
                     for (var event in events) {
-                        names.push(event);
+                        eventNames.push(event);
                     }
                 }
                 editor = this.editors["InList"];
-                editor.dropdownOptions = names;
+                editor.dropdownOptions = eventNames;
                 editor.renderForm();
             }
             else {
@@ -628,7 +628,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             var triggerType = xmlData.getAttribute("type");
             if (triggerType == "Action event") {
                 var triggeringAction = xmlData.getAttribute("triggeringAction");
-                var actionEvent = xmlData.getAttribute("name");
+                var actionEvent = xmlData.getAttribute("event");
                 if (triggeringAction && actionEvent) {
                     var currentActions = DesignerUtils.getActionsOfCurrentTab(this, xmlData);
                     var actionType = currentActions[triggeringAction];
@@ -637,7 +637,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             else if (triggerType == "Component event") {
                 var component = xmlData.getAttribute("component");
-                var event = xmlData.getAttribute("name");
+                var event = xmlData.getAttribute("event");
                 if (component && event) {
                     var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, xmlData);
                     var compType = currentComponents[component];
@@ -646,7 +646,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             else if (triggerType == "Menu") {
                 var component = xmlData.getAttribute("component");
-                var menuItem = xmlData.getAttribute("name");
+                var menuItem = xmlData.getAttribute("event");
                 if (component && menuItem) {
                     var currentMenuConfig = DesignerUtils.getComponentsWithMenuItems(this, xmlData);
                     var compMenuConfig = currentMenuConfig[component];
@@ -666,7 +666,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 }
             }
             else if (triggerType == "Global event") {
-                var eventName = xmlData.getAttribute("name")
+                var eventName = xmlData.getAttribute("event")
                 if (eventName) {
                     help += getEventHelp("Global", eventName);
                 }

@@ -15,7 +15,7 @@ class UiActionTrigger{
     public static final String COMPONENT_TYPE = "Component event"
     public static final String ACTION_TYPE = "Action event"
     public static final String GLOBAL_TYPE = "Global event"
-    String name = "";
+    String event = "";
     Boolean isActive = true;
     String type = COMPONENT_TYPE;
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
@@ -36,7 +36,7 @@ class UiActionTrigger{
         ,menu:[type:UiMenuItem, reverseName:"subscribedEvents", isMany:false]
     ]
     static constraints={
-        name(blank:false, nullable:false)
+        event(blank:false, nullable:false)
         action(nullable:false)
         component(nullable:true)
         menu(nullable:true)

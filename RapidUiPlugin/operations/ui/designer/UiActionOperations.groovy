@@ -45,10 +45,10 @@ public class UiActionOperations extends AbstractDomainOperation
     def getSubscribedTriggers() {
         def subscribedTriggers = [:];
         subscribedEvents.each {UiActionTrigger actionTrigger ->
-            def triggerArray = subscribedTriggers.get(actionTrigger.name);
+            def triggerArray = subscribedTriggers.get(actionTrigger.event);
             if (triggerArray == null) {
                 triggerArray = [];
-                subscribedTriggers.put(actionTrigger.name, triggerArray)
+                subscribedTriggers.put(actionTrigger.event, triggerArray)
             }
             triggerArray.add(actionTrigger)
         }

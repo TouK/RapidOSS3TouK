@@ -142,10 +142,10 @@ class EventsTagLib {
         out << getHtmlDialogsXml(htmlDialogs)
         out << getActionXml(actions);
 
-        out << ActionsTagLib.fAction(id: "deleteQueryAction", type: "request", url: "searchQuery/delete?format=xml", onSuccess: "refreshQueriesAction",
+        out << ActionsTagLib.fAction(id: "deleteQueryAction", type: "request", url: "searchQuery/delete?format=xml", onSuccess: "refreshQueriesAction", components:["filterTree"] ,
                 ActionsTagLib.fRequestParam(key: "id", value: "params.data.id", "")
         )
-        out << ActionsTagLib.fAction(id: "deleteQueryGroupAction", type: "request", url: "searchQueryGroup/delete?format=xml", onSuccess: "refreshQueriesAction",
+        out << ActionsTagLib.fAction(id: "deleteQueryGroupAction", type: "request", url: "searchQueryGroup/delete?format=xml", onSuccess: "refreshQueriesAction",   components:["filterTree"] ,
                 ActionsTagLib.fRequestParam(key: "id", value: "params.data.id", "")
         )
         out << ActionsTagLib.fAction(id: "saveQueryAction", type: "function", componentId: "filterDialog", function: "show",

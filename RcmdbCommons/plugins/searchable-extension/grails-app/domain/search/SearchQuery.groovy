@@ -30,6 +30,8 @@ class SearchQuery {
     static searchable = {
         except:["group"]
      };
+     Long id;
+     Long version;
     String username;
     SearchQueryGroup group;
     String name;

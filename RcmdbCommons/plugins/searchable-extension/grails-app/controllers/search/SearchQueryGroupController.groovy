@@ -67,8 +67,9 @@ class SearchQueryGroupController {
                 }
 
             }
-            catch (e) {
-                addError("default.couldnot.delete", [SearchQueryGroup, searchQueryGroup])
+            catch (e) {                
+                addError("default.custom.error", [e.getMessage()])
+
                 withFormat {
                     html {
                         flash.errors = errors;

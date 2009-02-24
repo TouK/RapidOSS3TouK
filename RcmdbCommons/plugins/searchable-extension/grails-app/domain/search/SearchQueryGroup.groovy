@@ -28,20 +28,28 @@ import auth.RsUser
  * To change this template use File | Settings | File Templates.
  */
 class SearchQueryGroup {
-    static searchable = {
-        except:["queries"]
-     };
+   static searchable = {
+        except = ["queries","errors", "__operation_class__"];
+    };
+    
+    Long id;
+    Long version;
     String username;
     String rsOwner = "p"
     String name;
     List queries = [];
     boolean isPublic = false;
     String type = "";
+
+    Object __operation_class__ ;
+    
     static relations = [
             queries:[type:SearchQuery, reverseName:"group", isMany:true]
     ]
     static constraints = {
         name(key:["username", "type"]);
+        __operation_class__(nullable:true)
     }
+    static transients = ["errors", "__operation_class__"];
 
 }

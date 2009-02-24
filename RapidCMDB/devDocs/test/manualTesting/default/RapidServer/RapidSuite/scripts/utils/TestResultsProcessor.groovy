@@ -20,13 +20,14 @@ class TestResultsProcessor{
     def tests;
     def testName;
     def logger;
+    def logPrefix="processTestResults";
     static String firstMemoryUsedKey="ManualTestingResultsFirstUsedMemory"
     public TestResultsProcessor(testName){
        reportsMap=[:];
        tests=[];
        this.testName=testName;
        logger=Logger.getRootLogger();
-       logger.warn("processTestResults started");
+       logger.warn(logPrefix+"started");
        generateCompassStatisticsMap();
     }
     public static long getFirstMemory()

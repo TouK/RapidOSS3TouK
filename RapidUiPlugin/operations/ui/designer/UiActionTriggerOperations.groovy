@@ -22,9 +22,10 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
                 imageCollapsed: "images/rapidjs/designer/bookmark.png",
                 propertyConfiguration: [
                         type: [descr: "The type of the triggering event"],
-                        name: [descr: ""],
                         component: [descr: "", formatter: {object -> return object.component ? object.component.name : ""}],
-                        triggeringAction: [descr: "", formatter: {object -> return object.triggeringAction ? object.triggeringAction.name : ""}]
+                        triggeringAction: [descr: "", formatter: {object -> return object.triggeringAction ? object.triggeringAction.name : ""}],
+                        name: [descr: ""]
+
                 ],
                 childrenConfiguration: []
         ];

@@ -7,6 +7,7 @@
  */
 
 import utils.TestResultsProcessor;
+import utils.StatsConverter;
 
 def processor=new TestResultsProcessor("ModelOperations");
 
@@ -23,4 +24,18 @@ processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,
 
 processor.generateResultsXml()
 processor.transferResultsToHudson()
+
+
+def statModels=[
+    [operation:"Add",models:["Fiction","ScienceFiction","Author","Person"]],
+    [operation:"Remove",models:["Fiction","ScienceFiction","Author","Person"]],
+    [operation:"Update",models:["Fiction","ScienceFiction","Author","Person"]],
+    [operation:"AddRelation",models:["Author","Person"]],
+    [operation:"RemoveRelation",models:["Fiction","ScienceFiction","Author","Person"]],
+    [operation:"CountHits",models:["Fiction","ScienceFiction","Author","Person"]],
+    [operation:"Search",models:["Book","Fiction","ScienceFiction","Author","Person"]]
+];
+
+def converter=new StatsConverter("ModelOperations",null);
+converter.generateTabbedStats (statModels,["NumberOfOperations","AvarageDuration","AverageCount"]);
 

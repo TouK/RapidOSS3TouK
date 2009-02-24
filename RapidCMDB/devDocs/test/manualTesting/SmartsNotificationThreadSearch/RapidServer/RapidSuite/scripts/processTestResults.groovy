@@ -7,6 +7,7 @@
  */
 
 import utils.TestResultsProcessor;
+import utils.StatsConverter;
 
 def processor=new TestResultsProcessor("SmartsNotificationThreadSearch");
 
@@ -21,3 +22,13 @@ processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,
 processor.generateResultsXml()
 processor.transferResultsToHudson()
 
+
+def statModels=[
+    [operation:"Add",models:["SmartsNotification","RsEventJournal","SmartsHistoricalNotification"]],
+    [operation:"Remove",models:["SmartsNotification"]],
+    [operation:"Update",models:["SmartsNotification"]],
+    [operation:"Search",models:["RsEvent","SmartsNotification","RsTopologyObject","relation.Relation","script.CmdbScript","auth.Role","auth.Group","auth.RsUser"]]
+];
+
+def converter=new StatsConverter("ModelOperations",null);
+converter.generateTabbedStats (statModels,["NumberOfOperations","AvarageDuration","AverageCount"]);

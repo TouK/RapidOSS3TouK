@@ -52,7 +52,11 @@ YAHOO.util.Event.onDOMReady(function() {
                 def layoutVarName = "layoutUnitJsObjectlayout"+layoutConfiguration.attributes.id+unitPosition;
     %>
             var ${layoutVarName} = layout${layoutConfiguration.attributes.id}.getUnitByPosition('${unitPosition}');
-            var ${layoutVarName}component = YAHOO.rapidjs.Components['${unit.attributes.body}'];
+            <%
+                if(unit.attributes.component)
+                {
+            %>
+            var ${layoutVarName}component = YAHOO.rapidjs.Components["${unit.attributes.component}"]
             if(${layoutVarName}component != null)
             {
                 ${layoutVarName}component.resize(${layoutVarName}.getSizes().body.w, ${layoutVarName}.getSizes().body.h);
@@ -60,6 +64,9 @@ YAHOO.util.Event.onDOMReady(function() {
                     ${layoutVarName}component.resize(${layoutVarName}.getSizes().body.w, ${layoutVarName}.getSizes().body.h);
                 });
             }
+            <%
+                }
+            %>
     <%
         }
     }

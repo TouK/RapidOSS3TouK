@@ -29,6 +29,7 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
     }
     private void clearMetaClasses()

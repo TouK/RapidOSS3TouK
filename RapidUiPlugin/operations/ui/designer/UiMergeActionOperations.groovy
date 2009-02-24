@@ -22,8 +22,11 @@ class UiMergeActionOperations extends UiRequestActionOperations {
                 childrenConfiguration: []
         ];
         def parentMetaData = UiRequestActionOperations.metaData();
+        def childConfiguration = [];
+        childConfiguration.addAll(parentMetaData.childrenConfiguration)
+        childConfiguration.addAll(metaData.childrenConfiguration)
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
-        metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
+        metaData.childrenConfiguration = childConfiguration;
         return metaData;
 
     }

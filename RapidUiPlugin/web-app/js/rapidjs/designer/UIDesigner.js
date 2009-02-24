@@ -226,13 +226,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         if (itemType == "ActionTrigger") {
             var triggerType = xmlData.getAttribute("type");
             data[data.length] = {name:"type", value:triggerType}
-            data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
             if (triggerType == "Action event") {
                 data[data.length] = {name:"triggeringAction", value:xmlData.getAttribute("triggeringAction") || ""}
             }
             else if (triggerType == "Menu" || triggerType == "Component event") {
                 data[data.length] = {name:"component", value:xmlData.getAttribute("component") || ""}
             }
+            data[data.length] = {name:"name", value:xmlData.getAttribute("name") || ""}
         }
         else {
             for (var prop in properties) {
@@ -397,7 +397,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
             this.refreshTree();
             this.expandTreeNode(row)
-            if (itemType == "ActionTrigger") {
+            if (itemType == "ActionTrigger" && this.currentDisplayedItemData) {
                 this.showHelp();
             }
         }

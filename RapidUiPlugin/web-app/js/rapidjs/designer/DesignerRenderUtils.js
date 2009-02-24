@@ -742,6 +742,10 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         else if (itemType == "FunctionAction") {
             helpText += getMethodHelp.call(this, this.currentDisplayedItemData) + getTriggersHelp.call(this, this.currentDisplayedItemData);
         }
+        else if (itemType == "RequestParameter"){
+            var actionNode = this.currentDisplayedItemData.parentNode().parentNode();
+            helpText += getTriggersHelp.call(this, actionNode);
+        }
         this.helpView.innerHTML = "<div>" + helpText + "</div>";
     }
 };

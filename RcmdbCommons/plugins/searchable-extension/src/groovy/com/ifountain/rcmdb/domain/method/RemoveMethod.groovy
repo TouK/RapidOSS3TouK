@@ -51,6 +51,8 @@ class RemoveMethod extends AbstractRapidDomainMethod{
         }
         else
         {
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+
             def cascadedObjectsToBeRemoved = [];
             def relsToBeRemoved = [:]
             relations.each{relationName,relation->
@@ -80,7 +82,7 @@ class RemoveMethod extends AbstractRapidDomainMethod{
             cascadedObjectsToBeRemoved.each{
                 it.remove();
             }
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+
             CompassMethodInvoker.unindex(mc, domainObject);
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);            
             statistics.stop();

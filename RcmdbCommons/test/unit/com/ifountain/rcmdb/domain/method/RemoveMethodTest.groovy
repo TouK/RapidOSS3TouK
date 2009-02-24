@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.springframework.validation.BeanPropertyBindingResult
 import relation.Relation
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,6 +35,7 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         RemoveMethodDomainObject.unIndexList = [];
+        RemoveMethodDomainObject.eventCallList = [];
         RemoveMethodDomainObject.existingInstanceCount = 0;
         RemoveMethodDomainObject.countQuery = null;
         RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
@@ -64,12 +66,21 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
     public void testRemoveObjectWithEvents()
     {
+        initialize([relation.Relation], []);
+        
+
         RemoveMethodDomainObject.existingInstanceCount = 1;
-        RemoveMethodDomainObjectWithEvents objectToBeRemoved = new RemoveMethodDomainObjectWithEvents(id:1, prop1:"prop1Value1");
-        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
+        def rel1Object=new Object();
+        RemoveMethodDomainObjectWithEvents objectToBeRemoved = new RemoveMethodDomainObjectWithEvents(id:1, prop1:"prop1Value1",rel1:rel1Object);
+        def relations=[rel1:new RelationMetaData("rel1","otherrel1",RemoveMethodDomainObject,RemoveMethodDomainObject,RelationMetaData.ONE_TO_ONE)];
+
+
+        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, relations);
         removeMethod.invoke (objectToBeRemoved, null);
+
+        
         assertSame(objectToBeRemoved, RemoveMethodDomainObjectWithEvents.unIndexList[0][0]);
-        assertNull (objectToBeRemoved.relationsToBeRemoved);
+        assertEquals (rel1Object,objectToBeRemoved.relationsToBeRemoved.rel1[0]);
         assertTrue (objectToBeRemoved.isBeforeDeleteCalled);
         assertTrue (objectToBeRemoved.isAfterDeleteCalled);
         assertFalse (objectToBeRemoved.isBeforeUpdateCalled);
@@ -77,6 +88,10 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         assertFalse (objectToBeRemoved.isBeforeInsertCalled);
         assertFalse (objectToBeRemoved.isAfterInsertCalled);
         assertFalse (objectToBeRemoved.isOnLoadCalled);
+
+        def eventCallList=["beforeDelete","removeRelation","unindex","afterDelete"];
+        assertEquals(eventCallList,RemoveMethodDomainObject.eventCallList);
+
     }
 
     public void testRemoveObjectReturnsErrorIfObjectDoesnotExist()
@@ -127,12 +142,16 @@ class RemoveMethodDomainObject
     def static unIndexList = [];
     def static countQuery;
     def static existingInstanceCount;
+    def static eventCallList=[];
+    
     def errors =  new BeanPropertyBindingResult(this, this.class.getName());
     def relationsToBeRemoved;
-    def isRemoveRelationFlushed = true;
+    
+
     def static unindex(objectList)
     {
         unIndexList.add(objectList);
+        eventCallList.add("unindex");
     }
     def static countHits(String query)
     {
@@ -146,10 +165,10 @@ class RemoveMethodDomainObject
     }
 
 
-    def removeRelation(Map relations, boolean flush)
+    def removeRelation(Map relations)
     {
+        eventCallList.add("removeRelation");
         relationsToBeRemoved = relations;
-        isRemoveRelationFlushed = flush;
         return relatedInstancesShouldBeReturnedFromRemoveRelationMethod;
     }
 }
@@ -165,25 +184,32 @@ class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
     boolean isAfterDeleteCalled = false;
     def onLoad = {
         isOnLoadCalled = true;
+        eventCallList.add("onLoad");
     }
 
     def beforeInsert = {
         isBeforeInsertCalled = true;
+        eventCallList.add("beforeInsert");
     }
     def beforeUpdate = {
         isBeforeUpdateCalled = true;
+        eventCallList.add("beforeUpdate");
     }
     def beforeDelete = {
         isBeforeDeleteCalled = true;
+        eventCallList.add("beforeDelete");
     }
     def afterInsert = {
         isAfterInsertCalled = true;
+        eventCallList.add("afterInsert");
     }
     def afterUpdate = {
         isAfterUpdateCalled = true;
+        eventCallList.add("afterUpdate");
     }
     def afterDelete = {
         isAfterDeleteCalled = true;
+        eventCallList.add("afterDelete");
     }
 }
 

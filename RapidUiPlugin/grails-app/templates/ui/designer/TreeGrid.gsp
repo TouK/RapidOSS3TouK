@@ -11,7 +11,9 @@
 >
     <rui:tgColumns>
 <%
-    uiElement.columns.each{column->
+
+    def columns = uiElement.columns.sort{it.columnIndex};
+    columns.each{column->
         def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
         def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
 %>

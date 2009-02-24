@@ -20,6 +20,7 @@ class UiColumn {
     String attributeName = "";
     String colLabel = "";
     Long width = 100;
+    Long columnIndex = 0;
     Boolean sortBy = false;
     String sortOrder = "asc";
 

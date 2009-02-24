@@ -27,6 +27,7 @@ class UiColumnOperations extends AbstractDomainOperation
                         width: [descr: "Width of the column"],
                         sortBy: [descr: "Parameter to render component whether sorted according to this column or not"],
                         sortOrder: [descr: "The order of the sort when \"sortBy\" property is \"true\"", required:false],
+                        columnIndex: [descr: "The order of the column in the grid."],
                         colLabel: [descr: "Title of the column"]
                 ],
                 childrenConfiguration: []

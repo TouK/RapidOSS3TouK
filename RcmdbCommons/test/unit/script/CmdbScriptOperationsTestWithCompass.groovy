@@ -73,6 +73,8 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
 
         CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,listeningDatasource:ds,scriptFile:simpleScriptFile)
         assertFalse(script.hasErrors())
+        assertEquals(1,CmdbScript.list().size());
+
         assertEquals(script.listeningDatasource.id,ds.id)
 
 
@@ -82,7 +84,11 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
             stoppedDatasource = listeningDatasource;
         }
         assertNull(stoppedDatasource);
-        script.beforeDelete();
+        script.remove();
+        assertFalse(script.hasErrors());
+        assertEquals(0,CmdbScript.list().size());
+
+        
         assertEquals(stoppedDatasource.id,ds.id);
         assertEquals(stoppedDatasource.name,ds.name);
 
@@ -105,7 +111,11 @@ class CmdbScriptOperationsTestWithCompass  extends RapidCmdbWithCompassTestCase{
             stoppedDatasource = listeningDatasource;
         }
         assertNull(stoppedDatasource);
-        script.beforeUpdate();
+        script.update(staticParam:"xxx");
+        
+        assertFalse(script.hasErrors());
+        assertEquals(script.staticParam,"xxx");
+        
         assertEquals(stoppedDatasource.id,ds.id);
         assertEquals(stoppedDatasource.name,ds.name);
 

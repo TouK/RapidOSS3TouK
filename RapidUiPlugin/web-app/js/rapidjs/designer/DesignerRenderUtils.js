@@ -611,7 +611,8 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 return ""
 
             }
-            var getMenuHelp = function(compType, compName, menuType, menuName) {
+            var getMenuHelp = function(compName, menuType, menuName) {
+                var compType = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData)[compName]
                 var menuParameters = UIConfig.getMenuParameters(compType, menuType);
                 var menuHelpArray = [];
                 menuHelpArray.push("<div><h4>" + compName + " : " + menuName + "</h4>")
@@ -660,7 +661,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                             }
                         }
                         if (menuType) {
-                            help += getMenuHelp(compType, component, menuType, menuItem);
+                            help += getMenuHelp.call(this, component, menuType, menuItem);
                         }
                     }
                 }

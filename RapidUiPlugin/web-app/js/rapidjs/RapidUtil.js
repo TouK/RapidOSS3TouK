@@ -68,13 +68,13 @@ YAHOO.rapidjs.ArrayUtils = new function()
         arrayP.splice(lastIndex, 1);
     };
     this.contains = function(array, element) {
-        for (var i = 0; i < this.length; i++) {
+        for (var i = 0; i < array.length; i++) {
             if (array[i] == element)
             {
                 return true;
             }
-            return false;
         }
+        return false;
     };
 }();
 YAHOO.rapidjs.FlashUtils = new function()

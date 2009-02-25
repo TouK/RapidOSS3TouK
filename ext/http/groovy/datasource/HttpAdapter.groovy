@@ -31,6 +31,10 @@ public class HttpAdapter extends BaseAdapter{
     public HttpAdapter(connectionName, logger){
     	super(connectionName, 0, logger);
     }
+
+    protected boolean isConnectionException(Throwable t) {
+        return false; //To change body of implemented methods use File | Settings | File Templates.
+    }
     
     public HttpAdapter(connectionName, reconnectInterval, logger){
     	super(connectionName, reconnectInterval, logger);

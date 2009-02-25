@@ -51,7 +51,7 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
         super.setUp();
         connectionParameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(connectionParameterSupplier);
-        connectionConfigName = "ds1";
+        connectionConfigName = "BaseAdapterConnectionTestds1";
         
     }
     public void testExecuteActionThrowsExceptionIfConnectionIsNotConnected() throws Throwable
@@ -208,6 +208,42 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
             assertFalse(t1.isExecutedSuccessfully());
             assertTrue(t1.getThrowedException() instanceof ConnectionException);
             assertSame(connectionException, t1.getThrowedException().getCause());
+        }
+        finally {
+            t1.interrupt();
+        }
+    }
+
+    public void testThrowsConnectionExceptionAndInavlidateConnectionIfCheckConnectionReturnsTrueAndIsConnectionExceptionReturnTrue() throws Exception
+    {
+        createConnectionParam(connectionConfigName, MockConnectionImpl.class);
+        impl = new MockBaseAdapterImpl(connectionConfigName, 0);
+        impl.isConnectionException = true;
+        final Exception connectionException = new Exception("Exception due to connection");
+        final MockActionImpl dsAction = new MockActionImpl()
+        {
+            @Override
+            public void execute(IConnection conn) throws Exception
+            {
+                throw connectionException;
+            }
+        };
+
+
+        TestAction datasourceExecuteWaitAction = new ExecuteWaitAction(impl, dsAction);
+        TestActionExecutorThread t1 = new TestActionExecutorThread(datasourceExecuteWaitAction);
+        t1.start();
+
+        Thread.sleep(1100);
+
+        try
+        {
+            assertTrue(t1.isStarted());
+            assertFalse(t1.isExecutedSuccessfully());
+            assertTrue(t1.getThrowedException() instanceof ConnectionException);
+            assertSame(connectionException, t1.getThrowedException().getCause());
+            assertEquals(1, impl.connectionExceptionParameters.size());
+            assertTrue(impl.connectionExceptionParameters.contains(connectionException));
         }
         finally {
             t1.interrupt();

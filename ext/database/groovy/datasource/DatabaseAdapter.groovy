@@ -32,6 +32,9 @@ public class DatabaseAdapter extends BaseAdapter {
         super(datasourceName, reconnectInterval, logger);
     }
 
+    protected boolean isConnectionException(Throwable t) {
+        return false; //To change body of implemented methods use File | Settings | File Templates.
+    }
     public static getInstance(datasourceName, tableName, keys){
     	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());
     }

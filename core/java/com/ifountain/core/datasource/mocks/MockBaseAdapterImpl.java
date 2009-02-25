@@ -24,12 +24,15 @@ package com.ifountain.core.datasource.mocks;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import com.ifountain.core.datasource.BaseAdapter;
 import org.apache.log4j.Logger;
 
 public class MockBaseAdapterImpl extends BaseAdapter
 {
+    public boolean isConnectionException = false;
+    public List connectionExceptionParameters = new ArrayList();
     public MockBaseAdapterImpl(String connConfigName, int reconnectInterval)
     {
         super(connConfigName, reconnectInterval, Logger.getRootLogger());
@@ -39,7 +42,12 @@ public class MockBaseAdapterImpl extends BaseAdapter
     {
         this(connConfigName, 0);
     }
-    
+
+    protected boolean isConnectionException(Throwable t) {
+        connectionExceptionParameters.add(t);
+        return isConnectionException;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception{
     	return null;
     }

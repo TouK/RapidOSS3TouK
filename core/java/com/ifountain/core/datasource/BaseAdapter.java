@@ -29,6 +29,9 @@ import org.apache.log4j.Logger;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.exception.ConnectionException;
+import com.ifountain.core.connection.exception.ConnectionInitializationException;
+import com.ifountain.core.connection.exception.UndefinedConnectionException;
+import com.ifountain.core.connection.exception.ConnectionPoolException;
 
 
 public abstract class BaseAdapter implements Adapter
@@ -47,8 +50,9 @@ public abstract class BaseAdapter implements Adapter
         this.logger = logger;
     }
     
+    protected abstract boolean isConnectionException(Throwable t);
     public abstract Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception;
-    
+
     public void executeAction(Action action) throws Exception
     {
 
@@ -62,7 +66,7 @@ public abstract class BaseAdapter implements Adapter
                     {
                         logger.debug("Getting connection "+connectionName + " from pool");
                     }
-                    conn = ConnectionManager.getConnection(connectionName);
+                    conn = getConnection();
                 }
                 catch (ConnectionException e)
                 {
@@ -100,7 +104,8 @@ public abstract class BaseAdapter implements Adapter
                     
                 }
                 catch (Exception e) {
-                    if(conn.checkConnection())
+                    boolean isConnectionException = isConnectionException(e);
+                    if(!isConnectionException && conn.checkConnection())
                     {
                         if(logger.isDebugEnabled())
                         {
@@ -131,7 +136,7 @@ public abstract class BaseAdapter implements Adapter
                 }
                 finally
                 {
-                    ConnectionManager.releaseConnection(conn);
+                    releaseConnection(conn);
                     if(logger.isDebugEnabled())
                     {
                         logger.debug("Released connection "+connectionName);
@@ -141,6 +146,14 @@ public abstract class BaseAdapter implements Adapter
             
         }
         
+    }
+
+
+    protected IConnection getConnection() throws ConnectionInitializationException, UndefinedConnectionException, ConnectionPoolException, ConnectionException {
+        return ConnectionManager.getConnection(connectionName);
+    }
+    protected void releaseConnection(IConnection connection) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
+        ConnectionManager.releaseConnection(connection);
     }
     
     @Override

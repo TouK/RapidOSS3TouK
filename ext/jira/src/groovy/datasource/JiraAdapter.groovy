@@ -16,6 +16,10 @@ public class JiraAdapter extends BaseAdapter{
 	    return action.getProps();
     }
 
+    protected boolean isConnectionException(Throwable t) {
+        return false; //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public openIssue(Map params) throws Exception{
         OpenIssueAction action = new OpenIssueAction(logger,params);
         executeAction(action);

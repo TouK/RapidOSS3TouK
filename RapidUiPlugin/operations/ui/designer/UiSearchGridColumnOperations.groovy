@@ -21,7 +21,7 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
-                    type:[descr:"Column type."]
+                    type:[descr:"Column type.", required:false]
                 ],
                 childrenConfiguration: []
         ];

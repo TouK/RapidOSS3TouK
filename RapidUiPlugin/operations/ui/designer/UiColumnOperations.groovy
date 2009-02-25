@@ -24,11 +24,12 @@ class UiColumnOperations extends AbstractDomainOperation
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
                 propertyConfiguration: [
                         attributeName: [descr: "The data node attribute which will be shown in the column"],
+                        colLabel: [descr: "Title of the column"],
                         width: [descr: "Width of the column"],
                         sortBy: [descr: "Parameter to render component whether sorted according to this column or not"],
                         sortOrder: [descr: "The order of the sort when \"sortBy\" property is \"true\"", required:false],
-                        columnIndex: [descr: "The order of the column in the grid."],
-                        colLabel: [descr: "Title of the column"]
+                        columnIndex: [descr: "The order of the column in the grid."]
+
                 ],
                 childrenConfiguration: []
         ];

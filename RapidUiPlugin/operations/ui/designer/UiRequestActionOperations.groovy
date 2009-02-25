@@ -79,7 +79,7 @@ class UiRequestActionOperations extends UiActionOperations {
                     }
                     else
                     {
-                        throw new UiElementCreationException(UiCombinedAction, "Component ${it} could not found for request action ${attributes.name}".toString());
+                        throw new UiElementCreationException(UiRequestAction, "Component ${it} could not found for request action ${attributes.name}".toString());
                     }
                 }
             }

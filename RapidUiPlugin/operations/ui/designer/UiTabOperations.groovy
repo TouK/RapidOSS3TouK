@@ -9,7 +9,7 @@ public class UiTabOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                help:"Tab.html",
+                help: "Tab.html",
                 designerType: "Tab",
                 canBeDeleted: true,
                 displayFromProperty: "name",
@@ -24,7 +24,7 @@ public class UiTabOperations extends AbstractDomainOperation
                 [
                         [designerType: "Components",
                                 metaData: [
-                                        help:"Components.html",
+                                        help: "Components.html",
                                         designerType: "Components",
                                         display: "Components",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
@@ -38,7 +38,7 @@ public class UiTabOperations extends AbstractDomainOperation
                         [designerType: "Layout", propertyName: "layout"],
                         [designerType: "Dialogs",
                                 metaData: [
-                                        help:"Dialogs.html",
+                                        help: "Dialogs.html",
                                         designerType: "Dialogs",
                                         display: "Dialogs",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
@@ -51,7 +51,7 @@ public class UiTabOperations extends AbstractDomainOperation
                         ],
                         [designerType: "Actions",
                                 metaData: [
-                                        help:"Actions.html",
+                                        help: "Actions.html",
                                         designerType: "Actions",
                                         display: "Actions",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
@@ -88,10 +88,47 @@ public class UiTabOperations extends AbstractDomainOperation
             def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui" + designerType);
             def component = domainClass.clazz.addUiElement(componentNode, uiTab);
         }
-
+        def actionAddOrder = [];
+        def actionsMap = [:]
         actionsNode.UiElement.each {actionNode ->
+            actionsMap.put(actionNode.@name.toString(), actionNode);
+        }
+        def iterationCount = 0
+        while (iterationCount < 10000) {
+            actionsMap.each {actionName, actionNode ->
+                if (!actionAddOrder.contains(actionName)) {
+                    def triggerNodes = actionNode.UiElement.UiElement.findAll {it.@designerType == "ActionTrigger" && it.@type == UiActionTrigger.ACTION_TYPE}
+                    if (triggerNodes.size() > 0) {
+                        def willAddAction = true;
+                        def triggeringActions = triggerNodes.@triggeringAction;
+                        triggeringActions.each {triggeringActionName ->
+                            if (actionsMap[triggeringActionName.toString()] != null) {
+                                if (!actionAddOrder.contains(triggeringActionName.toString())) {
+                                    willAddAction = false;
+                                    return;
+                                }
+                            }
+                            else {
+                                throw new Exception("Could not add ${actionName}, because triggeringAction ${triggeringActionName} does not exist");
+                            }
+                        }
+                        if (willAddAction) {
+                            actionAddOrder.add(actionName);
+                        }
+                    }
+                    else {
+                        actionAddOrder.add(actionName);
+                    }
+                }
+            }
+        }
+        if(actionAddOrder.size() < actionsMap.keySet().size()){
+            throw new Exception("Cannot save successfully because action configuration has circular references.")
+        }
+        actionAddOrder.each {
+            def actionNode = actionsMap[it];
             def designerType = actionNode.@designerType.text()
-            def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui" + designerType);
+            def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+ designerType);
             domainClass.clazz.'addUiElement'(actionNode, uiTab);
         }
 
@@ -126,7 +163,7 @@ public class UiTabOperations extends AbstractDomainOperation
         return actionTriggers;
     }
 
-    def getActionsString(actionTriggers){
+    def getActionsString(actionTriggers) {
         return DesignerTemplateUtils.getActionsString(actionTriggers);
     }
 

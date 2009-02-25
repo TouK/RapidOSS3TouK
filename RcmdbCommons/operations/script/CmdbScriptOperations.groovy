@@ -86,7 +86,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
-            //throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
             throw  createScriptException(script);
         }
         return script;
@@ -142,7 +141,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             configureScriptLogger(script);
         }
         if (!fromController && script.hasErrors()) {
-            //throw new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
             throw  createScriptException(script);
         }
         return script;

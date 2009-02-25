@@ -39,7 +39,7 @@ class UiRequestActionOperations extends UiActionOperations {
                                         propertyConfiguration: [
                                         ],
                                         childrenConfiguration: [
-                                                [designerType: "RequestParameter", isMultiple: true, propertyName: "triggers"]
+                                                [designerType: "RequestParameter", isMultiple: true, propertyName: "parameters"]
                                         ]
                                 ],
                                 isMultiple: false

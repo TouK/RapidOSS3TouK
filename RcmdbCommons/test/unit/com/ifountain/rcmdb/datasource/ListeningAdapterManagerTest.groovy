@@ -248,6 +248,10 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
     ListeningAdapterObserver listeningAdapterObserver=null;
     def subscribeCalled=false;
     def unsubscribeCalled=false;
+
+    protected boolean isConnectionException(Throwable t) {
+        return false; //To change body of implemented methods use File | Settings | File Templates.
+    }
     
     public BaseListeningAdapterMock()
     {

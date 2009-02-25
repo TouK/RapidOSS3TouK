@@ -26,6 +26,7 @@ package com.ifountain.core.connection;
  */
 public abstract class BaseConnection implements IConnection {
     protected boolean isConnected = false;
+    private boolean isValid = true;
     protected ConnectionParam params;
     protected long minTimeout;
     protected long maxTimeout;
@@ -35,6 +36,14 @@ public abstract class BaseConnection implements IConnection {
         isConnected = true;
     }
 
+    public boolean isValid()
+    {
+        return isValid;
+    }
+    public void invalidate()
+    {
+        this.isValid = false;
+    }
     public final void _disconnect(){
         disconnect();
         isConnected = false;

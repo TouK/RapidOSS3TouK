@@ -70,6 +70,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected abstract void _subscribe() throws Exception;
 
     protected abstract void _unsubscribe();
+    protected abstract boolean isConnectionException(Throwable t);
 
     private void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
@@ -99,13 +100,18 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                             }
                             catch(Exception e)
                             {
-                                if (connection.checkConnection()) {
+                                boolean isConnectionException = isConnectionException(e);
+                                if (!isConnectionException && connection.checkConnection()) {
                                     if(logger.isDebugEnabled())
                                     {
                                         logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
                                     }
                                     throw e;
                                 } else {
+                                    if(isConnectionException)
+                                    {
+                                        connection.invalidate();
+                                    }
                                     if (reconnectInterval > 0) {
                                         if(!isPrintedConnectionExceptionOnce)
                                         {
@@ -182,9 +188,14 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     }
     private void unsubscribeInternally() throws Exception {
         if (isSubscribed()) {
-            _unsubscribe();
-            isSubscribed = false;
-            releaseConnection();
+            try
+            {
+                _unsubscribe();
+                isSubscribed = false;
+            }
+            finally{
+                releaseConnection();
+            }
         }
     }
 

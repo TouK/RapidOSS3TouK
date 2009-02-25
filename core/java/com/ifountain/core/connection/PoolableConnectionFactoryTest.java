@@ -192,6 +192,18 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
         conn._disconnect();
         assertFalse(factory.validateObject(conn));
     }
+
+    public void testValidateReturnFalseIfConnectionIsNotValid() throws Exception
+    {
+        String connectionName = "conn1";
+        ConnectionParam param = createConnectionParam(connectionName);
+        paramSupplier.setParam(param);
+        PoolableConnectionFactory factory = new PoolableConnectionFactory(PoolableConnectionFactoryTest.class.getClassLoader(), connectionName, paramSupplier, null);
+
+        MockConnectionImpl conn = (MockConnectionImpl) factory.makeObject();
+        conn.invalidate();
+        assertFalse(factory.validateObject(conn));
+    }
     
     private ConnectionParam createConnectionParam(String connectionName)
     {

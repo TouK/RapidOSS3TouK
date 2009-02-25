@@ -87,4 +87,25 @@ public class BaseConnectionTest extends RapidCoreTestCase{
          conn.setTimeout(timeout);
          assertEquals(timeout, conn.getTimeout());
      }
+
+    public void testInvalidate()
+    {
+        BaseConnection conn = new BaseConnection(){
+             public ConnectionParam getParameters() {
+                 return null;
+             }
+
+             public boolean checkConnection() {
+                 return true;
+             }
+
+             public void connect() throws Exception {
+             }
+             public void disconnect() {
+             }
+         };
+        assertTrue(conn.isValid());
+        conn.invalidate();
+        assertFalse(conn.isValid());
+    }
 }

@@ -137,6 +137,28 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertTrue(conn.isConnected());
     }
+
+    public void testUnsubscribeReleasesConnectionIfExceptionOccurs() throws Exception {
+        param.setMaxNumberOfConnectionsInPool(1);
+        listeningAdapter.subscribe();
+        assertTrue(listeningAdapter.getConnection().isConnected());
+        assertTrue(listeningAdapter.getConnection().checkConnection());
+        assertTrue(listeningAdapter.isSubscribed());
+        listeningAdapter.unSubscribeException = new RuntimeException();
+        try
+        {
+            listeningAdapter.unsubscribe();
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertEquals(listeningAdapter.unSubscribeException, e);
+        }
+        assertTrue(listeningAdapter.isSubscribed());
+        assertNull(listeningAdapter.getConnection());
+        IConnection conn = ConnectionManager.getConnection(connectionName);
+        assertTrue(conn.isConnected());
+    }
     
     public void testDelegatingUpdateEventsToSubscribers() throws Exception {
         final ObservableSource source = new ObservableSource();

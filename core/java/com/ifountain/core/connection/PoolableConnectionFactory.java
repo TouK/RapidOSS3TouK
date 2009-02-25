@@ -102,7 +102,7 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
         try
         {
             IConnection conn = (IConnection)arg0;
-
+            if(!conn.isValid()) return false;
             if(logger.isDebugEnabled())
             {
                 logger.debug("Validating connection instance of " + param.getConnectionName());

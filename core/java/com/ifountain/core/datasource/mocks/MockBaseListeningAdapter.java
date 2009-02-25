@@ -23,12 +23,18 @@
 package com.ifountain.core.datasource.mocks;
 
 import java.util.Observable;
+import java.util.List;
+import java.util.ArrayList;
 
 import com.ifountain.core.datasource.BaseListeningAdapter;
 import org.apache.log4j.Logger;
 
 public class MockBaseListeningAdapter extends BaseListeningAdapter {
 
+    public boolean isConnectionException = false;
+    public Exception subscribeException;
+    public RuntimeException unSubscribeException;
+    public List isConnectionExceptionsList = new ArrayList();
     public MockBaseListeningAdapter(String connectionName, long reconnectInterval) {
         super(connectionName, reconnectInterval, Logger.getRootLogger());
     }
@@ -36,13 +42,22 @@ public class MockBaseListeningAdapter extends BaseListeningAdapter {
     public MockBaseListeningAdapter(String connectionName){
         this(connectionName, 0);
     }
-    
+
+    protected boolean isConnectionException(Throwable t) {
+        isConnectionExceptionsList.add(t);
+        return isConnectionException;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     @Override
     protected void _subscribe() throws Exception {
+        if(subscribeException != null)
+        throw subscribeException;
     }
 
     @Override
     protected void _unsubscribe() {
+        if(unSubscribeException != null)
+        throw unSubscribeException;
     }
     
     @Override

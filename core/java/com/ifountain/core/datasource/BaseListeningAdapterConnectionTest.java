@@ -26,6 +26,7 @@ import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.connection.mocks.NotConnectedConnection;
@@ -46,11 +47,20 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        MockConnectionImpl.defaultTimeout = 7777;
+        MockConnectionImpl.globalConnectionException = null;
         connectionParameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(connectionParameterSupplier);
         connectionName = "ds1";
     }
-    
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
+        MockConnectionImpl.defaultTimeout = 7777;
+        MockConnectionImpl.globalConnectionException = null;
+    }
+
     public void testSubscribeThrowsExceptionIfConnectionIsNotConnected() throws Throwable
     {
         createConnectionParam(connectionName, NotConnectedConnection.class);
@@ -252,6 +262,32 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         assertFalse(t1.isExecutedSuccessfully());
         assertTrue(t1.getThrowedException() instanceof InterruptedException);
         
+    }
+
+    public void testSubscribeSetConnectionAsInvalidIfThrowedExceptionIsConnectionException() throws Exception
+    {
+        createConnectionParam(connectionName, MockConnectionImpl.class);
+        IConnection conn = ConnectionManager.getConnection(connectionName);
+        ConnectionManager.releaseConnection(conn);
+        listeningAdapter = new MockBaseListeningAdapter(connectionName, 0);
+        IConnection connection = listeningAdapter.getConnection();
+        listeningAdapter.subscribeException = new Exception();
+        listeningAdapter.isConnectionException = true;
+
+        try
+        {
+            listeningAdapter.subscribe();
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertTrue(e instanceof ConnectionException);
+            assertSame(listeningAdapter.subscribeException, e.getCause());
+        }
+
+        IConnection connectionAfterSubscribeException = ConnectionManager.getConnection(connectionName);
+        assertNotSame("Connection object should not be same since previous connection should be marked as invalid by adapter", conn, connectionAfterSubscribeException);
+
     }
     
     

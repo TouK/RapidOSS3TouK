@@ -36,6 +36,9 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     ConnectionPool pool;
     public void setUp() throws Exception {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        MockConnection.isConnected = true;
+        MockConnection.isValid = true;
+        MockConnection.checkConnectionCallCount = 0;
         MockConnection.disconnectCalledFor.clear();
         MockTimeoutStrategy.connectionParameterList.clear();
     }
@@ -43,6 +46,12 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     public void tearDown() throws Exception {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
         pool.close();
+        MockConnection.isConnected = true;
+        MockConnection.isValid = true;
+        MockConnection.checkConnectionCallCount = 0;
+        MockConnection.disconnectCalledFor.clear();
+        MockTimeoutStrategy.connectionParameterList.clear();
+
     }
     //TODO: Try to implement a case to test synchronization , when synchronization is off it should fail.
     public void testGetBarrowedObjects() throws Exception
@@ -414,11 +423,14 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
 
 class MockConnection implements IConnection
 {
+    public static boolean isValid = true;
+    public static int checkConnectionCallCount = 0;
     public static boolean isConnected = true;
     public static boolean checkConnectionResult = true;
     public static Map<Integer, Integer> disconnectCalledFor = new HashMap<Integer, Integer>();
     int id;
     boolean privateIsConnected = true;
+    boolean privateIsValid = true;
     boolean privateCheckConnectionResult = true;
     long timeout;
     public MockConnection(int id) {
@@ -427,6 +439,14 @@ class MockConnection implements IConnection
     }
 
     public void init(ConnectionParam param) throws Exception {
+    }
+
+    public boolean isValid() {
+        return isValid && privateIsValid;
+    }
+
+    public void invalidate() {
+        privateIsValid = false;
     }
 
     public ConnectionParam getParameters() {
@@ -443,6 +463,7 @@ class MockConnection implements IConnection
     }
 
     public boolean checkConnection() {
+        checkConnectionCallCount++;
         return checkConnectionResult && privateCheckConnectionResult;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

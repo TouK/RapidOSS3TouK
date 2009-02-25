@@ -28,6 +28,8 @@ public interface IConnection
     public ConnectionParam getParameters();
 	public void _disconnect();
 	public boolean isConnected();
+	public boolean isValid();
+	public void invalidate();
     public boolean checkConnection();
     public void setTimeout(long timeout);
     public long getTimeout();

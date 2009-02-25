@@ -12,12 +12,12 @@
     def userName = session.username;
     def queryType = params.type;
     def searchComponentType = params.searchComponentType;
-    def searchQuery ;
+    def searchQuery;
 %>
 <g:if test="${mode == 'edit' && (searchQuery = SearchQuery.get([id: params.queryId])) == null}">
-     <div style="height:100%; background-color:#fff3f3;color:#cc0000">
-         SearchQuery with id ${params.queryId} does not exist.
-     </div>
+    <div style="height:100%; background-color:#fff3f3;color:#cc0000">
+        SearchQuery with id ${params.queryId} does not exist.
+    </div>
 </g:if>
 <g:else>
     <%
@@ -48,10 +48,10 @@
         def sortOrder = params.sortOrder ? params.sortOrder : mode == 'edit' ? searchQuery.sortOrder : 'asc';
     %>
     <script type="text/javascript">
-        window.refreshFilterTree = function(){
-            var filterTree = YAHOO.rapidjs.Components['filterTree'];
-            filterTree.poll();
-        }
+    window.refreshFilterTree = function(){
+    var filterTree = YAHOO.rapidjs.Components['filterTree'];
+    filterTree.poll();
+    }
     </script>
     <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshFilterTree">
         <table>
@@ -66,15 +66,15 @@
                 </g:each>
             </select></td></tr>
             <tr><td width="50%"><label>Query Name:</label></td><td width="50%">
-                <input type="textbox" name="name" style="width:175px" value="${queryName}">
+                <input type="textbox" name="name" style="width:175px" value="${queryName.encodeAsHTML()}">
             </td></tr>
             <tr><td width="50%"><label>Query:</label></td><td width="50%">
-                <input type="textbox" name="query" style="width:175px" value="${query}">
+                <input type="textbox" name="query" style="width:175px" value="${query.encodeAsHTML()}">
             </td></tr>
             <g:if test="${searchComponentType == 'grid'}">
                 <tr><td width="50%"><label>View Name:</label></td><td width="50%">
                     <select name="viewName" style="width:175px">
-                        <option name="default" ${viewName == 'default'? 'selected="true"':''}>default</option>
+                        <option name="default" ${viewName == 'default' ? 'selected="true"' : ''}>default</option>
                         <g:each var="view" in="${gridViews}">
                             <g:if test="${viewName == view.name}">
                                 <option name="${view.name}" selected="true">${view.name}</option>
@@ -85,20 +85,25 @@
                         </g:each>
                     </select>
                 </td></tr>
-                <input type="hidden" name="sortProperty" value="${sortProperty}">
-                <input type="hidden" name="sortOrder" value="${sortOrder}">
+                <input type="hidden" name="sortProperty" value="${sortProperty.encodeAsHTML()}">
+                <input type="hidden" name="sortOrder" value="${sortOrder.encodeAsHTML()}">
             </g:if>
             <g:else>
                 <tr><td width="50%"><label>Sort Property:</label></td><td width="50%">
                     <select name="sortProperty" style="width:175px">
                         <g:each var="prop" in="${sortedProps}">
                             <g:if test="${prop.name != 'rsDatasource'}">
-                                <g:if test="${sortProperty == prop.name}">
-                                    <option name="${prop.name}" selected="true">${prop.name}</option>
+                                <g:if test="${!propertyMap[prop.name]}">
+                                    <g:if test="${sortProperty == prop.name}">
+                                        <option name="${prop.name}" selected="true">${prop.name}</option>
+                                    </g:if>
+                                    <g:else>
+                                        <option name="${prop.name}">${prop.name}</option>
+                                    </g:else>
+                                    <%
+                                        propertyMap.put(prop.name, "true");
+                                    %>
                                 </g:if>
-                                <g:else>
-                                    <option name="${prop.name}">${prop.name}</option>
-                                </g:else>
                             </g:if>
                         </g:each>
                     </select></td></tr>
@@ -108,7 +113,7 @@
                         <option value="desc" ${sortOrder == 'desc' ? 'selected="true"' : ''}>desc</option>
                     </select>
                 </td></tr>
-                <input type="hidden" name="viewName" value="${viewName}">
+                <input type="hidden" name="viewName" value="${viewName.encodeAsHTML()}">
             </g:else>
         </table>
         <input type="hidden" name="id" value="${searchQuery != null ? searchQuery.id : ''}">

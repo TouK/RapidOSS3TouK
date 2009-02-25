@@ -252,7 +252,7 @@ class SearchListTagLib {
             def flds = field.fields.Item;
             def fldsArray = [];
             flds.each {
-                fldsArray.add("'${it.text()}'");
+                fldsArray.add("'${it.text().trim()}'");
             }
             fieldArray.add("""{
                     exp:"${exp}",

@@ -30,7 +30,7 @@
     </script>
     <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshFilterTree">
         <table>
-            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px" value="${groupName}"/></td></tr>
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px" value="${groupName.encodeAsHTML()}"/></td></tr>
         </table>
         <input type="hidden" name="id" value="${mode == 'edit'? searchQueryGroup.id : ''}">
     </rui:formRemote>

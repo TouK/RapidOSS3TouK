@@ -42,7 +42,7 @@ class UiSearchListField {
 
     public String toString()
     {
-        return getProperty("src");
+        return getProperty("id");
     }
 
     public boolean equals(Object obj) {

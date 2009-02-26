@@ -128,4 +128,15 @@ class UiSearchListOperations extends UiComponentOperations{
         searchList.addRelation(propertyMenuItems:propMenuItems);
         return searchList;
     }
+
+    def getRowMenuItems(){
+        def propertyMenuItemNames = propertyMenuItems.name;
+        def rowMenuItems = [];
+        menuItems.each{UiMenuItem menuItem ->
+            if(!propertyMenuItemNames.contains(menuItem.name)){
+                rowMenuItems.add(menuItem);
+            }
+        }
+        return rowMenuItems;
+    }
 }

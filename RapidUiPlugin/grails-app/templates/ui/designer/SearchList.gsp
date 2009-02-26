@@ -12,7 +12,7 @@
 >
     <rui:slMenuItems>
         <%
-            uiElement.menuItems.each{menuItem->
+            uiElement.getRowMenuItems().each{menuItem->
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>

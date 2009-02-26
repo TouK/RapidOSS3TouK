@@ -34,6 +34,7 @@ class UiImageObjectMapContentOperations extends UiObjectMapContentOperations{
     {
         def attributes = xmlNode.attributes();
         attributes.objectMap = parentElement
+        attributes.objectMapId = parentElement.id
         attributes.type = "image"
         return DesignerUtils.addUiObject(UiImageObjectMapContent, attributes, xmlNode);
     }

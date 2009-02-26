@@ -235,7 +235,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (String.valueOf(model1Instance.prop3), parser.UiElement.'@prop3'.text());
     }
 
-    public void testGenerateXmlDoesnotAddPropertiesWithDefaultValueToXml()
+    public void testGenerateXmlDoesnotAddOptionalPropertiesWithDefaultValueToXml()
     {
         //Create ui domain objects they should be located under package ui.designer and they should start with Ui
         def modelName = "UiModel1";
@@ -244,10 +244,11 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def prop1 = [name:"prop1", type:ModelGenerator.DATE_TYPE];
         def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, defaultValue:"defaultalue"];
         def prop3 = [name:"prop3", type:ModelGenerator.NUMBER_TYPE, defaultValue:100];
+        def prop4 = [name:"prop4", type:ModelGenerator.NUMBER_TYPE, defaultValue:100];
 
         def modelMetaProps = [name:modelName]
 
-        def modelProps = [prop1, prop2, prop3];
+        def modelProps = [prop1, prop2, prop3, prop4];
         def keyPropList = [prop1];
         String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
         def modelClass = gcl.parseClass (modelString);
@@ -258,30 +259,34 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
                 propertyConfiguration: [
                         prop1: [descr: '', formatter:{object->return df.format(object["prop1"])}],
                         prop2: [descr: ''],
-                        prop3: [descr: '']
+                        prop3: [descr: ''],
+                        prop4: [descr: '', required:true]
                 ]
             ];
         };
         RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
         initialize ([modelClass], [], false);
-        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0);
+        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0, prop4:0);
 
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
             DesignerUtils.generateXml([model1Instance], markupBuilder);
         }
-
+        //Since all properties are different from their default value all properties will be added to xml
         def parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());
-        assertEquals(5, parser.UiElement[0].attributes().size());
+        assertEquals(6, parser.UiElement[0].attributes().size());
         assertEquals (String.valueOf(model1Instance.id), parser.UiElement.'@id'.text());
         assertEquals ("model1", parser.UiElement.'@designerType'.text());
         assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
         assertEquals (model1Instance.prop2, parser.UiElement.'@prop2'.text());
         assertEquals (String.valueOf(model1Instance.prop3), parser.UiElement.'@prop3'.text());
+        assertEquals (String.valueOf(model1Instance.prop4), parser.UiElement.'@prop4'.text());
 
 
+        //All default value optional properties will be discarded and only props different from default value and
+        //all required properties equal to default value will be added to xml
         model1Instance = modelClass.'add'([prop1:new Date()]);
 
         sw = new StringWriter();
@@ -292,9 +297,10 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
 
         parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());
-        assertEquals(3, parser.UiElement[0].attributes().size());
+        assertEquals(4, parser.UiElement[0].attributes().size());
         assertEquals (String.valueOf(model1Instance.id), parser.UiElement.'@id'.text());
         assertEquals (df.format(model1Instance.prop1), parser.UiElement.'@prop1'.text());
+        assertEquals (String.valueOf(model1Instance.prop4), parser.UiElement.'@prop4'.text());
     }
 
     public void testGenerateXmlWithRelatedClass()

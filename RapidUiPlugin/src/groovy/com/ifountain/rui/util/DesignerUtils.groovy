@@ -144,7 +144,7 @@ class DesignerUtils {
                         propValue = component.getProperty(propName);
                         defaultPropValue = defaultPropertyValueInstance.getProperty(propName);
                     }
-                    if(defaultPropValue != propValue)
+                    if(propConfig.required == true || defaultPropValue != propValue)
                     {
                         uiElementProperties[propName] = propValue;
                     }

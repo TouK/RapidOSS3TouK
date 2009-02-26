@@ -47,7 +47,7 @@ class SearchQuery {
             group:[type:SearchQueryGroup, reverseName:"queries", isMany:false]
     ]
     static constraints = {
-        name(key:["username"]);
+        name(blank:false, key:["username"]);
         sortOrder(inList:["asc","desc"]);
         viewName(blank:true, nullable:true);
         sortProperty(blank:true, nullable:true);

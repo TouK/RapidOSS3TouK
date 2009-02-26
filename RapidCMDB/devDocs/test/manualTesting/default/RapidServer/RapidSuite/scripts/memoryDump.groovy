@@ -21,7 +21,7 @@ import utils.TestingConstants;
 
 def pid=java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 def fileName = TestingConstants.getHeapDumpFile().path;
-def javaDir = "C:/Program Files/Java/jdk1.6.0_04/bin/";
+def javaDir = System.getenv("JAVA_HOME")+"/bin/";
 def cmd = "${javaDir}jmap -dump:format=b,file=${fileName} ${pid}"
 
 

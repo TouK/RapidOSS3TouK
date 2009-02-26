@@ -39,6 +39,7 @@ class UiFlexPieChartOperations extends UiComponentOperations
         def attributes = [:];
         attributes.putAll (xmlNode.attributes());
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         return DesignerUtils.addUiObject(UiFlexPieChart, attributes, xmlNode);
     }
 

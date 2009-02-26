@@ -25,6 +25,7 @@ class UiColumn {
     String sortOrder = "asc";
 
     Long id;
+    Long componentId;
 
     Long version;
 
@@ -40,7 +41,7 @@ class UiColumn {
     ]
 
     static constraints = {
-        attributeName(blank: false, nullable: false, key: ["component", "isActive"])
+        attributeName(blank: false, nullable: false, key: ["componentId", "isActive"])
         colLabel(blank: true, nullable: false)
         sortBy(nullable: true)
         sortOrder(blank:false, nullable: true, inList:["asc", "desc"]);

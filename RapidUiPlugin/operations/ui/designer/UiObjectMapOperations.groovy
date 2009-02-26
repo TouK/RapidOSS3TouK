@@ -112,6 +112,7 @@ class UiObjectMapOperations extends UiComponentOperations {
         def attributes = [:];
         attributes.putAll (xmlNode.attributes());
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def addedMap = DesignerUtils.addUiObject(UiObjectMap, attributes, xmlNode);
         def textsNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapTextNodeContent"}
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapImageNodeContent"}

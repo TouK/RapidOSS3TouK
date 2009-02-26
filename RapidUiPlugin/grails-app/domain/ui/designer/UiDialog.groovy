@@ -37,6 +37,7 @@ class UiDialog
     String title = "";
 
     Long id;
+    Long componentId;
 
     Long version;
 
@@ -47,6 +48,7 @@ class UiDialog
     Object __is_federated_properties_loaded__;
 
     UiTab tab;
+    Long tabId;
 
     UiComponent component;
 
@@ -58,7 +60,7 @@ class UiDialog
     ]
 
     static constraints = {
-        tab(key: ["component", "isActive"])
+        tabId(key: ["componentId", "isActive"])
         x(nullable: true)
         y(nullable: true)
         maxHeight(nullable: true)

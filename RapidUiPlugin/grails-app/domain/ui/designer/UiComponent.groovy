@@ -31,8 +31,9 @@ class UiComponent
     
     Object __is_federated_properties_loaded__ ;
     
+    Long tabId ;
     UiTab tab ;
-    
+
     UiLayoutUnit layoutUnit ;
     
     UiDialog dialog ;
@@ -55,7 +56,7 @@ class UiComponent
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["tab", "isActive"])
+    name(blank:false,nullable:false,key:["tabId", "isActive"])
         
      title(blank:true,nullable:true)
         

@@ -29,6 +29,7 @@ class UiMenuItem {
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
     UiComponent component ;
+    Long componentId ;
     List childMenuItems = [];
     UiMenuItem parentMenuItem;
     List subscribedEvents = [];
@@ -42,7 +43,7 @@ class UiMenuItem {
     ]
 
     static constraints={
-     name(blank:false,nullable:false,key:["component", "isActive"])
+     name(blank:false,nullable:false,key:["componentId", "isActive"])
      label(blank:true,nullable:false);
      type(blank:false,nullable:false, inList:["component", "property", "toolbar"]);
      visible(blank:true,nullable:true);

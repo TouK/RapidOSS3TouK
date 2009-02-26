@@ -13,7 +13,7 @@ class UiTab
         storageType "File"
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "url":["nameInDs":"url"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "webPageId":["nameInDs":"webPageId"]]]]
 
     boolean isActive = true;
     String name ="";
@@ -31,7 +31,8 @@ class UiTab
     Object __is_federated_properties_loaded__ ;
     
     UiWebPage webPage ;
-    
+    Long webPageId ;
+
     UiLayout layout ;
     
     List components =[];
@@ -56,7 +57,7 @@ class UiTab
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["webPage", "isActive"])
+    name(blank:false,nullable:false,key:["webPageId", "isActive"])
     contentFile(blank:true,nullable:true)
     title(blank:true,nullable:true)
 
@@ -68,7 +69,7 @@ class UiTab
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "url", "layout", "components", "dialogs", "actions"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     public String toString()
     {

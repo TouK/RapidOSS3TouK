@@ -75,6 +75,7 @@ public class UiTabOperations extends AbstractDomainOperation
         def attributes = [:]
         attributes.putAll(xmlNode.attributes());
         attributes.webPage = parentElement;
+        attributes.webPageId = parentElement.id;
         def uiLayout = UiLayout.add([:]);
         attributes.layout = uiLayout;
 
@@ -94,30 +95,34 @@ public class UiTabOperations extends AbstractDomainOperation
             actionsMap.put(actionNode.@name.toString(), actionNode);
         }
         def iterationCount = 0
-        while (iterationCount < 10000) {
-            actionsMap.each {actionName, actionNode ->
-                if (!actionAddOrder.contains(actionName)) {
-                    def triggerNodes = actionNode.UiElement.UiElement.findAll {it.@designerType == "ActionTrigger" && it.@type == UiActionTrigger.ACTION_TYPE}
-                    if (triggerNodes.size() > 0) {
-                        def willAddAction = true;
-                        def triggeringActions = triggerNodes.@triggeringAction;
-                        triggeringActions.each {triggeringActionName ->
-                            if (actionsMap[triggeringActionName.toString()] != null) {
-                                if (!actionAddOrder.contains(triggeringActionName.toString())) {
-                                    willAddAction = false;
-                                    return;
+        if(!actionsMap.isEmpty())
+        {
+            while (iterationCount < 10000) {
+                iterationCount++;
+                actionsMap.each {actionName, actionNode ->
+                    if (!actionAddOrder.contains(actionName)) {
+                        def triggerNodes = actionNode.UiElement.UiElement.findAll {it.@designerType == "ActionTrigger" && it.@type == UiActionTrigger.ACTION_TYPE}
+                        if (triggerNodes.size() > 0) {
+                            def willAddAction = true;
+                            def triggeringActions = triggerNodes.@triggeringAction;
+                            triggeringActions.each {triggeringActionName ->
+                                if (actionsMap[triggeringActionName.toString()] != null) {
+                                    if (!actionAddOrder.contains(triggeringActionName.toString())) {
+                                        willAddAction = false;
+                                        return;
+                                    }
+                                }
+                                else {
+                                    throw new Exception("Could not add ${actionName}, because triggeringAction ${triggeringActionName} does not exist");
                                 }
                             }
-                            else {
-                                throw new Exception("Could not add ${actionName}, because triggeringAction ${triggeringActionName} does not exist");
+                            if (willAddAction) {
+                                actionAddOrder.add(actionName);
                             }
                         }
-                        if (willAddAction) {
+                        else {
                             actionAddOrder.add(actionName);
                         }
-                    }
-                    else {
-                        actionAddOrder.add(actionName);
                     }
                 }
             }

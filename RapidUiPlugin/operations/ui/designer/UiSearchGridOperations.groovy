@@ -105,6 +105,7 @@ class UiSearchGridOperations extends UiComponentOperations {
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def searchGrid = DesignerUtils.addUiObject(UiSearchGrid, attributes, xmlNode);
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};

@@ -13,7 +13,7 @@ class UiRequestParameter {
         storageType "File"
 
     };
-    static datasources = ["RCMDB":["keys":["key":["nameInDs":"key"], "action":["nameInDs":"action"], "isActive":["nameInDs":"isActive"]]]]
+    static datasources = ["RCMDB":["keys":["key":["nameInDs":"key"], "actionId":["nameInDs":"actionId"], "isActive":["nameInDs":"isActive"]]]]
 
     boolean isActive = true;
     String key ="";
@@ -25,12 +25,13 @@ class UiRequestParameter {
     Object __is_federated_properties_loaded__ ;
 
     UiRequestAction action;
+    Long actionId;
 
 
     static relations = [action:[type:UiRequestAction, reverseName:"parameters", isMany:false]]
 
     static constraints={
-     key(blank:false,nullable:false,key:["isActive","action"])
+     key(blank:false,nullable:false,key:["isActive","actionId"])
      value(blank:true,nullable:true)
      __operation_class__(nullable:true)
      __is_federated_properties_loaded__(nullable:true)

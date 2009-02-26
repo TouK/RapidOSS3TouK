@@ -84,6 +84,7 @@ class UiTreeGridOperations extends UiComponentOperations{
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def treeGrid = DesignerUtils.addUiObject(UiTreeGrid, attributes, xmlNode);
 
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumns"};

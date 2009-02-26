@@ -55,7 +55,8 @@ class UiFunctionActionOperations extends UiActionOperations {
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
-        def component = UiComponent.get(tab: parentElement, name: attributes.component, isActive: true);
+        attributes.tabId = parentElement.id;
+        def component = UiComponent.get(tabId: parentElement.id, name: attributes.component, isActive: true);
         attributes.component = component;
         def addedAction = DesignerUtils.addUiObject(UiFunctionAction, attributes, xmlNode);
         def functionArgumentsNode = xmlNode.UiElement.find {it.@designerType.text() == "FunctionArguments"}

@@ -66,13 +66,14 @@ class UiRequestActionOperations extends UiActionOperations {
         def attributes = [:];
         attributes.putAll(xmlNode.attributes());
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def comps = [];
         if (attributes.components != null && attributes.components != "")
         {
             attributes.components.split(",").each {
                 if (it != "")
                 {
-                    def comp = UiComponent.get(name: it, tab: parentElement, isActive: true);
+                    def comp = UiComponent.get(name: it, tabId: parentElement.id, isActive: true);
                     if (comp)
                     {
                         comps.add(comp);

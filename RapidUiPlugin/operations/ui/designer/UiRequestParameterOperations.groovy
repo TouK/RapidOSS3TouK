@@ -31,6 +31,7 @@ class UiRequestParameterOperations extends AbstractDomainOperation{
         def attributes = [:];
         attributes.putAll (xmlNode.attributes());
         attributes.action = parentElement;
+        attributes.actionId = parentElement.id;
         return DesignerUtils.addUiObject(UiRequestParameter, attributes, xmlNode);
     }
 }

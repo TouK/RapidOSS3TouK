@@ -14,7 +14,7 @@ class UiObjectMapContent {
         storageType "File"
 
     };
-    static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"], "component": ["nameInDs": "component"], "isActive": ["nameInDs": "isActive"]]]]
+    static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"], "objectMapId": ["nameInDs": "objectMapId"], "isActive": ["nameInDs": "isActive"]]]]
 
     boolean isActive = true;
     String name="";
@@ -28,12 +28,13 @@ class UiObjectMapContent {
     Object __operation_class__;
     Object __is_federated_properties_loaded__;
     UiObjectMap objectMap;
+    Long objectMapId;
     static relations = [
             objectMap: [type: UiObjectMap, reverseName: "nodeContents", isMany: false]
     ]
 
     static constraints = {
-        name(nullable: false, blank: false, key: ["objectMap", "isActive"]);
+        name(nullable: false, blank: false, key: ["objectMapId", "isActive"]);
         x(nullable: false)
         y(nullable: false)
         width(nullable: false)

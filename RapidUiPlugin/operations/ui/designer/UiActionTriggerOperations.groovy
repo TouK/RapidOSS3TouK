@@ -40,18 +40,18 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
             def component = null;
             if (attributes.component != "")
             {
-                component = UiComponent.get(tab: parentElement.tab, name: attributes.component, isActive: true);
+                component = UiComponent.get(tabId: parentElement.tab.id, name: attributes.component, isActive: true);
                 attributes.component = component;
             }
             if (triggerType == UiActionTrigger.MENU_TYPE && component != null) {
-                def menuItem = UiMenuItem.get(component: component, isActive: true, name: attributes.event);
+                def menuItem = UiMenuItem.get(componentId: component.id, isActive: true, name: attributes.event);
                 attributes.menu = menuItem;
             }
         }
         else if (triggerType == UiActionTrigger.ACTION_TYPE) {
             if (attributes.triggeringAction != "")
             {
-                def triggeringAction = UiAction.get(tab: parentElement.tab, name: attributes.triggeringAction, isActive: true);
+                def triggeringAction = UiAction.get(tabId: parentElement.tab.id, name: attributes.triggeringAction, isActive: true);
                 attributes.triggeringAction = triggeringAction;
             }
         }

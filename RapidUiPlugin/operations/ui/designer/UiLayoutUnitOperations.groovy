@@ -32,7 +32,7 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
         def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType).clazz;
         if(attributes.component != null && attributes.component != "")
         {
-            attributes.component=UiComponent.get(name:attributes.component, tab:tab, isActive:true);
+            attributes.component=UiComponent.get(name:attributes.component, tabId:tab.id, isActive:true);
         }
 
         def layoutUnit = DesignerUtils.addUiObject(domainClass, attributes, xmlNode);

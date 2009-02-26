@@ -104,6 +104,7 @@ class UiSearchListOperations extends UiComponentOperations{
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def searchList = DesignerUtils.addUiObject(UiSearchList, attributes, xmlNode);
         
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListFields"};

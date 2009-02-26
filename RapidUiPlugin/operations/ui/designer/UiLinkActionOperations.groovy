@@ -35,6 +35,7 @@ class UiLinkActionOperations extends UiActionOperations {
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def addedAction = DesignerUtils.addUiObject(UiLinkAction, attributes, xmlNode);
         addTriggers(xmlNode, addedAction);
         return addedAction;

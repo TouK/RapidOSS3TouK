@@ -36,6 +36,7 @@ class UiTimelineOperations extends UiComponentOperations {
     {
         def attributes = xmlNode.attributes();
         attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
         def searchGrid = DesignerUtils.addUiObject(UiTimeline, attributes, xmlNode);
         xmlNode.UiElement.each{
             UiTimelineBand.addUiElement(it, searchGrid);

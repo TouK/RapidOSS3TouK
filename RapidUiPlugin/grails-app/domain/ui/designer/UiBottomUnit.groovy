@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiBottomUnit extends UiLayoutUnit{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     Long height = 200;
     Boolean resize = false;

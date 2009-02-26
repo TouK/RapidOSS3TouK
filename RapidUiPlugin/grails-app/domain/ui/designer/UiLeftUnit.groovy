@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiLeftUnit extends UiLayoutUnit{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     Long width = 200;
     Long minWidth = 0;

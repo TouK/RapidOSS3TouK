@@ -11,7 +11,7 @@ class UiSearchList extends UiComponent{
 
     static searchable = {
         except = ["fields", "images", "propertyMenuItems"];
-        storageType "File"
+        storageType "FileAndMemory"
     };
     static datasources = [:]
     String url = "search?searchIn=RsEvent";

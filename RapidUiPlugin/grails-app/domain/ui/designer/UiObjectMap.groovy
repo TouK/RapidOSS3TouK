@@ -9,7 +9,7 @@ package ui.designer
 class UiObjectMap extends UiComponent{
 
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
 
     String expandURL="script/run/expandMap"

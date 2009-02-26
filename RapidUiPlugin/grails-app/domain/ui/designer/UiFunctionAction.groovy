@@ -8,7 +8,7 @@ class UiFunctionAction extends UiAction
 
     static searchable = {
         except = ["component", "arguments"];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     UiComponent component;

@@ -11,7 +11,7 @@ class UiDialog
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "component"];
 
 
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     static datasources = ["RCMDB": ["keys": ["tab": ["nameInDs": "tab"], "isActive":["nameInDs":"isActive"], "component":["nameInDs":"component"]]]]

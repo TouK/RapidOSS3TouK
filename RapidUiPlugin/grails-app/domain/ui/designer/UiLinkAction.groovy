@@ -8,7 +8,7 @@ class UiLinkAction extends UiAction
 
     static searchable = {
         except = [];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     String url;

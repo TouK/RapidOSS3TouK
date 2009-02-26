@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiFlexPieChart extends UiComponent{
      static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     String rootTag = "";
     String url = "";

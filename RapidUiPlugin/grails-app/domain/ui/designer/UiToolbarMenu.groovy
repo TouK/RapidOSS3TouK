@@ -11,7 +11,7 @@ class UiToolbarMenu {
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "objectMap"];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]

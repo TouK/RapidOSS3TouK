@@ -9,7 +9,7 @@ package ui.designer
 class UiTreeGridColumn extends UiColumn{
     static searchable = {
         except = ["images"]
-        storageType "File"
+        storageType "FileAndMemory"
     };
     String type = "text";
     List images = [];

@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiTimeline extends UiComponent{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     String url = "";
     Long pollingInterval= 0;

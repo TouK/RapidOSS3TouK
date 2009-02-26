@@ -10,7 +10,7 @@ class UiWebPage
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tabs"];
     
     
-        storageType "File"
+        storageType "FileAndMemory"
     
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"]]]]

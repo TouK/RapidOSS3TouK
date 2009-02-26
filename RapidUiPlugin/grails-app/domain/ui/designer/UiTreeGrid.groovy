@@ -11,7 +11,7 @@ class UiTreeGrid extends UiComponent{
 
     static searchable = {
         except = ["columns", "rootImages"];
-        storageType "File"
+        storageType "FileAndMemory"
     };
     static datasources = [:]
     String url = "";

@@ -10,7 +10,7 @@ class UiTab
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "webPage", "layout", "components", "dialogs", "actions"];
     
     
-        storageType "File"
+        storageType "FileAndMemory"
     
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "webPageId":["nameInDs":"webPageId"]]]]

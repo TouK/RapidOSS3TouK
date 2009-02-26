@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiCenterUnit extends UiLayoutUnit{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     static datasources = [:]
     static relations = [:]

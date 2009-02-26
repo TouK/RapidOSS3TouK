@@ -9,7 +9,7 @@ package ui.designer
 class UiHtml extends UiComponent{
 
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
 
     Long pollingInterval= 0;

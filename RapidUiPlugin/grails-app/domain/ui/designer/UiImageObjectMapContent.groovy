@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiImageObjectMapContent extends UiObjectMapContent{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
 
     String mapping="";

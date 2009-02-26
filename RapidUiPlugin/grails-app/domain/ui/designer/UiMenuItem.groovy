@@ -13,7 +13,7 @@ class UiMenuItem {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "childMenuItems", "parentMenuItem", "subscribedEvents"];
 
 
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "component":["nameInDs":"component"], "isActive":["nameInDs":"isActive"]]]]

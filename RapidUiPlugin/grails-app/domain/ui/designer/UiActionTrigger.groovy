@@ -9,7 +9,7 @@ package ui.designer
 class UiActionTrigger{
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction", "menu"];
-        storageType "File"
+        storageType "FileAndMemory"
     };
     public static final String MENU_TYPE = "Menu"
     public static final String COMPONENT_TYPE = "Component event"

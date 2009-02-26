@@ -11,7 +11,7 @@ class UiComponent
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
     
     
-        storageType "File"
+        storageType "FileAndMemory"
     
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"], "isActive":["nameInDs":"isActive"], "tab":["nameInDs":"tab"]]]]

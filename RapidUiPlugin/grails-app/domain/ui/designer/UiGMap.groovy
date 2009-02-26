@@ -9,7 +9,7 @@ package ui.designer
 class UiGMap extends UiComponent{
 
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
 
     String contentPath

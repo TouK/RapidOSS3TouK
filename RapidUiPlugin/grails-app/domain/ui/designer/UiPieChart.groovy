@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiPieChart extends UiComponent{
     static searchable = {
-        storageType "File"
+        storageType "FileAndMemory"
     };
     String contentPath = "";
     String categoryField = "";

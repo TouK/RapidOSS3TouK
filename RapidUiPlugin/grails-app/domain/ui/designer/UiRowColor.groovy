@@ -11,7 +11,7 @@ class UiRowColor {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "grid"];
 
 
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
      static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]

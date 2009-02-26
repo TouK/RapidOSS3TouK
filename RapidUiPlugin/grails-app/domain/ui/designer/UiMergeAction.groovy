@@ -9,7 +9,7 @@ package ui.designer
 class UiMergeAction extends UiRequestAction{
     static searchable = {
         except = [];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     String removeAttribute = "";

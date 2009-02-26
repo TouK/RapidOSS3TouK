@@ -9,7 +9,7 @@ package ui.designer
 class UiSearchGridColumn extends UiColumn{
    static searchable = {
         except = []
-        storageType "File"
+        storageType "FileAndMemory"
     };
     String type = "text";
     static datasources = [:]

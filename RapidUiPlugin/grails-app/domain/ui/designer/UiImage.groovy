@@ -11,7 +11,7 @@ class UiImage {
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "column"];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]

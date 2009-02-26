@@ -8,7 +8,7 @@ class UiRequestAction extends UiAction
 
     static searchable = {
         except = ["parameters", "components"];
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     String url;

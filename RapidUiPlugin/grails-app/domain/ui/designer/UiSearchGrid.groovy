@@ -11,7 +11,7 @@ class UiSearchGrid extends UiComponent {
 
     static searchable = {
         except = ["columns", "images", "rowColors"];
-        storageType "File"
+        storageType "FileAndMemory"
     };
     static datasources = [:]
     String url = "search?searchIn=RsEvent";

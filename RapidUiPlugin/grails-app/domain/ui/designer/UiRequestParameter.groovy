@@ -10,7 +10,7 @@ class UiRequestParameter {
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
 
-        storageType "File"
+        storageType "FileAndMemory"
 
     };
     static datasources = ["RCMDB":["keys":["key":["nameInDs":"key"], "actionId":["nameInDs":"actionId"], "isActive":["nameInDs":"isActive"]]]]

@@ -93,5 +93,22 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         }
         return currentState;
     }
+    
+	public int criticalPercent(currentState,  oldPropagatedState, newPropagatedState)
+	{
+		if (newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState < currentState
+				|| currentState == oldPropagatedState && newPropagatedState > currentState)
+		{
+			def s = childObjects.state         
+			def percent = s.findAll{it == 1}.size()/s.size()*100
+
+			switch(percent) {
+			case [it > 40]: currentState = 1;break
+			case [it > 20]: currentState = 2;break
+			default: currentState = 5
+			}
+		}
+		return currentState;
+	}
 }
     

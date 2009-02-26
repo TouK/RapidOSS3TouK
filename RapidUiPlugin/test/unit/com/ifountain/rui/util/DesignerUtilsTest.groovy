@@ -21,10 +21,13 @@ import org.codehaus.groovy.grails.validation.BlankConstraint
 * To change this template use File | Settings | File Templates.
 */
 class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
-
+    Closure metaDataGetter;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         ExpandoMetaClass.enableGlobally();
+        metaDataGetter = {component->
+            return component.metaData();            
+        }
     }
 
     public void tearDown() {
@@ -217,12 +220,12 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         };
         RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
         initialize ([modelClass], [], false);
-        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0);
+        def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:100);
 
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([model1Instance], markupBuilder);
+            DesignerUtils.generateXml([model1Instance], markupBuilder, metaDataGetter);
         }
 
         def parser = new XmlParser().parseText(sw.toString());
@@ -271,7 +274,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([model1Instance], markupBuilder);
+            DesignerUtils.generateXml([model1Instance], markupBuilder, metaDataGetter);
         }
         //Since all properties are different from their default value all properties will be added to xml
         def parser = new XmlParser().parseText(sw.toString());
@@ -292,7 +295,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         sw = new StringWriter();
         markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([model1Instance], markupBuilder);
+            DesignerUtils.generateXml([model1Instance], markupBuilder, metaDataGetter);
         }
 
         parser = new XmlParser().parseText(sw.toString());
@@ -339,7 +342,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([modelInstance], markupBuilder);
+            DesignerUtils.generateXml([modelInstance], markupBuilder, metaDataGetter);
         }
         def parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());
@@ -404,7 +407,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([modelInstance], markupBuilder);
+            DesignerUtils.generateXml([modelInstance], markupBuilder, metaDataGetter);
         }
         def parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());
@@ -452,7 +455,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([modelInstance], markupBuilder);
+            DesignerUtils.generateXml([modelInstance], markupBuilder, metaDataGetter);
         }
         def parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());
@@ -516,7 +519,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def sw = new StringWriter();
         def markupBuilder = new MarkupBuilder(sw);
         markupBuilder.UiElement{
-            DesignerUtils.generateXml([modelInstance], markupBuilder);
+            DesignerUtils.generateXml([modelInstance], markupBuilder, metaDataGetter);
         }
         def parser = new XmlParser().parseText(sw.toString());
         assertEquals(1, parser.UiElement.size());

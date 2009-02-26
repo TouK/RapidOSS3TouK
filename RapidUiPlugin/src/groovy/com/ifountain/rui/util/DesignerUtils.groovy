@@ -121,15 +121,14 @@ class DesignerUtils {
         return res;
     }
 
-    public static void generateXml(List components, MarkupBuilder builder)
+    public static void generateXml(List components, MarkupBuilder builder, Closure metadataGetter)
     {
         components.each {component ->
             def defaultPropertyValueInstance = component.class.newInstance();
-            def metaData = component.metaData();
-            def propsToBeSentToUi = metaData.propertyConfiguration
-            propsToBeSentToUi.put("id", [:]);
+            def metaData = metadataGetter(component);
+            def propsToBeSentToUi = metaData.propertyConfiguration;
             def children = metaData.childrenConfiguration
-            def uiElementProperties = [designerType: metaData.designerType];
+            def uiElementProperties = [designerType: metaData.designerType, id:component.id];
             propsToBeSentToUi.each {String propName, propConfig ->
                 try {
                     def propValue = null;
@@ -157,7 +156,7 @@ class DesignerUtils {
                         def propName = child.propertyName;
                         try {
                             def childObjects = getChildObjects(component, propName, child);
-                            generateXml(childObjects, builder);
+                            generateXml(childObjects, builder, metadataGetter);
                         } catch (groovy.lang.MissingPropertyException e) {}
                     }
                     else
@@ -177,7 +176,7 @@ class DesignerUtils {
                                 def propName = realChild.propertyName;
                                 try {
                                     def childObjects = getChildObjects(component, propName, realChild);
-                                    generateXml(childObjects, builder);
+                                    generateXml(childObjects, builder, metadataGetter);
                                 } catch (groovy.lang.MissingPropertyException e) {}
                             }
                         }

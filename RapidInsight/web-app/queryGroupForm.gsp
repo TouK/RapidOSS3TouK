@@ -14,7 +14,7 @@
 %>
 <g:if test="${mode == 'edit' && (searchQueryGroup = SearchQueryGroup.get([id: params.queryGroupId])) == null}">
     <div style="height:100%; background-color:#fff3f3;color:#cc0000">
-        SearchQuery with id ${params.queryId} does not exist.
+        SearchQueryGroup with id ${params.queryGroupId} does not exist.
     </div>
 </g:if>
 <g:else>

@@ -29,7 +29,7 @@
 >
     <rui:omMenuItems>
         <%
-            uiElement.menuItems.each{menuItem->
+            uiElement.getNodeMenuItems().each{menuItem->
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>

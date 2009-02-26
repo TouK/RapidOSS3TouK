@@ -139,4 +139,18 @@ class UiObjectMapOperations extends UiComponentOperations {
         }
         return addedMap;
     }
+
+    def getNodeMenuItems(){
+        def toolbarMenuItems = [];
+        toolbarMenus.each{UiToolbarMenu toolbarMenu ->
+            toolbarMenuItems.addAll(toolbarMenu.menuItems.name);
+        }
+        def nodeMenuItems = [];
+        menuItems.each{UiMenuItem menuItem ->
+           if(!toolbarMenuItems.contains(menuItem.name)){
+               nodeMenuItems.add(menuItem)
+           }
+        }
+        return nodeMenuItems;
+    }
 }

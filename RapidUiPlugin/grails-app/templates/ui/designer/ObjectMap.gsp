@@ -1,17 +1,16 @@
 <%
     def getMap = {stringMap->
-        def map = [:];
+        def mapArray = [];
         stringMap.split(",").each{entry->
             if(entry != "")
             {
                 def parts = entry.split(":");
                 def key = parts[0]
                 def value = parts[1]
-                map[key] = value;
+                mapArray.add("${key}:${value}")
             }
         }
-        def mapString = map.toString();
-        mapString = mapString.substring(1, mapString.length()-1);
+        def mapString = mapArray.join(",");
         if(mapString == "") mapString = ":"
         return "\${["+mapString+"]}";
     }

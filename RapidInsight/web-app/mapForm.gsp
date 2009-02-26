@@ -41,6 +41,6 @@
         </table>
         <input type="hidden" name="nodes" value="${nodes.encodeAsHTML()}"/>
         <input type="hidden" name="layout" value="${layout.encodeAsHTML()}"/>
-        <input type="hidden" name="id" value="${mode == 'edit'? mapNode.id : ''}"/>
+        <input type="hidden" name="id" value="${mode == 'edit'? topoMap.id : ''}"/>
     </rui:formRemote>
 </g:else>

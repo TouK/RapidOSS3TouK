@@ -9,8 +9,8 @@ public class UiLeftUnitOperations extends UiLayoutUnitOperations
                 designerType:"LeftUnit",
                 canBeDeleted: true,
                 display: "Left",
-                imageExpanded:"images/rapidjs/designer/layout_content.png",
-                imageCollapsed:"images/rapidjs/designer/layout_content.png",
+                imageExpanded:"images/rapidjs/designer/layout.png",
+                imageCollapsed:"images/rapidjs/designer/layout.png",
                 propertyConfiguration: [
                         width:[descr:"The width (in pixels) that the unit will take up in the layout."],
                         resize:[descr:"Boolean indicating whether this unit is resizeable.", required:true],

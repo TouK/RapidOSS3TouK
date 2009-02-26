@@ -18,8 +18,8 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
                 designerType: "ActionTrigger",
                 canBeDeleted: true,
                 display: "Trigger",
-                imageExpanded: "images/rapidjs/designer/bookmark.png",
-                imageCollapsed: "images/rapidjs/designer/bookmark.png",
+                imageExpanded: "images/rapidjs/designer/lightning.png",
+                imageCollapsed: "images/rapidjs/designer/lightning.png",
                 propertyConfiguration: [
                         type: [descr: "The type of the triggering event"],
                         component: [descr: "", formatter: {object -> return object.component ? object.component.name : ""}],

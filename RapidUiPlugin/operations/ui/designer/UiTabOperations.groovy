@@ -13,8 +13,8 @@ public class UiTabOperations extends AbstractDomainOperation
                 designerType: "Tab",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: 'images/rapidjs/designer/page.png',
-                imageCollapsed: 'images/rapidjs/designer/page.png',
+                imageExpanded: 'images/rapidjs/designer/tab.png',
+                imageCollapsed: 'images/rapidjs/designer/tab.png',
                 propertyConfiguration: [
                         name: [descr: 'Name of the tab'],
                         title: [descr: "Title of tab", required: true],

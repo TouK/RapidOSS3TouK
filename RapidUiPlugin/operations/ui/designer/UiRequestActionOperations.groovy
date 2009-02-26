@@ -19,8 +19,8 @@ class UiRequestActionOperations extends UiActionOperations {
                 designerType: "RequestAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/connect_creating.png",
-                imageCollapsed: "images/rapidjs/designer/connect_creating.png",
+                imageExpanded: "images/rapidjs/designer/arrow_refresh_small.png",
+                imageCollapsed: "images/rapidjs/designer/arrow_refresh_small.png",
                 propertyConfiguration: [
                         url: [descr: "The URL to be used for requests to the server"],
                         timeout: [descr: "The time interval in seconds to wait the server request completes successfully before aborting.", required: true],
@@ -34,8 +34,8 @@ class UiRequestActionOperations extends UiActionOperations {
                                         designerType: "RequestParameters",
                                         display: "RequestParameters",
                                         canBeDeleted: false,
-                                        imageExpanded: "images/rapidjs/designer/bookmark_folder.png",
-                                        imageCollapsed: "images/rapidjs/designer/bookmark_folder.png",
+                                        imageExpanded: "images/rapidjs/designer/link_go.png",
+                                        imageCollapsed: "images/rapidjs/designer/link_go.png",
                                         propertyConfiguration: [
                                         ],
                                         childrenConfiguration: [

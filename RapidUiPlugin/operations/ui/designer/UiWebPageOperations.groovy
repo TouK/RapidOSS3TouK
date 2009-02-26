@@ -11,8 +11,8 @@ public class UiWebPageOperations extends AbstractDomainOperation
                 designerType: "WebPage",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: 'images/rapidjs/designer/gsp_logo.png',
-                imageCollapsed: 'images/rapidjs/designer/gsp_logo.png',
+                imageExpanded: 'images/rapidjs/designer/page_world.png',
+                imageCollapsed: 'images/rapidjs/designer/page_world.png',
                 propertyConfiguration: [
                         name: [descr: 'Url of the page set']
                 ],
@@ -24,8 +24,8 @@ public class UiWebPageOperations extends AbstractDomainOperation
                                 metaData: [
                                         designerType: "Tabs",
                                         display: "Tabs",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',
+                                        imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                         childrenConfiguration: [
                                                 [designerType: "Tab", propertyName: "tabs", isMultiple: true]
                                         ]

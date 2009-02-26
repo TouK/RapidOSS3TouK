@@ -43,8 +43,8 @@ class UiSearchListOperations extends UiComponentOperations{
                                         help:"SearchList Component.html",
                                         designerType: "SearchListFields",
                                         display: "Fields",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/textfield_rename.png',
+                                        imageCollapsed: 'images/rapidjs/designer/textfield_rename.png',
                                         childrenConfiguration: [
                                                 [designerType: "SearchListField", propertyName: "fields", isMultiple: true]
                                         ]
@@ -71,8 +71,8 @@ class UiSearchListOperations extends UiComponentOperations{
                                         help:"SearchList Component.html",
                                         designerType: "SearchListMenuItems",
                                         display: "MenuItems",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
+                                        imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
                                         childrenConfiguration: [
                                                 [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "component"}]
                                         ]
@@ -85,8 +85,8 @@ class UiSearchListOperations extends UiComponentOperations{
                                         help:"SearchList Component.html",
                                         designerType: "SearchListPropertyMenuItems",
                                         display: "PropertyMenuItems",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/text_indent.png',
+                                        imageCollapsed: 'images/rapidjs/designer/text_indent.png',
                                         childrenConfiguration: [
                                                 [designerType: "MenuItem", propertyName: "propertyMenuItems", isMultiple: true, isVisible:{component-> return component.type == "property"}]
                                         ]

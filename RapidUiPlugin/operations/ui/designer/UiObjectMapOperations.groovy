@@ -17,8 +17,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                 designerType: "ObjectMap",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/chart_line.png",
+                imageCollapsed: "images/rapidjs/designer/chart_line.png",
                 propertyConfiguration: [
                         expandURL: [descr: "The default URL to be used for requests to the server to retrieve map topology (nodes, edges, locations, and etc.)"],
                         dataURL: [descr: "The default URL to be used for requests to the server to retrieve the data of each node and edges (state, cpu utilization, and etc.)"],
@@ -50,8 +50,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                         help:"ObjectMap Component.html",
                                         designerType: "ObjectMapTextNodeContent",
                                         display: "Texts",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/text_smallcaps.png',
+                                        imageCollapsed: 'images/rapidjs/designer/text_smallcaps.png',
                                         childrenConfiguration: [
                                                 [designerType: "ObjectMapContent", propertyName: "nodeContents", isMultiple: true, isVisible:{component->component.type == "text"}]
                                         ]
@@ -64,8 +64,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                         help:"ObjectMap Component.html",
                                         designerType: "ObjectMapGaugeNodeContent",
                                         display: "Gauges",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/excellent.png',
+                                        imageCollapsed: 'images/rapidjs/designer/excellent.png',
                                         childrenConfiguration: [
                                                 [designerType: "ObjectMapContent", propertyName: "nodeContents", isMultiple: true, isVisible:{component->component.type == "gauge"}]
                                         ]
@@ -78,8 +78,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                         help:"ObjectMap Component.html",
                                         designerType: "ObjectMapToolbarMenus",
                                         display: "ToolbarMenus",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/text_indent.png',
+                                        imageCollapsed: 'images/rapidjs/designer/text_indent.png',
                                         childrenConfiguration: [
                                                 [designerType: "ToolbarMenu", propertyName: "toolbarMenus", isMultiple: true]
                                         ]
@@ -92,8 +92,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                         help:"ObjectMap Component.html",
                                         designerType: "ObjectMapMenuItems",
                                         display: "MenuItems",
-                                        imageExpanded: 'images/rapidjs/designer/tab.png',
-                                        imageCollapsed: 'images/rapidjs/designer/tab.png',
+                                        imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
+                                        imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
                                         childrenConfiguration: [
                                                 [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "component"}]
                                         ]

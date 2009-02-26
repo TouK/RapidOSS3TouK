@@ -9,8 +9,8 @@ public class UiTopUnitOperations extends UiLayoutUnitOperations
                 designerType:"TopUnit",
                 canBeDeleted: true,
                 display: "Top",
-                imageExpanded:"images/rapidjs/designer/layout_content.png",
-                imageCollapsed:"images/rapidjs/designer/layout_content.png",
+                imageExpanded:"images/rapidjs/designer/layout.png",
+                imageCollapsed:"images/rapidjs/designer/layout.png",
                 propertyConfiguration: [
                         height:[descr:"The height (in pixels) that the unit will take up in the layout."],
                         resize:[descr:"Boolean indicating whether this unit is resizeable.", required:true],

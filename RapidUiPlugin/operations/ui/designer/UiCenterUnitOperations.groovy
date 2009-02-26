@@ -8,8 +8,8 @@ public class UiCenterUnitOperations extends UiLayoutUnitOperations
                 help:"Layout Panes - Center, Top, Bottom, Left, Right.html",
                 designerType:"CenterUnit",
                 display: "Center",
-                imageExpanded:"images/rapidjs/designer/layout_content.png",
-                imageCollapsed:"images/rapidjs/designer/layout_content.png",
+                imageExpanded:"images/rapidjs/designer/layout.png",
+                imageCollapsed:"images/rapidjs/designer/layout.png",
                 propertyConfiguration: [:],
                 childrenConfiguration:[]
         ];

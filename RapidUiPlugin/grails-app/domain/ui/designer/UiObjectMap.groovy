@@ -16,7 +16,7 @@ class UiObjectMap extends UiComponent{
     String dataURL="script/run/getMapData"
     Long pollingInterval= 0;
     Long nodeSize= 60;
-    String edgeColors="5:0xffde2c26,4:0xfff79229,3:0xfffae500,2:0xff20b4e0,1:0xffac6bac,0:0xff62b446,default:0xff62b446"
+    String edgeColors="'5':0xffde2c26,'4':0xfff79229,'3':0xfffae500,'2':0xff20b4e0,'1':0xffac6bac,'0':0xff62b446,'default':0xff62b446"
     String edgeColorDataKey="state";
     List nodeContents=[];
     List toolbarMenus=[];

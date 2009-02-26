@@ -44,7 +44,7 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
 
     this.getComponentsWithMenuItems = function(designer, xmlData) {
         var menuConfig = {};
-        var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenuItems':'toolbar'}
+        var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenus':'toolbar'}
         var componentNodes = this.getComponentNodesOfCurrentTab(designer, xmlData);
         for (var i = 0; i < componentNodes.length; i++) {
             var hasMenu = false;
@@ -52,10 +52,10 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
             var compChildNodes = componentNodes[i].childNodes();
             for (var j = 0; j < compChildNodes.length; j++) {
                 var childDisplay = compChildNodes[j].getAttribute(designer.treeDisplayAttribute);
-                if (childDisplay == "MenuItems" || childDisplay == "PropertyMenuItems" || childDisplay == "ToolbarMenuItems") {
+                if (childDisplay == "MenuItems" || childDisplay == "PropertyMenuItems" || childDisplay == "ToolbarMenus") {
                     var menuType = menuTypes[childDisplay];
                     var menuNames = [];
-                    if (childDisplay == 'ToolbarMenuItems') {
+                    if (childDisplay == 'ToolbarMenus') {
                         var toolbarMenus = compChildNodes[j].childNodes();
                         for (var k = 0; k < toolbarMenus.length; k++) {
                             var menuNodes = toolbarMenus[k].childNodes();

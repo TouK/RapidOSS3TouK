@@ -227,7 +227,6 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
         }
         catch(err) {
             this.events['error'].fireDirect([err.description])
-            throw err.description;
         }
 
     }
@@ -256,7 +255,6 @@ YAHOO.rapidjs.component.action.LinkAction.prototype = {
         }
         catch(err) {
             this.events['error'].fireDirect([err.description])
-            throw err.description;
         }
     }
 };

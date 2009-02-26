@@ -410,6 +410,18 @@ YAHOO.rapidjs.designer.Config = new function() {
                 args:{
                     "title":"Component's new title"
                 }
+            },
+            "loadMapForNode":{
+                descr:"Loads the map for the given object name.",
+                args:{
+                    "name":"Name of the object"
+                }
+            },
+            "loadMap":{
+                descr:"Loads the map from AJAX response.",
+                args:{
+                    "response":"AJAX response object which includes map structure"
+                }
             }
         }
     };

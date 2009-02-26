@@ -96,7 +96,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         else
         {
-            this.doRequest(this.url, this.params);
+            this.doPostRequest(this.url, this.params);
         }
         this.showMask();
     },

@@ -54,6 +54,7 @@ class UiTreeGridColumnOperations extends UiColumnOperations
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
         def attributes = xmlNode.attributes();
         attributes.component = parentElement
+        attributes.componentId = parentElement.id
         if (imagesNode.UiElement.size() == 0)
         {
             attributes.type = "text";

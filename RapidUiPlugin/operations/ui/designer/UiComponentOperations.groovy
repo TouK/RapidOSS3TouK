@@ -1,6 +1,7 @@
 package ui.designer
 
 import com.ifountain.rui.util.DesignerTemplateUtils
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,7 +10,7 @@ import com.ifountain.rui.util.DesignerTemplateUtils
 * Time: 8:54:45 AM
 * To change this template use File | Settings | File Templates.
 */
-class UiComponentOperations extends UiLayoutUnitOperations {
+class UiComponentOperations extends AbstractDomainOperation {
     public static Map metaData()
     {
         Map metaData = [

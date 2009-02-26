@@ -20,7 +20,7 @@ import utils.TestingConstants
 
 def pid=java.lang.management.ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
 def javaDir = System.getenv("JAVA_HOME")+"/bin/";
-def cmd = "\"${javaDir}jmap\" -histo ${pid}"
+def cmd = "${javaDir}jmap -histo ${pid}"
 
 
 def process = "${cmd}".execute()

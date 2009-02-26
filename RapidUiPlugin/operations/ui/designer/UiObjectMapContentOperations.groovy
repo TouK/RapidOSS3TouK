@@ -39,6 +39,7 @@ class UiObjectMapContentOperations  extends AbstractDomainOperation
     {
         def attributes = xmlNode.attributes();
         attributes.objectMap = parentElement
+        attributes.objectMapId = parentElement.id
         return DesignerUtils.addUiObject(UiObjectMapContent, attributes, xmlNode);
     }
 

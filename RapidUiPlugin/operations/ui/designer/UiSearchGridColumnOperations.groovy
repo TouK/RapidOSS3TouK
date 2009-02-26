@@ -35,6 +35,7 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
     {
         def attributes = xmlNode.attributes();
         attributes.component = parentElement
+        attributes.componentId = parentElement.id
         def searchGridColumn = DesignerUtils.addUiObject(UiSearchGridColumn, attributes, xmlNode);
         return searchGridColumn;
     }

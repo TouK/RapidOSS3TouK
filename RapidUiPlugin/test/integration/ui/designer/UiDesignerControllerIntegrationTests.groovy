@@ -206,7 +206,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(chart1Props.name, component.name);
         assertEquals(chart1Props.title, component.title);
         assertEquals (UiCenterUnit.name, component.layoutUnit.class.name);
-        UiRequestAction requestAction = UiAction.get(name:"action1", tab:tab, isActive:true);
+        UiRequestAction requestAction = UiAction.get(name:"action1", tabId:tab.id, isActive:true);
         assertEquals (2, requestAction.components.size());
     }
 

@@ -27,11 +27,16 @@ class UiDesignerController {
             def sw = new StringWriter();
             def markupBuilder = new MarkupBuilder(sw);
             def urls = UiWebPage.list();
+            def application = grailsApplication;
+            def metaDataGetter = {component->
+                return getMetaData(application.getDomainClass(component.class.name));
+            }
             try
             {
                 markupBuilder.UiConfig {
                     markupBuilder.UiElement(designerType: "WebPages") {
-                        com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder);
+
+                        com.ifountain.rui.util.DesignerUtils.generateXml(urls, markupBuilder, metaDataGetter);
                     }
                 }
                 render(text: sw.toString(), contentType: "text/xml");
@@ -242,6 +247,23 @@ class UiDesignerController {
 
     }
 
+    def getMetaData(org.codehaus.groovy.grails.commons.GrailsDomainClass domainClass)
+    {
+        def domainClassMetaData = null
+        try
+        {
+            domainClassMetaData = domainClass.clazz.'metaData'()
+        } catch (groovy.lang.MissingMethodException prop) {
+            log.warn("No meta data information available for ${domainClass.name}");
+        };
+        if (domainClassMetaData)
+        {
+            def metaProperties = domainClassMetaData.propertyConfiguration ? domainClassMetaData.propertyConfiguration : [:]
+            domainClassMetaData.propertyConfiguration = DesignerUtils.addConfigurationParametersFromModel(metaProperties, domainClass);
+        }
+        return domainClassMetaData;
+    }
+
     def metaData = {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
@@ -253,22 +275,10 @@ class UiDesignerController {
             }
             def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
             uiDomainClasses.each {grailsDomainClass ->
-                Class domainClass = grailsDomainClass.clazz;
-                def domainClassMetaData = null
-                try
+                def domainClassMetaData = getMetaData(grailsDomainClass);
+                if(domainClassMetaData != null && domainClassMetaData.designerType != null)
                 {
-                    domainClassMetaData = domainClass.'metaData'()
-                } catch (groovy.lang.MissingMethodException prop) {
-                    log.warn("No meta data information available for ${domainClass.name}");
-                };
-                if (domainClassMetaData)
-                {
-                    def metaProperties = domainClassMetaData.propertyConfiguration ? domainClassMetaData.propertyConfiguration : [:]
-                    if (domainClassMetaData.designerType != null)
-                    {
-                        domainClassMetaData.propertyConfiguration = DesignerUtils.addConfigurationParametersFromModel(metaProperties, grailsDomainClass);
-                        createMetaXml(builder, domainClassMetaData);
-                    }
+                    createMetaXml(builder, domainClassMetaData);
                 }
             }
         }

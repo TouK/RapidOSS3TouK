@@ -29,7 +29,7 @@ class DesignerTemplateUtils {
             variableValue = "\"${variableValue.escape()}\"";
         }
         return "<%\n"+
-        "${variableName}=variableValue\n"
+        "${variableName}=${variableValue}\n" + 
         "%>";
     }
 

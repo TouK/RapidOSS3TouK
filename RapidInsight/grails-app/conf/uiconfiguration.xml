@@ -737,7 +737,7 @@
                 <UiElement designerType="FunctionArgument" id="3315" value="'Details of ' + params.data.className + ' ' + params.data.name"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
-                <UiElement designerType="ActionTrigger" id="3317" type="Menu" event="browse"/>
+                <UiElement designerType="ActionTrigger" id="3317" type="Menu" event="browse" component="inventoryList"/>
               </UiElement>
             </UiElement>
             <UiElement designerType="FunctionAction" id="3319" component="saveQueryForm" function="show" name="copyQueryAction" condition="">

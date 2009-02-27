@@ -43,7 +43,7 @@
         </td>
         <td width="0%"></td>
         <td id="serverDownEl" width="0%" style="display:none">
-            <img src="images/network-offline.png"/>
+            <img src="/RapidSuite/images/network-offline.png"/>
         </td>
         <td width="0%">
             <div style="vertical-align:bottom">

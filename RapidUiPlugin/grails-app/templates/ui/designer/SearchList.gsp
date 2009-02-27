@@ -73,7 +73,7 @@
      <rui:slFields>
     <%
         uiElement.fields.each{field->
-            def fieldsString = field.fields.split(",").encodeAsHTML().toString();
+            def fieldsString = field.fields.split(",").toString();
             fieldsString = fieldsString.substring(1, fieldsString.length()-1);
     %>
         <rui:slField exp="${field.exp.encodeAsHTML()}" fields='\${[${fieldsString}]}'></rui:slField>

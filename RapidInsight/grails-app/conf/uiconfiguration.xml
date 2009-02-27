@@ -74,7 +74,7 @@
                 <UiElement designerType='FunctionArgument' id='7933' />
               </UiElement>
               <UiElement designerType='ActionTriggers'>
-                <UiElement designerType='ActionTrigger' event='nodeClicked' id='7935' type="Component event"/>
+                <UiElement designerType='ActionTrigger' event='nodeClicked' id='7935' type="Component event" component="filterTree"/>
               </UiElement>
             </UiElement>
             <UiElement designerType='FunctionAction' component='eventDetails' function='show' name='eventDetailsAction' id='7937'>
@@ -110,7 +110,7 @@
                 <UiElement designerType='FunctionArgument' id='7975' />
               </UiElement>
               <UiElement designerType='ActionTriggers'>
-                <UiElement designerType='ActionTrigger' event='saveQueryClicked' id='7977' type="Component event"/>
+                <UiElement designerType='ActionTrigger' event='saveQueryClicked' id='7977' type="Component event"  component="eventsGrid"/>
               </UiElement>
             </UiElement>
             <UiElement designerType='FunctionAction' component='saveQueryForm' function='show' name='queryUpdateAction' id='7979'>
@@ -266,7 +266,7 @@
                 <UiElement designerType="FunctionArgument" id="11367"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
-                <UiElement designerType="ActionTrigger" event="nodeClicked" id="11369" type="Component event"/>
+                <UiElement designerType="ActionTrigger" event="nodeClicked" id="11369" type="Component event"   component="filterTree"/>
               </UiElement>
             </UiElement>
             <UiElement designerType="FunctionAction" component="eventDetails" function="show" name="eventDetailsAction" id="11371">
@@ -302,7 +302,7 @@
                 <UiElement designerType="FunctionArgument" id="11409"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
-                <UiElement designerType="ActionTrigger" event="saveQueryClicked" id="11411" type="Component event"/>
+                <UiElement designerType="ActionTrigger" event="saveQueryClicked" id="11411" type="Component event"  component="eventList"/>
               </UiElement>
             </UiElement>
             <UiElement designerType="FunctionAction" component="saveQueryForm" function="show" name="queryUpdateAction" id="11413">

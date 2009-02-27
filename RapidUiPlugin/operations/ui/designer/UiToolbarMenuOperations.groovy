@@ -25,8 +25,8 @@ class UiToolbarMenuOperations extends AbstractDomainOperation
                 propertyConfiguration: [
                         label: [descr: "The label of the menu", required:true]
                 ],
-                childrenConfiguration: [
-                    [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "toolbar"}]
+                childrenConfiguration: [                                                                                                                          
+                    [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "toolbar" && component.parentMenuItem == null}]
                 ]
         ];
         return metaData;

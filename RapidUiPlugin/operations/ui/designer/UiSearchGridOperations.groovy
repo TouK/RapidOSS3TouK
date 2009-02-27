@@ -89,7 +89,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                                         imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
                                         imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
                                         childrenConfiguration: [
-                                                [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true]
+                                                [designerType: "MenuItem", propertyName: "menuItems", isMultiple: true, isVisible:{component-> return component.type == "component" && component.parentMenuItem == null}]
                                         ]
                                 ]
                         ]

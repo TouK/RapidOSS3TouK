@@ -33,6 +33,10 @@ public class TestLogUtils
     {
         enableLogger(TestLogUtils.log);
     }
+    public static void disableLogger()
+    {
+        disableLogger(TestLogUtils.log);
+    }
     public static void enableLogger(Logger logger)
     {
         logger.removeAllAppenders();

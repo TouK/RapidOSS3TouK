@@ -18,8 +18,10 @@
 >
     <%
         uiElement.parameters.each{parameter->
+            def parameterVisiblePropertyName = "parameter"+parameter.id+ "Visible";
+            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(parameterVisiblePropertyName, parameter.value, true);
     %>
-    <rui:requestParam key="${parameter.key}" value="${parameter.value}"></rui:requestParam>
+    <rui:requestParam key="${parameter.key}" value="\${${parameterVisiblePropertyName}}"></rui:requestParam>
     <%
         }
     %>

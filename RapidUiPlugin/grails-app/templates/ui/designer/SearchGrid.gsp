@@ -17,7 +17,7 @@
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                 def visiblePropertyName = menuItem.name+ "Visible";
-                println com.ifountain.rui.util.DesignerUtils.declareVariable(visiblePropertyName, menuItem.visible, true);
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(visiblePropertyName, menuItem.visible, true);
     %>
         <rui:sgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${visiblePropertyName}}" ${actionString}>
             <%
@@ -30,7 +30,7 @@
                             def subMenuActionString = subMenuItem.getActionString();
                             def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                             def subMenuVisiblePropertyName = subMenuItem.name+ "Visible";
-                            println com.ifountain.rui.util.DesignerUtils.declareVariable(subMenuVisiblePropertyName, subMenuItem.visible, true);
+                            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuVisiblePropertyName, subMenuItem.visible, true);
                     %>
                         <rui:sgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuVisiblePropertyName}}"></rui:sgMenuItem>
                     <%
@@ -51,7 +51,7 @@
     <%
         uiElement.images.each{image->
             def imageVisiblePropertyName = "image"+image.id+ "Visible";
-            println com.ifountain.rui.util.DesignerUtils.declareVariable(imageVisiblePropertyName, image.visible, true);
+            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(imageVisiblePropertyName, image.visible, true);
     %>
         <rui:sgImage visible="\${${imageVisiblePropertyName}}" src="../${image.src}"></rui:sgImage>
     <%
@@ -75,7 +75,7 @@
         uiElement.rowColors.each{rowColor->
             def textColor = rowColor.textColor;
             def rowColorVisiblePropertyName = "rowColor"+rowColor.id+ "Visible";
-            println com.ifountain.rui.util.DesignerUtils.declareVariable(rowColorVisiblePropertyName, rowColor.visible, true);
+            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(rowColorVisiblePropertyName, rowColor.visible, true);
     %>
         <rui:sgRowColor color="${rowColor.color}" visible="\${${rowColorVisiblePropertyName}}" ${textColor?"textColor='"+textColor+"'":""}></rui:sgRowColor>
     <%

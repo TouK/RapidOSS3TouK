@@ -26,7 +26,7 @@
                 <%
                     column.images.each{colImage->
                         def colImageMenuItemVisiblePropertyName = "image"+colImage.id+ "Visible";
-                        println com.ifountain.rui.util.DesignerUtils.declareVariable(colImageMenuItemVisiblePropertyName, colImage.visible, true);
+                        println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(colImageMenuItemVisiblePropertyName, colImage.visible, true);
                 %>
                 <rui:tgImage src="../${colImage.src}" visible="\${${colImageMenuItemVisiblePropertyName}}" align="${colImage.align}"></rui:tgImage>
                 <%
@@ -48,7 +48,7 @@
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                     def menuItemVisiblePropertyName = menuItem.name+ "Visible";
-                    println com.ifountain.rui.util.DesignerUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
+                    println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
         %>
         <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${menuItemVisiblePropertyName}}" ${actionString}>
                <%
@@ -60,7 +60,7 @@
                             menuItem.childMenuItems.each{subMenuItem->
                                 def subMenuAction = subMenuItem.getAction();
                                 def subMenuItemVisiblePropertyName = subMenuItem.name+ "Visible";
-                                println com.ifountain.rui.util.DesignerUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
+                                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
                         %>
                             <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="\${${subMenuItemVisiblePropertyName}}"></rui:tgMenuItem>
                         <%
@@ -80,7 +80,7 @@
         <%
             uiElement.rootImages.each{rootImage->
                 def rootImageVisiblePropertyName = "rootImage"+rootImage.id+ "Visible";
-                println com.ifountain.rui.util.DesignerUtils.declareVariable(rootImageVisiblePropertyName, rootImage.visible, true);
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(rootImageVisiblePropertyName, rootImage.visible, true);
         %>
         <rui:tgRootImage visible="\${${rootImageVisiblePropertyName}}" expanded="../${rootImage.expanded}" collapsed="../${rootImage.collapsed}"></rui:tgRootImage>
         <%

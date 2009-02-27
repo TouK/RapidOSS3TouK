@@ -21,7 +21,7 @@
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                 def menuItemVisiblePropertyName = menuItem.name+ "Visible";
-                println com.ifountain.rui.util.DesignerUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
         %>
         <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${menuItemVisiblePropertyName}}" ${actionString}>
                <%
@@ -34,7 +34,7 @@
                                 def subMenuActionString = subMenuItem.getActionString();
                                 def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                                 def subMenuItemVisiblePropertyName = subMenuItem.name+ "Visible";
-                                println com.ifountain.rui.util.DesignerUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
+                                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
                         %>
                             <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuItemVisiblePropertyName}}"></rui:slMenuItem>
                         <%
@@ -59,7 +59,7 @@
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                     def propertyMenuItemVisiblePropertyName = menuItem.name+ "Visible";
-                    println com.ifountain.rui.util.DesignerUtils.declareVariable(propertyMenuItemVisiblePropertyName, menuItem.visible, true);
+                    println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(propertyMenuItemVisiblePropertyName, menuItem.visible, true);
         %>
         <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString} visible="\${${propertyMenuItemVisiblePropertyName}">
                <%
@@ -72,7 +72,7 @@
                                 def subMenuActionString = subMenuItem.getActionString();
                                 def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                                 def propertySubMenuItemVisiblePropertyName = subMenuItem.name+ "Visible";
-                                println com.ifountain.rui.util.DesignerUtils.declareVariable(propertySubMenuItemVisiblePropertyName, subMenuItem.visible, true);
+                                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(propertySubMenuItemVisiblePropertyName, subMenuItem.visible, true);
                         %>
                             <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${propertySubMenuItemVisiblePropertyName}}"></rui:slMenuItem>
                         <%
@@ -93,8 +93,10 @@
         uiElement.fields.each{field->
             def fieldsString = field.fields.split(",").toString();
             fieldsString = fieldsString.substring(1, fieldsString.length()-1);
+            def expVisiblePropertyName = "fieldExpression"+field.id+ "Visible";
+            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(expVisiblePropertyName, field.exp, true);
     %>
-        <rui:slField exp="${field.exp}" fields='\${[${fieldsString}]}'></rui:slField>
+        <rui:slField exp="\${${expVisiblePropertyName}}" fields='\${[${fieldsString}]}'></rui:slField>
     <%
         }
     %>
@@ -103,7 +105,7 @@
     <%
         uiElement.images.each{image->
             def imageMenuItemVisiblePropertyName = "image"+image.id+ "Visible";
-            println com.ifountain.rui.util.DesignerUtils.declareVariable(imageMenuItemVisiblePropertyName, image.visible, true);
+            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(imageMenuItemVisiblePropertyName, image.visible, true);
     %>
         <rui:slImage visible="\${${imageMenuItemVisiblePropertyName}}" src="../${image.src}"></rui:slImage>
     <%

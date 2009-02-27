@@ -1,4 +1,8 @@
-<rui:action id="${uiElement.name}" type="link" url="${uiElement.url}" ${uiElement.condition != ""?"condition=\""+uiElement.condition+"\"":""}
+<%
+    def urlVisiblePropertyName = "linkUrl"+link.id+ "Visible";
+    println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(urlVisiblePropertyName, link.url, true);
+%>
+<rui:action id="${uiElement.name}" type="link" url="\${${urlVisiblePropertyName}}" ${uiElement.condition != ""?"condition=\""+uiElement.condition+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

@@ -1,0 +1,1281 @@
+<UiConfig>
+  <UiElement designerType='WebPages'>
+    <UiElement designerType='WebPage' name='indexTrial' id='7853'>
+      <UiElement designerType='Tabs'>
+        <UiElement designerType='Tab' name='events' title='Events' contentFile='pageContents/_events.gsp' id='7855'>
+          <UiElement designerType='Components'>
+            <UiElement designerType='SearchGrid' name='eventsGrid' title='Events' id='7858'>
+              <UiElement designerType='SearchGridImages'>
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/red.png' visible='params.data.severity == &apos;5&apos;' id='7874' />
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/orange.png' visible='params.data.severity == &apos;4&apos;' id='7876' />
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/yellow.png' visible='params.data.severity == &apos;3&apos;' id='7878' />
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/blue.png' visible='params.data.severity == &apos;2&apos;' id='7880' />
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/purple.png' visible='params.data.severity == &apos;1&apos;' id='7882' />
+                <UiElement designerType='Image' src='images/rapidjs/component/searchlist/green.png' visible='params.data.severity == &apos;0&apos;' id='7884' />
+              </UiElement>
+              <UiElement designerType='SearchGridColumns'>
+                <UiElement designerType='SearchGridColumn' attributeName='acknowledged' width='50' colLabel='Ack' id='7860' />
+                <UiElement designerType='SearchGridColumn' attributeName='owner' columnIndex='1' colLabel='Owner' id='7862' />
+                <UiElement designerType='SearchGridColumn' attributeName='elementName' width='150' columnIndex='2' colLabel='Element Name' id='7864' />
+                <UiElement designerType='SearchGridColumn' attributeName='identifier' width='150' columnIndex='3' colLabel='Event' id='7866' />
+                <UiElement designerType='SearchGridColumn' attributeName='count' width='50' columnIndex='4' colLabel='Count' id='7868' />
+                <UiElement designerType='SearchGridColumn' attributeName='source' columnIndex='5' colLabel='Source' id='7870' />
+                <UiElement designerType='SearchGridColumn' attributeName='changedAt' width='120' columnIndex='6' colLabel='Last Change' id='7872' />
+              </UiElement>
+              <UiElement designerType='SearchGridRowColors' />
+              <UiElement designerType='SearchGridMenuItems'>
+                <UiElement designerType='MenuItem' name='eventDetails' label='Event Details' id='7886' />
+                <UiElement designerType='MenuItem' name='browse' label='Browse' visible='params.data.elementName &amp;&amp; params.data.elementName != &apos;&apos;' id='7896' />
+                <UiElement designerType='MenuItem' name='acknowledge' label='Acknowledge' visible='params.data.acknowledged != &apos;true&apos;' id='7888' />
+                <UiElement designerType='MenuItem' name='unacknowledge' label='Unacknowledge' visible='params.data.acknowledged == &apos;true&apos;' id='7890' />
+                <UiElement designerType='MenuItem' name='takeOwnership' label='Take Ownership' id='7892' />
+                <UiElement designerType='MenuItem' name='releaseOwnership' label='Release Ownership' id='7894' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='TreeGrid' url='script/run/queryList?format=xml&amp;type=event' rootTag='Filters' contentPath='Filter' keyAttribute='id' expanded='true' name='filterTree' title='Saved Queries' id='7898'>
+              <UiElement designerType='TreeGridColumns'>
+                <UiElement designerType='TreeGridColumn' attributeName='name' width='248' sortBy='true' colLabel='Name' id='7900'>
+                  <UiElement designerType='TreeGridColumnImages' />
+                </UiElement>
+              </UiElement>
+              <UiElement designerType='TreeGridRootImages'>
+                <UiElement designerType='RootImage' expanded='images/rapidjs/component/tools/folder_open.gif' collapsed='images/rapidjs/component/tools/folder.gif' visible='params.data.nodeType == &apos;group&apos;' id='7902' />
+                <UiElement designerType='RootImage' expanded='images/rapidjs/component/tools/filter.png' collapsed='images/rapidjs/component/tools/filter.png' visible='params.data.nodeType == &apos;filter&apos;' id='7904' />
+              </UiElement>
+              <UiElement designerType='TreeGridMenuItems'>
+                <UiElement designerType='MenuItem' name='deleteQuery' label='Delete' visible='params.data.isPublic != &apos;true&apos; &amp;&amp; params.data.nodeType == &apos;filter&apos; ' id='7906' />
+                <UiElement designerType='MenuItem' name='deleteQueryGroup' label='Delete' visible='params.data.isPublic != &apos;true&apos; &amp;&amp; params.data.name != &apos;My Queries&apos; &amp;&amp; params.data.nodeType == &apos;group&apos;' id='7908' />
+                <UiElement designerType='MenuItem' name='queryUpdate' label='Update' visible='params.data.nodeType == &apos;filter&apos; &amp;&amp; params.data.isPublic != &apos;true&apos;' id='7910' />
+                <UiElement designerType='MenuItem' name='queryGroupUpdate' label='Update' visible='params.data.isPublic != &apos;true&apos; &amp;&amp; params.data.name != &apos;My Queries&apos; &amp;&amp; params.data.nodeType == &apos;group&apos;' id='7912' />
+                <UiElement designerType='MenuItem' name='copyQuery' label='Copy Query' visible='params.data.nodeType == &apos;filter&apos;' id='7914' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='Html' name='eventDetails' id='7916' />
+            <UiElement designerType='Html' name='objectDetails' id='7918' />
+            <UiElement designerType='Html' name='saveQueryForm' id='7920' />
+            <UiElement designerType='Html' name='saveQueryGroupForm' id='7922' />
+          </UiElement>
+          <UiElement designerType='Layout' id='7854'>
+            <UiElement designerType='CenterUnit' component='eventsGrid' id='8084' />
+            <UiElement designerType='LeftUnit' width='250' resize='true' component='filterTree' id='8087' />
+          </UiElement>
+          <UiElement designerType='Dialogs'>
+            <UiElement designerType='Dialog' width='850' height='500' component='eventDetails' id='8072' />
+            <UiElement designerType='Dialog' width='850' x='85' y='50' height='700' component='objectDetails' id='8075' />
+            <UiElement designerType='Dialog' title='Save query' width='385' height='165' resizable='false' component='saveQueryForm' id='8078' />
+            <UiElement designerType='Dialog' title='Save group' width='330' height='100' resizable='false' component='saveQueryGroupForm' id='8081' />
+          </UiElement>
+          <UiElement designerType='Actions'>
+            <UiElement designerType='FunctionAction' component='eventsGrid' function='setQueryWithView' name='setQueryAction' condition='params.data.nodeType == &apos;filter&apos;' id='7924'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='params.data.query ' id='7927' />
+                <UiElement designerType='FunctionArgument' value='params.data.viewName' id='7929' />
+                <UiElement designerType='FunctionArgument' id='7931' />
+                <UiElement designerType='FunctionArgument' id='7933' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' event='nodeClicked' id='7935' type="Component event"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='eventDetails' function='show' name='eventDetailsAction' id='7937'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;getEventDetails.gsp&apos;, {name:params.data.name})' id='7940' />
+                <UiElement designerType='FunctionArgument' value='&apos;Details of &apos; + params.data.name' id='7942' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='eventDetails' id='7944' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='objectDetails' function='show' name='objectDetailsAction' id='7948'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;getObjectDetails.gsp&apos;, {name:params.data.elementName})' id='7951' />
+                <UiElement designerType='FunctionArgument' value='&apos;Details of &apos; + params.data.elementName' id='7953' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='browse' id='7955' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='saveQueryForm' function='show' name='copyQueryAction' id='7959'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;queryForm.gsp&apos;, {query:params.data.query, group:params.data.group, viewName:params.data.viewName, mode:&apos;create&apos;, type:&apos;event&apos;, searchComponentType:&apos;grid&apos;})' id='7962' />
+                <UiElement designerType='FunctionArgument' id='7964' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='filterTree' event='copyQuery' id='7966' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='saveQueryForm' function='show' name='saveQueryAction' id='7970'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;queryForm.gsp&apos;, {query:params.query,  viewName:YAHOO.rapidjs.Components[&apos;eventsGrid&apos;].getCurrentView(), mode:&apos;create&apos;, type:&apos;event&apos;, searchComponentType:&apos;grid&apos;})' id='7973' />
+                <UiElement designerType='FunctionArgument' id='7975' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' event='saveQueryClicked' id='7977' type="Component event"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='saveQueryForm' function='show' name='queryUpdateAction' id='7979'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;queryForm.gsp&apos;, {queryId:params.data.id,   mode:&apos;edit&apos;, type:&apos;event&apos;, searchComponentType:&apos;grid&apos;})' id='7982' />
+                <UiElement designerType='FunctionArgument' id='7984' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='filterTree' event='queryUpdate' id='7986' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='saveQueryGroupForm' function='show' name='queryGroupUpdateAction' id='7990'>
+              <UiElement designerType='FunctionArguments' designerHidden='true'>
+                <UiElement designerType='FunctionArgument' value='createURL(&apos;queryGroupForm.gsp&apos;, {mode:&apos;edit&apos;, type:&apos;event&apos;, queryGroupId:params.data.id})' id='7993' />
+                <UiElement designerType='FunctionArgument' id='7995' />
+              </UiElement>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='filterTree' event='queryGroupUpdate' id='7997' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='FunctionAction' component='filterTree' function='poll' name='refreshQueriesAction' id='8063'>
+              <UiElement designerType='FunctionArguments' designerHidden='true' />
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Action event' triggeringAction='deleteQueryAction' event='success' id='8066' />
+                <UiElement designerType='ActionTrigger' type='Action event' triggeringAction='deleteQueryGroupAction' event='success' id='8069' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='MergeAction' url='script/run/acknowledge' components='eventsGrid' name='acknowledgeAction' id='8001'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='acknowledge' id='8008' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='name' value='params.data.name ' id='8004' />
+                <UiElement designerType='RequestParameter' key='acknowledged' value='&apos;true&apos;' id='8006' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='MergeAction' url='script/run/acknowledge' components='eventsGrid' name='unacknowledgeAction' id='8012'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='unacknowledge' id='8019' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='name' value='params.data.name ' id='8015' />
+                <UiElement designerType='RequestParameter' key='acknowledged' value='&apos;false&apos;' id='8017' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='MergeAction' url='script/run/setOwnership' components='eventsGrid' name='takeOwnershipAction' id='8023'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='takeOwnership' id='8030' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='name' value='params.data.name ' id='8026' />
+                <UiElement designerType='RequestParameter' key='act' value='&apos;true&apos;' id='8028' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='MergeAction' url='script/run/setOwnership' components='eventsGrid' name='releaseOwnershipAction' id='8034'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='eventsGrid' event='releaseOwnership' id='8041' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='name' value='params.data.name ' id='8037' />
+                <UiElement designerType='RequestParameter' key='act' value='&apos;false&apos;' id='8039' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='RequestAction' url='searchQuery/delete?format=xml' components='filterTree' name='deleteQueryAction' id='8045'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='filterTree' event='deleteQuery' id='8050' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='id' value='params.data.id' id='8048' />
+              </UiElement>
+            </UiElement>
+            <UiElement designerType='RequestAction' url='searchQueryGroup/delete?format=xml' components='filterTree' name='deleteQueryGroupAction' id='8054'>
+              <UiElement designerType='ActionTriggers'>
+                <UiElement designerType='ActionTrigger' type='Menu' component='filterTree' event='deleteQueryGroup' id='8059' />
+              </UiElement>
+              <UiElement designerType='RequestParameters'>
+                <UiElement designerType='RequestParameter' key='id' value='params.data.id' id='8057' />
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+        <UiElement designerType="Tab" name="eventSearch" title="Event Search" contentFile="pageContents/_eventSearch.gsp" id="11280">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchList" defaultFields="name" name="eventList" title="Event Search" id="11283">
+              <UiElement designerType="SearchListFields">
+                <UiElement designerType="SearchListField" fields="elementName, identifier, node,active, owner, acknowledged, severity, source" exp="params.data.rsAlias == 'RsRiEvent'" id="11285"/>
+              </UiElement>
+              <UiElement designerType="SearchListImages">
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/red.png" visible="params.data.severity == '5'" id="11287"/>
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/orange.png" visible="params.data.severity == '4'" id="11289"/>
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/yellow.png" visible="params.data.severity == '3'" id="11291"/>
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/blue.png" visible="params.data.severity == '2'" id="11293"/>
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/purple.png" visible="params.data.severity == '1'" id="11295"/>
+                <UiElement designerType="Image" src="images/rapidjs/component/searchlist/green.png" visible="params.data.severity == '0'" id="11297"/>
+              </UiElement>
+              <UiElement designerType="SearchListMenuItems">
+                <UiElement designerType="MenuItem" name="eventDetails" label="Event Details" id="11299"/>
+                <UiElement designerType="MenuItem" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''" id="11301"/>
+                <UiElement designerType="MenuItem" name="acknowledge" label="Acknowledge" visible="params.data.acknowledged != 'true'" id="11303"/>
+                <UiElement designerType="MenuItem" name="unacknowledge" label="Unacknowledge" visible="params.data.acknowledged == 'true'" id="11305"/>
+                <UiElement designerType="MenuItem" name="takeOwnership" label="Take Ownership" id="11307"/>
+                <UiElement designerType="MenuItem" name="releaseOwnership" label="Release Ownership" id="11309"/>
+              </UiElement>
+              <UiElement designerType="SearchListPropertyMenuItems">
+                <UiElement designerType="MenuItem" name="sortAsc" label="Sort Asc" id="11311"/>
+                <UiElement designerType="MenuItem" name="sortDesc" label="Sort Desc" id="11313"/>
+                <UiElement designerType="MenuItem" name="except" label="Except" id="11315"/>
+                <UiElement designerType="MenuItem" name="greaterThan" label="Greater Than" visible="(params.key == 'severity' &amp;&amp; params.value != '1') || (params.key != 'severity' &amp;&amp; YAHOO.lang.isNumber(parseInt(params.value)))" id="11317"/>
+                <UiElement designerType="MenuItem" name="lessThan" label="Less Than" visible="(params.key == 'severity' &amp;&amp; params.value != '5') || (params.key != 'severity' &amp;&amp; YAHOO.lang.isNumber(parseInt(params.value)))" id="11319"/>
+                <UiElement designerType="MenuItem" name="greaterThanOrEqualTo" label="Greater than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))" id="11321"/>
+                <UiElement designerType="MenuItem" name="lessThanOrEqualTo" label="Less than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))" id="11323"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="TreeGrid" url="script/run/queryList?format=xml&amp;type=event" rootTag="Filters" contentPath="Filter" keyAttribute="id" expanded="true" name="filterTree" title="Saved Queries" id="11332">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" attributeName="name" width="248" sortBy="true" colLabel="Name" id="11334">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages">
+                <UiElement designerType="RootImage" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif" visible="params.data.nodeType == 'group'" id="11336"/>
+                <UiElement designerType="RootImage" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png" visible="params.data.nodeType == 'filter'" id="11338"/>
+              </UiElement>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" name="deleteQuery" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.nodeType == 'filter' " id="11340"/>
+                <UiElement designerType="MenuItem" name="deleteQueryGroup" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'" id="11342"/>
+                <UiElement designerType="MenuItem" name="queryUpdate" label="Update" visible="params.data.nodeType == 'filter' &amp;&amp; params.data.isPublic != 'true'" id="11344"/>
+                <UiElement designerType="MenuItem" name="queryGroupUpdate" label="Update" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'" id="11346"/>
+                <UiElement designerType="MenuItem" name="copyQuery" label="Copy Query" visible="params.data.nodeType == 'filter'" id="11348"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" name="eventDetails" id="11350"/>
+            <UiElement designerType="Html" name="objectDetails" id="11352"/>
+            <UiElement designerType="Html" name="saveQueryForm" id="11354"/>
+            <UiElement designerType="Html" name="saveQueryGroupForm" id="11356"/>
+          </UiElement>
+          <UiElement designerType="Layout" id="11279">
+            <UiElement designerType="CenterUnit" component="eventList" id="11587"/>
+            <UiElement designerType="LeftUnit" width="250" resize="true" component="filterTree" id="11590"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" width="850" height="500" component="eventDetails" id="11575"/>
+            <UiElement designerType="Dialog" width="850" x="85" y="50" height="700" component="objectDetails" id="11578"/>
+            <UiElement designerType="Dialog" title="Save query" width="385" height="188" resizable="false" component="saveQueryForm" id="11581"/>
+            <UiElement designerType="Dialog" title="Save group" width="330" height="100" resizable="false" component="saveQueryGroupForm" id="11584"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" component="eventList" function="setQuery" name="setQueryAction" condition="params.data.nodeType == 'filter'" id="11358">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.data.query" id="11361"/>
+                <UiElement designerType="FunctionArgument" value="params.data.sortProperty" id="11363"/>
+                <UiElement designerType="FunctionArgument" value="params.data.sortOrder" id="11365"/>
+                <UiElement designerType="FunctionArgument" id="11367"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" event="nodeClicked" id="11369" type="Component event"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventDetails" function="show" name="eventDetailsAction" id="11371">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('getEventDetails.gsp', {name:params.data.name})" id="11374"/>
+                <UiElement designerType="FunctionArgument" value="'Details of ' + params.data.name" id="11376"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="eventDetails" id="11378"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="objectDetails" function="show" name="objectDetailsAction" id="11382">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" id="11385"/>
+                <UiElement designerType="FunctionArgument" value="'Details of ' + params.data.elementName" id="11387"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="browse" id="11389"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="saveQueryForm" function="show" name="copyQueryAction" id="11393">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'event', searchComponentType:'list'})" id="11396"/>
+                <UiElement designerType="FunctionArgument" id="11398"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="filterTree" event="copyQuery" id="11400"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="saveQueryForm" function="show" name="saveQueryAction" id="11404">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), mode:'create', type:'event', searchComponentType:'list'})" id="11407"/>
+                <UiElement designerType="FunctionArgument" id="11409"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" event="saveQueryClicked" id="11411" type="Component event"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="saveQueryForm" function="show" name="queryUpdateAction" id="11413">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'event', searchComponentType:'list'})" id="11416"/>
+                <UiElement designerType="FunctionArgument" id="11418"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="filterTree" event="queryUpdate" id="11420"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" id="11424">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="createURL('queryGroupForm.gsp', {mode:'edit', type:'event', queryGroupId:params.data.id})" id="11427"/>
+                <UiElement designerType="FunctionArgument" id="11429"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="filterTree" event="queryGroupUpdate" id="11431"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="sort" name="sortAscAction" id="11435">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key" id="11438"/>
+                <UiElement designerType="FunctionArgument" value="'asc'" id="11440"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="sortAsc" id="11442"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="sort" name="sortDescAction" id="11446">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key" id="11449"/>
+                <UiElement designerType="FunctionArgument" value="'desc'" id="11451"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="sortDesc" id="11453"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="appendExceptQuery" name="exceptAction" id="11519">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key" id="11522"/>
+                <UiElement designerType="FunctionArgument" value="params.value" id="11524"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="except" id="11526"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="appendToQuery" name="greaterThanAction" id="11530">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key + ':{' + params.value + ' TO *}'" id="11533"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="greaterThan" id="11535"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="appendToQuery" name="lessThanAction" id="11539">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key + ':{* TO ' + params.value + '}'" id="11542"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="lessThan" id="11544"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" id="11548">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key + ':[' + params.value + ' TO *]'" id="11551"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="greaterThanOrEqualTo" id="11553"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" id="11557">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" value="params.key + ':[* TO ' + params.value + ']'" id="11560"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="lessThanOrEqualTo" id="11562"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" component="filterTree" function="poll" name="refreshQueriesAction" id="11566">
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Action event" triggeringAction="deleteQueryAction" event="success" id="11569"/>
+                <UiElement designerType="ActionTrigger" type="Action event" triggeringAction="deleteQueryGroupAction" event="success" id="11572"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" url="script/run/acknowledge" components="eventList" name="acknowledgeAction" id="11457">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="acknowledge" id="11464"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="name" value="params.data.name " id="11460"/>
+                <UiElement designerType="RequestParameter" key="acknowledged" value="'true'" id="11462"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" url="script/run/acknowledge" components="eventList" name="unacknowledgeAction" id="11468">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="unacknowledge" id="11475"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="name" value="params.data.name " id="11471"/>
+                <UiElement designerType="RequestParameter" key="acknowledged" value="'false'" id="11473"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" url="script/run/setOwnership" components="eventList" name="takeOwnershipAction" id="11479">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="takeOwnership" id="11486"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="name" value="params.data.name " id="11482"/>
+                <UiElement designerType="RequestParameter" key="act" value="'true'" id="11484"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" url="script/run/setOwnership" components="eventList" name="releaseOwnershipAction" id="11490">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="eventList" event="releaseOwnership" id="11497"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="name" value="params.data.name " id="11493"/>
+                <UiElement designerType="RequestParameter" key="act" value="'false'" id="11495"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" url="searchQuery/delete?format=xml" components="filterTree" name="deleteQueryAction" id="11501">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="filterTree" event="deleteQuery" id="11506"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="id" value="params.data.id" id="11504"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" url="searchQueryGroup/delete?format=xml" components="filterTree" name="deleteQueryGroupAction" id="11510">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" type="Menu" component="filterTree" event="deleteQueryGroup" id="11515"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" key="id" value="params.data.id" id="11513"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>  
+        <UiElement designerType="Tab" id="2441" name="historicalEvents" title="Historical Events" contentFile="pageContents/_historicalEvents.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchList" id="2444" url="search?searchIn=RsHistoricalEvent" rootTag="Objects" contentPath="Object" keyAttribute="id" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" defaultFields="name" pollingInterval="0" name="eventList" title="Historical Events">
+              <UiElement designerType="SearchListFields">
+                <UiElement designerType="SearchListField" id="2446" fields="elementName, identifier, node,active, owner, acknowledged, severity, source,changedAt,visibility,count" exp="params.data.rsAlias == 'RsRiHistoricalEvent'"/>
+              </UiElement>
+              <UiElement designerType="SearchListImages">
+                <UiElement designerType="Image" id="2448" src="images/rapidjs/component/searchlist/red.png" visible="params.data.severity == '5'"/>
+                <UiElement designerType="Image" id="2450" src="images/rapidjs/component/searchlist/orange.png" visible="params.data.severity == '4'"/>
+                <UiElement designerType="Image" id="2452" src="images/rapidjs/component/searchlist/yellow.png" visible="params.data.severity == '3'"/>
+                <UiElement designerType="Image" id="2454" src="images/rapidjs/component/searchlist/blue.png" visible="params.data.severity == '2'"/>
+                <UiElement designerType="Image" id="2456" src="images/rapidjs/component/searchlist/purple.png" visible="params.data.severity == '1'"/>
+                <UiElement designerType="Image" id="2458" src="images/rapidjs/component/searchlist/green.png" visible="params.data.severity == '0'"/>
+              </UiElement>
+              <UiElement designerType="SearchListMenuItems">
+                <UiElement designerType="MenuItem" id="2460" name="eventDetails" label="Event Details" visible="true"/>
+                <UiElement designerType="MenuItem" id="2462" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''"/>
+              </UiElement>
+              <UiElement designerType="SearchListPropertyMenuItems">
+                <UiElement designerType="MenuItem" id="2464" name="sortAsc" label="Sort Asc" visible="true"/>
+                <UiElement designerType="MenuItem" id="2466" name="sortDesc" label="Sort Desc" visible="true"/>
+                <UiElement designerType="MenuItem" id="2468" name="except" label="Except" visible="true"/>
+                <UiElement designerType="MenuItem" id="2470" name="greaterThan" label="Greater Than" visible="(params.key == 'severity' &amp;&amp; params.value != '1') || (params.key != 'severity' &amp;&amp; YAHOO.lang.isNumber(parseInt(params.value)))"/>
+                <UiElement designerType="MenuItem" id="2472" name="lessThan" label="Less Than" visible="(params.key == 'severity' &amp;&amp; params.value != '5') || (params.key != 'severity' &amp;&amp; YAHOO.lang.isNumber(parseInt(params.value)))"/>
+                <UiElement designerType="MenuItem" id="2474" name="greaterThanOrEqualTo" label="Greater than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2476" name="lessThanOrEqualTo" label="Less than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2478" name="propertyBrowse" label="Browse" visible="params.key == 'elementName' &amp;&amp; params.value != ''"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="TreeGrid" id="2488" url="script/run/queryList?format=xml&amp;type=historicalEvent" rootTag="Filters" contentPath="Filter" keyAttribute="id" pollingInterval="0" expanded="true" name="filterTree" title="Saved Queries">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" id="2490" attributeName="name" colLabel="Name" width="248" sortBy="true" columnIndex="0">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages">
+                <UiElement designerType="RootImage" id="2492" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif" visible="params.data.nodeType == 'group'"/>
+                <UiElement designerType="RootImage" id="2494" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png" visible="params.data.nodeType == 'filter'"/>
+              </UiElement>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" id="2496" name="deleteQuery" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.nodeType == 'filter' "/>
+                <UiElement designerType="MenuItem" id="2498" name="deleteQueryGroup" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'"/>
+                <UiElement designerType="MenuItem" id="2500" name="queryUpdate" label="Update" visible="params.data.nodeType == 'filter' &amp;&amp; params.data.isPublic != 'true'"/>
+                <UiElement designerType="MenuItem" id="2502" name="queryGroupUpdate" label="Update" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'"/>
+                <UiElement designerType="MenuItem" id="2504" name="copyQuery" label="Copy Query" visible="params.data.nodeType == 'filter'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="2506" pollingInterval="0" name="eventDetails" title=""/>
+            <UiElement designerType="Html" id="2508" pollingInterval="0" name="objectDetails" title=""/>
+            <UiElement designerType="Html" id="2510" pollingInterval="0" name="saveQueryForm" title=""/>
+            <UiElement designerType="Html" id="2512" pollingInterval="0" name="saveQueryGroupForm" title=""/>
+          </UiElement>
+          <UiElement designerType="Layout" id="2440">
+            <UiElement designerType="CenterUnit" id="2705" component="eventList" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="2708" width="250" resize="true" component="filterTree" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="2693" title="" width="850" height="500" component="eventDetails"/>
+            <UiElement designerType="Dialog" id="2696" title="" width="850" x="85" y="50" height="700" component="objectDetails"/>
+            <UiElement designerType="Dialog" id="2699" title="Save query" width="385" height="188" resizable="false" component="saveQueryForm"/>
+            <UiElement designerType="Dialog" id="2702" title="Save group" width="330" height="100" resizable="false" component="saveQueryGroupForm"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="2514" component="eventList" function="setQuery" name="setQueryAction" condition="params.data.nodeType == 'filter'">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2517" value="params.data.query"/>
+                <UiElement designerType="FunctionArgument" id="2519" value="params.data.sortProperty"/>
+                <UiElement designerType="FunctionArgument" id="2521" value="params.data.sortOrder"/>
+                <UiElement designerType="FunctionArgument" id="2523"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2525" type="Component event" component="filterTree" event="nodeClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2528" component="eventDetails" function="show" name="eventDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2531" value="createURL('getHistoricalEventDetails.gsp', {id:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="2533" value="'Details of ' + params.data.name"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2535" type="Menu" component="eventList" event="eventDetails"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2539" component="objectDetails" function="show" name="objectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2542" value="createURL('getObjectDetails.gsp', {name:params.data.elementName})"/>
+                <UiElement designerType="FunctionArgument" id="2544" value="'Details of ' + params.data.elementName"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2546" type="Menu" component="eventList" event="browse"/>
+                <UiElement designerType="ActionTrigger" id="2550" type="Menu" component="eventList" event="propertyBrowse"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2554" component="saveQueryForm" function="show" name="copyQueryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2557" value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'historicalEvent', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="2559"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2561" type="Menu" component="filterTree" event="copyQuery"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2565" component="saveQueryForm" function="show" name="saveQueryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2568" value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), mode:'create', type:'historicalEvent', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="2570"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2572" type="Component event" component="eventList" event="saveQueryClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2575" component="saveQueryForm" function="show" name="queryUpdateAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2578" value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'historicalEvent', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="2580"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2582" type="Menu" component="filterTree" event="queryUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2586" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2589" value="createURL('queryGroupForm.gsp', {mode:'edit', type:'historicalEvent', queryGroupId:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="2591"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2593" type="Menu" component="filterTree" event="queryGroupUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2597" component="eventList" function="sort" name="sortAscAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2600" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2602" value="'asc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2604" type="Menu" component="eventList" event="sortAsc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2608" component="eventList" function="sort" name="sortDescAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2611" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2613" value="'desc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2615" type="Menu" component="eventList" event="sortDesc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2619" component="eventList" function="appendExceptQuery" name="exceptAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2622" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2624" value="params.value"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2626" type="Menu" component="eventList" event="except"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2630" component="eventList" function="appendToQuery" name="greaterThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2633" value="params.key + ':{' + params.value + ' TO *}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2635" type="Menu" component="eventList" event="greaterThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2639" component="eventList" function="appendToQuery" name="lessThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2642" value="params.key + ':{* TO ' + params.value + '}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2644" type="Menu" component="eventList" event="lessThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2648" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2651" value="params.key + ':[' + params.value + ' TO *]'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2653" type="Menu" component="eventList" event="greaterThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2657" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2660" value="params.key + ':[* TO ' + params.value + ']'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2662" type="Menu" component="eventList" event="lessThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2684" component="filterTree" function="poll" name="refreshQueriesAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2687" type="Action event" triggeringAction="deleteQueryAction" event="success"/>
+                <UiElement designerType="ActionTrigger" id="2690" type="Action event" triggeringAction="deleteQueryGroupAction" event="success"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="2666" url="searchQueryGroup/delete?format=xml" timeout="60" components="filterTree" name="deleteQueryGroupAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2671" type="Menu" component="filterTree" event="deleteQueryGroup"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="2669" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="2675" url="searchQuery/delete?format=xml" timeout="60" components="filterTree" name="deleteQueryAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2680" type="Menu" component="filterTree" event="deleteQuery"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="2678" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+
+        <UiElement designerType="Tab" id="3227" name="inventory" title="Inventory" contentFile="pageContents/_inventory.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchList" id="3230" url="search?searchIn=RsTopologyObject" rootTag="Objects" contentPath="Object" keyAttribute="id" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" defaultFields="className,name, description, displayName, isManaged" pollingInterval="0" name="inventoryList" title="Inventory">
+              <UiElement designerType="SearchListFields">
+                <UiElement designerType="SearchListField" id="3232" fields="className, name, vendor, model, managementServer, location, snmpAddress" exp="params.data.rsAlias == 'RsComputerSystem'"/>
+                <UiElement designerType="SearchListField" id="3234" fields="className, name, a_ComputerSystemName, a_Name, z_ComputerSystemName,z_Name" exp="params.data.rsAlias == 'RsLink'"/>
+              </UiElement>
+              <UiElement designerType="SearchListImages"/>
+              <UiElement designerType="SearchListMenuItems">
+                <UiElement designerType="MenuItem" id="3236" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''"/>
+                <UiElement designerType="MenuItem" id="3238" name="showMap" label="Show Map" visible="params.data.rsAlias == 'RsComputerSystem' || params.data.rsAlias == 'RsLink'"/>
+              </UiElement>
+              <UiElement designerType="SearchListPropertyMenuItems">
+                <UiElement designerType="MenuItem" id="3240" name="sortAsc" label="Sort Asc" visible="true"/>
+                <UiElement designerType="MenuItem" id="3242" name="sortDesc" label="Sort Desc" visible="true"/>
+                <UiElement designerType="MenuItem" id="3244" name="except" label="Except" visible="true"/>
+                <UiElement designerType="MenuItem" id="3246" name="greaterThan" label="Greater Than" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="3248" name="lessThan" label="Less Than" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="3250" name="greaterThanOrEqualTo" label="Greater than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="3252" name="lessThanOrEqualTo" label="Less than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="TreeGrid" id="3261" url="script/run/queryList?format=xml&amp;type=topology" rootTag="Filters" contentPath="Filter" keyAttribute="id" pollingInterval="0" expanded="true" name="filterTree" title="Saved Queries">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" id="3263" attributeName="name" colLabel="Name" width="248" sortBy="true" columnIndex="0">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages">
+                <UiElement designerType="RootImage" id="3265" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif" visible="params.data.nodeType == 'group'"/>
+                <UiElement designerType="RootImage" id="3267" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png" visible="params.data.nodeType == 'filter'"/>
+              </UiElement>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" id="3269" name="deleteQuery" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.nodeType == 'filter' "/>
+                <UiElement designerType="MenuItem" id="3271" name="deleteQueryGroup" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'"/>
+                <UiElement designerType="MenuItem" id="3273" name="queryUpdate" label="Update" visible="params.data.nodeType == 'filter' &amp;&amp; params.data.isPublic != 'true'"/>
+                <UiElement designerType="MenuItem" id="3275" name="queryGroupUpdate" label="Update" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'My Queries' &amp;&amp; params.data.nodeType == 'group'"/>
+                <UiElement designerType="MenuItem" id="3277" name="copyQuery" label="Copy Query" visible="params.data.nodeType == 'filter'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="3279" pollingInterval="0" name="saveQueryGroupForm" title=""/>
+            <UiElement designerType="Html" id="3281" pollingInterval="0" name="objectDetails" title=""/>
+            <UiElement designerType="Html" id="3283" pollingInterval="0" name="saveQueryForm" title=""/>
+          </UiElement>
+          <UiElement designerType="Layout" id="3226">
+            <UiElement designerType="CenterUnit" id="3462" component="inventoryList" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="3465" width="250" resize="true" component="filterTree" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="3453" title="Save group" width="330" height="100" resizable="false" component="saveQueryGroupForm"/>
+            <UiElement designerType="Dialog" id="3456" title="" width="850" x="85" y="50" height="700" component="objectDetails"/>
+            <UiElement designerType="Dialog" id="3459" title="Save query" width="385" height="188" resizable="false" component="saveQueryForm"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="3285" component="inventoryList" function="setQuery" name="setQueryAction" condition="params.data.nodeType == 'filter'">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3288" value="params.data.query"/>
+                <UiElement designerType="FunctionArgument" id="3290" value="params.data.sortProperty"/>
+                <UiElement designerType="FunctionArgument" id="3292" value="params.data.sortOrder"/>
+                <UiElement designerType="FunctionArgument" id="3294"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3296" type="Component event" component="filterTree" event="nodeClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3299" component="inventoryList" function="appendExceptQuery" name="exceptAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3302" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="3304" value="params.value"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3306" type="Menu" component="inventoryList" event="except"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3310" component="objectDetails" function="show" name="objectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3313" value="createURL('getObjectDetails.gsp', {name:params.data.name})"/>
+                <UiElement designerType="FunctionArgument" id="3315" value="'Details of ' + params.data.className + ' ' + params.data.name"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3317" type="Menu" event="browse"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3319" component="saveQueryForm" function="show" name="copyQueryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3322" value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="3324"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3326" type="Menu" component="filterTree" event="copyQuery"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3330" component="saveQueryForm" function="show" name="saveQueryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3333" value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['inventoryList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['inventoryList'].getSortOrder(), mode:'create', type:'topology', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="3335"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3337" type="Component event" component="inventoryList" event="saveQueryClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3340" component="saveQueryForm" function="show" name="queryUpdateAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3343" value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'topology', searchComponentType:'list'})"/>
+                <UiElement designerType="FunctionArgument" id="3345"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3347" type="Menu" component="filterTree" event="queryUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3351" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3354" value="createURL('queryGroupForm.gsp', {mode:'edit', type:'topology', queryGroupId:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="3356"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3358" type="Menu" component="filterTree" event="queryGroupUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3362" component="inventoryList" function="sort" name="sortAscAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3365" value="params.key "/>
+                <UiElement designerType="FunctionArgument" id="3367" value="'asc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3369" type="Menu" component="inventoryList" event="sortAsc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3373" component="inventoryList" function="sort" name="sortDescAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3376" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="3378" value="'desc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3380" type="Menu" component="inventoryList" event="sortDesc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3384" component="inventoryList" function="appendToQuery" name="lessThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3387" value="params.key + ':[* TO ' + params.value + ']'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3389" type="Menu" component="inventoryList" event="lessThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3393" component="inventoryList" function="appendToQuery" name="greaterThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3396" value="params.key + ':[' + params.value + ' TO *]'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3398" type="Menu" component="inventoryList" event="greaterThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3402" component="inventoryList" function="appendToQuery" name="lessThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3405" value="params.key + ':{* TO ' + params.value + '}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3407" type="Menu" component="inventoryList" event="lessThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3411" component="inventoryList" function="appendToQuery" name="greaterThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="3414" value="params.key + ':{' + params.value + ' TO *}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3416" type="Menu" component="inventoryList" event="greaterThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="3444" component="filterTree" function="poll" name="refreshQueriesAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3447" type="Action event" triggeringAction="deleteQueryAction" event="success"/>
+                <UiElement designerType="ActionTrigger" id="3450" type="Action event" triggeringAction="deleteQueryGroupAction" event="success"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="3420" url="searchQuery/delete?format=xml" timeout="60" components="filterTree" name="deleteQueryAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3425" type="Menu" component="filterTree" event="deleteQuery"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="3423" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="3429" url="searchQueryGroup/delete?format=xml" timeout="60" components="filterTree" name="deleteQueryGroupAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3434" type="Menu" component="filterTree" event="deleteQueryGroup"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="3432" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="LinkAction" id="3438" url="createURL('redirectToMap.gsp', {name:params.data.name})" name="showMapAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="3440" type="Menu" component="inventoryList" event="showMap"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+
+
+        <UiElement designerType="Tab" id="7652" name="maps" title="Maps" contentFile="pageContents/_maps.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="TreeGrid" id="7655" url="script/run/mapList?format=xml" rootTag="Maps" contentPath="Map" keyAttribute="id" pollingInterval="0" expanded="true" name="mapTree" title="Saved Maps">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" id="7657" attributeName="name" colLabel="Name" width="248" columnIndex="0">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages">
+                <UiElement designerType="RootImage" id="7659" expanded="images/rapidjs/component/tools/folder_open.gif" collapsed="images/rapidjs/component/tools/folder.gif" visible="params.data.nodeType == 'group'"/>
+                <UiElement designerType="RootImage" id="7661" expanded="images/rapidjs/component/tools/filter.png" collapsed="images/rapidjs/component/tools/filter.png" visible="params.data.nodeType == 'map'"/>
+              </UiElement>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" id="7663" name="deleteMap" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.nodeType == 'map'"/>
+                <UiElement designerType="MenuItem" id="7665" name="deleteMapGroup" label="Delete" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'Default' &amp;&amp; params.data.nodeType == 'group'"/>
+                <UiElement designerType="MenuItem" id="7667" name="mapUpdate" label="Update" visible="params.data.nodeType == 'map' &amp;&amp; params.data.isPublic != 'true'"/>
+                <UiElement designerType="MenuItem" id="7669" name="mapGroupUpdate" label="Update" visible="params.data.isPublic != 'true' &amp;&amp; params.data.name != 'Default' &amp;&amp; params.data.nodeType == 'group'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="7671" pollingInterval="0" name="objectDetails" title=""/>
+            <UiElement designerType="Html" id="7673" pollingInterval="0" name="eventDetails" title=""/>
+            <UiElement designerType="Html" id="7675" pollingInterval="0" name="eventList" title=""/>
+            <UiElement designerType="Html" id="7677" pollingInterval="0" name="saveMapGroupForm" title=""/>
+            <UiElement designerType="Html" id="7679" pollingInterval="0" name="saveMapForm" title=""/>
+            <UiElement designerType="ObjectMap" id="7681" expandURL="script/run/expandMap" dataURL="script/run/getMapData" pollingInterval="0" name="topologyMap" title="">
+              <UiElement designerType="ObjectMapImageNodeContent">
+                <UiElement designerType="ImageObjectMapContent" id="7685" mapping="'Host':'server_icon.png', 'Router':'router_icon.png', 'Switch':'switch_icon.png'" name="icon" x="70" y="0" width="20" height="20" dataKey="type"/>
+                <UiElement designerType="ImageObjectMapContent" id="7687" mapping="'0':'../states/green.png', '5':'../states/red.png', '4':'../states/orange.png', '3':'../states/yellow.png', '2':'../states/blue.png', '1':'../states/purple.png','default':'../states/green.png'" name="status" x="70" y="40" width="30" height="30" dataKey="state"/>
+              </UiElement>
+              <UiElement designerType="ObjectMapTextNodeContent">
+                <UiElement designerType="ObjectMapContent" id="7683" name="name" x="15" y="20" width="70" height="30" dataKey="id"/>
+              </UiElement>
+              <UiElement designerType="ObjectMapGaugeNodeContent"/>
+              <UiElement designerType="ObjectMapToolbarMenus">
+                <UiElement designerType="ToolbarMenu" id="7691" label="Map">
+                  <UiElement designerType="MenuItem" id="7689" name="saveMap" label="Save Map" visible="true"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="ObjectMapMenuItems">
+                <UiElement designerType="MenuItem" id="7694" name="browse" label="Browse" visible="true"/>
+                <UiElement designerType="MenuItem" id="7696" name="showEvents" label="Show Events" visible="true"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+          <UiElement designerType="Layout" id="7651">
+            <UiElement designerType="CenterUnit" id="7820" component="topologyMap" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="7823" width="250" resize="true" component="mapTree" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="7805" title="" width="850" x="50" y="85" height="500" component="objectDetails"/>
+            <UiElement designerType="Dialog" id="7808" title="" width="850" height="500" component="eventDetails"/>
+            <UiElement designerType="Dialog" id="7811" title="" width="850" x="100" y="80" height="700" component="eventList"/>
+            <UiElement designerType="Dialog" id="7814" title="Save Group" width="330" height="100" resizable="false" component="saveMapGroupForm"/>
+            <UiElement designerType="Dialog" id="7817" title="Save Map" width="385" height="125" resizable="false" component="saveMapForm"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="7698" component="objectDetails" function="show" name="objectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7701" value="createURL('getObjectDetails.gsp', {name:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="7703" value="'Details of ' + params.data.type + ' ' + params.data.id"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7705" type="Menu" component="topologyMap" event="browse"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7709" component="eventList" function="show" name="showEventsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7712" value="createURL('showEvents.gsp', {name:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="7714" value="'Events of ' + params.data.type + ' ' + params.data.id"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7716" type="Menu" component="topologyMap" event="showEvents"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7720" component="saveMapGroupForm" function="show" name="mapGroupUpdateAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7723" value="createURL('mapGroupForm.gsp', {mode:'edit', mapGroupId:params.data.id})"/>
+                <UiElement designerType="FunctionArgument" id="7725"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7727" type="Menu" component="mapTree" event="mapGroupUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7731" component="topologyMap" function="loadMapForNode" name="loadMapForNodeAction" condition="getURLParam('name') != null">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7734" value="getURLParam('name')"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7736" type="Component event" component="topologyMap" event="mapInitialized"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7739" component="saveMapForm" function="show" name="updateMapAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7742" value="createURL('mapForm.gsp', {mapId:params.data.id, mode:'edit'})"/>
+                <UiElement designerType="FunctionArgument" id="7744"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7746" type="Menu" component="mapTree" event="mapUpdate"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7777" component="saveMapForm" function="show" name="saveMapAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7780" value="createURL('mapForm.gsp', {mode:'create', nodes: YAHOO.rapidjs.Components['topologyMap'].getNodesString(), layout: YAHOO.rapidjs.Components['topologyMap'].getLayout()})"/>
+                <UiElement designerType="FunctionArgument" id="7782"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7784" type="Menu" component="topologyMap" event="saveMap"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7788" component="topologyMap" function="loadMap" name="loadMapAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="7791" value="params.response"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7793" type="Action event" triggeringAction="requestMapAction" event="success"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="7796" component="mapTree" function="poll" name="refreshMapsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7799" type="Action event" triggeringAction="deleteMapAction" event="success"/>
+                <UiElement designerType="ActionTrigger" id="7802" type="Action event" triggeringAction="deleteMapGroupAction" event="success"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="7750" url="topoMap/delete?format=xml" timeout="60" components="mapTree" name="deleteMapAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7755" type="Menu" component="mapTree" event="deleteMap"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="7753" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="7759" url="mapGroup/delete?format=xml" timeout="60" components="mapTree" name="deleteMapGroupAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7764" type="Menu" component="mapTree" event="deleteMapGroup"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="7762" key="id" value="params.data.id"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="RequestAction" id="7768" url="script/run/getMap?format=xml" timeout="60" components="" name="requestMapAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="7774" type="Component event" component="mapTree" event="nodeClicked"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="7770" key="mapName" value="params.data.name"/>
+                <UiElement designerType="RequestParameter" id="7772" key="isPublic" value="params.data.isPublic"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+
+        <UiElement designerType="Tab" id="8744" name="serviceView" title="Service View" contentFile="pageContents/_serviceView.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchGrid" id="8747" url="search?searchIn=RsEvent" rootTag="Objects" contentPath="Object" keyAttribute="id" fieldsUrl="script/run/getViewFields?format=xml" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" pollingInterval="0" name="eventsGrid" title="Events">
+              <UiElement designerType="SearchGridImages">
+                <UiElement designerType="Image" id="8763" src="images/rapidjs/component/searchlist/red.png" visible="params.data.severity == '5'"/>
+                <UiElement designerType="Image" id="8765" src="images/rapidjs/component/searchlist/orange.png" visible="params.data.severity == '4'"/>
+                <UiElement designerType="Image" id="8767" src="images/rapidjs/component/searchlist/yellow.png" visible="params.data.severity == '3'"/>
+                <UiElement designerType="Image" id="8769" src="images/rapidjs/component/searchlist/blue.png" visible="params.data.severity == '2'"/>
+                <UiElement designerType="Image" id="8771" src="images/rapidjs/component/searchlist/purple.png" visible="params.data.severity == '1'"/>
+                <UiElement designerType="Image" id="8773" src="images/rapidjs/component/searchlist/green.png" visible="params.data.severity == '0'"/>
+              </UiElement>
+              <UiElement designerType="SearchGridColumns">
+                <UiElement designerType="SearchGridColumn" id="8749" attributeName="acknowledged" colLabel="Ack" width="50" columnIndex="0"/>
+                <UiElement designerType="SearchGridColumn" id="8751" attributeName="owner" colLabel="Owner" width="100" columnIndex="1"/>
+                <UiElement designerType="SearchGridColumn" id="8753" attributeName="elementName" colLabel="Element Name" width="150" columnIndex="2"/>
+                <UiElement designerType="SearchGridColumn" id="8755" attributeName="identifier" colLabel="Event" width="150" columnIndex="3"/>
+                <UiElement designerType="SearchGridColumn" id="8757" attributeName="count" colLabel="Count" width="50" columnIndex="4"/>
+                <UiElement designerType="SearchGridColumn" id="8759" attributeName="source" colLabel="Source" width="100" columnIndex="5"/>
+                <UiElement designerType="SearchGridColumn" id="8761" attributeName="changedAt" colLabel="Last Change" width="120" columnIndex="6"/>
+              </UiElement>
+              <UiElement designerType="SearchGridRowColors"/>
+              <UiElement designerType="SearchGridMenuItems">
+                <UiElement designerType="MenuItem" id="8775" name="eventDetails" label="Event Details" visible="true"/>
+                <UiElement designerType="MenuItem" id="8777" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''"/>
+                <UiElement designerType="MenuItem" id="8779" name="acknowledge" label="Acknowledge" visible="params.data.acknowledged != 'true'"/>
+                <UiElement designerType="MenuItem" id="8781" name="unacknowledge" label="Unacknowledge" visible="params.data.acknowledged == 'true'"/>
+                <UiElement designerType="MenuItem" id="8783" name="takeOwnership" label="Take Ownership" visible="true"/>
+                <UiElement designerType="MenuItem" id="8785" name="releaseOwnership" label="Release Ownership" visible="true"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="TreeGrid" id="8787" url="script/run/getHierarchy?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" pollingInterval="60" name="topologyTree" title="Service View">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" id="8789" attributeName="displayName" colLabel="Name" width="248" sortBy="true" columnIndex="0">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages"/>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" id="8791" name="eventHistory" label="Get Event History" visible="true"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="8793" pollingInterval="0" name="eventDetails" title=""/>
+            <UiElement designerType="Html" id="8795" pollingInterval="0" name="objectDetails" title=""/>
+            <UiElement designerType="FlexPieChart" id="8797" url="script/run/getSummaryData?format=xml" rootTag="chart" pollingInterval="0" name="summaryChart" title="Summary View"/>
+            <UiElement designerType="Timeline" id="8799" url="script/run/getEventHistory?format=xml" pollingInterval="0" name="eventHistory" title="Event History">
+              <UiElement designerType="TimelineBand" id="8801" width="70" intervalPixels="100" intervalUnit="hour" showText="true" highlight="false"/>
+              <UiElement designerType="TimelineBand" id="8803" width="30" intervalPixels="200" intervalUnit="day" showText="false" trackHeight="0.5" syncWith="0" highlight="true"/>
+            </UiElement>
+          </UiElement>
+          <UiElement designerType="Layout" id="8743">
+            <UiElement designerType="CenterUnit" id="8915" component="summaryChart" useShim="false"/>
+            <UiElement designerType="BottomUnit" id="8921" height="300" resize="true" component="eventsGrid" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="8918" width="250" resize="true" component="topologyTree" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="8906" title="" width="850" height="500" component="eventDetails"/>
+            <UiElement designerType="Dialog" id="8909" title="" width="850" x="85" y="50" height="700" component="objectDetails"/>
+            <UiElement designerType="Dialog" id="8912" title="Event History" width="730" height="450" component="eventHistory"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="8827" component="objectDetails" function="show" name="objectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="8830" value="createURL('getObjectDetails.gsp', {name:params.data.elementName})"/>
+                <UiElement designerType="FunctionArgument" id="8832" value="'Details of ' + params.data.elementName"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8834" type="Menu" component="eventsGrid" event="browse"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="8860" component="eventDetails" function="show" name="eventDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="8863" value="createURL('getEventDetails.gsp', {name:params.data.name})"/>
+                <UiElement designerType="FunctionArgument" id="8865" value="'Details of ' + params.data.name"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8867" type="Menu" component="eventsGrid" event="eventDetails"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="8871" component="eventsGrid" function="setQueryWithView" name="getEventsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="8874" value="getEventsQuery(params.data)"/>
+                <UiElement designerType="FunctionArgument" id="8876" value="'default'"/>
+                <UiElement designerType="FunctionArgument" id="8878" value="'Events of ' + params.data.displayName"/>
+                <UiElement designerType="FunctionArgument" id="8880"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8882" type="Component event" component="topologyTree" event="nodeClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="8885" component="summaryChart" function="refresh" name="getSummaryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="8888" value="{nodeType:params.data.nodeType, name:params.data.name}"/>
+                <UiElement designerType="FunctionArgument" id="8890" value="'Summary View for ' + params.data.displayName"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8892" type="Component event" component="topologyTree" event="nodeClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="8895" component="eventHistory" function="refresh" name="eventHistoryAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="8898" value="{nodeType:params.data.nodeType, name:params.data.name}"/>
+                <UiElement designerType="FunctionArgument" id="8900" value="'Event History of ' + params.data.displayName"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8902" type="Menu" component="topologyTree" event="eventHistory"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="8805" url="script/run/acknowledge" timeout="60" components="eventsGrid" name="unacknowledgeAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8812" type="Menu" component="eventsGrid" event="unacknowledge"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="8808" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="8810" key="acknowledged" value="'false'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="8816" url="script/run/acknowledge" timeout="60" components="eventsGrid" name="acknowledgeAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8823" type="Menu" component="eventsGrid" event="acknowledge"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="8819" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="8821" key="acknowledged" value="'true'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="8838" url="script/run/setOwnership" timeout="60" components="eventsGrid" name="releaseOwnershipAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8845" type="Menu" component="eventsGrid" event="releaseOwnership"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="8841" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="8843" key="act" value="'false'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="8849" url="script/run/setOwnership" timeout="60" components="eventsGrid" name="takeOwnershipAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="8856" type="Menu" component="eventsGrid" event="takeOwnership"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="8852" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="8854" key="act" value="'true'"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+
+          <UiElement designerType="Tab" id="528" name="deviceView" title="Device View" contentFile="pageContents/_deviceView.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchGrid" id="531" url="search?searchIn=RsEvent" rootTag="Objects" contentPath="Object" keyAttribute="id" fieldsUrl="script/run/getViewFields?format=xml" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" pollingInterval="0" name="eventsGrid" title="Events">
+              <UiElement designerType="SearchGridImages">
+                <UiElement designerType="Image" id="547" src="images/rapidjs/component/searchlist/red.png" visible="params.data.severity == '5'"/>
+                <UiElement designerType="Image" id="549" src="images/rapidjs/component/searchlist/orange.png" visible="params.data.severity == '4'"/>
+                <UiElement designerType="Image" id="551" src="images/rapidjs/component/searchlist/yellow.png" visible="params.data.severity == '3'"/>
+                <UiElement designerType="Image" id="553" src="images/rapidjs/component/searchlist/blue.png" visible="params.data.severity == '2'"/>
+                <UiElement designerType="Image" id="555" src="images/rapidjs/component/searchlist/purple.png" visible="params.data.severity == '1'"/>
+                <UiElement designerType="Image" id="557" src="images/rapidjs/component/searchlist/green.png" visible="params.data.severity == '0'"/>
+              </UiElement>
+              <UiElement designerType="SearchGridColumns">
+                <UiElement designerType="SearchGridColumn" id="533" attributeName="acknowledged" colLabel="Ack" width="50" columnIndex="0"/>
+                <UiElement designerType="SearchGridColumn" id="535" attributeName="owner" colLabel="Owner" width="100" columnIndex="1"/>
+                <UiElement designerType="SearchGridColumn" id="537" attributeName="elementName" colLabel="Element Name" width="150" columnIndex="2"/>
+                <UiElement designerType="SearchGridColumn" id="539" attributeName="identifier" colLabel="Event" width="150" columnIndex="3"/>
+                <UiElement designerType="SearchGridColumn" id="541" attributeName="count" colLabel="Count" width="50" columnIndex="4"/>
+                <UiElement designerType="SearchGridColumn" id="543" attributeName="source" colLabel="Source" width="100" columnIndex="5"/>
+                <UiElement designerType="SearchGridColumn" id="545" attributeName="changedAt" colLabel="Last Change" width="120" columnIndex="6"/>
+              </UiElement>
+              <UiElement designerType="SearchGridRowColors"/>
+              <UiElement designerType="SearchGridMenuItems">
+                <UiElement designerType="MenuItem" id="559" name="eventDetails" label="Event Details" visible="true"/>
+                <UiElement designerType="MenuItem" id="561" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''"/>
+                <UiElement designerType="MenuItem" id="563" name="acknowledge" label="Acknowledge" visible="params.data.acknowledged != 'true'"/>
+                <UiElement designerType="MenuItem" id="565" name="unacknowledge" label="Unacknowledge" visible="params.data.acknowledged == 'true'"/>
+                <UiElement designerType="MenuItem" id="567" name="takeOwnership" label="Take Ownership" visible="true"/>
+                <UiElement designerType="MenuItem" id="569" name="releaseOwnership" label="Release Ownership" visible="true"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="571" name="objectDetails" title=""/>
+            <UiElement designerType="Html" id="573" name="eventDetails" title=""/>
+            <UiElement designerType="Autocomplete" id="575" url="script/run/autocomplete" contentPath="Suggestion" suggestionAttribute="name" name="searchDevice" title="Device Search"/>
+          </UiElement>
+          <UiElement designerType="Layout" id="527">
+            <UiElement designerType="CenterUnit" id="670" component="objectDetails" useShim="false"/>
+            <UiElement designerType="BottomUnit" id="673" height="300" resize="true" component="eventsGrid" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="676" width="280" resize="true" component="searchDevice" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="667" title="" width="850" height="500" component="eventDetails"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="577" component="objectDetails" function="show" name="objectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="580" value="createURL('getObjectDetails.gsp', {name:params.data.elementName})"/>
+                <UiElement designerType="FunctionArgument" id="582" value="'Details of ' + params.data.elementName"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="584" type="Menu" component="eventsGrid" event="browse"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="588" component="eventDetails" function="show" name="eventDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="591" value="createURL('getEventDetails.gsp', {name:params.data.name})"/>
+                <UiElement designerType="FunctionArgument" id="593" value="'Details of ' + params.data.name"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="595" type="Menu" component="eventsGrid" event="eventDetails"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="599" component="eventsGrid" function="setQueryWithView" name="getEventsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="602" value="'elementName:' + params.query + ''"/>
+                <UiElement designerType="FunctionArgument" id="604" value="'default'"/>
+                <UiElement designerType="FunctionArgument" id="606" value="'Events of ' + params.query"/>
+                <UiElement designerType="FunctionArgument" id="608"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="610" type="Component event" component="searchDevice" event="submit"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="657" component="objectDetails" function="show" name="autocompleteObjectDetailsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="660" value="createURL('getObjectDetails.gsp', {name:params.query})"/>
+                <UiElement designerType="FunctionArgument" id="662" value="'Details of ' + params.query"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="664" type="Component event" component="searchDevice" event="submit"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="613" url="script/run/setOwnership" timeout="60" components="eventsGrid" name="takeOwnershipAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="620" type="Menu" component="eventsGrid" event="takeOwnership"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="616" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="618" key="act" value="'true'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="624" url="script/run/setOwnership" timeout="60" components="eventsGrid" name="releaseOwnershipAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="631" type="Menu" component="eventsGrid" event="releaseOwnership"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="627" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="629" key="act" value="'false'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="635" url="script/run/acknowledge" timeout="60" components="eventsGrid" name="unacknowledgeAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="642" type="Menu" component="eventsGrid" event="unacknowledge"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="638" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="640" key="acknowledged" value="'false'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="MergeAction" id="646" url="script/run/acknowledge" timeout="60" components="eventsGrid" name="acknowledgeAction" condition="">
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="653" type="Menu" component="eventsGrid" event="acknowledge"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement designerType="RequestParameter" id="649" key="name" value="params.data.name "/>
+                <UiElement designerType="RequestParameter" id="651" key="acknowledged" value="'true'"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>
+      </UiElement>
+    </UiElement>
+  </UiElement>
+</UiConfig>

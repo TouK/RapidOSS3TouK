@@ -1,0 +1,45 @@
+package ui.designer
+
+import com.ifountain.rui.util.DesignerUtils
+
+/**
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Feb 27, 2009
+* Time: 8:53:32 AM
+* To change this template use File | Settings | File Templates.
+*/
+class UiAutocompleteOperations extends UiComponentOperations {
+    public static Map metaData()
+    {
+        Map metaData = [
+                help: "FlexPieChart Component.html",
+                designerType: "Autocomplete",
+                canBeDeleted: true,
+                displayFromProperty: "name",
+                imageExpanded: "images/rapidjs/designer/chart_pie.png",
+                imageCollapsed: "images/rapidjs/designer/chart_pie.png",
+                propertyConfiguration: [
+                        url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
+                        contentPath: [descr: "The node names of AJAX response which will be used as suggestion data."],
+                        suggestionAttribute: [descr: "The attribute of suggestion data which will be displayed in suggestion box."],
+                        cacheSize: [descr: "Max number of data stored in client side cache."],
+                        animated: [descr: "Parameter to display suggestion box whether animated or not."]
+                ],
+                childrenConfiguration: []
+        ];
+        def parentMetaData = UiComponentOperations.metaData();
+        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
+        return metaData;
+    }
+
+    def static addUiElement(xmlNode, parentElement)
+    {
+        def attributes = [:];
+        attributes.putAll(xmlNode.attributes());
+        attributes.tab = parentElement;
+        attributes.tabId = parentElement.id;
+        return DesignerUtils.addUiObject(UiAutocomplete, attributes, xmlNode);
+    }
+}

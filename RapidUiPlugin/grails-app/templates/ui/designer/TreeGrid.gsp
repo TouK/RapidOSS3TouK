@@ -1,10 +1,10 @@
-<rui:treeGrid id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}"
-        keyAttribute="${uiElement.keyAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}" expanded="${uiElement.expanded}"
+<rui:treeGrid id="${uiElement.name.encodeAsHTML()}" url="../${uiElement.url.encodeAsHTML()}" rootTag="${uiElement.rootTag.encodeAsHTML()}" pollingInterval="${uiElement.pollingInterval}"
+        keyAttribute="${uiElement.keyAttribute.encodeAsHTML()}" contentPath="${uiElement.contentPath.encodeAsHTML()}" title="${uiElement.title.encodeAsHTML()}" expanded="${uiElement.expanded}"
 <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);
     %>
-        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
+        on${eventName.substring(0,1).toUpperCase().encodeAsHTML()}${eventName.substring(1).encodeAsHTML()}="${actionString}"
     <%
     }
     %>
@@ -14,10 +14,10 @@
 
     def columns = uiElement.columns.sort{it.columnIndex};
     columns.each{column->
-        def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
+        def sortByString = column.sortBy ? "sortBy=\"${column.sortBy.encodeAsHTML()}\"":""
         def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
 %>
-        <rui:tgColumn type="${column.type}" attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString}>
+        <rui:tgColumn type="${column.type.encodeAsHTML()}" attributeName="${column.attributeName.encodeAsHTML()}" colLabel="${column.colLabel.encodeAsHTML()}" width="${column.width}" ${sortByString} ${sortOrderString}>
             <%
                 if(!column.images.isEmpty())
                 {
@@ -26,7 +26,7 @@
                 <%
                     column.images.each{colImage->
                 %>
-                <rui:tgImage src="../${colImage.src}" visible="${colImage.visible}" align="${colImage.align}"></rui:tgImage>
+                <rui:tgImage src="../${colImage.src.encodeAsHTML()}" visible="${colImage.visible.encodeAsHTML()}" align="${colImage.align}"></rui:tgImage>
                 <%
                     }
                 %>
@@ -45,7 +45,7 @@
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
-        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="${menuItem.visible}" ${actionString}>
+        <rui:tgMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" visible="${menuItem.visible.encodeAsHTML()}" ${actionString}>
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {
@@ -55,7 +55,7 @@
                             menuItem.childMenuItems.each{subMenuItem->
                                 def subMenuAction = subMenuItem.getAction();
                         %>
-                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="${subMenuItem.visible}"></rui:tgMenuItem>
+                            <rui:tgMenuItem id="${subMenuItem.name.encodeAsHTML()}" label="${subMenuItem.label.encodeAsHTML()}" ${subMenuAction?"action='"+subMenuAction.name.encodeAsHTML()+"'":""} visible="${subMenuItem.visible.encodeAsHTML()}"></rui:tgMenuItem>
                         <%
                                 }
                         %>
@@ -72,7 +72,7 @@
         <%
             uiElement.rootImages.each{rootImage->
         %>
-        <rui:tgRootImage visible="${rootImage.visible}" expanded="../${rootImage.expanded}" collapsed="../${rootImage.collapsed}"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage.visible.encodeAsHTML()}" expanded="../${rootImage.expanded}" collapsed="../${rootImage.collapsed}"></rui:tgRootImage>
         <%
             }
         %>

@@ -6,6 +6,6 @@
         colorsString = "\${["+colorsString.substring(1, colorsString.length()-1)+"]}";
     }
 %>
-<rui:pieChart id="${uiElement.name}" url="../${uiElement.url}" dataField="${uiElement.dataField}" contentPath="${uiElement.contentPath}" title="${uiElement.title}"
-        categoryField="${uiElement.categoryField}" legend="${uiElement.legend}" swfURL="../js/yui/charts/assets/charts.swf"
+<rui:pieChart id="${uiElement.name.encodeAsHTML()}" url="../${uiElement.url.encodeAsHTML()}" dataField="${uiElement.dataField.encodeAsHTML()}" contentPath="${uiElement.contentPath.encodeAsHTML()}" title="${uiElement.title.encodeAsHTML()}"
+        categoryField="${uiElement.categoryField.encodeAsHTML()}" legend="${uiElement.legend.encodeAsHTML()}" swfURL="../js/yui/charts/assets/charts.swf"
             ${colorsString != ""?"colors=\""+colorsString+"\"":""}></rui:pieChart>

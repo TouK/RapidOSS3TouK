@@ -1,12 +1,12 @@
-<rui:gmap id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" contentPath="${uiElement.contentPath}" googleKey="${uiElement.googleKey}"
-        timeout="${uiElement.timeout}" latitudeField="${uiElement.latitudeField}"
-        longitudeField="${uiElement.longitudeField}" addressField="${uiElement.addressField}" markerField="${uiElement.markerField}"
-        tooltipField="${uiElement.tooltipField}"
+<rui:gmap id="${uiElement.name.encodeAsHTML()}" url="../${uiElement.url.encodeAsHTML()}" title="${uiElement.title.encodeAsHTML()}" contentPath="${uiElement.contentPath.encodeAsHTML()}" googleKey="${uiElement.googleKey.encodeAsHTML()}"
+        timeout="${uiElement.timeout}" latitudeField="${uiElement.latitudeField.encodeAsHTML()}"
+        longitudeField="${uiElement.longitudeField.encodeAsHTML()}" addressField="${uiElement.addressField.encodeAsHTML()}" markerField="${uiElement.markerField.encodeAsHTML()}"
+        tooltipField="${uiElement.tooltipField.encodeAsHTML()}"
 <%
         uiElement.getActionTrigers().each{eventName, actionTriggers->
     def actionString = uiElement.getActionsString(actionTriggers);
 %>
-    on${eventName.substring(0, 1).toUpperCase()}${eventName.substring(1)}="${actionString}"
+    on${eventName.substring(0, 1).toUpperCase().encodeAsHTML()}${eventName.substring(1).encodeAsHTML()}="${actionString}"
     <%
         }
     %>

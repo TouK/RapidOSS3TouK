@@ -1,1 +1,1 @@
-<rui:html id="${uiElement.name}" iframe="${uiElement.iframe}"></rui:html>
+<rui:html id="${uiElement.name.encodeAsHTML()}" iframe="${uiElement.iframe}"></rui:html>

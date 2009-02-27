@@ -34,7 +34,7 @@
                     <%
                         url.tabs.each{tab->
                     %>
-                    <li class="\${request.uri.toString().indexOf('${url.name}/${tab.name}.gsp') > -1 ? "selected" : ""}"><a href="\${createLinkTo(file: '${url.name}/${tab.name}.gsp')}"><em>${tab.title}</em></a></li>
+                    <li class="\${request.uri.toString().indexOf('${url.name.encodeAsHTML()}/${tab.name.encodeAsHTML()}.gsp') > -1 ? "selected" : ""}"><a href="\${createLinkTo(file: '${url.name.encodeAsHTML()}/${tab.name.encodeAsHTML()}.gsp')}"><em>${tab.title.encodeAsHTML()}</em></a></li>
                     <%
                         }
                     %>

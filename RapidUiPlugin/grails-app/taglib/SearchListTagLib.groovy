@@ -240,8 +240,8 @@ class SearchListTagLib {
         def imageArray = [];
         images.each {image ->
             imageArray.add("""{
-                    src:'${image.@src}',
-                    visible:\"${image.@visible}\"
+                    src:'${image.@src.text().encodeAsJavaScript()}',
+                    visible:\"${image.@visible.text().encodeAsJavaScript()}\"
                 }""")
         }
         cArray.add("images:[${imageArray.join(',\n')}]")
@@ -255,7 +255,7 @@ class SearchListTagLib {
                 fldsArray.add("'${it.text().trim()}'");
             }
             fieldArray.add("""{
-                    exp:"${exp}",
+                    exp:"${exp.encodeAsJavaScript()}",
                     fields:[${fldsArray.join(',')}]
                 }""")
         }
@@ -285,14 +285,14 @@ class SearchListTagLib {
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
         if (visible != "")
-            menuItemArray.add("visible:\"${visible}\"")
+            menuItemArray.add("visible:\"${visible.encodeAsJavaScript()}\"")
         def subMenuItems = menuItem.SubmenuItems?.MenuItem;
         if (subMenuItems) {
             def subMenuItemsArray = [];
             subMenuItems.each {subMenuItem ->
                 subMenuItemsArray.add("""{
                    id:'${subMenuItem.@id}',
-                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible}\"," : ""}
+                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible.text().encodeAsJavaScript()}\"," : ""}
                    label:'${subMenuItem.@label}'
                }""")
                 def subAction = subMenuItem.@action.toString().trim();

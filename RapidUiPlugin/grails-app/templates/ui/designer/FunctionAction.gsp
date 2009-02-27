@@ -1,9 +1,9 @@
-<rui:action id="${uiElement.name.encodeAsHTML()}" type="function" function="${uiElement.function.encodeAsHTML()}" ${uiElement.component != null?"componentId='"+uiElement.component.name.encodeAsHTML()+"'":""} ${uiElement.condition != ""?"condition=\""+uiElement.condition.encodeAsHTML()+"\"":""}
+<rui:action id="${uiElement.name}" type="function" function="${uiElement.function}" ${uiElement.component != null?"componentId='"+uiElement.component.name+"'":""} ${uiElement.condition != ""?"condition=\""+uiElement.condition+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);
     %>
-        on${eventName.substring(0,1).toUpperCase().encodeAsHTML()}${eventName.substring(1).encodeAsHTML()}="${actionString}"
+        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
     <%
     }
     %>

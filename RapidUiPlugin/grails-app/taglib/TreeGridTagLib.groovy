@@ -124,7 +124,7 @@ class TreeGridTagLib {
         def imageArray = [];
         rootImages.each {rootImage ->
             imageArray.add("""{
-                    visible:\"${rootImage.@visible}\",
+                    visible:\"${rootImage.@visible.text().encodeAsJavaScript()}\",
                     expanded:'${rootImage.@expanded}',
                     collapsed:'${rootImage.@collapsed}'
                 }""")
@@ -165,7 +165,7 @@ class TreeGridTagLib {
             def align = image.@align.toString().trim();
             imageArray.add("src:'${src}'");
             if (visible != "") {
-                imageArray.add("visible:\"${visible}\"")
+                imageArray.add("visible:\"${visible.encodeAsJavaScript()}\"")
             }
             if (align != "") {
                 imageArray.add("align:'${align}'")
@@ -198,14 +198,14 @@ class TreeGridTagLib {
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
         if (visible != "")
-            menuItemArray.add("visible:\"${visible}\"")
+            menuItemArray.add("visible:\"${visible.encodeAsJavaScript()}\"")
         def subMenuItems = menuItem.SubmenuItems?.MenuItem;
         if (subMenuItems) {
             def subMenuItemsArray = [];
             subMenuItems.each {subMenuItem ->
                 subMenuItemsArray.add("""{
                    id:'${subMenuItem.@id}',
-                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible}\"," : ""}
+                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible.text().encodeAsJavaScript()}\"," : ""}
                    label:'${subMenuItem.@label}'
                }""")
                 def subAction = subMenuItem.@action.toString().trim();

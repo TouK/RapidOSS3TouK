@@ -17,17 +17,17 @@
                         def propValue = layoutUnit[prop.name]
                         if(propValue != "" && propValue != "0" && propValue != 0 && propValue != null)
                         {
-                            attributes.add("${prop.name}='${layoutUnit[prop.name].encodeAsHTML()}'");
+                            attributes.add("${prop.name}='${layoutUnit[prop.name]}'");
                         }
                     }
                 }
                 if(layoutUnit.component != null)
                 {
-                    attributes.add("component='${layoutUnit.component.name.encodeAsHTML()}'");
+                    attributes.add("component='${layoutUnit.component.name}'");
                 }
                 else if(layoutUnit.contentFile != "" && layoutUnit.contentFile != null)
                 {
-                    attributes.add("body='${layoutUnit.getContentFileDivId().encodeAsHTML()}'");
+                    attributes.add("body='${layoutUnit.getContentFileDivId()}'");
                 }
         %>
             <rui:layoutUnit ${attributes.join(" ")}>

@@ -17,12 +17,12 @@
     def edgeColorString = getMap(uiElement.edgeColors);
     def contents = uiElement.nodeContents;
 %>
-<rui:objectMap id="${uiElement.name.encodeAsHTML()}" expandURL="../${uiElement.expandURL.encodeAsHTML()}" dataURL="../${uiElement.dataURL.encodeAsHTML()}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey.encodeAsHTML()}" edgeColors="${edgeColorString}"
+<rui:objectMap id="${uiElement.name}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}"
 <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);
     %>
-        on${eventName.substring(0,1).toUpperCase().encodeAsHTML()}${eventName.substring(1).encodeAsHTML()}="${actionString}"
+        on${eventName.substring(0,1).toUpperCase()}${eventName.substring(1)}="${actionString}"
     <%
     }
     %>
@@ -34,7 +34,7 @@
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
-        <rui:omMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" ${actionString}>
+        <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
         </rui:omMenuItem>
         <%
             }
@@ -46,13 +46,13 @@
         <%
             uiElement.toolbarMenus.each{toolbarMenu->
         %>
-        <rui:omToolbarMenu label="${toolbarMenu.label.encodeAsHTML()}">
+        <rui:omToolbarMenu label="${toolbarMenu.label}">
             <%
                 toolbarMenu.menuItems.each{menuItem->
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
             %>
-            <rui:omMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" ${actionString}>
+            <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
             </rui:omMenuItem>
             <%
                 }
@@ -71,7 +71,7 @@
                     {
                         def mapString = getMap(imageNodeContent.mapping);
             %>
-            <rui:omImage id="${imageNodeContent.name.encodeAsHTML()}" x="${imageNodeContent.x}" y="${imageNodeContent.y}" width="${imageNodeContent.width}" height="${imageNodeContent.height}" dataKey="${imageNodeContent.dataKey.encodeAsHTML()}" mapping="${mapString}"></rui:omImage>
+            <rui:omImage id="${imageNodeContent.name}" x="${imageNodeContent.x}" y="${imageNodeContent.y}" width="${imageNodeContent.width}" height="${imageNodeContent.height}" dataKey="${imageNodeContent.dataKey}" mapping="${mapString}"></rui:omImage>
             <%
                     }
                 }
@@ -83,7 +83,7 @@
                     if(textNodeContent.type == "text")
                     {
             %>
-            <rui:omText id="${textNodeContent.name.encodeAsHTML()}" x="${textNodeContent.x}" y="${textNodeContent.y}" width="${textNodeContent.width}" height="${textNodeContent.height}" dataKey="${textNodeContent.dataKey.encodeAsHTML()}"></rui:omText>
+            <rui:omText id="${textNodeContent.name}" x="${textNodeContent.x}" y="${textNodeContent.y}" width="${textNodeContent.width}" height="${textNodeContent.height}" dataKey="${textNodeContent.dataKey}"></rui:omText>
             <%
                     }
                 }
@@ -95,7 +95,7 @@
                     if(gaugeNodeContent.type == "gauge")
                     {
             %>
-            <rui:omGauge id="${gaugeNodeContent.name.encodeAsHTML()}" x="${gaugeNodeContent.x}" y="${gaugeNodeContent.y}" width="${gaugeNodeContent.width}" height="${gaugeNodeContent.height}" dataKey="${gaugeNodeContent.dataKey.encodeAsHTML()}"></rui:omGauge>
+            <rui:omGauge id="${gaugeNodeContent.name}" x="${gaugeNodeContent.x}" y="${gaugeNodeContent.y}" width="${gaugeNodeContent.width}" height="${gaugeNodeContent.height}" dataKey="${gaugeNodeContent.dataKey}"></rui:omGauge>
             <%
                     }
                 }

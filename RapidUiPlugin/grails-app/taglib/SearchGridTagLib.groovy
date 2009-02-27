@@ -186,8 +186,8 @@ class SearchGridTagLib {
             def imageArray = [];
             images.each {image ->
                 imageArray.add("""{
-                    src:'${image.@src}',
-                    visible:\"${image.@visible}\"
+                    src:'${image.@src.text().encodeAsJavaScript()}',
+                    visible:\"${image.@visible.text().encodeAsJavaScript()}\"
                 }""")
             }
             cArray.add("images:[${imageArray.join(',\n')}]")
@@ -218,7 +218,7 @@ class SearchGridTagLib {
                 rowColorsArray.add("""{
                     color:'${rowColor.@color}',
                     ${textColor != "" ? "textColor:'${textColor}'," : ""}
-                    visible:\"${rowColor.@visible}\" 
+                    visible:\"${rowColor.@visible.text().encodeAsJavaScript()}\" 
                 }""")
             }
             cArray.add("rowColors:[${rowColorsArray.join(',\n')}]")
@@ -248,14 +248,14 @@ class SearchGridTagLib {
         menuItemArray.add("id:'${id}'")
         menuItemArray.add("label:'${label}'")
         if (visible != "")
-            menuItemArray.add("visible:\"${visible}\"")
+            menuItemArray.add("visible:\"${visible.encodeAsJavaScript()}\"")
         def subMenuItems = menuItem.SubmenuItems?.MenuItem;
         if (subMenuItems) {
             def subMenuItemsArray = [];
             subMenuItems.each {subMenuItem ->
                 subMenuItemsArray.add("""{
                    id:'${subMenuItem.@id}',
-                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible}\"," : ""}
+                   ${subMenuItem.@visible.toString().trim() != "" ? "visible:\"${subMenuItem.@visible.text().encodeAsJavaScript()}\"," : ""}
                    label:'${subMenuItem.@label}'
                }""")
                 def subAction = subMenuItem.@action.toString().trim();

@@ -22,6 +22,17 @@ class DesignerTemplateUtils {
         return divId;
     }
 
+    public static declareVariable(String variableName, String variableValue, String isString)
+    {
+        if(isString)
+        {
+            variableValue = "\"${variableValue.escape()}\"";
+        }
+        return "<%\n"+
+        "${variableName}=variableValue\n"
+        "%>";
+    }
+
     public static def getActionsString(actionTriggers){
         def actionNames = actionTriggers.action.name;
         def actionsString;

@@ -58,13 +58,13 @@ class ActionsTagLib {
             def arguments = [];
             def args = new XmlSlurper().parseText(configXml).FunctionArg;
             args.each {
-                arguments.add("\"${it.text()}\"");
+                arguments.add("\"${it.text().encodeAsJavaScript()}\"");
             }
             return """
                <script type="text/javascript">
                var ${actionId}comp = YAHOO.rapidjs.Components['${attrs["componentId"]}'];
                var ${actionId}func = ${actionId}comp.${attrs["function"]};
-               var ${actionId}action = new YAHOO.rapidjs.component.action.FunctionAction('${attrs["id"]}',${actionId}comp ,${actionId}func, ${attrs["condition"] ? "\"${attrs["condition"]}\"" : "null"}, [${arguments.join(",")}] )
+               var ${actionId}action = new YAHOO.rapidjs.component.action.FunctionAction('${attrs["id"]}',${actionId}comp ,${actionId}func, ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"}, [${arguments.join(",")}] )
                ${successJs}
                ${errorJs}
                </script>
@@ -111,7 +111,7 @@ class ActionsTagLib {
             def requestParams = [];
             def params = new XmlSlurper().parseText(configXml).RequestParam;
             params.each {
-                requestParams.add("${it.@key}:\"${it.@value}\"");
+                requestParams.add("${it.@key}:\"${it.@value.text().encodeAsJavaScript()}\"");
             }
             def compnentList = attrs["components"];
             def cList = [];
@@ -126,7 +126,7 @@ class ActionsTagLib {
                        var ${actionId}config = {
                          id:'${actionId}',
                          ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
-                         ${attrs["condition"] ? "condition:\"${attrs["condition"]}\"," : ""}
+                         ${attrs["condition"] ? "condition:\"${attrs["condition"].encodeAsJavaScript()}\"," : ""}
                          url:'${attrs["url"]}'
                        }
                        var ${actionId}action = new YAHOO.rapidjs.component.action.RequestAction( ${actionId}config, {${requestParams.join(",")}}, [${cList.join(",")}]);
@@ -144,7 +144,7 @@ class ActionsTagLib {
                        var ${actionId}config = {
                          id:'${actionId}',
                          ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
-                         ${attrs["condition"] ? "condition:\"${attrs["condition"]}\"," : ""}
+                         ${attrs["condition"] ? "condition:\"${attrs["condition"].encodeAsJavaScript()}\"," : ""}
                          ${attrs["removeAttribute"] ? "removeAttribute:'${attrs["removeAttribute"]}'," : ""}
                          url:'${attrs["url"]}'
                        }
@@ -162,7 +162,7 @@ class ActionsTagLib {
         else if (actionType == "link") {
             return """
                <script type="text/javascript">
-               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"]}\", ${attrs["condition"] ? "\"${attrs["condition"]}\"" : "null"});
+               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"].encodeAsJavaScript()}\", ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"});
                ${errorJs} 
                </script>
             """;

@@ -1,6 +1,6 @@
 <html>
 <head>
-    <meta name="layout" content="${tab.webPage.name.encodeAsHTML()}Layout" />
+    <meta name="layout" content="${tab.webPage.name}Layout" />
 </head>
 <body>
 <%
@@ -11,8 +11,8 @@
 <%
     layoutUnitsHavingContentFile.each{layoutUnit->
 %>
-    <div id="${layoutUnit.getContentFileDivId().encodeAsHTML()}">
-        <rui:include template="${layoutUnit.contentFile.encodeAsHTML()}"></rui:include>
+    <div id="${layoutUnit.getContentFileDivId()}">
+        <rui:include template="${layoutUnit.contentFile}"></rui:include>
     </div>
 <%
     }
@@ -21,7 +21,7 @@
     if(tab.contentFile != null && tab.contentFile != "")
     {
 %>
-       <rui:include template="${tab.contentFile.encodeAsHTML()}"></rui:include>
+       <rui:include template="${tab.contentFile}"></rui:include>
 <%
     }
 %>
@@ -30,7 +30,7 @@
         def eventName = triggerName.substring(0,1).toUpperCase()+triggerName.substring(1);
         def actionString = tab.getActionsString(triggers); 
 %>
-       <rui:globalEvent on${eventName.encodeAsHTML()}="${actionString}"></rui:globalEvent>
+       <rui:globalEvent on${eventName}="${actionString}"></rui:globalEvent>
 <%
     }
 %>

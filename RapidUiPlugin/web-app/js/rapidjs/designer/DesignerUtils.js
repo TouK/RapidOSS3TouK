@@ -43,6 +43,14 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
     };
 
     this.getComponentsWithMenuItems = function(designer, xmlData) {
+        var getMenuNames = function(xmlData, menuNamesArray) {
+            var subMenuNodes = xmlData.childNodes();
+            for (var n = 0; n < subMenuNodes.length; n++) {
+                menuNamesArray.push(subMenuNodes[n].getAttribute('name'));
+                getMenuNames(subMenuNodes[n], menuNamesArray)
+            }
+
+        }
         var menuConfig = {};
         var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenus':'toolbar'}
         var componentNodes = this.getComponentNodesOfCurrentTab(designer, xmlData);
@@ -62,8 +70,10 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
                             if (menuNodes.length > 0) {
                                 hasMenu = true;
                             }
+
                             for (var n = 0; n < menuNodes.length; n++) {
                                 menuNames.push(menuNodes[n].getAttribute('name'));
+                                getMenuNames(menuNodes[n], menuNames);
                             }
                         }
                     }
@@ -73,6 +83,7 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
                             hasMenu = true;
                             for (var k = 0; k < menuNodes.length; k++) {
                                 menuNames.push(menuNodes[k].getAttribute('name'));
+                                getMenuNames(menuNodes[k], menuNames);
                             }
                         }
                     }

@@ -22,7 +22,7 @@ class DesignerTemplateUtils {
         return divId;
     }
 
-    public static declareVariable(String variableName, String variableValue, String isString)
+    public static declareVariable(String variableName, String variableValue, boolean isString)
     {
         if(isString)
         {

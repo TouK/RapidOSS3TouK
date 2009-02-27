@@ -1,4 +1,3 @@
-import build.RapidCompBuild
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 

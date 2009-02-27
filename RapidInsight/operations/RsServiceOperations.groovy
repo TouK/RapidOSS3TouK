@@ -23,25 +23,8 @@ public class RsServiceOperations extends RsGroupOperations
     def calculateState(currentState, oldPropagatedState, newPropagatedState)
     {
         return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);
+//    	return criticalPercent(currentState,  oldPropagatedState, newPropagatedState);
     }
     
-    public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
-    {
-        if (newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState > currentState
-                || currentState == oldPropagatedState && newPropagatedState < currentState)
-        {
-            def maxValue = 0;
-            childObjects.each {
-                def childState = it.getState();
-                if (childState >= 0 && maxValue < childState)
-                {
-                    maxValue = childState;
-                }
-            }
-            return maxValue;
-        }
-        return currentState;
-    }
-
 }
     

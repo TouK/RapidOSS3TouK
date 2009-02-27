@@ -13,7 +13,7 @@
 *
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111NOTSET307
 * USA.
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
@@ -21,20 +21,31 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     //its enough for a domain to implement save & load state  to have its own way of saving state
     //Note that child classes must not have a property state , they should use other name , stateValue or savedState etc
     //If a child have property state , calling getState over child does not call the getState function here.
+
+    final static int CRITICAL = 5
+    final static int MAJOR = 4
+    final static int INDETERMINATE = 1
+    final static int NOTSET = -1
+    final static int CRITICAL_PERCENTAGE = 40
+    final static int MAJOR_PERCENTAGE = 20
+    
     def saveState(currentState){
         RsObjectState.add(objectId:id, state:currentState);
     }
     //should only return the value of state
     def loadState(){
-        return  RsObjectState.get(objectId:id)?.state;
+        def state = RsObjectState.get(objectId:id)?.state;
+        if (state==null)
+        	return NOTSET
+        return state
     }
 
     int getState()
     {
         def currentState = currentState();
-        if(currentState == null)
+        if(currentState == NOTSET)
         {
-            currentState = calculateState(currentState, -1, -1);
+            currentState = calculateState(currentState, NOTSET, NOTSET);
             saveState(currentState);
         }
         return currentState;
@@ -45,9 +56,9 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         return loadState();
     }
     
-    int setState(newPropagatedState, oldPropagatedState = -1)
+    int setState(newPropagatedState, oldPropagatedState = NOTSET)
     {
-        def currentState = getState();
+        def currentState = currentState();
         def calculatedState = calculateState(currentState, oldPropagatedState, newPropagatedState);
         if(calculatedState != currentState)
         {
@@ -62,11 +73,12 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     - It is expected that users will change only calculateState, propagateState methods according to their needs.
     - In current implementation default state calculation strategy is specified as finding max severity of events.
     - calculateState will be called for each setState call. oldPropagatedState and newPropagatedState refers the states of triggering objects.
-    - oldPropagatedState and newPropagatedState will be passed as -1 if state calculation is triggered because of first getState call.
+    - oldPropagatedState and newPropagatedState will be passed as NOTSET if state calculation is triggered because of first getState call.
     =====================================================================================================================================*/
     def calculateState(currentState, oldPropagatedState, newPropagatedState)
     {
         return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);
+//    	return criticalPercent(currentState,  oldPropagatedState, newPropagatedState);
     }
 
     def propagateState(oldState, newState)
@@ -78,12 +90,11 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 
     public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
     {
-        if(newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState > currentState
-                || currentState == oldPropagatedState && newPropagatedState < currentState)
+        if(needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
         {
-            def propSummary = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
+            def severityFrequencyMap = RsEvent.propertySummary("elementName:\"${name}\"", "severity");
             def maxValue = 0;
-            propSummary.severity.each{propValue, numberOfObjects->
+            severityFrequencyMap.severity.each{propValue, numberOfObjects->
                 if(propValue >= 0 && maxValue < propValue)
                 {
                     maxValue = propValue;
@@ -96,19 +107,37 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     
 	public int criticalPercent(currentState,  oldPropagatedState, newPropagatedState)
 	{
-		if (newPropagatedState == -1 && oldPropagatedState == -1 || newPropagatedState < currentState
-				|| currentState == oldPropagatedState && newPropagatedState > currentState)
+		if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
 		{
-			def s = childObjects.state         
-			def percent = s.findAll{it == 1}.size()/s.size()*100
-
+			currentState = INDETERMINATE
+			def eventList = RsEvent.search("elementName:$name",max:1000000);
+			if (eventList.total==0)
+				return currentState
+			def severityList = eventList.results.severity;
+			def criticalList = severityList.findAll{it == CRITICAL};
+			def percent = (criticalList.size()/severityList.size())*100
 			switch(percent) {
-			case [it > 40]: currentState = 1;break
-			case [it > 20]: currentState = 2;break
-			default: currentState = 5
+				case {it > CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
+				case {it > MAJOR_PERCENTAGE}: currentState = MAJOR;break
+				default: currentState = INDETERMINATE
 			}
 		}
 		return currentState;
 	}
+	
+//  max severity means most critical. In RI, 5 is critical.
+	def needToCalculate(currentState,  oldPropagatedState, newPropagatedState)
+	{
+		// check if state calculation is triggered because of first getState call.
+    	def condition1 = newPropagatedState == NOTSET && oldPropagatedState == NOTSET
+    	// more severe event is received
+    	def condition2 = newPropagatedState > currentState
+    	// this event might have determined the current state (was the event with the max severity)    
+    	def condition3 = currentState == oldPropagatedState && newPropagatedState < currentState
+    	if(condition1 || condition2 || condition3)
+    		return true;
+    	else
+    		return false;
+    }
 }
     

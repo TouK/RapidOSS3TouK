@@ -17,5 +17,40 @@
 * USA.
 */
 public class RsGroupOperations extends RsTopologyObjectOperations {
+    
+	public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
+    {
+    	if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
+    	{
+            def maxValue = 0;
+            childObjects.each {
+                def childState = it.getState();
+                if (childState >= 0 && maxValue < childState)
+                {
+                    maxValue = childState;
+                }
+            }
+            return maxValue;
+        }
+        return currentState;
+    }
+    
+    public int criticalPercent(currentState,  oldPropagatedState, newPropagatedState)
+	{
+		if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
+		{
+			def stateList = []; 
+			childObjects.each{child->
+				stateList.add(child.currentState())
+			}
+			def percent = (stateList.findAll{it == CRITICAL}.size()/stateList.size())*100
+			switch(percent) {
+				case {it > CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
+				case {it > MAJOR_PERCENTAGE}: currentState = MAJOR;break
+				default: currentState = INDETERMINATE
+			}
+		}
+		return currentState;
+	}
 }
     

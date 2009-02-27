@@ -63,15 +63,6 @@
 				<Property Name="lastPolledAt" Type="number" />
 			</Properties>
 		</Model>
-		<Model Name="RsService" Parent="RsGroup">
-			<Properties>
-				<Property Name="observedState" Type="string" />
-				<Property Name="lastChangedAt" Type="number" />
-				<Property Name="interval" Type="number" />
-				<Property Name="consideredDownAt" Type="number" />
-				<Property Name="hasHeartbeat" Type="boolean" />
-			</Properties>
-		</Model>
 		<Model Name="RsTopologyObject">
 			<Properties>
 				<Property Name="name" Type="string" IsKey="true"/>
@@ -112,6 +103,19 @@
             </Properties>
         </Model>
         <Model Name="RsGroup" Parent="RsTopologyObject">
+			<Properties>
+			</Properties>
+		</Model>
+		<Model Name="RsService" Parent="RsGroup">
+			<Properties>
+				<Property Name="observedState" Type="string" />
+				<Property Name="lastChangedAt" Type="number" />
+				<Property Name="interval" Type="number" />
+				<Property Name="consideredDownAt" Type="number" />
+				<Property Name="hasHeartbeat" Type="boolean" />
+			</Properties>
+		</Model>
+		<Model Name="RsCustomer" Parent="RsGroup">
 			<Properties>
 			</Properties>
 		</Model>

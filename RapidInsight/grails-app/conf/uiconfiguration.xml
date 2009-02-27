@@ -1275,6 +1275,143 @@
             </UiElement>
           </UiElement>
         </UiElement>
+
+        <UiElement designerType="Tab" id="2568" name="browser" title="Repository Browser" contentFile="pageContents/_browser.gsp">
+          <UiElement designerType="Components">
+            <UiElement designerType="SearchList" id="2583" url="rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" defaultFields="id,name" showMax="6" pollingInterval="0" name="objectList" title="Objects">
+              <UiElement designerType="SearchListFields"/>
+              <UiElement designerType="SearchListImages"/>
+              <UiElement designerType="SearchListMenuItems">
+                <UiElement designerType="MenuItem" id="2585" name="browse" label="Browse" visible="true"/>
+              </UiElement>
+              <UiElement designerType="SearchListPropertyMenuItems">
+                <UiElement designerType="MenuItem" id="2587" name="sortAsc" label="Sort Asc" visible="true"/>
+                <UiElement designerType="MenuItem" id="2589" name="sortDesc" label="Sort Desc" visible="true"/>
+                <UiElement designerType="MenuItem" id="2591" name="greaterThan" label="Greater Than" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2593" name="lessThan" label="Less Than" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2595" name="greaterThanOrEqualTo" label="Greater than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2597" name="lessThanOrEqualTo" label="Less than or equal to" visible="YAHOO.lang.isNumber(parseInt(params.value))"/>
+                <UiElement designerType="MenuItem" id="2599" name="except" label="Except" visible="true"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="TreeGrid" id="2571" url="rsBrowser/classes?format=xml" rootTag="Classes" contentPath="Class" keyAttribute="name" pollingInterval="0" name="classTree" title="Classes">
+              <UiElement designerType="TreeGridColumns">
+                <UiElement designerType="TreeGridColumn" id="2573" attributeName="name" colLabel="Class Name" width="300" sortBy="true" columnIndex="0">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="TreeGridRootImages">
+                <UiElement designerType="RootImage" id="2575" expanded="images/rapidjs/component/tools/class.png" collapsed="images/rapidjs/component/tools/class.png" visible="params.data.name != 'System' &amp;&amp; params.data.name != 'Application'"/>
+                <UiElement designerType="RootImage" id="2577" expanded="images/rapidjs/component/tools/application.png" collapsed="images/rapidjs/component/tools/application.png" visible="params.data.name == 'Application'"/>
+                <UiElement designerType="RootImage" id="2579" expanded="images/rapidjs/component/tools/configure.png" collapsed="images/rapidjs/component/tools/configure.png" visible="params.data.name == 'System'"/>
+              </UiElement>
+              <UiElement designerType="TreeGridMenuItems">
+                <UiElement designerType="MenuItem" id="2581" name="propsAndOperations" label="Get Properties and Operations" visible="params.data.name != 'System' &amp;&amp; params.data.name != 'Application'"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="Html" id="2608" name="objectDetails" title=""/>
+            <UiElement designerType="Html" id="2610" name="propsAndOperations" title=""/>
+          </UiElement>
+          <UiElement designerType="Layout" id="2567">
+            <UiElement designerType="CenterUnit" id="2726" component="objectList" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="2729" width="340" resize="true" component="classTree" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs">
+            <UiElement designerType="Dialog" id="2720" title="" width="850" height="500" component="objectDetails"/>
+            <UiElement designerType="Dialog" id="2723" title="" width="550" height="600" component="propsAndOperations"/>
+          </UiElement>
+          <UiElement designerType="Actions">
+            <UiElement designerType="FunctionAction" id="2612" component="objectDetails" function="show" name="browseAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2615" value="createURL('browser/browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})"/>
+                <UiElement designerType="FunctionArgument" id="2617" value="'Details of ' + params.data.rsAlias + ' ' + params.data.id"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2619" type="Menu" component="objectList" event="browse"/>
+                <UiElement designerType="ActionTrigger" id="2623" type="Component event" component="objectList" event="rowDoubleClicked"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2626" component="propsAndOperations" function="show" name="propsAndOperationsAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2629" value="createURL('browser/propsAndOperations.gsp', {className:params.data.name})"/>
+                <UiElement designerType="FunctionArgument" id="2631" value="'Properties and Operations of ' + params.data.name"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2633" type="Menu" component="classTree" event="propsAndOperations"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2637" component="objectList" function="appendToQuery" name="greaterThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2640" value="params.key + ':{' + params.value + ' TO *}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2642" type="Menu" component="objectList" event="greaterThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2646" component="objectList" function="appendToQuery" name="lessThanAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2649" value="params.key + ':{* TO ' + params.value + '}'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2651" type="Menu" component="objectList" event="lessThan"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2655" component="objectList" function="appendToQuery" name="lessThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2658" value="params.key + ':[* TO ' + params.value + ']'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2660" type="Menu" component="objectList" event="lessThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2664" component="objectList" function="appendToQuery" name="greaterThanOrEqualToAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2667" value="params.key + ':[' + params.value + ' TO *]'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2669" type="Menu" component="objectList" event="greaterThanOrEqualTo"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2673" component="objectList" function="appendExceptQuery" name="exceptAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2676" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2678" value="params.value"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2680" type="Menu" component="objectList" event="except"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2684" component="objectList" function="sort" name="sortAscAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2687" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2689" value="'asc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2691" type="Menu" component="objectList" event="sortAsc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2695" component="objectList" function="sort" name="sortDescAction" condition="">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2698" value="params.key"/>
+                <UiElement designerType="FunctionArgument" id="2700" value="'desc'"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2702" type="Menu" component="objectList" event="sortDesc"/>
+              </UiElement>
+            </UiElement>
+            <UiElement designerType="FunctionAction" id="2706" component="objectList" function="setQuery" name="setQueryAction" condition="params.data.name != 'System' &amp;&amp; params.data.name != 'Application'">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement designerType="FunctionArgument" id="2709" value="''"/>
+                <UiElement designerType="FunctionArgument" id="2711" value="'id'"/>
+                <UiElement designerType="FunctionArgument" id="2713" value="'asc'"/>
+                <UiElement designerType="FunctionArgument" id="2715" value="{domain:params.data.logicalName}"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement designerType="ActionTrigger" id="2717" type="Component event" component="classTree" event="nodeClicked"/>
+              </UiElement>
+            </UiElement>
+          </UiElement>
+        </UiElement>  
       </UiElement>
     </UiElement>
   </UiElement>

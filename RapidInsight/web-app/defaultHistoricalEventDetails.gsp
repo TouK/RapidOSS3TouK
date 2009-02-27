@@ -14,7 +14,7 @@
 %>
 <script type="text/javascript">
 window.showTopologyObject = function (url, title){
-var objectDialog = YAHOO.rapidjs.Components['objectDetailsmenuHtml'];
+var objectDialog = YAHOO.rapidjs.Components['objectDetails'];
 if(objectDialog.popupWindow){
 objectDialog.popupWindow.show();
 }

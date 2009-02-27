@@ -33,14 +33,15 @@ public class LoggerUtils
 {
 
     public static final String DAILY_ROLLING_FILE_APPENDER = "DailyRollingFileAppender";
+    public static final String DEFAULT_LAYOUT_PATTERN="%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n";
 
     public static void configureLogger(Logger aLogger,  Level level ,String fileName)
     {
-        configureLogger(aLogger, level, fileName,  "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n",true);
+        configureLogger(aLogger, level, fileName,  DEFAULT_LAYOUT_PATTERN,true);
     }
     public static void configureLogger(Logger aLogger,  Level level ,String fileName,boolean addFileAppender)
     {
-        configureLogger(aLogger, level, fileName,  "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n",addFileAppender);
+        configureLogger(aLogger, level, fileName,  DEFAULT_LAYOUT_PATTERN,addFileAppender);
     }
     public static void configureLogger(Logger aLogger, Level level, String fileName, String layoutPattern, boolean addFileAppender)
     {

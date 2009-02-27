@@ -80,9 +80,8 @@ public class LoggerUtils
     }
     
     public static void addConsoleAppender(Logger aLogger, String layoutPattern)
-    {
-    	String layout_str = "";
-    	PatternLayout layout = new PatternLayout( layout_str );
+    {       	
+    	PatternLayout layout = new PatternLayout( layoutPattern );
     	ConsoleAppender app = new ConsoleAppender( layout, "System.err" );
     	app.setTarget( "System.err" );
     	app.setName( "ConsoleAppender" );

@@ -17,6 +17,7 @@
     <rui:slMenuItems>
         <%
             uiElement.getRowMenuItems().each{menuItem->
+                if(menuItem.parentMenuItem == null){
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
@@ -41,6 +42,8 @@
                 %>
         </rui:slMenuItem>
         <%
+
+               }
             }
         %>
     </rui:slMenuItems>

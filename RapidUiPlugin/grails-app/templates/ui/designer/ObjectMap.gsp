@@ -30,12 +30,14 @@
     <rui:omMenuItems>
         <%
             uiElement.getNodeMenuItems().each{menuItem->
-                def menuActionString = menuItem.getActionString();
-                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                 if(menuItem.parentMenuItem == null){
+                    def menuActionString = menuItem.getActionString();
+                    def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
         <rui:omMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" ${actionString}>
         </rui:omMenuItem>
         <%
+            }
             }
         %>
     </rui:omMenuItems>

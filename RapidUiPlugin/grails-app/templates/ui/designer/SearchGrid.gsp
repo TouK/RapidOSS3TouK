@@ -13,8 +13,9 @@
     <rui:sgMenuItems>
     <%
         uiElement.menuItems.each{menuItem->
-            def menuActionString = menuItem.getActionString();
-            def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+            if(menuItem.parentMenuItem == null){
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
     %>
         <rui:sgMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" visible="${menuItem.visible}" ${actionString}>
             <%
@@ -37,6 +38,8 @@
             %>
         </rui:sgMenuItem>
     <%
+
+          }
         }
     %>
     </rui:sgMenuItems>

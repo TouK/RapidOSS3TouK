@@ -42,8 +42,9 @@
     <rui:tgMenuItems>
         <%
             uiElement.menuItems.each{menuItem->
-                def menuActionString = menuItem.getActionString();
-                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                 if(menuItem.parentMenuItem == null){
+                    def menuActionString = menuItem.getActionString();
+                    def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
         %>
         <rui:tgMenuItem id="${menuItem.name.encodeAsHTML()}" label="${menuItem.label.encodeAsHTML()}" visible="${menuItem.visible.encodeAsHTML()}" ${actionString}>
                <%
@@ -65,6 +66,7 @@
                 %>
         </rui:tgMenuItem>
         <%
+            }
             }
         %>
     </rui:tgMenuItems>

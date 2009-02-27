@@ -385,7 +385,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             }
         },
-        "AutoComplete":{
+        "Autocomplete":{
             "setTitle":{
                 descr:"Changes component's title.",
                 args:{
@@ -559,7 +559,7 @@ YAHOO.rapidjs.designer.Config = new function() {
         "Html":{
 
         },
-        "AutoComplete":{
+        "Autocomplete":{
             "submit":{
                 descr:"Fired when a suggestion is selected or \"search\" button is clicked",
                 params:{

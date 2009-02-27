@@ -39,4 +39,8 @@ public class TestLogUtils
         LoggerUtils.addConsoleAppender(logger, "%d{yy/MM/dd HH:mm:ss.SSS} %p: %m%n");
         logger.setLevel(Level.DEBUG);
     }
+    public static void disableLogger(Logger logger)
+    {
+        logger.removeAllAppenders();        
+    }
 }

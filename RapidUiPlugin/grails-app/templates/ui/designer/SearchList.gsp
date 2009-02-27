@@ -1,6 +1,10 @@
+<%
+    def defaultFieldsString = uiElement.defaultFields.split(",").toString();
+    defaultFieldsString = defaultFieldsString.substring(1, defaultFieldsString.length()-1);
+%>
 <rui:searchList id="${uiElement.name.encodeAsHTML()}" url="../${uiElement.url.encodeAsHTML()}" rootTag="${uiElement.rootTag.encodeAsHTML()}" contentPath="${uiElement.contentPath.encodeAsHTML()}" keyAttribute="${uiElement.keyAttribute.encodeAsHTML()}"
     lineSize="${uiElement.lineSize}" title="${uiElement.title.encodeAsHTML()}" queryParameter="${uiElement.queryParameter.encodeAsHTML()}" totalCountAttribute="${uiElement.totalCountAttribute.encodeAsHTML()}" offsetAttribute="${uiElement.offsetAttribute.encodeAsHTML()}" sortOrderAttribute="${uiElement.sortOrderAttribute.encodeAsHTML()}"
-    pollingInterval="${uiElement.pollingInterval}" defaultFields="${uiElement.defaultFields.encodeAsHTML()}" ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""}
+    pollingInterval="${uiElement.pollingInterval}" defaultFields='\${[${defaultFieldsString}]}' ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""}
     <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);

@@ -295,6 +295,7 @@ class RapidInsightBuild extends Build {
             ant.fileset(file: "${env.rapid_insight}/scripts/**") {
                 ant.exclude(name: "_Install.groovy")
                 ant.exclude(name: "_Upgrade.groovy")
+                ant.exclude(name: "*Test.groovy")
             }
         }
         ant.copy(toDir: "${env.dist_rapid_suite}/web-app",overwrite:true) {

@@ -5,8 +5,10 @@
         compNameString = "";
     }
     compNameString = "\${["+compNameString+"]}";
+    def requestActionConditionPropertyName = "requestActionCondition"+uiElement.id+ "Condition";
+    println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(requestActionConditionPropertyName, uiElement.condition, true);
 %>
-<rui:action id="${uiElement.name}" type="request" url="../${uiElement.url}" components="${compNameString}" ${uiElement.condition != ""?"condition=\""+uiElement.condition+"\"":""}
+<rui:action id="${uiElement.name}" type="request" url="../${uiElement.url}" components="${compNameString}" ${uiElement.condition != ""?"condition=\""+requestActionConditionPropertyName+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

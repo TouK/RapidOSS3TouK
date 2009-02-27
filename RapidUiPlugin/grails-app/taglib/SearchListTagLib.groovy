@@ -207,7 +207,7 @@ class SearchListTagLib {
         if (config["defaultFields"]) {
             def fArray = [];
             config['defaultFields'].each {
-                fArray.add("'${it}'");
+                fArray.add("'${it.trim()}'");
             }
             cArray.add("defaultFields:[${fArray.join(",")}]")
         }

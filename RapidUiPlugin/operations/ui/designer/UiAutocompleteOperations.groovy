@@ -17,8 +17,8 @@ class UiAutocompleteOperations extends UiComponentOperations {
                 designerType: "Autocomplete",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/chart_pie.png",
-                imageCollapsed: "images/rapidjs/designer/chart_pie.png",
+                imageExpanded: "images/rapidjs/designer/autocomplete.png",
+                imageCollapsed: "images/rapidjs/designer/autocomplete.png",
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         contentPath: [descr: "The node names of AJAX response which will be used as suggestion data."],

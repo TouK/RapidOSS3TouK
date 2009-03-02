@@ -8,3 +8,4 @@
 -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., 
 -Dgroovy.full.stacktrace=false
 -Dcom.smarts.disable_keepalives=1
+-Dorg.mortbay.jetty.Request.maxFormContentSize=1000000

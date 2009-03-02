@@ -2,7 +2,7 @@
     def functionActionConditionPropertyName = "functionActionCondition"+uiElement.id+ "Condition";
     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(functionActionConditionPropertyName, uiElement.condition, true);
 %>
-<rui:action id="${uiElement.name}" type="function" function="${uiElement.function}" ${uiElement.component != null?"componentId='"+uiElement.component.name+"'":""} ${uiElement.condition != ""?"condition=\""+functionActionConditionPropertyName+"\"":""}
+<rui:action id="${uiElement.name}" type="function" function="${uiElement.function}" ${uiElement.component != null?"componentId='"+uiElement.component.name+"'":""} ${uiElement.condition != ""?"condition=\"\$"+functionActionConditionPropertyName+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

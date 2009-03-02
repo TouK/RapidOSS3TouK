@@ -66,7 +66,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ExportTool, YAHOO.rapidjs.compo
         for(var param in params){
             paramsArray[paramsArray.length] = param + '=' + params[param]
         }
-        window.location = "search/export?" + paramsArray.join('&');
+        window.location = getUrlPrefix()+ "search/export?" + paramsArray.join('&');
     },
     
     exportChange: function(){

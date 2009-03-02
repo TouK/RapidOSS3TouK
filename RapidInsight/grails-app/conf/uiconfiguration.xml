@@ -1,6 +1,6 @@
 <UiConfig>
   <UiElement designerType='WebPages'>
-    <UiElement designerType='WebPage' name='indexTrial' id='7853'>
+    <UiElement designerType='WebPage' name='index' id='7853'>
       <UiElement designerType='Tabs'>
         <UiElement designerType='Tab' name='events' title='Events' contentFile='pageContents/_events.gsp' id='7855'>
           <UiElement designerType='Components'>

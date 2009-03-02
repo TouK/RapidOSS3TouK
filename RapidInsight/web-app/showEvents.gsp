@@ -35,7 +35,7 @@
         <div id="eventsTable"></div>
     </div>
      <script>
-     Event.onDOMReady(function() {
+     YAHOO.util.Event.onDOMReady(function() {
              var mydata = [];
               <g:each var="event" in="${events}">
                   <g:if test="${event instanceof RsRiEvent}">

@@ -14,7 +14,7 @@ import groovy.xml.MarkupBuilder
 class RsBrowserController {
 
     def index = {
-        redirect(uri: "/browser.gsp")
+        redirect(uri: "/index/browser.gsp")
     }
 
     def classes = {

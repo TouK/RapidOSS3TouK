@@ -21,7 +21,7 @@
         def groupName = params.groupName ? params.groupName : mode == 'edit' ? topoMap.group.groupName : '';
         def mapName = params.mapName ? params.mapName : mode == 'edit' ? topoMap.mapName : '';
         def nodes = params.nodes ? params.nodes : ''
-        def layout = params.layout ? params.layout : ''
+        def layout = params.layout ? params.layout : mode == 'edit' ? topoMap.layout : '0'
     %>
     
     <rui:formRemote method="POST" action="script/run/saveMap?format=xml" componentId="${params.componentId}" onSuccess="window.refreshMapTree">
@@ -41,6 +41,6 @@
         </table>
         <input type="hidden" name="nodes" value="${nodes.encodeAsHTML()}"/>
         <input type="hidden" name="layout" value="${layout.encodeAsHTML()}"/>
-        <input type="hidden" name="id" value="${mode == 'edit'? topoMap.id : ''}"/>
+        <input type="hidden" name="mapId" value="${mode == 'edit'? topoMap.id : ''}"/>
     </rui:formRemote>
 </g:else>

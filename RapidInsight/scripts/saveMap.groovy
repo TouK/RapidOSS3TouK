@@ -34,7 +34,13 @@ if(map){
 def user = RsUser.findByUsername(web.session.username);
 
 def group = MapGroup.add( groupName : groupName, username : user );
-map = TopoMap.add( mapName : mapName, username : user, layout : layout);
+if(params.mapId && params.mapId != ""){
+    map = TopoMap.get(id:params.mapId);
+    map.update(mapName:mapName, layout:layout)
+}
+else{
+    map = TopoMap.add( mapName : mapName, username : user, layout : layout);    
+}
 
 group.addRelation( maps : map);
 

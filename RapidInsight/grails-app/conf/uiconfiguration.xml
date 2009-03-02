@@ -666,7 +666,7 @@
               </UiElement>
               <UiElement designerType="SearchListImages"/>
               <UiElement designerType="SearchListMenuItems">
-                <UiElement designerType="MenuItem" id="3236" name="browse" label="Browse" visible="params.data.elementName &amp;&amp; params.data.elementName != ''"/>
+                <UiElement designerType="MenuItem" id="3236" name="browse" label="Browse" visible="true"/>
                 <UiElement designerType="MenuItem" id="3238" name="showMap" label="Show Map" visible="params.data.rsAlias == 'RsComputerSystem' || params.data.rsAlias == 'RsLink'"/>
               </UiElement>
               <UiElement designerType="SearchListPropertyMenuItems">

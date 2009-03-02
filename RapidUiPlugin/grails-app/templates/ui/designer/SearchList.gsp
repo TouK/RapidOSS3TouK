@@ -54,14 +54,14 @@
     <rui:slPropertyMenuItems>
         <%
             uiElement.propertyMenuItems.each{menuItem->
-                if(menuItem.parentMenuItem != null )
+                if(menuItem.parentMenuItem == null )
                 {
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                     def propertyMenuItemVisiblePropertyName = menuItem.name+ "Visible";
                     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(propertyMenuItemVisiblePropertyName, menuItem.visible, true);
         %>
-        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString} visible="\${${propertyMenuItemVisiblePropertyName}">
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString} visible="\${${propertyMenuItemVisiblePropertyName}}">
                <%
                     if(!menuItem.childMenuItems.isEmpty())
                     {

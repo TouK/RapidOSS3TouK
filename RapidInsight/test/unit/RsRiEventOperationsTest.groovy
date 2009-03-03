@@ -92,7 +92,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
 
 
-        assertNotSame(addedEvent,updatedEvent);
+        assertFalse(addedEvent.asMap() == updatedEvent.asMap());
 
         assertEquals(2,RsEventJournal.list().size());
         def addedJournal2=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[1]

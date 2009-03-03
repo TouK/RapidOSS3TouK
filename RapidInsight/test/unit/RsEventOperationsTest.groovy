@@ -40,7 +40,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(1,RsEvent.list().size());
 
 
-         assertNotSame(addedEvent,updatedEvent);
+         assertFalse(addedEvent.asMap() == updatedEvent.asMap());
      }
 
 }

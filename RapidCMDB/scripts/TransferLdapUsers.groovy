@@ -36,8 +36,10 @@ import auth.RsUserInformation
 def output=" "
 
 try{
-
-	/*
+    // LDAP CONFIGURATION
+    // Don't forget to create the group configured in localGroupName property
+    //
+    /*
 	//for apache ds
 	//Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
     def ldapConnectionName="apache ds"
@@ -45,6 +47,7 @@ try{
     def searchFilter="objectClass=person"    
     def searchSubDirectories=true
     def usernameAttribute="uid"
+    def localGroupName="userGroup"
     */
 
     //for ms ds
@@ -55,12 +58,16 @@ try{
     def searchFilter="objectClass=user"
     def searchSubDirectories=true
     def usernameAttribute="name"
+    def localGroupName="userGroup"
 
+    // BELOW IMPLEMENTATION IS TO TRANSFER USERS
 
     def ldapConnection=LdapConnection.get(name:ldapConnectionName)
 	if(ldapConnection==null)
 	{
-		output+="No connection found with id ${ldapConnectionName}"
+        logger.warn("No connection found with id ${ldapConnectionName}");
+        
+        output+="No connection found with id ${ldapConnectionName}"
 		return output
 	}
 
@@ -70,7 +77,9 @@ try{
         ldapConnection.connect()
         output+= "Connected to Ldap"
     }
-    catch (NamingException e) {        
+    catch (NamingException e) {
+        logger.warn("Could not connect to LDAP: ${e}");
+
         output+= "Could not connect to LDAP: ${e}"
         throw e
     }
@@ -113,22 +122,34 @@ try{
 
 
                 def userInformation=LdapUserInformation.add(userdn:userdn,ldapConnection:ldapConnection)
+                try {
+                    
+                    def rsUser = RsUser.createUser([username: username, passwordHash:"",userInformation:userInformation],[localGroupName])
+                    if (!rsUser.hasErrors()) {
+                        output+= "<br>User ${rsUser.username} created"
 
-                def rsUser = RsUser.add(username: username, passwordHash:"",userInformation:userInformation)
-                if (!rsUser.hasErrors()) {
-                    output+= "<br>User ${rsUser.username} created"
+                    }
+                    else
+                    {
+                        logger.warn("User ${username} can not be created. Reason : ${rsUser.errors}");
 
+                        output+= "<br> User ${username} can not be created. Reason : ${rsUser.errors}";
+
+                    }
                 }
-                else
+                catch(e)
                 {
-                    output+= "<br> User ${username} can not be created"
+                    logger.warn("User ${username} can not be created. Reason : ${e}");
 
+                    output+= "<br> User ${username} can not be created. Reason : ${e}";
                 }
+
             }
 
         }
     }
     catch (NamingException ex) {
+        logger.warn("Exception occured while searching Ldap Server : ${ex}");
 
         output+="<br> Exception occured while searching Ldap Server : ${ex}"
     }
@@ -148,7 +169,9 @@ try{
 }
 catch(Exception e)
 {
-    output+="Got Exception ${e} "
+    logger.warn("Got Exception ${e} ");
+    
+    output+="<br> Got Exception ${e} "
 }
 
 

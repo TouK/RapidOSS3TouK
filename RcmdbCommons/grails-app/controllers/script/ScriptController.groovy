@@ -227,8 +227,8 @@ class ScriptController {
             }
             catch (e) {
                 log.warn("Exception occurred while starting script", e);
-                def errors = [e.getMessage()]
-                flash.errors = errors;
+                addError("script.start.error", [e.getMessage()])
+                flash.errors = this.errors;
                 if(params.targetURI){
                     redirect(uri:params.targetURI);
                 }
@@ -260,8 +260,8 @@ class ScriptController {
             }
             catch (e) {
                 log.warn("Exception occurred while stopping script", e);
-                def errors = [e.getMessage()]
-                flash.errors = errors;
+                addError("script.stop.error", [e.getMessage()])
+                flash.errors = this.errors;
                 if(params.targetURI){
                     redirect(uri:params.targetURI);
                 }

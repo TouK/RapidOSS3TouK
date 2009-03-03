@@ -59,6 +59,8 @@ public class JsCssCombiner extends CommandLineUtility {
 
     private String mediaPath = "images";
 
+    private int firstMatchIndex = Integer.MAX_VALUE;
+
 
     public JsCssCombiner() {
         super(TOOL_NAME, TOOL_NAME + ".log");
@@ -186,6 +188,10 @@ public class JsCssCombiner extends CommandLineUtility {
         Matcher matcher = pattern.matcher(wholeHTML);
         String firstPath;
         while (matcher.find()) {
+            int index = matcher.start();
+            if(firstMatchIndex > index){
+                firstMatchIndex = index;
+            }
             firstPath = findActualPath(matcher.group(1));
             paths.add(firstPath);
         }
@@ -203,8 +209,14 @@ public class JsCssCombiner extends CommandLineUtility {
         String fileName = getFileName(file);
         String combinedJSName = webBasePrefix + fileName + suffix + ".js";
         String combinedCSSName = webBasePrefix +  fileName + suffix + ".css";
-        String replace = "<head>\n\t<script src=\"" + combinedJSName + "\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" + combinedCSSName + "\"/>\n";
-        String htmlWithScriptsInserted = htmlWithNoScripts.replaceFirst("<head>", replace);
+        String replace = "\n\t<script src=\"" + combinedJSName + "\"></script>\n\t<link rel=\"stylesheet\" type=\"text/css\" href=\"" + combinedCSSName + "\"/>\n";
+        String htmlWithScriptsInserted = "";
+        if(firstMatchIndex == Integer.MAX_VALUE){
+           htmlWithScriptsInserted = htmlWithNoScripts.replaceFirst("<head>", "<head>" + replace);
+        }
+        else{
+            htmlWithScriptsInserted = htmlWithNoScripts.substring(0, firstMatchIndex) + replace + (htmlWithNoScripts.length() > (firstMatchIndex + 1)? htmlWithNoScripts.substring(firstMatchIndex):"");
+        }
         createFile(htmlWithScriptsInserted, targetPath + "/" + file.getName());
     }
 

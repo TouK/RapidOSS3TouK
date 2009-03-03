@@ -1,84 +1,82 @@
-<script type="text/javascript" src="../js/yui/utilities/utilities.js"></script>
-<script type="text/javascript" src="../js/yui/json/json-min.js"></script>
-<script type="text/javascript" src="../js/yui/container/container-min.js"></script>
-<script type="text/javascript" src="../js/yui/menu/menu-min.js"></script>
-<script type="text/javascript" src="../js/yui/resize/resize-min.js"></script>
-<script type="text/javascript" src="../js/yui/layout/layout-min.js"></script>
-<script type="text/javascript" src="../js/yui/history/history-min.js"></script>
-<script type="text/javascript" src="../js/yui/datasource/datasource-min.js"></script>
-<script type="text/javascript" src="../js/yui/datatable/datatable-min.js"></script>
-<script type="text/javascript" src="../js/yui/charts/charts-experimental-min.js"></script>
-<script type="text/javascript" src="../js/yui/autocomplete/autocomplete-min.js"></script>
-<script type="text/javascript" src="../js/ext/ext.js"></script>
-
-<script type="text/javascript" src="../js/rapidjs/component/ComponentContainer.js"></script>
-<script type="text/javascript" src="../js/rapidjs/RapidUtil.js"></script>
-<script type="text/javascript" src="../js/rapidjs/data/NodeFactory.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/RapidElement.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/PollingComponentContainer.js"></script>
-
-<script type="text/javascript" src="../js/yui/button/button-min.js"></script>
-<script type="text/javascript" src="../js/rapidjs/data/RapidXmlDocument.js"></script>
-<script type="text/javascript" src="../js/rapidjs/SelectUtils.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/form/Form.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/form/HtmlEmbeddableForm.js"></script>
-
-<script type="text/javascript" src="../js/rapidjs/component/simplewidgets/Button.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/BasicTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/SettingsTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/dialog/Dialog.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/PopupWindow.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/utilities', file:'utilities.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/json', file:'json-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/container', file:'container-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/menu', file:'menu-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/resize', file:'resize-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/layout', file:'layout-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/history', file:'history-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/datasource', file:'datasource-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/datatable', file:'datatable-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/charts', file:'charts-experimental-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/autocomplete', file:'autocomplete-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/button', file:'button-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/ext', file:'ext.js')}"></script>
 
 
-<script type="text/javascript" src="../js/rapidjs/component/search/SearchNode.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/ButtonToolBar.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/SearchListSettingsTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/LoadingTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/ErrorTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/search/ExportTool.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/search/AbstractSearchList.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/search/SearchList.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/search/ViewBuilder.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/search/SearchGrid.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/autocomplete/Autocomplete.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/pieChart/PieChart.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/pieChart/FABridge.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/pieChart/FlexPieChart.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/map/GMap.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'RapidUtil.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'SelectUtils.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/data', file:'NodeFactory.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/data', file:'RapidXmlDocument.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'RapidElement.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'ComponentContainer.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'PollingComponentContainer.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/form', file:'Form.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/form', file:'HtmlEmbeddableForm.js')}"></script>
 
-<script type="text/javascript" src="../js/rapidjs/component/simplewidgets/split.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/tools/Tooltip.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/simplewidgets', file:'Button.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/simplewidgets', file:'split.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'ButtonToolBar.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'BasicTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'SettingsTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'SearchListSettingsTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'LoadingTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'ErrorTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'Tooltip.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/dialog', file:'Dialog.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'PopupWindow.js')}"></script>
 
-<script type="text/javascript" src="../js/rapidjs/component/timeline/Timeline.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/timeline/Timelineext.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/timeline/TimelineWindow.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchNode.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ExportTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'AbstractSearchList.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchList.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ViewBuilder.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchGrid.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/autocomplete', file:'Autocomplete.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'PieChart.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FABridge.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FlexPieChart.js')}"></script>
 
-<script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeNode.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeHeaderCell.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGridView.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGrid.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/map', file:'GMap.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'Timeline.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'Timelineext.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'TimelineWindow.js')}"></script>
 
-<script type="text/javascript" src="../js/rapidjs/component/action/Action.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/html/Html.js"></script>
-<script type="text/javascript" src="../js/rapidjs/component/topologyMap/TopologyMap.js"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeNode.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeHeaderCell.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeGridView.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeGrid.js')}"></script>
+
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/action', file:'Action.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/html', file:'Html.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/topologyMap', file:'TopologyMap.js')}"></script>
 
 
-<link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/menu.css"/>
-<link rel="stylesheet" type="text/css" href="../js/yui/assets/skins/sam/skin.css"/>
-<link rel="stylesheet" type="text/css" href="../js/yui/button/assets/skins/sam/button.css"/>
-<link rel="stylesheet" type="text/css" href="../js/yui/container/assets/skins/sam/container.css"/>
-<link rel="stylesheet" type="text/css" href="../js/yui/datatable/assets/skins/sam/datatable.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/yuioverride.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/timeline/timeline.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/common.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/dialog.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/form.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/layout.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/search/search.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/search/searchlist.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/search/searchgrid.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/simplewidgets/button.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css"/>
-<link rel="stylesheet" type="text/css" href="../css/rapidjs/autocomplete/autocomplete.css"/>
-<link rel="stylesheet" type="text/css" href="../riindex.css"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/assets/skins/sam', file:'menu.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/assets/skins/sam', file:'skin.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/button/assets/skins/sam', file:'button.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/container/assets/skins/sam', file:'container.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/datatable/assets/skins/sam', file:'datatable.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'yuioverride.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/timeline', file:'timeline.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'common.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'dialog.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'form.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'layout.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'search.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchlist.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchgrid.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/simplewidgets', file:'button.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/tools', file:'tools.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/treegrid', file:'treegrid.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/autocomplete', file:'autocomplete.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(file:'riindex.css')}"/>

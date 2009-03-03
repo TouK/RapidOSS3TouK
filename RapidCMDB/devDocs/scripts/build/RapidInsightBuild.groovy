@@ -129,26 +129,45 @@ class RapidInsightBuild extends Build {
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
         def versionDate = getVersionWithDate();
+        replaceGrailsLinks("${env.dist_rapid_suite}/grails-app/views/layouts/_layoutHeader.gsp")
+        ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
+            ant.arg(value: "-file");
+            ant.arg(value: "$env.dist_rapid_suite/grails-app/views/layouts/_layoutHeader.gsp");
+            ant.arg(value: "-applicationPath");
+            ant.arg(value: "${env.dist_rapid_suite}/web-app");
+            ant.arg(value: "-target");
+            ant.arg(value: "${env.dist_rapid_suite}/web-app");
+            ant.arg(value: "-suffix");
+            ant.arg(value: "_${buildNo}");
+            ant.classpath() {
+                ant.pathelement(location: "${env.dist_rapid_suite_lib}/comp.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
+            }
+        }
+        ant.move(file: "${env.dist_rapid_suite}/web-app/_layoutHeader.gsp", todir: "${env.dist_rapid_suite}/grails-app/views/layouts");
+        replaceJavascriptAndCss("${env.dist_rapid_suite}/grails-app/views/layouts/_layoutHeader.gsp", "_layoutHeader_${buildNo}.js", "_layoutHeader_${buildNo}.css")
 
-//        ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
-//            ant.arg(value: "-file");
-//            ant.arg(value: "$env.rapid_insight/grails-app/views/layouts/indexLayout.gsp");
-//            ant.arg(value: "-applicationPath");
-//            ant.arg(value: "${env.dist_rapid_suite}/web-app");
-//            ant.arg(value: "-target");
-//            ant.arg(value: "${env.dist_rapid_suite}/web-app");
-//            ant.arg(value: "-suffix");
-//            ant.arg(value: "_${buildNo}");
-//            ant.arg(value: "-webBasePrefix");
-//            ant.arg(value: "${getWebBasePath()}");
-//            ant.classpath() {
-//                ant.pathelement(location: "${env.dist_rapid_suite_lib}/comp.jar");
-//                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");
-//                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
-//                ant.pathelement(location: "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
-//            }
-//        }
-//        ant.move(file: "${env.dist_rapid_suite}/web-app/indexLayout.gsp", todir: "${env.dist_rapid_suite}/grails-app/views/layouts");
+        replaceGrailsLinks("${env.dist_rapid_suite}/web-app/designer.gsp")
+        ant.java(fork: "true", classname: "com.ifountain.comp.utils.JsCssCombiner") {
+            ant.arg(value: "-file");
+            ant.arg(value: "$env.dist_rapid_suite/web-app/designer.gsp");
+            ant.arg(value: "-applicationPath");
+            ant.arg(value: "${env.dist_rapid_suite}/web-app");
+            ant.arg(value: "-target");
+            ant.arg(value: "${env.dist_rapid_suite}/web-app");
+            ant.arg(value: "-suffix");
+            ant.arg(value: "_${buildNo}");
+            ant.classpath() {
+                ant.pathelement(location: "${env.dist_rapid_suite_lib}/comp.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-cli-1.0.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/commons-io-1.4.jar");
+                ant.pathelement(location: "${env.dist_rapid_server_lib}/log4j-1.2.15.jar");
+            }
+        }
+        replaceJavascriptAndCss("${env.dist_rapid_suite}/web-app/designer.gsp", "designer_${buildNo}.js", "designer_${buildNo}.css")
+        
         ant.move(file: "${env.dist_rapid_server}/licenses/RapidCMDB_license.txt", toFile: "${env.dist_rapid_server}/licenses/RapidInsightCommunityLicense.txt");
         def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
         dbViews.each {

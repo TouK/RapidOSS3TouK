@@ -33,6 +33,8 @@ try
 catch(Exception e)
 {
     web.flash.message = "Operation could not be reloaded successfully. Reason :" + e.getMessage()
+    
+    logger.warn( "Operation could not be reloaded successfully. Reason :" + e.getMessage())
 }
 
 

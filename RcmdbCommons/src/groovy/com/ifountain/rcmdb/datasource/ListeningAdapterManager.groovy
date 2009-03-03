@@ -2,9 +2,8 @@ package com.ifountain.rcmdb.datasource
 
 import com.ifountain.core.datasource.BaseListeningAdapter
 import datasource.BaseListeningDatasource
+import org.apache.log4j.Logger
 import script.CmdbScript
-import com.ifountain.rcmdb.scripting.ScriptManager
-import org.apache.log4j.Logger;
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -31,9 +30,9 @@ import org.apache.log4j.Logger;
  */
 class ListeningAdapterManager {
     private static ListeningAdapterManager manager;
-    private def listeningAdapters;
-    private def observers;
-    
+    private Map listeningAdapterRunners;
+    private def adapterLock = new Object();
+
     Logger logger = Logger.getLogger("scripting");
     public static ListeningAdapterManager getInstance() {
         if (manager == null) {
@@ -49,108 +48,127 @@ class ListeningAdapterManager {
             manager = null;
         }
     }
-    private ListeningAdapterManager() {     
+    private ListeningAdapterManager() {
     }
 
     public void initialize() {
-        listeningAdapters = [:];
-        observers = [:];         
+        listeningAdapterRunners = [:];
     }
 
-    private void destroy() {        
+    private void destroy() {
         logger.debug("Destroying listening adapter manager.");
-        if(listeningAdapters!=null)
+        if (listeningAdapterRunners != null)
         {
-            listeningAdapters.each {String adapterName, BaseListeningAdapter adapter ->
-                adapter.unsubscribe();
-                adapter.deleteObservers();
-                if(observers!=null)
+            def tmpMap = new HashMap(listeningAdapterRunners);
+            tmpMap.each {String adapterName, ListeningAdapterRunner runner ->
+                try
                 {
-                    ListeningAdapterObserver observer = observers.remove(adapter);
-                    try {
-                        observer.scriptInstance.cleanUp();
-                    }
-                    catch (e) {
-                        logger.warn("Error during script ${observer.scriptInstance} clean up . Reason: ${e.getMessage()}", e)
-                    }
+                    removeAdapter (adapterName);
                 }
-            } 
+                catch(Throwable e)
+                {
+                    logger.info ("Exception occurred while stopping adapter ${adapterName}", e);
+                }
+            }
         }
         logger.info("Destroyed listening adapter manager.");
     }
 
-    public void startAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
-        logger.debug("Starting listening adapter ${listeningDatasource.name}");
-        CmdbScript script = listeningDatasource.listeningScript;
-        if (script && script.type == CmdbScript.LISTENING) {
-            stopAdapter(listeningDatasource);
-            BaseListeningAdapter listeningAdapter = null;
-            def scriptObject;
-            def scriptLogger;
-            try {
 
-                def scriptParams=[:]
-                scriptParams.datasource=listeningDatasource;
-                scriptObject = CmdbScript.getScriptObject(script,scriptParams);
-                scriptLogger=scriptObject.logger;
-                
-                
-                scriptObject.run();
-                def params = scriptObject.getParameters();
-                if (params == null) {
-                    throw new Exception("Subscription parameters cannot be null");
-                }
-
-                listeningAdapter = listeningDatasource.getListeningAdapter(params,scriptLogger);
-            }
-            catch (e) {
-                throw new Exception("Error creating listening adapter. Reason: ${e.getMessage()}", e);
-            }
-
-            try {
-                scriptObject.init();
-            }
-            catch (e) {
-                throw new Exception("Error script initialization. Reason: ${e.getMessage()}", e);
-            }
-
-            try {
-                ListeningAdapterObserver adapterObserver = new ListeningAdapterObserver(scriptObject, scriptLogger);
-                listeningAdapter.addObserver(adapterObserver);
-                listeningAdapter.subscribe();
-                listeningAdapters.put(listeningDatasource.name, listeningAdapter);
-                observers.put(listeningAdapter, adapterObserver);
-                
-            }
-            catch (e) {
-                throw new Exception("Error during subscription. Reason: ${e.getMessage()}", e);
-            }
-
-        }
-        else {
-            throw new Exception("No listening script is defined for ${listeningDatasource.name}");
+    public boolean hasAdapter(String dsName)
+    {
+        synchronized (adapterLock)
+        {
+            return listeningAdapterRunners.containsKey(dsName);
         }
     }
 
-    public void stopAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
-        BaseListeningAdapter adapter = listeningAdapters.remove(listeningDatasource.name);
-        if (adapter) {
-            logger.debug("Stopping listening adapter ${listeningDatasource.name}");
-            adapter.unsubscribe();
-            adapter.deleteObservers();
-            ListeningAdapterObserver observer = observers.remove(adapter);
-            
-            try {
-                observer.getScriptInstance().cleanUp();
+    public void addAdapter(BaseListeningDatasource listeningDatasource)
+    {
+        synchronized (adapterLock)
+        {
+            if (!hasAdapter(listeningDatasource.name))
+            {
+                ListeningAdapterRunner runner = createAdapterRunner(listeningDatasource.name);
+                listeningAdapterRunners.put(runner.getAdapterName(), runner);
             }
-            catch (e) {
-                throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
+            else
+            {
+                throw ListeningAdapterException.adapterAlreadyExists(listeningDatasource.name);
             }
+        }
+    }
 
-        }        
+    public void removeAdapter(BaseListeningDatasource listeningDatasource){
+        removeAdapter (listeningDatasource.name);
+    }
+    public void removeAdapter(String adapterName)
+    {
+        ListeningAdapterRunner runner = null;
+        synchronized (adapterLock)
+        {
+            if (hasAdapter(adapterName))
+            {
+                runner = listeningAdapterRunners.remove(adapterName)
+            }
+            else
+            {
+                throw ListeningAdapterException.adapterDoesNotExist(adapterName);
+            }
+        }
+        if(runner.isRunning())
+        {
+            try
+            {
+                runner.stop();
+            }catch(ListeningAdapterException e)
+            {
+                logger.debug ("Adapter could not be stopped since ${e.getMessage()}", e);
+            }
+        }
+    }
+
+    protected  ListeningAdapterRunner createAdapterRunner(String name)
+    {
+        return new ListeningAdapterRunner(name);           
+    }
+
+    public void startAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
+
+        ListeningAdapterRunner runner = getRunnerAnThrowExceptionIfNotExist(listeningDatasource.name);
+        runner.start(listeningDatasource);
+
+    }
+
+    public int getState(BaseListeningDatasource ds)
+    {
+        return getRunnerAnThrowExceptionIfNotExist(ds.name).getState();
+    }
+    
+    private ListeningAdapterRunner getRunner(String name)
+    {
+        synchronized (adapterLock)
+        {
+            return listeningAdapterRunners.get(name);
+        }
+    }
+
+    private ListeningAdapterRunner getRunnerAnThrowExceptionIfNotExist(String name)
+    {
+        ListeningAdapterRunner runner = getRunner(name);
+        if(runner == null)
+        {
+            throw ListeningAdapterException.adapterDoesNotExist(name);
+        }
+        return runner;
+    }
+    public void stopAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
+        ListeningAdapterRunner runner = getRunnerAnThrowExceptionIfNotExist(listeningDatasource.name);
+        runner.stop();
     }
 
     public boolean isSubscribed(BaseListeningDatasource listeningDatasource) {
-        return listeningAdapters.containsKey(listeningDatasource.name);
+        ListeningAdapterRunner runner = getRunner(listeningDatasource.name)
+        return runner != null && runner.isSubscribed();
     }
 }

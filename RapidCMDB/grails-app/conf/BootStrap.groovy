@@ -124,6 +124,7 @@ class BootStrap {
                 if (ds.listeningScript) {
                     try {
                         log.debug("Starting listening script ${ds.listeningScript}")
+                        ListeningAdapterManager.getInstance().addAdapter (ds);
                         CmdbScript.startListening(ds.listeningScript);
                         log.info("Listening script ${ds.listeningScript} successfully started.")
                     }

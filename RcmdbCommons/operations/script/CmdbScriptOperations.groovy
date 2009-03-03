@@ -39,11 +39,18 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     def beforeDelete(){
         if(this.type == LISTENING ){
-            def scriptInCompass = CmdbScript.get(this.id);
-            if(scriptInCompass.listeningDatasource){
-                ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);
+            if(listeningDatasource != null){
+                ListeningAdapterManager.getInstance().removeAdapter(listeningDatasource);
             }
 
+        }
+    }
+
+    def afterInsert(){
+        if(this.type == LISTENING ){
+            if(listeningDatasource != null){
+                ListeningAdapterManager.getInstance().addAdapter(listeningDatasource);
+            }
         }
     }
 

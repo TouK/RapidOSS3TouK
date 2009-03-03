@@ -7,6 +7,7 @@ import com.ifountain.core.connection.exception.UndefinedConnectionParameterExcep
 
 import javax.mail.Session;
 import com.sun.mail.smtp.SMTPTransport;
+import org.apache.log4j.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,6 +86,12 @@ class EmailConnectionImpl extends BaseConnection{
             }
             catch (javax.mail.MessagingException e)
             {
+                Logger errorLogger=Logger.getRootLogger();
+                if(errorLogger.isDebugEnabled())
+                {
+                    errorLogger.debug("[EmailConnectionImpl]: Disconnect detected during checkConnection. Reason :"+e.toString());
+                }
+
                 result=false;
             }
         }

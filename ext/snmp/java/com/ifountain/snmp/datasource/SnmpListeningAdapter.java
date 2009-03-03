@@ -116,7 +116,9 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
                 logger.debug(getLogPrefix() + "Interrupted trap processor thread. Waiting for trap processor thread to die.");
                 try {
                     trapProcessorThread.join();
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
+                    logger.warn(getLogPrefix() + "InterruptedException occured during trapProcessorThread.join .");
                 }
                 logger.debug(getLogPrefix() + "Trap processor thread died.");
             } else {

@@ -22,6 +22,7 @@ import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import java.sql.*
+import org.apache.log4j.Logger;
 
 public class DatabaseConnectionImpl extends BaseConnection{
 
@@ -75,13 +76,25 @@ public class DatabaseConnectionImpl extends BaseConnection{
         } 
         catch (SQLException e) 
         {
+            Logger errorLogger=Logger.getRootLogger();
+            if(errorLogger.isDebugEnabled())
+            {
+                errorLogger.debug("[DatabaseConnectionImpl]: Disconnect detected during checkConnection. Reason :"+e.toString());
+            }
+            
             return false;
         } 
         finally{
             if(set != null){
                 try {
                     set.close();
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
+                    Logger errorLogger=Logger.getRootLogger();
+                    if(errorLogger.isDebugEnabled())
+                    {
+                        errorLogger.debug("[DatabaseConnectionImpl]: Error during closing set used in checkConnection. Reason :"+e.toString());
+                    }
                 }
             }
         }

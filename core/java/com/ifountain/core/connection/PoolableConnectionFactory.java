@@ -126,6 +126,7 @@ public class PoolableConnectionFactory extends BaseConnectionFactory
         }
         catch (ClassNotFoundException e)
         {
+            logger.warn("[PoolableConnectionFactory]: ClassNotFoundException in validateObject, Reason : "+e.toString());
             return false;
         }
     }

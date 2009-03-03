@@ -66,7 +66,9 @@ public class ScriptManager {
                 addScript(script.name);
             }
             catch (t)
-            {}
+            {
+                logger.warn ("An exception occurred while adding script ${script.name}.", t);
+            }
         }
         startupScriptList.each{
             try

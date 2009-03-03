@@ -70,9 +70,14 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         initializeForCmdbScript();
 
         def stoppedDatasource = null;
+        Exception exceptionToThrow = null;
         ListeningAdapterManager.metaClass.removeAdapter = {BaseListeningDatasource listeningDatasource ->
             println "removeAdapter in beforedelete";
             stoppedDatasource = listeningDatasource;
+            if(exceptionToThrow != null)
+            {
+                throw exceptionToThrow;
+            }
         }
 
         ListeningAdapterManager.metaClass.addAdapter = {BaseListeningDatasource listeningDatasource ->
@@ -97,6 +102,17 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(stoppedDatasource.id, ds.id);
         assertEquals(stoppedDatasource.name, ds.name);
 
+        //test if exception occurred in stopAdapter this will be discarded
+        script = CmdbScript.add(name: "testscript", type: CmdbScript.LISTENING, listeningDatasource: ds, scriptFile: simpleScriptFile)
+        exceptionToThrow = new Exception();
+        try
+        {
+            script.remove();
+        }catch(Exception e)
+        {
+            fail("Should not throw exception");
+        }
+
     }
     
     void testBeforeUpdate() {
@@ -113,9 +129,14 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(script.listeningDatasource.id, ds.id)
 
         def stoppedDatasource = null;
+        Exception exceptionToThrow = null;
         ListeningAdapterManager.metaClass.stopAdapter = {BaseListeningDatasource listeningDatasource ->
             println "stopAdapter in beforeupdate";
             stoppedDatasource = listeningDatasource;
+            if(exceptionToThrow != null)
+            {
+                throw exceptionToThrow;
+            }
         }
         assertNull(stoppedDatasource);
         script.update(staticParam: "xxx");
@@ -125,6 +146,16 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         assertEquals(stoppedDatasource.id, ds.id);
         assertEquals(stoppedDatasource.name, ds.name);
+
+
+        exceptionToThrow = new Exception();
+        try
+        {
+            script.update(staticParam: "xxx");
+        }catch(Exception e)
+        {
+            fail("Should not throw exception");
+        }
 
     }
     void testAddScriptGeneratesScriptFileParamWhenMissing()

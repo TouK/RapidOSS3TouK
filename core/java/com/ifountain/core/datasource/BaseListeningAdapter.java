@@ -182,6 +182,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
             {
                 logger.debug("Released connection "+connectionName);
             }
+            connection._disconnect();
             ConnectionManager.releaseConnection(connection);
             connection = null;
         }

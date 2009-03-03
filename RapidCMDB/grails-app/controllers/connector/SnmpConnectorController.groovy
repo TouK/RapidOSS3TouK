@@ -106,7 +106,14 @@ class SnmpConnectorController {
                 if (isConnectionChanged) {
                     snmpConnector.connection.update(connectionParams);
                     if (!snmpConnector.connection.hasErrors()) {
-                        CmdbScript.stopListening(snmpConnector.script.name)
+                        try
+                        {
+                            CmdbScript.stopListening(snmpConnector.script.name)
+                        }
+                        catch (Throwable t)
+                        {
+                            log.info("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                        }
                     }
                     else {
                         render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
@@ -119,7 +126,14 @@ class SnmpConnectorController {
                 CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
                 if (!snmpConnector.script.hasErrors()) {
                     if (isScriptChanged) {
-                        CmdbScript.stopListening(snmpConnector.script.name)
+                        try
+                        {
+                            CmdbScript.stopListening(snmpConnector.script.name)
+                        }
+                        catch (Throwable t)
+                        {
+                            log.info("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                        }
                     }
                     flash.message = "SnmpConnector with id ${params.id} successfully updated."
                     redirect(action: show, id:snmpConnector.id)
@@ -204,7 +218,6 @@ class SnmpConnectorController {
             }
             catch (Throwable t)
             {
-                t.printStackTrace();
                 addError("connector.start.exception", [snmpConnector.name, t.toString()]);
                 log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
                 flash.errors = this.errors;
@@ -221,8 +234,17 @@ class SnmpConnectorController {
         }
         else {
             def script = snmpConnector.script
-            CmdbScript.stopListening(script.name);
-            flash.message = "Connector ${snmpConnector.name} successfully stopped"
+            try
+            {
+                CmdbScript.stopListening(script.name);
+                flash.message = "Connector ${snmpConnector.name} successfully stopped"
+            }
+            catch (Throwable t)
+            {
+                addError("connector.stop.exception", [snmpConnector.name, t.toString()]);
+                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                flash.errors = this.errors;
+            }
             redirect(action: list)
         }
     }

@@ -46,19 +46,11 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
     }
 
-    def afterInsert(){
-        if(this.type == LISTENING ){
-            if(listeningDatasource != null){
-                ListeningAdapterManager.getInstance().addAdapter(listeningDatasource);
-            }
-        }
-    }
-
      def beforeUpdate(){
         if(this.type == LISTENING ){
-            def scriptInCompass = CmdbScript.get(this.id);
-            if(scriptInCompass.listeningDatasource){
-                ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);
+            if(listeningDatasource != null)
+            {
+                ListeningAdapterManager.getInstance().stopAdapter(listeningDatasource);
             }
         }
     }
@@ -204,7 +196,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def startListening(CmdbScript script) throws Exception{
          if(script.listeningDatasource){
-             ListeningAdapterManager.getInstance().startAdapter(script.listeningDatasource);
+             ListeningAdapterManager.getInstance().addAndStartAdapter(script.listeningDatasource);
              script.listeningDatasource.update(isSubscribed:true);
          }
          else{

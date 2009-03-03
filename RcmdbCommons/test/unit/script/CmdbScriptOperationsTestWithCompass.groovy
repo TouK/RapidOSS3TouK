@@ -98,28 +98,6 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(stoppedDatasource.name, ds.name);
 
     }
-    void testBeforeInsert() {
-        initialize([CmdbScript, BaseListeningDatasource], []);
-        initializeForCmdbScript();
-
-        def ds = BaseListeningDatasource.add(name: "myds")
-        assertFalse(ds.hasErrors())
-
-        def addedDatasource = null;
-        ListeningAdapterManager.metaClass.addAdapter = {BaseListeningDatasource listeningDatasource ->
-            println "addAdapter in beforedelete";
-            addedDatasource = listeningDatasource;
-        }
-        CmdbScript script = CmdbScript.add(name: "testscript", type: CmdbScript.LISTENING, listeningDatasource: ds, scriptFile: simpleScriptFile)
-        assertFalse(script.hasErrors())
-        assertEquals(1, CmdbScript.list().size());
-
-
-        assertEquals(addedDatasource.id, ds.id);
-        assertEquals(addedDatasource.name, ds.name);
-
-    }
-
     
     void testBeforeUpdate() {
         initialize([CmdbScript, BaseListeningDatasource], []);
@@ -927,7 +905,8 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         initializeForCmdbScript();
 
         def datasourceFromParam = null;
-        ListeningAdapterManager.metaClass.startAdapter = {BaseListeningDatasource listeningDatasource ->
+        def addAdapterDatasource = null;
+        ListeningAdapterManager.metaClass.addAndStartAdapter = {BaseListeningDatasource listeningDatasource ->
             datasourceFromParam = listeningDatasource;
         }
 
@@ -947,6 +926,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertTrue(updatedDs.isSubscribed)
 
     }
+
     void testStopListening()
     {
         initialize([CmdbScript, BaseListeningDatasource], [])

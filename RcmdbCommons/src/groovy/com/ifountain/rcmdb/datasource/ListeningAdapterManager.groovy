@@ -133,6 +133,13 @@ class ListeningAdapterManager {
         return new ListeningAdapterRunner(name);           
     }
 
+    public void addAndStartAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
+         if(!hasAdapter(script.listeningDatasource.name))
+         {
+            addAdapter (script.listeningDatasource);
+         }
+         startAdapter (listeningDatasource);
+    }
     public void startAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
 
         ListeningAdapterRunner runner = getRunnerAnThrowExceptionIfNotExist(listeningDatasource.name);

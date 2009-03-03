@@ -76,13 +76,13 @@ class ScriptScheduler {
 
       }
       private void scheduleJob(JobDetail jobDetail,Trigger trigger)
-      {
-          //qScheduler.scheduleJob(jobDetail, trigger);
+      {             
             try{
                 qScheduler.scheduleJob(jobDetail, trigger);
             }
             catch(org.quartz.ObjectAlreadyExistsException e)
             {
+                org.apache.log4j.Logger.getRootLogger().info("[ScriptScheduler]: in scheduleJob, ${trigger.getName()} already scheduled, rescheduling it.");
                 qScheduler.rescheduleJob (trigger.getName(),null,trigger)
             }
       }

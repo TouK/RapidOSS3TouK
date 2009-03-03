@@ -134,9 +134,9 @@ class ListeningAdapterManager {
     }
 
     public void addAndStartAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
-         if(!hasAdapter(script.listeningDatasource.name))
+         if(!hasAdapter(listeningDatasource.name))
          {
-            addAdapter (script.listeningDatasource);
+            addAdapter (listeningDatasource);
          }
          startAdapter (listeningDatasource);
     }

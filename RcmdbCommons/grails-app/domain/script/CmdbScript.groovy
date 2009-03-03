@@ -76,6 +76,7 @@ class CmdbScript {
             }
             catch (Throwable t)
             {
+                org.apache.log4j.Logger.getRootLogger().warn("[CmdbScript]: Error in  domain constraint, Script contains errors. Reason :"+t.toString());
                 return ['script.compilation.error', t.toString()];
             }
         });
@@ -90,6 +91,7 @@ class CmdbScript {
                     trigger.getFireTimeAfter(new Date());
                 }
                 catch (Throwable t) {
+                    org.apache.log4j.Logger.getRootLogger().warn("[CmdbScript]:Error in domain constraint, Schedule does not match cron expression pattern. Reason :"+t.toString());
                     return ['script.cron.doesnt.match', t.toString()];
                 }
             }

@@ -22,12 +22,12 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     //Note that child classes must not have a property state , they should use other name , stateValue or savedState etc
     //If a child have property state , calling getState over child does not call the getState function here.
 
-    final static int CRITICAL = 5
-    final static int MAJOR = 4
-    final static int INDETERMINATE = 1
-    final static int NOTSET = -1
-    final static int CRITICAL_PERCENTAGE = 40
-    final static int MAJOR_PERCENTAGE = 20
+    public final static int CRITICAL = 5
+    public final static int MAJOR = 4
+    public final static int INDETERMINATE = 1
+    public final static int NOTSET = -1
+    public final static int CRITICAL_PERCENTAGE = 40
+    public final static int MAJOR_PERCENTAGE = 20
     
     def saveState(currentState){
         RsObjectState.add(objectId:id, state:currentState);

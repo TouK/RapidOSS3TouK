@@ -164,6 +164,23 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
 
     }
 
+    void testAddAndStartAdapter() {
+        def logLevel = Level.DEBUG;
+        initialize();
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", staticParam: "x:5", logLevel: logLevel.toString())]);
+        def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+
+        def ds = new BaseListeningDatasourceMock();
+        ds.listeningScript = script;
+        ListeningAdapterManager.getInstance().addAndStartAdapter(ds);
+        assertEquals(ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        ListeningAdapterManager.getInstance().stopAdapter (ds);
+        assertEquals(ListeningAdapterRunner.STOPPED, ListeningAdapterManager.getInstance().getState(ds));
+        ListeningAdapterManager.getInstance().addAndStartAdapter (ds);
+        assertEquals(ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+
+    }
+
 
     void testRemoveAdapter()
     {

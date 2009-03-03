@@ -18,15 +18,21 @@ class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
     protected void setUp() {
         super.setUp();
         gcl = new GroovyClassLoader();
+        reloadClasses();
         ExpandoMetaClass.enableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
-        GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningAdapterMock);
         DataStore.clear();
     }
     protected void tearDown() {
         super.tearDown();
-        ExpandoMetaClass.disableGlobally();
+        reloadClasses();
         DataStore.clear();
+    }
+
+    private void reloadClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
+        GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningAdapterMock);
     }
 
 

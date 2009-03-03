@@ -452,8 +452,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             argument:[this.saveSuccess]
         }
         var postData = 'configuration=' + encodeURIComponent(this.data.firstChild().toString());
-        YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
         this.loadingMask.show("Saving, please wait...");
+        YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
     },
     confirmBoxHandler: function() {
         this.confirmBox.hide();

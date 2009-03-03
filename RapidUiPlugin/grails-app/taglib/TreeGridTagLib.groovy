@@ -136,6 +136,17 @@ class TreeGridTagLib {
         columns.each {column ->
             def sortBy = column.@sortBy.toString().trim();
             def sortOrder = column.@sortOrder.toString().trim();
+            def sortType = column.@sortType.toString().trim();
+            def sortTypeInJs;
+            if(sortType != ""){
+                switch(sortType){
+                    case 'string':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.none'; break;
+                    case 'int':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asInt'; break;
+                    case 'date':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asDate'; break;
+                    case 'float':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asFloat'; break;
+                    case 'ucString':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asUCString'; break;
+                }
+            }
             def type = column.@type.toString().trim();
             def images = [];
             if (type == 'image' || type == "Image") {
@@ -145,6 +156,7 @@ class TreeGridTagLib {
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
+                    ${sortTypeInJs != "" ? "sortType:${sortTypeInJs}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
                     ${images.size() > 0 ? "images:[${images.join(',\n')}]," : ""}
@@ -237,7 +249,7 @@ class TreeGridTagLib {
         out << fTgColumns(attrs, body())
     }
     static def fTgColumn(attrs, bodyString) {
-        def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width", "sortOrder"];
+        def validAttrs = ["attributeName", "colLabel", "sortBy", "type", "width", "sortOrder", "sortType"];
         return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs, bodyString)
     }
     def tgColumn = {attrs, body ->

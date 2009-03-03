@@ -17,7 +17,7 @@
         def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
         def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
 %>
-        <rui:tgColumn type="${column.type}" attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString}>
+        <rui:tgColumn type="${column.type}" attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString} sortType="${column.sortType}">
             <%
                 if(!column.images.isEmpty())
                 {

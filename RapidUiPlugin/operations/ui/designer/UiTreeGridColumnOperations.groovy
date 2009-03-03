@@ -23,7 +23,9 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 display:"Column",
                 imageExpanded: "images/rapidjs/designer/layout_content.png",
                 imageCollapsed: "images/rapidjs/designer/layout_content.png",
-                propertyConfiguration: [:],
+                propertyConfiguration: [
+                    sortType: [descr: "specifies whether the values will be sorted as a int, string, upper cased string, float or date", required:false],
+                ],
                 childrenConfiguration: [
                         [
                                 help:"TreeGrid Component.html",
@@ -44,7 +46,10 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 ]
         ];
         def parentMetaData = UiColumnOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.putAll(metaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }

@@ -12,11 +12,13 @@ class UiTreeGridColumn extends UiColumn{
         storageType "FileAndMemory"
     };
     String type = "text";
+    String sortType = "string";
     List images = [];
     static datasources = [:]
     static relations = [images:[type: UiImage, reverseName: "column", isMany: true]]
     static constraints={
         type(nullable:false, blank:false, inList:["text", "image"])
+        sortType(nullable:false, blank:false, inList:["string", "ucString", "int", "date", "float"])
     }
 
     static propertyConfiguration= [:]

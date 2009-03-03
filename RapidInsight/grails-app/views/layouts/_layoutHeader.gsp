@@ -59,6 +59,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/action', file:'Action.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/html', file:'Html.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/topologyMap', file:'TopologyMap.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'yuioverride.js')}"></script>
 
 
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'js/yui/assets/skins/sam', file:'menu.css')}"/>

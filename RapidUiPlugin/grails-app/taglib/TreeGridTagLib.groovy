@@ -140,11 +140,11 @@ class TreeGridTagLib {
             def sortTypeInJs;
             if(sortType != ""){
                 switch(sortType){
-                    case 'string':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.none'; break;
-                    case 'int':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asInt'; break;
-                    case 'date':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asDate'; break;
-                    case 'float':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asFloat'; break;
-                    case 'ucString':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.asUCString'; break;
+                    case 'string':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.none'; break;
+                    case 'int':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asInt'; break;
+                    case 'date':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asDate'; break;
+                    case 'float':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asFloat'; break;
+                    case 'ucString':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asUCString'; break;
                 }
             }
             def type = column.@type.toString().trim();

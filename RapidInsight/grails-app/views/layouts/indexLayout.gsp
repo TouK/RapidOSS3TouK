@@ -45,6 +45,8 @@
                     <li class="${request.uri.toString().indexOf('index/serviceView.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/serviceView.gsp')}"><em>Service View</em></a></li>
                     
                     <li class="${request.uri.toString().indexOf('index/deviceView.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/deviceView.gsp')}"><em>Device View</em></a></li>
+
+                    <li class="${(request.uri.toString().indexOf('index/_notifications.gsp') > -1 || request.uri.toString().matches('.*/rsMessageRule/.*')) ? "selected" : ""}"><a href="${createLinkTo(file: 'index/_notifications.gsp')}"><em>Notifications</em></a></li>
                     
                     <li class="${request.uri.toString().indexOf('index/browser.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/browser.gsp')}"><em>Repository Browser</em></a></li>
                     

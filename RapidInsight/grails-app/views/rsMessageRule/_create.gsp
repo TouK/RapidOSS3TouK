@@ -2,15 +2,12 @@
 <%@ page import="auth.RsUser" %>
 <%@ page import="search.SearchQueryGroup" %>
 <%@ page import="search.SearchQuery" %>
-<g:render template="header" model="[:]"/>
 
-
-<div class="nav">    
-    <span class="menuButton"><g:link class="list" action="list">Notification Rule List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">New Notification Rule</g:link></span>
+<div class="nav">
+    <span class="menuButton"><g:link class="list" action="list" controller="rsMessageRule">Notification Rule List</g:link></span>
 </div>
 <div class="body">
-    <h1>Edit Notification Rule</h1>
+    <h1>Create Notification Rule</h1>
     <g:if test="${flash.message}">
         <div class="message">${flash.message}</div>
     </g:if>
@@ -24,12 +21,11 @@
             <g:renderErrors bean="${flash.errors}"/>
         </div>
     </g:hasErrors>
-    <g:form method="post" >
-        <input type="hidden" name="id" value="${rsMessageRule?.id}"/>
+    <g:form action="save" method="post" controller="rsMessageRule">
         <div class="dialog">
             <table>
                 <tbody>
-                    
+
 
                     <tr class="prop">
                         <td valign="top" class="name">
@@ -45,14 +41,14 @@
                                <g:each in="${queryGroups}" var="group">
                                      <optgroup label="${group.name}">
                                       <g:each in="${group.queries}" var="query">
-                                          <g:if test="${query.type==filterType}">
-                                             <g:if test="${rsMessageRule.searchQueryId==query.id && query.type==filterType}">
+                                         <g:if test="${query.type==filterType}">
+                                             <g:if test="${rsMessageRule.searchQueryId==query.id}">
                                                 <option value="${query.id}" selected="selected">${query.name}</option>
                                              </g:if>
                                               <g:else>
                                                   <option value="${query.id}">${query.name}</option>
                                               </g:else>
-                                           </g:if>
+                                         </g:if>
                                       </g:each>
                                      </optgroup>
                                </g:each>
@@ -97,19 +93,12 @@
                     </td>
                 </tr>
 
-
                 </tbody>
             </table>
         </div>
         <div class="buttons">
-            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+            <span class="button"><input class="save" type="submit" value="Create"/></span>
         </div>
     </g:form>
 </div>
 
-</div>
-<g:render template="footer" model="[:]"/>
-
-</body>
-</html>

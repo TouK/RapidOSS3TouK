@@ -12,7 +12,7 @@
     layoutUnitsHavingContentFile.each{layoutUnit->
 %>
     <div id="${layoutUnit.getContentFileDivId()}">
-        <rui:include template="${layoutUnit.contentFile}"></rui:include>
+        <rui:include template="${layoutUnit.contentFile}" model="\${binding.variables}"></rui:include>
     </div>
 <%
     }
@@ -21,7 +21,7 @@
     if(tab.contentFile != null && tab.contentFile != "")
     {
 %>
-       <rui:include template="${tab.contentFile}"></rui:include>
+       <rui:include template="${tab.contentFile}" model="\${binding.variables}"></rui:include>
 <%
     }
 %>

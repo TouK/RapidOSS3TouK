@@ -5,9 +5,8 @@
   Time: 6:14:57 PM
   To change this template use File | Settings | File Templates.
 --%>
-<g:render template="header" model="[:]"/>
 <div class="nav">
-    <span class="menuButton"><g:link class="create" action="create">New Notification Rule</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create" controller="rsMessageRule">New Notification Rule</g:link></span>
 </div>
        <div class="body">
             <h1>Your Notification Rule List</h1>
@@ -40,7 +39,7 @@
                     <g:each in="${myRules}" status="i" var="rule">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                             <td>
-                            <g:link action="edit" id="${rule.id}">
+                            <g:link controller="rsMessageRule" action="edit" id="${rule.id}">
                                 <g:set var="queryName" value="${search.SearchQuery.get(id:rule.searchQueryId)?.name}"/>
                                 <g:if test="${queryName}">${queryName?.encodeAsHTML()}</g:if>
                                 <g:else>id:${rule.searchQueryId}</g:else>
@@ -69,6 +68,3 @@
                 </table>
             </div>
         </div>
-
-
-<g:render template="footer" model="[:]"/>

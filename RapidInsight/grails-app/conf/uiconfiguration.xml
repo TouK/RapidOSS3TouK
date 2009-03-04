@@ -1275,6 +1275,15 @@
             </UiElement>
           </UiElement>
         </UiElement>
+        <UiElement designerType="Tab" id="9786" name="_notifications" title="Notifications">
+          <UiElement designerType="Components"/>
+          <UiElement designerType="Layout" id="9785">
+            <UiElement designerType="CenterUnit" id="9789" contentFile="pageContents/_notificationsCenter.gsp" component="" useShim="false"/>
+          </UiElement>
+          <UiElement designerType="Dialogs"/>
+          <UiElement designerType="Actions"/>
+        </UiElement>
+      </UiElement>
 
         <UiElement designerType="Tab" id="2568" name="browser" title="Repository Browser" contentFile="pageContents/_browser.gsp">
           <UiElement designerType="Components">

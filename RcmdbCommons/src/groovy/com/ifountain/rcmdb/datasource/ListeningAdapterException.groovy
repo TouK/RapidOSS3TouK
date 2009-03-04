@@ -28,6 +28,11 @@ class ListeningAdapterException extends Exception{
     {
         return new ListeningAdapterException("Adapter ${adapterName} already stopped.")
     }
+
+    public static ListeningAdapterException stoppingStateException(String adapterName, String actionName)
+    {
+        return new ListeningAdapterException("You cannot ${actionName} ${adapterName} while it is in stopping state.")
+    }
     public static ListeningAdapterException adapterDoesNotExist(String adapterName)
     {
         return new ListeningAdapterException("Adapter ${adapterName} does not exist.")

@@ -70,7 +70,11 @@ public class ListeningAdapterRunner
     public void stop() throws Exception {
         synchronized (stateLock)
         {
-            if (getState() == NOT_STARTED || getState() == STOPPING || getState() == STOPPED || getState() == STOPPED_WITH_EXCEPTION)
+            if(getState() == STOPPING)
+            {
+                throw ListeningAdapterException.stoppingStateException(adapterName, "stop");    
+            }
+            else if (getState() == NOT_STARTED || getState() == STOPPED || getState() == STOPPED_WITH_EXCEPTION)
             {
                 throw ListeningAdapterException.adapterAlreadyStoppedException(adapterName);
             }
@@ -98,7 +102,11 @@ public class ListeningAdapterRunner
         def scriptObject = null;
         synchronized (adapterLock)
         {
-            if (state != NOT_STARTED && state != STOPPED_WITH_EXCEPTION && state != STOPPED)
+            if(getState() == STOPPING)
+            {
+                throw ListeningAdapterException.stoppingStateException(adapterName, "start");
+            }
+            else if (state != NOT_STARTED && state != STOPPED_WITH_EXCEPTION && state != STOPPED)
             {
                 throw ListeningAdapterException.adapterAlreadyStartedException(adapterName);
             }

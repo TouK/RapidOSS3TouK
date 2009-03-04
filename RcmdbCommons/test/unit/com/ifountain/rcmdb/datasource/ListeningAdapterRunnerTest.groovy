@@ -247,10 +247,10 @@ class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
         try
         {
             runner.start (ds);
-            fail("Should throw exception since it is already started");
+            fail("Should throw exception ");
         }catch(ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterAlreadyStartedException(runner.adapterName).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.stoppingStateException(runner.adapterName, "start").getMessage(), e.getMessage());
         }
 
         runner.setState (ListeningAdapterRunner.NOT_STARTED);
@@ -311,10 +311,10 @@ class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
         try
         {
             runner.stop();
-            fail("Should throw exception since it is already stpped");
+            fail("Should throw exception");
         }catch(ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterAlreadyStoppedException(runner.adapterName).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.stoppingStateException(runner.adapterName, "stop").getMessage(), e.getMessage());
         }
 
         runner.setState (ListeningAdapterRunner.STOPPED_WITH_EXCEPTION);

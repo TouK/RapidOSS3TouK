@@ -17,10 +17,7 @@
 * USA.
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-    //the way to save the data of state may change for child domains,
-    //its enough for a domain to implement save & load state  to have its own way of saving state
-    //Note that child classes must not have a property state , they should use other name , stateValue or savedState etc
-    //If a child have property state , calling getState over child does not call the getState function here.
+
 
     public final static int CRITICAL = 5
     public final static int MAJOR = 4
@@ -28,17 +25,8 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     public final static int NOTSET = -1
     public final static int CRITICAL_PERCENTAGE = 40
     public final static int MAJOR_PERCENTAGE = 20
-    
-    def saveState(currentState){
-        RsObjectState.add(objectId:id, state:currentState);
-    }
-    //should only return the value of state
-    def loadState(){
-        def state = RsObjectState.get(objectId:id)?.state;
-        if (state==null)
-        	return NOTSET
-        return state
-    }
+
+
 
     int getState()
     {
@@ -67,8 +55,32 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         }
         return calculatedState;
     }
-
-
+    
+     /*=====================================================================================================================================
+    - The way to save the data of state may change for child domains,
+    - its enough for a domain to implement save & load state  to have its own way of saving state
+    - Note that child classes must not have a property state , they should use other name , stateValue or savedState etc
+    - If a child have property state , calling getState over child does not call the getState function here.
+    =====================================================================================================================================*/
+    def saveState(currentState){
+        RsObjectState.add(objectId:id, state:currentState);
+    }
+    //should only return the value of state
+    def loadState(){
+        def state = RsObjectState.get(objectId:id)?.state;
+        if (state==null)
+        	return NOTSET
+        return state
+    }
+    def afterDelete()
+    {        
+        def stateObject=RsObjectState.get(objectId:id);
+        if(stateObject != null )
+        {
+            stateObject.remove();
+        }
+    }
+    
     /*=====================================================================================================================================
     - It is expected that users will change only calculateState, propagateState methods according to their needs.
     - In current implementation default state calculation strategy is specified as finding max severity of events.

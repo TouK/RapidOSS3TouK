@@ -47,7 +47,6 @@ serv21.addRelation(childObjects:[device211,device212])
 serv22.addRelation(childObjects:[device221,device222])
 
 def event1111 = RsEvent.add(name:"Event1111", elementName:device111.name, severity:INDETERMINATE)
-device111.addRelation(childObjects:event1111)
 assert device111.currentState() == NOTSET
 assert serv11.currentState() == NOTSET
 assert cust1.currentState() == NOTSET
@@ -57,14 +56,12 @@ assert serv11.currentState() == INDETERMINATE
 assert cust1.currentState() == INDETERMINATE
 
 def event1112 = RsEvent.add(name:"Event1112", elementName:device111.name,severity:MAJOR)
-device111.addRelation(childObjects:event1112)
 device111.setState(event1112.severity)
 assert device111.currentState() == MAJOR
 assert serv11.currentState() == MAJOR
 assert cust1.currentState() == MAJOR
 
 def event1113 = RsEvent.add(name:"Event1113", elementName:device111.name,severity:CRITICAL)
-device111.addRelation(childObjects:event1113)
 device111.setState(event1113.severity)
 assert device111.currentState() == CRITICAL 
 assert serv11.currentState() == CRITICAL
@@ -89,7 +86,6 @@ assert serv11.currentState() == INDETERMINATE
 assert cust1.currentState() == INDETERMINATE
 
 def event1221 = RsEvent.add(name:"Event1221", elementName:device122.name,severity:WARNING)
-device122.addRelation(childObjects:event1221)
 device122.setState(event1221.severity)
 assert device122.currentState() == WARNING
 assert serv12.currentState() == WARNING

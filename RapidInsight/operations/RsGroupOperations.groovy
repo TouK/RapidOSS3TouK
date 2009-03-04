@@ -18,6 +18,12 @@
 */
 public class RsGroupOperations extends RsTopologyObjectOperations {
     
+  def calculateState(currentState, oldPropagatedState, newPropagatedState)
+    {
+        return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);
+//	    	return criticalPercent(currentState,  oldPropagatedState, newPropagatedState);
+    }
+  
 	public int findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState)
     {
     	if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))

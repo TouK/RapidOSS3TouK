@@ -9,31 +9,31 @@ import com.ifountain.rui.util.DesignerUtils
 * Time: 8:59:57 AM
 * To change this template use File | Settings | File Templates.
 */
-class UiDialogOperations extends UiLayoutUnitOperations{
+class UiDialogOperations extends UiLayoutUnitOperations {
     public static Map metaData()
     {
         Map metaData = [
-                help:"Dialog.html",
-                designerType:"Dialog",
-                imageExpanded:"images/rapidjs/designer/application_double.png",
-                imageCollapsed:"images/rapidjs/designer/application_double.png",
-                displayFromProperty:"component",
-                canBeDeleted:true,
+                help: "Dialog.html",
+                designerType: "Dialog",
+                imageExpanded: "images/rapidjs/designer/application_double.png",
+                imageCollapsed: "images/rapidjs/designer/application_double.png",
+                displayFromProperty: "component",
+                canBeDeleted: true,
                 propertyConfiguration:
                 [
-                    title:[descr:"Title of component", required:true],
-                    width:[descr:"The width of the dialog"],
-                    x:[descr:"The x position of the dialog"],
-                    y:[descr:"The y position of the dialog"],
-                    height:[descr:"The height of the dialog"],
-                    maxHeight:[descr:"Maximum height of the dialog"],
-                    minHeight:[descr:"Minimum height of the dialog"],
-                    minWidth:[descr:"Minimum width of the dialog"],
-                    maxWidth:[descr:"Maximum width of the dialog"],
-                    resizable:[descr:"Boolean value to represent whether the dialog is resizable or not."],
-                    component:[descr:"RapidInsight component that will be displayed as pop up dialog", required:true, formatter:{object-> return object.component?object.component.name:""}]
+                        title: [descr: "Title of component", required: true],
+                        width: [descr: "The width of the dialog"],
+                        x: [descr: "The x position of the dialog"],
+                        y: [descr: "The y position of the dialog"],
+                        height: [descr: "The height of the dialog"],
+                        maxHeight: [descr: "Maximum height of the dialog"],
+                        minHeight: [descr: "Minimum height of the dialog"],
+                        minWidth: [descr: "Minimum width of the dialog"],
+                        maxWidth: [descr: "Maximum width of the dialog"],
+                        resizable: [descr: "Boolean value to represent whether the dialog is resizable or not."],
+                        component: [descr: "RapidInsight component that will be displayed as pop up dialog", required: true, formatter: {object -> return object.component ? object.component.name : ""}]
                 ],
-                childrenConfiguration:[]
+                childrenConfiguration: []
         ];
         return metaData;
     }
@@ -41,11 +41,13 @@ class UiDialogOperations extends UiLayoutUnitOperations{
     def static addUiElement(xmlNode, parentElement)
     {
         def attributes = [:];
-        attributes.putAll (xmlNode.attributes());
+        attributes.putAll(xmlNode.attributes());
         def componentName = xmlNode.@component;
-        UiComponent comp = UiComponent.get(name:componentName, tabId:parentElement.id, isActive:true);
-        attributes["component"] = comp
-        attributes["componentId"] = comp.id
+        UiComponent comp = UiComponent.get(name: componentName, tabId: parentElement.id, isActive: true);
+        if (comp) {
+            attributes["component"] = comp
+            attributes["componentId"] = comp.id
+        }
         attributes["tab"] = parentElement;
         attributes["tabId"] = parentElement.id;
         return DesignerUtils.addUiObject(UiDialog, attributes, xmlNode);

@@ -511,6 +511,11 @@ YAHOO.rapidjs.data.Node.prototype =
         }
     },
 
+    removeAttribute: function(attributeName)
+    {
+        delete this.attributes[attributeName]
+        this.fireDataChanged(attributeName, null);
+    },
 
     getAttribute: function(attributeName)
     {

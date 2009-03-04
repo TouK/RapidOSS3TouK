@@ -95,7 +95,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 this.propertyGrid.deleteRow(elRow);
                 this.closeCellEditor();
                 SelectUtils.addOption(this.propertySelect, prop, prop);
-                this.currentDisplayedItemData.setAttribute(prop, null);
+                this.currentDisplayedItemData.removeAttribute(prop);
             }
         }
     };

@@ -98,11 +98,12 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
                     def res = null;
                     result.results.each{foundObject->
                         boolean isMatched = true;
-                        relationKeys.each{relName->
+                        for(int i=0; i < relationKeys.size(); i++){
+                            def relName = relationKeys[i];
                             if(searchParams[relName] == null || foundObject[relName] == null || searchParams[relName].id != foundObject[relName].id)
                             {
                                 isMatched = false;
-                                return;
+                                break;
                             }
                         }
                         if(isMatched)

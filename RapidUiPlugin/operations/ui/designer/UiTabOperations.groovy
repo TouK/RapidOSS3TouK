@@ -114,11 +114,13 @@ public class UiTabOperations extends AbstractDomainOperation
                         if (triggerNodes.size() > 0) {
                             def willAddAction = true;
                             def triggeringActions = triggerNodes.@triggeringAction;
-                            triggeringActions.each {triggeringActionName ->
-                                if (actionsMap[triggeringActionName.toString()] != null) {
-                                    if (!actionAddOrder.contains(triggeringActionName.toString())) {
+                            for(int i=0; i < triggeringActions.size(); i++)
+                            {
+                                triggeringActionName = triggeringActions[i].toString()
+                                if (actionsMap[triggeringActionName] != null) {
+                                    if (!actionAddOrder.contains(triggeringActionName)) {
                                         willAddAction = false;
-                                        return;
+                                        break;
                                     }
                                 }
                                 else {

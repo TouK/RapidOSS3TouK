@@ -116,7 +116,7 @@ public class UiTabOperations extends AbstractDomainOperation
                             def triggeringActions = triggerNodes.@triggeringAction;
                             for(int i=0; i < triggeringActions.size(); i++)
                             {
-                                triggeringActionName = triggeringActions[i].toString()
+                                def triggeringActionName = triggeringActions[i].toString()
                                 if (actionsMap[triggeringActionName] != null) {
                                     if (!actionAddOrder.contains(triggeringActionName)) {
                                         willAddAction = false;

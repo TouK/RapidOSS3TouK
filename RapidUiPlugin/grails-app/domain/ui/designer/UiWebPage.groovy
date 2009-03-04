@@ -38,7 +38,7 @@ class UiWebPage
     ]
     
     static constraints={
-        name(blank:false,nullable:false,key:["isActive"])
+        name(blank:false,nullable:false,key:["isActive"], matches:"[a-z_A-z]\\w*")
         
      __operation_class__(nullable:true)
         

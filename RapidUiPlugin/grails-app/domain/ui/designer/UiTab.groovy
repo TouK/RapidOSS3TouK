@@ -57,7 +57,7 @@ class UiTab
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:["webPageId", "isActive"])
+    name(blank:false,nullable:false,key:["webPageId", "isActive"], matches:"[a-z_A-z]\\w*")
     contentFile(blank:true,nullable:true)
     title(blank:true,nullable:true)
 

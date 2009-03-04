@@ -39,7 +39,7 @@ class UiAction
     ]
 
     static constraints = {
-        name(blank: false, nullable: false, key: ["tabId", "isActive"])
+        name(blank: false, nullable: false, key: ["tabId", "isActive"], matches:"[a-z_A-z]\\w*")
 
         condition(blank: true, nullable: true)
 

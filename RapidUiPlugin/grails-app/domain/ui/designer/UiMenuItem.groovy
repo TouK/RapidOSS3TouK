@@ -43,7 +43,7 @@ class UiMenuItem {
     ]
 
     static constraints={
-     name(blank:false,nullable:false,key:["componentId", "isActive"])
+     name(blank:false,nullable:false,key:["componentId", "isActive"], matches:"[a-z_A-z]\\w*")
      label(blank:true,nullable:false);
      type(blank:false,nullable:false, inList:["component", "property", "toolbar"]);
      visible(blank:true,nullable:true);

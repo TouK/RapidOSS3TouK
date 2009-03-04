@@ -166,10 +166,10 @@ public class UiTabOperations extends AbstractDomainOperation
         triggers.each {UiActionTrigger actionTrigger ->
             if (actionTrigger.action.tab.name == name)
             {
-                def triggerArray = actionTriggers.get(actionTrigger.name);
+                def triggerArray = actionTriggers.get(actionTrigger.event);
                 if (triggerArray == null) {
                     triggerArray = [];
-                    actionTriggers.put(actionTrigger.name, triggerArray)
+                    actionTriggers.put(actionTrigger.event, triggerArray)
                 }
                 triggerArray.add(actionTrigger)
             }

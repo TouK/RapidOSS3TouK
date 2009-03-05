@@ -28,6 +28,7 @@ class SnmpDatasource extends BaseListeningDatasource {
 
     
     SnmpConnection connection ;
+    org.springframework.validation.Errors errors ;
       
     static relations = [
             connection:[isMany:false, reverseName:"snmpDatasources", type:SnmpConnection]

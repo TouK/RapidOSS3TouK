@@ -26,7 +26,7 @@ public class EmailConnection extends Connection
     String protocol ="";
 
     List emailDatasources =[];
-
+    org.springframework.validation.Errors errors ;
 
     static relations = [
             emailDatasources:[type:EmailDatasource, reverseName:"connection", isMany:true]

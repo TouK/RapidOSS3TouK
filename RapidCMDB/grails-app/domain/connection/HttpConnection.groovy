@@ -32,7 +32,7 @@ public class HttpConnection extends Connection{
     String baseUrl ="";
     String connectionClass = "connection.HttpConnectionImpl";
     List httpDatasources = [];
-
+    org.springframework.validation.Errors errors ;
     static relations = [
             httpDatasources:[isMany:true, reverseName:"connection", type:HttpDatasource]
     ]

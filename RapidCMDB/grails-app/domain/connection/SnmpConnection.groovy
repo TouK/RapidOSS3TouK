@@ -31,7 +31,7 @@ public class SnmpConnection extends Connection{
     String connectionClass = "com.ifountain.snmp.connection.SnmpConnectionImpl";
     String host ="0.0.0.0";
     List snmpDatasources = [];
-
+   org.springframework.validation.Errors errors ;
     static relations = [
             snmpDatasources:[isMany:true, reverseName:"connection", type:SnmpDatasource]
     ]

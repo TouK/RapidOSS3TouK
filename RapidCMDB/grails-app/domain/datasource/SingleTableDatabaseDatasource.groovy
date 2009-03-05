@@ -32,6 +32,7 @@ class SingleTableDatabaseDatasource extends BaseDatasource{
     
     DatabaseConnection connection ;
     Long reconnectInterval = 0;
+    org.springframework.validation.Errors errors ;
     
 
     static relations = [

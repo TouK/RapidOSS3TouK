@@ -28,7 +28,7 @@ class PropertyAction {
     public static final String CLEAR_RELATION = "clearrelation"
     public static final String SET_DEFAULT_VALUE = "setdefaultvalue"
     static searchable = {
-        except = ["propType", "defaultValue"];
+        except = ["propType", "defaultValue", "errors"];
     };
     Long id;
     Long version;
@@ -41,5 +41,10 @@ class PropertyAction {
     Class propType;
     Object defaultValue;
     boolean willBeDeleted = false;
-    static transients = ["propType", "defaultValue"]
+    org.springframework.validation.Errors errors ;
+    static transients = ["propType", "defaultValue", "errors"]
+
+    static constraints={
+    errors(nullable:false)
+    }
 }

@@ -39,7 +39,7 @@ public class RapidInsightConnection extends Connection{
     String username ="";
     String connectionClass = "connection.RapidInsightConnectionImpl";
     List rapidInsightDatasources = [];
-
+    org.springframework.validation.Errors errors ;
     static relations = [
             rapidInsightDatasources:[isMany:true, reverseName:"connection", type:RapidInsightDatasource]
     ]

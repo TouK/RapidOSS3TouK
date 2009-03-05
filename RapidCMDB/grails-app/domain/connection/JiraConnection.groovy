@@ -20,7 +20,7 @@ public class JiraConnection extends Connection
     String userPassword ="";
     
     List jiraDatasources =[];
-
+    org.springframework.validation.Errors errors ;
     static relations = [
             jiraDatasources:[type:JiraDatasource, reverseName:"connection", isMany:true]
     ]

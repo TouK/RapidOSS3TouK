@@ -38,6 +38,7 @@ public class DatabaseConnection extends Connection{
     String driver ="";
     List singleTableDatabaseDatasources = [];
     List databaseDatasources = [];
+    org.springframework.validation.Errors errors ;
     static relations = [
             singleTableDatabaseDatasources:[isMany:true, reverseName:"connection", type:SingleTableDatabaseDatasource],
             databaseDatasources:[isMany:true, reverseName:"connection", type:DatabaseDatasource]

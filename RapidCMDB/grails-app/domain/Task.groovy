@@ -24,24 +24,25 @@ class Task {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["workedOnBy"];
+        except = ["workedOnBy", "errors"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
     
     String name ="";
     List workedOnBy = [];
+    org.springframework.validation.Errors errors ;
 
     static relations = [workedOnBy:[isMany:true, type:Developer, reverseName:"worksOn"]
     ]
     static constraints={
     name(blank:false,nullable:false,key:[])
-        
+    errors(nullable:true)   
      
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors"];
     
     public String toString()
     {

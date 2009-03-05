@@ -28,6 +28,7 @@ class HttpDatasource extends BaseDatasource{
     
     HttpConnection connection ;
     Long reconnectInterval = 0;
+    org.springframework.validation.Errors errors ;
     static relations = [
             connection:[isMany:false, reverseName:"httpDatasources", type:HttpConnection]
     ]

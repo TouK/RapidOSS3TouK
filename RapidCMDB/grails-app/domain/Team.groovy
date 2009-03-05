@@ -24,7 +24,7 @@ class Team {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["managedBy"];
+        except = ["managedBy", "errors"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
@@ -34,6 +34,7 @@ class Team {
     String name ="";
     
     Employee managedBy ;
+    org.springframework.validation.Errors errors ;
     
     static relations = [managedBy:[isMany:false, type:Employee, reverseName:"manages"]
     ]
@@ -43,12 +44,12 @@ class Team {
      name(blank:false,nullable:false,key:[])
         
      managedBy(nullable:true)
-        
+     errors(nullable:true)   
      
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors"];
     
     public String toString()
     {

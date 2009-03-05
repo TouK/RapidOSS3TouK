@@ -37,6 +37,7 @@ class Employee  extends Person {
     
     Employee nextEmp ;
     List manages = [];
+    org.springframework.validation.Errors errors ;
 
     static relations = [manages:[isMany:true, type:Team, reverseName:"managedBy"],
             prevEmp:[isMany:false, type:Employee, reverseName:"nextEmp"],

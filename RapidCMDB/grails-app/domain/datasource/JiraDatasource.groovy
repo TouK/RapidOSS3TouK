@@ -14,6 +14,7 @@ class JiraDatasource extends BaseDatasource{
     Object __is_federated_properties_loaded__;
     JiraConnection connection;
     Long reconnectInterval = 0;
+    
     static relations = [
             connection: [isMany: false, reverseName: "jiraDatasources", type: JiraConnection]
     ]

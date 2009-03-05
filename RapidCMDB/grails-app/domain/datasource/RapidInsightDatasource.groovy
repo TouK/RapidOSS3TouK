@@ -29,6 +29,7 @@ class RapidInsightDatasource extends BaseDatasource{
     
     RapidInsightConnection connection ;
     Long reconnectInterval = 0;
+    org.springframework.validation.Errors errors ;
     
     static relations = [
             connection:[isMany:false, reverseName:"rapidInsightDatasources", type:RapidInsightConnection]

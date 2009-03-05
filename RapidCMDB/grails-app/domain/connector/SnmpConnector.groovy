@@ -29,14 +29,14 @@ import connection.SnmpConnection
 */
 class SnmpConnector {
    static searchable = {
-        except = [];
+        except = ["errors"];
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     String name ="";
     String rsOwner = "p";
     CmdbScript script;
     SnmpConnection connection;
-
+    org.springframework.validation.Errors errors ;
 
     static relations  =[
         script:[type:CmdbScript, isMany:false],
@@ -46,8 +46,9 @@ class SnmpConnector {
       name(blank:false,nullable:false,key:[])
       script(nullable:true)
       connection(nullable:true)
+      errors(nullable:true)
     }
-    static transients = [];
+    static transients = ["errors"];
 
     public String toString()
     {

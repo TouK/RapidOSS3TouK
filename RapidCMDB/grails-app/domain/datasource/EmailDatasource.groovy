@@ -16,6 +16,7 @@ class EmailDatasource extends BaseDatasource
 
     Long reconnectInterval =0;
     EmailConnection connection ;
+    org.springframework.validation.Errors errors ;
 
 
     static relations = [

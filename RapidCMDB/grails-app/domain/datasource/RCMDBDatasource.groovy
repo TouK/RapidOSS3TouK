@@ -22,6 +22,7 @@ class RCMDBDatasource extends BaseDatasource
     static searchable = {
         except = [];
     };
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static constraints={
     

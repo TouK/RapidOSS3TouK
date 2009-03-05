@@ -33,6 +33,8 @@ class RsHistoricalEvent {
     
     String name ="";
     
+    Long activeId =0;
+    
     String owner ="";
     
     Boolean acknowledged =false;
@@ -59,12 +61,11 @@ class RsHistoricalEvent {
     
     Long count =1;
     
-    Long id ;
-    Long activeId ;
-
-    Long version ;
-    
     org.springframework.validation.Errors errors ;
+    
+    Long id ;
+    
+    Long version ;
     
     Object __operation_class__ ;
     
@@ -75,6 +76,8 @@ class RsHistoricalEvent {
     
     static constraints={
     name(blank:true,nullable:true)
+        
+     activeId(nullable:true)
         
      owner(blank:true,nullable:true)
         
@@ -102,11 +105,11 @@ class RsHistoricalEvent {
         
      count(nullable:true)
         
+     errors(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
-        
-     errors(nullable:true)
         
      
     }
@@ -123,6 +126,7 @@ class RsHistoricalEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

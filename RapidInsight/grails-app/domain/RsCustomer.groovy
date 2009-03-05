@@ -1,32 +1,35 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsCustomer extends RsGroup
-{
-    
+class RsCustomer  extends RsGroup {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["errors"];
     
     
     };
-    org.springframework.validation.Errors errors ;
     static datasources = [:]
 
+    
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [:]    
     
     static constraints={
-    
+    errors(nullable:true)
+        
+     
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

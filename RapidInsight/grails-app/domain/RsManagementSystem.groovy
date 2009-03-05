@@ -35,11 +35,11 @@ class RsManagementSystem {
     
     Long lastPolledAt =0;
     
+    org.springframework.validation.Errors errors ;
+    
     Long id ;
     
     Long version ;
-    
-    org.springframework.validation.Errors errors ;
     
     Object __operation_class__ ;
     
@@ -53,11 +53,11 @@ class RsManagementSystem {
         
      lastPolledAt(nullable:true)
         
+     errors(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
-        
-     errors(nullable:true)
         
      
     }
@@ -74,6 +74,7 @@ class RsManagementSystem {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

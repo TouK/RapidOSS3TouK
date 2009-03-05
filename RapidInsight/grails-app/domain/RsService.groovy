@@ -23,7 +23,7 @@ class RsService  extends RsGroup {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["relatedServiceTickets"];
+        except = ["errors", "relatedServiceTickets"];
     
     
     };
@@ -40,8 +40,9 @@ class RsService  extends RsGroup {
     
     Boolean hasHeartbeat =false;
     
-    List relatedServiceTickets =[];
     org.springframework.validation.Errors errors ;
+    
+    List relatedServiceTickets =[];
     
     
     static relations = [
@@ -61,16 +62,19 @@ class RsService  extends RsGroup {
         
      hasHeartbeat(nullable:true)
         
+     errors(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["relatedServiceTickets"];
+    static transients = ["errors", "relatedServiceTickets"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

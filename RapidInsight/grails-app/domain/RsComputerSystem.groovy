@@ -24,7 +24,7 @@ class RsComputerSystem  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["connectedVia"];
+        except = ["errors", "connectedVia"];
     
     
     };
@@ -53,8 +53,9 @@ class RsComputerSystem  extends RsTopologyObject {
     
     String vendor ="";
     
-    List connectedVia =[];
     org.springframework.validation.Errors errors ;
+    
+    List connectedVia =[];
     
     
     static relations = [
@@ -86,16 +87,19 @@ class RsComputerSystem  extends RsTopologyObject {
         
      vendor(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["connectedVia"];
+    static transients = ["errors", "connectedVia"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

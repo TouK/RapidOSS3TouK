@@ -21,70 +21,71 @@ import com.ifountain.core.domain.annotations.*;
 
 class RsEventJournal {
 
-    public static String MESSAGE_CREATE = "Created event";
-    public static String MESSAGE_UPDATE = "Updated event";
-
     //AUTO_GENERATED_CODE
 
     static searchable = {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
-
-
+    
+    
     };
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
-
+    
     Long eventId =0;
-
+    
     Date rsTime =new Date(0);
-
+    
     String eventName ="";
-
+    
     String details ="";
-
-    Long id ;
-
-    Long version ;
-
+    
     org.springframework.validation.Errors errors ;
-
+    
+    Long id ;
+    
+    Long version ;
+    
     Object __operation_class__ ;
-
+    
     Object __is_federated_properties_loaded__ ;
-
-
-    static relations = [:]
-
+    
+    
+    static relations = [:]    
+    
     static constraints={
     eventId(nullable:true)
-
+        
      rsTime(nullable:true)
-
+        
      eventName(blank:true,nullable:true)
-
+        
      details(blank:true,nullable:true)
-
-     __operation_class__(nullable:true)
-
-     __is_federated_properties_loaded__(nullable:true)
-
+        
      errors(nullable:true)
-
-
+        
+     __operation_class__(nullable:true)
+        
+     __is_federated_properties_loaded__(nullable:true)
+        
+     
     }
 
     static propertyConfiguration= [:]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
-
+    
     public String toString()
     {
     	return "${getClass().getName()}[id:${getProperty("id")}]";
     }
-
+    
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
+    public static String MESSAGE_CREATE = "Created event";
+    public static String MESSAGE_UPDATE = "Updated event";
+
 
 
 

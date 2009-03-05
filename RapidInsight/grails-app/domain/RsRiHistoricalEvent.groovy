@@ -24,7 +24,7 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["errors"];
     
     
     };
@@ -34,6 +34,7 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     String description ="";
     
     String identifier ="";
+    
     org.springframework.validation.Errors errors ;
     
     
@@ -44,16 +45,19 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
         
      identifier(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

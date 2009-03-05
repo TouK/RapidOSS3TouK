@@ -1,9 +1,8 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsLookup 
-{
-    
+class RsLookup {
+
     //AUTO_GENERATED_CODE
 
     static searchable = {
@@ -18,11 +17,11 @@ class RsLookup
     
     String value ="";
     
+    org.springframework.validation.Errors errors ;
+    
     Long id ;
     
     Long version ;
-    
-    org.springframework.validation.Errors errors ;
     
     Object __operation_class__ ;
     
@@ -36,11 +35,11 @@ class RsLookup
         
      value(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
-        
-     errors(nullable:true)
         
      
     }
@@ -57,4 +56,5 @@ class RsLookup
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+    
 }

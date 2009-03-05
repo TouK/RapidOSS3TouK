@@ -6,7 +6,7 @@ class RsTicket {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents", "subTickets", "parentTicket"];
     
     
     };
@@ -27,11 +27,11 @@ class RsTicket {
     
     String rsDatasource ="";
     
+    org.springframework.validation.Errors errors ;
+    
     Long id ;
     
     Long version ;
-    
-    org.springframework.validation.Errors errors ;
     
     Object __operation_class__ ;
     
@@ -43,6 +43,10 @@ class RsTicket {
     
     List relatedEvents =[];
     
+    List subTickets =[];
+    
+    RsTicket parentTicket ;
+    
     
     static relations = [
     
@@ -51,6 +55,10 @@ class RsTicket {
         ,relatedServices:[type:RsService, reverseName:"relatedServiceTickets", isMany:true]
     
         ,relatedEvents:[type:RsEvent, reverseName:"relatedEventTickets", isMany:true]
+    
+        ,subTickets:[type:RsTicket, reverseName:"parentTicket", isMany:true]
+    
+        ,parentTicket:[type:RsTicket, reverseName:"subTickets", isMany:false]
     
     ]
     
@@ -69,17 +77,19 @@ class RsTicket {
         
      rsDatasource(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
         
-     errors(nullable:true)
+     parentTicket(nullable:true)
         
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedObjects", "relatedServices", "relatedEvents", "subTickets", "parentTicket"];
     
     public String toString()
     {
@@ -90,6 +100,7 @@ class RsTicket {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
     
 }

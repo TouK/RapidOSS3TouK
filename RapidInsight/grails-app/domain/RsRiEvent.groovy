@@ -24,7 +24,7 @@ class RsRiEvent  extends RsEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = [];
+        except = ["errors"];
     
     
         storageType "FileAndMemory"
@@ -36,6 +36,7 @@ class RsRiEvent  extends RsEvent {
     String description ="";
     
     String identifier ="";
+    
     org.springframework.validation.Errors errors ;
     
     
@@ -46,16 +47,19 @@ class RsRiEvent  extends RsEvent {
         
      identifier(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = [];
+    static transients = ["errors"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

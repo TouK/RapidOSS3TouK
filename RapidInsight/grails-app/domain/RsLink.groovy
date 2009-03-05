@@ -24,7 +24,7 @@ class RsLink  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["connectedSystems"];
+        except = ["errors", "connectedSystems"];
     
     
     };
@@ -39,8 +39,9 @@ class RsLink  extends RsTopologyObject {
     
     String z_Name ="";
     
-    List connectedSystems =[];
     org.springframework.validation.Errors errors ;
+    
+    List connectedSystems =[];
     
     
     static relations = [
@@ -58,16 +59,19 @@ class RsLink  extends RsTopologyObject {
         
      z_Name(blank:true,nullable:true)
         
+     errors(nullable:true)
+        
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["connectedSystems"];
+    static transients = ["errors", "connectedSystems"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
     

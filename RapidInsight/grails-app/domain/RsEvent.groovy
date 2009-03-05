@@ -61,11 +61,11 @@ class RsEvent {
     
     Long count =1;
     
+    org.springframework.validation.Errors errors ;
+    
     Long id ;
     
     Long version ;
-    
-    org.springframework.validation.Errors errors ;
     
     Object __operation_class__ ;
     
@@ -109,11 +109,11 @@ class RsEvent {
         
      count(nullable:true)
         
+     errors(nullable:true)
+        
      __operation_class__(nullable:true)
         
      __is_federated_properties_loaded__(nullable:true)
-        
-     errors(nullable:true)
         
      
     }
@@ -130,6 +130,7 @@ class RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

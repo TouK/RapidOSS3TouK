@@ -19,7 +19,9 @@
 package com.ifountain.rcmdb.domain.constraints
 
 import org.codehaus.groovy.grails.validation.AbstractConstraint
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.Errors
+import org.codehaus.groovy.runtime.GStringImpl
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,8 +38,22 @@ class KeyConstraint extends AbstractConstraint{
     {
 
         Map keyMap = [:];
-        keys.each{key->
-            keyMap[key] = target.getProperty(key);
+        for(def i= 0; i< keys.size(); i++){
+            def key = keys[i];
+            def keyValue = target.getProperty(key);
+            if(keyValue == null){
+                List args = [key, constraintOwningClass];
+                super.rejectValue(target, errors, ConstrainedProperty.DEFAULT_NULL_MESSAGE_CODE, args as Object[], getDefaultMessage(ConstrainedProperty.DEFAULT_NULL_MESSAGE_CODE));
+                return;
+            }
+            else if((keyValue instanceof String || keyValue instanceof GStringImpl) && keyValue.trim() == ""){
+                List args = [key, constraintOwningClass];
+                super.rejectValue(target, errors, ConstrainedProperty.DEFAULT_BLANK_MESSAGE_CODE, args as Object[], getDefaultMessage(ConstrainedProperty.DEFAULT_BLANK_MESSAGE_CODE));
+                return; 
+            }
+            else{
+                keyMap[key] = target.getProperty(key);
+            }
         }
         Object res = constraintOwningClass.'getFromHierarchy'(keyMap);
         if(res != null && target.id != res.id)

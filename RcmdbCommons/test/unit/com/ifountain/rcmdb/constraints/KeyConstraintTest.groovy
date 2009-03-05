@@ -127,8 +127,36 @@ class KeyConstraintTest extends RapidCmdbTestCase{
         errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
         constraint.validate (obj1, obj1.key1, errors);
         assertTrue (errors.hasErrors());
+    }
 
+    public void testProcessValidateReturnsErrorIfOneOfKeysIsNull(){
+        KeyConstraint constraint = new KeyConstraint();
+        constraint.setPropertyName ("key1");
+        def compositeKeys = ["key2","key3"]
+        constraint.setParameter (compositeKeys);
+        constraint.setOwningClass (KeyConstraintDomainObjectForTest.class);
 
+        KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val");
+        Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
+        constraint.validate (obj1, obj1.key1, errors);
+        assertTrue (errors.hasErrors());
+        assertEquals(ConstrainedProperty.DEFAULT_MESSAGES.get(ConstrainedProperty.DEFAULT_NULL_MESSAGE_CODE), errors.getFieldError().getDefaultMessage())
+        assertEquals(ConstrainedProperty.DEFAULT_NULL_MESSAGE_CODE, errors.getFieldError().code)
+    }
+
+    public void testProcessValidateReturnsErrorIfAStringKeyIsBlank(){
+        KeyConstraint constraint = new KeyConstraint();
+        constraint.setPropertyName ("key1");
+        def compositeKeys = ["key2","key3"]
+        constraint.setParameter (compositeKeys);
+        constraint.setOwningClass (KeyConstraintDomainObjectForTest.class);
+
+        KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:" ");
+        Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
+        constraint.validate (obj1, obj1.key1, errors);
+        assertTrue (errors.hasErrors());
+        assertEquals(ConstrainedProperty.DEFAULT_MESSAGES.get(ConstrainedProperty.DEFAULT_BLANK_MESSAGE_CODE), errors.getFieldError().getDefaultMessage())
+        assertEquals(ConstrainedProperty.DEFAULT_BLANK_MESSAGE_CODE, errors.getFieldError().code)
     }
 }
 

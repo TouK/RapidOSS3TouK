@@ -20,8 +20,8 @@ class UiSearchListFieldOperations extends AbstractDomainOperation
                 designerType: "SearchListField",
                 canBeDeleted: true,
                 display: "Field",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/textfield.png",
+                imageCollapsed: "images/rapidjs/designer/textfield.png",
                 propertyConfiguration: [
                         fields: [descr: "Property list that will be displayed if the expression evaluates to true"],
                         exp: [descr: "The JavaScript expression evaluated on row data to determine whether the property list is valid or not", type:"Expression"]

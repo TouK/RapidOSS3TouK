@@ -21,8 +21,8 @@ class UiTreeGridColumnOperations extends UiColumnOperations
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",
                 display:"Column",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/view_sidetree.png",
+                imageCollapsed: "images/rapidjs/designer/view_sidetree.png",
                 propertyConfiguration: [
                     sortType: [descr: "specifies whether the values will be sorted as a int, string, upper cased string, float or date", required:false],
                 ],

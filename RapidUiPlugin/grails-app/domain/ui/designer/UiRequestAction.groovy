@@ -15,6 +15,7 @@ class UiRequestAction extends UiAction
     Long timeout = 60;
     List parameters = [];
     List components = [];
+    org.springframework.validation.Errors errors ;
     static relations = [
             parameters:[type:UiRequestParameter, reverseName:"action", isMany:true],
             components:[type:UiComponent, isMany:true]

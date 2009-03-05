@@ -11,6 +11,7 @@
     <script type="text/javascript" src="../js/yui/datasource/datasource-min.js"></script>
     <script type="text/javascript" src="../js/yui/datatable/datatable.js"></script>
      <script type="text/javascript" src="../js/yui/button/button.js"></script>
+     <script type="text/javascript" src="../js/yui/calendar/calendar-min.js"></script>
     <script type="text/javascript" src="../js/ext/ext.js"></script>
     <script type="text/javascript" src="../js/rapidjs/yuioverride.js"></script>
 
@@ -50,6 +51,7 @@
     <script type="text/javascript" src="../js/rapidjs/component/treegrid/TreeGrid.js"></script>
     <script type="text/javascript" src="../js/rapidjs/designer/Config.js"></script>
     <script type="text/javascript" src="../js/rapidjs/designer/DesignerUtils.js"></script>
+    <script type="text/javascript" src="../js/rapidjs/designer/DesignerRenderUtils.js"></script>
     <script type="text/javascript" src="../js/rapidjs/designer/ActionDefinitionDialog.js"></script>
     <script type="text/javascript" src="../js/rapidjs/designer/UIDesigner.js"></script>
 
@@ -69,6 +71,7 @@
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/tools/tools.css"/>
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/treegrid/treegrid.css"/>
     <link rel="stylesheet" type="text/css" href="../css/rapidjs/designer/designer.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/rapidjs/designer/help.css"/>
 </head>
 <body class="yui-skin-sam">
     <script>
@@ -80,6 +83,7 @@
             treeHideAttribute : 'designer_hidden',
             url : 'auth.xml',
             generateUrl : 'auth.xml',
+            helpUrl : 'help.xml',
             metaDataUrl : 'metaData.xml'
         };
         var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);

@@ -29,6 +29,7 @@ class UiSearchGrid extends UiComponent {
     String defaultQuery = "";
     List images = [];
     List rowColors = [];
+    org.springframework.validation.Errors errors ;
 
 
     static relations = [

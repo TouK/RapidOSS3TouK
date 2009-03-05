@@ -1,1 +1,86 @@
-<Locations><Location Address="225 Franklin St Boston MA 02110" Lat="42.356537" Lng="-71.053946" Tooltip="&lt;b&gt;225 Franklin St Boston MA 02110 (5 devices)&lt;/b&gt;" Marker="http://www.mapbuilder.net/img/icons/marker_34_orange.png" Parent="PrivateBanking"/></Locations>
+<UiConfig>
+    <UiElement designerType='WebPages' designer_name='Web Pages'>
+        <UiElement designerType='WebPage' name='operator' id='50' designer_name='operator' canBeDeleted='true'>
+            <UiElement designerType='Tabs' designer_name='Tabs'>
+                <UiElement designerType='Tab' name='serviceView' title='' contentFile='' id='52'
+                           designer_name='serviceView' canBeDeleted='true' designer_item_tab='52'>
+                    <UiElement designerType='Components' designer_name='Components' designer_item_tab='52'>
+                        <UiElement designerType='SearchGrid' url='search?searchIn=RsEvent' rootTag='Objects'
+                                   contentPath='Object' keyAttribute='id'
+                                   fieldsUrl='script/run/getViewFields?format=xml' queryParameter='query'
+                                   totalCountAttribute='total' offsetAttribute='offset' sortOrderAttribute='sortOrder'
+                                   pollingInterval='0' queryEnabled='true' maxRowsDisplayed='100' defaultQuery=''
+                                   name='eventsGrid' title='' id='61' designer_name='eventsGrid' canBeDeleted='true'
+                                   designer_item_tab='52'>
+                            <UiElement designerType='SearchGridImages' designer_name='Images'
+                                       designer_item_tab='52'></UiElement>
+                            <UiElement designerType='SearchGridColumns' designer_name='Columns'
+                                       designer_item_tab='52'></UiElement>
+                            <UiElement designerType='SearchGridRowColors' designer_name='RowColors'
+                                       designer_item_tab='52'></UiElement>
+                            <UiElement designerType='SearchGridMenuItems' designer_name='MenuItems'
+                                       designer_item_tab='52'></UiElement>
+                        </UiElement>
+                        <UiElement designerType='TreeGrid' url='script/run/getHierarchy?format=xml' rootTag='Objects'
+                                   contentPath='Object' keyAttribute='id' pollingInterval='0' expanded='false'
+                                   tooltip='false' name='topologyTree' title='Service View' id='55'
+                                   designer_name='topologyTree' canBeDeleted='true' designer_item_tab='52'>
+                            <UiElement designerType='TreeGridColumns' designer_name='Columns' designer_item_tab='52'>
+                                <UiElement designerType='TreeGridColumn' attributeName='displayName' width='248'
+                                           sortBy='false' colLabel='Name' id='57' designer_name='displayName'
+                                           canBeDeleted='true' designer_item_tab='52'>
+                                    <UiElement designerType='TreeGridColumnImages' designer_name='Images'
+                                               designer_item_tab='52'></UiElement>
+                                </UiElement>
+                            </UiElement>
+                            <UiElement designerType='TreeGridRootImages' designer_name='RootImages'
+                                       designer_item_tab='52'></UiElement>
+                            <UiElement designerType='TreeGridMenuItems' designer_name='MenuItems'
+                                       designer_item_tab='52'></UiElement>
+                        </UiElement>
+                        <UiElement designerType='FlexPieChart' url='script/run/getSummaryData?format=xml'
+                                   rootTag='chart' pollingInterval='0' name='summaryChart' title='' id='59'
+                                   designer_name='summaryChart' canBeDeleted='true' designer_item_tab='52'></UiElement>
+                    </UiElement>
+                    <UiElement designerType='Layout' id='51' designer_name='Layout' canBeDeleted='true'
+                               designer_item_tab='52'>
+                        <UiElement designerType='CenterUnit' contentFile='' component='summaryChart' gutter='0px'
+                                   scroll='false' useShim='false' id='63' designer_name='Center'
+                                   designer_item_tab='52'></UiElement>
+                        <UiElement designerType='BottomUnit' height='300' minHeight='0' maxHeight='0' resize='false'
+                                   contentFile='' component='eventsGrid' gutter='0px' scroll='false' useShim='false'
+                                   id='69' designer_name='Bottom' canBeDeleted='true'
+                                   designer_item_tab='52'></UiElement>
+                        <UiElement designerType='LeftUnit' width='400' resize='true' minWidth='0' maxWidth='0'
+                                   contentFile='' component='topologyTree' gutter='0px' scroll='false' useShim='false'
+                                   id='66' designer_name='Left' canBeDeleted='true' designer_item_tab='52'></UiElement>
+                    </UiElement>
+                    <UiElement designerType='Dialogs' designer_name='Dialogs' designer_item_tab='52'></UiElement>
+                    <UiElement designerType='Actions' designer_name='Actions' designer_item_tab='52'>
+                        <UiElement id='FunctionAction97' designerType='FunctionAction' component='summaryChart'
+                                   function='refresh' name='getSummaryAction' condition=''
+                                   designer_name='getSummaryAction' canBeDeleted='true' designer_item_tab='52'
+                                   arg0:params='{nodeType:params.data.nodeType, name:params.data.name}'
+                                   arg1:title='&apos;Summary View for &apos; + params.data.displayName'>
+                            <UiElement id='FunctionArguments98' designerType='FunctionArguments' null=''
+                                       designer_name='Arguments' designer_item_tab='52'>
+                                <UiElement id='FunctionArgument109' designerType='FunctionArgument'
+                                           designer_name='FunctionArgument' canBeDeleted='true' designer_item_tab='52'
+                                           value='{nodeType:params.data.nodeType, name:params.data.name}'></UiElement>
+                                <UiElement id='FunctionArgument110' designerType='FunctionArgument'
+                                           designer_name='FunctionArgument' canBeDeleted='true' designer_item_tab='52'
+                                           value='&apos;Summary View for &apos; + params.data.displayName'></UiElement>
+                            </UiElement>
+                            <UiElement id='ActionTriggers99' designerType='ActionTriggers' designer_name='Triggers'
+                                       designer_item_tab='52'>
+                                <UiElement id='ActionTrigger111' designerType='ActionTrigger' type='Component event'
+                                           name='selectionChanged' designer_name='Trigger' canBeDeleted='true'
+                                           designer_item_tab='52' component='topologyTree'></UiElement>
+                            </UiElement>
+                        </UiElement>
+                    </UiElement>
+                </UiElement>
+            </UiElement>
+        </UiElement>
+    </UiElement>
+</UiConfig>

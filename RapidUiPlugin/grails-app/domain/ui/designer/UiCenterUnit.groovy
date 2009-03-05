@@ -10,6 +10,7 @@ class UiCenterUnit extends UiLayoutUnit{
     static searchable = {
         storageType "FileAndMemory"
     };
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

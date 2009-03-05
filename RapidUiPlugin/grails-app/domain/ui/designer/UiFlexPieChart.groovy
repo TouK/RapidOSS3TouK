@@ -13,6 +13,7 @@ class UiFlexPieChart extends UiComponent{
     String rootTag = "";
     String url = "";
     Long pollingInterval= 0;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

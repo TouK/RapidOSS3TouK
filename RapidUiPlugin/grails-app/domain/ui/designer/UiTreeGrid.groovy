@@ -23,6 +23,7 @@ class UiTreeGrid extends UiComponent{
     Boolean tooltip = false;
     List columns = [];
     List rootImages = [];
+    org.springframework.validation.Errors errors ;
 
 
     static relations = [

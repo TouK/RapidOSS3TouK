@@ -22,6 +22,7 @@ class UiGMap extends UiComponent{
     String markerField
     String tooltipField
     Long timeout=60;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

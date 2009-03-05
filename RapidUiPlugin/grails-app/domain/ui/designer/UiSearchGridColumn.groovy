@@ -12,6 +12,7 @@ class UiSearchGridColumn extends UiColumn{
         storageType "FileAndMemory"
     };
     String type = "text";
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

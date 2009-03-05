@@ -13,6 +13,7 @@ class UiMergeAction extends UiRequestAction{
 
     };
     String removeAttribute = "";
+    org.springframework.validation.Errors errors ;
     static relations = [:]
 
     static constraints={

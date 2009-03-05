@@ -14,6 +14,7 @@ class UiTreeGridColumn extends UiColumn{
     String type = "text";
     String sortType = "string";
     List images = [];
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [images:[type: UiImage, reverseName: "column", isMany: true]]
     static constraints={

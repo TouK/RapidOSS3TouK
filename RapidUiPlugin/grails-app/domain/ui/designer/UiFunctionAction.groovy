@@ -14,6 +14,7 @@ class UiFunctionAction extends UiAction
     UiComponent component;
     String function;
     List arguments = [];
+    org.springframework.validation.Errors errors ;
     static relations = [component:[type:UiComponent, isMany:false],
     arguments:[type:UiFunctionArgument, reverseName:"action", isMany:true]]
 

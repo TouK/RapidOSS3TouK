@@ -14,6 +14,7 @@ class UiBottomUnit extends UiLayoutUnit{
     Boolean resize = false;
     Long maxHeight = 0;
     Long minHeight = 0;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

@@ -12,6 +12,7 @@ class UiTimeline extends UiComponent{
     };
     String url = "";
     Long pollingInterval= 0;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     List bands=[];
     static relations = [

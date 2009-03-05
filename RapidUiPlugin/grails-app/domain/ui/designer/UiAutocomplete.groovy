@@ -15,6 +15,7 @@ class UiAutocomplete extends UiComponent{
     String suggestionAttribute = "";
     Long cacheSize = 0;
     Boolean animated = false;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

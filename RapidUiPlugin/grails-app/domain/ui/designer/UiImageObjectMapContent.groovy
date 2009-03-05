@@ -12,6 +12,7 @@ class UiImageObjectMapContent extends UiObjectMapContent{
     };
 
     String mapping="";
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

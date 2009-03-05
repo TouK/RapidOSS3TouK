@@ -17,6 +17,7 @@ class UiPieChart extends UiComponent{
     String colors = "";
     String url = "";
     Long pollingInterval= 0;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

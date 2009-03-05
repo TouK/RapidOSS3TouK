@@ -12,6 +12,7 @@ class UiLinkAction extends UiAction
 
     };
     String url;
+    org.springframework.validation.Errors errors ;
     static relations = [:]
 
     static constraints={

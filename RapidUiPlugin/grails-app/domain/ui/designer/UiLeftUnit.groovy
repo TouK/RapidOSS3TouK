@@ -14,6 +14,7 @@ class UiLeftUnit extends UiLayoutUnit{
     Long minWidth = 0;
     Long maxWidth = 0;
     Boolean resize = false;
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={

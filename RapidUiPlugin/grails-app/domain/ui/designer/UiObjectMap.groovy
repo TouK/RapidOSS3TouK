@@ -20,6 +20,7 @@ class UiObjectMap extends UiComponent{
     String edgeColorDataKey="state";
     List nodeContents=[];
     List toolbarMenus=[];
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [
         nodeContents: [type: UiObjectMapContent, reverseName: "objectMap", isMany: true],

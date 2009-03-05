@@ -31,6 +31,7 @@ class UiSearchList extends UiComponent{
     List fields = [];
     List images = [];
     List propertyMenuItems = [];
+    org.springframework.validation.Errors errors ;
 
 
     static relations = [

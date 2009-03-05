@@ -20,8 +20,8 @@ class UiToolbarMenuOperations extends AbstractDomainOperation
                 designerType: "ToolbarMenu",
                 canBeDeleted: true,
                 displayFromProperty: "label",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/application_view_icons.png",
+                imageCollapsed: "images/rapidjs/designer/application_view_icons.png",
                 propertyConfiguration: [
                         label: [descr: "The label of the menu", required:true]
                 ],

@@ -1,0 +1,22 @@
+
+
+<p>What triggers an action is defined by adding one or more trigger nodes to the action. In RapidInsight there are 4 types of events that can trigger an action. These trigger types are:</p>
+
+<ul>
+	<li>Menu: action will be triggered when a menu item is clicked</li>
+	<li>Component event: action will be triggered when an event supported by a component is fired, such as "rowClicked" event of the SearchGrid</li>
+	<li>Action event: action will be triggered by an event fired by a preceding action, such as the "success" event of the FunctionAction</li>
+	<li>Global event: action will be triggered when a global event is fired, such as serverDown, which indicates communication to the server is lost.</li>
+</ul>
+
+
+<h4><a name="RequestActionTrigger-AvailableProperties"></a>Available Properties</h4>
+<p><b>type</b>: Determine the trigger type by selecting what will fire the event: a menu item, a component, an action, or RapidInsight web client (global)<br/>
+<b>component</b>: When the trigger type is Menu or Component, select which component fires the desired event or contains the desired menu item<br/>
+<b>triggeringAction</b>: When the trigger type is Action event, select which action fires the desired event<br/>
+<b>event</b>: Event fired that will trigger the action</p>
+
+<h4><a name="RequestActionTrigger-AvailableActions"></a>Available Actions</h4>
+<p><b>Clone</b>: Clones the trigger for creating a similar trigger quickly<br/>
+<b>Delete</b>: Deletes the trigger</p>
+

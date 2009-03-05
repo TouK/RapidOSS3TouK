@@ -14,7 +14,7 @@ class UiRequestParameterOperations extends AbstractDomainOperation{
      public static Map metaData()
     {
         Map metaData = [
-                help:"RequestAction.html",
+                help:"RequestParameter.html",
                 designerType:"RequestParameter",
                 canBeDeleted: true,
                 displayFromProperty: "key",

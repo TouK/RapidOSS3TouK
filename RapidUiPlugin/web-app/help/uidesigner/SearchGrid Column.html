@@ -1,0 +1,25 @@
+
+
+<p>Defines column attributes.</p>
+
+<h4><a name="SearchGridColumn-AvailableProperties"></a>Available Properties</h4>
+<ul>
+	<li>type (Required): Column type. It can be either a text column or a link column. A link column allows the user to move the focus to another tab/dialog window etc. Default is text.
+<div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>The action for the link should be defined in Actions node for the tab</td></tr></table></div></li>
+	<li>attributeName (Required): The data node attribute which will be shown in the column. This attribute comes with the Ajax response.</li>
+	<li>colLabel (Required): Title of the column.</li>
+	<li>width (Required): Width of the column.</li>
+</ul>
+
+
+<h4><a name="SearchGridColumn-AdditionalProperties"></a>Additional Properties</h4>
+<ul>
+	<li>sortBy (Optional): Parameter to render SearchGrid whether sorted according to this column or not. Default is false.</li>
+	<li>sortOrder (Optional): The order of the sort when 'sortBy" property is "true". Default is "asc".</li>
+</ul>
+
+
+<h4><a name="SearchGridColumn-AvailableActions"></a>Available Actions</h4>
+<p><b>Clone</b>: Creates a copy of the node with same properties<br/>
+<b>Delete</b>: Deletes the node</p>
+

@@ -1,51 +1,59 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-    <head>
-        <title>RapidInsight Documentation In-Progress : SearchGrid Component</title>
-	    <link rel="stylesheet" href="styles/site.css" type="text/css" />
-        <META http-equiv="Content-Type" content="text/html; charset=UTF-8">	    
-    </head>
 
-    <body>
-	    <table class="pagecontent" border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff">
-		    <tr>
-			    <td valign="top" class="pagebody">
-				    <div class="pageheader">
-					    <span class="pagetitle">
-                            RapidInsight Documentation In-Progress : SearchGrid Component
-                                                    </span>
-				    </div>
-				    <div class="pagesubheading">
-					    This page last changed on Feb 11, 2009 by <font color="#0050B2">tugrul</font>.
-				    </div>
 
-				    <h4><a name="SearchGridComponent-AvailableProperties"></a>Available Properties</h4>
-<p><b>url</b>: <br/>
-<b>rootTag</b>:<br/>
-<b>contentPath</b>:<br/>
-<b>keyAttribute</b>:<br/>
-<b>fieldsUrl</b>:<br/>
-<b>totalCountAttribute</b>:<br/>
-<b>offsetAttribute</b>:<br/>
-<b>sortOrderAttribute</b>:<br/>
-<b>pollingInterval</b>:<br/>
-<b>name</b>:<br/>
-<b>title</b>:</p>
+<p>SearchGrid is a UI component designed to represent tabular row data. It enables filtering out results with quick querying.</p>
+
+<p><img src="download/attachments/2201772/SearchGrid.jpg" align="absmiddle" border="0"/></p>
+
+<h4><a name="SearchGridComponent-AvailableProperties"></a>Available Properties</h4>
+<p><b>name</b> (Required): Name of the component. Default is SearchGrid.<br/>
+<b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
+<b>rootTag</b> (Required): The root node name of AJAX response which SearchGrid takes as starting point to get its data. ex: "Objects" for the sample data below<br/>
+<b>contentPath</b> (Required): The node names of AJAX response which will be used as row data. ex: "Object" for the sample data below<br/>
+<b>keyAttribute</b> (Required): The attribute name of the row node which uniquely identifies the node. ex: "id" for the sample data below<br/>
+<b>fieldsUrl</b> (Required): The url used for the request to the server to retrieve available properties used in view builder.<br/>
+<b>totalCountAttribute</b> (Required): The attribute in the root node of the AJAX response which shows the total number of hits which matches the query. ex: "total" for the sample data below<br/>
+<b>offsetAttribute</b> (Required): The attribute in the root node of the AJAX response which shows where the results starts from according to the search query. ex: "offset" for the sample data below<br/>
+<b>sortOrderAttribute</b> (Required): The attribute of the row which displays the sort position of the row according to the search query. ex: "sortOrder" for the sample data below<br/>
+<b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.<br/>
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
+<b>title</b> (Optional): SearchGrid title.</p>
+
+<div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>All properties except rootTag, contentPath and keyAttribute are pre-populated when a new SearchGrid component is added to the layout, assuming you will be using SearchController provided with RapidInsight.</td></tr></table></div>
+
+<p>Below is the sample Ajax response in Xml format to a url call:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">&lt;Objects total=<span class="code-quote">"3"</span> offset=<span class="code-quote">"0"</span>&gt;
+  &lt;<span class="code-object">Object</span> acknowledged=<span class="code-quote">"<span class="code-keyword">false</span>"</span> changedAt=<span class="code-quote">"1234527397231"</span> clearedAt=<span class="code-quote">"0"</span> count=<span class="code-quote">"1"</span> createdAt=<span class="code-quote">"1234527397231"</span> description=<span class="code-quote">"" elementId="</span>126<span class="code-quote">" elementName="</span>erncswbos1<span class="code-quote">" id="</span>129<span class="code-quote">" identifier="</span><span class="code-quote">" name="</span>event0<span class="code-quote">" owner="</span><span class="code-quote">" rsDatasource="</span>SAM<span class="code-quote">" severity="</span>1<span class="code-quote">" source="</span><span class="code-quote">" state="</span>0<span class="code-quote">" willExpireAt="</span>0<span class="code-quote">" sortOrder="</span>0<span class="code-quote">" rsAlias="</span>RsRiEvent"/&gt;
+  &lt;<span class="code-object">Object</span> acknowledged=<span class="code-quote">"<span class="code-keyword">false</span>"</span> changedAt=<span class="code-quote">"1234527397887"</span> clearedAt=<span class="code-quote">"0"</span> count=<span class="code-quote">"1"</span> createdAt=<span class="code-quote">"1234527397887"</span> description=<span class="code-quote">"" elementId="</span>101<span class="code-quote">" elementName="</span>erceswnyc4<span class="code-quote">" id="</span>132<span class="code-quote">" identifier="</span><span class="code-quote">" name="</span>event1<span class="code-quote">" owner="</span><span class="code-quote">" rsDatasource="</span>SAM<span class="code-quote">" severity="</span>2<span class="code-quote">" source="</span><span class="code-quote">" state="</span>0<span class="code-quote">" willExpireAt="</span>0<span class="code-quote">" sortOrder="</span>1<span class="code-quote">" rsAlias="</span>RsRiEvent"/&gt;
+  &lt;<span class="code-object">Object</span> acknowledged=<span class="code-quote">"<span class="code-keyword">false</span>"</span> changedAt=<span class="code-quote">"1234527398215"</span> clearedAt=<span class="code-quote">"0"</span> count=<span class="code-quote">"1"</span> createdAt=<span class="code-quote">"1234527398215"</span> description=<span class="code-quote">"" elementId="</span>62<span class="code-quote">" elementName="</span>ercwsvnyc2<span class="code-quote">" id="</span>135<span class="code-quote">" identifier="</span><span class="code-quote">" name="</span>event2<span class="code-quote">" owner="</span><span class="code-quote">" rsDatasource="</span>AM<span class="code-quote">" severity="</span>3<span class="code-quote">" source="</span><span class="code-quote">" state="</span>0<span class="code-quote">" willExpireAt="</span>0<span class="code-quote">" sortOrder="</span>2<span class="code-quote">" rsAlias="</span>RsRiEvent"/&gt;
+&lt;/Objects&gt;</pre>
+</div></div>
+
+<h4><a name="SearchGridComponent-AdditionalProperties"></a>Additional Properties</h4>
+<p><b>queryEnabled</b> (Optional): Parameter to determine whether the quick filtering is enabled or not. Default is true.<br/>
+<b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100. <br/>
+<b>defaultQuery</b> (Optional): The query appended to all queries sent by SearchGrid. </p>
 
 <h4><a name="SearchGridComponent-AvailableActions"></a>Available Actions</h4>
-<p><b>Delete</b>: Deletes the component</p>
+<p><b>Clone</b>: Creates a copy of the component with same properties<br/>
+<b>Delete</b>: Deletes the component</p>
 
-				    
-                    			    </td>
-		    </tr>
-	    </table>
-	    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-			<tr>
-				<td height="12" background="http://www.ifountain.org/confluence/images/border/border_bottom.gif"><img src="images/border/spacer.gif" width="1" height="1" border="0"/></td>
-			</tr>
-		    <tr>
-			    <td align="center"><font color="grey">Document generated by Confluence on Feb 17, 2009 14:52</font></td>
-		    </tr>
-	    </table>
-    </body>
-</html>
+<h4><a name="SearchGridComponent-AvailableEvents"></a>Available Events</h4>
+<p><b>onSaveQueryClick</b>: Event fired when "Save Query" button is clicked. Available parameters:</p>
+<ul>
+	<li>params.query:  Query written in search input field.</li>
+</ul>
+
+
+<p><b>onRowDoubleClick</b>: Event fired when a row is double clicked. Available parameters:</p>
+<ul>
+	<li>params.data: JavaScript object representing row data. While defining an action on this event, the row data can be accessed through params.data object. ex: params.data.severity, params.data.id, etc.</li>
+</ul>
+
+
+<p><b>onRowClick</b>: Event fired when a row is clicked. Available parameters:</p>
+<ul>
+	<li>params.data: JavaScript object representing row data. While defining an action on this event, the row data can be accessed through params.data object. ex: params.data.severity, params.data.id, etc.</li>
+</ul>
+
+

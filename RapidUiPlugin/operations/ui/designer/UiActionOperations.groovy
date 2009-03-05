@@ -19,6 +19,7 @@ public class UiActionOperations extends AbstractDomainOperation
                                         designerType: "ActionTriggers",
                                         display: "Triggers",
                                         canBeDeleted: false,
+                                        help:"FunctionAction Triggers.html",
                                         imageExpanded: "images/rapidjs/component/tools/folder_open.gif",
                                         imageCollapsed: "images/rapidjs/component/tools/folder_open.gif",
                                         propertyConfiguration: [

@@ -14,7 +14,7 @@ class UiActionTriggerOperations extends AbstractDomainOperation {
     public static Map metaData()
     {
         Map metaData = [
-                help: "Action Trigger.html",
+                help: "FunctionAction Trigger.html",
                 designerType: "ActionTrigger",
                 canBeDeleted: true,
                 display: "Trigger",

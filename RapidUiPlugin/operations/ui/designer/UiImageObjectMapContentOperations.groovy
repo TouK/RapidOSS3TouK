@@ -13,10 +13,10 @@ class UiImageObjectMapContentOperations extends UiObjectMapContentOperations{
     public static Map metaData()
     {
         Map metaData = [
-                help:"ObjectMap Component.html",
+                help:"ObjectMap Image.html",
                 designerType: "ImageObjectMapContent",
                 canBeDeleted: true,
-                display: "NodeContent",
+                display: "Image",
                 imageExpanded: "images/rapidjs/designer/image.png",
                 imageCollapsed: "images/rapidjs/designer/image.png",
                 propertyConfiguration: [

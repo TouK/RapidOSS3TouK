@@ -14,7 +14,7 @@ class UiRowColorOperations  extends AbstractDomainOperation{
    public static Map metaData()
     {
         Map metaData = [
-                help:"SearchGrid Component.html",
+                help:"SearchGrid RowColor.html",
                 designerType: "RowColor",
                 canBeDeleted: true,
                 display: "RowColor",

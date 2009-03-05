@@ -16,7 +16,7 @@ class UiSearchListFieldOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                help:"SearchList Component.html",
+                help:"SearchList Field.html",
                 designerType: "SearchListField",
                 canBeDeleted: true,
                 display: "Field",

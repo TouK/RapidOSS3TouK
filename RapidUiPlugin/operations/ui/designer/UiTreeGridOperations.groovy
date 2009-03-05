@@ -31,12 +31,12 @@ class UiTreeGridOperations extends UiComponentOperations{
                 childrenConfiguration:
                 [
                         [
-                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridColumns",
                                 isMultiple: false,
                                 metaData: [
                                         designerType: "TreeGridColumns",
                                         display: "Columns",
+                                        help:"TreeGrid Columns.html",
                                         imageExpanded: 'images/rapidjs/designer/text_columns.png',
                                         imageCollapsed: 'images/rapidjs/designer/text_columns.png',
                                         childrenConfiguration: [
@@ -45,11 +45,11 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 ]
                         ],
                         [
-                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridRootImages",
                                 isMultiple: false,
                                 metaData: [
                                         designerType: "TreeGridRootImages",
+                                        help:"TreeGrid RootImages.html",
                                         display: "RootImages",
                                         imageExpanded: 'images/rapidjs/designer/images.png',
                                         imageCollapsed: 'images/rapidjs/designer/images.png',
@@ -59,12 +59,12 @@ class UiTreeGridOperations extends UiComponentOperations{
                                 ]
                         ],
                         [
-                                help:"TreeGrid Component.html",
                                 designerType: "TreeGridMenuItems",
                                 isMultiple: false,
                                 metaData: [
                                         designerType: "TreeGridMenuItems",
                                         display: "MenuItems",
+                                        help:"TreeGrid MenuItems.html",
                                         imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
                                         imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
                                         childrenConfiguration: [

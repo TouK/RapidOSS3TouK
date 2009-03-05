@@ -40,7 +40,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListFields",
                                 isMultiple: false,
                                 metaData: [
-                                        help:"SearchList Component.html",
+                                        help:"SearchList Fields.html",
                                         designerType: "SearchListFields",
                                         display: "Fields",
                                         imageExpanded: 'images/rapidjs/designer/textfield_rename.png',
@@ -54,7 +54,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListImages",
                                 isMultiple: false,
                                 metaData: [
-                                        help:"SearchList Component.html",
+                                        help:"SearchList Images.html",
                                         designerType: "SearchListImages",
                                         display: "Images",
                                         imageExpanded: 'images/rapidjs/designer/images.png',
@@ -68,7 +68,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListMenuItems",
                                 isMultiple: false,
                                 metaData: [
-                                        help:"SearchList Component.html",
+                                        help:"SearchList MenuItems.html",
                                         designerType: "SearchListMenuItems",
                                         display: "MenuItems",
                                         imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
@@ -82,7 +82,7 @@ class UiSearchListOperations extends UiComponentOperations{
                                 designerType: "SearchListPropertyMenuItems",
                                 isMultiple: false,
                                 metaData: [
-                                        help:"SearchList Component.html",
+                                        help:"SearchList PropertyMenuItems.html",
                                         designerType: "SearchListPropertyMenuItems",
                                         display: "PropertyMenuItems",
                                         imageExpanded: 'images/rapidjs/designer/text_indent.png',

@@ -16,7 +16,7 @@ class UiObjectMapContentOperations  extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                help:"ObjectMap Component.html",
+                help:"ObjectMap NodeContent.html",
                 designerType: "ObjectMapContent",
                 canBeDeleted: true,
                 display: "NodeContent",

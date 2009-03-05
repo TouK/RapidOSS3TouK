@@ -13,7 +13,7 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
    public static Map metaData()
     {
         Map metaData = [
-                help:"Column.html",
+                help:"SearchGrid Column.html",
                 designerType: "SearchGridColumn",
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",

@@ -19,10 +19,10 @@ public class UiWebPageOperations extends AbstractDomainOperation
                 ],
                 childrenConfiguration: [
                         [
-                                help:"Tabs.html",
                                 designerType: "Tabs",
                                 isMultiple: false,
                                 metaData: [
+                                        help:"Tabs.html",
                                         designerType: "Tabs",
                                         display: "Tabs",
                                         imageExpanded: 'images/rapidjs/component/tools/folder_open.gif',

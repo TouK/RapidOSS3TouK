@@ -16,7 +16,7 @@ class UiImageOperations extends AbstractDomainOperation
     public static Map metaData()
     {
         Map metaData = [
-                help:"Image.html",
+                help:"SearchGrid Image.html",
                 designerType: "Image",
                 canBeDeleted: true,
                 display: "Image",

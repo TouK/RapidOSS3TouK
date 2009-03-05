@@ -15,7 +15,7 @@ class UiTimelineBandOperations extends AbstractDomainOperation{
     public static Map metaData()
     {
         Map metaData = [
-                help:"Timeline Component.html",
+                help:"Timeline Band.html",
                 designerType: "TimelineBand",
                 canBeDeleted: true,
                 display: "Band",

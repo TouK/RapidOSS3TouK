@@ -65,7 +65,7 @@ class UiDesignerController {
     def save = {
         synchronized (uiDefinitionLock)
         {
-            def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
+            def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer.Ui")}
             uiDomainClasses.each {domainClassInstance ->
                 domainClassInstance.clazz.list().each {uiInstance ->
                     uiInstance.isActive = false;
@@ -76,13 +76,7 @@ class UiDesignerController {
             try
             {
                 processUiElement(xmlConfiguration);
-                def urlsAfterDelete = UiWebPage.list();
-                UiWebPage.search("isActive:false").results.each {urlObject ->
-                    deleteUrlFiles(urlObject);
-                }
-                UiTab.search("isActive:false").results.each {UiTab tabObject ->
-                    deleteTabFile(tabObject.webPage.name, tabObject);
-                }
+                createTrashFiles(UiWebPage.searchEvery("isActive:false"), UiTab.searchEvery("isActive:false")); 
                 uiDomainClasses.each {domainClassInstance ->
                     domainClassInstance.clazz.'removeAll'("isActive:false");
                 }
@@ -110,24 +104,21 @@ class UiDesignerController {
         }
     }
 
-    def deleteUrlFiles(url)
+
+
+    def createTrashFiles(urls, tabs)
     {
-        def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.name}Layout.gsp");
-        def urlRedirectFile = new File("${baseDir}/web-app/${url.name}.gsp");
-        def tabsDir = new File("${baseDir}/web-app/${url.name}");
-        urlRedirectFile.delete();
-        urlLayoutFile.delete();
-        if (tabsDir.exists())
-        {
-            FileUtils.deleteDirectory(tabsDir)
+        urls.each{url->
+            DesignerTrashFile.add(fileName:url.getUrlLayoutFilePath());
+            DesignerTrashFile.add(fileName:url.getUrlFilePath());
+            DesignerTrashFile.add(fileName:url.getUrlDirectory());
+        }
+        tabs.each{tab->
+            DesignerTrashFile.add(fileName:tab.getTabFilePath());    
         }
     }
+    
 
-    def deleteTabFile(url, tab)
-    {
-        def tabFile = new File("${baseDir}/web-app/${url}/${tab.name}.gsp");
-        tabFile.delete();
-    }
 
     def reloadTemplates = {
         try
@@ -158,11 +149,17 @@ class UiDesignerController {
             {
                 def urlTemplate = getTemplate("WebPage");
                 def tabTemplate = getTemplate("Tab");
+                def filesToBeDeleted = [:];
+                DesignerTrashFile.list().each{
+                    filesToBeDeleted[it.fileName] = it;
+                }
                 UiWebPage.list().each {url ->
-                    def urlLayoutFile = new File("${baseDir}/grails-app/views/layouts/${url.name}Layout.gsp");
+                    filesToBeDeleted.remove(url.getUrlLayoutFilePath());
+                    filesToBeDeleted.remove(url.getUrlFilePath());
+                    def urlLayoutFile = new File("${baseDir}/${url.getUrlLayoutFilePath()}");
                     def content = urlTemplate.make(url: url).toString()
                     urlLayoutFile.setText(content)
-                    def urlRedirectFile = new File("${baseDir}/web-app/${url.name}.gsp");
+                    def urlRedirectFile = new File("${baseDir}/${url.getUrlFilePath()}");
                     if (!url.tabs.isEmpty())
                     {
                         urlRedirectFile.setText("""
@@ -176,7 +173,8 @@ class UiDesignerController {
                         urlRedirectFile.setText("");
                     }
                     url.tabs.each {UiTab tab ->
-                        def tabOutputFile = new File("${baseDir}/web-app/${url.name}/${tab.name}.gsp");
+                        filesToBeDeleted.remove(tab.getTabFilePath());
+                        def tabOutputFile = new File("${baseDir}/${tab.getTabFilePath()}");
                         tabOutputFile.parentFile.mkdirs();
                         StringBuffer tabContent = new StringBuffer();
                         def components = tab.components.sort {it.id};
@@ -207,6 +205,19 @@ class UiDesignerController {
                         //                    xmlPrinter.print(rootNode)
                         tabOutputFile.setText(tabString)
                     }
+                }
+
+                filesToBeDeleted.each{fileName, trashFileObject->
+                    def fileToBeDeleted = new File("${baseDir}/${fileName}");
+                    if(fileToBeDeleted.isDirectory())
+                    {
+                        FileUtils.deleteDirectory (fileToBeDeleted)
+                    }
+                    else
+                    {
+                        fileToBeDeleted.delete();
+                    }
+                    trashFileObject.remove();
                 }
                 application.RsApplication.reloadViewsAndControllers();
                 render(contentType: "text/xml")
@@ -273,7 +284,7 @@ class UiDesignerController {
                     builder.Child(isMultiple: true, designerType: "WebPage")
                 }
             }
-            def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer")}
+            def uiDomainClasses = grailsApplication.getDomainClasses().findAll {it.clazz.name.startsWith("ui.designer.Ui")}
             uiDomainClasses.each {grailsDomainClass ->
                 def domainClassMetaData = getMetaData(grailsDomainClass);
                 if(domainClassMetaData != null && domainClassMetaData.designerType != null)

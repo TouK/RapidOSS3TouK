@@ -183,4 +183,17 @@ public class UiTabOperations extends AbstractDomainOperation
         return DesignerTemplateUtils.getActionsString(actionTriggers);
     }
 
+
+    def getTabFilePath()
+    {
+        def page = webPage;
+        return "${page.getUrlDirectory()}/${name}.gsp".toString()
+    }
+
+    def deleteTabFile(baseDir)
+    {
+        def tabFile = new File("${baseDir}/${getTabFilePath()}");
+        tabFile.delete();
+    }
+
 }

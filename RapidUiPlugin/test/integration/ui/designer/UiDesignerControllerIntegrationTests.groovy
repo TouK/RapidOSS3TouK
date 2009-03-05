@@ -15,59 +15,60 @@ import groovy.util.slurpersupport.GPathResult
 * Time: 3:27:15 PM
 * To change this template use File | Settings | File Templates.
 */
-class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
+class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
-                {
-                    it.clazz.'removeAll'();   
-                }
+        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll {
+            if (it.clazz.name.startsWith(UiWebPage.getPackage().name))
+            {
+                it.clazz.'removeAll'();
+            }
         }
+        DesignerTrashFile.removeAll();
     }
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
-                {
-                    it.clazz.'removeAll'();
-                }
+        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll {
+            if (it.clazz.name.startsWith(UiWebPage.getPackage().name))
+            {
+                it.clazz.'removeAll'();
+            }
         }
     }
 
     public void testSaveViewAndGenerate()
     {
-        new File("${System.getProperty ("base.dir")}/web-app/x.gsp").setText ("");
-        new File("${System.getProperty ("base.dir")}/web-app/y.gsp").setText ("");
+        new File("${System.getProperty("base.dir")}/web-app/x.gsp").setText("");
+        new File("${System.getProperty("base.dir")}/web-app/y.gsp").setText("");
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [name:"myUrl1", designerType:"WebPage", id:""]
-        def url2Props = [name:"myUrl2", designerType:"WebPage", id:""]
-        def tabsProps = [[name:"tab1", designerType:"Tab", contentFile:'x.gsp', title:"tab1", id:""], [name:"tab2", designerType:"Tab", contentFile:'y.gsp', title:"tab2", id:""]];
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages", id:""){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs", id:""){
-                        tabsProps.each{tab->
-                            builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout', id:"")
-                                builder.UiElement(designerType:'Components', id:"")
-                                builder.UiElement(designerType:'Dialogs', id:"")
-                                builder.UiElement(designerType:'Actions', id:"")
+        def url1Props = [name: "myUrl1", designerType: "WebPage", id: ""]
+        def url2Props = [name: "myUrl2", designerType: "WebPage", id: ""]
+        def tabsProps = [[name: "tab1", designerType: "Tab", contentFile: 'x.gsp', title: "tab1", id: ""], [name: "tab2", designerType: "Tab", contentFile: 'y.gsp', title: "tab2", id: ""]];
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages", id: "") {
+                builder.UiElement(url1Props) {
+                    builder.UiElement(designerType: "Tabs", id: "") {
+                        tabsProps.each {tab ->
+                            builder.UiElement(tab) {
+                                builder.UiElement(designerType: 'Layout', id: "")
+                                builder.UiElement(designerType: 'Components', id: "")
+                                builder.UiElement(designerType: 'Dialogs', id: "")
+                                builder.UiElement(designerType: 'Actions', id: "")
                             }
                         }
                     }
                 }
-                builder.UiElement(url2Props){
-                    builder.UiElement(designerType:"Tabs", id:""){
-                        tabsProps.each{tab->
-                            builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout', id:"")
-                                builder.UiElement(designerType:'Components', id:"")
-                                builder.UiElement(designerType:'Dialogs', id:"")
-                                builder.UiElement(designerType:'Actions', id:"")
+                builder.UiElement(url2Props) {
+                    builder.UiElement(designerType: "Tabs", id: "") {
+                        tabsProps.each {tab ->
+                            builder.UiElement(tab) {
+                                builder.UiElement(designerType: 'Layout', id: "")
+                                builder.UiElement(designerType: 'Components', id: "")
+                                builder.UiElement(designerType: 'Dialogs', id: "")
+                                builder.UiElement(designerType: 'Actions', id: "")
                             }
                         }
                     }
@@ -77,16 +78,16 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
-        def url2 = UiWebPage.get(name:url2Props.name, isActive:true);
-        assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
-        assertTrue (!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
-        assertTrue (!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
-        assertTrue (!url2.tabs.findAll {it.name == "tab2"}.isEmpty());
-        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        def url1 = UiWebPage.get(name: url1Props.name, isActive: true);
+        def url2 = UiWebPage.get(name: url2Props.name, isActive: true);
+        assertTrue(!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
+        assertTrue(!url1.tabs.findAll {it.name == "tab2"}.isEmpty());
+        assertTrue(!url2.tabs.findAll {it.name == "tab1"}.isEmpty());
+        assertTrue(!url2.tabs.findAll {it.name == "tab2"}.isEmpty());
+        assertEqualsXML("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
 
         //test view
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.view();
         println sw.toString()
         println controller.response.contentAsString
@@ -98,9 +99,9 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def webPageNode = node.UiElement.UiElement.find {it.@name.text() == url1.name};
         def tabsNode = webPageNode.UiElement
         def tabNode = tabsNode.UiElement[0];
-        def componentsNode = tabNode.UiElement.find{it.@designerType.text() == "Components"}
-        def dialogsNode = tabNode.UiElement.find{it.@designerType.text() == "Dialogs"}
-        def actionsNode = tabNode.UiElement.find{it.@designerType.text() == "Actions"}
+        def componentsNode = tabNode.UiElement.find {it.@designerType.text() == "Components"}
+        def dialogsNode = tabNode.UiElement.find {it.@designerType.text() == "Dialogs"}
+        def actionsNode = tabNode.UiElement.find {it.@designerType.text() == "Actions"}
         assertEquals("autoGenerated1", tabsNode.@id.text());
         assertEquals("autoGenerated2", componentsNode.@id.text());
         assertEquals("autoGenerated3", dialogsNode.@id.text());
@@ -108,9 +109,9 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         //test generate gsp files 
         deleteGeneratedFiles();
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.generate();
-        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
         checkGeneratedFiles();
 
         def tabsOfUrl1BeforeDelete = url1.tabs;
@@ -118,83 +119,109 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         //test deletes old models
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages"){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs", id:"")
-                    {
-                        builder.UiElement(tabsProps[0]){
-                            builder.UiElement(designerType:"Layout");                            
-                        }
-                    }
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(url1Props) {
+                    builder.UiElement(designerType: "Tabs", id: "")
+                            {
+                                builder.UiElement(tabsProps[0]) {
+                                    builder.UiElement(designerType: "Layout");
+                                }
+                            }
                 }
             }
         }
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        assertEqualsXML("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+
+        //for deleted webpage and tab file trash files should be added to repository
+        def filesWillBeSavedToTrashList = ["grails-app/views/layouts/${url1Props.name}Layout.gsp",
+                "web-app/${url1Props.name}.gsp",
+                "grails-app/views/layouts/${url2Props.name}Layout.gsp",
+                "web-app/${url2Props.name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[0].name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[1].name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[1].name}.gsp",
+                "web-app/${url1Props.name}/${tabsProps[1].name}.gsp",
+                "grails-app/views/layouts/${url1Props.name}Layout.gsp",
+                "web-app/${url1Props.name}.gsp",
+                "grails-app/views/layouts/${url2Props.name}Layout.gsp",
+                "web-app/${url2Props.name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[0].name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[1].name}.gsp",
+                "web-app/${url2Props.name}/${tabsProps[1].name}.gsp",
+                "web-app/${url1Props.name}/${tabsProps[1].name}.gsp"
+        ];
+        
+        filesWillBeSavedToTrashList.each{fileName->
+            assertNotNull(DesignerTrashFile.searchEvery("fileName:\"${fileName}\"")[0])
+            assertTrue (new File("${System.getProperty("base.dir")}/${fileName}").exists());
+        }
         def urlsAfterReSave = UiWebPage.list();
         def tabsAfterReSave = UiTab.list();
-        assertEquals (1, urlsAfterReSave.size())
-        assertEquals (1, tabsAfterReSave.size())
-        assertEquals (url1Props.name, urlsAfterReSave[0].name)
-        assertEquals (tabsProps[0].name, tabsAfterReSave[0].name)
+        assertEquals(1, urlsAfterReSave.size())
+        assertEquals(1, tabsAfterReSave.size())
+        assertEquals(url1Props.name, urlsAfterReSave[0].name)
+        assertEquals(tabsProps[0].name, tabsAfterReSave[0].name)
 
         //Test if tab does not exist generate will create redirect url page  with no content
         UiTab.removeAll();
         deleteGeneratedFiles();
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.generate();
-        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
         checkGeneratedFiles();
         def baseDir = System.getProperty("base.dir");
-        def urlRedirectFile = new File( baseDir + "/web-app/${url1.name}.gsp");
+        def urlRedirectFile = new File(baseDir + "/${url1.getUrlFilePath()}");
         assertEquals("", urlRedirectFile.getText());
-        def url2LayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url2.name+"Layout.gsp");
-        assertFalse (url2LayoutFile.exists());
-        assertFalse (new File(baseDir + "/web-app/${url2.name}.gsp").exists());
-        assertFalse (new File(baseDir + "/web-app/${url2.name}").exists());
-        tabsOfUrl2BeforeDelete.each{tab->
+
+        //test will delete delete files belonging to deleted webpage and tab
+        def url2LayoutFile = new File(baseDir + "/${url2.getUrlLayoutFilePath()}");
+        assertFalse(url2LayoutFile.exists());
+        assertFalse(new File(baseDir + "/${url2.getUrlFilePath()}").exists());
+        assertFalse(new File(baseDir + "/${url2.getUrlDirectory()}").exists());
+        tabsOfUrl2BeforeDelete.each {tab ->
             def tabFile = new File(baseDir + "/web-app/${url2.name}/${tab.name}.gsp");
-            assertFalse (tabFile.exists());
+            assertFalse(tabFile.exists());
         }
 
         def url1Tab2File = new File(baseDir + "/web-app/${url1.name}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
-        assertFalse (url1Tab2File.exists());
+        assertFalse(url1Tab2File.exists());
     }
 
     public void testSaveWithRelationProperty()
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [name:"myUrl1", designerType:"WebPage"]
-        def chart1Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart1", title:"title"]
-        def chart2Props = [designerType:'FlexPieChart', rootTag:"rootTag", url:"url1", pollingInterval:"10", name:"chart2", title:"title"]
-        def tabsProps = [[name:"tab1", designerType:"Tab", javascriptFile:'x.gsp']];
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages"){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs"){
-                        tabsProps.each{tab->
-                            builder.UiElement(tab){
-                                builder.UiElement(designerType:'Layout')
-                                {
-                                    builder.UiElement(designerType:'CenterUnit', component:'chart1', contentFile:'', gutter:'', scroll:'false', useShim:'false');
-                                }
-                                builder.UiElement(designerType:'Components')
-                                {
-                                    builder.UiElement(chart1Props)
-                                    builder.UiElement(chart2Props)
-                                }
-                                builder.UiElement(designerType:'Dialogs')
-                                builder.UiElement(designerType:'Actions')
-                                {
-                                    builder.UiElement(designerType:'RequestAction', name:"action1", url:"url1", components:"${chart1Props.name},${chart2Props.name}", condition:"true", timeout:40)
-                                    {
-                                        builder.UiElement(designerType:'Events', designerHidden:"true")    
-                                    }
-                                }
+        def url1Props = [name: "myUrl1", designerType: "WebPage"]
+        def chart1Props = [designerType: 'FlexPieChart', rootTag: "rootTag", url: "url1", pollingInterval: "10", name: "chart1", title: "title"]
+        def chart2Props = [designerType: 'FlexPieChart', rootTag: "rootTag", url: "url1", pollingInterval: "10", name: "chart2", title: "title"]
+        def tabsProps = [[name: "tab1", designerType: "Tab", javascriptFile: 'x.gsp']];
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(url1Props) {
+                    builder.UiElement(designerType: "Tabs") {
+                        tabsProps.each {tab ->
+                            builder.UiElement(tab) {
+                                builder.UiElement(designerType: 'Layout')
+                                        {
+                                            builder.UiElement(designerType: 'CenterUnit', component: 'chart1', contentFile: '', gutter: '', scroll: 'false', useShim: 'false');
+                                        }
+                                builder.UiElement(designerType: 'Components')
+                                        {
+                                            builder.UiElement(chart1Props)
+                                            builder.UiElement(chart2Props)
+                                        }
+                                builder.UiElement(designerType: 'Dialogs')
+                                builder.UiElement(designerType: 'Actions')
+                                        {
+                                            builder.UiElement(designerType: 'RequestAction', name: "action1", url: "url1", components: "${chart1Props.name},${chart2Props.name}", condition: "true", timeout: 40)
+                                                    {
+                                                        builder.UiElement(designerType: 'Events', designerHidden: "true")
+                                                    }
+                                        }
                             }
                         }
                     }
@@ -204,37 +231,37 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
-        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
-        assertTrue (!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
+        assertEqualsXML("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        def url1 = UiWebPage.get(name: url1Props.name, isActive: true);
+        assertTrue(!url1.tabs.findAll {it.name == "tab1"}.isEmpty());
         def tab = url1.tabs[0];
         def tabComponents = tab.components;
-        assertEquals (2, tabComponents.size());
-        tabComponents = tabComponents.sort{it.name}
+        assertEquals(2, tabComponents.size());
+        tabComponents = tabComponents.sort {it.name}
         UiFlexPieChart component = tabComponents[0];
 
-        assertTrue (component instanceof UiFlexPieChart)
+        assertTrue(component instanceof UiFlexPieChart)
         assertEquals(chart1Props.rootTag, component.rootTag);
         assertEquals(chart1Props.url, component.url);
         assertEquals(new Long(chart1Props.pollingInterval), component.pollingInterval);
         assertEquals(chart1Props.name, component.name);
         assertEquals(chart1Props.title, component.title);
-        assertEquals (UiCenterUnit.name, component.layoutUnit.class.name);
-        UiRequestAction requestAction = UiAction.get(name:"action1", tabId:tab.id, isActive:true);
-        assertEquals (2, requestAction.components.size());
+        assertEquals(UiCenterUnit.name, component.layoutUnit.class.name);
+        UiRequestAction requestAction = UiAction.get(name: "action1", tabId: tab.id, isActive: true);
+        assertEquals(2, requestAction.components.size());
     }
 
     public void testSaveWithErrors()
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [name:"myUrl1", designerType:"WebPage"]
-        def url2Props = [name:"myUrl2", designerType:"WebPage"]
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages"){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs"){
-                        builder.UiElement(designerType:"Tab", name:"tab1")
+        def url1Props = [name: "myUrl1", designerType: "WebPage"]
+        def url2Props = [name: "myUrl2", designerType: "WebPage"]
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(url1Props) {
+                    builder.UiElement(designerType: "Tabs") {
+                        builder.UiElement(designerType: "Tab", name: "tab1")
                     }
                 }
             }
@@ -242,29 +269,29 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEquals (1, UiWebPage.count());
+        assertEquals(1, UiWebPage.count());
         def url1BeforeTryingToSaveWithError = UiWebPage.list()[0];
 
         sw = new StringWriter();
         builder = new MarkupBuilder(sw);
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages"){
-                builder.UiElement(url1Props){
-                    builder.UiElement(designerType:"Tabs"){
-                        builder.UiElement(designerType:"Tab")
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(url1Props) {
+                    builder.UiElement(designerType: "Tabs") {
+                        builder.UiElement(designerType: "Tab")
                     }
                 }
-                builder.UiElement(url2Props){
+                builder.UiElement(url2Props) {
                 }
             }
         }
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.params.configuration = sw.toString()
         controller.save();
-        assertEquals (1, UiWebPage.count());
-        assertEquals (url1BeforeTryingToSaveWithError.id, UiWebPage.list()[0].id);
-        assertEquals (true, UiWebPage.list()[0].isActive);
-        assertEquals (1, UiTab.count());
+        assertEquals(1, UiWebPage.count());
+        assertEquals(url1BeforeTryingToSaveWithError.id, UiWebPage.list()[0].id);
+        assertEquals(true, UiWebPage.list()[0].isActive);
+        assertEquals(1, UiTab.count());
 
         def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
         assertEquals(1, responseXml.Error.size());
@@ -277,28 +304,28 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         println controller.response.contentAsString
         def responseXml = new XmlSlurper().parseText(controller.response.contentAsString);
         def components = responseXml.UiElement
-        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll{
-                if(it.clazz.name.startsWith(UiWebPage.getPackage().name))
-                {
-                    try{
-                        it.clazz.'metaData'();
-                        return true;
-                    }catch(groovy.lang.MissingMethodException e){}
-                    return false;
-                }
+        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll {
+            if (it.clazz.name.startsWith(UiWebPage.getPackage().name))
+            {
+                try {
+                    it.clazz.'metaData'();
+                    return true;
+                } catch (groovy.lang.MissingMethodException e) {}
                 return false;
+            }
+            return false;
         }
         def componentMap = [:]
-        components.each{
-            componentMap[it.'@designerType'.text()] = it;            
+        components.each {
+            componentMap[it.'@designerType'.text()] = it;
         }
         def classToBeExcluded = [UiLayoutUnit.name, UiComponent.name, UiAction.name]
-        uiDomainClasses.each{grailsDomainClass->
+        uiDomainClasses.each {grailsDomainClass ->
             def domainClass = grailsDomainClass.clazz;
-            if(!classToBeExcluded.contains(domainClass.name))
+            if (!classToBeExcluded.contains(domainClass.name))
             {
                 def component = componentMap[StringUtils.substringAfter(domainClass.simpleName, "Ui")];
-                assertNotNull ("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
+                assertNotNull("Undefined for ${StringUtils.substringAfter(domainClass.simpleName, "Ui")} in ${componentMap}", component);
             }
         }
         def urlsComponent = componentMap["WebPages"];
@@ -311,7 +338,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def urlComponent = componentMap["WebPage"];
         def urlPropertyMetaData = urlComponent.Properties.Property;
         def xmlProperties = [:]
-        urlPropertyMetaData.each{
+        urlPropertyMetaData.each {
             xmlProperties[it.'@name'.text()] = it;
         }
         assertEquals("name", xmlProperties["name"].'@name'.text());
@@ -321,7 +348,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         def urlChildMetaData = urlComponent.Children.Child;
         def xmlChildren = [:]
-        urlChildMetaData.each{
+        urlChildMetaData.each {
             xmlChildren[it.'@designerType'.text()] = it;
         }
         assertEquals(1, xmlChildren.size());
@@ -331,7 +358,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def tabsComponent = componentMap["Tabs"];
         def tabsChildMetaData = tabsComponent.Children.Child;
         def tabsXmlChildren = [:]
-        tabsChildMetaData.each{
+        tabsChildMetaData.each {
             tabsXmlChildren[it.'@designerType'.text()] = it;
         }
         assertEquals(1, tabsXmlChildren.size());
@@ -339,10 +366,10 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("true", tabsXmlChildren["Tab"].'@isMultiple'.text());
 
         //Test will not send information about components whose meta data does not have designerType
-        assertNull (componentMap["Component"])
-        assertNull (componentMap["Action"])
-        assertNull (componentMap["LayoutUnit"])
-        assertNull (componentMap[""])
+        assertNull(componentMap["Component"])
+        assertNull(componentMap["Action"])
+        assertNull(componentMap["LayoutUnit"])
+        assertNull(componentMap[""])
 
     }
 
@@ -350,63 +377,63 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def url1Props = [name:"myUrl1", designerType:"WebPage", id:""]
-        builder.UiConfig{
-            builder.UiElement(designerType:"WebPages"){
-                builder.UiElement(url1Props){
+        def url1Props = [name: "myUrl1", designerType: "WebPage", id: ""]
+        builder.UiConfig {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(url1Props) {
                 }
             }
         }
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url1 = UiWebPage.get(name:url1Props.name, isActive:true);
-        assertNotNull (url1);
-        assertEqualsXML ("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
+        def url1 = UiWebPage.get(name: url1Props.name, isActive: true);
+        assertNotNull(url1);
+        assertEqualsXML("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
 
         File uiUrlTemplate = new File("${System.getProperty("base.dir")}/${UiDesignerController.TEMPLATES_DIRECTORY}/WebPage.gsp");
-        assertTrue (uiUrlTemplate.exists());
-        def originalTemplate  = uiUrlTemplate.getText();
+        assertTrue(uiUrlTemplate.exists());
+        def originalTemplate = uiUrlTemplate.getText();
         //test generate gsp files
         deleteGeneratedFiles();
-        IntegrationTestUtils.resetController (controller);
+        IntegrationTestUtils.resetController(controller);
         controller.generate();
-        assertEqualsXML ("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
 
-        File generatedFile = new File("${System.getProperty("base.dir")}/grails-app/views/layouts/"+url1.name+"Layout.gsp");
+        File generatedFile = new File("${System.getProperty("base.dir")}/grails-app/views/layouts/" + url1.name + "Layout.gsp");
         String generatedUrlFileContent = generatedFile.getText();
-        
-        uiUrlTemplate.setText ("contentChanged");
+
+        uiUrlTemplate.setText("contentChanged");
         try
         {
-            IntegrationTestUtils.resetController (controller);
+            IntegrationTestUtils.resetController(controller);
             controller.generate();
             String generatedContentAfterTemplateChange = generatedFile.getText();
-            assertEquals (generatedUrlFileContent, generatedContentAfterTemplateChange);
+            assertEquals(generatedUrlFileContent, generatedContentAfterTemplateChange);
 
             //After reloading templates new content should be generated
-            IntegrationTestUtils.resetController (controller);
+            IntegrationTestUtils.resetController(controller);
             controller.reloadTemplates();
-            assertEqualsXML ("<Successful>Templates reloaded successfully</Successful>", controller.response.contentAsString);
-            IntegrationTestUtils.resetController (controller);
+            assertEqualsXML("<Successful>Templates reloaded successfully</Successful>", controller.response.contentAsString);
+            IntegrationTestUtils.resetController(controller);
             controller.generate();
             String textAfterReload = generatedFile.getText();
-            assertEquals ("contentChanged",  textAfterReload);
+            assertEquals("contentChanged", textAfterReload);
 
             //if there are some errors in templates reload will not load templates
-            uiUrlTemplate.setText ("\${");
-            IntegrationTestUtils.resetController (controller);
+            uiUrlTemplate.setText("\${");
+            IntegrationTestUtils.resetController(controller);
             controller.reloadTemplates();
-            assertTrue(controller.response.contentAsString.indexOf("<Errors")>=0);
+            assertTrue(controller.response.contentAsString.indexOf("<Errors") >= 0);
 
-            IntegrationTestUtils.resetController (controller);
+            IntegrationTestUtils.resetController(controller);
             controller.generate();
             textAfterReload = generatedFile.getText();
-            assertEquals ("Since template could not be reloaded it should not change", "contentChanged",  textAfterReload);
-            
-        }finally {
-            uiUrlTemplate.setText (originalTemplate);
-            IntegrationTestUtils.resetController (controller);
+            assertEquals("Since template could not be reloaded it should not change", "contentChanged", textAfterReload);
+
+        } finally {
+            uiUrlTemplate.setText(originalTemplate);
+            IntegrationTestUtils.resetController(controller);
             controller.reloadTemplates();
         }
 
@@ -418,11 +445,11 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         //These should be escaped
         String helpContent1 = "<This is a help file.>&";
         String helpContent2 = "<This is a help file.>&2";
-        def helpFile1 = new File("${System.getProperty ("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp1.html");
-        def helpFile2 = new File("${System.getProperty ("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp2.html");
+        def helpFile1 = new File("${System.getProperty("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp1.html");
+        def helpFile2 = new File("${System.getProperty("base.dir")}/$UiDesignerController.HELP_FILE_DIRECTORY/TrialHelp2.html");
         helpFile1.parentFile.mkdirs();
-        helpFile1.setText (helpContent1);
-        helpFile2.setText (helpContent2);
+        helpFile1.setText(helpContent1);
+        helpFile2.setText(helpContent2);
 
         UiDesignerController controller = new UiDesignerController();
         controller.help();
@@ -431,38 +458,37 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("Helps", helpContentNode.name());
         def helpItems = helpContentNode.Help;
         def helpFile1Node = helpItems.find {it.attributes()["id"] == helpFile1.getName()};
-        assertEquals (helpContent1, helpFile1Node.text());
+        assertEquals(helpContent1, helpFile1Node.text());
 
         def helpFile2Node = helpItems.find {it.attributes()["id"] == helpFile2.getName()};
-        assertEquals (helpContent2, helpFile2Node.text());
+        assertEquals(helpContent2, helpFile2Node.text());
 
-//        HELP_FILE_DIRECTORY
+        //        HELP_FILE_DIRECTORY
     }
 
     def checkGeneratedFiles()
     {
-        def baseDir =  System.getProperty("base.dir");
-        UiWebPage.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.name+"Layout.gsp");
-            assertTrue (urlLayoutFile.exists());
-            def urlRedirectFile = new File(baseDir + "/web-app/${url.name}.gsp");
-            assertTrue (urlRedirectFile.exists());
-            url.tabs.each{tab->
-                def url1WebAppDirectoryFile = new File(baseDir + "/web-app/${url.name}/${tab.name}.gsp");
-                assertTrue (url1WebAppDirectoryFile.exists());
+        def baseDir = System.getProperty("base.dir");
+        UiWebPage.list().each {url ->
+            def urlLayoutFile = new File(baseDir + "/${url.getUrlLayoutFilePath()}");
+            assertTrue(urlLayoutFile.exists());
+            def urlRedirectFile = new File(baseDir + "/${url.getUrlFilePath()}");
+            assertTrue(urlRedirectFile.exists());
+            url.tabs.each {tab ->
+                def url1WebAppDirectoryFile = new File(baseDir + "/${tab.getTabFilePath()}");
+                assertTrue(url1WebAppDirectoryFile.exists());
             }
-        }        
+        }
     }
     def deleteGeneratedFiles()
     {
-        def baseDir =  System.getProperty("base.dir");
-        UiWebPage.list().each{url->
-            def urlLayoutFile = new File(baseDir + "/grails-app/views/layouts/"+url.name+"Layout.gsp");
+        def baseDir = System.getProperty("base.dir");
+        UiWebPage.list().each {url ->
+            def urlLayoutFile = new File(baseDir + "/${url.getUrlLayoutFilePath()}");
             urlLayoutFile.delete();
-            FileUtils.deleteDirectory (new File(baseDir + "/web-app/${url.name}"));
+            FileUtils.deleteDirectory(new File(baseDir + "/web-app/${url.name}"));
             new File(baseDir + "/web-app/${url.name}.gsp").delete();
         }
     }
-
 
 }

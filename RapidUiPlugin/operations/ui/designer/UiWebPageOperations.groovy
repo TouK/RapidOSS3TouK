@@ -1,6 +1,7 @@
 package ui.designer;
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rui.util.DesignerUtils
+import org.apache.commons.io.FileUtils
 
 public class UiWebPageOperations extends AbstractDomainOperation
 {
@@ -47,6 +48,33 @@ public class UiWebPageOperations extends AbstractDomainOperation
         }
         uiUrl.addRelation(tabs:addedTabs);
         return uiUrl; 
+    }
+
+    def getUrlLayoutFilePath()
+    {
+        return "grails-app/views/layouts/${name}Layout.gsp".toString()
+    }
+
+    def getUrlFilePath()
+    {
+        return "web-app/${name}.gsp".toString()
+    }
+    def getUrlDirectory()
+    {
+        return "web-app/${name}".toString()
+    }
+
+    def deleteUrlFiles(baseDir)
+    {
+        def urlLayoutFile = new File("${baseDir}/${getUrlLayoutFilePath ()}");
+        def urlRedirectFile = new File("${baseDir}/${getUrlFilePath()}");
+        def tabsDir = new File("${baseDir}/${getUrlDirectory()}");
+        urlRedirectFile.delete();
+        urlLayoutFile.delete();
+        if (tabsDir.exists())
+        {
+            FileUtils.deleteDirectory(tabsDir)
+        }
     }
 
 }

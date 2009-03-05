@@ -18,8 +18,8 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",
                 display: "Column",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/SearchGridColumn.png",
+                imageCollapsed: "images/rapidjs/designer/SearchGridColumn.png",
                 propertyConfiguration: [
                     type:[descr:"Column type.", required:false]
                 ],

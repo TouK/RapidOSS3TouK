@@ -42,6 +42,7 @@ class SearchQueryGroup {
     String type = "";
 
     Object __operation_class__ ;
+    org.springframework.validation.Errors errors ;
     
     static relations = [
             queries:[type:SearchQuery, reverseName:"group", isMany:true]
@@ -49,6 +50,7 @@ class SearchQueryGroup {
     static constraints = {
         name(key:["username", "type"]);
         __operation_class__(nullable:true)
+        errors(nullable:true)
     }
     static transients = ["errors", "__operation_class__"];
 

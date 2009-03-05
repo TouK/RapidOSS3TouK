@@ -25,7 +25,9 @@ package relation
  * To change this template use File | Settings | File Templates.
  */
 class Relation {
-    static searchable = true;
+    static searchable = {
+        except:["errors"]
+    };
     Long id;
     Long version;
     String rsOwner = "p"
@@ -34,9 +36,12 @@ class Relation {
     String name = "";
     String source;
     String reverseName = "";
+    org.springframework.validation.Errors errors ;
+    static transients = ["errors"]
     static relations = [:]
     static constraints = {
         objectId(key:["name", "reverseObjectId", "reverseName"]);
+        errors(nullable:true)
     }
 
     public String toString() {

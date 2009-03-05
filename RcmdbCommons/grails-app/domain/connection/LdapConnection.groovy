@@ -29,12 +29,14 @@ class LdapConnection  extends Connection{
     String userPassword ="";
     String username ="";
     String contextFactory ="com.sun.jndi.ldap.LdapCtxFactory";
+    org.springframework.validation.Errors errors ;
 
     static constraints={
         url(blank:false)
         userPassword(blank:true,  nullable:true)
         username(blank:true,  nullable:true)
         contextFactory(blank:false)
+        errors(nullable:true)
     }
     
 }

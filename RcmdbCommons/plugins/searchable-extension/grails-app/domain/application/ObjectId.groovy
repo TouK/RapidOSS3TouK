@@ -25,10 +25,17 @@ package application
  * To change this template use File | Settings | File Templates.
  */
 class ObjectId {
-    static searchable = true;
+    static searchable = {
+        except:["errors"]
+    };
     Long id;
     String rsOwner = "p"
     Long version;
     String name;
     long nextId;
+    org.springframework.validation.Errors errors ;
+    static transients = ["errors"]
+    static constraints = {
+        errors(nullable:true)
+    }
 }

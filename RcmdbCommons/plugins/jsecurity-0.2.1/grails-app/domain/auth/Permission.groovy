@@ -19,15 +19,17 @@
 package auth;
 class Permission {
      static searchable = {
-        except:["userRelations", "roleRelations"]    
+        except:["userRelations", "roleRelations", "errors"]    
      };
     String type
     String rsOwner = "p"
     String possibleActions
     List userRelations = [];
     List roleRelations = [];
+    org.springframework.validation.Errors errors ;
     static cascaded = ["userRelations":true, "roleRelations":true]
     static relations = [userRelations:[type:UserPermissionRel, reverseName:"permission", isMany:true], roleRelations:[isMany:true, reverseName:"permission", type:RolePermissionRel]]
+    static transients = ["errors"]
     static constraints = {
         type(nullable: false, blank: false, key: [])
         possibleActions(nullable:false, blank: false)

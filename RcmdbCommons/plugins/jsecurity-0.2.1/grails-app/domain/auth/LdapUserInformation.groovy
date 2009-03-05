@@ -30,6 +30,7 @@ class LdapUserInformation extends RsUserInformation{
 
 
     LdapConnection ldapConnection;
+    org.springframework.validation.Errors errors ;
 
     static relations = [
             ldapConnection:[type:LdapConnection,isMany:false]

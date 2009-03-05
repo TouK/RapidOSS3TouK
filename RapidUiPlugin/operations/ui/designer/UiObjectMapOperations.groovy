@@ -78,8 +78,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                                         help:"ObjectMap ToolBarMenus.html",
                                         designerType: "ObjectMapToolbarMenus",
                                         display: "ToolbarMenus",
-                                        imageExpanded: 'images/rapidjs/designer/text_indent.png',
-                                        imageCollapsed: 'images/rapidjs/designer/text_indent.png',
+                                        imageExpanded: 'images/rapidjs/designer/application_view_icons.png',
+                                        imageCollapsed: 'images/rapidjs/designer/application_view_icons.png',
                                         childrenConfiguration: [
                                                 [designerType: "ToolbarMenu", propertyName: "toolbarMenus", isMultiple: true]
                                         ]

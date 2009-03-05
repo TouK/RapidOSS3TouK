@@ -123,7 +123,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     }
                 }
             }
-            menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
+            menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && params.data." + this.treeTypeAttribute + " != 'Layout'"});
             menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
             this.tree.treeGridView.setMenuItems(menuItems);
             this.tree.treeGridView.rootImages = rootImages;
@@ -567,7 +567,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             var layout = new YAHOO.widget.Layout({
                 units: [
                     { position: 'center', resize: false},
-                    { position: 'left', resize: true, gutter: '1px', width:450}
+                    { position: 'left', resize: true, gutter: '0 5 0 0', width:450}
                 ]
             });
             layout.on('render', function() {
@@ -596,7 +596,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                     minWidth: 400,
                     units: [
                         { position: 'center', body:this.tree.container.id},
-                        { position: 'bottom', body: propWrpId, height: 400, resize: true, header:'Property Editor'},
+                        { position: 'bottom', body: propWrpId, height: 400, resize: true, header:'Property Editor', gutter:"5 0 0 0"},
                     ]
                 });
                 layout2.render();

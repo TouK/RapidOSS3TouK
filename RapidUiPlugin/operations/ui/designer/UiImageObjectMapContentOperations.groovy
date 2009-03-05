@@ -17,8 +17,8 @@ class UiImageObjectMapContentOperations extends UiObjectMapContentOperations{
                 designerType: "ImageObjectMapContent",
                 canBeDeleted: true,
                 display: "Image",
-                imageExpanded: "images/rapidjs/designer/image.png",
-                imageCollapsed: "images/rapidjs/designer/image.png",
+                imageExpanded: "images/rapidjs/designer/report.png",
+                imageCollapsed: "images/rapidjs/designer/report.png",
                 propertyConfiguration: [
                         mapping: [descr: "Map which defines the image mapping according to the possible values of dataKey attribute", required:true]
                 ],

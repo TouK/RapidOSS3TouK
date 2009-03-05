@@ -226,7 +226,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         def threadsNotFinishedWithException = threads.findAll {it.threadState == 5}
         assertEquals (numberOfThreads - 1, threadsNotFinishedWithException.size());
         threadsNotFinishedWithException.each{ListeningAdapterSynchronizationRunnerThread thread->
-            assertEquals (ListeningAdapterException.adapterAlreadyStoppedException(ds.name).getMessage(), thread.thrownException.getMessage())
+            assertTrue(thread.thrownException.getMessage() == ListeningAdapterException.adapterAlreadyStoppedException(ds.name).getMessage() || thread.thrownException.getMessage() == ListeningAdapterException.stoppingStateException(ds.name, "stop").getMessage())
         }
 
         def initLock = DataStore.get ("cleanUpLock");

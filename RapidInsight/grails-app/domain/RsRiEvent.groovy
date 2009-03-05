@@ -36,6 +36,7 @@ class RsRiEvent  extends RsEvent {
     String description ="";
     
     String identifier ="";
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [:]    

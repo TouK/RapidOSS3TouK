@@ -11,6 +11,7 @@ class RsCustomer extends RsGroup
     
     
     };
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
 
     

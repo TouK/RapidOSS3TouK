@@ -54,6 +54,7 @@ class RsComputerSystem  extends RsTopologyObject {
     String vendor ="";
     
     List connectedVia =[];
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [

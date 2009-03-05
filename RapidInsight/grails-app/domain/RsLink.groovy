@@ -40,6 +40,7 @@ class RsLink  extends RsTopologyObject {
     String z_Name ="";
     
     List connectedSystems =[];
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [

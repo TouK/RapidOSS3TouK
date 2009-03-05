@@ -41,6 +41,7 @@ class RsService  extends RsGroup {
     Boolean hasHeartbeat =false;
     
     List relatedServiceTickets =[];
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [

@@ -28,6 +28,7 @@ class RsGroup  extends RsTopologyObject {
 
 
     };
+    org.springframework.validation.Errors errors ;
     static datasources = [:]
 
 

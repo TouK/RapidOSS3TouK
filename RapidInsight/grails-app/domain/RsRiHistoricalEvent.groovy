@@ -34,6 +34,7 @@ class RsRiHistoricalEvent  extends RsHistoricalEvent {
     String description ="";
     
     String identifier ="";
+    org.springframework.validation.Errors errors ;
     
     
     static relations = [:]    

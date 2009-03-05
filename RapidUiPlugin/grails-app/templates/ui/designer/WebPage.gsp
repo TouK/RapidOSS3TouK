@@ -4,7 +4,7 @@
     <g:render template="/layouts/layoutHeader"></g:render>
     <g:layoutHead/>
 </head>
-<body class=" yui-skin-sam rimain">
+<body class="yui-skin-sam">
 <rui:form id="changeProfileDialog" width="35em" saveUrl="\${createLink(controller:'rsUser', action:'changeProfile', params:[format:'xml'])}" createUrl="\${createLink(controller:'rsUser', action:'changeProfileData', params:[format:'xml', username:session.username])}">
     <div>
         <div class="hd">Change My Profile</div>

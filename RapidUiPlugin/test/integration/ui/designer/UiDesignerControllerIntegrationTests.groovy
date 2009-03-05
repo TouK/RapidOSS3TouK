@@ -176,6 +176,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         def baseDir = System.getProperty("base.dir");
         def urlRedirectFile = new File(baseDir + "/${url1.getUrlFilePath()}");
         assertEquals("", urlRedirectFile.getText());
+        assertEquals(0, DesignerTrashFile.list().size());
 
         //test will delete delete files belonging to deleted webpage and tab
         def url2LayoutFile = new File(baseDir + "/${url2.getUrlLayoutFilePath()}");

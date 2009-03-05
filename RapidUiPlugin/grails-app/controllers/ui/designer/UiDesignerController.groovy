@@ -217,8 +217,8 @@ class UiDesignerController {
                     {
                         fileToBeDeleted.delete();
                     }
-                    trashFileObject.remove();
                 }
+                DesignerTrashFile.removeAll();
                 application.RsApplication.reloadViewsAndControllers();
                 render(contentType: "text/xml")
                         {

@@ -406,18 +406,17 @@ class ModelMetaData
             }
             constraints[masterKeyPropName][KeyConstraint.KEY_CONSTRAINT] = uniqueKeys;
         }
-
+        propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
+        constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+        transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
         if(parentModelName == null || parentModelName == "")
         {
             propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.IDENTITY];
             propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.VERSION];
-            propertyList += [type:Errors.name, name:com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME];
             propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
             propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
             constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
             constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.ERRORS_PROPERTY_NAME;
             transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
             transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
         }

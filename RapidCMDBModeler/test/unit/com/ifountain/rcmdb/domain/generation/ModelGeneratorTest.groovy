@@ -750,9 +750,9 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(object.propertyConfiguration instanceof Map);
         assertTrue(object.propertyConfiguration.isEmpty());
         assertTrue(object.transients instanceof List);
+        assertTrue(object.transients.contains("errors"));
         if(object.class.superclass.name == Object.class.name)
         {
-          assertTrue(object.transients.contains("errors"));
           assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
           assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
         }

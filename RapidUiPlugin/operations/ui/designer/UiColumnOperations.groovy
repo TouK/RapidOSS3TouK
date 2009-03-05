@@ -20,8 +20,7 @@ class UiColumnOperations extends AbstractDomainOperation
                 designerType: "Column",
                 canBeDeleted: true,
                 displayFromProperty: "attributeName",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+
                 propertyConfiguration: [
                         attributeName: [descr: "The data node attribute which will be shown in the column"],
                         colLabel: [descr: "Title of the column"],

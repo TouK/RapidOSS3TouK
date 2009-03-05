@@ -20,8 +20,8 @@ class UiObjectMapContentOperations  extends AbstractDomainOperation
                 designerType: "ObjectMapContent",
                 canBeDeleted: true,
                 display: "NodeContent",
-                imageExpanded: "images/rapidjs/designer/layout_content.png",
-                imageCollapsed: "images/rapidjs/designer/layout_content.png",
+                imageExpanded: "images/rapidjs/designer/report.png",
+                imageCollapsed: "images/rapidjs/designer/report.png",
                 propertyConfiguration: [
                         name: [descr: "The unique name of the node content configuration"],
                         x: [descr: "Sets how far the left edge of the image is to the left edge of the node"],

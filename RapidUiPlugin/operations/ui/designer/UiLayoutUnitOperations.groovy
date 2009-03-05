@@ -30,9 +30,14 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
         def designerType = attributes.designerType;
         def innerLayouts = xmlNode.UiElement;
         def domainClass = ApplicationHolder.application.getDomainClass("ui.designer.Ui"+designerType).clazz;
+        def component;
         if(attributes.component != null && attributes.component != "")
         {
-            attributes.component=UiComponent.get(name:attributes.component, tabId:tab.id, isActive:true);
+            component=UiComponent.get(name:attributes.component, tabId:tab.id, isActive:true);
+            attributes.component = component;
+        }
+        if(component == null && (attributes.contentFile == null || attributes.contentFile == "")){
+            throw new Exception("All layout units should have a component or a contentFile");
         }
 
         def layoutUnit = DesignerUtils.addUiObject(domainClass, attributes, xmlNode);

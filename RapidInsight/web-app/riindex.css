@@ -10,22 +10,6 @@
     cursor: pointer;
 }
 
-.yui-skin-sam .yui-layout-unit .yui-resize-handle-r {
-    background-image: url( images/rapidjs/component/layout/e-handle.gif );
-    background-position: left center;
-    background-color: #C3DAF9;
-
-}
-
-.yui-skin-sam .yui-layout .yui-resize-proxy div {
-    background-color: #C3DAF9;
-}
-
-.yui-skin-sam .yui-layout-unit .yui-resize-handle-r .yui-layout-resize-knob {
-    background-image: none;
-
-}
-
 .dragging, .drag-hint {
     border: 1px solid gray;
     background-color: blue;

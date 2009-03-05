@@ -72,7 +72,6 @@
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'common.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'dialog.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'form.css')}"/>
-<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'layout.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'search.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchlist.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchgrid.css')}"/>

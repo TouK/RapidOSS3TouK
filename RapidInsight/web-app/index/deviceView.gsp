@@ -281,7 +281,7 @@ parameter4568Visible="'true'"
 
     <rui:innerLayout id="4434">
         
-            <rui:layoutUnit position='bottom' gutter='0px' height='300' id='4580' isActive='true' resize='true' scroll='false' useShim='false' component='eventsGrid'>
+            <rui:layoutUnit position='bottom' gutter='5 0 0 0' height='300' id='4580' isActive='true' resize='true' scroll='false' useShim='false' component='eventsGrid'>
         
             </rui:layoutUnit>
         
@@ -289,7 +289,7 @@ parameter4568Visible="'true'"
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0px' id='4583' isActive='true' resize='true' scroll='false' useShim='false' width='280' component='searchDevice'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4583' isActive='true' resize='true' scroll='false' useShim='false' width='280' component='searchDevice'>
         
             </rui:layoutUnit>
         

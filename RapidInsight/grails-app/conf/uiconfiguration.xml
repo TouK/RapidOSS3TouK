@@ -57,7 +57,7 @@
           </UiElement>
           <UiElement designerType='Layout' id='7854'>
             <UiElement designerType='CenterUnit' component='eventsGrid' id='8084' />
-            <UiElement designerType='LeftUnit' width='250' resize='true' component='filterTree' id='8087' />
+            <UiElement designerType='LeftUnit' width='255' resize='true' component='filterTree' id='8087' gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType='Dialogs'>
             <UiElement designerType='Dialog' width='850' height='500' component='eventDetails' id='8072' />
@@ -249,7 +249,7 @@
           </UiElement>
           <UiElement designerType="Layout" id="11279">
             <UiElement designerType="CenterUnit" component="eventList" id="11587"/>
-            <UiElement designerType="LeftUnit" width="250" resize="true" component="filterTree" id="11590"/>
+            <UiElement designerType="LeftUnit" width="255" resize="true" component="filterTree" id="11590" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" width="850" height="500" component="eventDetails" id="11575"/>
@@ -497,7 +497,7 @@
           </UiElement>
           <UiElement designerType="Layout" id="2440">
             <UiElement designerType="CenterUnit" id="2705" component="eventList" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="2708" width="250" resize="true" component="filterTree" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="2708" width="255" resize="true" component="filterTree" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="2693" title="" width="850" height="500" component="eventDetails"/>
@@ -703,7 +703,7 @@
           </UiElement>
           <UiElement designerType="Layout" id="3226">
             <UiElement designerType="CenterUnit" id="3462" component="inventoryList" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="3465" width="250" resize="true" component="filterTree" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="3465" width="255" resize="true" component="filterTree" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="3453" title="Save group" width="330" height="100" resizable="false" component="saveQueryGroupForm"/>
@@ -904,7 +904,7 @@
           </UiElement>
           <UiElement designerType="Layout" id="7651">
             <UiElement designerType="CenterUnit" id="7820" component="topologyMap" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="7823" width="250" resize="true" component="mapTree" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="7823" width="255" resize="true" component="mapTree" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="7805" title="" width="850" x="50" y="85" height="500" component="objectDetails"/>
@@ -1061,8 +1061,8 @@
           </UiElement>
           <UiElement designerType="Layout" id="8743">
             <UiElement designerType="CenterUnit" id="8915" component="summaryChart" useShim="false"/>
-            <UiElement designerType="BottomUnit" id="8921" height="300" resize="true" component="eventsGrid" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="8918" width="250" resize="true" component="topologyTree" useShim="false"/>
+            <UiElement designerType="BottomUnit" id="8921" height="300" resize="true" component="eventsGrid" useShim="false" gutter="5 0 0 0"/>
+            <UiElement designerType="LeftUnit" id="8918" width="255" resize="true" component="topologyTree" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="8906" title="" width="850" height="500" component="eventDetails"/>
@@ -1192,8 +1192,8 @@
           </UiElement>
           <UiElement designerType="Layout" id="527">
             <UiElement designerType="CenterUnit" id="670" component="objectDetails" useShim="false"/>
-            <UiElement designerType="BottomUnit" id="673" height="300" resize="true" component="eventsGrid" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="676" width="280" resize="true" component="searchDevice" useShim="false"/>
+            <UiElement designerType="BottomUnit" id="673" height="300" resize="true" component="eventsGrid" useShim="false" gutter="5 0 0 0"/>
+            <UiElement designerType="LeftUnit" id="676" width="280" resize="true" component="searchDevice" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="667" title="" width="850" height="500" component="eventDetails"/>
@@ -1322,7 +1322,7 @@
           </UiElement>
           <UiElement designerType="Layout" id="2567">
             <UiElement designerType="CenterUnit" id="2726" component="objectList" useShim="false"/>
-            <UiElement designerType="LeftUnit" id="2729" width="340" resize="true" component="classTree" useShim="false"/>
+            <UiElement designerType="LeftUnit" id="2729" width="345" resize="true" component="classTree" useShim="false" gutter="0 5 0 0"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement designerType="Dialog" id="2720" title="" width="850" height="500" component="objectDetails"/>

@@ -295,7 +295,7 @@ functionActionCondition4725Condition="params.data.name != 'System' && params.dat
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0px' id='4748' isActive='true' resize='true' scroll='false' useShim='false' width='340' component='classTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4748' isActive='true' resize='true' scroll='false' useShim='false' width='345' component='classTree'>
         
             </rui:layoutUnit>
         

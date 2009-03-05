@@ -327,7 +327,7 @@ x='100' y='80'
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0px' id='4250' isActive='true' resize='true' scroll='false' useShim='false' width='250' component='mapTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4250' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='mapTree'>
         
             </rui:layoutUnit>
         

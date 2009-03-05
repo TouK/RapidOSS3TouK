@@ -584,7 +584,7 @@ x='85' y='50'
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0px' id='3560' isActive='true' resize='true' scroll='false' useShim='false' width='250' component='filterTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='3560' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
         
             </rui:layoutUnit>
         

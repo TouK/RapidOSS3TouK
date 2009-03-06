@@ -20,7 +20,10 @@ public class UiTopUnitOperations extends UiLayoutUnitOperations
                 childrenConfiguration:[]
         ];
         def parentMetaData = UiLayoutUnitOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.putAll(metaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }

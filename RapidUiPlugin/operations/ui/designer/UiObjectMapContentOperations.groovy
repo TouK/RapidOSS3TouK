@@ -24,11 +24,11 @@ class UiObjectMapContentOperations  extends AbstractDomainOperation
                 imageCollapsed: "images/rapidjs/designer/report.png",
                 propertyConfiguration: [
                         name: [descr: "The unique name of the node content configuration"],
+                        dataKey: [descr: "The attribute in node data which the mapping will be applied according to"],
                         x: [descr: "Sets how far the left edge of the image is to the left edge of the node"],
                         y: [descr: "Sets how far the top edge of the image is to the top edge of the node"],
                         width: [descr: "Width of the image"],
-                        height: [descr: "Height of the image"],
-                        dataKey: [descr: "The attribute in node data which the mapping will be applied according to"],
+                        height: [descr: "Height of the image"]
                 ],
                 childrenConfiguration: []
         ];

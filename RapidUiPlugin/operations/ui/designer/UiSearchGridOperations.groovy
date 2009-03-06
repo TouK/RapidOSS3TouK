@@ -26,11 +26,11 @@ class UiSearchGridOperations extends UiComponentOperations {
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node."],
                         fieldsUrl: [descr: "The url used for the request to the server to retrieve available properties used in view builder."],
-                        queryParameter: [descr: "The url parameter to send the query to the server."],
                         totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query."],
                         offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query."],
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query."],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
+                        queryParameter: [descr: "The url parameter to send the query to the server."],
                         queryEnabled: [descr: "Parameter to determine whether the quick filtering is enabled or not."],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
                         defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],
@@ -96,7 +96,10 @@ class UiSearchGridOperations extends UiComponentOperations {
                 ]
         ];
         def parentMetaData = UiComponentOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.putAll(metaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }

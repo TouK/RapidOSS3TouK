@@ -47,6 +47,13 @@ public class ListeningAdapterRunner
             return getState() == INITIALIZED || getState() == INITIALIZING || getState() == STARTED;
         }
     }
+     public boolean isStartable()
+    {
+        synchronized (stateLock)
+        {
+            return getState() == NOT_STARTED || getState() == STOPPED_WITH_EXCEPTION || getState() == STOPPED;
+        }
+    }
     public boolean isSubscribed()
     {
         synchronized (adapterLock)

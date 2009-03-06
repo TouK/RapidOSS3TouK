@@ -156,6 +156,7 @@ class UiDesignerController {
                 UiWebPage.list().each {url ->
                     filesToBeDeleted.remove(url.getUrlLayoutFilePath());
                     filesToBeDeleted.remove(url.getUrlFilePath());
+                    filesToBeDeleted.remove(url.getUrlDirectory());
                     def urlLayoutFile = new File("${baseDir}/${url.getUrlLayoutFilePath()}");
                     def content = urlTemplate.make(url: url).toString()
                     urlLayoutFile.setText(content)

@@ -166,30 +166,45 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         assertEquals(url1Props.name, urlsAfterReSave[0].name)
         assertEquals(tabsProps[0].name, tabsAfterReSave[0].name)
 
-        //Test if tab does not exist generate will create redirect url page  with no content
-        UiTab.removeAll();
-        deleteGeneratedFiles();
+        def baseDir = System.getProperty("base.dir");
+
         IntegrationTestUtils.resetController(controller);
         controller.generate();
-        assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
-        checkGeneratedFiles();
-        def baseDir = System.getProperty("base.dir");
-        def urlRedirectFile = new File(baseDir + "/${url1.getUrlFilePath()}");
-        assertEquals("", urlRedirectFile.getText());
-        assertEquals(0, DesignerTrashFile.list().size());
 
         //test will delete delete files belonging to deleted webpage and tab
         def url2LayoutFile = new File(baseDir + "/${url2.getUrlLayoutFilePath()}");
         assertFalse(url2LayoutFile.exists());
         assertFalse(new File(baseDir + "/${url2.getUrlFilePath()}").exists());
         assertFalse(new File(baseDir + "/${url2.getUrlDirectory()}").exists());
+        assertTrue(new File(baseDir + "/${url1.getUrlFilePath()}").exists());
+        assertTrue(new File(baseDir + "/${url1.getUrlDirectory()}").exists());
+        assertTrue(new File(baseDir + "/${url1.getUrlLayoutFilePath()}").exists());
         tabsOfUrl2BeforeDelete.each {tab ->
             def tabFile = new File(baseDir + "/web-app/${url2.name}/${tab.name}.gsp");
             assertFalse(tabFile.exists());
         }
 
-        def url1Tab2File = new File(baseDir + "/web-app/${url1.name}/${tabsOfUrl1BeforeDelete[1].name}.gsp");
-        assertFalse(url1Tab2File.exists());
+        tabsOfUrl1BeforeDelete.each {tab ->
+            def tabFile = new File(baseDir + "/web-app/${url1.name}/${tab.name}.gsp");
+            if(tab.name == tabsProps[0].name)
+            {
+                assertTrue(tabFile.exists());
+            }
+            else
+            {
+                assertFalse(tabFile.exists());
+            }
+        }
+
+        //Test if tab does not exist generate will create redirect url page  with no content
+        UiTab.removeAll();
+        IntegrationTestUtils.resetController(controller);
+        controller.generate();
+        assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
+        checkGeneratedFiles();
+        def urlRedirectFile = new File(baseDir + "/${url1.getUrlFilePath()}");
+        assertEquals("", urlRedirectFile.getText());
+        assertEquals(0, DesignerTrashFile.list().size());
     }
 
     public void testSaveWithRelationProperty()

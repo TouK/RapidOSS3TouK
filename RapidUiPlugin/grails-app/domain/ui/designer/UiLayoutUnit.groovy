@@ -46,6 +46,7 @@ class UiLayoutUnit
     static constraints={
       contentFile(blank:true,nullable:true)
       gutter(blank:true,nullable:true)
+      useShim(nullable:true)
       scroll(nullable:true)
      __operation_class__(nullable:true)
 

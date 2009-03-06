@@ -224,13 +224,14 @@ class RapidDomainClassGrailsPlugin {
                 getPropertiesMethod.setOperationClass (manager.getOperationClass());
                 getOperationsMethod.setOperationClass (manager.getOperationClass());
             }
-
+              
             try
             {
                 mc.invokeStaticMethod (dc.clazz, "reloadOperations", false);
             }
             catch(t)
             {
+                logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}. Reason :"+t.toString());
             }
         }
 

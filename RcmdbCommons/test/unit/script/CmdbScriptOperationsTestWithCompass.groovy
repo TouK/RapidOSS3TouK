@@ -1045,26 +1045,6 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(unscheduleScriptName, scriptInstance.name);
 
 
-        //we test here if there is a listening datasource stopListening is called
-        def ds = BaseListeningDatasource.add(name: "baseds", isSubscribed: true);
-        assertFalse(ds.hasErrors())
-        assertTrue(ds.isSubscribed)
-
-        scriptParams = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, listeningDatasource: ds]
-        scriptInstance = CmdbScriptOperations.addScript(scriptParams);
-        assertFalse(scriptInstance.hasErrors());
-        assertNotNull(scriptInstance.listeningDatasource);
-
-        unscheduleScriptName = null;
-
-        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 1)
-        assertEquals(CmdbScript.list().size(), 1);
-        assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
-        CmdbScriptOperations.deleteScript(scriptInstance);
-        assertEquals(CmdbScript.list().size(), 0);
-        assertEquals(unscheduleScriptName, scriptInstance.name);
-        assertEquals(callParams.script.id, scriptInstance.id);
-
         //Now we also test that script is removed from script Manager
         assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 0)
         assertNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))

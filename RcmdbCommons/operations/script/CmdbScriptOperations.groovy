@@ -109,9 +109,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
-        if(script.listeningDatasource){
-            stopListening(script)
-        }
         script.remove()
         if(CmdbScript.countHits("scriptFile:"+script.scriptFile) == 0)
         {

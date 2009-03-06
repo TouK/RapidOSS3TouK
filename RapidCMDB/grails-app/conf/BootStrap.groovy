@@ -120,7 +120,7 @@ class BootStrap {
         }
 
         BaseListeningDatasource.list().each{BaseListeningDatasource ds->
-            ListeningAdapterManager.addAdapter (ds);            
+            ListeningAdapterManager.getInstance().addAdapter (ds);            
         }
 
         listeningScriptInitializerThread = Thread.start{

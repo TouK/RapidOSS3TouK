@@ -42,7 +42,7 @@ class DomainClassPropertyInterceptorFactoryBean implements FactoryBean, Initiali
 
         def propertyInterceptorClass = DefaultDomainClassPropertyInterceptor;
         try
-        {
+        {               
             def tmpPropertyInterceptorClass = classLoader.loadClass(propertyInterceptorClassName);
             if(DomainClassPropertyInterceptor.isAssignableFrom(tmpPropertyInterceptorClass))
             {
@@ -51,6 +51,7 @@ class DomainClassPropertyInterceptorFactoryBean implements FactoryBean, Initiali
         }
         catch(Throwable t)
         {
+            org.apache.log4j.Logger.getRootLogger().warn("[DomainClassPropertyInterceptorFactoryBean]: Using default propertyInterceptor, Can not use ${propertyInterceptorClassName} propertyInterceptor. Reason : ${t.toString()}");
         }
         propertyInterceptor = (DomainClassPropertyInterceptor)propertyInterceptorClass.newInstance();
     }

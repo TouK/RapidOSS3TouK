@@ -37,8 +37,10 @@ public class GroovyPagesServlet extends org.codehaus.groovy.grails.web.pages.Gro
                 try
                 {
                     interceptor.afterCompletion(request, response, null, null);
-                }catch(Exception e)
+                }
+                catch(Exception e)
                 {
+                    org.apache.log4j.Logger.getRootLogger().debug("[GroovyPagesServlet]: Error in interceptor.afterCompletion . Reason :"+e.toString(),e);
                 }
             }
         }

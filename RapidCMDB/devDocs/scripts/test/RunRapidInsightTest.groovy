@@ -99,6 +99,7 @@ if(testOptions.SMARTS == "true")
 if(testOptions.NETCOOL == "true")
 {
     buildProperties.put("NETCOOL", "false")
+    watchConfig.add([new File("${workspaceDir}/LicencedJars/lib/jdbc"), new File("${rootDir.absolutePath}/RapidSuite/lib"), []]);
     watchConfig.add([new File("${workspaceDir}/Netcool"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Netcool/applications").canonicalPath, new File("${workspaceDir}/Netcool/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/Netcool/applications/RapidInsightForNetcool"), new File("${rootDir.absolutePath}/RapidSuite")]);
     watchConfig.add([new File("${workspaceDir}/Netcool/test/integration"), new File("${rootDir.absolutePath}/Netcool/test/integration")]);

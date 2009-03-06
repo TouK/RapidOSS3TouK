@@ -24,14 +24,15 @@ class UiSearchListOperations extends UiComponentOperations{
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node."],
-                        queryParameter: [descr: "The url parameter to send the query to the server."],
                         totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query."],
                         offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query."],
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query."],
+                        pollingInterval: [descr: "Time delay between two server requests.", required:true],
+                        queryParameter: [descr: "The url parameter to send the query to the server."],
                         defaultFields: [descr: "Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided."],
                         showMax: [descr: "Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations."],
-                        pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
+                        defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],
                         lineSize: [descr: "How many lines a row consists of."],
                 ],
                 childrenConfiguration:
@@ -95,7 +96,10 @@ class UiSearchListOperations extends UiComponentOperations{
                 ]
         ];
         def parentMetaData = UiComponentOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.putAll(metaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }

@@ -29,14 +29,16 @@ class UiGMapOperations extends UiComponentOperations
                         addressField:[descr:"The attribute in data which specifies open location address. "],
                         markerField:[descr:"The marker image url. "],
                         tooltipField:[descr:"The attribute in data which will be displayed in tooltip. "],
-                        title:[descr:"GMap title."],
                         pollingInterval:[descr:"Time delay between two server requests.", required:true],
                         timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration: []
         ];
         def parentMetaData = UiComponentOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.putAll(metaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
     }

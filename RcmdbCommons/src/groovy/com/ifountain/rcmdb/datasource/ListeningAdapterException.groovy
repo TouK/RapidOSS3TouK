@@ -33,9 +33,9 @@ class ListeningAdapterException extends Exception{
     {
         return new ListeningAdapterException("You cannot ${actionName} ${adapterName} while it is in stopping state.")
     }
-    public static ListeningAdapterException adapterDoesNotExist(String adapterName)
+    public static ListeningAdapterException runnerDoesNotExist(String adapterName)
     {
-        return new ListeningAdapterException("Adapter ${adapterName} does not exist.")
+        return new ListeningAdapterException("Adapter runner for adapter ${adapterName} has not created.")
     }
     public static ListeningAdapterException adapterAlreadyExists(String adapterName)
     {

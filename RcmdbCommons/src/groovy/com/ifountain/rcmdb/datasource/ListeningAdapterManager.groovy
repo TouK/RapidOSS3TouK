@@ -113,7 +113,7 @@ class ListeningAdapterManager {
             }
             else
             {
-                throw ListeningAdapterException.adapterDoesNotExist(adapterName);
+                throw ListeningAdapterException.runnerDoesNotExist(adapterName);
             }
         }
         if(runner.isRunning())
@@ -142,14 +142,14 @@ class ListeningAdapterManager {
     }
     public void startAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
 
-        ListeningAdapterRunner runner = getRunnerAnThrowExceptionIfNotExist(listeningDatasource.name);
+        ListeningAdapterRunner runner = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.name);
         runner.start(listeningDatasource);
 
     }
 
     public int getState(BaseListeningDatasource ds)
     {
-        return getRunnerAnThrowExceptionIfNotExist(ds.name).getState();
+        return getRunnerAndThrowExceptionIfNotExist(ds.name).getState();
     }
     
     private ListeningAdapterRunner getRunner(String name)
@@ -160,17 +160,17 @@ class ListeningAdapterManager {
         }
     }
 
-    private ListeningAdapterRunner getRunnerAnThrowExceptionIfNotExist(String name)
+    private ListeningAdapterRunner getRunnerAndThrowExceptionIfNotExist(String name)
     {
         ListeningAdapterRunner runner = getRunner(name);
         if(runner == null)
         {
-            throw ListeningAdapterException.adapterDoesNotExist(name);
+            throw ListeningAdapterException.runnerDoesNotExist(name);
         }
         return runner;
     }
     public void stopAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
-        ListeningAdapterRunner runner = getRunnerAnThrowExceptionIfNotExist(listeningDatasource.name);
+        ListeningAdapterRunner runner = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.name);
         runner.stop();
     }
 

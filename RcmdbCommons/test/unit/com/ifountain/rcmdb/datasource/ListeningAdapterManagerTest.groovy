@@ -86,10 +86,10 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
         try
         {
             ListeningAdapterManager.getInstance().getState(ds);
-            fail("Sohuld throw exception since adapter is not defined");
+            fail("Sohuld throw exception since adapter runner is not defined");
         } catch (ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterDoesNotExist(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
         }
 
         ListeningAdapterManager.getInstance().addAdapter(ds)
@@ -120,7 +120,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
             fail("Sohuld throw exception since adapter is not defined");
         } catch (ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterDoesNotExist(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
         }
 
         try
@@ -129,7 +129,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
             fail("Sohuld throw exception since adapter is not defined");
         } catch (ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterDoesNotExist(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
         }
 
         ListeningAdapterManager.getInstance().addAdapter(ds);
@@ -192,7 +192,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
             fail("Should throw exception since adapter is not defined");
         } catch (ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterDoesNotExist(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
         }
         //test does not have adapter
         assertFalse (ListeningAdapterManager.getInstance().hasAdapter(ds.name));
@@ -313,7 +313,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.adapterDoesNotExist(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
         }
         ListeningAdapterManager.getInstance().addAdapter(ds);
         // adapter not started stop will throw exception

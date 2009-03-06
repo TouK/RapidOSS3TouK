@@ -45,7 +45,11 @@ class UiFunctionActionOperations extends UiActionOperations {
                 ]
         ];
         def parentMetaData = UiActionOperations.metaData();
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.put("name", parentMetaData.propertyConfiguration.remove("name"))
+        propConfig.putAll(metaData.propertyConfiguration)
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;
 

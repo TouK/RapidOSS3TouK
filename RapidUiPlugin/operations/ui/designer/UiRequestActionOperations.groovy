@@ -50,7 +50,11 @@ class UiRequestActionOperations extends UiActionOperations {
         def childConfiguration = [];
         childConfiguration.addAll(parentMetaData.childrenConfiguration)
         childConfiguration.addAll(metaData.childrenConfiguration)
-        metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
+        def propConfig = [:]
+        propConfig.put("name", parentMetaData.propertyConfiguration.remove("name"))
+        propConfig.putAll(metaData.propertyConfiguration)
+        propConfig.putAll(parentMetaData.propertyConfiguration)
+        metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration = childConfiguration;
         return metaData;
 

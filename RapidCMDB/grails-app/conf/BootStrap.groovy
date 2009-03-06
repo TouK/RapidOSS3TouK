@@ -119,6 +119,10 @@ class BootStrap {
 
         }
 
+        BaseListeningDatasource.list().each{BaseListeningDatasource ds->
+            ListeningAdapterManager.addAdapter (ds);            
+        }
+
         listeningScriptInitializerThread = Thread.start{
             BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
                 if (ds.listeningScript) {

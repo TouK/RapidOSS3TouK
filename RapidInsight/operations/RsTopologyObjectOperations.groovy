@@ -26,8 +26,6 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     public final static int CRITICAL_PERCENTAGE = 40
     public final static int MAJOR_PERCENTAGE = 20
 
-
-
     int getState()
     {
         def currentState = currentState();
@@ -151,5 +149,14 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     	else
     		return false;
     }
+
+	public int calculateWeight() {
+		int w = 1
+		  
+		parentObjects.each {
+			w = w + it.calculateWeight()
+		}
+		return w 
+	}    	
 }
     

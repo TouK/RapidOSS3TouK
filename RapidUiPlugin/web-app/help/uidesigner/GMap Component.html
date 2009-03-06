@@ -1,11 +1,12 @@
 
-
-<p>GMap is a UI component which integrates Google Maps with RapidInsight UI.</p>
+GMap is a UI component which integrates Google Maps with RapidInsight UI.</p>
 
 <p><img src="download/attachments/2201786/Gmap.jpg" align="absmiddle" border="0"/></p>
 
 <h4><a name="GMapComponent-AvailableProperties"></a>Available Properties</h4>
+
 <p><b>name</b> (Required): Name of the component. Default is GMap.<br/>
+<b>title</b> (Optional): GMap component title<br/>
 <b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
 <b>contentPath</b> (Required): The node names of AJAX response which will be used as location data. ex: "Location" for the sample data below<br/>
 <b>latitudeField</b> (Required): The attribute in data which specifies the latitude of the location. ex: "Lat" for the sample data below<br/>
@@ -13,8 +14,8 @@
 <b>adressField</b> (Required): The attribute in data which specifies open location address. ex: "Address" for the sample data below<br/>
 <b>markerField</b> (Required): The marker image url. ex: "Marker" for the sample data below<br/>
 <b>tooltipField</b> (Required): The attribute in data which will be displayed in tooltip. ex: "Tooltip" for the sample data below<br/>
-<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
-<b>title</b> (Optional): GMap component title</p>
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.</p>
+
 
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
@@ -31,13 +32,16 @@
 </div></div>
 
 <h4><a name="GMapComponent-AdditionalProperties"></a>Additional Properties</h4>
+
 <p><b>timeout</b> (Optional): The time interval in seconds to wait the server request completes successfully before aborting. Default is 30.</p>
 
 <h4><a name="GMapComponent-AvailableActions"></a>Available Actions</h4>
+
 <p><b>Clone</b>: Creates a copy of the component with the same properties<br/>
 <b>Delete</b>: Deletes the component</p>
 
 <h4><a name="GMapComponent-AvailableEvents"></a>Available Events</h4>
+
 <p><b>onMarkerClick</b>: Event fired when a marker is clicked. Available parameters:</p>
 <ul>
 	<li>params.data: JavaScript object representing location data.</li>

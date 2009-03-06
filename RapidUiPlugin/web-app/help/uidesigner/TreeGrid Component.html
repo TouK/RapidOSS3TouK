@@ -1,17 +1,18 @@
-
-
-<p>A TreeGrid component is used to display the data in hierarchical form. You can have both a tree structure with expanding/collapsing nodes as well as a grid view attached to the expanding nodes as follows:</p>
+>
+A TreeGrid component is used to display the data in hierarchical form. You can have both a tree structure with expanding/collapsing nodes as well as a grid view attached to the expanding nodes as follows:</p>
 
 <p><img src="download/attachments/2201776/TreeGrid.jpg" align="absmiddle" border="0"/></p>
 
 <h4><a name="TreeGridComponent-AvailableProperties"></a>Available Properties</h4>
-<p><b>name</b> (Required): Name of the component. Default is TreeGrid. <br/>
-<b>url</b> (Required): The default URL to be used for requests to the server to retrieve hierarchical data.  <br/>
+
+<p><b>name</b> (Required): Name of the component. Default is TreeGrid.<br/>
+<b>title</b> (Optional): TreeGrid title.<br/>
+<b>url</b> (Required): The default URL to be used for requests to the server to retrieve hierarchical data.<br/>
 <b>rootTag</b> (Required): The root node name of AJAX response which TreeGrid takes as starting point to get its data. ex: "Objects" for the sample data below<br/>
 <b>contentPath</b> (Required): The node names of AJAX response which will be used as row data. ex: "Object" for the sample data below<br/>
 <b>keyAttribute</b> (Required): The attribute name of the row node which uniquely identifies the node. ex: "id" for the sample data below<br/>
-<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
-<b>title</b> (Optional): TreeGrid title.</p>
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.</p>
+
 
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
@@ -32,14 +33,17 @@
 </div></div>
 
 <h4><a name="TreeGridComponent-AdditionalProperties"></a>Additional Properties</h4>
+
 <p><b>tooltip</b> (Optional): Parameter to display a tooltip over rows. Default is false.<br/>
-<b>expanded</b> (Optional): Parameter to display TreeGrid branches either expanded or collapsed. Default is false. </p>
+<b>expanded</b> (Optional): Parameter to display TreeGrid branches either expanded or collapsed. Default is false.</p>
 
 <h4><a name="TreeGridComponent-AvailableActions"></a>Available Actions</h4>
+
 <p><b>Clone</b>: Creates a copy of the component with same properties<br/>
 <b>Delete</b>: Deletes the component</p>
 
 <h4><a name="TreeGridComponent-Events"></a>Events</h4>
+
 <p><b>onNodeClick</b>: Event fired when a row is clicked. Available parameters:</p>
 <ul>
 	<li>params.data:  JavaScript object representing the row data. While defining an action on this event, the row data can be accessed through params.data object. ex: params.data.state, params.data.id, etc.</li>

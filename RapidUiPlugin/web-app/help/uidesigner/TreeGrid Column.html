@@ -1,24 +1,28 @@
+>
+A TreeGrid component must have at least one TreeGridColumn. A TreeGridColumn can be either text or an image. Default is text.</p>
 
-
-<p>A TreeGrid component must have at least one TreeGridColumn. A TreeGridColumn can be either text or an image. Default is text. </p>
 <h4><a name="TreeGridColumn-AvailableProperties"></a>Available Properties</h4>
+
 <ul>
-	<li>attributeName (Required): The data node attribute which will be shown in the column. This attribute comes with the Ajax response. ex: "displayName" for the sample data above.</li>
-	<li>colLabel (Required): Title of the column.</li>
-	<li>width (Required): Width of the column.</li>
+	<li><b>attributeName</b> (Required): The data node attribute which will be shown in the column. This attribute comes with the Ajax response. ex: "displayName" for the sample data above.</li>
+	<li><b>colLabel</b> (Required): Title of the column.</li>
+	<li><b>width</b> (Required): Width of the column.</li>
+	<li><b>columnIndex</b>(Required): The order of the column.</li>
 </ul>
 
 
 <h4><a name="TreeGridColumn-AdditionalProperties"></a>Additional Properties</h4>
+
 <ul>
-	<li>sortBy (Optional): Parameter to render TreeGrid whether sorted according to this column or not. Default is false.</li>
-	<li>sortOrder (Optional): The order of the sort when 'sortBy" property is "true". Default is "asc".</li>
+	<li><b>sortBy</b> (Optional): Parameter to render TreeGrid whether sorted according to this column or not. Default is false.</li>
+	<li><b>sortOrder</b> (Optional): The order of the sort when 'sortBy" property is "true". Default is "asc".</li>
+	<li><b>sortType</b> (Optional): Specifies whether the values will be sorted as a int, string, upper cased string, float or date. Available values are "string", "ucString", "int", "date" and "float". Default is "string".</li>
 </ul>
 
 
-<p>If a TreeGridColumn is of type Image, you can add one or more images under Images node. The display of the image depends on an expression defined in "visible" parameter. </p>
+<p>If a TreeGridColumn is of type Image, you can add one or more images under Images node. The display of the image depends on an expression defined in "visible" parameter.</p>
 
 <h4><a name="TreeGridColumn-AvailableActions"></a>Available Actions</h4>
+
 <p><b>Clone</b>: Creates a copy of the node with same properties<br/>
 <b>Delete</b>: Deletes the node</p>
-

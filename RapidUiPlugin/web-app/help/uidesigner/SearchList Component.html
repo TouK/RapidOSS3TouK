@@ -1,11 +1,12 @@
-
-
-<p>SearchList is a UI component designed to represent tabular row data. It enables filtering out results with quick querying.</p>
+>
+SearchList is a UI component designed to represent tabular row data. It enables filtering out results with quick querying.</p>
 
 <p><img src="download/attachments/2201774/SearchList.jpg" align="absmiddle" border="0"/></p>
 
 <h4><a name="SearchListComponent-AvailableProperties"></a>Available Properties</h4>
-<p><b>name</b> (Required): Name of the component. Default is SearchList. <br/>
+
+<p><b>name</b> (Required): Name of the component. Default is SearchList.<br/>
+<b>title</b> (Optional): SearchList title.<br/>
 <b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
 <b>rootTag</b> (Required): The root node name of AJAX response which SearchList takes as starting point to get its data. ex: "Objects" for the sample data below<br/>
 <b>contentPath</b> (Required): The node names of AJAX response which will be used as row data. ex: "Object" for the sample data below<br/>
@@ -13,12 +14,10 @@
 <b>totalCountAttribute</b> (Required): The attribute in the root node of the AJAX response which shows the total number of hits which matches the query. ex: "total" for the sample data below<br/>
 <b>offsetAttribute</b> (Required): The attribute in the root node of the AJAX response which shows where the results starts from according to the search query. ex: "offset" for the sample data below<br/>
 <b>sortOrderAttribute</b> (Required): The attribute of the row which displays the sort position of the row according to the search query. ex: "sortOrder" for the sample data below<br/>
-<b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.<br/>
 <b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
-<b>title</b> (Optional): SearchList title.</p>
+<b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.</p>
 
 <div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>All properties except rootTag, contentPath and keyAttribute are pre-populated when a new SearchList component is added to the layout, assuming you will be using SearchController provided with RapidInsight.</td></tr></table></div>
-
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
 <pre class="code-java">&lt;Objects total=<span class="code-quote">"3"</span> offset=<span class="code-quote">"0"</span>&gt;
@@ -29,17 +28,20 @@
 </div></div>
 
 <h4><a name="SearchListComponent-AdditionalProperties"></a>Additional Properties</h4>
+
 <p><b>defaultFields</b> (Optional if showMax property is provided): Properties list that will be shown when no field configuration is found for the row.<br/>
-<b>showMax</b> (Optional): Maximum number of properties that will be displayed from the data. It overrides "defaultFields" and fields declarations. <br/>
-<b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100. <br/>
-<b>defaultQuery</b> (Optional): The query appended to the all queries sent by SearchList. <br/>
-<b>lineSize</b> (Optional): How many lines a row consists of. Default is 3. </p>
+<b>showMax</b> (Optional): Maximum number of properties that will be displayed from the data. It overrides "defaultFields" and fields declarations.<br/>
+<b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100.<br/>
+<b>defaultQuery</b> (Optional): The query appended to the all queries sent by SearchList.<br/>
+<b>lineSize</b> (Optional): How many lines a row consists of. Default is 3.</p>
 
 <h4><a name="SearchListComponent-AvailableActions"></a>Available Actions</h4>
+
 <p><b>Clone</b>: Creates a copy of the component with same properties<br/>
 <b>Delete</b>: Deletes the component</p>
 
 <h4><a name="SearchListComponent-AvailableEvents"></a>Available Events</h4>
+
 <p><b>onSaveQueryClick</b>: Event fired when "Save Query" button is clicked. Available parameters:</p>
 <ul>
 	<li>params.query:  Query written in search input field.</li>

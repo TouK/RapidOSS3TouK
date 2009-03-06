@@ -48,6 +48,7 @@ SMARTS=false
 RAPID_UI=true
 **/
 def testOptions = Build.getBuildOptions("testopts.txt")
+println testOptions
 def buildProperties = new Properties();
 buildProperties.put("RCMDB_UNIX", "true")
 buildProperties.put("RCMDB_WINDOWS", "true")
@@ -95,11 +96,19 @@ if(testOptions.SMARTS == "true")
     watchConfig.add([new File("${workspaceDir}/Smarts"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Smarts/applications").canonicalPath, new File("${workspaceDir}/Smarts/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/Smarts/applications/RapidInsightForSmarts"), new File("${rootDir.absolutePath}/RapidSuite")]);
 }
+if(testOptions.NETCOOL == "true")
+{
+    buildProperties.put("NETCOOL", "false")
+    watchConfig.add([new File("${workspaceDir}/Netcool"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Netcool/applications").canonicalPath, new File("${workspaceDir}/Netcool/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/Netcool/applications/RapidInsightForNetcool"), new File("${rootDir.absolutePath}/RapidSuite")]);
+    watchConfig.add([new File("${workspaceDir}/Netcool/test/integration"), new File("${rootDir.absolutePath}/Netcool/test/integration")]);
+}
 if(testOptions.OPENNMS == "true")
 {
     buildProperties.put("OPENNMS", "false")
     watchConfig.add([new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
+    watchConfig.add([new File("${workspaceDir}/OpenNms/test/integration"), new File("${rootDir.absolutePath}/OpenNms/test/integration")]);
 }
 if(testOptions.RAPID_UI == "true")
 {

@@ -196,6 +196,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                 args:{
                     "queryString":"New query to get data from server",
                     "view":"The view name that will be displayed",
+                    "searchIn":"The class that the search will be applied",
                     "title":"Grid's new title",
                     "extraParams":"JavaScript object containing extra request parameters if needed"
                 }
@@ -245,6 +246,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "queryString":"New query to get data from server",
                     "sortAttribute":"Property to sort the search list according to",
                     "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'",
+                    "searchIn":"The class that the search will be applied",
                     "extraParams":"JavaScript object containing extra request parameters if needed"
                 }
             },

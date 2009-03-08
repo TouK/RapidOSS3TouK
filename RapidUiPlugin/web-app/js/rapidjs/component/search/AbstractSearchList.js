@@ -33,8 +33,11 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.menuItems = null;
     this.propertyMenuItems = null;
     this.defaultFilter = null;
+    this.searchClassesUrl = null;
+    this.defaultSearchClass = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.searchInput = null;
+    this.classesInput = null;
     this.rootNode = null;
     this.searchData = [];
     this.rowHeight = null;
@@ -42,7 +45,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.lastOffset = 0;
     this.lastSortAtt = this.keyAttribute;
     this.lastSortOrder = 'asc';
-    this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed};
+    this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed, "searchIn":this.defaultSearchClass};
     this.rowHeaderMenu = null;
     this.bufferPos = null;
     this.scrollPos = null;
@@ -68,6 +71,25 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
 }
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
+
+    getSearchClasses: function(){
+       var cb = {
+            success: this.searchClassesSuccess,
+            failure: this.processFailure,
+            timeout: this.timeout,
+            scope: this,
+            cache:false
+        };
+        YAHOO.util.Connect.asyncRequest('GET', this.searchClassesUrl, cb);
+    },
+    searchClassesSuccess:function(response){
+        var classes = response.responseXML.getElementsByTagName("Class");
+        for(var i=0; i< classes.length; i++){
+            var className = classes[i].getAttribute('name')
+            SelectUtils.addOption(this.classesInput, className, className);
+        }
+        SelectUtils.selectTheValue(this.classesInput, this.defaultSearchClass, 0);
+    },
     handleSearch: function(e) {
         this.offset = 0;
         var newHistoryState = [];
@@ -76,6 +98,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         newHistoryState[newHistoryState.length] = this.searchInput.value;
         newHistoryState[newHistoryState.length] = this.lastSortAtt;
         newHistoryState[newHistoryState.length] = this.lastSortOrder;
+        newHistoryState[newHistoryState.length] = this.classesInput.options[this.classesInput.selectedIndex].value
         this.saveHistoryChange(newHistoryState.join("!::!"));
     },
 
@@ -90,24 +113,26 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             var queryString = params[0]
             var sort = params[1]
             var order = params[2]
-            this._setQuery(queryString, sort, order);
+            var searchClass = params[3]
+            this._setQuery(queryString, sort, order, searchClass);
             this._poll();
         }
 
     },
 
-    setQuery: function(queryString, sortAtt, sortOrder, extraParams)
+    setQuery: function(queryString, sortAtt, sortOrder, searchIn, extraParams)
     {
-        this._setQuery(queryString, sortAtt, sortOrder, extraParams)
+        this._setQuery(queryString, sortAtt, sortOrder, searchIn, extraParams)
         this.handleSearch();
     },
 
-    _setQuery: function(queryString, sortAtt, sortOrder, extraParams)
+    _setQuery: function(queryString, sortAtt, sortOrder, searchIn, extraParams)
     {
         this.currentlyExecutingQuery = queryString;
         this.searchInput.value = queryString;
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
+        SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         this.offset = 0;
         if (extraParams) {
             for (var extraParam in extraParams) {
@@ -185,6 +210,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.params[this.queryParameter] = this.currentlyExecutingQuery;
         this.params['sort'] = this.lastSortAtt;
         this.params['order'] = this.lastSortOrder;
+        this.params['searchIn'] = this.classesInput.options[this.classesInput.selectedIndex].value;
         this.poll();
     },
 
@@ -643,6 +669,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         params['offset'] = offset;
         params['max'] = max;
         return params;
+    },
+
+    getSearchClass:function(){
+        return this.classesInput.options[this.classesInput.selectedIndex].value;  
     },
 
     showCurrentState: function() {

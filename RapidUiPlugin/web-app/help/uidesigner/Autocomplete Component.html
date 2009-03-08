@@ -1,0 +1,42 @@
+
+Autocomplete component provides the functionality for text-entry suggestion and completion as the (s)he types in the edit box.</p>
+
+<p><img src="download/attachments/2203555/Autocomplete.jpg" align="absmiddle" border="0"/></p>
+
+<h4><a name="AutocompleteComponent-AvailableProperties"></a>Available Properties</h4>
+
+<p><b>name</b> (Required): Name of the component. Default is Autocomplete<br/>
+<b>title</b> (Optional): Autocomplete title.<br/>
+<b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
+<b>contentPath</b> (Required): The node names of AJAX response which will be used as suggestion data. ex: "Suggestion" for the sample data below.<br/>
+<b>suggestionAttribute</b> (Required): The attribute of suggestion data which will be displayed in suggestion box. ex" "Name" for the sample data below.</p>
+
+
+<p>Below is the sample Ajax response in Xml format to a url call:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">&lt;Suggestions&gt;
+    &lt;Suggestion Name=<span class="code-quote">"device1"</span>&gt;&lt;/Suggestion&gt;
+    &lt;Suggestion Name=<span class="code-quote">"device2"</span>&gt;&lt;/Suggestion&gt;
+    &lt;Suggestion Name=<span class="code-quote">"device3"</span>&gt;&lt;/Suggestion&gt;
+    &lt;Suggestion Name=<span class="code-quote">"device4"</span>&gt;&lt;/Suggestion&gt;
+&lt;/Suggestions&gt;</pre>
+</div></div>
+
+<h4><a name="AutocompleteComponent-AdditionalProperties"></a>Additional Properties</h4>
+
+<p><b>cacheSize</b> (Optional): Max number of data stored in client side cache. Default is 0.<br/>
+<b>animated</b> (Optional): Parameter to display suggestion box whether animated or not. Default is "false".</p>
+
+<h4><a name="AutocompleteComponent-AvailableActions"></a>Available Actions</h4>
+
+<p><b>Clone</b>: Creates a copy of the component with same properties<br/>
+<b>Delete</b>: Deletes the component</p>
+
+<h4><a name="AutocompleteComponent-AvailableEvents"></a>Available Events</h4>
+
+<p><b>onSubmit</b>: Event fired when a suggestion is selected or "search" button is clicked. Available parameters:</p>
+<ul>
+	<li>params.query: Value in search input field.</li>
+</ul>
+
+

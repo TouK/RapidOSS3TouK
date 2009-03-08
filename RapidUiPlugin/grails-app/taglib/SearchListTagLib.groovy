@@ -196,6 +196,8 @@ class SearchListTagLib {
         cArray.add("rootTag: '${config["rootTag"]}'")
         cArray.add("contentPath: '${config["contentPath"]}'")
         cArray.add("keyAttribute: '${config["keyAttribute"]}'")
+        cArray.add("defaultSearchClass: '${config["defaultSearchClass"]}'")
+        cArray.add("searchClassesUrl: '${config["searchClassesUrl"]}'")
         cArray.add("queryParameter: '${config["queryParameter"]}'")
         cArray.add("totalCountAttribute: '${config["totalCountAttribute"]}'")
         cArray.add("offsetAttribute: '${config["offsetAttribute"]}'")

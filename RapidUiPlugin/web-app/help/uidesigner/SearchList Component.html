@@ -11,6 +11,8 @@ SearchList is a UI component designed to represent tabular row data. It enables 
 <b>rootTag</b> (Required): The root node name of AJAX response which SearchList takes as starting point to get its data. ex: "Objects" for the sample data below<br/>
 <b>contentPath</b> (Required): The node names of AJAX response which will be used as row data. ex: "Object" for the sample data below<br/>
 <b>keyAttribute</b> (Required): The attribute name of the row node which uniquely identifies the node. ex: "id" for the sample data below<br/>
+<b>defaultSearchClass</b> (Required): Default class that the search will be applied.<br/>
+<b>searchClassesUrl</b> (Required): The url used for the request to the server to retrieve available search classes.<br/>
 <b>totalCountAttribute</b> (Required): The attribute in the root node of the AJAX response which shows the total number of hits which matches the query. ex: "total" for the sample data below<br/>
 <b>offsetAttribute</b> (Required): The attribute in the root node of the AJAX response which shows where the results starts from according to the search query. ex: "offset" for the sample data below<br/>
 <b>sortOrderAttribute</b> (Required): The attribute of the row which displays the sort position of the row according to the search query. ex: "sortOrder" for the sample data below<br/>

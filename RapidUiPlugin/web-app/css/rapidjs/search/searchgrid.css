@@ -162,7 +162,7 @@
 
 .rcmdb-searchgrid-searchinput {
     height: 18px;
-    width: 350px;
+    width: 280px;
     font-size: 10px;
 }
 
@@ -221,7 +221,7 @@
 }
 
 .rcmdb-searchgrid-viewselect {
-    width: 100px;
+    width: 80px;
 }
 
 .rcmdb-searchgrid-count {

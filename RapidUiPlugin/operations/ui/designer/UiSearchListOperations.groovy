@@ -24,6 +24,8 @@ class UiSearchListOperations extends UiComponentOperations{
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node."],
+                        defaultSearchClass: [descr: "Default class that the search will be applied."],
+                        searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query."],
                         offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query."],
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query."],

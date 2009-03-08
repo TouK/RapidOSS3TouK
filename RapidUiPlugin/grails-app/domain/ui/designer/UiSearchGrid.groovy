@@ -14,7 +14,7 @@ class UiSearchGrid extends UiComponent {
         storageType "FileAndMemory"
     };
     static datasources = [:]
-    String url = "search?searchIn=RsEvent";
+    String url = "search";
     String rootTag = "Objects";
     String contentPath = "Object";
     String keyAttribute = "id";
@@ -23,6 +23,8 @@ class UiSearchGrid extends UiComponent {
     String totalCountAttribute = "total";
     String offsetAttribute = "offset";
     String sortOrderAttribute = "sortOrder";
+    String defaultSearchClass = "RsEvent"
+    String searchClassesUrl = "script/run/getEventClassesForSearch"
     Long pollingInterval = 0;
     Boolean queryEnabled = true;
     Long maxRowsDisplayed = 100;
@@ -51,6 +53,8 @@ class UiSearchGrid extends UiComponent {
         queryEnabled(nullable: true)
         maxRowsDisplayed(nullable: true)
         defaultQuery(nullable: true, blank: true)
+        defaultSearchClass(nullable: false, blank: false)
+        searchClassesUrl(nullable: true, blank: true)
     }
 
     static propertyConfiguration = [:]

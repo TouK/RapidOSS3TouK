@@ -297,6 +297,17 @@ class RsBrowserController {
         }
     }
 
+    def getSearchClasses = {
+        def domainClasses = grailsApplication.domainClasses;
+        render(contentType: "text/xml"){
+            Classes(){
+                domainClasses.each{
+                    Class(name:it.fullName);
+                }
+            }
+        }
+    }
+
     def getPropertiesWhichCanBeListed(domainClass, max) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();

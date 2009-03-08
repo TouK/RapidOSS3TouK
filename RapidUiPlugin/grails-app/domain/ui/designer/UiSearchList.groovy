@@ -14,7 +14,7 @@ class UiSearchList extends UiComponent{
         storageType "FileAndMemory"
     };
     static datasources = [:]
-    String url = "search?searchIn=RsEvent";
+    String url = "search";
     String rootTag = "Objects";
     String contentPath = "Object";
     String keyAttribute = "id";
@@ -28,6 +28,8 @@ class UiSearchList extends UiComponent{
     Long pollingInterval = 0;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
+    String defaultSearchClass = "RsEvent"
+    String searchClassesUrl = "script/run/getEventClassesForSearch"
     List fields = [];
     List images = [];
     List propertyMenuItems = [];
@@ -55,6 +57,8 @@ class UiSearchList extends UiComponent{
         defaultFields(nullable: true)
         maxRowsDisplayed(nullable: true)
         defaultQuery(nullable: true, blank: true)
+        defaultSearchClass(nullable: false, blank: false)
+        searchClassesUrl(nullable: false, blank: false)
     }
 
     static propertyConfiguration = [:]

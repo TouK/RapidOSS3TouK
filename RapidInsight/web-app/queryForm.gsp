@@ -30,11 +30,15 @@
             case 'topology': className = 'RsTopologyObject'; break;
         }
         def allProps = [];
+        def classes = [];
         def domainClass = grailsApplication.getDomainClass(className);
+        classes.add(domainClass);
         allProps.addAll(domainClass.clazz."getPropertiesList"());
         domainClass.getSubClasses().each {
+            classes.add(it);
             allProps.addAll(it.clazz."getPropertiesList"());
         }
+        classes = classes.sort{it.fullName};
         def sortedProps = allProps.sort {it.name}
         def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
             queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type == "default")
@@ -46,6 +50,7 @@
         def viewName = params.viewName ? params.viewName : mode == 'edit' ? searchQuery.viewName : '';
         def sortProperty = params.sortProperty ? params.sortProperty : mode == 'edit' ? searchQuery.sortProperty : '';
         def sortOrder = params.sortOrder ? params.sortOrder : mode == 'edit' ? searchQuery.sortOrder : 'asc';
+        def searchClass = params.searchClass ? params.searchClass : mode == 'edit' ? searchQuery.searchClass : '';
     %>
     <script type="text/javascript">
     window.refreshFilterTree = function(){
@@ -68,6 +73,16 @@
             <tr><td width="50%"><label>Query Name:</label></td><td width="50%">
                 <input type="textbox" name="name" style="width:175px" value="${queryName.encodeAsHTML()}">
             </td></tr>
+             <tr><td width="50%"><label>Search Class:</label></td><td width="50%"><select name="searchClass" style="width:175px">
+                <g:each var="currentClass" in="${classes}">
+                    <g:if test="${searchClass == currentClass.fullName}">
+                        <option name="${currentClass.fullName}" selected="true">${currentClass.fullName}</option>
+                    </g:if>
+                    <g:else>
+                        <option name="${currentClass.fullName}">${currentClass.fullName}</option>
+                    </g:else>
+                </g:each>
+            </select></td></tr>
             <tr><td width="50%"><label>Query:</label></td><td width="50%">
                 <input type="textbox" name="query" style="width:175px" value="${query.encodeAsHTML()}">
             </td></tr>

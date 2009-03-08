@@ -73,12 +73,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                  '<td  width="93%"><input type="textbox" style="width:100%;" name="search"/></td>' +
                  '<td><div class="rcmdb-searchlist-searchbutton"></div></td>' +
                  '<td  width="100%"><div class="rcmdb-searchlist-savequery"></div></td>' +
+                 '<td  width="0%"><div>in:</div></td>' +
+                 '<td  width="0%"><div><select style="width:80px;"></select></div></td>' +
                  '<td  width="0%"><div class="rcmdb-searchlist-count"></div></td>' +
                  '<td  width="0%"><div class="rcmdb-searchlist-sortOrder"></div></td>' +
                  '</tr>' +
                  '</tbody></table></form></div>'}, true);
 
         this.searchInput = this.searchBox.dom.getElementsByTagName('input')[0];
+        this.classesInput = this.searchBox.dom.getElementsByTagName('select')[0];
         this.searchCountEl = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchlist-count', 'div', this.searchBox.dom)[0];
         this.sortTextEl = YAHOO.util.Dom.getElementsByClassName('rcmdb-searchlist-sortOrder', 'div', this.searchBox.dom)[0];
         var searchButton = YAHOO.ext.Element.get(YAHOO.util.Dom.getElementsByClassName('rcmdb-searchlist-searchbutton', 'div', this.searchBox.dom)[0]);
@@ -117,6 +120,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
         this.cellMenu.render(document.body);
         YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.cellMenu);
+        this.getSearchClasses();
     },
 
     createMask: function() {

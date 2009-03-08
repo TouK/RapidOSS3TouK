@@ -4,9 +4,10 @@
 </head>
 <body>
 
-<rui:searchList id="inventoryList" url="../search?searchIn=RsTopologyObject" rootTag="Objects" contentPath="Object" keyAttribute="id"
+<rui:searchList id="inventoryList" url="../search" rootTag="Objects" contentPath="Object" keyAttribute="id"
     lineSize="3" title="Inventory" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
-    pollingInterval="0" defaultFields='${["className", "name", " description", " displayName", " isManaged"]}' 
+    pollingInterval="0" defaultFields='${["className", "name", " description", " displayName", " isManaged"]}'  defaultQuery=""
+    defaultSearchClass="RsTopologyObject" searchClassesUrl="../script/run/getTopologyClassesForSearch"
     
         onSaveQueryClicked="${['saveQueryAction']}"
     
@@ -82,15 +83,15 @@ lessThanOrEqualToVisible="YAHOO.lang.isNumber(parseInt(params.value))"
     </rui:slPropertyMenuItems>
      <rui:slFields>
     <%
-fieldExpression3840Visible="params.data.rsAlias == 'RsComputerSystem'"
+fieldExpression7146Visible="params.data.rsAlias == 'RsComputerSystem'"
 %>
 
-        <rui:slField exp="${fieldExpression3840Visible}" fields='${["className", " name", " vendor", " model", " managementServer", " location", " snmpAddress"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression7146Visible}" fields='${["className", " name", " vendor", " model", " managementServer", " location", " snmpAddress"]}'></rui:slField>
     <%
-fieldExpression3842Visible="params.data.rsAlias == 'RsLink'"
+fieldExpression7148Visible="params.data.rsAlias == 'RsLink'"
 %>
 
-        <rui:slField exp="${fieldExpression3842Visible}" fields='${["className", " name", " a_ComputerSystemName", " a_Name", " z_ComputerSystemName", "z_Name"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression7148Visible}" fields='${["className", " name", " a_ComputerSystemName", " a_Name", " z_ComputerSystemName", "z_Name"]}'></rui:slField>
     
     </rui:slFields>
     <rui:slImages>
@@ -106,7 +107,7 @@ fieldExpression3842Visible="params.data.rsAlias == 'RsLink'"
 >
     <rui:tgColumns>
 
-        <rui:tgColumn type="text" attributeName="name" colLabel="Name" width="248" sortBy="true" sortOrder="asc">
+        <rui:tgColumn type="text" attributeName="name" colLabel="Name" width="248" sortBy="true" sortOrder="asc" sortType="string">
             
         </rui:tgColumn>
 
@@ -151,15 +152,15 @@ copyQueryVisible="params.data.nodeType == 'filter'"
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage3873Visible="params.data.nodeType == 'group'"
+rootImage7179Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage3873Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage7179Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <%
-rootImage3875Visible="params.data.nodeType == 'filter'"
+rootImage7181Visible="params.data.nodeType == 'filter'"
 %>
 
-        <rui:tgRootImage visible="${rootImage3875Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage7181Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
@@ -171,10 +172,10 @@ rootImage3875Visible="params.data.nodeType == 'filter'"
 <rui:html id="saveQueryForm" iframe="false"></rui:html>
 
 <%
-functionActionCondition3893Condition="params.data.nodeType == 'filter'"
+functionActionCondition7199Condition="params.data.nodeType == 'filter'"
 %>
 
-<rui:action id="setQueryAction" type="function" function="setQuery" componentId='inventoryList' condition="$functionActionCondition3893Condition"
+<rui:action id="setQueryAction" type="function" function="setQuery" componentId='inventoryList' condition="$functionActionCondition7199Condition"
 
 >
     
@@ -184,12 +185,12 @@ functionActionCondition3893Condition="params.data.nodeType == 'filter'"
     
     <rui:functionArg><![CDATA[params.data.sortOrder]]></rui:functionArg>
     
-    <rui:functionArg>null</rui:functionArg>
+    <rui:functionArg><![CDATA[params.data.searchClass]]></rui:functionArg>
     
 </rui:action>
 
 <%
-functionActionCondition3907Condition=""
+functionActionCondition7213Condition=""
 %>
 
 <rui:action id="exceptAction" type="function" function="appendExceptQuery" componentId='inventoryList' 
@@ -203,7 +204,7 @@ functionActionCondition3907Condition=""
 </rui:action>
 
 <%
-functionActionCondition3918Condition=""
+functionActionCondition7224Condition=""
 %>
 
 <rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
@@ -217,35 +218,35 @@ functionActionCondition3918Condition=""
 </rui:action>
 
 <%
-functionActionCondition3929Condition=""
+functionActionCondition7235Condition=""
 %>
 
 <rui:action id="copyQueryAction" type="function" function="show" componentId='saveQueryForm' 
 
 >
     
-    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, searchClass: params.data.searchClass, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     
 </rui:action>
 
 <%
-functionActionCondition3940Condition=""
+functionActionCondition7246Condition=""
 %>
 
 <rui:action id="saveQueryAction" type="function" function="show" componentId='saveQueryForm' 
 
 >
     
-    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['inventoryList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['inventoryList'].getSortOrder(), mode:'create', type:'topology', searchComponentType:'list'})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['inventoryList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['inventoryList'].getSortOrder(), searchClass: YAHOO.rapidjs.Components['inventoryList'].getSearchClass(), mode:'create', type:'topology', searchComponentType:'list'})]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     
 </rui:action>
 
 <%
-functionActionCondition3950Condition=""
+functionActionCondition7256Condition=""
 %>
 
 <rui:action id="queryUpdateAction" type="function" function="show" componentId='saveQueryForm' 
@@ -259,7 +260,7 @@ functionActionCondition3950Condition=""
 </rui:action>
 
 <%
-functionActionCondition3961Condition=""
+functionActionCondition7267Condition=""
 %>
 
 <rui:action id="queryGroupUpdateAction" type="function" function="show" componentId='saveQueryGroupForm' 
@@ -273,7 +274,7 @@ functionActionCondition3961Condition=""
 </rui:action>
 
 <%
-functionActionCondition3972Condition=""
+functionActionCondition7278Condition=""
 %>
 
 <rui:action id="sortAscAction" type="function" function="sort" componentId='inventoryList' 
@@ -287,7 +288,7 @@ functionActionCondition3972Condition=""
 </rui:action>
 
 <%
-functionActionCondition3983Condition=""
+functionActionCondition7289Condition=""
 %>
 
 <rui:action id="sortDescAction" type="function" function="sort" componentId='inventoryList' 
@@ -301,7 +302,7 @@ functionActionCondition3983Condition=""
 </rui:action>
 
 <%
-functionActionCondition3994Condition=""
+functionActionCondition7300Condition=""
 %>
 
 <rui:action id="lessThanOrEqualToAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -313,7 +314,7 @@ functionActionCondition3994Condition=""
 </rui:action>
 
 <%
-functionActionCondition4003Condition=""
+functionActionCondition7309Condition=""
 %>
 
 <rui:action id="greaterThanOrEqualToAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -325,7 +326,7 @@ functionActionCondition4003Condition=""
 </rui:action>
 
 <%
-functionActionCondition4012Condition=""
+functionActionCondition7318Condition=""
 %>
 
 <rui:action id="lessThanAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -337,7 +338,7 @@ functionActionCondition4012Condition=""
 </rui:action>
 
 <%
-functionActionCondition4021Condition=""
+functionActionCondition7327Condition=""
 %>
 
 <rui:action id="greaterThanAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -349,7 +350,7 @@ functionActionCondition4021Condition=""
 </rui:action>
 
 <%
-requestActionCondition4030Condition=""
+requestActionCondition7336Condition=""
 %>
 
 <rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" 
@@ -358,15 +359,15 @@ requestActionCondition4030Condition=""
     
 >
     <%
-parameter4033Visible="params.data.id"
+parameter7339Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4033Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter7339Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition4039Condition=""
+requestActionCondition7345Condition=""
 %>
 
 <rui:action id="deleteQueryGroupAction" type="request" url="../searchQueryGroup/delete?format=xml" components="${['filterTree']}" 
@@ -375,27 +376,27 @@ requestActionCondition4039Condition=""
     
 >
     <%
-parameter4042Visible="params.data.id"
+parameter7348Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4042Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter7348Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-linkUrl4048Visible="createURL('redirectToMap.gsp', {name:params.data.name})"
+linkUrl7354Visible="createURL('redirectToMap.gsp', {name:params.data.name})"
 %>
 <%
-linkActionCondition4048Condition=""
+linkActionCondition7354Condition=""
 %>
 
-<rui:action id="showMapAction" type="link" url="${linkUrl4048Visible}" 
+<rui:action id="showMapAction" type="link" url="${linkUrl7354Visible}" 
 
 >
 </rui:action>
 
 <%
-functionActionCondition4054Condition=""
+functionActionCondition7360Condition=""
 %>
 
 <rui:action id="refreshQueriesAction" type="function" function="poll" componentId='filterTree' 
@@ -426,7 +427,7 @@ x='85' y='50'
 
 
 
-       <rui:include template="pageContents/_inventory.gsp"></rui:include>
+       <rui:include template="pageContents/_inventory.gsp" model="${binding.variables}"></rui:include>
 
 
 <rui:layout id="layout">
@@ -435,13 +436,13 @@ x='85' y='50'
         
 
 
-    <rui:innerLayout id="3834">
+    <rui:innerLayout id="7140">
         
-            <rui:layoutUnit position='center' gutter='0px' id='4072' isActive='true' scroll='false' useShim='false' component='inventoryList'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='7381' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4075' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
+            <rui:layoutUnit position='center' gutter='0px' id='7378' isActive='true' scroll='false' useShim='false' component='inventoryList'>
         
             </rui:layoutUnit>
         

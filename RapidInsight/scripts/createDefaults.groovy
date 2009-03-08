@@ -43,6 +43,7 @@ scriptsToAdd.add([name: "emailGenerator", type:CmdbScript.SCHEDULED, scheduleTyp
 scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);
+scriptsToAdd.add([name: "importUiConfiguration"]);
 
 scriptsToAdd.add([name:"autocomplete", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHierarchy", enabledForAllGroups:true])
@@ -51,6 +52,9 @@ scriptsToAdd.add([name:"getSummaryData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getGeocodes"])
 scriptsToAdd.add([name:"getDeviceLocations", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getDevicesByLocation", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getEventClassesForSearch", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getTopologyClassesForSearch", enabledForAllGroups:true])
+scriptsToAdd.add([name:"getHistoricalEventClassesForSearch", enabledForAllGroups:true])
 
 
 

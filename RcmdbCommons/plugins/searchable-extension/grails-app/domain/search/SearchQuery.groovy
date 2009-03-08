@@ -40,6 +40,7 @@ class SearchQuery {
     String sortProperty;
     String viewName = "default";
     String type="";
+    String searchClass="";
     boolean isPublic = false;
     String sortOrder = "asc";
     org.springframework.validation.Errors errors ;

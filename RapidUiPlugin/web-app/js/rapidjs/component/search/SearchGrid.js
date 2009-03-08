@@ -74,6 +74,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             html:'<div class="wrp"></div><div class="wrp"></div><div class="wrp"></div>' +
                  '<div class="rcmdb-searchgrid-viewselect-wrp wrp"><select class="rcmdb-searchgrid-viewselect"></select></div>' +
                  '<div class="rcmdb-searchgrid-count wrp">&nbsp;</div>' +
+                 '<div class="rcmdb-searchgrid-classes-wrp wrp"><select class="rcmdb-searchgrid-classes" style="width:80px"></select></div><div class="wrp" style="margin-top:3px">in:</div>' +
                  '<div class="wrp"></div><div class="wrp"></div>' +
                  '<div class="wrp"><form action="javascript:void(0)" style="overflow:auto;"><input class="rcmdb-searchgrid-searchinput"></input></form></div>'});
         var wrps = YAHOO.util.Dom.getElementsByClassName('wrp', 'div', searchInputWrp);
@@ -82,17 +83,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.removeViewButton.disable();
         this.updateViewButton.disable();
         new YAHOO.rapidjs.component.Button(wrps[2], {className:'rcmdb-searchgrid-addview', scope:this, click:this.handleAddView, tooltip: 'Add View'});
-        this.viewInput = searchInputWrp.getElementsByTagName('select')[0];
+        var selects = searchInputWrp.getElementsByTagName('select')
+        this.viewInput = selects[0];
+        this.classesInput = selects[1];
         YAHOO.util.Event.addListener(this.viewInput, 'change', this.handleViewChange, this, true);
         this.searchCountEl = wrps[4];
-        new YAHOO.rapidjs.component.Button(wrps[5], {className:'rcmdb-searchgrid-saveButton', scope:this, click:this.handleSaveQueryClick, tooltip: 'Save Query'});
-        new YAHOO.rapidjs.component.Button(wrps[6], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
+        new YAHOO.rapidjs.component.Button(wrps[7], {className:'rcmdb-searchgrid-saveButton', scope:this, click:this.handleSaveQueryClick, tooltip: 'Save Query'});
+        new YAHOO.rapidjs.component.Button(wrps[8], {className:'rcmdb-searchgrid-searchButton', scope:this, click:this.handleSearch, tooltip: 'Search'});
         this.searchInput = searchInputWrp.getElementsByTagName('input')[0];
         YAHOO.util.Event.addListener(this.searchInput.form, 'keypress', this.handleInputEnter, this, true);
         if (!this.queryEnabled) {
             YAHOO.util.Dom.setStyle(wrps[5], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[6], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[7], 'display', 'none')
+            YAHOO.util.Dom.setStyle(wrps[8], 'display', 'none')
+            YAHOO.util.Dom.setStyle(wrps[9], 'display', 'none')
         }
         this.body.dom.id = this.bodyId;
         this.pwrap = dh.append(this.body.dom, {tag: 'div', cls: 'rcmdb-searchgrid-positioner'});
@@ -149,6 +154,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder = new YAHOO.rapidjs.component.search.ViewBuilder(this);
         this.viewBuilder.events['success'].subscribe(this.viewBuilderSuccess, this, true);
         this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
+
+        if(this.queryEnabled){
+            this.getSearchClasses();
+        }
+        else{
+           SelectUtils.addOption(this.classesInput, this.defaultSearchClass, this.defaultSearchClass);
+        }
     },
 
     addHeader: function(columnIndex, label) {
@@ -538,7 +550,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortAtt = column['attributeName'];
             sortOrder = column['sortOrder'] || 'asc';
         }
-        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder);
+        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.classesInput.options[this.classesInput.selectedIndex].value);
         this.handleSearch(null, willSaveHistory);
     },
     getColumnConfigFromViewNode: function(viewNode) {
@@ -607,18 +619,20 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
     },
-    setQueryWithView: function(queryString, view, title, extraParams)
+    setQueryWithView: function(queryString, view, searchIn, title, extraParams)
     {
         if (title) {
             this.setTitle(title);
         }
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
+        SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
             this.viewChanged(queryString);
         }
         else {
-            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, extraParams);
+            var currentSearchIn = this.classesInput.options[this.classesInput.selectedIndex].value
+            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, currentSearchIn, extraParams);
             this.handleSearch();
         }
     },
@@ -634,6 +648,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (willSaveHistory !== false) {
             var newHistoryState = [];
             newHistoryState[newHistoryState.length] = this.searchInput.value;
+            newHistoryState[newHistoryState.length] = this.classesInput.options[this.classesInput.selectedIndex].value;
             newHistoryState[newHistoryState.length] = this.viewInput[this.viewInput.selectedIndex].value;
             this.saveHistoryChange(newHistoryState.join("!::!"));
         }
@@ -643,8 +658,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (state != "noAction") {
             var params = state.split("!::!");
             var queryString = params[0]
-            var view = params[1]
+            var searchClass = params[1]
+            var view = params[2]
             SelectUtils.selectTheValue(this.viewInput, view, 0);
+            SelectUtils.selectTheValue(this.classesInput, searchClass, 0);
             this.viewChanged(queryString, false);
         }
     },

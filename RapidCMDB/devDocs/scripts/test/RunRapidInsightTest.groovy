@@ -120,6 +120,7 @@ if(testOptions.RAPID_UI == "true")
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/operations"), new File("${rootDir.absolutePath}/RapidSuite/operations")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/grails-app/templates"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/templates")]);
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/test"), new File("${rootDir.absolutePath}/RapidSuite/test")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/RapidUiPlugin/web-app"), new File("${rootDir.absolutePath}/RapidSuite/web-app")]);
 }
 
 

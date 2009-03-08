@@ -163,6 +163,7 @@ class SearchGridTagLib {
         cArray.add("totalCountAttribute: '${config["totalCountAttribute"]}'")
         cArray.add("offsetAttribute: '${config["offsetAttribute"]}'")
         cArray.add("sortOrderAttribute: '${config["sortOrderAttribute"]}'")
+        cArray.add("defaultSearchClass: '${config["defaultSearchClass"]}'")
         if (config["title"])
             cArray.add("title:'${config['title']}'")
         if (config["queryEnabled"])
@@ -173,6 +174,8 @@ class SearchGridTagLib {
             cArray.add("maxRowsDisplayed:${config['maxRowsDisplayed']}")
         if (config["defaultQuery"])
             cArray.add("defaultFilter:'${config['defaultQuery']}'")
+        if (config["searchClassesUrl"])
+            cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

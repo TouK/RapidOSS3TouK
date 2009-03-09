@@ -104,7 +104,25 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
         }
 
     }
+    public void testAddAdapterIfNotExists()
+    {
+        initialize();
+        def ds = new BaseListeningDatasourceMock();
+        assertFalse(ListeningAdapterManager.getInstance().hasAdapter(ds.name))
 
+        ListeningAdapterManager.getInstance().addAdapterIfNotExists(ds)
+        assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.name))
+        try
+        {
+            ListeningAdapterManager.getInstance().addAdapterIfNotExists(ds)
+
+        } catch (e)
+        {
+            fail("Should not throw exception");
+
+        }
+        assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.name))
+    }
     void testStartAdapter()
     {
         def logLevel = Level.DEBUG;
@@ -163,25 +181,7 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
         assertEquals(ds.adapterLogger, CmdbScript.getScriptLogger(script))
 
     }
-
-    void testAddAndStartAdapter() {
-        def logLevel = Level.DEBUG;
-        initialize();
-        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", staticParam: "x:5", logLevel: logLevel.toString())]);
-        def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
-
-        def ds = new BaseListeningDatasourceMock();
-        ds.listeningScript = script;
-        ListeningAdapterManager.getInstance().addAndStartAdapter(ds);
-        assertEquals(ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
-        ListeningAdapterManager.getInstance().stopAdapter (ds);
-        assertEquals(ListeningAdapterRunner.STOPPED, ListeningAdapterManager.getInstance().getState(ds));
-        ListeningAdapterManager.getInstance().addAndStartAdapter (ds);
-        assertEquals(ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
-
-    }
-
-
+   
     void testRemoveAdapter()
     {
         initialize();
@@ -395,6 +395,35 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
 
         ListeningAdapterManager.getInstance().stopAdapter(ds);
         assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds))
+    }
+    void testIsStartable()
+    {
+        initialize();
+
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
+        def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
+
+        def ds = new BaseListeningDatasourceMock();
+        ds.name= "testds";
+        ds.listeningScript = script;
+
+        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+
+        ListeningAdapterManager.getInstance().addAdapter(ds);
+        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+
+        ListeningAdapterManager.getInstance().startAdapter(ds);
+        assertFalse(ListeningAdapterManager.getInstance().isStartable(ds))        
+
+        ListeningAdapterManager.getInstance().stopAdapter(ds);
+        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+
+
+        ListeningAdapterManager.getInstance().removeAdapter(ds);
+        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+
+
+
     }
     void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException() {
         //we should disgard previous initializes

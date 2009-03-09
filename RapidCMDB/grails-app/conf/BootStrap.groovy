@@ -49,7 +49,7 @@ import com.ifountain.rcmdb.methods.MethodFactory
 * USA.
 */
 class BootStrap {
-    Thread listeningScriptInitializerThread;
+    
     def init = {servletContext ->
         registerDatasourceConverters();
         initializeSessionManager();
@@ -119,24 +119,7 @@ class BootStrap {
 
         }
 
-        BaseListeningDatasource.list().each{BaseListeningDatasource ds->
-            ListeningAdapterManager.getInstance().addAdapter (ds);            
-        }
-
-        listeningScriptInitializerThread = Thread.start{
-            BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
-                if (ds.listeningScript) {
-                    try {
-                        log.debug("Starting listening script ${ds.listeningScript}")
-                        CmdbScript.startListening(ds.listeningScript);
-                        log.info("Listening script ${ds.listeningScript} successfully started.")
-                    }
-                    catch (e) {
-                        log.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
-                    }
-                }
-            }
-        }
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
     }
 
     def corrrectModelData()
@@ -177,13 +160,7 @@ class BootStrap {
 
 
     def destroy = {
-        if(listeningScriptInitializerThread != null && listeningScriptInitializerThread.isAlive())
-        {
-            log.info("Stopping listening script initializer thread");
-            listeningScriptInitializerThread.interrupt();
-            listeningScriptInitializerThread.join();
-            log.info("Stopped listening script initializer thread");
-        }
+        ListeningAdapterManager.getInstance().destroyListeningDatasources();
         ListeningAdapterManager.destroyInstance();
         ScriptManager.destroyInstance();
         SessionManager.destroyInstance();

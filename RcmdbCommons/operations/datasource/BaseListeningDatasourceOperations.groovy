@@ -31,12 +31,67 @@ import org.apache.log4j.Logger
  */
 class BaseListeningDatasourceOperations extends BaseDatasourceOperations
 {
+
+    static Logger logger = Logger.getLogger(BaseListeningDatasourceOperations.class)
+    static String logPrefix="[BaseListeningDatasource]: ";
+
     def beforeDelete(){
-        if(this.listeningScript && this.listeningScript.type == CmdbScript.LISTENING){
-            ListeningAdapterManager.getInstance().stopAdapter(this.domainObject);
+        try
+        {
+            ListeningAdapterManager.getInstance().removeAdapter(this.domainObject);
+        }catch(Exception e)
+        {
+            logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
         }
     }
 
+   def beforeUpdate(){
+        try
+        {
+            def dsSaved=BaseListeningDatasource.get(id:this.id);
+            if(dsSaved.name != this.name)
+            {
+                ListeningAdapterManager.getInstance().removeAdapter(dsSaved);
+            }
+        }catch(Exception e)
+        {
+            logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
+        }
+
+    }      
+     def afterUpdate(){
+        try
+        {
+            ListeningAdapterManager.getInstance().addAdapterIfNotExists (this.domainObject);
+        }catch(Exception e)
+        {
+            logger.info ("Exception occurred while adding adapter for ${this.domainObject.name} datasource", e);
+        }
+    }
+    def afterInsert(){
+        try
+        {
+            ListeningAdapterManager.getInstance().addAdapterIfNotExists (this.domainObject);
+        }catch(Exception e)
+        {
+            logger.info ("Exception occurred while adding adapter for ${this.domainObject.name} datasource", e);
+        }
+    }
+
+    def startListening() throws Exception{
+         ListeningAdapterManager.getInstance().startAdapter(this.domainObject);
+         this.update(isSubscribed:true);
+
+    }
+    def stopListening() throws Exception{
+        ListeningAdapterManager.getInstance().stopAdapter(this.domainObject);
+        this.update(isSubscribed:false);     
+    }
+
+    def isStartable()
+    {
+        return ListeningAdapterManager.getInstance().isStartable(this.domainObject);
+    }
 
     def getListeningAdapter(Map params,Logger adapterLogger){
         return null;

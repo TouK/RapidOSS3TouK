@@ -1,4 +1,4 @@
-<%@ page import="com.ifountain.rcmdb.datasource.ListeningAdapterManager; connector.SnmpConnector" %>
+<%@ page import="connector.SnmpConnector" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -45,15 +45,16 @@
                         <td>${snmpConnector.script?.scriptFile?.encodeAsHTML()}</td>
                         <td>${snmpConnector.script?.logLevel?.encodeAsHTML()}</td>
                         <%
-                            def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(snmpConnector.script.listeningDatasource);
+                            def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
                             if (isSubscribed) {
                         %>
-                        <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
+                           <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
                         <%
                             }
                             else {
                         %>
-                        <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
+                            <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
+
                         <%
                             }
                         %>

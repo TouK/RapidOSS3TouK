@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -37,6 +37,7 @@ import com.ifountain.comp.utils.LoggerUtils;
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     static Logger logger = Logger.getLogger(CmdbScriptOperations.class)
+    /*
     def beforeDelete(){
         if(this.type == LISTENING ){
             if(listeningDatasource != null){
@@ -52,13 +53,13 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
     }
 
-     def beforeUpdate(){
-        if(this.type == LISTENING ){
-            if(listeningDatasource != null)
-            {
+   def beforeUpdate(){
+       def scriptInCompass = CmdbScript.get(this.id);
+        if(scriptInCompass.type == LISTENING ){
+            if(scriptInCompass.listeningDatasource != null ){
                 try
                 {
-                    ListeningAdapterManager.getInstance().stopAdapter(listeningDatasource);
+                    ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);
                 }catch(Exception e)
                 {
                     logger.info ("Exception occurred while stopping adapter for ${listeningDatasource.name} datasource", e);
@@ -66,6 +67,22 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             }
         }
     }
+
+    def afterInsert(){
+       if(this.type == LISTENING ){
+            if(listeningDatasource != null){
+                try
+                {
+                    ListeningAdapterManager.getInstance().addAdapterIfNotExists (listeningDatasource);
+                }catch(Exception e)
+                {
+                    logger.info ("Exception occurred while adding adapter for ${listeningDatasource.name} datasource", e);
+                }
+            }
+
+        }
+    }
+     */
 
     def reload() throws ScriptingException
     {
@@ -81,13 +98,13 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             }
         }
     }
-    static def addScript(Map params, boolean fromController) throws Exception {        
+    static def addScript(Map params, boolean fromController) throws Exception {
         if(!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
             params["scriptFile"] = params.name;
         }
         if(!params.get("logFile") || params.get("logFile").trim() == "")
-        {                           
+        {
             params["logFile"] = params.name;
         }
         def script = CmdbScript.add(params)
@@ -109,6 +126,16 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def deleteScript(CmdbScript script) throws Exception {
         def scriptName = script.name;
+        if(script.listeningDatasource){
+            try
+            {
+                stopListening(script);
+            }
+            catch(Exception e)
+            {
+                logger.info ("Exception occurred while stopListening for ${script.name} script", e);
+            }
+        }
         script.remove()
         if(CmdbScript.countHits("scriptFile:"+script.scriptFile) == 0)
         {
@@ -130,8 +157,8 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
         def scriptNameBeforeUpdate = script.name;
-        
-        
+
+
         script.update(params);
 
         if (!script.hasErrors()) {
@@ -179,7 +206,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def runScript(CmdbScript script, Map params) throws Exception {
-        params=getScriptObjectParams(script,params);         
+        params=getScriptObjectParams(script,params);
         return ScriptManager.getInstance().runScript(script.scriptFile, params,getScriptLogger(script),script.operationClass);
     }
     static def getScriptObject(CmdbScript script, Map params)
@@ -191,7 +218,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         params.staticParam=script.staticParam;
         params.staticParamMap=CmdbScript.getStaticParamMap(script);
-        return params;        
+        return params;
     }
 
     static def startListening(scriptName) throws Exception{
@@ -205,8 +232,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def startListening(CmdbScript script) throws Exception{
          if(script.listeningDatasource){
-             ListeningAdapterManager.getInstance().addAndStartAdapter(script.listeningDatasource);
-             script.listeningDatasource.update(isSubscribed:true);
+            script.listeningDatasource.startListening();
          }
          else{
              throw new Exception("No listening datasource defined");
@@ -224,8 +250,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def stopListening(CmdbScript script) throws Exception{
          if(script.listeningDatasource){
-             ListeningAdapterManager.getInstance().stopAdapter(script.listeningDatasource);
-             script.listeningDatasource.update(isSubscribed:false);
+             script.listeningDatasource.stopListening();
          }
          else{
              throw new Exception("No listening datasource defined");
@@ -235,9 +260,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def configureScriptLogger(CmdbScript script)
     {
         def logger=getScriptLogger(script);
-        LoggerUtils.configureLogger(logger,Level.toLevel(script.logLevel),script.logFile,script.logFileOwn); 
-        
-    }    
+        LoggerUtils.configureLogger(logger,Level.toLevel(script.logLevel),script.logFile,script.logFileOwn);
+
+    }
     static def stopScriptLogger(CmdbScript script)
     {
         //getScriptLogger(script).removeAllAppenders();
@@ -253,7 +278,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
          {
              def regex="([^,]+):([^,]+)";
              def matcher = ( script.staticParam =~ regex );
-             while (matcher.find()) {                
+             while (matcher.find()) {
                 map.put(matcher.group(1),matcher.group(2));
             }
          }

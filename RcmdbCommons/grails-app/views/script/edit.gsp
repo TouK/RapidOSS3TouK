@@ -1,4 +1,4 @@
-<%@ page import="datasource.BaseListeningDatasource; com.ifountain.rcmdb.datasource.ListeningAdapterManager; script.CmdbScript" %>
+<%@ page import="datasource.BaseListeningDatasource;  script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -201,14 +201,14 @@
 		        <span class="button"><g:actionSubmit class="refresh" value="Reload"/></span>
 		        <%
 		            if (cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource) {
-		                if (ListeningAdapterManager.getInstance().isSubscribed(cmdbScript.listeningDatasource)) {
+		                if (cmdbScript.listeningDatasource.isStartable()) {
 		        %>
-		        <span class="button"><g:actionSubmit class="close" value="Stop"/></span>
+                <span class="button"><g:actionSubmit class="run" value="Start"/></span>
 		        <%
 		            }
 		            else {
 		        %>
-		        <span class="button"><g:actionSubmit class="run" value="Start"/></span>
+		        <span class="button"><g:actionSubmit class="close" value="Stop"/></span>
 		        <%
 		                }
 		            }

@@ -1,4 +1,4 @@
-<%@ page import="com.ifountain.rcmdb.datasource.ListeningAdapterManager" %><html>
+<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="adminLayout"/>
@@ -70,14 +70,15 @@
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
              <%
 
-                if (ListeningAdapterManager.getInstance().isSubscribed(snmpConnector?.script.listeningDatasource)) {
+                if ((snmpConnector?.script.listeningDatasource.isStartable())) {
             %>
-            <span class="button"><g:actionSubmit class="close" value="Stop" action="StopConnector"/></span>
+            <span class="button"><g:actionSubmit class="run" value="Start" action="StartConnector"/></span>
             <%
                 }
                 else {
             %>
-            <span class="button"><g:actionSubmit class="run" value="Start" action="StartConnector"/></span>
+            <span class="button"><g:actionSubmit class="close" value="Stop" action="StopConnector"/></span>
+
             <%
                 }
             %>

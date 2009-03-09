@@ -64,7 +64,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         createSimpleScript(simpleScriptFile, expectedScriptMessage);
     }
-
+    /*
     void testBeforeDelete() {
         initialize([CmdbScript, BaseListeningDatasource], []);
         initializeForCmdbScript();
@@ -114,16 +114,67 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
-    
-    void testBeforeUpdate() {
+    void testAddScriptAddsAdapter()
+    {
+        initialize([CmdbScript, BaseListeningDatasource], []);
+        initializeForCmdbScript();
+
+        def addedDatasource = null;
+        Exception exceptionToThrow = null;
+
+        ListeningAdapterManager.metaClass.addAdapterIfNotExists = {BaseListeningDatasource listeningDatasource ->
+            println "addAdapterIfNotExists in testaddscript";
+            addedDatasource = listeningDatasource;
+            if(exceptionToThrow != null)
+            {
+                throw exceptionToThrow;
+            }
+        }
+        def ds = BaseListeningDatasource.add(name: "myds")
+        assertFalse(ds.hasErrors())
+
+
+
+        assertNull(addedDatasource);
+        CmdbScript script = CmdbScript.add(name: "testscript", type: CmdbScript.LISTENING, listeningDatasource: ds, scriptFile: simpleScriptFile)
+
+        assertFalse(script.hasErrors())
+        assertEquals(1, CmdbScript.list().size());
+        assertEquals(script.listeningDatasource.id, ds.id)
+
+
+        assertEquals(addedDatasource.id, ds.id);
+        assertEquals(addedDatasource.name, ds.name);
+
+        //test if exception occurred in addAdapterIfNotExists this will be discarded
+        script.remove();
+        assertFalse(script.hasErrors());
+
+        try
+        {
+            addedDatasource=null;
+            assertNull(addedDatasource);
+
+            exceptionToThrow = new Exception();
+            def newScript = CmdbScript.add(name: "testscript", type: CmdbScript.LISTENING, listeningDatasource: ds, scriptFile: simpleScriptFile)
+            assertFalse(newScript.hasErrors());
+
+            assertEquals(addedDatasource.id, ds.id);
+            assertEquals(addedDatasource.name, ds.name);
+
+        }catch(Exception e)
+        {
+            fail("Should not throw exception");
+        }
+    }
+    void testUpdateStopsAdapter() {
         initialize([CmdbScript, BaseListeningDatasource], []);
         initializeForCmdbScript();
 
 
         def ds = BaseListeningDatasource.add(name: "myds")
         assertFalse(ds.hasErrors())
-        ListeningAdapterManager.metaClass.addAdapter = {BaseListeningDatasource listeningDatasource ->
-        }
+
         CmdbScript script = CmdbScript.add(name: "testscript", type: CmdbScript.LISTENING, listeningDatasource: ds, scriptFile: simpleScriptFile)
         assertFalse(script.hasErrors())
         assertEquals(script.listeningDatasource.id, ds.id)
@@ -158,6 +209,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
+    void testUpdateWithScriptRenamingRemovesOldAdapterAddsNewAdapter()
+    {
+
+    }
+    */
     void testAddScriptGeneratesScriptFileParamWhenMissing()
     {
         initialize([CmdbScript], []);
@@ -930,16 +986,23 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
-    void testStartListening()
+    void testStartListeningCallsBaseListeningDatasourceAndThrowsException()
     {
         initialize([CmdbScript, BaseListeningDatasource], [])
         initializeForCmdbScript();
+        CompassForTests.addOperationSupport (BaseListeningDatasource,datasource.BaseListeningDatasourceOperations);
 
-        def datasourceFromParam = null;
-        def addAdapterDatasource = null;
-        ListeningAdapterManager.metaClass.addAndStartAdapter = {BaseListeningDatasource listeningDatasource ->
-            datasourceFromParam = listeningDatasource;
+        def callParams=[:];
+        def exceptionToThrow=null;
+        BaseListeningDatasource.metaClass.startListening = {  ->
+            callParams.listeningDatasource = domainObject;
+            if ( exceptionToThrow != null)
+            {
+                callParams.exceptionToThrow=exceptionToThrow;
+                throw exceptionToThrow;
+            }
         }
+
 
         def ds = BaseListeningDatasource.add(name: "baseds", isSubscribed: false);
         assertFalse(ds.hasErrors())
@@ -950,22 +1013,41 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertFalse(script.hasErrors());
         assertNotNull(script.listeningDatasource);
 
+        assertEquals(0,callParams.size());
         CmdbScriptOperations.startListening(script);
-        assertEquals(script.listeningDatasource.id, datasourceFromParam.id)
+        assertEquals(script.listeningDatasource.id, callParams.listeningDatasource.id)
 
-        def updatedDs = BaseListeningDatasource.get(name: ds.name)
-        assertTrue(updatedDs.isSubscribed)
+
+        callParams=[:];
+        exceptionToThrow=new Exception();
+        assertEquals(0,callParams.size());
+
+        try{
+            CmdbScriptOperations.startListening(script);
+            fail("Should throw Exception");
+        }
+        catch(e)
+        {
+            assertEquals(callParams.exceptionToThrow,exceptionToThrow);
+        }
 
     }
 
-    void testStopListening()
+    void testStopListeningCallsBaseListeningDatasourceAndThrowsException()
     {
         initialize([CmdbScript, BaseListeningDatasource], [])
         initializeForCmdbScript();
+        CompassForTests.addOperationSupport (BaseListeningDatasource,datasource.BaseListeningDatasourceOperations);
 
-        def datasourceFromParam = null;
-        ListeningAdapterManager.metaClass.stopAdapter = {BaseListeningDatasource listeningDatasource ->
-            datasourceFromParam = listeningDatasource;
+        def callParams=[:];
+        def exceptionToThrow=null;
+        BaseListeningDatasource.metaClass.stopListening = { ->
+            callParams.listeningDatasource = domainObject;
+            if ( exceptionToThrow != null)
+            {
+                callParams.exceptionToThrow=exceptionToThrow;
+                throw exceptionToThrow;
+            }
         }
 
         def ds = BaseListeningDatasource.add(name: "baseds", isSubscribed: true);
@@ -978,10 +1060,21 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertNotNull(script.listeningDatasource);
 
         CmdbScriptOperations.stopListening(script);
-        assertEquals(script.listeningDatasource.id, datasourceFromParam.id)
+        assertEquals(script.listeningDatasource.id, callParams.listeningDatasource.id) ;
 
-        def updatedDs = BaseListeningDatasource.get(name: ds.name)
-        assertFalse(updatedDs.isSubscribed)
+
+        callParams=[:];
+        exceptionToThrow=new Exception();
+        assertEquals(0,callParams.size());
+
+        try{
+            CmdbScriptOperations.stopListening(script);
+            fail("Should throw Exception");
+        }
+        catch(e)
+        {
+            assertEquals(callParams.exceptionToThrow,exceptionToThrow);
+        }
 
     }
     void testDeleteScriptWithNameGeneratesExceptionWhenScriptIsMissing() {
@@ -1033,8 +1126,14 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
         def callParams = [:]
+        def exceptionToThrow;
         CmdbScriptOperations.metaClass.static.stopListening = {CmdbScript script ->
             callParams.script = script
+            if(exceptionToThrow != null)
+            {
+                callParams.exceptionToThrow=exceptionToThrow;
+                throw  exceptionToThrow;
+            }
 
         }
 
@@ -1045,9 +1144,48 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(unscheduleScriptName, scriptInstance.name);
 
 
+        //we test here if there is a listening datasource stopListening is called
+        def ds = BaseListeningDatasource.add(name: "baseds", isSubscribed: true);
+        assertFalse(ds.hasErrors())
+        assertTrue(ds.isSubscribed)
+
+        scriptParams = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, listeningDatasource: ds]
+        scriptInstance = CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(scriptInstance.hasErrors());
+        assertNotNull(scriptInstance.listeningDatasource);
+
+        unscheduleScriptName = null;
+
+        assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 1)
+        assertEquals(CmdbScript.list().size(), 1);
+        assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+        CmdbScriptOperations.deleteScript(scriptInstance);
+        assertEquals(CmdbScript.list().size(), 0);
+        assertEquals(unscheduleScriptName, scriptInstance.name);
+        assertEquals(callParams.script.id, scriptInstance.id);
+
         //Now we also test that script is removed from script Manager
         assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 0)
         assertNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
+
+
+        // we test stoplistening exception is not thrown
+        scriptInstance = CmdbScriptOperations.addScript(scriptParams);
+        assertFalse(scriptInstance.hasErrors())
+
+        callParams=[:];
+        assertEquals(0,callParams.size());
+        exceptionToThrow=new Exception();
+        try
+        {
+            CmdbScriptOperations.deleteScript(scriptInstance);
+            assertEquals(callParams.script.id, scriptInstance.id);
+            assertEquals(callParams.exceptionToThrow,exceptionToThrow);
+        }
+        catch(e)
+        {
+            fail("should not throw exception");
+        }
 
     }
     void testDeleteScriptDoesNotRemoveScriptFromScriptManagerIfUsed()

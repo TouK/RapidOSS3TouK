@@ -1,4 +1,3 @@
-<%@ page import="com.ifountain.rcmdb.datasource.ListeningAdapterManager" %><html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -109,15 +108,16 @@
 	            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
 	            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
 	            <%
-	                def isSubscribed = ListeningAdapterManager.getInstance().isSubscribed(snmpConnector.script.listeningDatasource);
-	                if (isSubscribed) {
+                    def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
+                    if (isSubscribed) {
 	            %>
-	            <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
+	                <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
 	            <%
 	                }
 	                else {
 	            %>
-	            <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
+                    <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
+
 	            <%
 	                }
 	            %>

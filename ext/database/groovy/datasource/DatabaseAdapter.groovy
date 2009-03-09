@@ -20,7 +20,9 @@ package datasource
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.core.datasource.BaseAdapter
 import java.sql.ResultSet
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import org.apache.commons.lang.exception.ExceptionUtils
+import java.sql.SQLException;
 
 public class DatabaseAdapter extends BaseAdapter {
 
@@ -33,7 +35,7 @@ public class DatabaseAdapter extends BaseAdapter {
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
+        return ExceptionUtils.indexOfThrowable(t, SQLException.class) > -1
     }
     public static getInstance(datasourceName, tableName, keys){
     	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());

@@ -10,6 +10,7 @@ package datasource
 import com.ifountain.core.datasource.BaseAdapter
 
 import org.apache.log4j.Logger
+import org.apache.commons.lang.exception.ExceptionUtils
 
 
 public class EmailAdapter extends BaseAdapter{
@@ -26,7 +27,8 @@ public class EmailAdapter extends BaseAdapter{
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
+        return ExceptionUtils.indexOfThrowable(t, javax.mail.MessagingException.class) > -1 ||
+                ExceptionUtils.indexOfThrowable(t,javax.mail.SendFailedException.class) > -1
     }
 
      public void sendEmail(Map params) throws Exception{

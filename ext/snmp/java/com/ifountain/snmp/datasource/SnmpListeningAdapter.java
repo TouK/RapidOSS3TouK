@@ -4,6 +4,7 @@ import com.ifountain.snmp.util.RSnmpConstants;
 import com.ifountain.snmp.connection.SnmpConnectionImpl;
 import com.ifountain.core.datasource.BaseListeningAdapter;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.snmp4j.*;
 import org.snmp4j.security.*;
 import org.snmp4j.mp.MPv1;
@@ -55,7 +56,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return false;
+        return ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
     }
 
     public void _subscribe() throws Exception {

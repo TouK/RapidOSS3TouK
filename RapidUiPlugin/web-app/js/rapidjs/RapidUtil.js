@@ -58,6 +58,10 @@ String.prototype.trim = function() {
     var a = this.replace(/^\s+/, '');
     return a.replace(/\s+$/, '');
 };
+String.prototype.toQuery = function() {
+    var a = this.replace(/"/, '\\"');
+    return a;
+};
 YAHOO.rapidjs.ArrayUtils = new function()
 {
     this.remove = function(arrayP, index)

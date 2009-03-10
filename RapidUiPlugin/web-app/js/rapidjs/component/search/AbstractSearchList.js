@@ -148,9 +148,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
     appendExceptQuery: function(key, value) {
         if (this.searchInput.value != "")
-            this.appendToQuery("NOT " + key + ": \"" + value + "\"");
+            this.appendToQuery("NOT " + key + ": \"" + value.toQuery() + "\"");
         else
-            this.appendToQuery("alias:* NOT " + key + ": \"" + value + "\"");
+            this.appendToQuery("alias:* NOT " + key + ": \"" + value.toQuery() + "\"");
     },
 
     handleInputEnter : function(e) {

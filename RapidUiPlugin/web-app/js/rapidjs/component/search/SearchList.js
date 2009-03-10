@@ -270,7 +270,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
             else
             {
-                this.appendToQuery(cell.propKey + ":\"" + cell.propValue + "\"");
+                this.appendToQuery(cell.propKey + ":\"" + cell.propValue.toQuery() + "\"");
                 this.firePropertyClick(cell.propKey, cell.propValue, dataNode);
             }
         }

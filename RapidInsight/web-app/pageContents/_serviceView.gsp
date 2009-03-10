@@ -1,10 +1,10 @@
 <script>
     function getEventsQuery(data){
         if(data.nodeType == 'Container'){
-            return 'rsDatasource:"' + data.name + '"'
+            return 'rsDatasource:"' + data.name.toQuery() + '"'
         }
         else{
-            return 'rsDatasource:"' + data.rsDatasource + '" AND elementName:"' + data.name + '"';
+            return 'rsDatasource:"' + data.rsDatasource.toQuery() + '" AND elementName:"' + data.name.toQuery() + '"';
         }
     }
     var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];

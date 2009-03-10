@@ -309,7 +309,7 @@ functionActionCondition7300Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[params.key + ':[* TO ' + params.value + ']']]></rui:functionArg>
+    <rui:functionArg><![CDATA[params.key + ':[* TO ' + params.value.toQuery() + ']']]></rui:functionArg>
     
 </rui:action>
 
@@ -321,7 +321,7 @@ functionActionCondition7309Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[params.key + ':[' + params.value + ' TO *]']]></rui:functionArg>
+    <rui:functionArg><![CDATA[params.key + ':[' + params.value.toQuery() + ' TO *]']]></rui:functionArg>
     
 </rui:action>
 
@@ -333,7 +333,7 @@ functionActionCondition7318Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[params.key + ':{* TO ' + params.value + '}']]></rui:functionArg>
+    <rui:functionArg><![CDATA[params.key + ':{* TO ' + params.value.toQuery() + '}']]></rui:functionArg>
     
 </rui:action>
 
@@ -345,7 +345,7 @@ functionActionCondition7327Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[params.key + ':{' + params.value + ' TO *}']]></rui:functionArg>
+    <rui:functionArg><![CDATA[params.key + ':{' + params.value.toQuery() + ' TO *}']]></rui:functionArg>
     
 </rui:action>
 

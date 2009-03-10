@@ -157,7 +157,7 @@ functionActionCondition7812Condition=""
 
 >
     
-    <rui:functionArg><![CDATA['elementName:' + params.query.toQuery() + '']]></rui:functionArg>
+    <rui:functionArg><![CDATA['elementName:"' + params.query.toQuery() + '"']]></rui:functionArg>
     
     <rui:functionArg><![CDATA['default']]></rui:functionArg>
     

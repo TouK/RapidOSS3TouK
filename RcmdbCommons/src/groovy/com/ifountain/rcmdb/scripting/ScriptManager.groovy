@@ -83,7 +83,7 @@ public class ScriptManager {
 
         }
     }
-    def addScript(String scriptPath) throws ScriptingException
+    def synchronized addScript(String scriptPath) throws ScriptingException
     {
         if(getScript(scriptPath) == null)
         {
@@ -96,7 +96,7 @@ public class ScriptManager {
         scripts[scriptPath] = getScriptClass(scriptPath);
     }
 
-    def removeScript(String scriptPath)
+    def synchronized removeScript(String scriptPath)
     {           
         scripts.remove(getScriptPath(scriptPath))
     }

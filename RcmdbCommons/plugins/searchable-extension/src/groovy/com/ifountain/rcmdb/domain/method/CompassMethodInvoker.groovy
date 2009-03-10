@@ -18,6 +18,8 @@
 */
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.util.RapidStringUtilities
+
 /**
 * Created by IntelliJ IDEA.
 * User: Administrator
@@ -63,7 +65,7 @@ class CompassMethodInvoker {
         if(keys.isEmpty()) return [total:0, results:[]]
         def queryBuffer = new StringBuffer("");
         for(key in keys){
-            queryBuffer.append(key.key).append(":\"").append(key.value).append("\" AND ");
+            queryBuffer.append(key.key).append(":\"").append(RapidStringUtilities.toQuery(String.valueOf(key.value))).append("\" AND ");
         }
         String query = queryBuffer.toString();
         if(keys.size() > 0)

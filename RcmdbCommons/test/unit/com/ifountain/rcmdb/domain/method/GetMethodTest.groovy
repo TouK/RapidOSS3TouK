@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.util.RapidStringUtilities
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,9 +47,12 @@ class GetMethodTest extends RapidCmdbTestCase{
         def keys = ["prop1",  "prop2"]
         GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
         assertFalse (get.isWriteOperation());
-        def result = get.invoke (GetMethodDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
+
+        //get method should escape invalid characters like double-quote
+        def propValues = [prop1:"prop1\"Value", prop3:"prop3Value"];
+        def result = get.invoke (GetMethodDomainObject, [propValues] as Object[]);
         assertNull (result);
-        assertEquals ("prop1:\"prop1Value\" AND prop2:\"null\"", GetMethodDomainObject.query);
+        assertEquals ("prop1:\"${RapidStringUtilities.toQuery (propValues.prop1)}\" AND prop2:\"null\"", GetMethodDomainObject.query);
 
         GetMethodDomainObject objectWillBeReturned = new GetMethodDomainObject(prop1:"prop1Value", prop2:"prop2Value")
         GetMethodDomainObject.searchResult = [total:1, results:[objectWillBeReturned]];
@@ -102,21 +106,21 @@ class GetMethodTest extends RapidCmdbTestCase{
         def relations = ["rel1":new RelationMetaData("rel1", "revRel1", GetMethodDomainObject, RelationMethodDomainObject2, RelationMetaData.ONE_TO_ONE)]
         RelationMethodDomainObject2 relatedObject1 = new RelationMethodDomainObject2(id:1);
         RelationMethodDomainObject2 relatedObject2 = new RelationMethodDomainObject2(id:2);
-        GetMethodDomainObject objectWillBeReturned1 = new GetMethodDomainObject(id:3, prop1:"prop1Value", prop2:"prop2Value", rel1:relatedObject1)
+        GetMethodDomainObject objectWillBeReturned1 = new GetMethodDomainObject(id:3, prop1:"prop1\"Value", prop2:"prop2Value", rel1:relatedObject1)
         GetMethodDomainObject objectWillBeReturned2 = new GetMethodDomainObject(id:4, prop1:"prop1Value", prop2:"prop2Value", rel1:relatedObject2)
         GetMethodDomainObject.searchResult = [total:2, results:[objectWillBeReturned2, objectWillBeReturned1]];
         def params = [prop1:objectWillBeReturned1.prop1, rel1:new RelationMethodDomainObject2(id:1)]
         GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, relations);
         def result = get.invoke (GetMethodDomainObject, [params] as Object[]);
         assertEquals (objectWillBeReturned1.id, result.id);
-        assertEquals ("prop1:\"${objectWillBeReturned1.prop1}\"", GetMethodDomainObject.query);
+        assertEquals ("prop1:\"${RapidStringUtilities.toQuery(objectWillBeReturned1.prop1)}\"", GetMethodDomainObject.query);
 
         objectWillBeReturned1.rel1 = null;
         GetMethodDomainObject.searchResult = [total:2, results:[objectWillBeReturned2, objectWillBeReturned1]];
         params = [prop1:objectWillBeReturned1.prop1, rel1:new RelationMethodDomainObject2(id:1)]
         result = get.invoke (GetMethodDomainObject, [params] as Object[]);
         assertNull (result);
-        assertEquals ("prop1:\"${objectWillBeReturned1.prop1}\"", GetMethodDomainObject.query);
+        assertEquals ("prop1:\"${RapidStringUtilities.toQuery(objectWillBeReturned1.prop1)}\"", GetMethodDomainObject.query);
     }
 
     public void testGetMethodWithTwoRelationsAsKey()
@@ -167,9 +171,10 @@ class GetMethodTest extends RapidCmdbTestCase{
         def keys = ["prop1",  "prop2"]
         GetMethod get = new GetMethod(GetMethodChildDomainObject.metaClass, keys, [:]);
         assertFalse (get.isWriteOperation());
-        def result = get.invoke (GetMethodChildDomainObject, [[prop1:"prop1Value", prop3:"prop3Value"]] as Object[]);
+        def propvalues = [prop1:"prop1\"Value", prop3:"prop3Value"];
+        def result = get.invoke (GetMethodChildDomainObject, [propvalues] as Object[]);
         assertNull (result);
-        assertEquals ("prop1:\"prop1Value\" AND prop2:\"null\"", GetMethodChildDomainObject.query);
+        assertEquals ("prop1:\"${RapidStringUtilities.toQuery (propvalues.prop1)}\" AND prop2:\"null\"", GetMethodChildDomainObject.query);
 
 
         GetMethodChildDomainObject objectWillBeReturned = new GetMethodChildDomainObject(prop1:"prop1Value", prop2:"prop2Value")

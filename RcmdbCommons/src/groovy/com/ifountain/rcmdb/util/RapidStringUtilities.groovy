@@ -30,6 +30,8 @@ import org.codehaus.groovy.runtime.InvokerHelper
 */
 class RapidStringUtilities {
     private RapidStringUtilities() {}
+    //this method wil register all apache stringutils methods and all static methods
+    //on this classes to string metaclass
     public static void registerStringUtils()
     {
         String.metaClass.methodMissing = {java.lang.String methodName, params ->
@@ -50,6 +52,11 @@ class RapidStringUtilities {
 
             }
         }
+    }
+
+    public static String toQuery(String s)
+    {
+        return s.replaceAll("\"", "\\\\\"");
     }
 
     public static String toASCII(String s, char placeholder) {

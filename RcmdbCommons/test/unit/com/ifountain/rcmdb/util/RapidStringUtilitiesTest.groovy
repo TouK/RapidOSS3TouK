@@ -27,24 +27,54 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 * Time: 2:45:30 PM
 * To change this template use File | Settings | File Templates.
 */
-class RapidStringUtilitiesTest extends RapidCmdbTestCase{
+class RapidStringUtilitiesTest extends RapidCmdbTestCase {
     public void testRegisterStringUtilsMethods()
     {
         RapidStringUtilities.registerStringUtils();
-        assertEquals ("tri", "trial".substringBefore("al"));
-        assertEquals ("java.lang.String", String.name);
-        assertTrue ( "trial".equals("trial"));
+        assertEquals("tri", "trial".substringBefore("al"));
+        assertEquals("java.lang.String", String.name);
+        assertTrue("trial".equals("trial"));
         try
         {
             "trial".undefinedMethod("al");
             fail("Should throw exception");
         }
-        catch(MissingMethodException  e)
+        catch (MissingMethodException e)
         {
 
         }
     }
 
+    public void testToQuery()
+    {
+        RapidStringUtilities.registerStringUtils();
+        def originalString = "queryParam"
+        def str = originalString.toQuery();
+        assertEquals(originalString, str);
 
+        originalString = "queryParam\"";
+        str = originalString.toQuery();
+        assertEquals("queryParam\\\"", str);
+
+        originalString = "\"queryParam\"";
+        str = originalString.toQuery();
+        assertEquals("\\\"queryParam\\\"", str);
+    }
+
+    public void testToQueryWithGString()
+    {
+        RapidStringUtilities.registerStringUtils();
+        def originalString = "${"queryParam"}";
+        def str = originalString.toQuery();
+        assertEquals(originalString, str);
+
+        originalString = "${"queryParam\""}";
+        str = originalString.toQuery();
+        assertEquals("queryParam\\\"", str);
+
+        originalString = "${"\"queryParam\""}";
+        str = originalString.toQuery();
+        assertEquals("\\\"queryParam\\\"", str);
+    }
 
 }

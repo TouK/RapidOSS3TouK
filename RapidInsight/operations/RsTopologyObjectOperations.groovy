@@ -18,13 +18,12 @@
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-
-    public final static int CRITICAL = 5
-    public final static int MAJOR = 4
-    public final static int INDETERMINATE = 1
-    public final static int NOTSET = -1
-    public final static int CRITICAL_PERCENTAGE = 40
-    public final static int MAJOR_PERCENTAGE = 20
+     static int CRITICAL = 5
+     static int MAJOR = 4
+     static int INDETERMINATE = 1
+     static int NOTSET = -1
+     static int CRITICAL_PERCENTAGE = 40
+     static int MAJOR_PERCENTAGE = 20
 
     int getState()
     {

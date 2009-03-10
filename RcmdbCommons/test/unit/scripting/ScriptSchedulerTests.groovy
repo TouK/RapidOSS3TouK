@@ -7,6 +7,9 @@ import org.quartz.JobExecutionContext
 import org.quartz.Scheduler
 import org.quartz.StatefulJob
 import org.quartz.impl.StdSchedulerFactory
+import org.quartz.impl.StdScheduler
+import org.quartz.JobDetail
+import org.quartz.Trigger
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -132,6 +135,69 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         }
     }
 
+    public void testScriptSchedulerIsSynchronized(){
+         def threadWaitInterval = 300;
+         ScriptScheduler.destroyInstance();
+         scriptScheduler = ScriptScheduler.getInstance();
+         def quartzScheduler =  new MockQuartzScheduler(threadWaitInterval)
+         scriptScheduler.initialize(quartzScheduler);
+         scriptScheduler.setScriptExecutorClass(MockQuartzJob.class);
+         def threads = [];
+         10.times{
+             def scriptName = "myscript${it}"
+             def t = Thread.start {
+                 scriptScheduler.scheduleScript(scriptName, 0, 30);
+             }
+             threads.add(t);
+         }
+         Thread.sleep(400);
+         try{
+            assertTrue(quartzScheduler.jobDetails.size() < 10)    
+         }
+         finally{
+             threads.each{
+                 it.join();
+             }
+             ScriptScheduler.destroyInstance();
+         }
+
+    }
+
+}
+class MockQuartzScheduler extends StdScheduler{
+    def triggers = [:]
+    def jobDetails = [:]
+    def waitTime = -1
+    public MockQuartzScheduler(waitTime){
+        super(null, null);
+        this.waitTime = waitTime;
+    }
+    public Date scheduleJob(JobDetail jobDetail, Trigger trigger) {
+        if(waitTime > 0){
+            Thread.sleep(waitTime);
+        }
+        def jobName = jobDetail.getName();
+        triggers.put(jobName, trigger);
+        jobDetails.put(jobName, jobDetail);
+        return null;
+    }
+
+    public boolean deleteJob(String s, String s1) {
+        if(waitTime > 0){
+            Thread.sleep(waitTime);
+        }
+        triggers.remove(s);
+        jobDetails.remove(s);
+        return true;
+    }
+
+    public Date rescheduleJob(String s, String s1, Trigger trigger) {
+        if(waitTime > 0){
+            Thread.sleep(waitTime);
+        }
+        triggers.put(s, trigger);
+        return null;
+    }
 }
 class MockQuartzJob implements StatefulJob {
     public void execute(JobExecutionContext jobExecutionContext) {

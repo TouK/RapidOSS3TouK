@@ -56,7 +56,7 @@ class ScriptScheduler {
             this.qScheduler = qScheduler;          
       }
 
-      public void scheduleScript(String scriptName, long startDelay, long period){
+      public synchronized void scheduleScript(String scriptName, long startDelay, long period){
             JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
             long startTime = System.currentTimeMillis() + (startDelay * 1000);
             SimpleTrigger trigger = new SimpleTrigger(scriptName, null,
@@ -67,7 +67,7 @@ class ScriptScheduler {
             scheduleJob(jobDetail,trigger);
       }
 
-      public void scheduleScript(String scriptName, long startDelay, String cronExp){
+      public synchronized void scheduleScript(String scriptName, long startDelay, String cronExp){
             JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
             long startTime = System.currentTimeMillis() + (startDelay * 1000);
             CronTrigger cronTrigger = new CronTrigger(scriptName, null, cronExp);
@@ -86,7 +86,7 @@ class ScriptScheduler {
                 qScheduler.rescheduleJob (trigger.getName(),null,trigger)
             }
       }
-      public void unscheduleScript(String scriptName){
+      public synchronized void unscheduleScript(String scriptName){
            qScheduler.deleteJob(scriptName, null);
            
       }

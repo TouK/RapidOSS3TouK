@@ -23,7 +23,7 @@ class AllTestTestUtils {
     }
     public static junit.framework.TestSuite loadTests(Class allTestSuiteClass, String packagePath)
     {
-        TestSuite suite = new TestSuite(allTestSuiteClass.name);
+        TestSuite suite = new TestSuite(packagePath);
         def testsPath = new File(packagePath);
 
         def possibleTestFiles = FileUtils.listFiles (testsPath, ["groovy", "java"] as String[], true);

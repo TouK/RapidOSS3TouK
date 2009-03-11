@@ -31,7 +31,7 @@ import auth.RsUser
 def userName = web.session.username;
 def queryType = params.queryType;
 def extraFilteredProps = ["rsDatasource"];
-def gridViews = ui.GridView.searchEvery("username:\"${userName}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)", [sort: "name"]);
+def gridViews = ui.GridView.searchEvery("username:\"${userName.toQuery()}\" OR (username:\"${RsUser.RSADMIN.toQuery()}\" AND isPublic:true)", [sort: "name"]);
 if (queryType == "event" || queryType == "historicalEvent") {
     def className = queryType == "notification" ? "RsEvent" : "RsHistoricalEvent";
     def allProps = [];

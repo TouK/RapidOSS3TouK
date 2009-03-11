@@ -17,7 +17,7 @@
     }
     </script>
     <%
-        def mapGroups = MapGroup.searchEvery("username:\"${userName}\" AND isPublic:false")
+        def mapGroups = MapGroup.searchEvery("username:\"${userName.toQuery()}\" AND isPublic:false")
         def groupName = params.groupName ? params.groupName : mode == 'edit' ? topoMap.group.groupName : '';
         def mapName = params.mapName ? params.mapName : mode == 'edit' ? topoMap.mapName : '';
         def nodes = params.nodes ? params.nodes : ''

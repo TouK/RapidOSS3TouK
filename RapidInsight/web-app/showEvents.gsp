@@ -19,7 +19,7 @@
             if (links.size() > 0) {
                 def queryArray = [];
                 links.each {
-                    queryArray.add("elementName:\"${it}\"")
+                    queryArray.add("elementName:\"${it.toQuery()}\"")
                 }
                 query += " OR ${queryArray.join(' OR ')}";
             }

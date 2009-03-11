@@ -32,7 +32,7 @@ web.render(contentType: 'text/xml') {
     Objects() {
         containers.each {containerName ->
            Object(id:containerName, name:containerName, displayName:containerName, nodeType:'Container'){
-               def results = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:\"${containerName}\"");
+               def results = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:\"${containerName.toQuery()}\"");
                results.each{RsComputerSystem topoObj ->
                    Object(id:topoObj.id, name:topoObj.name, displayName:topoObj.displayName, nodeType:'Object',
                            "${CONTAINER_PROPERTY}":topoObj[CONTAINER_PROPERTY])

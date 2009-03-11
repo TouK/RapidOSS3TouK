@@ -109,7 +109,7 @@ def getOtherSideName(link, deviceName)
 def isExpandable( devName, edgeMap)
 {
     def expandable = "false";
-    def links = RsLink.searchEvery("a_ComputerSystemName:\"${devName}\" OR z_ComputerSystemName:\"${devName}\"");
+    def links = RsLink.searchEvery("a_ComputerSystemName:\"${devName.toQuery()}\" OR z_ComputerSystemName:\"${devName.toQuery()}\"");
     links.each{link->
         def otherSide = getOtherSideName(link, devName);
         if( otherSide != null ){

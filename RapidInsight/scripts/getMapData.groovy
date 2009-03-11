@@ -47,9 +47,9 @@ mapDataBuilder.graphData {
         def edgeTokens = it.splitPreserveAllTokens(",");
         def source = edgeTokens[0];
         def target = edgeTokens[1];
-        def links = RsLink.searchEvery( "a_ComputerSystemName:${source} z_ComputerSystemName: ${target}");
+        def links = RsLink.searchEvery( "a_ComputerSystemName:\"${source.toQuery()}\" z_ComputerSystemName: \"${target.toQuery()}\"");
         if( links.size() == 0 )
-        	links = RsLink.searchEvery( "a_ComputerSystemName:${target} z_ComputerSystemName: ${source}");
+        	links = RsLink.searchEvery( "a_ComputerSystemName:\"${target.toQuery()}\" z_ComputerSystemName: \"${source.toQuery()}\"");
 
         if( links.size() != 0 )
         {

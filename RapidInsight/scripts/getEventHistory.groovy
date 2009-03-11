@@ -35,10 +35,10 @@ def name = params.name;
 def searchParams = [max:"1000", sort:"clearedAt", order:"desc"];
 def historicalEvents = null;
 if(nodeType == "Container"){
-    historicalEvents = RsHistoricalEvent.search("${CONTAINER_PROPERTY}:\"${name}\"", searchParams).results;
+    historicalEvents = RsHistoricalEvent.search("${CONTAINER_PROPERTY}:\"${name.toQuery()}\"", searchParams).results;
 }
 else{
-   historicalEvents = RsHistoricalEvent.search("elementName:\"${name}\"", searchParams).results;
+   historicalEvents = RsHistoricalEvent.search("elementName:\"${name.toQuery()}\"", searchParams).results;
 }
 
 web.render(contentType: 'text/xml'){

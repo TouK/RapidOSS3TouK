@@ -34,7 +34,7 @@ def name = params.name;
 
 def devices = [];
 if (nodeType == "Container") {
-    devices = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:\"${name}\"");
+    devices = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:\"${name.toQuery()}\"");
 }
 else {
     def topoObj = RsComputerSystem.get(name: name);

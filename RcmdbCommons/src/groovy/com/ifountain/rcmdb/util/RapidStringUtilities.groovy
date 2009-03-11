@@ -56,7 +56,7 @@ class RapidStringUtilities {
 
     public static String toQuery(String s)
     {
-        return s.replaceAll("\"", "\\\\\"");
+        return org.apache.lucene.queryParser.QueryParser.escape(s);
     }
 
     public static String toASCII(String s, char placeholder) {

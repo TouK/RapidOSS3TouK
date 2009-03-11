@@ -34,10 +34,10 @@ def normalSeverityIndex="0";
 def severityMap = ["0":0, "1":0, "2":0, "3":0, "4":0, "5":0]
 def severitySummary = null
 if(nodeType == "Container"){
-    severitySummary = RsEvent.propertySummary("${CONTAINER_PROPERTY}:\"${name}\"", ["severity"]);
+    severitySummary = RsEvent.propertySummary("${CONTAINER_PROPERTY}:\"${name.toQuery()}\"", ["severity"]);
 }
 else{
-   severitySummary = RsEvent.propertySummary("elementName:\"${name}\"", ["severity"]);
+   severitySummary = RsEvent.propertySummary("elementName:\"${name.toQuery()}\"", ["severity"]);
 }
 def isAllZero = true;
 def invalidSeverityCount=0;

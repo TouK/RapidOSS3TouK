@@ -30,7 +30,7 @@ def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
 MapGroup.add(groupName: "Default", username: web.session.username);
-def mapGroups = MapGroup.searchEvery("username:\"${web.session.username}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)");
+def mapGroups = MapGroup.searchEvery("username:\"${web.session.username.toQuery()}\" OR (username:\"${RsUser.RSADMIN.toQuery()}\" AND isPublic:true)");
 
 mapBuilder.Maps
 {

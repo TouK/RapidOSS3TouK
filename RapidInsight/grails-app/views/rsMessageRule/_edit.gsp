@@ -38,7 +38,7 @@
                             <%
                                 def username = session.username;
                                 def filterType="event";
-                                def queryGroups = SearchQueryGroup.searchEvery("( type:\"${filterType}\" OR type:\"default\" ) AND  ( ( username:\"${RsUser.RSADMIN}\" AND isPublic:true) OR (username:\"${username}\") )");
+                                def queryGroups = SearchQueryGroup.searchEvery("( type:\"${filterType}\" OR type:\"default\" ) AND  ( ( username:\"${RsUser.RSADMIN}\" AND isPublic:true) OR (username:\"${username.toQuery()}\") )");
                             %>
                             <select name="searchQueryId" class="inputtextfield1">
                                <g:each in="${queryGroups}" var="group">

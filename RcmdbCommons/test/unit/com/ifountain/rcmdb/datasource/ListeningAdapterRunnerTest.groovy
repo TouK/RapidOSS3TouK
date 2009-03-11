@@ -2,9 +2,14 @@ package com.ifountain.rcmdb.datasource
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import script.CmdbScript
+import script.CmdbScriptOperations
 import org.apache.log4j.Logger
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.scripting.ScriptManager
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,16 +18,23 @@ import com.ifountain.rcmdb.util.DataStore
 * Time: 11:04:35 AM
 * To change this template use File | Settings | File Templates.
 */
-class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
+class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
     GroovyClassLoader gcl = null;
-    protected void setUp() {
+    def static base_directory = "../testoutput/";
+    
+    public void setUp() {
         super.setUp();
         gcl = new GroovyClassLoader();
         reloadClasses();
         ExpandoMetaClass.enableGlobally();
         DataStore.clear();
+        
+        initializeScriptManager();
+        initialize([CmdbScript], []);
+        CompassForTests.addOperationSupport(CmdbScript,CmdbScriptOperations);        
+        
     }
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown();
         reloadClasses();
         DataStore.clear();
@@ -30,12 +42,27 @@ class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
 
     private void reloadClasses()
     {
+        ScriptManager.destroyInstance();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
         GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningAdapterMock);
     }
-
-
+     void initializeScriptManager()
+    {
+        ScriptManager manager = ScriptManager.getInstance();
+        if (new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory(new File(base_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        
+    }
+    def createScript(scriptName, scriptContent)
+    {
+       def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+       scriptFile.write(scriptContent);
+    }
     private CmdbScript createScriptObject()
     {
         def code = """
@@ -53,22 +80,20 @@ class ListeningAdapterRunnerTest extends RapidCmdbTestCase {
         }
             """
 
+        def scriptFile="script1.groovy";
+        createScript(scriptFile,code);
         
-        def listeningScript = new CmdbScript();
-        listeningScript.name = "script1";
-        listeningScript.type = CmdbScript.LISTENING;
-        def scriptClass = gcl.parseClass(code);
-        CmdbScript.metaClass.'static'.getScriptObject = {script, params ->
-            def obj = scriptClass.newInstance();
-            obj.setProperty("logger", Logger.getRootLogger());
-            return obj;
-        }
+        def listeningScript=CmdbScript.addScript([name:"script1",scriptFile:scriptFile,type:CmdbScript.LISTENING],true);        
+        assertFalse(listeningScript.hasErrors());
+
         return listeningScript;
     }
 
 
     public void testStartAdapterThrowsExceptionIfDatasourceDoesNotReturnAdapter()
     {
+        
+        
         def runner = new ListeningAdapterRunner("adapter1");
         def ds = new RunnerBaseListeningDatasourceMock();
         ds.listeningScript = createScriptObject();

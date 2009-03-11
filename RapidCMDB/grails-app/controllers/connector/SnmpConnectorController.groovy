@@ -105,36 +105,15 @@ class SnmpConnectorController {
                 def isConnectionChanged = connectionParams.host != snmpConnector.connection.host || snmpConnector.connection.port.toString() != connectionParams.port;
                 if (isConnectionChanged) {
                     snmpConnector.connection.update(connectionParams);
-                    if (!snmpConnector.connection.hasErrors()) {
-                        try
-                        {
-                            CmdbScript.stopListening(snmpConnector.script.name)
-                        }
-                        catch (Throwable t)
-                        {
-                            log.info("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
-                        }
-                    }
-                    else {
+                    if (snmpConnector.connection.hasErrors()) {
                         render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
                         return;
                     }
                 }
                 params.name = snmpConnector.name;
-                def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
-                def isScriptChanged = scriptClassParams.name != snmpConnector.script.name || scriptClassParams.scriptFile != snmpConnector.script.scriptFile
+                def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);                
                 CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
-                if (!snmpConnector.script.hasErrors()) {
-                    if (isScriptChanged) {
-                        try
-                        {
-                            CmdbScript.stopListening(snmpConnector.script.name)
-                        }
-                        catch (Throwable t)
-                        {
-                            log.info("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
-                        }
-                    }
+                if (!snmpConnector.script.hasErrors()) {                    
                     flash.message = "SnmpConnector with id ${params.id} successfully updated."
                     redirect(action: show, id:snmpConnector.id)
                 }

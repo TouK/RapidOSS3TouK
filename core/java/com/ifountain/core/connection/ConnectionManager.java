@@ -148,7 +148,6 @@ public class ConnectionManager
         }
         else{
             connection._disconnect();
-            System.out.println( "no pool");
         }
     }
 

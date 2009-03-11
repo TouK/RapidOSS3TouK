@@ -24,6 +24,7 @@ package com.ifountain.core.datasource;
 
 import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
+import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.IConnection;
@@ -128,11 +129,10 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
 
             listeningAdapter.unsubscribe();
             Thread.sleep(300);
-            assertTrue(t1.isStarted());
-            assertFalse(t1.isExecutedSuccessfully());
-            assertNotNull(t1.getThrowedException());
-            
-
+            //subscribe returns without throwing an exception
+            assertTrue(t1.isExecutedSuccessfully());
+            assertNull(t1.getThrowedException());
+            assertFalse(listeningAdapter.isSubscribed());
         }
         finally
         {
@@ -220,7 +220,7 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 0){
             @Override
             protected void _subscribe() throws Exception {
-                ((MockConnectionImpl)connection).setConnectionException(connectionException);
+                ((MockConnectionImpl)getConnection()).setConnectionException(connectionException);
                 throw connectionException;
             }
         };

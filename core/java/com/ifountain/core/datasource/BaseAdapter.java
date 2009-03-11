@@ -34,148 +34,128 @@ import com.ifountain.core.connection.exception.UndefinedConnectionException;
 import com.ifountain.core.connection.exception.ConnectionPoolException;
 
 
-public abstract class BaseAdapter implements Adapter
-{
+public abstract class BaseAdapter implements Adapter {
     protected String connectionName;
     protected long reconnectInterval = 0;
     protected Logger logger;
+    private boolean isDestroyed = false;
 
     public BaseAdapter() {
     }
-    
-    public BaseAdapter(String connConfigName, long reconnectInterval, Logger logger)
-    {
+
+    public BaseAdapter(String connConfigName, long reconnectInterval, Logger logger) {
         this.connectionName = connConfigName;
         this.reconnectInterval = reconnectInterval;
         this.logger = logger;
     }
-    
+
     protected abstract boolean isConnectionException(Throwable t);
+
     public abstract Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception;
 
-    public void executeAction(Action action) throws Exception
-    {
+    public void executeAction(Action action) throws Exception {
 
         boolean isPrintedConnectionExceptionOnce = false;
-        while(true)
-        {
-                IConnection conn;
-                try
-                {
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("Getting connection "+connectionName + " from pool");
-                    }
-                    conn = getConnection();
+        while (!isDestroyed) {
+            IConnection conn;
+            try {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Getting connection " + connectionName + " from pool");
                 }
-                catch (ConnectionException e)
-                {
-                    if(reconnectInterval > 0)
-                    {
-                        if(!isPrintedConnectionExceptionOnce)
-                        {
+                conn = getConnection();
+            }
+            catch (ConnectionException e) {
+                if (reconnectInterval > 0) {
+                    if (!isPrintedConnectionExceptionOnce) {
+                        isPrintedConnectionExceptionOnce = true;
+                        logger.warn("Exception occurred while getting connection " + connectionName + " from pool. Trying to reconnect.", e);
+                    }
+                    Thread.sleep(reconnectInterval);
+                    continue;
+                } else {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Exception occurred while getting connection " + connectionName + " from pool.", e);
+                    }
+                    throw e;
+                }
+            }
+            try {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Executing action with " + connectionName);
+                }
+                action.execute(conn);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Executed action with " + connectionName);
+                }
+                break;
+
+            }
+            catch (Exception e) {
+                boolean isConnectionException = isConnectionException(e);
+                if (!isConnectionException && conn.checkConnection()) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Exception occurred while executing action with connection " + connectionName, e);
+                    }
+                    throw e;
+                } else {
+                    if (isConnectionException) {
+                        conn.invalidate();
+                    }
+                    if (reconnectInterval > 0) {
+                        if (!isPrintedConnectionExceptionOnce) {
                             isPrintedConnectionExceptionOnce = true;
-                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
+                            logger.warn("Exception occurred while executing action " + connectionName + ". Trying to reconnect.", e);
                         }
                         Thread.sleep(reconnectInterval);
-                        continue;
-                    }
-                    else
-                    {
-                        if(logger.isDebugEnabled())
-                        {
-                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
+                    } else {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Exception occurred while executing action with connection " + connectionName, e);
                         }
-                        throw e;
+                        throw new ConnectionException(e);
                     }
                 }
-                try
-                {
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("Executing action with "+connectionName);
-                    }
-                    action.execute(conn);
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("Executed action with "+connectionName);
-                    }
-                    break;
-                    
+            }
+            finally {
+                releaseConnection(conn);
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Released connection " + connectionName);
                 }
-                catch (Exception e) {
-                    boolean isConnectionException = isConnectionException(e);
-                    if(!isConnectionException && conn.checkConnection())
-                    {
-                        if(logger.isDebugEnabled())
-                        {
-                            logger.debug("Exception occurred while executing action with connection "+connectionName, e);
-                        }
-                        throw e;
-                    }
-                    else
-                    {
-                        if(reconnectInterval > 0)
-                        {
-                            if(!isPrintedConnectionExceptionOnce)
-                            {
-                                isPrintedConnectionExceptionOnce = true;
-                                logger.warn("Exception occurred while executing action "+connectionName + ". Trying to reconnect.", e);
-                            }
-                            Thread.sleep(reconnectInterval);
-                        }
-                        else
-                        {
-                            if(logger.isDebugEnabled())
-                            {
-                                logger.debug("Exception occurred while executing action with connection "+connectionName, e);
-                            }
-                            throw new ConnectionException(e);
-                        }
-                    }
-                }
-                finally
-                {
-                    releaseConnection(conn);
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("Released connection "+connectionName);
-                    }
-                }
-            
-            
+            }
+
+
         }
-        
     }
 
 
     protected IConnection getConnection() throws ConnectionInitializationException, UndefinedConnectionException, ConnectionPoolException, ConnectionException {
         return ConnectionManager.getConnection(connectionName);
     }
+
     protected void releaseConnection(IConnection connection) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
         ConnectionManager.releaseConnection(connection);
     }
-    
+
     @Override
-    public void setConnectionName(String connectionName)
-    {
-    	this.connectionName = connectionName;
+    public void setConnectionName(String connectionName) {
+        this.connectionName = connectionName;
     }
-    
+
     @Override
-    public void setReconnectInterval(int reconnectInterval)
-    {
-    	this.reconnectInterval = reconnectInterval;
+    public void setReconnectInterval(int reconnectInterval) {
+        this.reconnectInterval = reconnectInterval;
     }
 
     public long getReconnectInterval() {
         return reconnectInterval;
     }
-    
+
     @Override
-    public void setLogger(Logger logger)
-    {
-    	this.logger = logger;
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
+    public void destroy() {
+        isDestroyed = true;
     }
 
 }

@@ -138,7 +138,6 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         
         listeningAdapter.unsubscribe();
         assertFalse(listeningAdapter.isSubscribed());
-        assertNull(listeningAdapter.getConnection());
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertTrue(conn.isConnected());
     }
@@ -159,8 +158,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         {
             assertEquals(listeningAdapter.unSubscribeException, e);
         }
-        assertTrue(listeningAdapter.isSubscribed());
-        assertNull(listeningAdapter.getConnection());
+        assertFalse(listeningAdapter.isSubscribed());
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertTrue(conn.isConnected());
     }

@@ -24,6 +24,8 @@ package com.ifountain.core.datasource;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Map;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -32,16 +34,17 @@ import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.exception.ConnectionInitializationException;
 import com.ifountain.core.connection.exception.ConnectionPoolException;
+import com.ifountain.core.connection.exception.UndefinedConnectionException;
 
 public abstract class BaseListeningAdapter extends Observable implements Observer {
 
     protected String connectionName;
     protected long reconnectInterval = 0;
     protected Logger logger;
-    protected IConnection connection;
     protected boolean isSubscribed = false;
     protected boolean stoppedByUser = false;
     private Object subscriptionLock = new Object();
+    protected ActionExecutor executorAdapter;
 
     public BaseListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
         this.connectionName = connectionName;
@@ -59,10 +62,9 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         if (data != null) {
             setChanged();
             notifyObservers(data);
-            
+
         }
     }
-
 
 
     public abstract Object _update(Observable o, Object arg);
@@ -70,133 +72,57 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected abstract void _subscribe() throws Exception;
 
     protected abstract void _unsubscribe();
+
     protected abstract boolean isConnectionException(Throwable t);
 
     private void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
-            logger.info("Subscribing to connection with name "+ connectionName);
-            boolean isPrintedConnectionExceptionOnce = false;
-            while (true) {
-                try {
-                    synchronized (subscriptionLock)
-                    {
-                        if(!stoppedByUser)
-                        {
-                            if(logger.isDebugEnabled())
-                            {
-                                logger.debug("Getting connection "+connectionName + " from pool");
-                            }
-                            connection = ConnectionManager.getConnection(connectionName);
-                            if(logger.isDebugEnabled())
-                            {
-                                logger.debug("Got connection "+connectionName + " from pool");
-                            }
-                            try
-                            {
-                                _subscribe();
-                                isSubscribed = true;
-                                logger.info("Subscribed to connection with name "+ connectionName);
-                                break;
-                            }
-                            catch(Exception e)
-                            {
-                                boolean isConnectionException = isConnectionException(e);
-                                if (!isConnectionException && connection.checkConnection()) {
-                                    if(logger.isDebugEnabled())
-                                    {
-                                        logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
-                                    }
-                                    throw e;
-                                } else {
-                                    if(isConnectionException)
-                                    {
-                                        connection.invalidate();
-                                    }
-                                    if (reconnectInterval > 0) {
-                                        if(!isPrintedConnectionExceptionOnce)
-                                        {
-                                            isPrintedConnectionExceptionOnce = true;
-                                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
-                                        }
-                                        Thread.sleep(reconnectInterval);
-                                    } else {
-                                        if(logger.isDebugEnabled())
-                                        {
-                                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
-                                        }
-                                        throw new ConnectionException(e);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            logger.info("Stopped by user cannot subscribe to connection "+connectionName);
-                            throw new Exception("Stopped by user cannot subscribe");
-                        }
-                    }
-                }
-                catch (ConnectionException e) {
-                    if (reconnectInterval > 0) {
-                        if(!isPrintedConnectionExceptionOnce)
-                        {
-                            isPrintedConnectionExceptionOnce = true;
-                            logger.warn("Exception occurred while getting connection "+connectionName + " from pool. Trying to reconnect.", e);
-                        }
-                        Thread.sleep(reconnectInterval);
-                    } else {
-                        if(logger.isDebugEnabled())
-                        {
-                            logger.debug("Exception occurred while getting connection "+connectionName + " from pool.", e);
-                        }
-                        throw e;
-                    }
-                }
-                finally {
-                    if (!isSubscribed()) {
-                        releaseConnection();
-                    }
-                }
+            logger.info("Subscribing to connection with name " + connectionName);
+            executorAdapter = new ActionExecutor(this, connectionName, reconnectInterval, logger);
+            if (!stoppedByUser) {
+                executorAdapter.executeAction(new SubscribeAction());
+            } else {
+                logger.info("Stopped by user cannot subscribe to connection " + connectionName);
+                throw new Exception("Stopped by user cannot subscribe");
             }
+
         }
     }
+
     public void subscribe() throws Exception {
-        synchronized (subscriptionLock)
-        {
+        synchronized (subscriptionLock) {
             this.stoppedByUser = false;
         }
         subscribeInternally();
     }
 
     public void unsubscribe() throws Exception {
-        synchronized (subscriptionLock)
-        {
+        synchronized (subscriptionLock) {
             this.stoppedByUser = true;
             unsubscribeInternally();
         }
     }
 
     private synchronized void releaseConnection() throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
-        if (connection != null) {
-            if(logger.isDebugEnabled())
-            {
-                logger.debug("Released connection "+connectionName);
-            }
-            ConnectionManager.releaseConnection(connection);
-            connection = null;
-        }
+        executorAdapter.releaseConnection(getConnection());
     }
+
     private void unsubscribeInternally() throws Exception {
-        if (isSubscribed()) {
-            try
-            {
-                _unsubscribe();
-                isSubscribed = false;
-            }
-            finally{
-                releaseConnection();
+        try {
+            if (isSubscribed()) {
+                try {
+                    _unsubscribe();
+                }
+                finally {
+                    isSubscribed = false;
+                    releaseConnection();
+                }
             }
         }
+        finally {
+            executorAdapter.destroy();
+        }
+
     }
 
     protected void disconnectDetected() throws Exception {
@@ -233,7 +159,53 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     }
 
     protected IConnection getConnection() {
-        return connection;
+        try {
+            return executorAdapter.getConnection();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    class ActionExecutor extends BaseAdapter {
+        IConnection connection;
+        BaseListeningAdapter listeningAdapter;
+
+        public ActionExecutor(BaseListeningAdapter listeningAdapter, String connConfigName, long reconnectInterval, Logger logger) {
+            super(connConfigName, reconnectInterval, logger);
+            this.listeningAdapter = listeningAdapter;
+        }
+
+        protected boolean isConnectionException(Throwable t) {
+            return listeningAdapter.isConnectionException(t);
+        }
+
+        public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception {
+            return null;
+        }
+
+        protected IConnection getConnection() throws ConnectionInitializationException, UndefinedConnectionException, ConnectionPoolException, ConnectionException {
+            if (connection == null) {
+                connection = super.getConnection();
+            }
+            return connection;
+        }
+
+        protected void releaseConnection(IConnection connection) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
+            if (!isSubscribed()) {
+                super.releaseConnection(connection);
+                connection = null;
+            }
+        }
+    }
+
+    class SubscribeAction implements Action {
+
+        public void execute(IConnection conn) throws Exception {
+            synchronized (subscriptionLock) {
+                _subscribe();
+                isSubscribed = true;
+            }
+        }
     }
 
 

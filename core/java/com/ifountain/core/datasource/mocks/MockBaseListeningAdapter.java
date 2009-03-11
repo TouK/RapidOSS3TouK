@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import com.ifountain.core.datasource.BaseListeningAdapter;
+import com.ifountain.comp.test.util.logging.TestLogUtils;
 import org.apache.log4j.Logger;
 
 public class MockBaseListeningAdapter extends BaseListeningAdapter {
@@ -36,7 +37,7 @@ public class MockBaseListeningAdapter extends BaseListeningAdapter {
     public RuntimeException unSubscribeException;
     public List isConnectionExceptionsList = new ArrayList();
     public MockBaseListeningAdapter(String connectionName, long reconnectInterval) {
-        super(connectionName, reconnectInterval, Logger.getRootLogger());
+        super(connectionName, reconnectInterval, TestLogUtils.log);
     }
 
     public MockBaseListeningAdapter(String connectionName){

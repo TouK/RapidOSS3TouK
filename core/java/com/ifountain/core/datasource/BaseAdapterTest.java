@@ -27,7 +27,9 @@ import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.ConnectionParam;
+import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.exception.UndefinedConnectionException;
+import com.ifountain.core.connection.exception.ConnectionException;
 import com.ifountain.core.connection.mocks.MockConnectionImpl;
 import com.ifountain.core.datasource.mocks.MockActionImpl;
 import com.ifountain.core.datasource.mocks.MockBaseAdapterImpl;
@@ -63,6 +65,13 @@ public class BaseAdapterTest extends RapidCoreTestCase
         
         assertSame(ConnectionManager.getConnection(connectionName), action.getConnection());
         assertTrue(action.isExecuted());
+    }
+     public void testDestroyedAdapterDoesNotExecuteAction() throws Exception
+    {
+        MockActionImpl action = new MockActionImpl();
+        impl.destroy();
+        impl.executeAction(action);
+        assertFalse(action.isExecuted());
     }
     
     public void testExecuteActionThrowsExceptionIfActionCouldNotBeExecutedSuccessfully() throws Exception
@@ -120,6 +129,31 @@ public class BaseAdapterTest extends RapidCoreTestCase
         {
             assertEquals(new UndefinedConnectionException(connectionName), e);
         }
+    }
+
+    public void testSubscribeSetConnectionAsInvalidIfThrowedExceptionIsConnectionException() throws Exception
+    {
+        createConnectionParam(connectionName);
+        IConnection conn = ConnectionManager.getConnection(connectionName);
+        ConnectionManager.releaseConnection(conn);
+        impl.isConnectionException = true;
+        MockActionImpl dsAction = new MockActionImpl();
+        Exception expectedException = new Exception("Exception occurred while executing action.");
+        dsAction.setExceptionWillBeThrown(expectedException);
+
+        try
+        {
+            impl.executeAction(dsAction);
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertTrue(e instanceof ConnectionException);
+        }
+
+        IConnection connectionAfterSubscribeException = ConnectionManager.getConnection(connectionName);
+        assertNotSame("Connection object should not be same since previous connection should be marked as invalid by adapter", conn, connectionAfterSubscribeException);
+
     }
     
     private ConnectionParam createConnectionParam(String connectionName)

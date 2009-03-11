@@ -120,7 +120,9 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
             }
         }
         finally {
-            executorAdapter.destroy();
+            if(executorAdapter != null){
+                executorAdapter.destroy();    
+            }
         }
 
     }

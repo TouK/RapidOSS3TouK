@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.test.util
 import junit.framework.TestSuite
 import org.apache.commons.io.FileUtils
 import junit.framework.TestCase
+import org.apache.commons.lang.StringUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,24 +13,28 @@ import junit.framework.TestCase
 * To change this template use File | Settings | File Templates.
 */
 class AllTestTestUtils {
-    public static junit.framework.TestSuite loadTests(Class allTestSuiteClass, String filePathToLoadTests)
+    public static junit.framework.TestSuite loadTests(Class allTestSuiteClass, List packagePaths)
+    {
+        TestSuite suite = new TestSuite(allTestSuiteClass);
+        packagePaths.each{String path->
+            suite.addTest (loadTests(allTestSuiteClass, path));
+        }
+        return suite;
+    }
+    public static junit.framework.TestSuite loadTests(Class allTestSuiteClass, String packagePath)
     {
         TestSuite suite = new TestSuite(allTestSuiteClass.name);
-        def testsPath = new File(filePathToLoadTests);
+        def testsPath = new File(packagePath);
 
         def possibleTestFiles = FileUtils.listFiles (testsPath, ["groovy", "java"] as String[], true);
+
         def testClasses = [];
         possibleTestFiles.each{File possibleTesFile->
-            def gcl = new GroovyClassLoader();
-            gcl.addClasspath (testsPath.getCanonicalPath());
-            gcl.parseClass (possibleTesFile)
-            def classes = gcl.getLoadedClasses();
-            classes.each{Class cls->
-                def lowerCasedName = cls.name.toLowerCase();
-                if((lowerCasedName.endsWith("test") || lowerCasedName.endsWith("tests")) && TestCase.isAssignableFrom(cls) && !(lowerCasedName.endsWith("alltests") || lowerCasedName.endsWith("alltest")))
-                {
-                    suite.addTestSuite(allTestSuiteClass.classLoader.loadClass(cls.name));
-                }
+            if(possibleTesFile.name.endsWith("Test.java") || possibleTesFile.name.endsWith("Test.groovy"))
+            {
+                def fileName =  possibleTesFile.canonicalPath.substring(testsPath.canonicalPath.length()+1);
+                def className = StringUtils.substringBeforeLast(fileName, ".").replaceAll("/", ".").replaceAll("\\\\", ".");
+                suite.addTestSuite(allTestSuiteClass.classLoader.loadClass (className));
             }
         }
 

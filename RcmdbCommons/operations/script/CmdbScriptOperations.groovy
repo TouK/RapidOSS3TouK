@@ -37,52 +37,7 @@ import com.ifountain.comp.utils.LoggerUtils;
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     static Logger logger = Logger.getLogger(CmdbScriptOperations.class)
-    /*
-    def beforeDelete(){
-        if(this.type == LISTENING ){
-            if(listeningDatasource != null){
-                try
-                {
-                    ListeningAdapterManager.getInstance().removeAdapter(listeningDatasource);
-                }catch(Exception e)
-                {
-                    logger.info ("Exception occurred while removing adapter for ${listeningDatasource.name} datasource", e);
-                }
-            }
-
-        }
-    }
-
-   def beforeUpdate(){
-       def scriptInCompass = CmdbScript.get(this.id);
-        if(scriptInCompass.type == LISTENING ){
-            if(scriptInCompass.listeningDatasource != null ){
-                try
-                {
-                    ListeningAdapterManager.getInstance().stopAdapter(scriptInCompass.listeningDatasource);
-                }catch(Exception e)
-                {
-                    logger.info ("Exception occurred while stopping adapter for ${listeningDatasource.name} datasource", e);
-                }
-            }
-        }
-    }
-
-    def afterInsert(){
-       if(this.type == LISTENING ){
-            if(listeningDatasource != null){
-                try
-                {
-                    ListeningAdapterManager.getInstance().addAdapterIfNotExists (listeningDatasource);
-                }catch(Exception e)
-                {
-                    logger.info ("Exception occurred while adding adapter for ${listeningDatasource.name} datasource", e);
-                }
-            }
-
-        }
-    }
-     */
+    
 
     def reload() throws ScriptingException
     {

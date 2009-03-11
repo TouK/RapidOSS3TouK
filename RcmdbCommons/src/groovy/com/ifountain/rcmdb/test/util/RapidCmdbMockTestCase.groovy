@@ -45,6 +45,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.apache.commons.io.FileUtils
 import org.compass.core.Compass
+import com.ifountain.rcmdb.util.RapidStringUtilities
 
 /**
  * Created by IntelliJ IDEA.
@@ -103,6 +104,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         }
         this.loadedClasses = classesToBeLoaded;
         ExpandoMetaClass.enableGlobally()
+        RapidStringUtilities.registerStringUtils();
 //        classesToBeLoaded.addAll(Arrays.asList(gcl.getLoadedClasses()));
         ctx = new MockApplicationContext();
         ga = new DefaultGrailsApplication(classesToBeLoaded as Class[],gcl);

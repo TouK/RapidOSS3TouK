@@ -26,18 +26,35 @@ public class ListeningAdapterRunner
     public static final int STOPPED = 6;
     String adapterName;
     int state = NOT_STARTED;
+    Date lastStateChangeTime;
     BaseListeningAdapter adapter;
     ListeningAdapterObserver observer;
+
     public ListeningAdapterRunner(String adapterName)
     {
         this.adapterName = adapterName;
+        lastStateChangeTime=new Date();
     }
-
+    public int getState()
+    {
+        synchronized (stateLock)
+        {
+            return state;            
+        }
+    }
     public void setState(int state)
     {
         synchronized (stateLock)
         {
             this.state = state
+            lastStateChangeTime=new Date();
+        }
+    }
+    public Date getLastStateChangeTime()
+    {
+        synchronized (stateLock)
+        {
+            return (Date)lastStateChangeTime.clone();
         }
     }
     public boolean isRunning()

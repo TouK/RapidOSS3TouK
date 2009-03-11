@@ -202,6 +202,10 @@ class ListeningAdapterManager {
     {
         return getRunnerAndThrowExceptionIfNotExist(ds.name).getState();
     }
+    public Date getLastStateChangeTime(BaseListeningDatasource ds)
+    {
+        return getRunnerAndThrowExceptionIfNotExist(ds.name).getLastStateChangeTime();        
+    }
     
     private ListeningAdapterRunner getRunner(String name)
     {

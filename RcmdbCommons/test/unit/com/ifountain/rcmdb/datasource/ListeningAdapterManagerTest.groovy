@@ -78,7 +78,46 @@ class ListeningAdapterManagerTest extends RapidCmdbTestCase {
             println e;
         }
     }
+    public void testGetLastStateChangeTime()
+    {
+        def logLevel = Level.DEBUG;
+        initialize();
+        CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", staticParam: "x:5", logLevel: logLevel.toString())]);
+        def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
 
+        def ds = new BaseListeningDatasourceMock();
+        ds.listeningScript = script;
+        
+        try
+        {
+            ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+            fail("Sohuld throw exception since adapter runner is not defined");
+        } catch (ListeningAdapterException e)
+        {
+            assertEquals(ListeningAdapterException.runnerDoesNotExist(ds.name).getMessage(), e.getMessage());
+        }
+        def firstTime=new Date();
+        Thread.sleep(10);
+
+        ListeningAdapterManager.getInstance().addAdapter(ds);
+        assertEquals(ListeningAdapterRunner.NOT_STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        def managerTime=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+        def runnerTime=ListeningAdapterManager.getInstance().getRunner(ds.name).getLastStateChangeTime();
+        assertEquals(0,managerTime.compareTo(runnerTime));        
+        assertEquals(1,managerTime.compareTo(firstTime));
+
+        def secondTime=new Date();
+        Thread.sleep(10);
+
+        ListeningAdapterManager.getInstance().startAdapter(ds);
+        assertEquals(ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        def secondManagerTime=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+        def secondRunnerTime=ListeningAdapterManager.getInstance().getRunner(ds.name).getLastStateChangeTime();
+        assertEquals(0,secondManagerTime.compareTo(secondRunnerTime));
+        assertEquals(1,secondManagerTime.compareTo(secondTime));
+        assertEquals(1,secondManagerTime.compareTo(managerTime));
+
+    }
     public void testAddAdapter()
     {
         initialize();

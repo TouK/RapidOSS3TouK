@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.util
 
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.runtime.InvokerHelper
+import org.codehaus.groovy.runtime.NullObject
 
 /**
 * Created by IntelliJ IDEA.
@@ -51,6 +52,10 @@ class RapidStringUtilities {
                 }
 
             }
+        }
+
+        NullObject.metaClass.toQuery = {->
+            return String.valueOf(null);
         }
     }
 

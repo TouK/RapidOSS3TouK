@@ -28,6 +28,18 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 * To change this template use File | Settings | File Templates.
 */
 class RapidStringUtilitiesTest extends RapidCmdbTestCase {
+
+    protected void setUp() {
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        ExpandoMetaClass.enableGlobally();
+    }
+
+    protected void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        ExpandoMetaClass.disableGlobally();
+    }
+
+
     public void testRegisterStringUtilsMethods()
     {
         RapidStringUtilities.registerStringUtils();
@@ -59,6 +71,14 @@ class RapidStringUtilitiesTest extends RapidCmdbTestCase {
         originalString = "\"queryParam\"";
         str = originalString.toQuery();
         assertEquals("\\\"queryParam\\\"", str);
+    }
+
+    public void testToQueryWithNullStringObject()
+    {
+        RapidStringUtilities.registerStringUtils();
+        String originalString = null;
+        def str = originalString.toQuery();
+        assertEquals("null", str);
     }
 
     public void testToQueryWithGString()

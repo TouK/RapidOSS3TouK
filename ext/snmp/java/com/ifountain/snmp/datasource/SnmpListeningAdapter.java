@@ -56,7 +56,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
+        return false;//ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
     }
 
     public void _subscribe() throws Exception {

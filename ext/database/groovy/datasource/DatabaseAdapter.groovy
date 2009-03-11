@@ -35,7 +35,7 @@ public class DatabaseAdapter extends BaseAdapter {
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfThrowable(t, SQLException.class) > -1
+        return false;//ExceptionUtils.indexOfThrowable(t, SQLException.class) > -1
     }
     public static getInstance(datasourceName, tableName, keys){
     	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());

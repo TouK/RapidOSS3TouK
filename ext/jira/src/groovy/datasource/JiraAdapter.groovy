@@ -20,11 +20,11 @@ public class JiraAdapter extends BaseAdapter {
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfThrowable(t, RemoteException.class) > -1 ||
+        return false;/*ExceptionUtils.indexOfThrowable(t, RemoteException.class) > -1 ||
                 ExceptionUtils.indexOfThrowable(t, RemotePermissionException.class) > -1 ||
                 ExceptionUtils.indexOfThrowable(t, RemoteAuthenticationException.class) > -1 ||
                 ExceptionUtils.indexOfThrowable(t, RemoteValidationException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t, com.atlassian.jira.rpc.exception.RemoteException.class) > -1
+                ExceptionUtils.indexOfThrowable(t, com.atlassian.jira.rpc.exception.RemoteException.class) > -1*/
     }
 
     public openIssue(Map params) throws Exception {

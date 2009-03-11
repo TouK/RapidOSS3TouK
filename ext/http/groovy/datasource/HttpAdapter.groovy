@@ -35,7 +35,7 @@ public class HttpAdapter extends BaseAdapter{
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfThrowable(t, HttpStatusException.class) > -1 || ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
+        return false;//ExceptionUtils.indexOfThrowable(t, HttpStatusException.class) > -1 || ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
     }
     
     public HttpAdapter(connectionName, reconnectInterval, logger){

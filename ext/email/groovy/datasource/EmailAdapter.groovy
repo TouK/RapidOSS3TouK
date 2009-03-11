@@ -27,8 +27,8 @@ public class EmailAdapter extends BaseAdapter{
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfThrowable(t, javax.mail.MessagingException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t,javax.mail.SendFailedException.class) > -1
+        return false;/*ExceptionUtils.indexOfThrowable(t, javax.mail.MessagingException.class) > -1 ||
+                ExceptionUtils.indexOfThrowable(t,javax.mail.SendFailedException.class) > -1  */
     }
 
      public void sendEmail(Map params) throws Exception{

@@ -166,7 +166,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         }
     }
 
-    class ActionExecutor extends BaseAdapter {
+    protected class ActionExecutor extends BaseAdapter {
         IConnection connection;
         BaseListeningAdapter listeningAdapter;
 

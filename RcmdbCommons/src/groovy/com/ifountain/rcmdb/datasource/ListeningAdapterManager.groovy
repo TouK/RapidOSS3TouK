@@ -78,7 +78,12 @@ class ListeningAdapterManager {
    {
        logger.info("Initializing listening datasources");
        BaseListeningDatasource.list().each{BaseListeningDatasource ds->
-           ListeningAdapterManager.getInstance().addAdapter (ds);
+           try {
+               ListeningAdapterManager.getInstance().addAdapter (ds);
+           }
+           catch (e) {
+               logger.warn("Error adding adapter ${ds.name}. Reason: ${e.getMessage()}");
+           }
        }
        logger.info("Starting listening datasources");
        listeningScriptInitializerThread = Thread.start{

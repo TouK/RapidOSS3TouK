@@ -36,9 +36,9 @@ public class UiLayoutUnitOperations extends AbstractDomainOperation
             component=UiComponent.get(name:attributes.component, tabId:tab.id, isActive:true);
             attributes.component = component;
         }
-        if(component == null && (attributes.contentFile == null || attributes.contentFile == "")){
-            throw new Exception("All layout units should have a component or a contentFile");
-        }
+//        if(component == null && (attributes.contentFile == null || attributes.contentFile == "")){
+//            throw new Exception("All layout units should have a component or a contentFile");
+//        }
 
         def layoutUnit = DesignerUtils.addUiObject(domainClass, attributes, xmlNode);
         innerLayouts.each{innerLayoutNode->

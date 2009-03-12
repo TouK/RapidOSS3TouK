@@ -26,6 +26,7 @@ YAHOO.rapidjs.component.tool.ButtonToolBar = function(container, config){
         html:'<span class="r-buttontoolbar-text">' + title+ '</span><div class="r-buttontoolbar-tools"></div>'});
     this.titleEl = this.el.childNodes[0]; 
     this.toolsEl = this.el.childNodes[1];
+    this.tools = [];
 };
 
 YAHOO.rapidjs.component.tool.ButtonToolBar.prototype = {
@@ -38,6 +39,7 @@ YAHOO.rapidjs.component.tool.ButtonToolBar.prototype = {
          var buttonContainer = YAHOO.ext.DomHelper.append(this.toolsEl, {tag:'div', cls:'r-buttontoolbar-button'});
         buttonContainer.appendChild(basicTool.button.el.dom);
         basicTool.containerChanged(buttonContainer);
+        this.tools.push(basicTool);
     },
 
     setTitle: function(title){

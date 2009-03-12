@@ -288,6 +288,47 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         return runConnector;
     }
+    public void testSaveRollBacksIfConnectorHasErrors()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+        controller.params.remove("name");
+        controller.save();
+
+        assertTrue(controller.modelAndView.model.snmpConnector.hasErrors());
+        assertNull(controller.modelAndView.model.snmpConnection.id);
+        assertNull(controller.modelAndView.model.script.id);
+        
+
+        assertEquals(0, SnmpConnector.list().size());
+        assertEquals(0, SnmpConnection.list().size());
+        assertEquals(0, SnmpDatasource.list().size());
+        assertEquals(0, CmdbScript.list().size());
+
+    }
+
+    /*
+    public void testSaveRollBacksIfConnectionHasErrors()
+    {
+        String connectorName = "snmpTestConnector";
+        def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+        controller.params.port="xxyy";
+        controller.save();
+
+        assertNull(controller.modelAndView.model.snmpConnector.hasErrors());
+        assertTrue(controller.modelAndView.model.snmpConnection.hasErrors());
+        assertNull(controller.modelAndView.model.script.id);
+
+
+        assertEquals(0, SnmpConnector.list().size());
+        assertEquals(0, SnmpConnection.list().size());
+        assertEquals(0, SnmpDatasource.list().size());
+        assertEquals(0, CmdbScript.list().size());
+
+
+    }
+    */
      /*
     public void testRollbackDataInUpdate()
     {
@@ -345,6 +386,8 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.update();
 
         model = controller.modelAndView.model;
+
+
         assertFalse (model.smartsConnector.hasErrors());
         assertFalse (model.smartsConnection.hasErrors());
         assertTrue (model.datasource.hasErrors());
@@ -376,54 +419,6 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     }
 
 
-
-    public void testIfConnectorHasErrorsDoesnotCreateConnectionDatasourceScript()
-    {
-        SmartsConnectionData smartsConnectionData = SmartsConnectionData.add(name:"con1", broker:connectionParams.broker, username:connectionParams.username, password:connectionParams.password);
-        assertFalse(smartsConnectionData.hasErrors());
-
-        String connectorName = "notificationConnector";
-
-        //name property is missing
-        def controller = getTopologyController(smartsConnectionData);
-        controller.params.remove("name");
-        controller.save();
-
-        assertTrue (controller.modelAndView.model.smartsConnector.hasErrors());
-        assertNull(controller.modelAndView.model.smartsConnection.id);
-        assertNull(controller.modelAndView.model.datasource.id);
-        assertNull(controller.modelAndView.model.listeningScript.id);
-
-        assertEquals(0, SmartsConnector.list().size());
-        assertEquals(0, SmartsConnection.list().size());
-        assertEquals(0, SmartsTopologyDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
-
-    }
-
-    public void testIfConnectionHasErrorsDoesnotCreateDatasourceScriptAndRemoveCreatedConnector()
-    {
-        SmartsConnectionData smartsConnectionData = SmartsConnectionData.add(name:"con1", broker:connectionParams.broker, username:connectionParams.username, password:connectionParams.password);
-        assertFalse(smartsConnectionData.hasErrors());
-
-        String connectorName = "notificationConnector";
-
-        //domain property is missing
-        def controller = getTopologyController(smartsConnectionData);
-        controller.params.remove("domain");
-        controller.save();
-
-        assertTrue (controller.modelAndView.model.smartsConnection.hasErrors());
-        assertFalse(controller.modelAndView.model.smartsConnector.hasErrors());
-        assertNull(controller.modelAndView.model.datasource.id);
-        assertNull(controller.modelAndView.model.listeningScript.id);
-
-        assertEquals(0, SmartsConnector.list().size());
-        assertEquals(0, SmartsConnection.list().size());
-        assertEquals(0, SmartsTopologyDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
-
-    }
 
     public void testIfScriptHasErrorsDoesnotCreateDatasourceAndRemoveCreatedConnectorAndConnection()
     {

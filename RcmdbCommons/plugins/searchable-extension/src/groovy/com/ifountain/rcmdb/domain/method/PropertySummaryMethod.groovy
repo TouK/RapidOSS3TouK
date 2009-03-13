@@ -21,6 +21,8 @@ package com.ifountain.rcmdb.domain.method
 import org.compass.core.CompassHit
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.util.RapidStringUtilities
+import com.ifountain.compass.CompassConstants
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,35 +48,27 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
         def propertyList = arguments[1]
         propertyList = propertyList instanceof Collection?propertyList:[propertyList]
         Map summary = [:]
+
+
         propertyList.each{String propName->
             summary[propName] = new PropertySummaryMapWrapper();
-        }
-        def rawDataProcessorClosure = {hits,session->
-            hits.each{CompassHit hit->
-                propertyList.each{String propName->
-                    def prop = hit.getResource().getProperty(propName);
-                    def value ;
-                    if(prop == null)
+            def termFreqs = clazz.termFreqs(propName, [size:Integer.MAX_VALUE]);
+            termFreqs.each{termFreq->
+                def term = termFreq.term;
+                def countQuery = "(${query}) AND ${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${propName}:\"${RapidStringUtilities.toQuery(String.valueOf(term))}\"";
+                def rawDataProcessorClosure = {hits,session->
+                    def termCount = hits.size();
+                    if(termCount > 0)
                     {
-                        value = null;
+                        CompassHit hit = hits[0]
+                        def prop = hit.getResource().getProperty(propName);
+                        def value = prop.getObjectValue();
+                        summary[propName][value] = termCount;
                     }
-                    else if(prop.getObjectValue() == null)
-                    {
-                        value = "";
-                    }
-                    else
-                    {
-                        value = prop.getObjectValue();
-                    }
-                    if(summary[propName][value] == null)
-                    {
-                        summary[propName][value] = 0;
-                    }
-                    summary[propName][value]++;
                 }
+                CompassMethodInvoker.searchEvery(mc, countQuery, [raw:rawDataProcessorClosure])
             }
         }
-        CompassMethodInvoker.searchEvery(mc, query, [raw:rawDataProcessorClosure])
         return summary;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

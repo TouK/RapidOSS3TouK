@@ -39,7 +39,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value3");
 
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
-        def res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1"]] as Object[])
+        Map res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1"]] as Object[])
         assertEquals (1, res.size());
         assertEquals (2, res.prop1.prop1Value1);
         assertEquals (2, res.prop1.prop1Value2);
@@ -55,6 +55,8 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     
     public void testPropertySummaryWithMultipleProperty()
     {
+
+        fail("Should run after nullanalyzer implementation");
         initialize([PropertySummaryMethodDomainObject1], []);
         PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"p2val1");

@@ -23,6 +23,7 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.compass.CompassConstants
+import org.compass.core.CompassHits
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,16 +52,17 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
 
 
         propertyList.each{String propName->
+            def untokenizedPropName = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${propName}".toString();
             summary[propName] = new PropertySummaryMapWrapper();
-            def termFreqs = clazz.termFreqs(propName, [size:Integer.MAX_VALUE]);
+            def termFreqs = clazz.termFreqs(untokenizedPropName, [size:Integer.MAX_VALUE]);
             termFreqs.each{termFreq->
                 def term = termFreq.term;
-                def countQuery = "(${query}) AND ${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${propName}:\"${RapidStringUtilities.toQuery(String.valueOf(term))}\"";
-                def rawDataProcessorClosure = {hits,session->
-                    def termCount = hits.size();
+                def countQuery = "(${query}) AND ${untokenizedPropName}:\"${RapidStringUtilities.toQuery(String.valueOf(term))}\"";
+                def rawDataProcessorClosure = { hits,session->
+                    def termCount = hits.length();
                     if(termCount > 0)
                     {
-                        CompassHit hit = hits[0]
+                        CompassHit hit = hits.hit(0)
                         def prop = hit.getResource().getProperty(propName);
                         def value = prop.getObjectValue();
                         summary[propName][value] = termCount;

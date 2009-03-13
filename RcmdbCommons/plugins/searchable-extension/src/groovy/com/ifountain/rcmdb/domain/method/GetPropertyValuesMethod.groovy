@@ -46,7 +46,7 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
         Map options = arguments[2];
         def results = [];
         def raw = {compassHits, session->
-            compassHits.each{CompassHit hit->
+            compassHits.iterator().each{CompassHit hit->
 
                 Resource res = hit.getResource();
                 def propMap = [alias:res.getAlias(), id:res.getObject("id")];

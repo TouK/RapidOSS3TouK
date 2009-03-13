@@ -121,14 +121,15 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             }
 //                long time = System.currentTimeMillis() - start;
 //                System.out.println("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
-            Object collectedHits = hitCollector.collect(hits, tempOptions);
-            Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, tempOptions);
+
             if(rawProcessor != null)
             {
-                return doWithRawDataProcessor(session, rawProcessor, searchResult);
+                return doWithRawDataProcessor(session, rawProcessor, hits);
             }
             else
             {
+                Object collectedHits = hitCollector.collect(hits, tempOptions);
+                Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, tempOptions);
                 doWithHighlighter(collectedHits, hits, searchResult, tempOptions);
                 return searchResult;
             }
@@ -169,12 +170,9 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             }
         }
 
-        public Object doWithRawDataProcessor(CompassSession session, Closure rawProcessor, Object searchResult) {
-            if (!(searchResult instanceof Collection)) {
-                return null;
-            }
+        public Object doWithRawDataProcessor(CompassSession session, Closure rawProcessor, CompassHits hits) {
             rawProcessor = (Closure) rawProcessor.clone();
-            return rawProcessor.call(new Object[]{searchResult, session});
+            return rawProcessor.call(new Object[]{hits, session});
         }
 
         public void setGrailsApplication(GrailsApplication grailsApplication) {

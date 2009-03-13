@@ -48,7 +48,7 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainStaticMethod{
         def query = arguments[0];
 
         clazz.'searchEvery'(query, [raw:{hits, session->
-            hits.each{hit->
+            hits.iterator().each{hit->
                 def resource = hit.getResource();
                 def id = resource.getObject("id");
                 session.delete(resource);

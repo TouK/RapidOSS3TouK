@@ -37,6 +37,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value1");
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value2");
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value3");
+        PropertySummaryMethodDomainObject1.add(prop1:"prop1Value2 prop1Value3 prop1Value4part1 prop1Value4PArt2  prop1Value4PArt3");
 
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
         Map res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1"]] as Object[])
@@ -44,6 +45,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals (2, res.prop1.prop1Value1);
         assertEquals (2, res.prop1.prop1Value2);
         assertEquals (1, res.prop1.prop1Value3);
+        assertEquals (1, res.prop1.get("prop1Value2 prop1Value3 prop1Value4part1 prop1Value4PArt2  prop1Value4PArt3"));
 
         method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
         res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", "prop1"] as Object[])
@@ -51,6 +53,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals (2, res.prop1.prop1Value1);
         assertEquals (2, res.prop1.prop1Value2);
         assertEquals (1, res.prop1.prop1Value3);
+        assertEquals (1, res.prop1.get("prop1Value2 prop1Value3 prop1Value4part1 prop1Value4PArt2  prop1Value4PArt3"));
     }
     
     public void testPropertySummaryWithMultipleProperty()

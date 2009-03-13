@@ -111,7 +111,7 @@ class RelationUtils
         if(source == null)
         {
             Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
-                hits.each{CompassHit hit->
+                hits.iterator().each{CompassHit hit->
                     session.delete (hit.getResource());
                 }
             }]);
@@ -159,7 +159,7 @@ class RelationUtils
     {
         def query = "objectId:${objectId} OR reverseObjectId:${objectId}";  
         Relation.searchEvery(query, [raw:{hits, CompassSession session->
-            hits.each{CompassHit hit->
+            hits.iterator().each{CompassHit hit->
                 session.delete (hit.getResource());
             }
         }]);
@@ -172,7 +172,7 @@ class RelationUtils
 
         def query = "(objectId:${objectId} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\") OR (reverseObjectId:${objectId} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\")";
         Relation.searchEvery(query, [raw:{hits, CompassSession session->
-            hits.each{CompassHit hit->
+            hits.iterator().each{CompassHit hit->
                 session.delete (hit.getResource());                
             }
         }]);

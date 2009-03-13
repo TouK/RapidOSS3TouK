@@ -87,7 +87,7 @@ class DataCorrectionUtilities
     private static void deleteAllInstances(clazz)
     {
         clazz.'searchEvery'("alias:*", [raw:{hits, session->
-            hits.each{hit->
+            hits.iterator().each{hit->
                 Resource res = hit.getResource();
                 session.delete(res);
             }
@@ -108,7 +108,7 @@ class DataCorrectionUtilities
                 def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
                 propNames.add("id");
                 currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
-                    hits.each{hit->
+                    hits.iterator().each{hit->
                         Resource res = hit.getResource();
                         def newObj = currentModelClass.newInstance();
                         propNames.each{
@@ -154,7 +154,7 @@ class DataCorrectionUtilities
             {
                 Class currentModelClass = currentDomainObject.clazz;
                 currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
-                    hits.each{CompassHit hit->
+                    hits.iterator().each{CompassHit hit->
                         Resource res = hit.getResource();
                         def objectRealClass = domainClasses[hit.alias()];
                         if(objectRealClass)

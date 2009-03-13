@@ -36,7 +36,7 @@ testScriptParamsList.add([name:"searchInstances",period:60,startDelay:50,logLeve
 testScriptParamsList.add([name:"stopTestScripts",cronExpression:"0 0 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"processTestResults",cronExpression:"0 30 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
-
+testScriptParamsList.add([name:"memoryHistogram",period:180,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
 
 
 //script to initalize the scheduled testscripts that will run during test

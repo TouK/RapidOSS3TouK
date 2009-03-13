@@ -173,6 +173,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         params.staticParam=script.staticParam;
         params.staticParamMap=CmdbScript.getStaticParamMap(script);
+        if(params["params"] == null){
+            params["params"] = [:]
+        }
         return params;
     }
 

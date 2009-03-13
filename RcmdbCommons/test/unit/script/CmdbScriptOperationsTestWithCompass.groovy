@@ -581,13 +581,13 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
             assertEquals(val, managerParams.bindings[key])
         }
     }
-    void testRunScriptPassesStaticParamAndStaticParamMapToScript()
+    void testRunScriptPassesParamsStaticParamAndStaticParamMapToScript()
     {
         initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
 
         def scriptFile = "mytestscriptfile.groovy"
-        def scriptContent = "return [staticParam:staticParam,staticParamMap:staticParamMap]"
+        def scriptContent = "return [params:params,staticParam:staticParam,staticParamMap:staticParamMap]"
         createScript(scriptFile, scriptContent);
         ScriptManager.getInstance().addScript(scriptFile)
 
@@ -597,6 +597,8 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         def params = [:]
 
         def result = CmdbScript.runScript(onDemandScript, params)
+        assertTrue(result.params instanceof Map);
+        assertEquals(0, result.params.size());
         assertEquals(result.staticParam, onDemandScript.staticParam)
         assertEquals(result.staticParamMap.x, "5")
         assertEquals(result.staticParamMap.y, "6")

@@ -58,7 +58,7 @@ connection.pool.checker.interval = 10000;
 connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toString();
 rapidCMDB.base.dir = System.getProperty("base.dir");
-rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
+rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss.SSS";
 
 //user authentication type local or ldap , any value other than ldap is evaluated as local
 rapidCMDB.authentication.type="local"; 

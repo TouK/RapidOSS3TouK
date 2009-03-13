@@ -55,7 +55,7 @@ connection.pool.checker.interval = 10000;
 connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/../RapidSuite/generatedModels".toString();
 rapidCMDB.base.dir = "${System.getProperty("base.dir")}/../RapidSuite".toString();
-rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss";
+rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss.SSS";
 rapidcmdb.invalid.names = [];
 def invalidNameFile = new File("invalidNames.txt");
 if (invalidNameFile.exists())

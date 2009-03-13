@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import com.ifountain.compass.CompassConstants
 
 /**
  * Builds the Compass class mapping XML. Done with Groovy cos it's so easy compared with Java
@@ -122,6 +123,11 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                         }
                         property(attrs) {
                             "meta-data"(metaDataAttrs, propertyName)
+                            def untokenizedMetaDataAttributes = new HashMap(metaDataAttrs);
+                            untokenizedMetaDataAttributes.put("index", "un_tokenized");
+                            untokenizedMetaDataAttributes.put("exclude-from-all", "true");
+                            String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+propertyName
+                            "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)
                         }
                     }
                 }

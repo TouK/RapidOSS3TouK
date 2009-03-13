@@ -29,10 +29,13 @@ import org.compass.core.converter.Converter
  * To change this template use File | Settings | File Templates.
  */
 class CompassBooleanConverter extends AbstractCompassConverterWrapper{
-    org.compass.core.converter.basic.BooleanConverter dateConverter = new org.compass.core.converter.basic.BooleanConverter();
-
+    org.compass.core.converter.basic.BooleanConverter booleanConverter;
+    public CompassBooleanConverter()
+    {
+        booleanConverter = new org.compass.core.converter.basic.BooleanConverter()
+    }
     protected Converter getConverter() {
-        return dateConverter; //To change body of implemented methods use File | Settings | File Templates.
+        return booleanConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected Object getDefaultValue() {

@@ -42,16 +42,16 @@ class TestCompassFactory {
 
     static getCompass(Collection classes, Collection instances = null, boolean willPersist = false) {
         def grailsApplication = getGrailsApplication(classes)
-        return getCompass(grailsApplication, instances, willPersist)
+        return getCompass(grailsApplication, instances, willPersist, null)
     }
 
     static getPersistedCompass(Collection classes, Collection instances = null) {
         def grailsApplication = getGrailsApplication(classes)
-        return getCompass(grailsApplication, instances, true)
+        return getCompass(grailsApplication, instances, true, null)
     }
 
 
-    static getCompass(GrailsApplication grailsApplication, Collection instances = null, boolean willPersist) {
+    static getCompass(GrailsApplication grailsApplication, Collection instances = null, boolean willPersist, Map additionalSettings = null) {
         ApplicationHolder.application = grailsApplication;
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             grailsApplication,
@@ -72,6 +72,12 @@ class TestCompassFactory {
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
         config.getSettings().setSetting ("compass.engine.store.indexDeletionPolicy.type", WrapperIndexDeletionPolicy.name);
+        if(additionalSettings)
+        {
+            additionalSettings.each{settingKey, settingValue->
+                config.getSettings().setSetting (settingKey, settingValue);    
+            }
+        }
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 

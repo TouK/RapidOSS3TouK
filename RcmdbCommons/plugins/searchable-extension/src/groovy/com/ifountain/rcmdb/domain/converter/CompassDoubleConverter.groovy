@@ -28,7 +28,11 @@ import org.compass.core.converter.Converter
 * To change this template use File | Settings | File Templates.
 */
 class CompassDoubleConverter extends AbstractCompassFormattedConverterWrapper{
-    org.compass.core.converter.basic.DoubleConverter doubleConverter = new org.compass.core.converter.basic.DoubleConverter();
+    org.compass.core.converter.basic.DoubleConverter doubleConverter;
+    public CompassDoubleConverter()
+    {
+        doubleConverter = new org.compass.core.converter.basic.DoubleConverter();    
+    }
     protected Converter getConverter() {
         return doubleConverter; //To change body of implemented methods use File | Settings | File Templates.
     }

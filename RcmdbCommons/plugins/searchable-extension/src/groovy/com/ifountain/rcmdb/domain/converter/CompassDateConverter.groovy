@@ -29,7 +29,11 @@ import org.compass.core.converter.Converter
  */
 public class CompassDateConverter extends AbstractCompassFormattedConverterWrapper
 {
-    org.compass.core.converter.basic.DateConverter dateConverter = new org.compass.core.converter.basic.DateConverter();
+    org.compass.core.converter.basic.DateConverter dateConverter;
+    public CompassDateConverter()
+    {
+        dateConverter = new org.compass.core.converter.basic.DateConverter();
+    }
 
     protected Converter getConverter() {
         return dateConverter; //To change body of implemented methods use File | Settings | File Templates.

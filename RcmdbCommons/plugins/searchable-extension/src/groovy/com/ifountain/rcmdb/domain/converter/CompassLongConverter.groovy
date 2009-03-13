@@ -29,7 +29,11 @@ import org.compass.core.converter.Converter
  */
 public class CompassLongConverter extends AbstractCompassFormattedConverterWrapper
 {
-    org.compass.core.converter.basic.LongConverter longConverter = new org.compass.core.converter.basic.LongConverter();
+    org.compass.core.converter.basic.LongConverter longConverter;
+    public CompassLongConverter()
+    {
+        longConverter = new org.compass.core.converter.basic.LongConverter();
+    }
     protected Converter getConverter() {
         return longConverter; //To change body of implemented methods use File | Settings | File Templates.
     }

@@ -24,6 +24,9 @@ import org.springframework.util.Assert;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import com.ifountain.compass.CompassConstants;
+
 //MODIFIED
 /**
  * Post-processes a query to add sort
@@ -62,7 +65,7 @@ public class SearchableCompassQueryBuilderSortOptionHelper implements Searchable
         if (sort.equals("SCORE")) {
             return CompassQuery.SortImplicitType.SCORE;
         }
-        return sort;
+        return CompassConstants.UN_TOKENIZED_FIELD_PREFIX+sort;
     }
 
     private CompassQuery.SortPropertyType getSortType(String sortType) {

@@ -60,6 +60,44 @@ class CompassSortingTest extends RapidCmdbWithCompassTestCase{
         assertEquals (insts[0].id, returnedObjects[2].id);
         assertEquals (insts[3].id, returnedObjects[3].id);
     }
+
+    public void testSortingWithObjectsExtendingFromSameParentButOneOfThemDoesNotHaveLongSortProperty()
+    {
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+        def insts =[
+                SortTestoLevel2Child1.add(propInt: 1),
+                SortTestoLevel2Child1.add(propInt: 2),
+                SortTestoLevel2Child1.add(propInt: 3)
+        ]
+        assertEquals (insts.size(), SortTestParentObject.count());
+        def returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"asc"]).results
+        assertEquals (insts[0].id, returnedObjects[0].id);
+        assertEquals (insts[1].id, returnedObjects[1].id);
+        assertEquals (insts[2].id, returnedObjects[2].id);
+
+        returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"desc"]).results
+        assertEquals (insts[2].id, returnedObjects[0].id);
+        assertEquals (insts[1].id, returnedObjects[1].id);
+        assertEquals (insts[0].id, returnedObjects[2].id);
+    }
+
+    public void testSortingWithNonExistingProperty()
+    {
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+        def returnedObjects = SortTestoLevel2Child1.search("alias:*", [sort:"undefinedProp", order:"asc"]).results
+        assertEquals (0, returnedObjects.size())
+    }
+
+    public void testSortingWithNoInstance()
+    {
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+        def returnedObjects = SortTestoLevel2Child1.search("alias:*", [sort:"prop3", order:"asc"]).results
+        assertEquals (0, returnedObjects.size())
+        returnedObjects = SortTestParentObject.search("alias:*", [sort:"prop3", order:"asc"]).results
+        assertEquals (0, returnedObjects.size())
+        returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"asc"]).results
+        assertEquals (0, returnedObjects.size())
+    }
 }
 
 class SortTestParentObject {
@@ -97,6 +135,7 @@ class SortTestoLevel2Child1 extends SortTestoLevel1Child1 {
     Long id
     Long version
     String prop3 = "";
+    Long propInt = 0;
 }
 
 class SortTestoLevel2Child2 extends SortTestoLevel1Child2 {

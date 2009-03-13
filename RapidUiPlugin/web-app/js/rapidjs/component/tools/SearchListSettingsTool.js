@@ -37,7 +37,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SearchListSettingsTool, YAHOO.rap
                     '</tbody></table><input type="hidden" name="name"></input>' +
                     '</form></div>'
         });
-        this.form = new YAHOO.rapidjs.component.Form(container, {id:this.component.id + "_settingsTool", saveUrl:"componentConfig/save?format=xml", width:this.width + "px", submitAction:"POST"});
+        this.form = new YAHOO.rapidjs.component.Form(container, {id:this.component.id + "_settingsTool", saveUrl:getUrlPrefix() +"componentConfig/save?format=xml", width:this.width + "px", submitAction:"POST"});
         this.lineSizeSelector = this.form.dialog.form.lineSize;
         SelectUtils.selectTheValue(this.lineSizeSelector, this.component.lineSize, 0);
     },

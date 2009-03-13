@@ -93,7 +93,7 @@ propertyBrowseVisible="params.key == 'elementName' && params.value != ''"
 fieldExpression6875Visible="params.data.rsAlias == 'RsRiHistoricalEvent'"
 %>
 
-        <rui:slField exp="${fieldExpression6875Visible}" fields='${["elementName", " identifier", " node", "active", " owner", " acknowledged", " severity", " source", "changedAt", "visibility", "count"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression6875Visible}" fields='${["elementName", " identifier", " node", "active", " owner", " acknowledged", " severity", " source", "changedAt", "count"]}'></rui:slField>
     
     </rui:slFields>
     <rui:slImages>

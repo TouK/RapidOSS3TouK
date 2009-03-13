@@ -114,7 +114,7 @@ lessThanOrEqualToVisible="YAHOO.lang.isNumber(parseInt(params.value))"
 fieldExpression6559Visible="params.data.rsAlias == 'RsRiEvent'"
 %>
 
-        <rui:slField exp="${fieldExpression6559Visible}" fields='${["elementName", " identifier", " node", "active", " owner", " acknowledged", " severity", " source"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression6559Visible}" fields='${["elementName", " identifier", " owner", " acknowledged", " severity", " source", "changedAt"]}'></rui:slField>
     
     </rui:slFields>
     <rui:slImages>

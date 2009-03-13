@@ -30,5 +30,5 @@ def statModels=[
     [operation:"Search",models:["RsEvent","SmartsNotification","RsTopologyObject","relation.Relation","script.CmdbScript","auth.Role","auth.Group","auth.RsUser"]]
 ];
 
-def converter=new StatsConverter("ModelOperations",null);
+def converter=new StatsConverter("SmartsNotificationThreadSearch",null);
 converter.generateTabbedStats (statModels,["NumberOfOperations","AvarageDuration","AverageCount"]);

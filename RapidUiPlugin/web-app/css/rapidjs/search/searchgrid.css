@@ -132,7 +132,7 @@
 }
 
 .rcmdb-searchgrid .rcmdb-search-rowselected {
-    background-color: #DDDDFF;
+    background-color: #DDDDFF !important;
 }
 
 .rcmdb-searchgrid .rcmdb-search-cell {

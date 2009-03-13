@@ -93,7 +93,7 @@
 }
 
 .r-tree-rowselected {
-    background-color: #ddddff;
+    background-color: #ddddff !important;
 }
 
 .r-tree-rowunselected {

@@ -6,8 +6,10 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils" %>
+<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.domain.util.DomainClassUtils" %>
 <%
+    def dateProperties = ["lastChangedAt", "consideredDownAt"];
+    SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss")
     def name = params.name;
     def componentId = params.componentId
     def domainObject = RsTopologyObject.get(name: name);
@@ -15,9 +17,9 @@
         String className = domainObject.getClass().getName();
         def allProperties = domainObject.getPropertiesList();
         def propertyNames = ["className", "name"];
-        allProperties.each{
+        allProperties.each {
             def propName = it.name
-            if(propName != "className" && propName != "name"){
+            if (propName != "className" && propName != "name") {
                 propertyNames.add(propName)
             }
         }
@@ -38,59 +40,56 @@ cursor:pointer;
                 <tbody>
 
                     <g:each var="propertyName" status="i" in="${propertyNames}">
-                        <%
-                            if(propertyName != "id" && propertyName != "rsDatasource")
-                            {
-                        %>
+                        <g:if test="${propertyName != 'id' && propertyName != 'rsDatasource'}">
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${propertyName}</td>
-                                <%
-                                        if (!relations.containsKey(propertyName)) {
-
-                                %>
-                                <td>${domainObject[propertyName]}&nbsp;</td>
-                                <%
-                                    }
-                                    else {
-                                        def relation = relations[propertyName];
-                                        if (relation.isOneToOne() || relation.isManyToOne()) {
-                                            def sObj = domainObject[propertyName]
-                                            if (sObj != null) {
-                                %>
-                                <td>
-                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${sObj.name}'}), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}<a>
-                                </td>
-                                <%
-                                    }
-                                    else {
-                                %>
-                                <td></td>
-                                <%
+                                <g:if test="${!relations.containsKey(propertyName)}">
+                                    <g:if test="${dateProperties.contains(propertyName)}">
+                                        <td>${format.format(new Timestamp(domainObject[propertyName]))}&nbsp;</td>
+                                    </g:if>
+                                    <g:else>
+                                        <td>${domainObject[propertyName]}&nbsp;</td>
+                                    </g:else>
+                                </g:if>
+                                <g:else>
+                                    <%
+                                            def relation = relations[propertyName];
+                                            if (relation.isOneToOne() || relation.isManyToOne()) {
+                                                def sObj = domainObject[propertyName]
+                                                if (sObj != null) {
+                                    %>
+                                    <td>
+                                        <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${sObj.name}'}), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}<a>
+                                    </td>
+                                    <%
                                         }
-                                    }
-                                    else {
-                                %>
-                                <td width="100%">
-                                    <ul style="margin-left: 10px;">
-                                        <%
-                                                def relatedObjects = domainObject[propertyName];
-                                                def sortedRelatedObjects = relatedObjects.sort{"${it.className}${it.name}"};
-                                                sortedRelatedObjects.each {
-                                        %>
-                                        <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${it.name}'}), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}<a></li>
-                                        <%
-                                                }
-                                        %>
-                                    </ul>
-                                </td>
-                                <%
+                                        else {
+                                    %>
+                                    <td></td>
+                                    <%
                                             }
                                         }
-                                %>
+                                        else {
+                                    %>
+                                    <td width="100%">
+                                        <ul style="margin-left: 10px;">
+                                            <%
+                                                    def relatedObjects = domainObject[propertyName];
+                                                    def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                                                    sortedRelatedObjects.each {
+                                            %>
+                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${it.name}'}), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}<a></li>
+                                            <%
+                                                    }
+                                            %>
+                                        </ul>
+                                    </td>
+                                    <%
+                                            }
+                                    %>
+                                </g:else>
                             </tr>
-                        <%
-                            }
-                        %>
+                        </g:if>
                     </g:each>
 
                 </tbody>

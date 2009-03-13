@@ -29,7 +29,7 @@
         }
     });
     tree.addToolbarButton({
-        className:'r-filterTree-queryAdd',
+        className:'r-mapTree-mapAdd',
         scope:this,
         tooltip: 'Save Map',
         click:function() {

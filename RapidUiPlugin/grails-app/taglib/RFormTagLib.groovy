@@ -40,12 +40,15 @@ class RFormTagLib {
         return """
            <div id="${containerId}">${bodyString.trim()}</div>
            <script type="text/javascript">
-               var ${formId}conf = ${configStr};
-               var ${formId}parentContainer = document.getElementById('${containerId}');
-               var ${formId}container =${formId}parentContainer.firstChild;
-               document.body.appendChild(${formId}container);
-               var ${formId}form = new YAHOO.rapidjs.component.Form(${formId}container, ${formId}conf);
-                ${successJs ? successJs : ""}
+                YAHOO.util.Event.onDOMReady(function(){
+                    var ${formId}conf = ${configStr};
+                   var ${formId}parentContainer = document.getElementById('${containerId}');
+                   var ${formId}container =${formId}parentContainer.firstChild;
+                   document.body.appendChild(${formId}container);
+                   var ${formId}form = new YAHOO.rapidjs.component.Form(${formId}container, ${formId}conf);
+                    ${successJs ? successJs : ""}
+                })
+
            </script>
         """;
     }

@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.domain.generation
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import groovy.xml.MarkupBuilder
+import com.ifountain.compass.CompassConstants
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,6 +77,42 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
     }
 
+    public void testThrowsExceptionIfAnyPropertyExistStartingUntokenizedFieldPrefix()
+    {
+        def prop1 = [name:"${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        String modelName = "ChildModel";
+        def ds1 = [name:"RCMDB",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name]]]
+        def modelXml = createModel (modelName, null, [ds1], [prop1], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since properties cannot start with untokenized prefix");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.cannotStartWith(modelName, prop1.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX, false).getMessage(), e.getMessage());
+        }
+    }
+
+    public void testThrowsExceptionIfAnyRelationExistStartingUntokenizedFieldPrefix()
+        {
+            String modelName = "Model";
+            String relatedModelName = "RelatedModel";
+            def ds1 = [name:"RCMDB",keyMappings:[]]
+            def rel1 = [name:"${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+            def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+            def modelXml1 = createModel (modelName, null, [ds1], [], [], [rel1]);
+            def modelXml2 = createModel (relatedModelName, null, [ds1], [], [], [revrel1]);
+            try
+            {
+                ModelGenerator.getInstance().generateModels([modelXml1, modelXml2])
+                fail("Should throw exception since relation name cannot start with untokenized prefix");
+            }catch(ModelGenerationException e)
+            {
+                assertEquals (ModelGenerationException.cannotStartWith(modelName, rel1.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX, true).getMessage(), e.getMessage(),);
+            }
+        }
+
+    
     public void testThrowsExceptionIfOneOfRelatedClassesDoesnotExist()
     {
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]

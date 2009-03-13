@@ -46,6 +46,10 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Datasource property $dsPropertyName doesnot exist for property $propertyName in model $modelName");
     }
+    public static ModelGenerationException cannotStartWith(String modelName, String propName, String prefix, isRelation)
+    {
+        return new ModelGenerationException("Invalid ${isRelation?"relation":"property"} ${propName} for model ${modelName}. Model properties can not start with ${prefix}.");
+    }
 
     public static ModelGenerationException duplicateParentDatasource(String dsName, String modelName)
     {

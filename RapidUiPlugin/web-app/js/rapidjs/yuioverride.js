@@ -59,6 +59,27 @@ YAHOO.widget.DropdownCellEditor.prototype.renderForm = function() {
     }
 }
 
+YAHOO.widget.BaseCellEditor.prototype.doAfterRender = function() {
+   YAHOO.util.Event.addListener(document.body, 'mousedown', function(e){
+       if(this.isActive) {
+           var xy = YAHOO.util.Event.getXY(e);
+           var box = getEl(this.getContainerEl()).getBox();
+           var eventX = xy[0];
+           var eventY = xy[1];
+           var editorX = box['x']
+           var editorY = box['y']
+           var editorWidth = box['width']
+           var editorHeight = box['height']
+           if((eventX < editorX || eventX > editorX + editorWidth) || (eventY < editorY || eventY > editorY + editorHeight)){
+               this.cancel();
+           }
+       }
+
+       
+   }, this, true)
+    
+}
+
 YAHOO.widget.DataTable.prototype.findRecord = function(key, value) {
     var records = this.getRecordSet().getRecords();
     for (var i = 0; i < records.length; i++) {

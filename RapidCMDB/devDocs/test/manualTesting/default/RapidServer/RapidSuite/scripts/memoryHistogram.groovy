@@ -24,5 +24,5 @@ def cmd = "${javaDir}jmap -histo ${pid}"
 
 
 def process = "${cmd}".execute()
-def file=new File("web-app/${params.fileName}.log");
+def file=TestingConstants.getHeapHistogramFile();
 file.setText(process.in.text);

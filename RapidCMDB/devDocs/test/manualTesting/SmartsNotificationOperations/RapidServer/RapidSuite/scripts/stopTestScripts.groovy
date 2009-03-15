@@ -7,7 +7,13 @@
  */
 import script.CmdbScript
 
-CmdbScript.stopListening(connector.SmartsConnector.get(name:"smnot").ds.listeningScript);
+try {
+    CmdbScript.stopListening(connector.SmartsConnector.get(name:"smnot").ds.listeningScript);
+}
+catch(e)
+{
+    logger.warn("Exception occured while stopping listening script smnot .Reason : ${e}");
+}
 
 def scriptsToStop=["notificationAdder","notificationDeleter","notificationSearcher","notificationWebSearcher"]
 

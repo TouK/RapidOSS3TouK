@@ -36,7 +36,7 @@ YAHOO.rapidjs.component.ComponentContainer = function(container, config) {
         'error' :new YAHOO.util.CustomEvent('error')
     };
     YAHOO.rapidjs.Components[this.id] = this;
-    if (config.subscribeToHistoryChange !== false) {
+    if (config.subscribeToHistoryChange !== false && YAHOO.rapidjs.component.historyEnabled) {
         if (!YAHOO.util.History.historyChangedEvent) {
             YAHOO.util.History.historyChangedEvent = new YAHOO.util.CustomEvent("historyChanged");
         }
@@ -111,7 +111,7 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
     resize: function(width, height) {
 
     },
-    inPopupWindow: function(){
+    inPopupWindow: function() {
 
     },
     setTitle: function(title) {
@@ -129,25 +129,29 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
 };
 
 YAHOO.rapidjs.Components = {};
+YAHOO.rapidjs.component.historyEnabled = true;
 
 YAHOO.util.Event.onDOMReady(function() {
-    var firstChild = document.body.firstChild;
-    if (firstChild) {
-        var historyInput = document.createElement('input');
-        historyInput.id = 'yui-history-field';
-        historyInput.type = "hidden";
-        document.body.insertBefore(historyInput, document.body.firstChild);
-        if (YAHOO.util.Event.isIE) {
-            var historyIframe = document.createElement('iframe');
-            historyIframe.id = 'yui-history-iframe';
-            historyIframe.src = "js/yui/history/assets/blank.html"
-            document.body.insertBefore(historyIframe, historyInput);
+    if (YAHOO.rapidjs.component.historyEnabled) {
+        var firstChild = document.body.firstChild;
+        if (firstChild) {
+            var historyInput = document.createElement('input');
+            historyInput.id = 'yui-history-field';
+            historyInput.type = "hidden";
+            document.body.insertBefore(historyInput, document.body.firstChild);
+            if (YAHOO.util.Event.isIE) {
+                var historyIframe = document.createElement('iframe');
+                historyIframe.id = 'yui-history-iframe';
+                historyIframe.src = "js/yui/history/assets/blank.html"
+                document.body.insertBefore(historyIframe, historyInput);
+            }
+        }
+        try {
+            YAHOO.util.History.initialize("yui-history-field", "yui-history-iframe");
+        } catch (e) {
         }
     }
-    try {
-        YAHOO.util.History.initialize("yui-history-field", "yui-history-iframe");
-    } catch (e) {
-    }
+
 });
 
 

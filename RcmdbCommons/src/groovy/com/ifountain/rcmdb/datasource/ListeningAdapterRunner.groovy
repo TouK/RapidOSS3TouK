@@ -115,9 +115,11 @@ public class ListeningAdapterRunner
             catch (e) {
                 throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
             }
+            adapter = null;
             setState(STOPPED);
         } catch (Exception e)
         {
+            adapter = null;
             setState(STOPPED_WITH_EXCEPTION);
         }
 

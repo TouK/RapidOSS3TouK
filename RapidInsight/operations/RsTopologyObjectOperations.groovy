@@ -18,19 +18,12 @@
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-     static int CRITICAL = 5
-     static int MAJOR = 4
-     static int INDETERMINATE = 1
-     static int NOTSET = -1
-     static int CRITICAL_PERCENTAGE = 40
-     static int MAJOR_PERCENTAGE = 20
-
     int getState()
     {
         def currentState = currentState();
-        if(currentState == NOTSET)
+        if(currentState == Constants.NOTSET)
         {
-            currentState = calculateState(currentState, NOTSET, NOTSET);
+            currentState = calculateState(currentState, Constants.NOTSET, Constants.NOTSET);
             saveState(currentState);
         }
         return currentState;
@@ -41,7 +34,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         return loadState();
     }
     
-    int setState(newPropagatedState, oldPropagatedState = NOTSET)
+    int setState(newPropagatedState, oldPropagatedState = Constants.NOTSET)
     {
         def currentState = currentState();
         def calculatedState = calculateState(currentState, oldPropagatedState, newPropagatedState);
@@ -66,7 +59,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     def loadState(){
         def state = RsObjectState.get(objectId:id)?.state;
         if (state==null)
-        	return NOTSET
+        	return Constants.NOTSET
         return state
     }
     def afterDelete()
@@ -118,17 +111,17 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 	{
 		if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
 		{
-			currentState = INDETERMINATE
+			currentState = Constants.INDETERMINATE
 			def eventList = RsEvent.search("elementName:\"${name.toQuery()}\"",max:1000000);
 			if (eventList.total==0)
 				return currentState
 			def severityList = eventList.results.severity;
-			def criticalList = severityList.findAll{it == CRITICAL};
+			def criticalList = severityList.findAll{it == Constants.CRITICAL};
 			def percent = (criticalList.size()/severityList.size())*100
 			switch(percent) {
-				case {it > CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
-				case {it > MAJOR_PERCENTAGE}: currentState = MAJOR;break
-				default: currentState = INDETERMINATE
+				case {it > Constants.CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
+				case {it > Constants.MAJOR_PERCENTAGE}: currentState = Constants.MAJOR;break
+				default: currentState = Constants.INDETERMINATE
 			}
 		}
 		return currentState;
@@ -138,7 +131,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 	def needToCalculate(currentState,  oldPropagatedState, newPropagatedState)
 	{
 		// check if state calculation is triggered because of first getState call.
-    	def condition1 = newPropagatedState == NOTSET && oldPropagatedState == NOTSET
+    	def condition1 = newPropagatedState == Constants.NOTSET && oldPropagatedState == Constants.NOTSET
     	// more severe event is received
     	def condition2 = newPropagatedState > currentState
     	// this event might have determined the current state (was the event with the max severity)    

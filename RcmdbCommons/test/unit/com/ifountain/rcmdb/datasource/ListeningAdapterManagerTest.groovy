@@ -29,6 +29,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,21 +43,46 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     static def scriptMap;
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         scriptMap = [:];
     }
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
     }
-
-    def initialize()
+    private void clearMetaClasses()
+    {
+        ListeningAdapterManager.destroyInstance();
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);        
+        ExpandoMetaClass.enableGlobally();
+    }
+    def initializeManagers()
     {
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
         ListeningAdapterManager.getInstance().initialize();
-        //CompassForTests.initialize([CmdbScript]);
-        initialize([CmdbScript], []);
+    }
+    def initializeOperations()
+    {
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(BaseListeningDatasource, BaseListeningDatasourceOperations);
     }
+    def initialize()
+    {
+        initializeManagers();
+        //CompassForTests.initialize([CmdbScript]);
+        initialize([CmdbScript], []);
+        initializeOperations();
+    }
+    def initializeWithBaseListeningDatasourceCompassMock()
+    {
+        initializeManagers();        
+        initialize([CmdbScript,BaseListeningDatasource,BaseListeningDatasourceCompassMock], []);
+        initializeOperations();
+        CompassForTests.addOperationSupport(BaseListeningDatasourceCompassMock, BaseListeningDatasourceOperations);
+    }
+
 
     void testStartAdapterThrowsExceptionWhenNoListeningScriptIsDefined() {
         def ds = new BaseListeningDatasource();
@@ -486,9 +512,154 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         }
     }
 
+    void testInitializeListeningDatasources()
+    {
+        initializeWithBaseListeningDatasourceCompassMock();
+       
+        def datasources=[:];
+        def scripts=[:];
+        def inactiveDatasources=[:];
+        def inactiveScripts=[:];
+        5.times{  counter ->
+            def script = CmdbScript.addScript(name: "testscript${counter}", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+            assertFalse(script.hasErrors());
+            scripts[script.name]=script;
+            def ds = BaseListeningDatasourceCompassMock.add(name:"testdds${counter}",listeningScript:script,isSubscribed:true);
+            assertFalse(ds.hasErrors());
+            datasources[ds.name]=ds;
+        }
+        3.times{  counter ->
+            def script = CmdbScript.addScript(name: "testinactivescript${counter}", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+            assertFalse(script.hasErrors());
+            inactiveScripts[script.name]=script;
+            def ds = BaseListeningDatasourceCompassMock.add(name:"testinactiveds${counter}",listeningScript:script,isSubscribed:false);
+            assertFalse(ds.hasErrors());
+            inactiveDatasources[ds.name]=ds;
+        }
+
+        assertEquals(5,BaseListeningDatasource.countHits("isSubscribed:true"));
+        assertEquals(3,BaseListeningDatasource.countHits("isSubscribed:false"));
+        assertEquals(8,BaseListeningDatasource.countHits("alias:*"));
+        
+        ListeningAdapterManager.destroyInstance();
+        ListeningAdapterManager.getInstance().initialize();
+
+        datasources.each { dsName , ds ->
+            assertFalse(ListeningAdapterManager.getInstance().hasAdapter(ds.name));
+            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));                      
+        }
+        inactiveDatasources.each { dsName , ds ->
+            assertFalse(ListeningAdapterManager.getInstance().hasAdapter(ds.name));
+            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));
+        }
+        
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        Thread.sleep(2000);
+        datasources.each { dsName , ds ->
+            assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.name));
+            assertFalse(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertTrue(ListeningAdapterManager.getInstance().isSubscribed(ds));
+        }
+        inactiveDatasources.each { dsName , ds ->
+            assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.name));
+            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));                       
+        }
+    }
+    void testInitializeListeningDatasourcesDoesNotThrowExceptionAndProcessesAllDatources_OnError()
+    {           
+        initializeWithBaseListeningDatasourceCompassMock();
+        
+        def startListeningCallParams = [:];
+        def startListeningExceptionCallParams=[:];
+        CmdbScriptOperations.metaClass.static.startListening = {CmdbScript script ->
+            startListeningCallParams[script.name]=script;
+            if(script.name=="testscript2")
+            {
+              startListeningExceptionCallParams[script.name]=script;
+              throw new Exception(script.name);
+            }
+        }
+
+        def addAdapterCallParams = [:];
+        def addAdapterExceptionCallParams=[:];
+        ListeningAdapterManager.metaClass.addAdapter= { BaseListeningDatasource ds ->
+            addAdapterCallParams[ds.name]=ds;
+            if(ds.name=="testds3")
+            {
+                addAdapterExceptionCallParams[ds.name]=ds;
+                throw new Exception(ds.name);
+            }
+        }
+
+
+        def datasources=[:];
+        def scripts=[:];
+        5.times{  counter ->
+            def script = CmdbScript.addScript(name: "testscript${counter}", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+            assertFalse(script.hasErrors());
+            scripts[script.name]=script;
+            def ds = BaseListeningDatasourceCompassMock.add(name:"testds${counter}",listeningScript:script,isSubscribed:true);
+            assertFalse(ds.hasErrors());
+            datasources[ds.name]=ds;
+        }
+
+        
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        Thread.sleep(2000);
+
+        assertEquals(5,startListeningCallParams.size());
+        assertEquals(5,addAdapterCallParams.size());
+        assertEquals(1,startListeningExceptionCallParams.size());
+        assertEquals(1,addAdapterExceptionCallParams.size());
+        assertTrue(addAdapterExceptionCallParams.containsKey("testds3"));
+        assertTrue(startListeningExceptionCallParams.containsKey("testscript2"));
+        assertFalse(addAdapterExceptionCallParams["testds3"].listeningScript.id==startListeningExceptionCallParams["testscript2"].id);
+
+
+    }
+    void testInitializeListeningDatasourcesDoesNotWaitDatasourceSubscriptions()
+    {
+        initializeWithBaseListeningDatasourceCompassMock();
+        
+        def startListeningCallParams = [:];
+       
+        CmdbScriptOperations.metaClass.static.startListening = {CmdbScript script ->
+            startListeningCallParams["startTime"]=new Date();
+            startListeningCallParams[script.name]=script;
+            Thread.sleep(500);
+            startListeningCallParams["endTime"]=new Date();
+        }
+
+        def script = CmdbScript.addScript(name: "testscript", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+        assertFalse(script.hasErrors());
+        
+        def ds = BaseListeningDatasourceCompassMock.add(name:"testds",listeningScript:script,isSubscribed:true);
+        assertFalse(ds.hasErrors());
+
+        def startTime=new Date();        
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        def endTime=new Date();
+        Thread.sleep(1500);
+
+        assertTrue(startListeningCallParams.containsKey(script.name));
+        assertEquals(1,startListeningCallParams["startTime"].compareTo(startTime));
+        assertEquals(1,startListeningCallParams["endTime"].compareTo(startListeningCallParams["startTime"]));
+        assertEquals(1,startListeningCallParams["endTime"].compareTo(endTime));
+        
+    }
+
 }
 
-
+class BaseListeningDatasourceCompassMock extends BaseListeningDatasource
+{
+     def getListeningAdapter(Map params, Logger adapterLogger) {        
+        def listeningAdapter = new BaseListeningAdapterMock();
+        return listeningAdapter;
+    }
+}
 class BaseListeningDatasourceMock extends BaseListeningDatasource
 {
 

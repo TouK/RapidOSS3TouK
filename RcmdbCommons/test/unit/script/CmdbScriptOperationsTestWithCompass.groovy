@@ -575,7 +575,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
-        assertEquals(managerParams.bindings.size(), oldParams.size() + 2)
+        assertEquals(managerParams.bindings.size(), oldParams.size() + 3)
 
         oldParams.each {key, val ->
             assertEquals(val, managerParams.bindings[key])
@@ -651,7 +651,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
-        assertEquals(managerParams.bindings.size(), oldParams.size() + 2)
+        assertEquals(managerParams.bindings.size(), oldParams.size() + 3)
 
         oldParams.each {key, val ->
             assertEquals(val, managerParams.bindings[key])

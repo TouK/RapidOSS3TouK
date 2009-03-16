@@ -33,7 +33,7 @@ public class ListeningAdapterRunner
     public ListeningAdapterRunner(String adapterName)
     {
         this.adapterName = adapterName;
-        lastStateChangeTime=new Date();
+        setState (NOT_STARTED);
     }
     public int getState()
     {

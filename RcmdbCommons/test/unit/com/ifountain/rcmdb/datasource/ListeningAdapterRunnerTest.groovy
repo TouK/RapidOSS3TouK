@@ -391,7 +391,7 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
     public void testGetLastStateChangeTime()
     {
         def firstTime = new Date();
-        Thread.sleep(10);
+        Thread.sleep(50);
         def runner = new ListeningAdapterRunner("adapter1");
         def firstStateTime = runner.getLastStateChangeTime();
         assertEquals(1, firstStateTime.compareTo(firstTime));
@@ -400,26 +400,26 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         assertNotSame(runner.getLastStateChangeTime(), runner.getLastStateChangeTime());
 
         //test that if no state change no time change occurs
-        Thread.sleep(10);
+        Thread.sleep(50);
         assertEquals(0, firstStateTime.compareTo(runner.getLastStateChangeTime()));
         assertEquals(0, runner.getLastStateChangeTime().compareTo(runner.getLastStateChangeTime()));
 
         def secondTime = new Date();
-        Thread.sleep(10);
+        Thread.sleep(50);
         //test changing state changes the time
         runner.setState(ListeningAdapterRunner.STARTED);
         def secondStateTime = runner.getLastStateChangeTime()
-        assertEquals(1, secondStateTime.compareTo(secondTime));
+        assertEquals("${secondStateTime.getTime()} should be greater than ${secondTime.getTime()}", 1, secondStateTime.compareTo(secondTime));
         assertEquals(1, secondStateTime.compareTo(firstStateTime));
 
 
 
         //test changing state changes the time
         def thirdTime = new Date();
-        Thread.sleep(10);
+        Thread.sleep(50);
         runner.setState(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION);
         def thirdStateTime = runner.getLastStateChangeTime()
-        assertEquals(1, thirdStateTime.compareTo(thirdTime));
+        assertEquals("${thirdStateTime.getTime()} should be greater than ${thirdTime.getTime()}",1, thirdStateTime.compareTo(thirdTime));
         assertEquals(1, thirdStateTime.compareTo(secondStateTime));
 
     }

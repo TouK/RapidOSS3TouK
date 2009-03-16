@@ -492,8 +492,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         ListeningAdapterManager.getInstance().removeAdapter(ds);
         assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
 
-
-
     }
     void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException() {
         //we should disgard previous initializes
@@ -511,7 +509,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             fail("Should Not Throw Exception")
         }
     }
-
+   
     void testInitializeListeningDatasources()
     {
         initializeWithBaseListeningDatasourceCompassMock();
@@ -554,9 +552,14 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
             assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));
         }
-        
+        assertNull(ListeningAdapterManager.getInstance().listeningScriptInitializerThread);
         ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        def initializerThread=ListeningAdapterManager.getInstance().listeningScriptInitializerThread;
+        assertNotNull(initializerThread);
+        assertTrue(initializerThread.isAlive());
+        assertFalse(initializerThread.isInterrupted());
         Thread.sleep(2000);
+        
         datasources.each { dsName , ds ->
             assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.name));
             assertFalse(ListeningAdapterManager.getInstance().isStartable(ds));
@@ -567,6 +570,9 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
             assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));                       
         }
+
+
+
     }
     void testInitializeListeningDatasourcesDoesNotThrowExceptionAndProcessesAllDatources_OnError()
     {           
@@ -606,8 +612,13 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             datasources[ds.name]=ds;
         }
 
-        
-        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        try{
+            ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        }
+        catch(e)
+        {
+            fail("should not throw exception");
+        }
         Thread.sleep(2000);
 
         assertEquals(5,startListeningCallParams.size());
@@ -649,6 +660,44 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         assertEquals(1,startListeningCallParams["endTime"].compareTo(startListeningCallParams["startTime"]));
         assertEquals(1,startListeningCallParams["endTime"].compareTo(endTime));
         
+    }
+     void testCallingDestroyInstanceDestroysListeningDatasourceInitializerThread() {
+        TestLogUtils.enableLogger(Logger.getLogger("scripting"));
+        initializeWithBaseListeningDatasourceCompassMock();
+
+        def startListeningCallParams = [:];
+
+        CmdbScriptOperations.metaClass.static.startListening = {CmdbScript script ->
+            startListeningCallParams["startTime"]=new Date();
+            startListeningCallParams[script.name]=script;
+            Thread.sleep(10000);
+            startListeningCallParams["endTime"]=new Date();
+        }
+        
+        assertNull(ListeningAdapterManager.getInstance().listeningScriptInitializerThread);
+
+        def script = CmdbScript.addScript(name: "testscript", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
+        assertFalse(script.hasErrors());
+
+        def ds = BaseListeningDatasourceCompassMock.add(name:"testds",listeningScript:script,isSubscribed:true);
+        assertFalse(ds.hasErrors());
+
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+        def initializerThread=ListeningAdapterManager.getInstance().listeningScriptInitializerThread;
+        assertNotNull(initializerThread);
+        assertTrue(initializerThread.isAlive());
+
+        try{
+            ListeningAdapterManager.getInstance().destroyInstance();
+        }
+        catch(e)
+        {
+            fail("should throw exception");
+        }
+
+        assertFalse(initializerThread.isAlive());
+        
+
     }
 
 }

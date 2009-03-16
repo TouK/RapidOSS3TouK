@@ -103,7 +103,7 @@ class ListeningAdapterManager {
        }
        logger.info("Initialized listening datasources");                 
    }
-   protected void destroyListeningDatasourceInitializerThread()
+   private void destroyListeningDatasourceInitializerThread()
    {          
        try {
            logger.info("Checking listening script initializer thread is alive");

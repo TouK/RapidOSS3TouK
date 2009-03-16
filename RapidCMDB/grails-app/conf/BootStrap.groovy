@@ -159,8 +159,7 @@ class BootStrap {
     }
 
 
-    def destroy = {
-        ListeningAdapterManager.getInstance().destroyListeningDatasources();
+    def destroy = {        
         ListeningAdapterManager.destroyInstance();
         ScriptManager.destroyInstance();
         SessionManager.destroyInstance();

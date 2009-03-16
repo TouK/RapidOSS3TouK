@@ -280,8 +280,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             fail("should not throw exception");
         }
         if(runConnector)
-        {
-            ListeningAdapterManager.getInstance().destroyListeningDatasources();
+        {               
             ListeningAdapterManager.destroyInstance();
             ListeningAdapterManager.getInstance().initialize();
         }

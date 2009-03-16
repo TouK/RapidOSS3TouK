@@ -58,6 +58,7 @@ class ListeningAdapterManager {
 
     private void destroy() {        
         logger.debug("Destroying listening adapter manager.");
+        destroyListeningDatasourceInitializerThread();
         if (listeningAdapterRunners != null)
         {
             def tmpMap = new HashMap(listeningAdapterRunners);
@@ -102,7 +103,7 @@ class ListeningAdapterManager {
        }
        logger.info("Initialized listening datasources");                 
    }
-   public void destroyListeningDatasources()
+   protected void destroyListeningDatasourceInitializerThread()
    {          
        try {
            logger.info("Checking listening script initializer thread is alive");

@@ -39,7 +39,7 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
  * Time: 3:36:31 AM
  * To change this template use File | Settings | File Templates.
  */
-class CompositeDirectoryWrapperProviderTest extends  AbstractSearchableCompassTests{
+class CompositeDirectoryWrapperTest extends  AbstractSearchableCompassTests{
     Compass compass;
 
     public void setUp() {

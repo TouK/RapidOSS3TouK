@@ -30,7 +30,7 @@ import org.springframework.validation.Errors
 * Time: 5:13:38 PM
 * To change this template use File | Settings | File Templates.
 */
-class KeyConstraintTest extends RapidCmdbTestCase{
+public class KeyConstraintTest extends RapidCmdbTestCase{
 
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.

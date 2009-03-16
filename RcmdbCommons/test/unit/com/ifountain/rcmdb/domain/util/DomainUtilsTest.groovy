@@ -28,7 +28,7 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
  * Date: Jun 6, 2008
  * Time: 5:13:43 PM
  */
-class DomainClassUtilsTest extends RapidCmdbTestCase
+class DomainUtilsTest extends RapidCmdbTestCase
 {
     public void testGetKeys()
     {

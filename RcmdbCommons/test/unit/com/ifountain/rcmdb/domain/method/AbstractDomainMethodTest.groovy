@@ -19,7 +19,7 @@ import com.ifountain.rcmdb.domain.DomainMethodExecutor
  * To change this template use File | Settings | File Templates.
  */
 
-public class AbstractRapidDomainMethodTest extends RapidCmdbTestCase
+public class AbstractDomainMethodTest extends RapidCmdbTestCase
 {
     public void testSynchronization()
     {

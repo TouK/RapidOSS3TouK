@@ -16,30 +16,29 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.compass.converter
 
 import org.compass.core.converter.Converter
 
+
 /**
  * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: May 29, 2008
- * Time: 5:59:49 PM
+ * User: mustafa sener
+ * Date: Aug 26, 2008
+ * Time: 5:01:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CompassLongConverter extends AbstractCompassFormattedConverterWrapper
-{
-    org.compass.core.converter.basic.LongConverter longConverter;
-    public CompassLongConverter()
+class CompassBooleanConverter extends AbstractCompassConverterWrapper{
+    org.compass.core.converter.basic.BooleanConverter booleanConverter;
+    public CompassBooleanConverter()
     {
-        longConverter = new org.compass.core.converter.basic.LongConverter();
+        booleanConverter = new org.compass.core.converter.basic.BooleanConverter()
     }
     protected Converter getConverter() {
-        return longConverter; //To change body of implemented methods use File | Settings | File Templates.
+        return booleanConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected Object getDefaultValue() {
-        return new Long(0);
+        return new Boolean(false);
     }
-
 }

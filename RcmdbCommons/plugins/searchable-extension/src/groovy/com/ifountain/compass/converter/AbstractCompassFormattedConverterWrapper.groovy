@@ -16,29 +16,26 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.compass.converter
 
+import org.compass.core.converter.basic.FormatConverter
 import org.compass.core.converter.Converter
-
+import org.compass.core.config.CompassConfigurable
 
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
  * Date: Aug 26, 2008
- * Time: 5:01:07 PM
+ * Time: 5:33:29 PM
  * To change this template use File | Settings | File Templates.
  */
-class CompassBooleanConverter extends AbstractCompassConverterWrapper{
-    org.compass.core.converter.basic.BooleanConverter booleanConverter;
-    public CompassBooleanConverter()
-    {
-        booleanConverter = new org.compass.core.converter.basic.BooleanConverter()
-    }
-    protected Converter getConverter() {
-        return booleanConverter; //To change body of implemented methods use File | Settings | File Templates.
+abstract class AbstractCompassFormattedConverterWrapper extends AbstractCompassConverterWrapper implements FormatConverter, CompassConfigurable{
+    public void setFormat(String s) {
+        ((FormatConverter)getConverter()).setFormat (s);
     }
 
-    protected Object getDefaultValue() {
-        return new Boolean(false);
+    public FormatConverter copy() {
+        return ((FormatConverter)getConverter()).copy();
     }
+
 }

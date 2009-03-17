@@ -16,28 +16,30 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.compass.converter
 
 import org.compass.core.converter.Converter
 
 /**
-* Created by IntelliJ IDEA.
-* User: Administrator
-* Date: May 30, 2008
-* Time: 1:21:09 PM
-* To change this template use File | Settings | File Templates.
-*/
-class CompassDoubleConverter extends AbstractCompassFormattedConverterWrapper{
-    org.compass.core.converter.basic.DoubleConverter doubleConverter;
-    public CompassDoubleConverter()
+ * Created by IntelliJ IDEA.
+ * User: Administrator
+ * Date: May 29, 2008
+ * Time: 5:59:49 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class CompassLongConverter extends AbstractCompassFormattedConverterWrapper
+{
+    org.compass.core.converter.basic.LongConverter longConverter;
+    public CompassLongConverter()
     {
-        doubleConverter = new org.compass.core.converter.basic.DoubleConverter();    
+        longConverter = new org.compass.core.converter.basic.LongConverter();
     }
     protected Converter getConverter() {
-        return doubleConverter; //To change body of implemented methods use File | Settings | File Templates.
+        return longConverter; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected Object getDefaultValue() {
-        return new Double(0);
+        return new Long(0);
     }
+
 }

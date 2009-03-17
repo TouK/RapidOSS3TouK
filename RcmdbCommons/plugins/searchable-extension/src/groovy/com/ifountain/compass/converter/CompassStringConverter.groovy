@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.domain.converter
+package com.ifountain.compass.converter
 
 import org.compass.core.Resource
 import org.compass.core.converter.Converter

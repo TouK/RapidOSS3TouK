@@ -1,4 +1,4 @@
-package com.ifountain.compass;
+package com.ifountain.compass.query;
 
 import org.compass.core.lucene.engine.queryparser.DefaultLuceneQueryParser;
 import org.apache.lucene.queryParser.CompassQueryParser;

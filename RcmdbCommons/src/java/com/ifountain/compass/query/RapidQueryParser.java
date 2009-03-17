@@ -1,8 +1,9 @@
-package com.ifountain.compass;
+package com.ifountain.compass.query;
 
 import org.apache.lucene.queryParser.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.index.Term;
 import org.compass.core.converter.basic.DateMathParser;
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.engine.SearchEngineFactory;
@@ -12,6 +13,8 @@ import java.util.Locale;
 import java.util.Date;
 
 import com.ifountain.compass.utils.QueryParserUtils;
+import com.ifountain.compass.CompassConstants;
+import com.ifountain.rcmdb.domain.converter.CompassStringConverter;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,11 +28,14 @@ public class RapidQueryParser extends CompassQueryParser{
         super(f, a, mapping, searchEngineFactory, forceAnalyzer);
     }
 
+    protected Query getFieldQuery(String field, String queryText) throws ParseException {
+        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText);
+        return super.getFieldQuery(param.getField(), param.getQueryText());
+    }
+
     protected Query getRangeQuery(String field, String start, String end, boolean inclusive) throws ParseException {
-        Date now = new Date();
-        start = QueryParserUtils.getCurrentTime(start, now);
-        end = QueryParserUtils.getCurrentTime(end, now);
-        return super.getRangeQuery(field, start, end, inclusive);
+        RangeQueryParameter param = QueryParserUtils.createRangeQueryParameters(field, start, end, inclusive);
+        return super.getRangeQuery(param.getField(), param.getStart(), param.getEnd(), param.isInclusive());
     }
 
 }

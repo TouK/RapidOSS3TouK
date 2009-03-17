@@ -24,9 +24,10 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 import com.ifountain.rcmdb.domain.converter.CompassBooleanConverter
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
-import com.ifountain.compass.RapidQueryParser
-import com.ifountain.compass.RapidLuceneQueryParser
+import com.ifountain.compass.query.RapidQueryParser
+import com.ifountain.compass.query.RapidLuceneQueryParser
 import com.ifountain.rcmdb.domain.converter.CompassStringConverter
+import com.ifountain.compass.DefaultCompassConfiguration
 
 /**
 * Grails Searchable Plugin configuration
@@ -66,24 +67,8 @@ class SearchableConfiguration {
      *
      * Documentation for Compass settings is here: http://www.compass-project.org/docs/1.2.1/reference/html/core-settings.html
      */
-    def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
-    Map compassSettings = ["compass.converter.date.type":CompassDateConverter.class.name,
-    "compass.converter.date.format":"${dateFormat}||yyyy-dd-MM||yyyy-dd-MM HH||yyyy-dd-MM HH:mm||yyyy-dd-MM HH:mm:ss||yyyy-dd-MM HH:mm:ss.SSS||MM-dd-yyyy||MM-dd-yyyy HH||MM-dd-yyyy HH:mm||MM-dd-yyyy HH:mm:ss||MM-dd-yyyy HH:mm:ss.SSS".toString(),
-    "compass.converter.long.type":CompassLongConverter.class.name,
-    "compass.converter.string.type":CompassStringConverter.class.name,
-    "compass.converter.long.format":"#000000000000000000000000000000",
-    "compass.converter.boolean.type":CompassBooleanConverter.class.name,
-    "compass.converter.double.type":CompassDoubleConverter.class.name,
-    "compass.converter.double.format":"#000000000000000000000000000000.00000000000000",
-    "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
-    "compass.engine.store.wrapper.wrapper1.type":"com.ifountain.compass.CompositeDirectoryWrapperProvider",
-    "compass.engine.store.wrapper.wrapper1.awaitTermination":"10000000",
-    "compass.cache.first":"org.compass.core.cache.first.NullFirstLevelCache",
-    "compass.transaction.lockTimeout":45,
-    "compass.engine.store.indexDeletionPolicy.type":WrapperIndexDeletionPolicy.name,
-    "compass.engine.queryParser.default.type":RapidLuceneQueryParser.class.name
-    ];
-
+    Map compassSettings = DefaultCompassConfiguration.getDefaultSettings(ConfigurationHolder.getConfig());
+             
     /**
      * Default mapping property exclusions
      *

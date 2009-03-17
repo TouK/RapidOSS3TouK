@@ -70,7 +70,9 @@ class TestCompassUtils {
             objects.each { object ->
                 def collection = object
                 if (!(collection instanceof Collection)) collection = [collection]
-                collection.each { session.save(it) }
+                collection.each {
+                    session.save(it)
+                }
             }
         }
     }

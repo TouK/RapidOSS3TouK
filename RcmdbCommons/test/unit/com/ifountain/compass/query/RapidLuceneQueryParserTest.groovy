@@ -1,6 +1,9 @@
 package com.ifountain.compass
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.compass.query.RapidMultiQueryParser
+import com.ifountain.compass.query.RapidQueryParser
+import com.ifountain.compass.query.RapidLuceneQueryParser
 
 /**
 * Created by IntelliJ IDEA.

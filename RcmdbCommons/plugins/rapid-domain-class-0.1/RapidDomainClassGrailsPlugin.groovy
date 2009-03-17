@@ -231,7 +231,8 @@ class RapidDomainClassGrailsPlugin {
             }
             catch(t)
             {
-                logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}. Reason :"+t.toString());
+                //the errors is already logged by the reloadOperations method _invoke(), but invoke() exceptions are ignored                
+                //logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}. Reason :"+t.toString());
             }
         }
 

@@ -58,8 +58,6 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     
     public void testPropertySummaryWithMultipleProperty()
     {
-
-        fail("Should run after nullanalyzer implementation");
         initialize([PropertySummaryMethodDomainObject1], []);
         PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"p1val1", prop2:"p2val1");
@@ -78,12 +76,11 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals (1, res.prop2.p2val1);
         assertEquals (2, res.prop2.p2val2);
-        assertEquals (2, res.prop2[null]);
-        assertEquals (1, res.prop2[""]);
+        assertEquals (3, res.prop2[""]);
 
         assertEquals (1, res.prop3[1l]);
         assertEquals (1, res.prop3["1"]);
-        assertEquals (5, res.prop3[null]);
+        assertEquals ("all null properties will be saved as default property specified in compass configuration of converters",5, res.prop3["0"]);
 
         res.prop3.each{key, value->
             if(key != null)

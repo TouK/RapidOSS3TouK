@@ -24,6 +24,7 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.compass.CompassConstants
 import org.compass.core.CompassHits
+import com.ifountain.rcmdb.domain.converter.CompassStringConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -64,7 +65,15 @@ class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
                     {
                         CompassHit hit = hits.hit(0)
                         def prop = hit.getResource().getProperty(propName);
-                        def value = prop.getObjectValue();
+                        def value;
+                        if(prop.stringValue == CompassStringConverter.EMPTY_VALUE)
+                        {
+                            value = ""; 
+                        }
+                        else
+                        {
+                            value = prop.getObjectValue();
+                        }
                         summary[propName][value] = termCount;
                     }
                 }

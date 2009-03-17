@@ -40,6 +40,10 @@ import org.compass.core.converter.basic.FormatConverter
 */
 abstract class AbstractCompassConverterWrapper  implements ResourcePropertyConverter{
     public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) {
+        if(o == null)
+        {
+            o = getDefaultValue();
+        }
         return getConverter().marshall(resource, o, mapping, marshallingContext);
     }
     public Object unmarshall(Resource resource, Mapping mapping, MarshallingContext marshallingContext) {

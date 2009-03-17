@@ -14,7 +14,7 @@ import java.util.Date;
 
 import com.ifountain.compass.utils.QueryParserUtils;
 import com.ifountain.compass.CompassConstants;
-import com.ifountain.rcmdb.domain.converter.CompassStringConverter;
+import com.ifountain.compass.converter.CompassStringConverter;
 
 /**
  * Created by IntelliJ IDEA.

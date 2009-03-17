@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.Locale;
 
-import com.ifountain.rcmdb.domain.converter.CompassStringConverter;
+import com.ifountain.compass.converter.CompassStringConverter;
 import com.ifountain.compass.query.RangeQueryParameter;
 import com.ifountain.compass.query.FieldQueryParameter;
 import com.ifountain.compass.CompassConstants;

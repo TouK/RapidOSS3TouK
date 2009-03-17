@@ -7,7 +7,7 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DomainClassMappingHelper
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping
-import com.ifountain.rcmdb.domain.converter.CompassStringConverter
+import com.ifountain.compass.converter.CompassStringConverter
 import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
 import org.compass.core.CompassSession
 import org.compass.core.CompassTransaction
@@ -15,7 +15,7 @@ import org.compass.core.CompassQuery
 import org.compass.core.CompassHits
 import org.compass.core.CompassQueryBuilder
 import org.compass.core.CompassHit
-import com.ifountain.rcmdb.domain.converter.CompassLongConverter
+import com.ifountain.compass.converter.CompassLongConverter
 import org.compass.core.Resource
 
 /**

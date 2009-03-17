@@ -24,7 +24,7 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.compass.CompassConstants
 import org.compass.core.CompassHits
-import com.ifountain.rcmdb.domain.converter.CompassStringConverter
+import com.ifountain.compass.converter.CompassStringConverter
 
 /**
  * Created by IntelliJ IDEA.

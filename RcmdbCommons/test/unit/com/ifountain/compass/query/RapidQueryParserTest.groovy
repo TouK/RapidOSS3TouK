@@ -3,7 +3,7 @@ package com.ifountain.compass
 import com.ifountain.compass.query.RapidMultiQueryParser
 import com.ifountain.compass.query.RapidQueryParser
 import com.ifountain.compass.utils.QueryParserUtils
-import com.ifountain.rcmdb.domain.converter.CompassStringConverter
+import com.ifountain.compass.converter.CompassStringConverter
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.commons.lang.StringUtils

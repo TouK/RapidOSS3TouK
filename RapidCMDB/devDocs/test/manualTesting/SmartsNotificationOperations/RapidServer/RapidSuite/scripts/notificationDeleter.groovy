@@ -24,7 +24,7 @@ def ds=smcon.ds;
 
 def output=" ";
 
-def deletelimit=50;
+def deletelimit=40;
 def deletecount=0;
 
 def random=new Random(System.currentTimeMillis());

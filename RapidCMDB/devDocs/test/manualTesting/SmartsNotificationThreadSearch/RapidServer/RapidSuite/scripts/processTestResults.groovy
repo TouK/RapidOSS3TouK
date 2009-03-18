@@ -14,6 +14,12 @@ def processor=new TestResultsProcessor("SmartsNotificationThreadSearch");
 processor.checkOperationLessThen("Add",["SmartsNotification"],"AvarageDuration",0.07,true)
 processor.checkOperationLessThen("Search",["RsEvent"],"AvarageDuration",0.03,true)
 
+//if notificationOperationTest also runs at the same time, these methods will also be done  by notificationconnector,
+// we check if they exists with parameter false
+processor.checkOperationLessThen("Add",["SmartsHistoricalNotification","RsEventJournal"],"AvarageDuration",0.07,false)
+processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuration",0.04,false)
+processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,false)
+
 def memoryLimit=processor.getFirstMemory()+20
 memoryLimit+=RsEvent.countHits("alias:*")*0.002
 

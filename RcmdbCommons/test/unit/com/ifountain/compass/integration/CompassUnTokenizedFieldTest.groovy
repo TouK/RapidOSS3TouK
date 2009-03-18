@@ -19,6 +19,7 @@ import com.ifountain.compass.converter.CompassLongConverter
 import org.compass.core.Resource
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import com.ifountain.compass.CompassConstants
 
 /**
 * Created by IntelliJ IDEA.

@@ -1,17 +1,18 @@
 package com.ifountain.compass.integration
 
-import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
-import org.compass.core.Compass
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
-import com.ifountain.compass.converter.CompassStringConverter
-import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
-import org.compass.core.CompassQueryBuilder
-import org.compass.core.CompassQuery
-import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
+import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
+import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.compass.core.Compass
+import org.compass.core.CompassQuery
+import org.compass.core.CompassQueryBuilder
+import com.ifountain.compass.DefaultCompassConfiguration
+import com.ifountain.compass.converter.CompassStringConverter
+
 
 /**
 * Created by IntelliJ IDEA.

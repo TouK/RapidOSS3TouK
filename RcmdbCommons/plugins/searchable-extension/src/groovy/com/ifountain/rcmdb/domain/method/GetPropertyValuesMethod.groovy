@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.domain.method
 
 import org.compass.core.Resource
 import org.compass.core.CompassHit
+import org.apache.commons.collections.MapUtils
 import com.ifountain.compass.converter.CompassStringConverter
 
 /**
@@ -33,12 +34,12 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
 
     Map relations;
     public GetPropertyValuesMethod(MetaClass mc, Map relations) {
-        super(mc);    //To change body of overridden methods use File | Settings | File Templates.
+        super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.relations = relations;
     }
 
     public boolean isWriteOperation() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected Object _invoke(Class clazz, Object[] arguments) {
@@ -46,30 +47,44 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
         List propertyList = arguments[1]
         Map options = arguments[2];
         def results = [];
-        def raw = {compassHits, session->
-            compassHits.iterator().each{CompassHit hit->
-
+        def raw = {compassHits, session ->
+            def maxOption = options["max"]
+            int offset = MapUtils.getIntValue(options, "offset");
+            int max = MapUtils.getIntValue(options, "max");
+            if (maxOption == null || max > compassHits.length())
+            {
+                max = compassHits.length();
+            }
+            int low = offset;
+            int high = Math.min(low + max, compassHits.length());
+            Iterator hitIterator = compassHits.iterator();
+            for (int i = 0; i < low && i < high; i++) {
+                hitIterator.next();
+            }
+            while (low < high) {
+                CompassHit hit = hitIterator.next();
+                low++
                 Resource res = hit.getResource();
-                def propMap = [alias:res.getAlias(), id:res.getObject("id")];
+                def propMap = [alias: res.getAlias(), id: res.getObject("id")];
                 results.add(propMap);
-                propertyList.each{String propName->
+                propertyList.each {String propName ->
 
                     def prop = res.getProperty(propName);
-                    if(prop != null)
+                    if (prop != null)
                     {
-                      Object value = prop.getObjectValue();
-                      if(value == CompassStringConverter.EMPTY_VALUE)
-                      {
-                          value = "";
-                      }
-                      propMap[propName] = value;
+                        Object value = prop.getObjectValue();
+                        if (value == CompassStringConverter.EMPTY_VALUE)
+                        {
+                            value = "";
+                        }
+                        propMap[propName] = value;
                     }
                 }
             }
         }
         options["raw"] = raw;
         clazz.'searchEvery'(query, options);
-        return results;  //To change body of implemented methods use File | Settings | File Templates.
+        return results; //To change body of implemented methods use File | Settings | File Templates.
     }
 
 }

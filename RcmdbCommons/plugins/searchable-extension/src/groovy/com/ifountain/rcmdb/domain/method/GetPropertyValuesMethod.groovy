@@ -48,22 +48,8 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
         Map options = arguments[2];
         def results = [];
         def raw = {compassHits, session ->
-            def maxOption = options["max"]
-            int offset = MapUtils.getIntValue(options, "offset");
-            int max = MapUtils.getIntValue(options, "max");
-            if (maxOption == null || max > compassHits.length())
-            {
-                max = compassHits.length();
-            }
-            int low = offset;
-            int high = Math.min(low + max, compassHits.length());
-            Iterator hitIterator = compassHits.iterator();
-            for (int i = 0; i < low && i < high; i++) {
-                hitIterator.next();
-            }
-            while (low < high) {
-                CompassHit hit = hitIterator.next();
-                low++
+            def hitList = MethodUtils.getCompassHitsSubset(compassHits, options);
+            hitList.each {CompassHit hit ->
                 Resource res = hit.getResource();
                 def propMap = [alias: res.getAlias(), id: res.getObject("id")];
                 results.add(propMap);

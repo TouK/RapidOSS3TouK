@@ -1,4 +1,4 @@
-package com.ifountain.compass
+package com.ifountain.compass.integration
 
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import org.compass.core.Compass
@@ -17,6 +17,8 @@ import org.compass.core.CompassQueryBuilder
 import org.compass.core.CompassHit
 import com.ifountain.compass.converter.CompassLongConverter
 import org.compass.core.Resource
+import com.ifountain.compass.CompassTestObject
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 /**
 * Created by IntelliJ IDEA.

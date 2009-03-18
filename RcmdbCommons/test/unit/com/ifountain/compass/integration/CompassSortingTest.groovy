@@ -1,4 +1,4 @@
-package com.ifountain.compass
+package com.ifountain.compass.integration
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 

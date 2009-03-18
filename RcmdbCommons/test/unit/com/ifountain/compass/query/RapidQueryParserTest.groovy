@@ -1,4 +1,4 @@
-package com.ifountain.compass
+package com.ifountain.compass.query
 
 import com.ifountain.compass.query.RapidMultiQueryParser
 import com.ifountain.compass.query.RapidQueryParser

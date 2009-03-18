@@ -1,4 +1,4 @@
-package com.ifountain.compass
+package com.ifountain.compass.integration
 
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import org.compass.core.Compass
@@ -10,6 +10,8 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
 import org.compass.core.CompassQueryBuilder
 import org.compass.core.CompassQuery
 import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
+import com.ifountain.compass.CompassTestObject
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 /**
 * Created by IntelliJ IDEA.

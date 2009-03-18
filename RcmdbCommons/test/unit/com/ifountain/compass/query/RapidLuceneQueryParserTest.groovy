@@ -1,4 +1,4 @@
-package com.ifountain.compass
+package com.ifountain.compass.query
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.compass.query.RapidMultiQueryParser

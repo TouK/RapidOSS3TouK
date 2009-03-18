@@ -73,7 +73,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     def initialize()
     {
         initializeManagers();
-        //CompassForTests.initialize([CmdbScript]);
         initialize([CmdbScript], []);
         initializeOperations();
     }
@@ -105,7 +104,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         def logLevel = Level.DEBUG;
         initialize();
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", staticParam: "x:5", logLevel: logLevel.toString())]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
 
         def ds = new BaseListeningDatasourceMock();
@@ -191,7 +189,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         def logLevel = Level.DEBUG;
         initialize();
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", staticParam: "x:5", logLevel: logLevel.toString())]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript",logLevel: logLevel.toString());
 
         def ds = new BaseListeningDatasourceMock(id:1);
@@ -272,7 +269,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
         //add start and remove adapter will call stop
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
         ds.listeningScript = script;
 
@@ -317,7 +313,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         def logLevel = Level.DEBUG;
         ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir.path, [], [:]);
         ListeningAdapterManager.getInstance().initialize();
-        //CompassForTests.initialize([CmdbScript]);
+
         initialize([CmdbScript], []);
         CompassForTests.addOperationSupport(CmdbScript, script.CmdbScriptOperations);
         CompassForTests.addOperationSupport(BaseListeningDatasource, datasource.BaseListeningDatasourceOperations);
@@ -336,7 +332,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         assertTrue (ListeningAdapterManager.getInstance().hasAdapter(ds2.id));
         assertTrue (ListeningAdapterManager.getInstance().hasAdapter(ds3.id));
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName, logFileOwn: true)]);
+
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName, logFileOwn: true);
         ds1.listeningScript = script;
         ds2.listeningScript = script;
@@ -364,7 +360,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         initialize();
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
 
         def ds = new BaseListeningDatasourceMock(id:1);
@@ -409,7 +404,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         initialize();
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
 
         def ds = new BaseListeningDatasourceMock(id:1);
@@ -450,7 +444,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         initialize();
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
 
         def ds = new BaseListeningDatasourceMock();
@@ -472,7 +465,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     {
         initialize();
 
-        //CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true)]);
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
 
         def ds = new BaseListeningDatasourceMock(id:1);

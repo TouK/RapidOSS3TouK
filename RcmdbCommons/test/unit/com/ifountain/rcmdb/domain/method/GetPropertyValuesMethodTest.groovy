@@ -115,6 +115,24 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase{
         assertEquals (modelInstance1.prop1, res[0].prop1);
     }
 
+    public void testGetPropertyValuesWithNullAndEmptyStringProperties()
+    {
+        def modelClass = initializeCompassWithSimpleObject();
+        def modelInstance1 = modelClass.'add'(keyProp:"obj1", prop1:"", prop2:1);
+        def modelInstance2 = modelClass.'add'(keyProp:"obj2", prop1:null, prop2:1);
+        assertFalse (modelInstance1.hasErrors());
+
+        def res = modelClass.'getPropertyValues'("alias:*", ["prop1"]);
+        assertEquals (2, res.size());
+        assertEquals (3, res[0].size())
+        assertEquals (modelClass.name, res[0].alias);
+        assertEquals (modelInstance1.id, res[0].id);
+        assertEquals ("", res[0].prop1);
+        assertEquals (modelClass.name, res[1].alias);
+        assertEquals (modelInstance2.id, res[1].id);
+        assertEquals ("", res[1].prop1);
+    }
+
     public void testGetPropertyValuesWithModelHasParent()
     {
         def childModelName1 = "ChildModel1";

@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.domain.method
 
 import org.compass.core.Resource
 import org.compass.core.CompassHit
+import com.ifountain.compass.converter.CompassStringConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +57,12 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
                     def prop = res.getProperty(propName);
                     if(prop != null)
                     {
-                      propMap[propName] = prop.getObjectValue();
+                      Object value = prop.getObjectValue();
+                      if(value == CompassStringConverter.EMPTY_VALUE)
+                      {
+                          value = "";
+                      }
+                      propMap[propName] = value;
                     }
                 }
             }

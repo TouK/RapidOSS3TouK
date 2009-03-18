@@ -79,6 +79,7 @@ class NetcoolModuleBuild extends Build {
                 ant.exclude(name: "**/netcoolDataGenerator.groovy")
                 ant.exclude(name: "**/NetcoolDemoValues.groovy")
                 ant.exclude(name: "**/NetcoolRealValues.groovy")
+                ant.exclude(name: "**/demoGenerator.groovy")
             }
         }
 //        replaceJavascriptAndCss("${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp", "/RapidSuite/indexLayout_${buildNo}.js", "/RapidSuite/indexLayout_${buildNo}.css")

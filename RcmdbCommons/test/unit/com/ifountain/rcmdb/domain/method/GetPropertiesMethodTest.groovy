@@ -258,6 +258,50 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase{
         assertEquals ("revRel2", prop.reverseName);
 
     }
+    public void testGetPropertiesIgnoresStaticPropertyInOperations()
+    {
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodIgnoreStaticPropertyDomainObject);
+        GetPropertiesMethod method = new GetPropertiesMethod(cls);
+        method.operationClass = GetPropertiesMethodIgnoreStaticPropertyDomainObjectOperations;
+
+        def allProperties = method.getDomainObjectProperties();
+        allProperties.each{
+            println it.name + " : " + it.type + " : " + it.isOperationProperty
+        }
+
+        assertEquals(4,allProperties.size());
+
+        RapidDomainClassProperty prop = allProperties[0];
+        assertEquals("id", prop.name);
+        assertFalse (prop.isRelation);
+        assertEquals (Long, prop.type);
+        assertFalse (prop.isKey);
+        assertFalse (prop.isOperationProperty);
+
+
+        prop = allProperties[1];
+        assertEquals("prop1", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+        prop = allProperties[2];
+        assertEquals("prop2", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+        prop = allProperties[3];
+        assertEquals("prop3", prop.name);
+        assertFalse(prop.isRelation);
+        assertFalse (prop.isKey);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+
+    }
 }
 
 class GetPropertiesMethodDomainObject
@@ -315,6 +359,7 @@ class GetPropertiesMethodParentDomainObjectOperations extends AbstractDomainOper
 class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParentDomainObjectOperations
 {
     private String privateProperty2;
+
 
 //    @HideProperty
 //    String privateProperty4;
@@ -377,8 +422,7 @@ class GetPropertiesMethodIgnorePropertyDomainObject
 }
 
 class GetPropertiesMethodIgnorePropertyDomainObjectOperations
-{
-
+{       
     def getProp1()
     {
     }
@@ -399,4 +443,52 @@ class GetPropertiesMethodIgnorePropertyDomainObjectOperations
 
     }
 
+}
+
+
+
+class GetPropertiesMethodIgnoreStaticPropertyDomainObject
+{
+    static searchable = {
+        except = ["rel1", "rel2"];
+    };
+    static cascaded = [:]
+    static datasources = [:]
+    Long id ;
+    Long version ;
+    String prop1;
+    String prop2;
+    String prop3;
+
+    static constraints={  }
+    static relations = [ :]
+    static propertyConfiguration= [:]
+    static transients = [];
+    //AUTO_GENERATED_CODE
+}
+
+class GetPropertiesMethodIgnoreStaticPropertyDomainObjectOperations
+{
+    static int static1;
+    static String static2;
+    static def getStatic3()
+    {
+
+    }
+    static int getStatic4()
+    {
+
+    }
+    static boolean getStatic5()
+    {
+        
+    }
+    static void setStatic5(boolean newValue)
+    {
+
+    }
+    static void setStatic6(String newValue)
+    {
+        
+    }
 }

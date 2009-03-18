@@ -9,6 +9,9 @@ import datasource.BaseListeningDatasource
 import org.apache.log4j.Logger
 import org.apache.log4j.Level
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -62,7 +65,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
             DataStore.put ("numberOfInitCalls", ++numberOfCalls);
             synchronized(DataStore.get("initLock"))
             {
-                DataStore.get("initLock").wait();
+                DataStore.get("initLock").wait(5000);
             }
         }
 
@@ -86,7 +89,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName, staticParam: "x:5", logLevel: logLevel.toString())]);
         def scriptObject = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName);
 
-        def ds = new SynchronizationBaseListeningDatasourceMock();
+        def ds = new SynchronizationBaseListeningDatasourceMock(id:1);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ListeningAdapterManager.getInstance().addAdapter (ds);
 
@@ -121,14 +124,17 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         assertEquals (1, DataStore.get ("numberOfGetParametersCalls"));
         assertEquals (1, DataStore.get ("numberOfInitCalls"));
 
-        //All thread except one which created adapter first should be finished
+        //All threads should be finished because start adapter is threaded
         Thread.sleep (200);
         def threadNotFinished = threads.findAll {it.threadState == 3}
-        assertEquals (1, threadNotFinished.size());
+        assertEquals (0, threadNotFinished.size());
         def threadsNotFinishedWithException = threads.findAll {it.threadState == 5}
+        //all threads except one throws exception
         assertEquals (numberOfThreads - 1, threadsNotFinishedWithException.size());
+        def threadsSuccessfulltFinished = threads.findAll {it.threadState == 4};
+        assertEquals (1, threadsSuccessfulltFinished.size());
         threadsNotFinishedWithException.each{ListeningAdapterSynchronizationRunnerThread thread->
-            assertEquals (ListeningAdapterException.adapterAlreadyStartedException(ds.name).getMessage(), thread.thrownException.getMessage())
+            assertEquals (ListeningAdapterException.adapterAlreadyStartedException(ds.id).getMessage(), thread.thrownException.getMessage())
         }
 
         def initLock = DataStore.get ("initLock");
@@ -165,7 +171,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
             DataStore.put ("numberOfCleanupCalls", ++numberOfCalls);
             synchronized(DataStore.get("cleanUpLock"))
             {
-                DataStore.get("cleanUpLock").wait();
+                DataStore.get("cleanUpLock").wait(5000);
             }
         }
         """
@@ -183,13 +189,15 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         CompassForTests.addOperationData.setObjectsWillBeReturned([new CmdbScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName, staticParam: "x:5", logLevel: logLevel.toString())]);
         def scriptObject = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: scriptName);
 
-        def ds = new SynchronizationBaseListeningDatasourceMock();
+        def ds = new SynchronizationBaseListeningDatasourceMock(id:1);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ListeningAdapterManager.getInstance().addAdapter (ds);
         ds.listeningScript = scriptObject;
 
         ListeningAdapterManager.getInstance().startAdapter(ds);
-        assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));    
+        }))
         
         def threads = new ArrayList();
         def threadRunLock = new Object();
@@ -226,7 +234,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         def threadsNotFinishedWithException = threads.findAll {it.threadState == 5}
         assertEquals (numberOfThreads - 1, threadsNotFinishedWithException.size());
         threadsNotFinishedWithException.each{ListeningAdapterSynchronizationRunnerThread thread->
-            assertTrue(thread.thrownException.getMessage() == ListeningAdapterException.adapterAlreadyStoppedException(ds.name).getMessage() || thread.thrownException.getMessage() == ListeningAdapterException.stoppingStateException(ds.name, "stop").getMessage())
+            assertTrue(thread.thrownException.getMessage() == ListeningAdapterException.adapterAlreadyStoppedException(ds.id).getMessage() || thread.thrownException.getMessage() == ListeningAdapterException.stoppingStateException(ds.id, "stop").getMessage())
         }
 
         def initLock = DataStore.get ("cleanUpLock");

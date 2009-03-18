@@ -1,17 +1,14 @@
 package com.ifountain.rcmdb.datasource
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.util.DataStore
+import datasource.BaseListeningDatasource
+import org.apache.commons.io.FileUtils
+import org.apache.log4j.Logger
 import script.CmdbScript
 import script.CmdbScriptOperations
-import org.apache.log4j.Logger
-import datasource.BaseListeningDatasource
-import com.ifountain.rcmdb.util.DataStore
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.scripting.ScriptManager
-import org.apache.commons.io.FileUtils
-import com.ifountain.comp.test.util.CommonTestUtils
-import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,6 +18,7 @@ import com.ifountain.rcmdb.test.util.ClosureWaitAction
 * To change this template use File | Settings | File Templates.
 */
 class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
+    public static Object stateWaitLock = new Object();
     GroovyClassLoader gcl = null;
     def static base_directory = "../testoutput/";
 
@@ -80,8 +78,45 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
             if(DataStore.get("getParametersException") != null)throw DataStore.get("getParametersException");
             return [:]
         }
+        def update(data){
+            def receivedObjects = DataStore.get("receivedObjects");
+            if(receivedObjects == null){
+                receivedObjects = [];
+                DataStore.put("receivedObjects", receivedObjects)
+            }
+            receivedObjects.add(data);
+        }
             """
+        return _createScriptObject(code);
+    }
 
+    private CmdbScript createScriptForStateMechanism() {
+        def code = """
+        import ${DataStore.name};
+        import ${ListeningAdapterRunnerTest.name};
+        def init(){
+            synchronized(ListeningAdapterRunnerTest.stateWaitLock){
+                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+            }
+        }
+        def cleanUp(){
+             synchronized(ListeningAdapterRunnerTest.stateWaitLock){
+                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+            }
+        }
+        def getParameters(){
+            synchronized(ListeningAdapterRunnerTest.stateWaitLock){
+                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+            }
+            return [:]
+        }
+        def update(data){
+        }
+            """
+        return _createScriptObject(code);
+    }
+
+    private CmdbScript _createScriptObject(code) {
         def scriptFile = "script1.groovy";
         createScript(scriptFile, code);
 
@@ -91,12 +126,61 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         return listeningScript;
     }
 
+    public void testStartAdapter() {
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
+        ds.listeningScript = createScriptObject();
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        runner.start(ds);
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+        def data = ["param1": "value1"]
+        ds.listeningAdapter.update(ds.listeningAdapter, data);
+        def receivedObjects = DataStore.get("receivedObjects");
+        assertNotNull(receivedObjects);
+        assertEquals(1, receivedObjects.size());
+        def receivedData = receivedObjects.get(0);
+        assertEquals("value1", receivedData["param1"]);
+        runner.stop();
+    }
+
+    public void testGetLastStateChangeTime()
+    {
+        def firstTime = new Date();
+        Thread.sleep(50);
+        def rObj = new ListeningAdapterRunner(1);
+        def firstStateTime = rObj.getLastStateChangeTime();
+        assertEquals(1, firstStateTime.compareTo(firstTime));
+
+        //test that returned dates are cloned
+        assertNotSame(rObj.getLastStateChangeTime(), rObj.getLastStateChangeTime());
+
+        //test that if no state change no time change occurs
+        Thread.sleep(50);
+        assertEquals(0, firstStateTime.compareTo(rObj.getLastStateChangeTime()));
+        assertEquals(0, rObj.getLastStateChangeTime().compareTo(rObj.getLastStateChangeTime()));
+
+        def secondTime = new Date();
+        Thread.sleep(50);
+        //test changing state changes the time
+        rObj.setState(AdapterStateProvider.STARTED);
+        def secondStateTime = rObj.getLastStateChangeTime()
+        assertEquals("${secondStateTime.getTime()} should be greater than ${secondTime.getTime()}", 1, secondStateTime.compareTo(secondTime));
+        assertEquals(1, secondStateTime.compareTo(firstStateTime));
+
+        //test changing state changes the time
+        def thirdTime = new Date();
+        Thread.sleep(50);
+        rObj.setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+        def thirdStateTime = rObj.getLastStateChangeTime()
+        assertEquals("${thirdStateTime.getTime()} should be greater than ${thirdTime.getTime()}", 1, thirdStateTime.compareTo(thirdTime));
+        assertEquals(1, thirdStateTime.compareTo(secondStateTime));
+    }
+
 
     public void testStartAdapterThrowsExceptionIfDatasourceDoesNotReturnAdapter()
     {
-
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningScript = createScriptObject();
         try
         {
@@ -105,15 +189,15 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.noAdapterDefined(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.noAdapterDefined(runner.datasourceId).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStartAdapterThrowsExceptionIfScriptIsNotListening()
     {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
         ds.listeningScript.type = CmdbScript.PERIODIC;
@@ -124,9 +208,9 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.noListeningScript(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.noListeningScript(runner.datasourceId).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
 
@@ -135,8 +219,8 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         CmdbScript.metaClass.'static'.getScriptObject = {script, params ->
             return null;
         }
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         try
         {
@@ -145,15 +229,15 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.noListeningScript(ds.name).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.noListeningScript(runner.datasourceId).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStartAdapterThrowsExceptionIfRunThrowsException()
     {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
         DataStore.put("runException", new Exception("run exception"));
@@ -164,15 +248,15 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.adapterName, ds.listeningScript.name, "run", DataStore.get("runException")).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.datasourceId, ds.listeningScript.name, "run", DataStore.get("runException")).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStartAdapterThrowsExceptionIfGetParametersThrowsException()
     {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
         DataStore.put("getParametersException", new Exception("getParameters exception"));
@@ -183,17 +267,17 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.adapterName, ds.listeningScript.name, "getParameters", DataStore.get("getParametersException")).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.datasourceId, ds.listeningScript.name, "getParameters", DataStore.get("getParametersException")).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
 
 
     public void testStartAdapterThrowsExceptionIfInitThrowsException()
     {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
         DataStore.put("initException", new Exception("init exception"));
@@ -204,15 +288,15 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.adapterName, ds.listeningScript.name, "init", DataStore.get("initException")).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.listeningScriptExecutionException(runner.datasourceId, ds.listeningScript.name, "init", DataStore.get("initException")).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStartAdapterThrowsExceptionSubscribeThrowsException()
     {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
         def subscribeException = new Exception("Subscribe exception");
         BaseListeningAdapterMock.metaClass.subscribe = {->
             throw subscribeException;
@@ -227,239 +311,136 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         }
         catch (com.ifountain.rcmdb.datasource.ListeningAdapterException e)
         {
-            assertEquals(ListeningAdapterException.couldNotSubscribed(runner.adapterName, subscribeException).getMessage(), e.getMessage());
+            assertEquals(ListeningAdapterException.couldNotSubscribed(runner.datasourceId, subscribeException).getMessage(), e.getMessage());
         }
-        assertEquals(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION, runner.getState());
-    }
-
-    public void testStartThrowsExceptionIfAdapterIsNotInOneOfStopStates()
-    {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
-        ds.listeningAdapter = new BaseListeningAdapterMock();
-        ds.listeningScript = createScriptObject();
-
-        runner.setState(ListeningAdapterRunner.INITIALIZING);
-        try
-        {
-            runner.start(ds);
-            fail("Should throw exception since it is already started");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStartedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.INITIALIZED);
-        try
-        {
-            runner.start(ds);
-            fail("Should throw exception since it is already started");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStartedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.STARTED);
-        try
-        {
-            runner.start(ds);
-            fail("Should throw exception since it is already started");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStartedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.STOPPING);
-        try
-        {
-            runner.start(ds);
-            fail("Should throw exception ");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.stoppingStateException(runner.adapterName, "start").getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.NOT_STARTED);
-        try
-        {
-            runner.start(ds);
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-        runner.setState(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION);
-        try
-        {
-            runner.start(ds);
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-        runner.setState(ListeningAdapterRunner.STOPPED);
-        try
-        {
-            runner.start(ds);
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-
-    }
-
-
-    public void testStopThrowsExceptionIfAdapterIsNotInOneOfStartStates()
-    {
-        def runner = new ListeningAdapterRunner("adapter1");
-        def ds = new RunnerBaseListeningDatasourceMock();
-        ds.listeningAdapter = new BaseListeningAdapterMock();
-        ds.listeningScript = createScriptObject();
-
-        runner.setState(ListeningAdapterRunner.NOT_STARTED);
-        try
-        {
-            runner.stop();
-            fail("Should throw exception since it is already stpped");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStoppedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.STOPPED);
-        try
-        {
-            runner.stop();
-            fail("Should throw exception since it is already stpped");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStoppedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-        runner.setState(ListeningAdapterRunner.STOPPING);
-        try
-        {
-            runner.stop();
-            fail("Should throw exception");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.stoppingStateException(runner.adapterName, "stop").getMessage(), e.getMessage());
-        }
-
-        runner.setState(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION);
-        try
-        {
-            runner.stop();
-            fail("Should throw exception since it is already stpped");
-        } catch (ListeningAdapterException e)
-        {
-            assertEquals(ListeningAdapterException.adapterAlreadyStoppedException(runner.adapterName).getMessage(), e.getMessage());
-        }
-        runner.start(ds);
-        //Following states are valid stop states
-        runner.setState(ListeningAdapterRunner.INITIALIZING);
-        try
-        {
-            runner.stop();
-        }
-        catch (e) {
-            e.printStackTrace();
-            fail("Should not throw exception");
-        }
-        runner.start(ds);
-        runner.setState(ListeningAdapterRunner.INITIALIZED);
-        try
-        {
-            runner.stop();
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-        runner.start(ds);
-        runner.setState(ListeningAdapterRunner.STARTED);
-        try
-        {
-            runner.stop();
-        }
-        catch (e) {
-            fail("Should not throw exception");
-        }
-
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStateMechanism()
     {
-        fail("Should be implemented");
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
+        ds.listeningScript = createScriptForStateMechanism();
+        ds.listeningAdapter = new BaseListeningAdapterMock(waitLock: stateWaitLock);
+        Thread.start{
+            runner.start(ds);
+        }
+        Thread.sleep(300);
+        assertEquals(AdapterStateProvider.INITIALIZING, runner.getState());
+        
+        //getParameters should pass
+        synchronized(stateWaitLock){
+            stateWaitLock.notify();    
+        }
+        Thread.sleep(100)
+        assertEquals(AdapterStateProvider.INITIALIZING, runner.getState());
+
+        //init should pass
+        synchronized(stateWaitLock){
+            stateWaitLock.notify();
+        }
+        Thread.sleep(100)
+        assertEquals(AdapterStateProvider.INITIALIZED, runner.getState());
+
+        //subscribe should pass
+        synchronized(stateWaitLock){
+            stateWaitLock.notify();
+        }
+        Thread.sleep(100)
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+
+        Thread.start{
+            runner.stop();
+        }
+        Thread.sleep(300);
+        assertEquals(AdapterStateProvider.STOPPING, runner.getState());
+        
+        //unsubscribe should pass but the state is still stopping
+        synchronized(stateWaitLock){
+            stateWaitLock.notify();
+        }
+        assertEquals(AdapterStateProvider.STOPPING, runner.getState());
+
+        Thread.start{
+            runner.cleanUp();
+        }
+        Thread.sleep(300);
+        assertEquals(AdapterStateProvider.STOPPING, runner.getState());
+         //cleanup should pass 
+        synchronized(stateWaitLock){
+            stateWaitLock.notify();
+        }
+        Thread.sleep(100);
+        assertEquals(AdapterStateProvider.STOPPED, runner.getState());
+        
     }
-    public void testGetLastStateChangeTime()
-    {
-        def firstTime = new Date();
-        Thread.sleep(50);
-        def runner = new ListeningAdapterRunner("adapter1");
-        def firstStateTime = runner.getLastStateChangeTime();
-        assertEquals(1, firstStateTime.compareTo(firstTime));
+    public void testStopAdapter() {
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
+        ds.listeningScript = createScriptObject();
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        runner.start(ds);
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+        runner.stop();
 
-        //test that returned dates are cloned
-        assertNotSame(runner.getLastStateChangeTime(), runner.getLastStateChangeTime());
-
-        //test that if no state change no time change occurs
-        Thread.sleep(50);
-        assertEquals(0, firstStateTime.compareTo(runner.getLastStateChangeTime()));
-        assertEquals(0, runner.getLastStateChangeTime().compareTo(runner.getLastStateChangeTime()));
-
-        def secondTime = new Date();
-        Thread.sleep(50);
-        //test changing state changes the time
-        runner.setState(ListeningAdapterRunner.STARTED);
-        def secondStateTime = runner.getLastStateChangeTime()
-        assertEquals("${secondStateTime.getTime()} should be greater than ${secondTime.getTime()}", 1, secondStateTime.compareTo(secondTime));
-        assertEquals(1, secondStateTime.compareTo(firstStateTime));
-
-
-
-        //test changing state changes the time
-        def thirdTime = new Date();
-        Thread.sleep(50);
-        runner.setState(ListeningAdapterRunner.STOPPED_WITH_EXCEPTION);
-        def thirdStateTime = runner.getLastStateChangeTime()
-        assertEquals("${thirdStateTime.getTime()} should be greater than ${thirdTime.getTime()}",1, thirdStateTime.compareTo(thirdTime));
-        assertEquals(1, thirdStateTime.compareTo(secondStateTime));
-
+        //adapter is not stopped until cleanUp is called successfully
+        assertEquals(AdapterStateProvider.STOPPING, runner.getState());
+        assertEquals(true, runner.isStopCalled());
+        assertEquals(true, ds.listeningAdapter.unsubscribeCalled);
+        runner.cleanUp();
+        assertEquals(AdapterStateProvider.STOPPED, runner.getState());
     }
 
     public void testAdapterWillBeAssignedToNullAfterStopThrowsException()
     {
-        DataStore.put("cleanUpException", new Exception());
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
         ds.listeningAdapter = new BaseListeningAdapterMock();
+        ds.listeningAdapter.unsubscribeException = new Exception("");
         ds.listeningScript = createScriptObject();
-        def runner = new ListeningAdapterRunner("adapter1");
-        runner.start (ds);
+        def runner = new ListeningAdapterRunner(ds.id);
+        runner.start(ds);
 
-        assertNotNull (runner.adapter);
+        assertNotNull(runner.adapter);
 
         runner.stop();
-
-        CommonTestUtils.waitFor (new ClosureWaitAction({
-            assertFalse ("runner could not be stopped", runner.isRunning());
-            assertNull ("Adapter should be set to null after runner stopped", runner.adapter);
-        }))
+        assertNull("Adapter should be set to null after runner stopped", runner.adapter);
     }
     public void testAdapterWillBeAssignedToNullAfterStop()
     {
-        def ds = new RunnerBaseListeningDatasourceMock();
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
-        def runner = new ListeningAdapterRunner("adapter1");
-        runner.start (ds);
+        def runner = new ListeningAdapterRunner(ds.id);
+        runner.start(ds);
 
-        assertNotNull (runner.adapter);
+        assertNotNull(runner.adapter);
 
         runner.stop();
+        assertNull(runner.adapter);
+    }
 
-        CommonTestUtils.waitFor (new ClosureWaitAction({
-            assertFalse ("runner could not be stopped", runner.isRunning());
-            assertNull ("Adapter should be set to null after runner stopped", runner.adapter);
-        }))
-
-        
+    public void testAdapterDoesNotSubscribeIfStopIsCalledBefore() {
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        ds.listeningScript = createScriptObject();
+        def runner = new ListeningAdapterRunner(ds.id);
+        runner.setStopCalled(true);
+        runner.start(ds);
+        assertEquals(AdapterStateProvider.INITIALIZED, runner.getState());
+        assertFalse(runner.isSubscribed());
+    }
+    public void testCleanUpStoresStoppedWithExceptionStateEvenIfItIsSuccessfullyExecuted(){
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        ds.listeningAdapter.unsubscribeException = new Exception("");
+        ds.listeningScript = createScriptObject();
+        def runner = new ListeningAdapterRunner(ds.id);
+        runner.start(ds);
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+        runner.stop();
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
+        runner.cleanUp();
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
 }

@@ -12,71 +12,25 @@ import datasource.BaseListeningDatasource
 * Time: 9:49:02 AM
 * To change this template use File | Settings | File Templates.
 */
-public class ListeningAdapterRunner
+public class ListeningAdapterRunner implements AdapterStateProvider
 {
     Logger logger = Logger.getLogger("scripting");
-    Object adapterLock = new Object();
+    Object stopCalledLock = new Object();
     Object stateLock = new Object();
-    public static final int NOT_STARTED = 0;
-    public static final int INITIALIZING = 1;
-    public static final int INITIALIZED = 2;
-    public static final int STARTED = 3;
-    public static final int STOPPING = 4;
-    public static final int STOPPED_WITH_EXCEPTION = 5;
-    public static final int STOPPED = 6;
-    String adapterName;
-    int state = NOT_STARTED;
-    Date lastStateChangeTime;
+    Long datasourceId;
     BaseListeningAdapter adapter;
+    Date lastStateChangeTime = new Date();
+    String state = NOT_STARTED;
     ListeningAdapterObserver observer;
+    private boolean stopCalled = false;
 
-    public ListeningAdapterRunner(String adapterName)
+    public ListeningAdapterRunner(Long dsId)
     {
-        this.adapterName = adapterName;
-        setState (NOT_STARTED);
-    }
-    public int getState()
-    {
-        synchronized (stateLock)
-        {
-            return state;            
-        }
-    }
-    public void setState(int state)
-    {
-        synchronized (stateLock)
-        {
-            this.state = state
-            lastStateChangeTime=new Date();
-        }
-    }
-    public Date getLastStateChangeTime()
-    {
-        synchronized (stateLock)
-        {
-            return (Date)lastStateChangeTime.clone();
-        }
-    }
-    public boolean isRunning()
-    {
-        synchronized (stateLock)
-        {
-            return getState() == INITIALIZED || getState() == INITIALIZING || getState() == STARTED;
-        }
-    }
-     public boolean isStartable()
-    {
-        synchronized (stateLock)
-        {
-            return getState() == NOT_STARTED || getState() == STOPPED_WITH_EXCEPTION || getState() == STOPPED;
-        }
+        this.datasourceId = dsId;
     }
     public boolean isSubscribed()
     {
-        synchronized (adapterLock)
-        {
-            return adapter != null && adapter.isSubscribed();
-        }
+        return adapter != null && adapter.isSubscribed();
     }
     protected Object createScriptObject(CmdbScript script, BaseListeningDatasource listeningDatasource)
     {
@@ -91,102 +45,139 @@ public class ListeningAdapterRunner
         }
     }
 
-    public void stop() throws Exception {
-        synchronized (stateLock)
-        {
-            if(getState() == STOPPING)
-            {
-                throw ListeningAdapterException.stoppingStateException(adapterName, "stop");    
-            }
-            else if (getState() == NOT_STARTED || getState() == STOPPED || getState() == STOPPED_WITH_EXCEPTION)
-            {
-                throw ListeningAdapterException.adapterAlreadyStoppedException(adapterName);
-            }
-            setState(STOPPING);
-        }
-        logger.debug("Stopping listening adapter ${adapterName}");
+    public void stop() {
+        setStopCalled(true);
+        setState(STOPPING);
+        logger.debug("Stopping listening adapter with datasource id ${datasourceId}");
         try
         {
             adapter.unsubscribe();
             adapter.deleteObservers();
-            try {
-                observer.getScriptInstance().cleanUp();
-            }
-            catch (e) {
-                throw new Exception("Error during script clean up. Reason: " + e.getMessage(), e)
-            }
             adapter = null;
-            setState(STOPPED);
         } catch (Exception e)
         {
             adapter = null;
-            setState(STOPPED_WITH_EXCEPTION);
+            setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
         }
 
     }
+    public void cleanUp() {
+        if (observer) {
+            try {
+                observer.getScriptInstance().cleanUp();
+                def stateBeforeCleanup = getState();
+                if (stateBeforeCleanup != STOPPED_WITH_EXCEPTION) {
+                    setState(AdapterStateProvider.STOPPED);
+                }
+            }
+            catch (e) {
+                logger.warn("Error during script clean up. Reason: " + e.getMessage(), e)
+                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+            }
+        }
+
+    }
+
     public void start(BaseListeningDatasource listeningDatasource) throws Exception {
         def scriptObject = null;
-        synchronized (adapterLock)
-        {
-            if(getState() == STOPPING)
+        setState(INITIALIZING);
+        logger.debug("Starting listening adapter with datasource id ${datasourceId}");
+        CmdbScript script = listeningDatasource.listeningScript;
+        if (script && script.type == CmdbScript.LISTENING) {
+            scriptObject = createScriptObject(script, listeningDatasource);
+            def scriptLogger = scriptObject.logger;
+            try {
+                scriptObject.run();
+            }
+            catch (Exception e) {
+                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+                throw ListeningAdapterException.listeningScriptExecutionException(datasourceId, script.name, "run", e);
+            }
+            def params = null;
+            try
             {
-                throw ListeningAdapterException.stoppingStateException(adapterName, "start");
-            }
-            else if (state != NOT_STARTED && state != STOPPED_WITH_EXCEPTION && state != STOPPED)
+                params = scriptObject.getParameters();
+            } catch (Exception e)
             {
-                throw ListeningAdapterException.adapterAlreadyStartedException(adapterName);
+                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+                throw ListeningAdapterException.listeningScriptExecutionException(datasourceId, script.name, "getParameters", e);
             }
-            logger.debug("Starting listening adapter ${adapterName}");
-            setState(INITIALIZING);
-            CmdbScript script = listeningDatasource.listeningScript;
-            if (script && script.type == CmdbScript.LISTENING) {
-                scriptObject = createScriptObject(script, listeningDatasource);
-                def scriptLogger = scriptObject.logger;
-                try {
-                    scriptObject.run();
-                }
-                catch (Exception e) {
-                    setState(STOPPED_WITH_EXCEPTION);
-                    throw ListeningAdapterException.listeningScriptExecutionException(adapterName, script.name, "run", e);
-                }
-                def params = null;
-                try
-                {
-                    params = scriptObject.getParameters();
-                } catch (Exception e)
-                {
-                    setState(STOPPED_WITH_EXCEPTION);
-                    throw ListeningAdapterException.listeningScriptExecutionException(adapterName, script.name, "getParameters", e);
-                }
-                adapter = (BaseListeningAdapter) listeningDatasource.getListeningAdapter(params, scriptLogger);
-                if (adapter == null)
-                {
-                    setState(STOPPED_WITH_EXCEPTION);
-                    throw ListeningAdapterException.noAdapterDefined(listeningDatasource.name)
-                }
-                observer = new ListeningAdapterObserver(scriptObject, scriptLogger);
-                adapter.addObserver(observer);
+            adapter = (BaseListeningAdapter) listeningDatasource.getListeningAdapter(params, scriptLogger);
+            if (adapter == null)
+            {
+                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+                throw ListeningAdapterException.noAdapterDefined(datasourceId)
             }
-            else {
-                setState(STOPPED_WITH_EXCEPTION);
-                throw ListeningAdapterException.noListeningScript(listeningDatasource.name);
-            }
+            observer = new ListeningAdapterObserver(scriptObject, scriptLogger);
+            adapter.addObserver(observer);
+        }
+        else {
+            setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+            throw ListeningAdapterException.noListeningScript(datasourceId);
         }
         try {
             scriptObject.init();
-            setState(INITIALIZED);
+            setState(AdapterStateProvider.INITIALIZED);
         }
         catch (Throwable e) {
-            setState(STOPPED_WITH_EXCEPTION);
-            throw ListeningAdapterException.listeningScriptExecutionException(adapterName, listeningDatasource.listeningScript.name, "init", e);
+            setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+            throw ListeningAdapterException.listeningScriptExecutionException(datasourceId, listeningDatasource.listeningScript.name, "init", e);
         }
-        try {
-            adapter.subscribe();
-            setState(STARTED);
+        if (!isStopCalled()) {
+            try {
+                adapter.subscribe();
+                setState(AdapterStateProvider.STARTED);
+            }
+            catch (Throwable e) {
+                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+                throw ListeningAdapterException.couldNotSubscribed(datasourceId, e);
+            }
         }
-        catch (Throwable e) {
-            setState(STOPPED_WITH_EXCEPTION);
-            throw ListeningAdapterException.couldNotSubscribed(adapterName, e);
+
+    }
+
+    public void setState(String state) {
+        synchronized (stateLock) {
+            this.state = state;
+            lastStateChangeTime = new Date();
+        }
+    }
+
+    public String getState() {
+        synchronized (stateLock) {
+            return state;
+        }
+    }
+
+    public boolean isStartable() {
+        synchronized (stateLock)
+        {
+            return getState() == NOT_STARTED || getState() == STOPPED_WITH_EXCEPTION || getState() == STOPPED;
+        }
+    }
+
+    public boolean isRunning()
+    {
+        synchronized (stateLock)
+        {
+            return getState() == INITIALIZED || getState() == INITIALIZING || getState() == STARTED;
+        }
+    }
+
+    public Date getLastStateChangeTime() {
+        synchronized (stateLock) {
+            return (Date) lastStateChangeTime.clone();
+        }
+    }
+
+    public boolean isStopCalled() {
+        synchronized (stopCalledLock) {
+            return stopCalled;
+        }
+    }
+    public void setStopCalled(boolean stopCalled) {
+        synchronized (stopCalledLock) {
+            this.stopCalled = stopCalled;
         }
     }
 

@@ -298,7 +298,6 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
 
     public void testDeadLockDetection()
     {
-        TestLogUtils.enableLogger(Logger.getRootLogger());
         DomainLockManager.initialize(2000, TestLogUtils.log);
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();

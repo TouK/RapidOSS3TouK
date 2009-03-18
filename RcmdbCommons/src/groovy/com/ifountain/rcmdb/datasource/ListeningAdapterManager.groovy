@@ -1,6 +1,5 @@
 package com.ifountain.rcmdb.datasource
 
-import com.ifountain.core.datasource.BaseListeningAdapter
 import datasource.BaseListeningDatasource
 import org.apache.log4j.Logger
 import script.CmdbScript
@@ -53,87 +52,87 @@ class ListeningAdapterManager {
     }
 
     public void initialize() {
-        listeningAdapterRunners = [:];        
+        listeningAdapterRunners = [:];
     }
 
-    private void destroy() {        
+    private void destroy() {
         logger.debug("Destroying listening adapter manager.");
         destroyListeningDatasourceInitializerThread();
         if (listeningAdapterRunners != null)
         {
             def tmpMap = new HashMap(listeningAdapterRunners);
-            tmpMap.each {String adapterName, ListeningAdapterRunner runner ->
+            tmpMap.each {Long datasourceId, RunnerObject runnerObj ->
                 try
                 {
-                    removeAdapter (adapterName);
+                    removeAdapter(datasourceId);
                 }
-                catch(Throwable e)
+                catch (Throwable e)
                 {
-                    logger.info ("Exception occurred while stopping adapter ${adapterName}", e);
+                    logger.info("Exception occurred while stopping adapter with datasource id ${datasourceId}", e);
                 }
             }
         }
-        logger.info("Destroyed listening adapter manager.");        
+        logger.info("Destroyed listening adapter manager.");
     }
-   public void initializeListeningDatasources()
-   {
-       logger.info("Initializing listening datasources");
-       BaseListeningDatasource.list().each{BaseListeningDatasource ds->
-           try {
-               ListeningAdapterManager.getInstance().addAdapter (ds);
-           }
-           catch (e) {
-               logger.warn("Error adding adapter ${ds.name}. Reason: ${e.getMessage()}");
-           }
-       }
-       logger.info("Starting listening datasources");
-       listeningScriptInitializerThread = Thread.start{
-           BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
-               if (ds.listeningScript) {
-                   try {
-                       logger.debug("Starting listening script ${ds.listeningScript}")
-                       CmdbScript.startListening(ds.listeningScript);
-                       logger.info("Listening script ${ds.listeningScript} successfully started.")
-                   }
-                   catch (e) {
-                       logger.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
-                   }
-               }
-           }
-       }
-       logger.info("Initialized listening datasources");                 
-   }
-   private void destroyListeningDatasourceInitializerThread()
-   {          
-       try {
-           logger.info("Checking listening script initializer thread is alive");
-           if(listeningScriptInitializerThread != null && listeningScriptInitializerThread.isAlive())
-           {
-               logger.info("Stopping listening script initializer thread");
-               listeningScriptInitializerThread.interrupt();
-               listeningScriptInitializerThread.join();
-               logger.info("Stopped listening script initializer thread");
-           }
-           else
-           {
-               logger.info("Not destroyed. Listening script initializer thread is not alive");
-           }
+    public void initializeListeningDatasources()
+    {
+        logger.info("Initializing listening datasources");
+        BaseListeningDatasource.list().each {BaseListeningDatasource ds ->
+            try {
+                ListeningAdapterManager.getInstance().addAdapter(ds);
+            }
+            catch (e) {
+                logger.warn("Error adding adapter ${ds.name}. Reason: ${e.getMessage()}");
+            }
+        }
+        logger.info("Starting listening datasources");
+        listeningScriptInitializerThread = Thread.start {
+            BaseListeningDatasource.searchEvery("isSubscribed:true").each {BaseListeningDatasource ds ->
+                if (ds.listeningScript) {
+                    try {
+                        logger.debug("Starting listening script ${ds.listeningScript}")
+                        CmdbScript.startListening(ds.listeningScript);
+                        logger.info("Listening script ${ds.listeningScript} successfully started.")
+                    }
+                    catch (e) {
+                        logger.warn("Error starting listening script ${ds.listeningScript}. Reason: ${e.getMessage()}");
+                    }
+                }
+            }
+        }
+        logger.info("Initialized listening datasources");
+    }
+    private void destroyListeningDatasourceInitializerThread()
+    {
+        try {
+            logger.info("Checking listening script initializer thread is alive");
+            if (listeningScriptInitializerThread != null && listeningScriptInitializerThread.isAlive())
+            {
+                logger.info("Stopping listening script initializer thread");
+                listeningScriptInitializerThread.interrupt();
+                listeningScriptInitializerThread.join();
+                logger.info("Stopped listening script initializer thread");
+            }
+            else
+            {
+                logger.info("Not destroyed. Listening script initializer thread is not alive");
+            }
 
-       }
-       catch(e)
-       {
-           logger.warn("Error while destroying listening datasources.Reason ${e.toString()}");
-       }
+        }
+        catch (e)
+        {
+            logger.warn("Error while destroying listening datasources.Reason ${e.toString()}");
+        }
 
-   }
+    }
 
 
 
-    public boolean hasAdapter(String dsName)
+    public boolean hasAdapter(Long datasourceId)
     {
         synchronized (adapterLock)
         {
-            return listeningAdapterRunners.containsKey(dsName);
+            return listeningAdapterRunners.containsKey(datasourceId);
         }
     }
 
@@ -141,110 +140,107 @@ class ListeningAdapterManager {
     {
         synchronized (adapterLock)
         {
-            if (!hasAdapter(listeningDatasource.name))
+            if (!hasAdapter(listeningDatasource.id))
             {
-                ListeningAdapterRunner runner = createAdapterRunner(listeningDatasource.name);
-                listeningAdapterRunners.put(runner.getAdapterName(), runner);
+                RunnerObject runnerObject = createAdapterRunner(listeningDatasource);
+                listeningAdapterRunners.put(listeningDatasource.id, runnerObject);
             }
             else
             {
-                throw ListeningAdapterException.adapterAlreadyExists(listeningDatasource.name);
+                throw ListeningAdapterException.adapterAlreadyExists(listeningDatasource.id);
             }
         }
     }
     public void addAdapterIfNotExists(BaseListeningDatasource listeningDatasource) throws Exception
     {
-         if(!hasAdapter(listeningDatasource.name))
-         {
-            addAdapter (listeningDatasource);
-         }
+        if (!hasAdapter(listeningDatasource.id))
+        {
+            addAdapter(listeningDatasource);
+        }
     }
 
-   
-    public void removeAdapter(BaseListeningDatasource listeningDatasource){
-        removeAdapter (listeningDatasource.name);
+
+    public void removeAdapter(BaseListeningDatasource listeningDatasource) {
+        removeAdapter(listeningDatasource.id);
     }
-    public void removeAdapter(String adapterName)
+    public void removeAdapter(Long datasourceId)
     {
-        ListeningAdapterRunner runner = null;
+        RunnerObject runnerObj = null;
         synchronized (adapterLock)
         {
-            if (hasAdapter(adapterName))
+            if (hasAdapter(datasourceId))
             {
-                runner = listeningAdapterRunners.remove(adapterName)
+                runnerObj = listeningAdapterRunners.remove(datasourceId)
             }
             else
             {
-                throw ListeningAdapterException.runnerDoesNotExist(adapterName);
+                throw ListeningAdapterException.runnerDoesNotExist(datasourceId);
             }
         }
-        if(runner.isRunning())
+        if (runnerObj.isRunning())
         {
             try
             {
-                runner.stop();
-            }catch(ListeningAdapterException e)
+                runnerObj.stop();
+            } catch (ListeningAdapterException e)
             {
-                logger.debug ("Adapter could not be stopped since ${e.getMessage()}", e);
+                logger.debug("Adapter could not be stopped since ${e.getMessage()}", e);
             }
         }
     }
 
-    protected  ListeningAdapterRunner createAdapterRunner(String name)
+    protected RunnerObject createAdapterRunner(BaseListeningDatasource datasource)
     {
-        return new ListeningAdapterRunner(name);           
+        return new RunnerObject(datasource.id);
     }
-
-
 
     public void startAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
 
-        ListeningAdapterRunner runner = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.name);
-        runner.start(listeningDatasource);
-
+        RunnerObject runnerObj = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.id);
+        runnerObj.start(listeningDatasource);
     }
 
-    public int getState(BaseListeningDatasource ds)
+    public String getState(BaseListeningDatasource ds)
     {
-        return getRunnerAndThrowExceptionIfNotExist(ds.name).getState();
+        return getRunnerAndThrowExceptionIfNotExist(ds.id).getState();
     }
     public Date getLastStateChangeTime(BaseListeningDatasource ds)
     {
-        return getRunnerAndThrowExceptionIfNotExist(ds.name).getLastStateChangeTime();        
+        return getRunnerAndThrowExceptionIfNotExist(ds.id).getLastStateChangeTime();
     }
-    
-    private ListeningAdapterRunner getRunner(String name)
+
+    private RunnerObject getRunner(Long datasourceId)
     {
         synchronized (adapterLock)
         {
-            return listeningAdapterRunners.get(name);
+            return listeningAdapterRunners.get(datasourceId);
         }
     }
 
-    private ListeningAdapterRunner getRunnerAndThrowExceptionIfNotExist(String name)
+    private RunnerObject getRunnerAndThrowExceptionIfNotExist(Long datasourceId)
     {
-        ListeningAdapterRunner runner = getRunner(name);
-        if(runner == null)
+        RunnerObject runner = getRunner(datasourceId);
+        if (runner == null)
         {
-            throw ListeningAdapterException.runnerDoesNotExist(name);
+            throw ListeningAdapterException.runnerDoesNotExist(datasourceId);
         }
         return runner;
     }
     public void stopAdapter(BaseListeningDatasource listeningDatasource) throws Exception {
-        ListeningAdapterRunner runner = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.name);
-        runner.stop();
+        RunnerObject runnerObj = getRunnerAndThrowExceptionIfNotExist(listeningDatasource.id);
+        runnerObj.stop();
     }
 
     public boolean isSubscribed(BaseListeningDatasource listeningDatasource) {
-        ListeningAdapterRunner runner = getRunner(listeningDatasource.name)
+        RunnerObject runner = getRunner(listeningDatasource.id)
         return runner != null && runner.isSubscribed();
     }
     public boolean isStartable(BaseListeningDatasource listeningDatasource) {
-        ListeningAdapterRunner runner = getRunner(listeningDatasource.name)
-        boolean result=true;
-        if(runner != null)
+        RunnerObject runner = getRunner(listeningDatasource.id)
+        boolean result = true;
+        if (runner != null)
         {
-             result=runner.isStartable();
+            result = runner.isStartable();
         }
         return result;
     }

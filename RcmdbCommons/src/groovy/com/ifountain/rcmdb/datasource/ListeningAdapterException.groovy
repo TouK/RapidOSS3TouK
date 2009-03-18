@@ -16,41 +16,41 @@ class ListeningAdapterException extends Exception{
         super(message, cause); //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public static ListeningAdapterException adapterAlreadyStartedException(String adapterName)
+    public static ListeningAdapterException adapterAlreadyStartedException(Long datasourceId)
     {
-        return new ListeningAdapterException("Adapter ${adapterName} already started.")
+        return new ListeningAdapterException("Adapter with datasource id ${datasourceId} already started.")
     }
-    public static ListeningAdapterException noAdapterDefined(String dsName)
+    public static ListeningAdapterException noAdapterDefined(Long dsId)
     {
-        return new ListeningAdapterException("No adapter defined in datasource ${dsName}.")
+        return new ListeningAdapterException("No adapter defined in datasource with id ${dsId}.")
     }
-    public static ListeningAdapterException adapterAlreadyStoppedException(String adapterName)
+    public static ListeningAdapterException adapterAlreadyStoppedException(Long datasourceId)
     {
-        return new ListeningAdapterException("Adapter ${adapterName} already stopped.")
+        return new ListeningAdapterException("Adapter with datasource id ${datasourceId} already stopped.")
     }
 
-    public static ListeningAdapterException stoppingStateException(String adapterName, String actionName)
+    public static ListeningAdapterException stoppingStateException(Long datasourceId, String actionName)
     {
-        return new ListeningAdapterException("You cannot ${actionName} ${adapterName} while it is in stopping state.")
+        return new ListeningAdapterException("You cannot ${actionName} adapter withy datasource id ${datasourceId} while it is in stopping state.")
     }
-    public static ListeningAdapterException runnerDoesNotExist(String adapterName)
+    public static ListeningAdapterException runnerDoesNotExist(Long datasourceId)
     {
-        return new ListeningAdapterException("Adapter runner for adapter ${adapterName} has not created.")
+        return new ListeningAdapterException("Adapter runner for adapter with datasource id ${datasourceId} has not created.")
     }
-    public static ListeningAdapterException adapterAlreadyExists(String adapterName)
+    public static ListeningAdapterException adapterAlreadyExists(Long datasourceId)
     {
-        return new ListeningAdapterException("Adapter ${adapterName} already exists.")
+        return new ListeningAdapterException("Adapter with datasource id ${datasourceId} already exists.")
     }
-    public static ListeningAdapterException noListeningScript(String adapterName)
+    public static ListeningAdapterException noListeningScript(Long datasourceId)
     {
-        return new ListeningAdapterException("No listening script is defined for ${adapterName}.")
+        return new ListeningAdapterException("No listening script is defined for adapter with datasource id ${datasourceId}.")
     }
-    public static ListeningAdapterException listeningScriptExecutionException(String adapterName, String scriptName, String methodName, Throwable e)
+    public static ListeningAdapterException listeningScriptExecutionException(Long datasourceId, String scriptName, String methodName, Throwable e)
     {
-        return new ListeningAdapterException("Exception occurred while executing ${methodName} method of script ${scriptName} in adapter ${adapterName}. Reason:${e.getMessage()}", e)
+        return new ListeningAdapterException("Exception occurred while executing ${methodName} method of script ${scriptName} in adapter with datasource id ${datasourceId}. Reason:${e.getMessage()}", e)
     }
-    public static ListeningAdapterException couldNotSubscribed(String adapterName, Throwable e)
+    public static ListeningAdapterException couldNotSubscribed(Long datasourceId, Throwable e)
     {
-        return new ListeningAdapterException("Adapter ${adapterName} could not subscribed successfully. Reason:${e.getMessage()}", e)
+        return new ListeningAdapterException("Adapter with datasource id ${datasourceId} could not subscribed successfully. Reason:${e.getMessage()}", e)
     }
 }

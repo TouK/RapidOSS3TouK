@@ -30,8 +30,8 @@ def errorcount
 def random=new Random(System.currentTimeMillis());
 addlimit.times{
 
-	def elid=random.nextInt(500)+1000;
-	def evid=random.nextInt(500)+1000;
+	def elid=random.nextInt(150)+1000;
+	def evid=random.nextInt(150)+1000;
 	ds.addNotification(ClassName:"Router",InstanceName:"trouter${elid}",EventName:"tevent${evid}");
 	addcount++;
 

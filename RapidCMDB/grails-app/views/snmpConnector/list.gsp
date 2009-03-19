@@ -43,7 +43,13 @@
 
                         <td>${snmpConnector.connection?.port?.encodeAsHTML()}</td>                        
                         <td>${snmpConnector.script?.scriptFile?.encodeAsHTML()}</td>
-                        <td>${snmpConnector.script?.logLevel?.encodeAsHTML()}</td>
+                        <td>
+                             <g:form>
+                                 <g:select name="logLevel" from="${snmpConnector.script.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:snmpConnector.script,field:'logLevel')}"></g:select>
+                                 <g:actionSubmit value="Update Log Level" action="updateLogLevel"/>
+                                 <input type="hidden" name="id" value="${snmpConnector?.id}"/>
+                             </g:form>
+                         </td>
                         <%
                             def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
                             if (isSubscribed) {
@@ -59,6 +65,7 @@
                             }
                         %>
                          <td><g:link action="edit" id="${snmpConnector.id}" class="Edit">Edit</g:link></td>
+
                     </tr>
                 </g:each>
             </tbody>

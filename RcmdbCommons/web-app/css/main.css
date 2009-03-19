@@ -234,6 +234,7 @@ th.desc a {
 }
 .list th, .list td {
     border-left: 1px solid #e7ccb4;
+    vertical-align: middle;
 }
 .list tr:hover {
     background: #f7e3b1;

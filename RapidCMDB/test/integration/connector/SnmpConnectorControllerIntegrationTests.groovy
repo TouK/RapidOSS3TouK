@@ -19,8 +19,8 @@ import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
 class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCase
 {
     static transactional = false;
-    def connectorSaveParams=[:];
-    def connectorUpdateParams=[:];
+    def connectorSaveParams = [:];
+    def connectorUpdateParams = [:];
 
     public void setUp() {
         super.setUp();
@@ -31,17 +31,17 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             CmdbScript.deleteScript(it);
         }
 
-        
+
         connectorSaveParams["host"] = "0.0.0.0";
         connectorSaveParams["port"] = "162";
         connectorSaveParams["logLevel"] = Level.DEBUG.toString();
-        connectorSaveParams["scriptFile"]="sampleSnmpScript"
+        connectorSaveParams["scriptFile"] = "sampleSnmpScript"
 
 
-        connectorUpdateParams["host"]="192.168.1.1";
-        connectorUpdateParams["port"] ="50";
-        connectorUpdateParams["logLevel"]=Level.WARN.toString();
-        connectorUpdateParams["scriptFile"]="sampleSnmpScriptForUpdate"
+        connectorUpdateParams["host"] = "192.168.1.1";
+        connectorUpdateParams["port"] = "50";
+        connectorUpdateParams["logLevel"] = Level.WARN.toString();
+        connectorUpdateParams["scriptFile"] = "sampleSnmpScriptForUpdate"
     }
 
     public void tearDown() {
@@ -50,7 +50,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     def createScriptFile(String scriptFileName)
     {
         def file = new File("${System.getProperty("base.dir")}/scripts/${scriptFileName}.groovy");
-        file.setText ("""
+        file.setText("""
             def getParameters(){
                return [:]
             }
@@ -68,38 +68,38 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             }
         """);
     }
-    def getSnmpControllerForSave(String connectorName,params)
+    def getSnmpControllerForSave(String connectorName, params)
     {
         createScriptFile(params.scriptFile);
         def controller = new SnmpConnectorController();
-        controller.params["name"]=connectorName;        
+        controller.params["name"] = connectorName;
         controller.params.putAll(params);
         return controller;
     }
-    def getSnmpControllerForUpdate(Long connectorId,String connectorName,params)
+    def getSnmpControllerForUpdate(Long connectorId, String connectorName, params)
     {
         createScriptFile(params.scriptFile);
-        
+
         def controller = new SnmpConnectorController();
-        controller.params["id"]=""+connectorId;
-        controller.params["name"]=connectorName;
+        controller.params["id"] = "" + connectorId;
+        controller.params["name"] = connectorName;
         controller.params.putAll(params);
         return controller;
     }
-    
+
     public void testSuccessfulSave()
-    {   
+    {
         String connectorName = "snmpTestConnector";
 
-        def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
         controller.save();
 
         List snmpConnectors = SnmpConnector.list();
         assertEquals(1, snmpConnectors.size());
         SnmpConnector snmpConnector = snmpConnectors[0]
         assertEquals(connectorName, snmpConnector.name);
-     
-        assertEquals ("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
 
         List snmpConnections = SnmpConnection.list();
@@ -108,14 +108,14 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
         assertEquals(connectorSaveParams.host, snmpConnection.host);
         assertEquals(connectorSaveParams.port.toInteger(), snmpConnection.port);
-        assertEquals(snmpConnector.connection.id,snmpConnection.id);
+        assertEquals(snmpConnector.connection.id, snmpConnection.id);
 
 
         List snmpDatasources = SnmpDatasource.list();
         assertEquals(1, snmpDatasources.size());
         SnmpDatasource snmpDatasource = snmpDatasources[0]
         assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
-        assertEquals(snmpConnection.id, snmpDatasource.connection.id);        
+        assertEquals(snmpConnection.id, snmpDatasource.connection.id);
         assertTrue(snmpDatasource.isStartable());
 
         def scripts = CmdbScript.list();
@@ -127,15 +127,15 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(true, script.logFileOwn);
         assertEquals(CmdbScript.LISTENING, script.type);
         assertEquals("", script.staticParam);
-        assertEquals(snmpConnector.script.id,script.id);
-        
+        assertEquals(snmpConnector.script.id, script.id);
+
     }
 
     public void testSuccessfulUpdate()
     {
         String connectorName = "snmpTestConnector";
 
-        def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
         controller.save();
 
         List oldSnmpConnectors = SnmpConnector.list();
@@ -143,12 +143,12 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         SnmpConnector oldSnmpConnector = oldSnmpConnectors[0]
         assertEquals(connectorName, oldSnmpConnector.name);
 
-        assertEquals ("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
-        
-        
-        IntegrationTestUtils.resetController (controller);
+        assertEquals("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
 
-        controller = getSnmpControllerForUpdate(oldSnmpConnector.id,connectorName,connectorUpdateParams);
+
+        IntegrationTestUtils.resetController(controller);
+
+        controller = getSnmpControllerForUpdate(oldSnmpConnector.id, connectorName, connectorUpdateParams);
         controller.update();
 
         def snmpConnectors = SnmpConnector.list();
@@ -156,7 +156,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         def snmpConnector = snmpConnectors[0]
         assertEquals(connectorName, snmpConnector.name);
 
-        assertEquals ("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
         List snmpConnections = SnmpConnection.list();
         assertEquals(1, snmpConnections.size());
@@ -164,7 +164,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
         assertEquals(connectorUpdateParams.host, snmpConnection.host);
         assertEquals(connectorUpdateParams.port.toInteger(), snmpConnection.port);
-        assertEquals(snmpConnector.connection.id,snmpConnection.id);
+        assertEquals(snmpConnector.connection.id, snmpConnection.id);
 
 
         List snmpDatasources = SnmpDatasource.list();
@@ -183,33 +183,17 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(true, script.logFileOwn);
         assertEquals(CmdbScript.LISTENING, script.type);
         assertEquals("", script.staticParam);
-        assertEquals(snmpConnector.script.id,script.id);
-
+        assertEquals(snmpConnector.script.id, script.id);
     }
 
 
-
-    public void testUpdatingConnectorDoesNotChangeListeningStateOfRunningConnector()
-    {
-          assertTrue(_testUpdatingConnectorDoesNotChangeListeningState(true));
-    }
     public void testUpdatingConnectorDoesNotChangeListeningStateOfUnstartedConnector()
     {
-          assertFalse(_testUpdatingConnectorDoesNotChangeListeningState(false));
-    }
-    public boolean _testUpdatingConnectorDoesNotChangeListeningState(runConnector)
-    {
-        
-        if(runConnector)
-        {
-            ListeningAdapterManager.destroyInstance();
-            ListeningAdapterManager.getInstance().initialize();
-        }
         try
         {
             String connectorName = "snmpTestConnector";
 
-            def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+            def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
             controller.save();
 
             List oldSnmpConnectors = SnmpConnector.list();
@@ -217,29 +201,15 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             SnmpConnector oldSnmpConnector = oldSnmpConnectors[0]
             assertEquals(connectorName, oldSnmpConnector.name);
 
-            assertEquals ("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
-            def ds= SnmpDatasource.list()[0];
+            assertEquals("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
+            def ds = SnmpDatasource.list()[0];
             assertTrue(ds.isStartable());
 
-            def lastDsStateChangeTime=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+            def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
-            if(runConnector)
-            {
-                IntegrationTestUtils.resetController (controller);
+            IntegrationTestUtils.resetController(controller);
 
-                controller.params.id=oldSnmpConnector.id;
-                controller.startConnector();
-                assertFalse(ds.isStartable());
-                lastDsStateChangeTime=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-
-                assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
-                assertTrue(controller.flash.message.indexOf("successfully started")>0)
-                assertEquals(0,controller.flash.errors.size());
-            }
-
-            IntegrationTestUtils.resetController (controller);
-
-            controller = getSnmpControllerForUpdate(oldSnmpConnector.id,connectorName,connectorUpdateParams);
+            controller = getSnmpControllerForUpdate(oldSnmpConnector.id, connectorName, connectorUpdateParams);
             controller.update();
 
             def snmpConnectors = SnmpConnector.list();
@@ -247,58 +217,109 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             def snmpConnector = snmpConnectors[0]
             assertEquals(connectorName, snmpConnector.name);
 
-            assertEquals ("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-
-            if(runConnector)
-            {
-                assertFalse(ds.isStartable());
-            }
-            else
-            {
-                assertTrue(ds.isStartable());
-            }
-            assertEquals(0,lastDsStateChangeTime.compareTo(ListeningAdapterManager.getInstance().getLastStateChangeTime(ds)));
-
-            if(runConnector)
-            {
-                IntegrationTestUtils.resetController (controller);
-                controller.params.id=snmpConnector.id;
-                controller.stopConnector();
-                assertTrue(controller.flash.message.indexOf("successfully stopped")>0)
-                assertEquals(0,controller.flash.errors.size());
-
-                assertTrue(ds.isStartable());
-
-                println controller.flash.message
-                println controller.flash.errors
-            }
+            assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+            assertTrue(ds.isStartable());
+            assertEquals(0, lastDsStateChangeTime.compareTo(ListeningAdapterManager.getInstance().getLastStateChangeTime(ds)));
 
         }
-        catch(e)
+        catch (e)
         {
             e.printStackTrace();
             fail("should not throw exception");
         }
-        if(runConnector)
-        {               
-            ListeningAdapterManager.destroyInstance();
-            ListeningAdapterManager.getInstance().initialize();
-        }
-
-        return runConnector;
     }
+
+    public void testUpdateLogLevelOfARunningConnector(){
+        ListeningAdapterManager.destroyInstance();
+        ListeningAdapterManager.getInstance().initialize();
+        String connectorName = "snmpTestConnector";
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorName, snmpConnector.name);
+
+        def logger = CmdbScript.getScriptLogger(snmpConnector.script);
+        assertEquals(logger.getLevel(), Level.DEBUG);
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.startConnector();
+        def ds = SnmpDatasource.list()[0];
+        assertFalse(ds.isStartable());
+        assertTrue(controller.flash.message.indexOf("successfully started") > 0)
+        assertEquals(0, controller.flash.errors.size());
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.params["logLevel"] = Level.ALL.toString();
+        controller.updateLogLevel();
+        assertEquals("/snmpConnector/list", controller.response.redirectedUrl);
+        logger = CmdbScript.getScriptLogger(snmpConnector.script);
+        assertEquals(logger.getLevel(), Level.ALL);
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.stopConnector();
+        assertTrue(controller.flash.message.indexOf("successfully stopped") > 0)
+        assertEquals(0, controller.flash.errors.size());
+
+        assertTrue(ds.isStartable());
+        ListeningAdapterManager.destroyInstance();
+        ListeningAdapterManager.getInstance().initialize();
+    }
+    public void testRunningConnectorCanNotBeUpdated() {
+        ListeningAdapterManager.destroyInstance();
+        ListeningAdapterManager.getInstance().initialize();
+        String connectorName = "snmpTestConnector";
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorName, snmpConnector.name);
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.startConnector();
+        def ds = SnmpDatasource.list()[0];
+        assertFalse(ds.isStartable());
+        assertTrue(controller.flash.message.indexOf("successfully started") > 0)
+        assertEquals(0, controller.flash.errors.size());
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.params["host"] = "newhost";
+        controller.params["logLevel"] = Level.ALL.toString();
+        controller.update();
+        assertEquals (1, controller.flash.errors.getAllErrors().size());
+        assertEquals ("connector.update.exception", controller.flash.errors.getAllErrors()[0].code);
+
+        IntegrationTestUtils.resetController(controller);
+        controller.params.id = snmpConnector.id;
+        controller.stopConnector();
+        assertTrue(controller.flash.message.indexOf("successfully stopped") > 0)
+        assertEquals(0, controller.flash.errors.size());
+
+        assertTrue(ds.isStartable());
+        ListeningAdapterManager.destroyInstance();
+        ListeningAdapterManager.getInstance().initialize();
+    }
+
     public void testSaveRollBacksIfConnectorHasErrors()
     {
         String connectorName = "snmpTestConnector";
-
-        def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
         controller.params.remove("name");
         controller.save();
 
         assertTrue(controller.modelAndView.model.snmpConnector.hasErrors());
         assertNull(controller.modelAndView.model.snmpConnection.id);
         assertNull(controller.modelAndView.model.script.id);
-        
+
 
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());
@@ -328,7 +349,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     }
     */
-     /*
+    /*
     public void testRollbackDataInUpdate()
     {
         String scriptFileName = "file1";

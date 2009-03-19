@@ -286,6 +286,37 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertTrue(logger.getAllAppenders().hasMoreElements());
 
     }
+    public void testUpdateLogLevel(){
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+        def logLevel = Level.DEBUG;
+        def oldLogLevel = Level.WARN;
+        def logParams = [:]
+        logParams["logLevel"] = logLevel.toString();
+        logParams["logFileOwn"] = true;
+        logParams["oldLogLevel"] = oldLogLevel.toString();
+
+
+        def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.oldLogLevel, logFileOwn: logParams.logFileOwn]
+        assertEquals(CmdbScript.list().size(), 0)
+
+        def scriptToUpdate = CmdbScript.addScript(params);
+
+        assertFalse(scriptToUpdate.hasErrors())
+        assertEquals(CmdbScript.list().size(), 1)
+
+        def oldLogger = CmdbScript.getScriptLogger(scriptToUpdate);
+        assertEquals(oldLogger.getLevel(), oldLogLevel);
+        assertTrue(oldLogger.getAllAppenders().hasMoreElements());
+
+        def script = CmdbScript.updateLogLevel(scriptToUpdate, logParams["logLevel"], true);
+        assertFalse(script.hasErrors())
+        assertFalse(scriptToUpdate.hasErrors())
+
+        def logger = CmdbScript.getScriptLogger(script);
+        assertEquals(logger.getLevel(), logLevel);
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+    }
     void testReloadScript()
     {
         initialize([CmdbScript, Group], []);

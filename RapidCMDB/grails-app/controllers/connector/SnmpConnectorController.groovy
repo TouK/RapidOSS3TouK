@@ -76,7 +76,7 @@ class SnmpConnectorController {
 
     def deleteConnector(SnmpConnector snmpConnector)
     {
-        if(snmpConnector.script){
+        if (snmpConnector.script) {
             CmdbScript.deleteScript(snmpConnector.script);
         }
         snmpConnector.connection?.remove();
@@ -90,41 +90,68 @@ class SnmpConnectorController {
             redirect(action: list)
         }
         else {
-            return [snmpConnector: snmpConnector, script:snmpConnector.script, snmpConnection:snmpConnector.connection]
+            return [snmpConnector: snmpConnector, script: snmpConnector.script, snmpConnection: snmpConnector.connection]
         }
     }
 
+    def updateLogLevel = {
+        SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
+        if (snmpConnector) {
+            CmdbScript.updateLogLevel(snmpConnector.script, params.logLevel? params.logLevel : snmpConnector.script.logLevel, true);
+            if (!snmpConnector.script.hasErrors()) {
+                flash.message = "SnmpConnector with id ${params.id} successfully updated."
+                redirect(action: list)
+            }
+            else {
+                flash.errors = snmpConnector.script.errors;
+                render(action: 'list')
+            }
+        }
+        else {
+            flash.message = "SnmpConnector not found with id ${params.id}"
+            redirect(action: list)
+        }
+    }
 
     def update = {
         SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
         if (snmpConnector) {
-            snmpConnector.update(ControllerUtils.getClassProperties(params, SnmpConnector));
-            if (!snmpConnector.hasErrors()) {
-                params.name = snmpConnector.connection.name;
-                def connectionParams = ControllerUtils.getClassProperties(params, SnmpConnection);
-                def isConnectionChanged = connectionParams.host != snmpConnector.connection.host || snmpConnector.connection.port.toString() != connectionParams.port;
-                if (isConnectionChanged) {
-                    snmpConnector.connection.update(connectionParams);
-                    if (snmpConnector.connection.hasErrors()) {
+            if (snmpConnector.script.listeningDatasource.isStartable()) {
+                snmpConnector.update(ControllerUtils.getClassProperties(params, SnmpConnector));
+                if (!snmpConnector.hasErrors()) {
+                    params.name = snmpConnector.connection.name;
+                    def connectionParams = ControllerUtils.getClassProperties(params, SnmpConnection);
+                    def isConnectionChanged = connectionParams.host != snmpConnector.connection.host || snmpConnector.connection.port.toString() != connectionParams.port;
+                    if (isConnectionChanged) {
+                        snmpConnector.connection.update(connectionParams);
+                        if (snmpConnector.connection.hasErrors()) {
+                            render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
+                            return;
+                        }
+                    }
+                    params.name = snmpConnector.name;
+                    def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
+                    CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
+                    if (!snmpConnector.script.hasErrors()) {
+                        flash.message = "SnmpConnector with id ${params.id} successfully updated."
+                        redirect(action: show, id: snmpConnector.id)
+                    }
+                    else {
                         render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
-                        return;
                     }
                 }
-                params.name = snmpConnector.name;
-                def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);                
-                CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
-                if (!snmpConnector.script.hasErrors()) {                    
-                    flash.message = "SnmpConnector with id ${params.id} successfully updated."
-                    redirect(action: show, id:snmpConnector.id)
-                }
                 else {
-                   render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
+                    render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
                 }
-
             }
             else {
+                println "startable degil"
+                addError("connector.update.exception", []);
+                flash.errors = errors;
+                println "rendering view edit"
                 render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
             }
+
         }
         else {
             flash.message = "SnmpConnector not found with id ${params.id}"
@@ -144,9 +171,9 @@ class SnmpConnectorController {
             params.name = snmpConnector.getConnectionName(snmpConnector.name);
             SnmpConnection snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))
             if (!snmpConnection.hasErrors()) {
-                snmpConnector.addRelation(connection:snmpConnection);
+                snmpConnector.addRelation(connection: snmpConnection);
                 def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
-                params.name=snmpConnector.name;
+                params.name = snmpConnector.name;
                 params.type = CmdbScript.LISTENING;
                 def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
                 scriptClassParams.logFileOwn = true;
@@ -157,7 +184,7 @@ class SnmpConnectorController {
                     snmpConnector.addRelation(script: script);
                     if (!datasource.hasErrors())
                     {
-                        redirect(action: show, id:snmpConnector.id)
+                        redirect(action: show, id: snmpConnector.id)
                     }
                     else
                     {
@@ -237,17 +264,17 @@ class SnmpConnectorController {
 
                 modelClass.metaClass.invokeStaticMethod(modelClass, "reloadOperations", [] as Object[]);
                 flash.message = "Model operations reloaded"
-                redirect(action:list)
+                redirect(action: list)
             } catch (t)
             {
                 flash.message = "Exception occurred while reloading model operations Reason:${t.toString()}"
-                 redirect(action:list)
+                redirect(action: list)
             }
         }
         else
         {
             flash.message = "Model currently not loaded by application. You should reload application."
-            redirect(action:list)
+            redirect(action: list)
         }
     }
 }

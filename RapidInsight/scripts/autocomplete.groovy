@@ -20,7 +20,7 @@ import groovy.xml.MarkupBuilder
 
 def query = params.query;
 
-def devices = RsComputerSystem.search("name:${query.toQuery()}*", [max:20]).results;
+def devices = RsComputerSystem.search("name:${query.toQuery()}*", [max:20,sort:"name"]).results;
 
 def writer = new StringWriter();
 def builder = new MarkupBuilder(writer);

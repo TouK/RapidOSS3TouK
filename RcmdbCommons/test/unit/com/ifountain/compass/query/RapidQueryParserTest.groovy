@@ -1,9 +1,10 @@
 package com.ifountain.compass.query
 
+import com.ifountain.compass.CompassTestObject
+import com.ifountain.compass.converter.CompassStringConverter
 import com.ifountain.compass.query.RapidMultiQueryParser
 import com.ifountain.compass.query.RapidQueryParser
 import com.ifountain.compass.utils.QueryParserUtils
-import com.ifountain.compass.converter.CompassStringConverter
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.commons.lang.StringUtils
@@ -12,7 +13,8 @@ import org.apache.lucene.analysis.WhitespaceAnalyzer
 import org.apache.lucene.queryParser.QueryParser
 import org.apache.lucene.search.Query
 import org.compass.core.impl.DefaultCompass
-
+import com.ifountain.compass.CompassConstants
+import org.apache.lucene.queryParser.ParseException
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,6 +37,138 @@ class RapidQueryParserTest extends RapidCmdbTestCase
     }
 
     public void testFieldQueryWithEmptyString()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String start = "\"\""
+        String field1 = "field1";
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        Query q = qp.parse("${field1}:\"\"");
+        String fieldQuery = q.toString();
+        assertEquals ("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:${CompassStringConverter.EMPTY_VALUE}".toString(), fieldQuery);
+
+        String field2 = "field2"
+        RapidMultiQueryParser mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = mqp.parse("${field1}:\"\"");
+        fieldQuery = q.toString();
+        assertEquals ("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:${CompassStringConverter.EMPTY_VALUE}".toString(), fieldQuery);
+
+
+        mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = mqp.parse("${field1}:\"\" AND ${field2}:\"\"");
+        fieldQuery = q.toString();
+        assertEquals ("+${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:${CompassStringConverter.EMPTY_VALUE} +${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}:${CompassStringConverter.EMPTY_VALUE}".toString(), fieldQuery);
+        fieldQuery = q.toString();
+        assertEquals ("+${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:${CompassStringConverter.EMPTY_VALUE} +${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}:${CompassStringConverter.EMPTY_VALUE}".toString(), fieldQuery);
+    }
+
+
+    public void testExactPhraseValidQueries()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String field1 = "prop1"
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        def propQueriesToBeTested = ["${field1}:\"\\${QueryParserUtils.EXACT_QUERY_START}deneme\"", "${field1}:\"deneme\\${QueryParserUtils.EXACT_QUERY_END}\"", "${field1}:\"deneme\\\\\\${QueryParserUtils.EXACT_QUERY_END}\"", "${field1}:\"deneme${QueryParserUtils.EXACT_QUERY_END} \"", "${field1}:\" ${QueryParserUtils.EXACT_QUERY_START}deneme\"", "${field1}:\"den${QueryParserUtils.EXACT_QUERY_START}eme\"", "${field1}:\"den\\${QueryParserUtils.EXACT_QUERY_START}eme\"", "${field1}:\" ${QueryParserUtils.EXACT_QUERY_START}deneme${QueryParserUtils.EXACT_QUERY_END} \""]
+        def validQueryTesterClosure = {QueryParser queryParserInstance, List propQueriesToBeTestedParameter->
+            propQueriesToBeTestedParameter.each{query->
+                queryParserInstance.nonEscapedTerms = [];
+                try
+                {
+                    queryParserInstance.parse(query);    
+                }
+                catch(ParseException e)
+                {
+                    fail("Should not throw exception since exact match query is valie. But query <${query}> is invalid. Exception is ${e.toString()}");
+                }
+            }
+        };
+        validQueryTesterClosure(qp, propQueriesToBeTested);
+        String field2 ="prop2"
+        propQueriesToBeTested.add("${field2}:value1 AND ${field1}:\"\\${QueryParserUtils.EXACT_QUERY_START}deneme\"");
+        qp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        validQueryTesterClosure(qp, propQueriesToBeTested);
+
+    }
+
+
+    public void testExactPhraseSetsTheFieldAsUntokenizedAndConvertsToLowercase()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String field1 = "prop1"
+        String untokenizedField1 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}";
+        String fieldValueToBeQueried1 = "field1value"
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        QueryParser mqp = RapidMultiQueryParser.newInstance([field1] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        String queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1}${QueryParserUtils.EXACT_QUERY_END}\"";
+        Query queryFromQueryParser = qp.parse(queryString);
+        Query queryFromMultiQueryParser = mqp.parse(queryString);
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromMultiQueryParser.toString());
+
+
+        queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1.toUpperCase()}${QueryParserUtils.EXACT_QUERY_END}\"";
+        queryFromQueryParser = qp.parse(queryString);
+        queryFromMultiQueryParser = mqp.parse(queryString);
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromMultiQueryParser.toString());
+
+        String field2 = "prop2"
+        String untokenizedField2 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}";
+        String fieldValueToBeQueried2 = "field2value"
+        mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1}${QueryParserUtils.EXACT_QUERY_END}\" ${field2}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried2}${QueryParserUtils.EXACT_QUERY_END}\"";
+        queryFromQueryParser = mqp.parse(queryString);
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()} ${untokenizedField2}:${fieldValueToBeQueried2.toLowerCase()}".toString(), queryFromQueryParser.toString());
+    }
+
+    public void testLowerCaseUntokenizedFieldQueries()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String start = "\"\""
+        String field1 = "field1";
+        String untokenizedField1 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}";
+        String givenFieldQuery = "Field1Value";
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        Query q = qp.parse("${untokenizedField1}:\"${givenFieldQuery}\"");
+        String fieldQuery = q.toString();
+        assertEquals ("${untokenizedField1}:${givenFieldQuery.toLowerCase()}".toString(), fieldQuery);
+
+        String field2 = "field2";
+        String untokenizedField2 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}";
+        RapidMultiQueryParser mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = qp.parse("${untokenizedField1}:\"${givenFieldQuery}\"");
+        fieldQuery = q.toString();
+        assertEquals ("${untokenizedField1}:${givenFieldQuery.toLowerCase()}".toString(), fieldQuery);   
+    }
+
+
+    public void testExactPhrasethrowsExceptionIfQueryIsInvalid()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String field1 = "prop1"
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        def propQueriesToBeTested = ["${field1}:\"${QueryParserUtils.EXACT_QUERY_START}deneme\"", "${field1}:\"deneme${QueryParserUtils.EXACT_QUERY_END}\"", "${field1}:\"deneme\\\\${QueryParserUtils.EXACT_QUERY_END}\""]
+        def invalidQueryTesterClosure = {QueryParser queryParserInstance, List propQueriesToBeTestedParameter->
+            propQueriesToBeTested.each{query->
+                queryParserInstance.nonEscapedTerms = [];
+                try
+                {
+                    queryParserInstance.parse(query);
+                    fail("Should throw exception since exact match query is not valid. <${query}>");
+                }
+                catch(ParseException e)
+                {
+                    assertTrue (e.toString().indexOf("Invalid exact match query")>=0);
+                }
+            }
+        };
+
+        invalidQueryTesterClosure(qp, propQueriesToBeTested);
+        String field2 ="prop2"
+        propQueriesToBeTested.add("${field2}:value1 AND ${field1}:\"${QueryParserUtils.EXACT_QUERY_START}deneme\"");
+        qp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        invalidQueryTesterClosure(qp, propQueriesToBeTested);
+    }
+    public void testValidExactMatchQueries()
     {
         compass = TestCompassFactory.getCompass([CompassTestObject]);
         String start = "\"\""

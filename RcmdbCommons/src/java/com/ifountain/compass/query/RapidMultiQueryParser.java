@@ -11,6 +11,8 @@ import com.ifountain.compass.utils.QueryParserUtils;
 import com.ifountain.compass.CompassConstants;
 
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,17 +23,23 @@ import java.util.Date;
  */
 public class RapidMultiQueryParser extends CompassMultiFieldQueryParser
 {
+    List nonEscapedTerms = new ArrayList();
     public RapidMultiQueryParser(String[] fields, Analyzer analyzer, CompassMapping mapping, SearchEngineFactory searchEngineFactory, boolean forceAnalyzer) {
         super(fields, analyzer, mapping, searchEngineFactory, forceAnalyzer);
     }
 
+    protected String discardEscapeChar(String s) throws ParseException {
+        nonEscapedTerms.add(s);
+        return super.discardEscapeChar(s);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     protected Query getFieldQuery(String field, String queryText, int slop) throws ParseException {
-        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText);
+        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText, nonEscapedTerms);
         return super.getFieldQuery(param.getField(), param.getQueryText(), slop);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     protected Query getFieldQuery(String field, String queryText) throws ParseException {
-        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText);
+        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText, nonEscapedTerms);
         return super.getFieldQuery(param.getField(), param.getQueryText());    //To change body of overridden methods use File | Settings | File Templates.
     }
 

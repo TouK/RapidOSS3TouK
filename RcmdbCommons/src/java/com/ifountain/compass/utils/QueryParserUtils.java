@@ -1,14 +1,17 @@
 package com.ifountain.compass.utils;
 
 import org.compass.core.converter.basic.DateMathParser;
+import org.apache.lucene.queryParser.ParseException;
 
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.Locale;
+import java.util.List;
 
 import com.ifountain.compass.converter.CompassStringConverter;
 import com.ifountain.compass.query.RangeQueryParameter;
 import com.ifountain.compass.query.FieldQueryParameter;
+import com.ifountain.compass.query.ExactQueryParseException;
 import com.ifountain.compass.CompassConstants;
 
 /**
@@ -21,6 +24,9 @@ import com.ifountain.compass.CompassConstants;
 public class QueryParserUtils {
     public static final String EMPTY_STRING_FOR_RANGE_QUERY = "\"\"";
     public static final String EMPTY_STRING_FOR_FIELD_QUERY = "";
+    public static final String EXACT_QUERY_START = "(";
+    public static final String QUOTE = "\"";
+    public static final String EXACT_QUERY_END = ")";
     public final static String CURRENT_TIME_PREFIX = "currenttime";
     public static String getCurrentTime(String queryString, Date now)
     {
@@ -39,6 +45,15 @@ public class QueryParserUtils {
         return queryString;
     }
 
+    public static String toExactQuery(String query)
+    {
+        return   QUOTE+EXACT_QUERY_START+escapeQuery(query)+EXACT_QUERY_END+QUOTE;
+    }
+
+    public static String escapeQuery(String s)
+    {
+        return org.apache.lucene.queryParser.QueryParser.escape(s);
+    }
     public static RangeQueryParameter createRangeQueryParameters(String field, String start, String end, boolean inclusive)
     {
         if(start.equals(QueryParserUtils.EMPTY_STRING_FOR_RANGE_QUERY) || end.equals(QueryParserUtils.EMPTY_STRING_FOR_RANGE_QUERY))
@@ -57,12 +72,50 @@ public class QueryParserUtils {
         return qparam;
     }
 
-    public static FieldQueryParameter createFieldQueryParameters(String field, String queryText)
+    private static boolean endsWithExactQuery(String nonEscapedQueryTerm, String escapedQueryTerm)
     {
-        if(QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
+        if(!nonEscapedQueryTerm.endsWith(EXACT_QUERY_END))
+        {
+            return false;
+        }
+        else
+        {
+            int numberOfEscapeChars = 0;
+            for(int i=nonEscapedQueryTerm.length()-2; i>=0; i--)
+            {
+                if(nonEscapedQueryTerm.charAt(i) == '\\')
+                {
+                    numberOfEscapeChars++;       
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return numberOfEscapeChars%2==0;
+        }
+    }
+
+    public static FieldQueryParameter createFieldQueryParameters(String field, String queryText, List nonEscapedTerms) throws ParseException {
+        String fieldName = (String)nonEscapedTerms.get(nonEscapedTerms.size()-2);
+        String lastNonEscapedTerm = (String)nonEscapedTerms.get(nonEscapedTerms.size()-1);
+        if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) && endsWithExactQuery(lastNonEscapedTerm, queryText))
+        {
+            queryText = queryText.substring(1, queryText.length()-1);
+            field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+        }
+        else if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) || endsWithExactQuery(lastNonEscapedTerm, queryText))
+        {
+            throw new ExactQueryParseException(fieldName, lastNonEscapedTerm);
+        }
+        else if(QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
         {
             queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
             field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+        }
+        if(field.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+        {
+            queryText = queryText.toLowerCase();    
         }
         FieldQueryParameter qparam = new FieldQueryParameter(field, queryText);
         return qparam;

@@ -1,25 +1,15 @@
 package com.ifountain.compass.integration
 
-import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
-import org.compass.core.Compass
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DomainClassMappingHelper
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping
-import com.ifountain.compass.converter.CompassStringConverter
-import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
-import org.compass.core.CompassSession
-import org.compass.core.CompassTransaction
-import org.compass.core.CompassQuery
-import org.compass.core.CompassHits
-import org.compass.core.CompassQueryBuilder
-import org.compass.core.CompassHit
-import com.ifountain.compass.converter.CompassLongConverter
-import org.compass.core.Resource
+import com.ifountain.compass.CompassConstants
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
-import com.ifountain.compass.CompassConstants
+import com.ifountain.compass.DefaultCompassConfiguration
+import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
+import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
+import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.compass.core.*
 
 /**
 * Created by IntelliJ IDEA.
@@ -50,12 +40,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
         Map mappings = [:];
 
-        compass = TestCompassFactory.getCompass(application, null, false, [
-                "compass.converter.string.type": CompassStringConverter.class.name,
-                "compass.converter.long.type": CompassLongConverter.class.name,
-                "compass.converter.long.format": "#000000000000000000000000000000"
-
-        ]);
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
         def id = 0;
         def instancesToBeSaved = [
                 new CompassTestObject(id: id++, prop1: "propertytoken1 propertytoken2 propertytoken3 propertytoken4"),
@@ -84,6 +69,12 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
             assertEquals(instancesToBeSaved[2].prop1, hit.getData().prop1);
             assertEquals("untokenized field should be lowercased", instancesToBeSaved[2].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
 
+            //queried data should be lowercased too
+            query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1.toUpperCase()}\"").toQuery();
+            query.addSort("id", CompassQuery.SortPropertyType.STRING);
+            hits = query.hits();
+            assertEquals("query should be lower cased for untokenized fields", 3, hits.length());
+
         })
 
         //test tokenized property is saved
@@ -106,7 +97,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         TestCompassUtils.withCompassQueryBuilder(compass, {CompassQueryBuilder builder ->
             CompassQuery query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1}\"").toQuery();
             CompassHits hits = query.hits();
-            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "id" && it.name != "version"};
+            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "version"};
             hits.iterator().each {CompassHit hit->
                 Resource res = hit.getResource();
                 propList.each{domainProp->

@@ -74,8 +74,15 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
                 // TODO support other "id" properties?
-                id(name: "id", "managed-id":"true"){
-                    'meta-data'("id");
+                def idPropName = "id";
+                id(name: idPropName, "managed-id":"true"){
+                    def idMetaDataAttributes =[:];
+                    'meta-data'(idMetaDataAttributes, idPropName);
+                    def untokenizedMetaDataAttributes = new HashMap(idMetaDataAttributes);
+                    untokenizedMetaDataAttributes.put("index", "un_tokenized");
+                    untokenizedMetaDataAttributes.put("exclude-from-all", "true");
+                    String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+idPropName
+                    "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)
                 }
 
                 for (constantMetaData in description.constantMetaData) {

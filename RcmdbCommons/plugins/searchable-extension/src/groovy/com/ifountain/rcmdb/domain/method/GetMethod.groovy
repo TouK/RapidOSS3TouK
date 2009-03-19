@@ -62,11 +62,15 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         }
         if(searchParams instanceof Map)
         {
+            def tempSearchParamMap  = new HashMap();
+            searchParams.each{key, value->
+                tempSearchParamMap[key.toString()] = value;                
+            }
+            searchParams = tempSearchParamMap;
             Map keyMap = [:];
-            if(searchParams.containsKey(RapidCMDBConstants.ID_PROPERTY_STRING) || searchParams.containsKey(RapidCMDBConstants.ID_PROPERTY_GSTRING))
+            if(searchParams.containsKey(RapidCMDBConstants.ID_PROPERTY_STRING))
             {
                 def idValue = searchParams[RapidCMDBConstants.ID_PROPERTY_STRING];
-                idValue = idValue == null?searchParams.get(RapidCMDBConstants.ID_PROPERTY_GSTRING):idValue;
                 keyMap["id"] = idValue;
                 def result = CompassMethodInvoker.search (clazz.metaClass, keyMap, willTriggerOnLoad)
                 return result.results[0];
@@ -124,8 +128,8 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         }
         else if(searchParams instanceof Number)
         {
-            searchParams = "id:\"${searchParams}\"".toString();
-            def result = CompassMethodInvoker.search (clazz.metaClass, searchParams, willTriggerOnLoad)
+            Map keyMap = [id:searchParams];
+            def result = CompassMethodInvoker.search (clazz.metaClass, keyMap, willTriggerOnLoad)
             return result.results[0];
         }
     }

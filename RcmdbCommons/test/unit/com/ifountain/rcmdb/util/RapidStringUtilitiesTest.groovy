@@ -19,6 +19,7 @@
 package com.ifountain.rcmdb.util
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.compass.utils.QueryParserUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -73,6 +74,26 @@ class RapidStringUtilitiesTest extends RapidCmdbTestCase {
         assertEquals("\\\"queryParam\\\"", str);
     }
 
+    public void testExactQuery()
+    {
+        RapidStringUtilities.registerStringUtils();
+        def originalString = "queryParam"
+        def str = originalString.exactQuery();
+        assertEquals("\"${QueryParserUtils.EXACT_QUERY_START}$originalString${QueryParserUtils.EXACT_QUERY_END}\"", str);
+
+        originalString = "query(Param\"";
+        str = originalString.exactQuery();
+        assertEquals("\"${QueryParserUtils.EXACT_QUERY_START}query\\(Param\\\"${QueryParserUtils.EXACT_QUERY_END}\"", str);
+    }
+
+    public void testExactQueryWithNullStringObject()
+    {
+        RapidStringUtilities.registerStringUtils();
+        def originalString = null;
+        def str = originalString.exactQuery();
+        assertEquals("\"${QueryParserUtils.EXACT_QUERY_START}$originalString${QueryParserUtils.EXACT_QUERY_END}\"", str);
+
+    }
     public void testToQueryWithNullStringObject()
     {
         RapidStringUtilities.registerStringUtils();

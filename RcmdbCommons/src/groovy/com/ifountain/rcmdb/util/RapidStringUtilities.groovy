@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.util
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.NullObject
+import com.ifountain.compass.utils.QueryParserUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -57,8 +58,15 @@ class RapidStringUtilities {
         NullObject.metaClass.toQuery = {->
             return String.valueOf(null);
         }
+        NullObject.metaClass.exactQuery = {->
+            return String.valueOf(null).exactQuery();
+        }
     }
 
+    public static String exactQuery(String s)
+    {
+        return QueryParserUtils.toExactQuery (s);
+    }
     public static String toQuery(String s)
     {
         return org.apache.lucene.queryParser.QueryParser.escape(s);

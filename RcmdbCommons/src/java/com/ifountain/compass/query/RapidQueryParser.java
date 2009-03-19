@@ -8,9 +8,7 @@ import org.compass.core.converter.basic.DateMathParser;
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.engine.SearchEngineFactory;
 
-import java.util.TimeZone;
-import java.util.Locale;
-import java.util.Date;
+import java.util.*;
 
 import com.ifountain.compass.utils.QueryParserUtils;
 import com.ifountain.compass.CompassConstants;
@@ -24,12 +22,18 @@ import com.ifountain.compass.converter.CompassStringConverter;
  * To change this template use File | Settings | File Templates.
  */
 public class RapidQueryParser extends CompassQueryParser{
+    List nonEscapedTerms = new ArrayList();  
     public RapidQueryParser(String f, Analyzer a, CompassMapping mapping, SearchEngineFactory searchEngineFactory, boolean forceAnalyzer) {
         super(f, a, mapping, searchEngineFactory, forceAnalyzer);
     }
 
+    protected String discardEscapeChar(String s) throws ParseException {
+        nonEscapedTerms.add(s);
+        return super.discardEscapeChar(s);
+    }
+
     protected Query getFieldQuery(String field, String queryText) throws ParseException {
-        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText);
+        FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText, nonEscapedTerms);
         return super.getFieldQuery(param.getField(), param.getQueryText());
     }
 

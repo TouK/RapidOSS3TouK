@@ -28,6 +28,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
+import com.ifountain.rcmdb.util.RapidStringUtilities
 
 /**
 * Created by IntelliJ IDEA.
@@ -62,7 +63,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
         assertEquals (2, addedObject.numberOfFlushCalls);
         assertFalse (addedObject.isFlushedByProperty[0]);
         assertFalse (addedObject.isFlushedByProperty[1]);
@@ -82,14 +83,14 @@ class AddMethodTest extends RapidCmdbTestCase{
         //test ignores id property
         props = [id:5, prop1:expectedDomainObject3.prop1];
         addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals("prop1:\"object3Prop1Value\"", AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
 
         AddMethodDomainObject1.indexList.clear();
         AddMethodDomainObject1.query = null;
         //test ignores id property whose name is gstring
         props = ["${"id"}":5, prop1:expectedDomainObject3.prop1];
         addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals("prop1:\"object3Prop1Value\"", AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
 
     }
 
@@ -118,7 +119,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
         assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
 
     }
 
@@ -163,7 +164,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals (expectedDomainObject1, addedObject);
         assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:\"${expectedDomainObject1.prop1}\"", AddMethodDomainObjectWithEvents.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObjectWithEvents.query);
         
         AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
 
@@ -329,7 +330,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
         assertEquals (objectBeforeAdd, addedObject);
-        assertEquals("prop1:\"object1Prop1Value\"".toString(), AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
 
         AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
 

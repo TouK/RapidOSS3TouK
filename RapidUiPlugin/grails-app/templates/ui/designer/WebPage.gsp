@@ -62,9 +62,8 @@ YAHOO.rapidjs.ErrorManager.serverUpEvent.subscribe(function(){
 YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'none');
 }, this, true);
 
-var changeProfileDialog = YAHOO.rapidjs.Components['changeProfileDialog']
 YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
-changeProfileDialog.show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"\${session.username}"});
+YAHOO.rapidjs.Components['changeProfileDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"\${session.username}"});
 },this, true)
 </script>
 <g:layoutBody/>

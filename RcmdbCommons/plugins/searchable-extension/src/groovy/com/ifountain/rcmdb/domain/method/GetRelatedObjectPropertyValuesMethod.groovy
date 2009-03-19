@@ -42,6 +42,7 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainMethod{
     protected Object _invoke(Object domainObject, Object[] arguments) {
         String relName = arguments[0]
         Collection propList = arguments[1]
+        Map options = arguments[2]
         RelationMetaData relationMetaData = relations[relName];
         if(relationMetaData != null)
         {
@@ -53,7 +54,7 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainMethod{
                     query.append("id:").append(id).append(" OR ")
                 }
                 String completeQuery = query.substring(0, query.length()-3);
-                return relationMetaData.otherSideCls.'getPropertyValues'(completeQuery, propList);
+                return relationMetaData.otherSideCls.'getPropertyValues'(completeQuery, propList, options);
             }
         }
         return [];

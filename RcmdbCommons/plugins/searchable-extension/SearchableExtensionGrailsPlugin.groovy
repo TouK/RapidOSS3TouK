@@ -184,7 +184,11 @@ class SearchableExtensionGrailsPlugin {
         }
 
         mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList->
-            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList] as Object[])
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, [:]] as Object[])
+        }
+
+        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList, Map options->
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, options] as Object[])
         }
 
         mc.'static'.getPropertyValues = {String query, Collection propertyList->

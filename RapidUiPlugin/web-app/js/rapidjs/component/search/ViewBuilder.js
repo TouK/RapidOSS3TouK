@@ -319,7 +319,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         for (var index = 0; index < nOfAvailableFields; index++) {
             var field = this.availableFields[index];
             var fieldName = field.getAttribute('Name');
-            if (!this.currentNode || !this.columnsConfig[fieldName]) {
+            if (!this.columnsConfig[fieldName]) {
                 SelectUtils.addOption(this.allFields, fieldName, fieldName);
             }
         }

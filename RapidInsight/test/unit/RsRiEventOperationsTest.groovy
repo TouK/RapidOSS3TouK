@@ -173,7 +173,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(callParams.state,event2.severity)
 
      }
-     void testIfEventHasErrorsEventIsNotProcessed
+    void testIfEventHasErrorsEventIsNotProcessed()
     {
         fail("should be implemented");
     }

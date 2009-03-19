@@ -19,6 +19,10 @@
 import groovy.xml.MarkupBuilder
 
 def query = params.query;
+if(query!=null || query=="")
+{
+    query=query.trim();
+}
 
 def devices = RsComputerSystem.search("name:${query.toQuery()}*", [max:20,sort:"name"]).results;
 

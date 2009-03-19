@@ -82,12 +82,35 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(20,results.size());
 
         
-    }   
+    }
+    public void testAutoCompleteIgnoresLeftRightSpaceInQuery()
+    {
+         def script=CmdbScript.addScript([name:"autocomplete",scriptFile:"autocomplete",type: CmdbScript.ONDEMAND])
+        assertFalse(script.hasErrors());
+
+
+        RsComputerSystem.add(name:"a 1");
+        RsComputerSystem.add(name:"a 2");
+        RsComputerSystem.add(name:"a3");
+        RsComputerSystem.add(name:"b1");
+        RsComputerSystem.add(name:"aa1");
+        
+        assertEquals(5,RsComputerSystem.countHits("alias:*"));
+
+        def spacedResults=getAutoCompleteData("a ");
+        def nospaceResults=getAutoCompleteData("a");
+
+        assertEquals(spacedResults,nospaceResults);
+        assertEquals(["a 1","a 2","a3","aa1"],spacedResults);
+
+
+
+    }
      def getAutoCompleteData(query){
         def script=CmdbScript.get(name:"autocomplete")
         
         def result=CmdbScript.runScript(script,["params":["query":query]]);
-        println result
+        
         def resultXml = new XmlSlurper().parseText(result);
 
         def suggestions=resultXml.Suggestion;

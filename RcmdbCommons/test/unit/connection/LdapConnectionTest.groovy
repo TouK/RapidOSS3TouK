@@ -32,6 +32,7 @@ import javax.naming.NamingException
 * To change this template use File | Settings | File Templates.
 */
 class LdapConnectionTest extends RapidCoreTestCase{
+    //a user with username:ldapuser , displayname:ldapuser , password:1234 must be created in ldap server
     public void testConnection()
     {
         Map params = LdapConnectionTestUtils.getConnectionParams();

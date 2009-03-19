@@ -66,4 +66,9 @@ class CompassStringMarshallingTest extends AbstractSearchableCompassTests {
 
         })
     }
+
+    public void testFieldsMarshallingUnmarshallingTest()
+    {
+        fail("to be implemented");
+    }
 }

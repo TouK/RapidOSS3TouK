@@ -52,12 +52,13 @@ public class RsRiEventOperations  extends RsEventOperations {
 
 		if (!event.hasErrors()) {
             RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)
+            event.propagateElementState();
 		}
 		else
         {
            Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");
         }
-        event.propagateElementState();
+
         
         return event;
     }

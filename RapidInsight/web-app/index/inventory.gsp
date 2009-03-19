@@ -417,7 +417,7 @@ functionActionCondition7360Condition=""
 x='85' y='50'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryForm" width="385" height="188" resizable="false"
+<rui:popupWindow componentId="saveQueryForm" width="385" height="213" resizable="false"
  
  
  

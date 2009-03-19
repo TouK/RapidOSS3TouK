@@ -16,7 +16,7 @@ import com.ifountain.compass.CompassConstants
 * To change this template use File | Settings | File Templates.
 */
 class CompassStringConverter extends AbstractCompassConverterWrapper{
-    public static final String EMPTY_VALUE = "_rse_";
+    public static final String EMPTY_VALUE = "_e";
     org.compass.core.converter.basic.StringConverter stringConverter;
     public CompassStringConverter()
     {

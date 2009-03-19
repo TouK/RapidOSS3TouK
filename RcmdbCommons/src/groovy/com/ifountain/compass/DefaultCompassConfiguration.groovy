@@ -22,7 +22,7 @@ class DefaultCompassConfiguration {
     {
         def defaultDateFormat = configObject?.toProperties()?.get("rapidcmdb.date.format");
         def dateFormat = "yyyy-dd-MM||yyyy-dd-MM HH||yyyy-dd-MM HH:mm||yyyy-dd-MM HH:mm:ss||yyyy-dd-MM HH:mm:ss.SSS||MM-dd-yyyy||MM-dd-yyyy HH||MM-dd-yyyy HH:mm||MM-dd-yyyy HH:mm:ss||MM-dd-yyyy HH:mm:ss.SSS".toString();
-        dateFormat = defaultDateFormat?"${dateFormat}||${dateFormat}".toString():dateFormat;
+        dateFormat = defaultDateFormat?"${defaultDateFormat}||${dateFormat}".toString():dateFormat;
         return ["compass.converter.date.type": CompassDateConverter.class.name,
                 "compass.converter.date.format": dateFormat,
                 "compass.converter.long.type": CompassLongConverter.class.name,

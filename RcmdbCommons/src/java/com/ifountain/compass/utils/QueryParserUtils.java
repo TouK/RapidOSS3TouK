@@ -97,28 +97,29 @@ public class QueryParserUtils {
     }
 
     public static FieldQueryParameter createFieldQueryParameters(String field, String queryText, List nonEscapedTerms) throws ParseException {
-        String fieldName = (String)nonEscapedTerms.get(nonEscapedTerms.size()-2);
-        String lastNonEscapedTerm = (String)nonEscapedTerms.get(nonEscapedTerms.size()-1);
-        if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) && endsWithExactQuery(lastNonEscapedTerm, queryText))
+        if(field != null)
         {
-            queryText = queryText.substring(1, queryText.length()-1);
-            field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+            String lastNonEscapedTerm = (String)nonEscapedTerms.get(nonEscapedTerms.size()-1);
+            if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) && endsWithExactQuery(lastNonEscapedTerm, queryText))
+            {
+                queryText = queryText.substring(1, queryText.length()-1);
+                field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+            }
+            else if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) || endsWithExactQuery(lastNonEscapedTerm, queryText))
+            {
+                throw new ExactQueryParseException(field, lastNonEscapedTerm);
+            }
+            else if(QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
+            {
+                queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
+                field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+            }
+            if(field.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                queryText = queryText.toLowerCase();
+            }
         }
-        else if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) || endsWithExactQuery(lastNonEscapedTerm, queryText))
-        {
-            throw new ExactQueryParseException(fieldName, lastNonEscapedTerm);
-        }
-        else if(QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
-        {
-            queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
-            field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
-        }
-        if(field.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
-        {
-            queryText = queryText.toLowerCase();    
-        }
-        FieldQueryParameter qparam = new FieldQueryParameter(field, queryText);
-        return qparam;
+        return new FieldQueryParameter(field, queryText);
     }
     public static String replaceEmptyStringQuery(String queryString, String emptyString)
     {

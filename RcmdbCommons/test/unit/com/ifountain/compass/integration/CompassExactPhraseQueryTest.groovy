@@ -159,4 +159,31 @@ class CompassExactPhraseQueryTest extends AbstractSearchableCompassTests {
 
         });
     }
+
+    public void testAllQueriesWorksProperly()
+    {
+        GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])
+        ApplicationHolder.application = application;
+        CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
+        Map mappings = [:];
+
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
+        def id = 0;
+        def instancesToBeSaved = [
+                new CompassTestObject(id: id++, prop1: "x"),
+        ] as Object[];
+        TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
+
+
+        TestCompassUtils.withCompassQueryBuilder(compass, {CompassQueryBuilder builder ->
+            CompassQuery query = builder.queryString("x").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            CompassHits hits = query.hits();
+            assertEquals(1, hits.length());
+
+            builder.queryString("${QueryParserUtils.toExactQuery ("x")}").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals(1, hits.length());
+        });
+
+    }
 }

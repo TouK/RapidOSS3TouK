@@ -89,6 +89,20 @@ class RapidQueryParserTest extends RapidCmdbTestCase
 
     }
 
+    public void testAllQuery()
+    {
+        String field1 ="prop1"
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        Query q = qp.parse("simpleQuery");
+        String fieldQuery = q.toString(field1);
+        assertEquals ("simpleQuery", fieldQuery);
+        String field2 ="prop2"
+        qp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = qp.parse("simpleQuery");
+        fieldQuery = q.toString();
+        assertEquals ("${field1}:simpleQuery ${field2}:simpleQuery", fieldQuery);
+    }
 
     public void testExactPhraseSetsTheFieldAsUntokenizedAndConvertsToLowercase()
     {

@@ -43,22 +43,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
         {
             logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
         }
-    }
-
-   def beforeUpdate(){
-        try
-        {
-            def dsSaved=BaseListeningDatasource.get(id:this.id);
-            if(dsSaved.name != this.name)
-            {
-                ListeningAdapterManager.getInstance().removeAdapter(dsSaved);
-            }
-        }catch(Exception e)
-        {
-            logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
-        }
-
-    }      
+    }  
      def afterUpdate(){
         try
         {

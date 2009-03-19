@@ -160,59 +160,7 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
             fail("Should not throw exception");
         }
      }
-     void testRenamingDatasourceRemovesOldAdapterAddNewAdapterAndDoesNotThrowException()
-     {
-        BaseListeningDatasource ds=BaseListeningDatasource.add(name:"myds")
-        assertFalse(ds.hasErrors())
 
-        def callParams=[:];
-        def exceptionToThrow=null;
-        ListeningAdapterManager.metaClass.removeAdapter= { BaseListeningDatasource listeningDatasource ->
-            println "removeAdapter in test";
-            callParams.listeningDatasource = listeningDatasource;
-            if(exceptionToThrow != null)
-            {
-                callParams.exceptionToThrow=exceptionToThrow;
-                throw exceptionToThrow;
-            }
-        }
-        assertEquals(0,callParams.size());
-
-        def addcallParams=[:];
-        def addexceptionToThrow=null;
-        ListeningAdapterManager.metaClass.addAdapterIfNotExists= { BaseListeningDatasource listeningDatasource ->
-            println "addAdapterIfNotExists in test";
-            addcallParams.listeningDatasource = listeningDatasource;
-            if(addexceptionToThrow != null)
-            {
-                addcallParams.exceptionToThrow=addexceptionToThrow;
-                throw addexceptionToThrow;
-            }
-        }
-        assertEquals(0,callParams.size());
-        assertEquals(0,addcallParams.size());
-        exceptionToThrow = new Exception();
-        addexceptionToThrow = new Exception();
-        try
-        {
-            def oldDsName=ds.name;
-            ds.update(name:ds.name+"newname");
-            assertFalse(ds.hasErrors())
-
-            assertEquals(callParams.listeningDatasource.id,ds.id);
-            assertEquals(callParams.listeningDatasource.name,oldDsName);
-            assertEquals(callParams.exceptionToThrow,exceptionToThrow);
-
-            assertEquals(addcallParams.listeningDatasource.id,ds.id);
-            assertEquals(addcallParams.listeningDatasource.name,ds.name);
-            assertEquals(addcallParams.exceptionToThrow,addexceptionToThrow);
-        }
-        catch(Exception e)
-        {
-            //e.printStackTrace()
-            fail("Should not throw exception");
-        }
-     }
 
     void testStartListeningCallsListeningAdapterManagerAndThrowsException()
     {

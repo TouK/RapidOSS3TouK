@@ -11,7 +11,7 @@ import org.apache.commons.collections.MapUtils;
  */
 class MethodUtils {
 
-    public static List getCompassHitsSubset(CompassHits compassHits, Map options) {
+    public static void getCompassHitsSubset(CompassHits compassHits, Map options, Closure hitIteratorClosure) {
         List hitList = new ArrayList();
         def maxOption = options["max"]
         int offset = MapUtils.getIntValue(options, "offset");
@@ -27,9 +27,9 @@ class MethodUtils {
             hitIterator.next();
         }
         while (low < high) {
-            hitList.add(hitIterator.next());
+
+            hitIteratorClosure(hitIterator.next());
             low++
         }
-        return hitList;
     }
 }

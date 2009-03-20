@@ -48,13 +48,11 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
         Map options = arguments[2];
         def results = [];
         def raw = {compassHits, session ->
-            def hitList = MethodUtils.getCompassHitsSubset(compassHits, options);
-            hitList.each {CompassHit hit ->
+            def hitIteratorClosure = {CompassHit hit ->
                 Resource res = hit.getResource();
                 def propMap = [alias: res.getAlias(), id: res.getObject("id")];
                 results.add(propMap);
                 propertyList.each {String propName ->
-
                     def prop = res.getProperty(propName);
                     if (prop != null)
                     {
@@ -67,6 +65,7 @@ class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
                     }
                 }
             }
+            MethodUtils.getCompassHitsSubset(compassHits, options, hitIteratorClosure);
         }
         options["raw"] = raw;
         clazz.'searchEvery'(query, options);

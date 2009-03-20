@@ -46,6 +46,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.apache.commons.io.FileUtils
 import org.compass.core.Compass
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,6 +56,14 @@ import com.ifountain.rcmdb.util.RapidStringUtilities
  * To change this template use File | Settings | File Templates.
  */
 public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
+    static String rootIndexDir = "../indexFiles";
+    static{
+        def rootIndexDirFile = new File(rootIndexDir);
+        if(rootIndexDirFile.exists())
+        {
+            FileUtils.deleteDirectory (rootIndexDirFile);
+        }
+    }
     def servletContext
 	def webRequest
 	def request
@@ -70,13 +79,19 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     def loadedClasses;
     def resolver = new PathMatchingResourcePatternResolver()
     def previousGrailsApp;
-    String indexDir = "../indexFiles"
+    def indexDir;
+    static indexCount = 0;
     public void setUp() {
         super.setUp();
+        indexCount++;
+        indexDir = "${rootIndexDir}/${this.class.simpleName}${indexCount}";
         System.clearProperty("index.dir")
         previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
-        FileUtils.deleteDirectory(new File(indexDir))
+        CommonTestUtils.waitFor (new ClosureWaitAction({
+            FileUtils.deleteDirectory(new File(indexDir));    
+        }));
+
 //        if(previousGrailsApp != null)
 //        {
 //            println "WITH GRAILS APPLICATION"
@@ -97,7 +112,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 
         if(isPersistant)
         {
-            System.setProperty("index.dir", "../indexFiles");
+            System.setProperty("index.dir", indexDir);
         }
         else
         {
@@ -158,6 +173,8 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         {
             if(appCtx.containsBean("compass"))
             {
+                Compass compass = appCtx.getBean("compass");
+                compass.getSearchEngineIndexManager().close();
                 appCtx.getBean("compass").close()
             }
         }

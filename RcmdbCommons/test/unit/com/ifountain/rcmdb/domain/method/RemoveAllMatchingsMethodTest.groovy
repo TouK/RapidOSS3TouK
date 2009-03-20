@@ -86,7 +86,6 @@ class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
         assertTrue (objectIdsForInstance1.isEmpty());
         assertTrue (objectIdsForInstance2.isEmpty());
     }
-
     public void testRemoveAllMatchingsWithCascade()
     {
         def modelName = "Model";
@@ -122,7 +121,8 @@ class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
 
         modelClass.'removeAll'("prop1:group1");
         assertNull (modelClass.'get'(keyProp:modelInstance1.keyProp));
-        assertNotNull (modelClass.'get'(keyProp:modelInstance3.keyProp));
+        def modelInstance2FromRepo = modelClass.'get'(keyProp:modelInstance3.keyProp);
+        assertEquals (relatedObject2.id, modelInstance2FromRepo.rel1.id);
         assertNull (relatedModelClass.'get'(keyProp:relatedObject1.keyProp));
         assertNotNull (relatedModelClass.'get'(keyProp:relatedObject2.keyProp));
         def objectIdsForInstance1 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance1.id, "rel1", "revrel1");

@@ -145,10 +145,8 @@ class SnmpConnectorController {
                 }
             }
             else {
-                println "startable degil"
                 addError("connector.update.exception", []);
                 flash.errors = errors;
-                println "rendering view edit"
                 render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
             }
 

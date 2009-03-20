@@ -144,7 +144,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     appendToQuery: function(query)
     {
         var queryString = this.searchInput.value + " " + query;
-        this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder);
+        this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.classesInput.options[this.classesInput.selectedIndex].value);
     },
     appendExceptQuery: function(key, value) {
         if (this.searchInput.value != "")

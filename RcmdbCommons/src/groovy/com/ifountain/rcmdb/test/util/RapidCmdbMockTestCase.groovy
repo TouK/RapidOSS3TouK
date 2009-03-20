@@ -94,6 +94,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     }
     def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
     {
+
         if(isPersistant)
         {
             System.setProperty("index.dir", "../indexFiles");
@@ -171,14 +172,15 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         appCtx = null
         springConfig = null
         resolver = null
-//		ExpandoMetaClass.disableGlobally()
         originalHandler = null
         ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;
         ServletContextHolder.servletContext = null;
+        ExpandoMetaClass.disableGlobally()
         this.loadedClasses.each{
             GroovySystem.metaClassRegistry.removeMetaClass (it);
         }
+        ExpandoMetaClass.enableGlobally();
         this.loadedClasses = null;
 
     }

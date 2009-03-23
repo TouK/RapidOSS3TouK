@@ -33,9 +33,12 @@ class EventTriggeringUtils {
     static final String AFTER_UPDATE_EVENT = 'afterUpdate'
     static final String AFTER_DELETE_EVENT = 'afterDelete'
     public static void triggerEvent(entity, event) {
+        triggerEvent (entity, event, null);
+    }
+    public static void triggerEvent(entity, event, Map params) {
         try
         {
-            entity."${event}"();
+            entity."${event}"(params);
         }
         catch(MissingMethodException exception)
         {

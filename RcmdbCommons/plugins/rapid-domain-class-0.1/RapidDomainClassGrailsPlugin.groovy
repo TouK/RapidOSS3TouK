@@ -283,6 +283,9 @@ class RapidDomainClassGrailsPlugin {
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         def relations = DomainClassUtils.getRelations(dc);
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
+        dc.metaClass.setPropertyWithoutUpdate = {String name, Object value->
+            delegate.setProperty(name, value, false);
+        }
         dc.metaClass.setProperty = {String name, Object value->
             delegate.setProperty(name, value, true);
         }

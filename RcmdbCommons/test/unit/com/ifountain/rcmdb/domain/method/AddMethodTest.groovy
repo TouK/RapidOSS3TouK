@@ -43,6 +43,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         IdGenerator.initialize (new MockIdGeneratorStrategy());
         AddMethodDomainObject1.searchResult =  [total:0, results:[]];
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
         validator = new MockValidator();
@@ -50,6 +51,7 @@ class AddMethodTest extends RapidCmdbTestCase{
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
     }
 
     public void testAddMethod()
@@ -93,6 +95,8 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
 
     }
+
+
 
     public void testGetLockName()
     {
@@ -175,6 +179,21 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertFalse (addedObject.isAfterInsertCalled);
         assertFalse (addedObject.isBeforeDeleteCalled);
         assertFalse (addedObject.isAfterDeleteCalled);
+    }
+
+    public void testBeforeInsertShouldBeCalledBeforeValidation()
+    {
+        def propValueUpdatedInBeforeInsert = "prop2ValueSetInBeforeInsert";
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject->
+            domainObject.setProperty("prop2", propValueUpdatedInBeforeInsert, false);
+        }
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+        def props = [prop1:expectedDomainObject1.prop1];
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (propValueUpdatedInBeforeInsert, addedObject.prop2);
+        assertEquals (propValueUpdatedInBeforeInsert, validator.validatedObject.prop2);
+
     }
 
 
@@ -320,25 +339,7 @@ class AddMethodTest extends RapidCmdbTestCase{
 
 
     }
-
-
-    public void testIfObjectAlreadyExistsUpdatesObjects()
-    {
-        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        def objectId = addedObject.id;
-        assertEquals (objectBeforeAdd, addedObject);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
-
-        AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
-
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
-        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        
-        assertEquals (props, addedObjectAfterAdd.propertiesToBeUpdated);
-    }
+    
 }
 
 class AddMethodDomainObject1  extends GroovyObjectSupport
@@ -453,6 +454,9 @@ class ChildAddMethodDomainObject2 extends AddMethodDomainObject1
 
 class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
 {
+    def static closureToBeInvokedBeforeInsert;
+    def closureToBeInvokedBeforeUpdate;
+    def closureToBeInvokedAfterUpdate;
     boolean isOnLoadCalled = false;
     boolean isBeforeInsertCalled = false;
     boolean isAfterInsertCalled = false;
@@ -465,11 +469,19 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
         isOnLoadCalled = true;
     }
 
-    def beforeInsert = {
+    def beforeInsert = {params->
         isBeforeInsertCalled = true;
+        if(closureToBeInvokedBeforeInsert)
+        {
+            closureToBeInvokedBeforeInsert(this);
+        }
     }
-    def beforeUpdate = {
+    def beforeUpdate = {params->
         isBeforeUpdateCalled = true;
+        if(closureToBeInvokedBeforeUpdate)
+        {
+            closureToBeInvokedBeforeUpdate(params);
+        }
     }
     def beforeDelete = {
         isBeforeDeleteCalled = true;
@@ -478,8 +490,12 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     def afterInsert = {
         isAfterInsertCalled = true;
     }
-    def afterUpdate = {
+    def afterUpdate = {params->
         isAfterUpdateCalled = true;
+        if(closureToBeInvokedAfterUpdate)
+        {
+            closureToBeInvokedAfterUpdate(params);
+        }
     }
     def afterDelete = {
         isAfterDeleteCalled = true;

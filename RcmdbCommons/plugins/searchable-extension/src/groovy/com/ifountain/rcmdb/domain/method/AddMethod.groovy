@@ -84,39 +84,22 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         }
 
         def sampleBean = clazz.newInstance()
-        Errors errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
 
-        props.each{key,value->
-            RelationMetaData relation = relations.get(key);
+        props.each{propName,value->
+            RelationMetaData relation = relations.get(propName);
             if(!relation)
             {
-                def fieldType = fieldTypes[key];
+                def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-
-                    if(value != null)
-                    {
-                        try
-                        {
-                            def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-                            def propVal = converter.convert (fieldType, value);
-                            sampleBean.setProperty(key, propVal, false);
-                        }
-                        catch(ConversionException exception)
-                        {
-                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [key, fieldType.name, sampleBean.class.name]);
-                        }
-                    }
-                    else
-                    {
-                        sampleBean.setProperty(key, value, false);
-                    }
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, value);
                 }
             }
             else
             {
-                relatedInstances[key] = value;
+                relatedInstances[propName] = value;
             }
         }
         if(instanceOfError)
@@ -127,6 +110,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
             return sampleBean;
         }
+        EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
         validator.validate (ValidationUtils.createValidationBean(sampleBean, props, relations, fieldTypes), errors)
 
         if(errors. hasErrors())
@@ -136,7 +120,6 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         else
         {
             sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
-            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
             CompassMethodInvoker.index (mc, sampleBean);
             if(!relatedInstances.isEmpty())
             {

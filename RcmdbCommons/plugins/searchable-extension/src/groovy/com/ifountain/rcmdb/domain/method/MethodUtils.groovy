@@ -1,7 +1,12 @@
 package com.ifountain.rcmdb.domain.method
 
 import org.compass.core.CompassHits
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections.MapUtils
+import com.ifountain.rcmdb.converter.RapidConvertUtils
+import org.apache.commons.beanutils.ConversionException
+import com.ifountain.rcmdb.domain.util.ValidationUtils
+import org.springframework.validation.Errors
+import org.springframework.validation.BindingResult;
 /**
  * Created by IntelliJ IDEA.
  * User: admin
@@ -11,6 +16,25 @@ import org.apache.commons.collections.MapUtils;
  */
 class MethodUtils {
 
+    public static void convertAndSetDomainObjectProperty(BindingResult errors, Object domainObject, String fieldName, Class fieldType, Object value) {
+        if(value != null)
+        {
+            try
+            {
+                def converter = RapidConvertUtils.getInstance().lookup (fieldType);
+                value = converter.convert(fieldType, value);
+                domainObject.setProperty(fieldName, value, false);
+            }
+            catch(ConversionException exception)
+            {
+                ValidationUtils.addFieldError (errors, fieldName, value, "rapidcmdb.invalid.property.type", [fieldName, fieldType.name, domainObject.class.name]);
+            }
+        }
+        else
+        {
+            domainObject.setProperty(fieldName, value, false);
+        }
+    }
     public static void getCompassHitsSubset(CompassHits compassHits, Map options, Closure hitIteratorClosure) {
         List hitList = new ArrayList();
         def maxOption = options["max"]

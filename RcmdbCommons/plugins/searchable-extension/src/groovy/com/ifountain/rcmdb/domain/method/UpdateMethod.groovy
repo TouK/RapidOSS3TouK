@@ -35,7 +35,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
  * To change this template use File | Settings | File Templates.
  */
 class UpdateMethod extends AbstractRapidDomainWriteMethod{
-
+    public static final String UPDATED_PROPERTIES = "updatedProps"
     def relations;
     def fieldTypes = [:]
     Validator validator;
@@ -55,59 +55,48 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def relationToBeAddedMap = [:]
+        def updatedProps = [:];
         def relationToBeRemovedMap = [:]
-        Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
-        props.each{key,value->
-            if(!relations.containsKey(key))
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
+        props.each{propName,value->
+            if(!relations.containsKey(propName))
             {
-                def fieldType = fieldTypes[key];
+                def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-                    if(value != null)
-                    {
-                        try
-                        {
-                            def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-                            domainObject.setProperty (key, converter.convert(fieldType, value), false);
-                        }
-                        catch(ConversionException exception)
-                        {
-                            ValidationUtils.addFieldError (errors, key, value, "rapidcmdb.invalid.property.type", [key, fieldType.name, domainObject.class.name]);
-                        }
-                    }
-                    else
-                    {
-                        domainObject.setProperty (key, value, false);
-                    }
+                    updatedProps[propName] = domainObject.getProperty(propName);
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
                 }
             }
             else
             {
-                def currentRelatedObjects = domainObject[key];
+                def currentRelatedObjects = domainObject[propName];
+                updatedProps[propName] = currentRelatedObjects;
                 if(currentRelatedObjects)
                 {
-                    relationToBeRemovedMap[key] = currentRelatedObjects;
+                    relationToBeRemovedMap[propName] = currentRelatedObjects;
                 }
                 if(value)
                 {
-                    relationToBeAddedMap[key] = value;
+                    relationToBeAddedMap[propName] = value;
                 }
             }
         }
-
+        def triggeredEventParams = [:];
+        triggeredEventParams[UPDATED_PROPERTIES] = updatedProps;
+        EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
         if(!errors.hasErrors())
         {
             validator.validate (ValidationUtils.createValidationBean(domainObject, props, relations, fieldTypes, true), errors)
         }
         if(!errors.hasErrors())
         {
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
             domainObject.index(domainObject);
             statistics.stop();
             domainObject.removeRelation(relationToBeRemovedMap);
             domainObject.addRelation(relationToBeAddedMap);
             statistics.start();
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT);
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
         }

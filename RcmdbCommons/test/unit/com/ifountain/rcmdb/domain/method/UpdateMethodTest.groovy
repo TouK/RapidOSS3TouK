@@ -108,11 +108,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
     public void testUpdateMethodWithEvents()
     {
+        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
         AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
 
-        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3, rel1:new AddMethodDomainObjectWithEvents()];
 
         def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
@@ -121,8 +122,19 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         addedObject.isBeforeInsertCalled = false;
         addedObject.isAfterInsertCalled = false;
         addedObject.isOnLoadCalled = false;
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
-        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:new AddMethodDomainObjectWithEvents()];
+
+        def beforeUpdateParams = [];
+        def afterUpdateParams = [];
+        addedObject.closureToBeInvokedBeforeUpdate = {params->
+            beforeUpdateParams.add(params);
+        }
+
+        addedObject.closureToBeInvokedAfterUpdate = {params->
+            afterUpdateParams.add(params);
+        }
+
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
         def updatedObject = update.invoke (addedObject, [props] as Object[]);
         assertEquals (addedObject.id, updatedObject.id);
         assertEquals ("newProp2Value", updatedObject.prop2);
@@ -136,6 +148,48 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertTrue (updatedObject.isAfterUpdateCalled);
         assertFalse (updatedObject.isBeforeDeleteCalled);
         assertFalse (updatedObject.isAfterDeleteCalled);
+        assertEquals(1, beforeUpdateParams.size());
+        Map params = beforeUpdateParams[0];
+        assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
+        assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
+
+        assertEquals(1, afterUpdateParams.size());
+        params = afterUpdateParams[0];
+        assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
+        assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
+    }
+
+    public void testBeforeUpdateWillBeCalledBeforeValidation()
+    {
+         AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+
+        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+
+        AddMethodDomainObject1.indexList.clear();
+        addedObject.isBeforeInsertCalled = false;
+        addedObject.isAfterInsertCalled = false;
+        addedObject.isOnLoadCalled = false;
+        
+        def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
+        addedObject.closureToBeInvokedBeforeUpdate = {params->
+            addedObject.setProperty("prop2", "updatedValueInBeforeUpdate", false);
+        }
+
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
+        MockValidator validator = new MockValidator();
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, validator, AddMethodDomainObject1.allFields, [:]);
+        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        assertEquals (propvalueToBeUpdatedInBeforeUpdate, validator.validatedObject.prop2);
+
+
     }
 
 

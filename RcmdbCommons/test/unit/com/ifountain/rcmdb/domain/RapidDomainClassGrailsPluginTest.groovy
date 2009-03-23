@@ -326,6 +326,10 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         }
         instance.prop2 = "transientPropvalueShouldNotUpdate"
         assertEquals (0, numberOfCalls);
+
+        //test setPropertyWithoutUpdate
+        instance.setPropertyWithoutUpdate("prop1", "prop1SetWithoutUpdate");
+        assertEquals (0, numberOfCalls);
     }
 
     public void testOperation()

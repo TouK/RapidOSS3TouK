@@ -39,6 +39,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
     Validator validator;
     Class rootDomainClass;
     List keys;
+    boolean willReturnErrorIfExist = false;
     public AddMethod(MetaClass mcp, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
         super(mcp);
         this.keys = keys;
@@ -71,7 +72,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[])
         def instanceOfError = false;
-        if(existingInstance != null)
+        if(!willReturnErrorIfExist && existingInstance != null)
         {
             if(clazz.isInstance(existingInstance) )
             {
@@ -102,10 +103,15 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 relatedInstances[propName] = value;
             }
         }
-        if(instanceOfError)
+        if(willReturnErrorIfExist && existingInstance != null)
+        {
+            ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstance.id]);
+        }
+        else if(instanceOfError)
         {
             ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name,existingInstance.class.name]);
         }
+
         if(errors.hasErrors()){
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
             return sampleBean;

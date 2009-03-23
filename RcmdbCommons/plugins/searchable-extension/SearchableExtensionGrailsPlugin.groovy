@@ -144,6 +144,8 @@ class SearchableExtensionGrailsPlugin {
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
+        def addUniqueMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
+        addUniqueMethod.setWillReturnErrorIfExist (true);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
         def getPropertyValuesMethod = new GetPropertyValuesMethod(mc, relations);
         def getRelatedModelPropertyValuesMethod = new GetRelatedObjectPropertyValuesMethod(mc, relations);
@@ -204,6 +206,9 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.'static'.add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);
+        }
+        mc.'static'.addUnique = {Map props->
+            return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);
         }
     }
 

@@ -29,6 +29,7 @@ import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import org.springframework.validation.ObjectError
 
 /**
 * Created by IntelliJ IDEA.
@@ -338,6 +339,45 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertTrue (validator.validatedObject.rel4.contains(expectedDomainObject6));
 
 
+    }
+    public void testIfObjectAlreadyExistsUpdatesObjects()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        def objectId = addedObject.id;
+        assertEquals (objectBeforeAdd, addedObject);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
+
+        AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
+
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
+        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+
+        assertEquals (props, addedObjectAfterAdd.propertiesToBeUpdated);
+    }
+
+    public void testAddMethodWithReturnErrorIfExistMode()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+        add.willReturnErrorIfExist = true;
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        def objectId = addedObject.id;
+        assertEquals (objectBeforeAdd, addedObject);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
+
+        AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
+
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
+        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        assertTrue (addedObjectAfterAdd.hasErrors());
+        assertEquals (1, addedObjectAfterAdd.errors.allErrors.size());
+        assertEquals ("rapidcmdb.instance.already.exist", addedObjectAfterAdd.errors.allErrors[0].code);
+        assertEquals (objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[0]);
+        assertNull(addedObjectAfterAdd.propertiesToBeUpdated);
     }
     
 }

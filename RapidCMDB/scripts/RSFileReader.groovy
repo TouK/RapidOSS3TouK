@@ -20,17 +20,31 @@ import com.ifountain.rcmdb.util.DataStore
 */
 public class RSFileReader{
 
-	def filePath, tailMode;
+	def filePath, tailMode, alwaysFromStart;
+	
+	public RSFileReader(filePath, tailMode, alwaysFromStart){
+		this.filePath = filePath;
+		this.tailMode = tailMode;
+		this.alwaysFromStart = alwaysFromStart;
+	}
 	
 	public RSFileReader(filePath, tailMode){
 		this.filePath = filePath;
 		this.tailMode = tailMode;
+		this.alwaysFromStart = false;
 	}
+	
+	public RSFileReader(filePath){
+		this.filePath = filePath;
+		this.tailMode = false;
+		this.alwaysFromStart = false;
+	}	
 
 	// Do not modify unless you have specific needs that require changes to this method.
 	// This method will return you a list of lines appended to the file you are listening to
 	def getLines(){
-
+		if (alwaysFromStart) DataStore.remove(filePath);
+		
 		//def t3 = System.currentTimeMillis();
 		def raf = new RandomAccessFile(filePath, "r");
 		def fileLength = raf.length();
@@ -64,6 +78,7 @@ public class RSFileReader{
 				DataStore.put(filePath,fileLength);
 			}
 		}
+		
 		//def t4 = System.currentTimeMillis();
 		//def readDuration = t4 - t3;
 		//println "READ LINE COUNT: ${lines.size()} in ${readDuration} ms. Lines are: ${lines}";

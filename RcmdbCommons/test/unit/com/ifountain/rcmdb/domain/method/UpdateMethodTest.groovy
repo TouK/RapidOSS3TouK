@@ -150,12 +150,14 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertFalse (updatedObject.isAfterDeleteCalled);
         assertEquals(1, beforeUpdateParams.size());
         Map params = beforeUpdateParams[0];
+        assertEquals(3, params[UpdateMethod.UPDATED_PROPERTIES].size())
         assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
         assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
         assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
 
         assertEquals(1, afterUpdateParams.size());
         params = afterUpdateParams[0];
+        assertEquals(3, params[UpdateMethod.UPDATED_PROPERTIES].size())
         assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
         assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
         assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);

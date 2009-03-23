@@ -55,6 +55,14 @@ class EventTriggeringUtilsTest extends RapidCmdbTestCase{
         EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT, mapToBePassed);
         assertEquals (1, obj.beforeDeleteParams.size());
         assertSame(mapToBePassed, obj.beforeDeleteParams[0]);
+
+        obj = new EventTriggeringUtilsTestObject();
+        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT, null);
+        assertEquals(1, obj.beforeUpdateParams.size());
+
+        obj = new EventTriggeringUtilsTestObject();
+        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
+        assertEquals(1, obj.beforeUpdateParams.size());
     }
 }
 
@@ -62,11 +70,16 @@ class   EventTriggeringUtilsTestObject
 {
     boolean isOnLoadCalled = false;
     List beforeDeleteParams = [];
+    List beforeUpdateParams = [];
     def onLoad = {
         isOnLoadCalled = true;
     }
 
     def beforeDelete = {params->
         beforeDeleteParams.add(params);
+    }
+
+    def beforeUpdate(){
+        beforeUpdateParams.add("beforeUpdateCalled");
     }
 }

@@ -505,39 +505,39 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     boolean isBeforeDeleteCalled = false;
     boolean isAfterDeleteCalled = false;
 
-    def onLoad = {
+    def onLoad(){
         isOnLoadCalled = true;
     }
 
-    def beforeInsert = {params->
+    def beforeInsert(params){
         isBeforeInsertCalled = true;
         if(closureToBeInvokedBeforeInsert)
         {
             closureToBeInvokedBeforeInsert(this);
         }
     }
-    def beforeUpdate = {params->
+    def beforeUpdate(params){
         isBeforeUpdateCalled = true;
         if(closureToBeInvokedBeforeUpdate)
         {
             closureToBeInvokedBeforeUpdate(params);
         }
     }
-    def beforeDelete = {
+    def beforeDelete(){
         isBeforeDeleteCalled = true;
     }
 
-    def afterInsert = {
+    def afterInsert(){
         isAfterInsertCalled = true;
     }
-    def afterUpdate = {params->
+    def afterUpdate(params){
         isAfterUpdateCalled = true;
         if(closureToBeInvokedAfterUpdate)
         {
             closureToBeInvokedAfterUpdate(params);
         }
     }
-    def afterDelete = {
+    def afterDelete(){
         isAfterDeleteCalled = true;
     }
 }

@@ -38,7 +38,14 @@ class EventTriggeringUtils {
     public static void triggerEvent(entity, event, Map params) {
         try
         {
-            entity."${event}"(params);
+            if(params != null)
+            {
+                entity."${event}"(params);
+            }
+            else
+            {
+                entity."${event}"();                
+            }
         }
         catch(MissingMethodException exception)
         {

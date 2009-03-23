@@ -4,6 +4,10 @@ import com.ifountain.rcmdb.test.util.RapidCmdbMockTestCase
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.domain.method.UpdateMethod
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,6 +17,18 @@ import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 * To change this template use File | Settings | File Templates.
 */
 class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
+
+    public void setUp() {
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DataStore.clear();
+    }
+
+    public void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        DataStore.clear();
+    }
+
+
     public void testAddMethods()
     {
         Map classes = initializePluginAndClasses();
@@ -43,9 +59,47 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
         assertEquals (addedObjectProps.prop1, objectInRepo.prop1);
     }
 
+    public void testAddMethodsWithTriggeringEvents()
+    {
+        Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass ("""
+        class ${classes.child.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeInsert()
+            {
+                ${DataStore.class.name}.put("beforeInsert", true);
+            }
+            def afterInsert()
+            {
+                ${DataStore.class.name}.put("afterInsert", true);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport (classes.child, operationClass);
+        def addedObjectProps = [keyProp:"object1", prop1:"prop1Value"]
+        def addedObject = classes.child.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+
+        assertTrue (DataStore.get("beforeInsert"));
+        assertTrue (DataStore.get("afterInsert"));
+
+    }
+
     public void testRemoveMethod()
     {
         Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass ("""
+        class ${classes.child.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeDelete()
+            {
+                ${DataStore.class.name}.put("beforeDelete", true);
+            }
+            def afterDelete()
+            {
+                ${DataStore.class.name}.put("afterDelete", true);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport (classes.child, operationClass);
         def addedObjectProps = [keyProp:"object1", prop1:"prop1Value"]
         def addedObject = classes.child.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
@@ -57,11 +111,26 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
         addedObject.remove();
         objectInRepo = classes.child.search("id:${addedObject.id}").results[0];
         assertNull(objectInRepo);
+        assertTrue (DataStore.get("beforeDelete"));
+        assertTrue (DataStore.get("afterDelete"));
     }
 
     public void testUpdateMethod()
     {
         Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass ("""
+        class ${classes.child.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeUpdate(params)
+            {
+                ${DataStore.class.name}.put("beforeUpdate", params);
+            }
+            def afterUpdate(params)
+            {
+                ${DataStore.class.name}.put("afterUpdate", params);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport (classes.child, operationClass);
         def addedObjectProps = [keyProp:"object1", prop1:"prop1Value"]
         def addedObject = classes.child.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
@@ -78,6 +147,12 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
         objectInRepo = classes.child.search("keyProp:${updatedObjectProps.keyProp}").results[0];
         assertEquals (updatedObjectProps.keyProp, objectInRepo.keyProp);
         assertEquals (updatedObjectProps.prop1, objectInRepo.prop1);
+
+        //test events are called
+        assertEquals (addedObjectProps.keyProp, DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].keyProp);
+        assertEquals (addedObjectProps.prop1, DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals (addedObjectProps.keyProp, DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].keyProp);
+        assertEquals (addedObjectProps.prop1, DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop1);
     }
 
     public void testAddRemoveRelations()

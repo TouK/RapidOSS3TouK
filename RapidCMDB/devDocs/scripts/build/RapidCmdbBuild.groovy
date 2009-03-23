@@ -224,7 +224,7 @@ class RapidCmdbBuild extends Build {
             }
         }
         
-        ant.copy(todir: "$env.dist_rapid_suite") {
+        ant.copy(todir: "$env.dist_rapid_suite/scripts") {
             ant.fileset(dir: "$env.rapid_cmdb_cvs/scripts")
         }
         ant.copy(todir: "$env.dist_rapid_suite/operations") {

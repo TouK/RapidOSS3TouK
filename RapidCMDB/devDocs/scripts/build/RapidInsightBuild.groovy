@@ -348,6 +348,9 @@ class RapidInsightBuild extends Build {
             ant.copy(todir: "${env.dist_rapid_suite}/test") {
                 ant.fileset(dir: "$env.rapid_insight/test")
             }
+            ant.copy(todir: "${env.dist_rapid_suite}") {
+                ant.fileset(dir: "$env.rapid_insight/overridenOperations")
+            }
         }
     }
 

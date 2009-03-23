@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.domain.operation
 
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.runtime.InvokerHelper
+import org.codehaus.groovy.runtime.NullObject
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -65,7 +66,14 @@ abstract class AbstractDomainOperation {
         def argsInList = InvokerHelper.asList(args)
         def types = [];
         argsInList.each{
-            types += it.class;
+            if(it != null)
+            {
+                types.add(it.class);
+            }
+            else
+            {
+                types.add(null);
+            }
         }
         if(domainObject.metaClass.getMetaMethod(methodName, types as Object[]) != null)
         {

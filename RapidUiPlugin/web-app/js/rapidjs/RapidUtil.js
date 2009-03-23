@@ -59,7 +59,14 @@ String.prototype.trim = function() {
     return a.replace(/\s+$/, '');
 };
 String.prototype.toQuery = function() {
-    var a = this.replace(/"/, '\\"');
+    var a = this.replace(/\\/g, '\\\\');
+    var a = a.replace(/"/g, '\\"');
+    var a = a.replace(/\(/g, '\\(');
+    var a = a.replace(/\)/g, '\\)');
+    return a;
+};
+String.prototype.toExactQuery = function() {
+    var a = '"(' + this.toQuery() + ')"'
     return a;
 };
 YAHOO.rapidjs.ArrayUtils = new function()

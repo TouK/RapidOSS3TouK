@@ -13,7 +13,7 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
     public void testGetOperations()
     {
         String operationClassName = "${GetOperationsMethodTest.simpleName}Operation1";
-        def methods = [[name:"method1", params:[String, Long, List]],
+        def methods = [[name:"method1", params:[String, Long, List], isStatic:true],
         [name:"method2", params:[], returnType:String],
         [name:"method3", params:[String], returnType:String]
         ]
@@ -22,7 +22,7 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
             def name = method.name;
             def params = method.params;
             def returnType = method.returnType;
-            methodText += returnType?returnType.name:"def";
+            methodText += returnType?returnType.name:"def ${method.isStatic?"static":""}";
             methodText +=" ${name}(";
             if(params)
             {

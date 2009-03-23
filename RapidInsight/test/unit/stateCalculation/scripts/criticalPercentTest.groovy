@@ -1,25 +1,16 @@
 logger.warn("Starting..............")
 
-// RI- FINDMAX
+//RI- FINDMAX
 final static int CRITICAL = 5
 final static int MAJOR = 4
 final static int WARNING = 2
 final static int INDETERMINATE = 1
 final static int NOTSET = -1
 
-// SMARTS- FINDMIN
-//final static int CRITICAL = 1
-//final static int MAJOR = 2
-//final static int WARNING = 4
-//final static int INDETERMINATE = 5
-//final static int NOTSET = -1
-
-
 RsCustomer.removeAll()
 RsService.removeAll()
 RsTopologyObject.removeAll()
 RsEvent.removeAll()
-
 
 def cust1 = RsCustomer.add([name:"Cust1"])
 def cust2 = RsCustomer.add([name:"Cust2"])
@@ -37,7 +28,7 @@ def device211 = RsTopologyObject.add([name:"Device211"])
 def device212 = RsTopologyObject.add([name:"Device212"])
 def device221 = RsTopologyObject.add([name:"Device221"])
 def device222 = RsTopologyObject.add([name:"Device222"])
-	
+
 cust1.addRelation(childObjects:[serv11,serv12])
 cust2.addRelation(childObjects:[serv21,serv22])
 
@@ -57,38 +48,32 @@ assert cust1.currentState() == INDETERMINATE
 
 def event1112 = RsEvent.add(name:"Event1112", elementName:device111.name,severity:MAJOR)
 device111.setState(event1112.severity)
-assert device111.currentState() == MAJOR
-assert serv11.currentState() == MAJOR
-assert cust1.currentState() == MAJOR
+assert device111.currentState() == INDETERMINATE
+assert serv11.currentState() == INDETERMINATE
+assert cust1.currentState() == INDETERMINATE
 
 def event1113 = RsEvent.add(name:"Event1113", elementName:device111.name,severity:CRITICAL)
 device111.setState(event1113.severity)
-assert device111.currentState() == CRITICAL 
-assert serv11.currentState() == CRITICAL
-assert cust1.currentState() == CRITICAL
+assert device111.currentState() == MAJOR
+assert serv11.currentState() == INDETERMINATE
+assert cust1.currentState() == INDETERMINATE
 
-event1112.severity = CRITICAL 
+event1112.severity = CRITICAL
 device111.setState(event1112.severity,MAJOR)
 assert device111.currentState() == CRITICAL
 assert serv11.currentState() == CRITICAL
 assert cust1.currentState() == CRITICAL
 
-event1112.severity = INDETERMINATE 
+event1112.severity = MAJOR
 device111.setState(event1112.severity,CRITICAL)
-assert device111.currentState() == CRITICAL 
-assert serv11.currentState() == CRITICAL
-assert cust1.currentState() == CRITICAL
-
-event1113.severity = INDETERMINATE 
-device111.setState(event1113.severity,CRITICAL)
-assert device111.currentState() == INDETERMINATE 
+assert device111.currentState() == MAJOR
 assert serv11.currentState() == INDETERMINATE
 assert cust1.currentState() == INDETERMINATE
 
-def event1221 = RsEvent.add(name:"Event1221", elementName:device122.name,severity:WARNING)
+def event1221 = RsEvent.add(name:"Event1221", elementName:device122.name,severity:CRITICAL)
 device122.setState(event1221.severity)
-assert device122.currentState() == WARNING
-assert serv12.currentState() == WARNING
-assert cust1.currentState() == WARNING
+assert device122.currentState() == CRITICAL
+assert serv12.currentState() == CRITICAL
+assert cust1.currentState() == CRITICAL
 
 return "success"

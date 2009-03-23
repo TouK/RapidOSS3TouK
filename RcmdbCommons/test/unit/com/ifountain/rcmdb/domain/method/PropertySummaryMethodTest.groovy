@@ -30,6 +30,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
     public void testPropertySummary()
     {
+        assertTrue ( AbstractRapidDomainReadMethod.isAssignableFrom(PropertySummaryMethod));
         initialize([PropertySummaryMethodDomainObject1], []);
         PropertySummaryMethodDomainObject1.list()*.remove();
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value1");

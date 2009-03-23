@@ -42,13 +42,8 @@ class AsMapMethod extends AbstractRapidDomainMethod{
         }
     }
 
-    public boolean isWriteOperation() {
-        return false; 
-    }
 
-
-
-    protected Object _invoke(Object domainObject, Object[] arguments) {
+    public Object invoke(Object domainObject, Object[] arguments) {
         def propertyMap = [:];
         def colList;
         if(arguments == null || arguments.length == 0)

@@ -28,7 +28,7 @@ import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
  * Time: 6:10:15 PM
  * To change this template use File | Settings | File Templates.
  */
-class ReloadOperationsMethod extends AbstractRapidDomainStaticMethod{
+class ReloadOperationsMethod extends AbstractRapidDomainMethod{
     List subclasses;
     DomainOperationManager manager;
     Object logger;
@@ -39,11 +39,7 @@ class ReloadOperationsMethod extends AbstractRapidDomainStaticMethod{
         this.subclasses = subclasses;
     }
 
-    public boolean isWriteOperation() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    protected Object _invoke(Class clazz, Object[] arguments) {
+    public Object invoke(Object clazz, Object[] arguments) {
         def reloadSubclasses = !(arguments != null && arguments.length == 1 && arguments[0] == false)
         try
         {

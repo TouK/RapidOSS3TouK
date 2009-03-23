@@ -46,7 +46,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     {
         def keys = ["prop1",  "prop2"]
         GetMethod get = new GetMethod(GetMethodDomainObject.metaClass, keys, [:]);
-        assertFalse (get.isWriteOperation());
+        assertTrue(get instanceof AbstractRapidDomainReadMethod);
 
         //get method should escape invalid characters like double-quote
         def propValues = [prop1:"prop1\"Value", prop3:"prop3Value"];
@@ -181,7 +181,7 @@ class GetMethodTest extends RapidCmdbTestCase{
     {
         def keys = ["prop1",  "prop2"]
         GetMethod get = new GetMethod(GetMethodChildDomainObject.metaClass, keys, [:]);
-        assertFalse (get.isWriteOperation());
+        assertTrue(get instanceof AbstractRapidDomainReadMethod);
         def propvalues = [prop1:"prop1\"Value", prop3:"prop3Value"];
         def result = get.invoke (GetMethodChildDomainObject, [propvalues] as Object[]);
         assertNull (result);

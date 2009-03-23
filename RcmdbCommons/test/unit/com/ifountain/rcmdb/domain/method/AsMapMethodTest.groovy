@@ -65,7 +65,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         
 
         AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
-        def instanceAsMap=asMap._invoke(instance,null);
+        def instanceAsMap=asMap.invoke(instance,null);
         
 
         assertEquals(propList.size(),instanceAsMap.size())
@@ -115,7 +115,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         
 
         AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
-        def instanceAsMap=asMap._invoke(instance,null);
+        def instanceAsMap=asMap.invoke(instance,null);
 
 
         assertEquals(propList.size()-excludeProps.size(),instanceAsMap.size())
@@ -169,7 +169,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
 
         AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
         def requestedProps=["name","pagecount"]
-        def instanceAsMap=asMap._invoke(instance,requestedProps);
+        def instanceAsMap=asMap.invoke(instance,requestedProps);
 
         assertEquals(requestedProps.size(),instanceAsMap.size())
         for(prop in requestedProps){

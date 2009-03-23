@@ -40,43 +40,5 @@ abstract class AbstractRapidDomainMethod {
             rootParentClass = rootParentClass.superclass;
         }
     }
-
-    public final Object invoke(Object domainObject, Object[] arguments) {
-
-        if (isWriteOperation()) {
-            String lockName = getLockName(domainObject);
-            def executionClosure = {
-                return _invoke(domainObject, arguments);
-            }
-            return DomainMethodExecutor.executeAction(Thread.currentThread(), lockName, executionClosure)
-        }
-        else {
-            return _invoke(domainObject, arguments);
-        }
-
-    }
-
-    public String getLockName(Object domainObject) {
-        StringBuffer bf = new StringBuffer(rootParentClass.name);
-        def keys = domainObject.'keySet'();
-        if(keys.isEmpty())
-        {
-            bf.append (domainObject["id"])
-        }
-        else
-        {
-            keys.each{prop->
-                bf.append(domainObject[prop.name]);
-            }
-        }
-        return bf.toString();
-    }
-
-    abstract boolean isWriteOperation()
-
-    ;
-
-    abstract protected Object _invoke(Object domainObject, Object[] arguments)
-
-    ;
+    public abstract Object invoke(Object domainObject, Object[] arguments);
 }

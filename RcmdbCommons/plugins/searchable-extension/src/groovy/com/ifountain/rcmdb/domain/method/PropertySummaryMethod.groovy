@@ -33,18 +33,13 @@ import com.ifountain.compass.converter.CompassStringConverter
  * Time: 4:35:20 PM
  * To change this template use File | Settings | File Templates.
  */
-class PropertySummaryMethod extends AbstractRapidDomainStaticMethod{
+class PropertySummaryMethod extends AbstractRapidDomainReadMethod{
 
-    public PropertySummaryMethod(MetaClass mc) {
-        super(mc);    //To change body of overridden methods use File | Settings | File Templates.
+    public PropertySummaryMethod(MetaClass mcp) {
+        super(mcp);    //To change body of overridden methods use File | Settings | File Templates.
     }
-
-
-    public boolean isWriteOperation() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    protected Object _invoke(Class clazz, Object[] arguments) {
+    
+    protected Object _invoke(Object clazz, Object[] arguments) {
         if(arguments.length != 2) return [:];
         String query = String.valueOf(arguments[0])
         def propertyList = arguments[1]

@@ -34,22 +34,18 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
  * Time: 2:06:19 PM
  * To change this template use File | Settings | File Templates.
  */
-class UpdateMethod extends AbstractRapidDomainMethod{
+class UpdateMethod extends AbstractRapidDomainWriteMethod{
 
     def relations;
     def fieldTypes = [:]
     Validator validator;
-    public UpdateMethod(MetaClass mc, Validator validator, Map allFields, Map relations) {
-        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+    public UpdateMethod(MetaClass mcp, Validator validator, Map allFields, Map relations) {
+        super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
         allFields.each{fieldName, field->
             fieldTypes[fieldName] = field.type;
         }
         this.relations = relations;
-    }
-
-    public boolean isWriteOperation() {
-        return true;
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {

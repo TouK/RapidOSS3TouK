@@ -82,7 +82,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1.indexList.clear();
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject, id:5000];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
-        assertTrue (update.isWriteOperation());
+        assertTrue (update instanceof AbstractRapidDomainWriteMethod);
         AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
 
         //id property will be ignored

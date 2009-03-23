@@ -57,6 +57,7 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase {
     }
     public void testGetPropertyValues()
     {
+        assertTrue ( AbstractRapidDomainReadMethod.isAssignableFrom(GetPropertyValuesMethod));
         def modelClass = initializeCompassWithSimpleObject();
         def modelInstance1 = modelClass.'add'(keyProp: "obj1", prop1: "prop1Value1", prop2: 1);
         def modelInstance2 = modelClass.'add'(keyProp: "obj2", prop1: "prop1Value1", prop2: 2);

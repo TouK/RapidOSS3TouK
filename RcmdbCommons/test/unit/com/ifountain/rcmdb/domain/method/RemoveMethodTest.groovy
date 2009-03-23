@@ -56,7 +56,7 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         RemoveMethodDomainObject.existingInstanceCount = 1;
         RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject(id:1, prop1:"prop1Value1");
         RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
-        assertTrue (removeMethod.isWriteOperation());
+        assertTrue (removeMethod  instanceof AbstractRapidDomainWriteMethod);
         removeMethod.invoke (objectToBeRemoved, null);
         assertSame(objectToBeRemoved, RemoveMethodDomainObject.unIndexList[0][0]);
         assertNull (objectToBeRemoved.relationsToBeRemoved);

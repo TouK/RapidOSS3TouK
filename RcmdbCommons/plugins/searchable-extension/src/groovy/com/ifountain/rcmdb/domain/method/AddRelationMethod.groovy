@@ -34,15 +34,11 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
  * Time: 2:00:27 PM
  * To change this template use File | Settings | File Templates.
  */
-class AddRelationMethod extends AbstractRapidDomainMethod{
+class AddRelationMethod extends AbstractRapidDomainWriteMethod{
     def relations;
-    public AddRelationMethod(MetaClass mc, Map relations) {
-        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+    public AddRelationMethod(MetaClass mcp, Map relations) {
+        super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.relations = relations;
-    }
-
-    public boolean isWriteOperation() {
-        return true;
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {

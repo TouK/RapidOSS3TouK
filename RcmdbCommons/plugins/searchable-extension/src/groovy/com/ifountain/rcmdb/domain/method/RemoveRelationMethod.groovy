@@ -35,16 +35,12 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
  * Time: 1:42:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class RemoveRelationMethod extends AbstractRapidDomainMethod{
+class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
 
     def relations;
-    public RemoveRelationMethod(MetaClass mc, Map relations) {
-        super(mc);
+    public RemoveRelationMethod(MetaClass mcp, Map relations) {
+        super(mcp);
         this.relations = relations;
-    }
-
-    public boolean isWriteOperation() {
-        return true;
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {

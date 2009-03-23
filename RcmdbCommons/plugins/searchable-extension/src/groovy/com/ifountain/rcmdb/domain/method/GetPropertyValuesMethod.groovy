@@ -30,19 +30,15 @@ import com.ifountain.compass.converter.CompassStringConverter
  * Time: 9:46:22 AM
  * To change this template use File | Settings | File Templates.
  */
-class GetPropertyValuesMethod extends AbstractRapidDomainStaticMethod {
+class GetPropertyValuesMethod extends AbstractRapidDomainReadMethod {
 
     Map relations;
-    public GetPropertyValuesMethod(MetaClass mc, Map relations) {
-        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+    public GetPropertyValuesMethod(MetaClass mcp, Map relations) {
+        super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.relations = relations;
     }
 
-    public boolean isWriteOperation() {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    protected Object _invoke(Class clazz, Object[] arguments) {
+    protected Object _invoke(Object clazz, Object[] arguments) {
         String query = arguments[0]
         List propertyList = arguments[1]
         Map options = arguments[2];

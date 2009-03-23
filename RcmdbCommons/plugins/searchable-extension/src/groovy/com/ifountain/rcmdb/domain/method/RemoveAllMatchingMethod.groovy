@@ -27,10 +27,10 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData;
  * Time: 5:57:30 PM
  * To change this template use File | Settings | File Templates.
  */
-class RemoveAllMatchingMethod extends AbstractRapidDomainStaticMethod{
+class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod{
     List cascadedRelations;
-    public RemoveAllMatchingMethod(MetaClass mc, Map relations) {
-        super(mc);    //To change body of overridden methods use File | Settings | File Templates.
+    public RemoveAllMatchingMethod(MetaClass mcp, Map relations) {
+        super(mcp);    //To change body of overridden methods use File | Settings | File Templates.
         cascadedRelations = [];
         relations.each{relationName, RelationMetaData metaData->
             if(metaData.isCascade)
@@ -40,11 +40,13 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainStaticMethod{
         }
     }
 
-    public boolean isWriteOperation() {
-        return true;  //To change body of implemented methods use File | Settings | File Templates.
+    public String getLockName(Object domainObject, Object[] arguments) {
+        return null;
     }
 
-    protected Object _invoke(Class clazz, Object[] arguments) {
+
+
+    protected Object _invoke(Object clazz, Object[] arguments) {
         def query = arguments[0];
 
         clazz.'searchEvery'(query, [raw:{hits, session->

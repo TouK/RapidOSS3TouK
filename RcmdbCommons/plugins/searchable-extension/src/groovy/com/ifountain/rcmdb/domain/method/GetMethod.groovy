@@ -26,12 +26,12 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
  * Time: 2:31:28 PM
  * To change this template use File | Settings | File Templates.
  */
-class GetMethod extends AbstractRapidDomainStaticMethod{
+class GetMethod extends AbstractRapidDomainReadMethod{
     List propKeys;
     List relationKeys;
     Map relations
-    public GetMethod(MetaClass mc, List keys, Map relations) {
-        super(mc); //To change body of overridden methods use File | Settings | File Templates.
+    public GetMethod(MetaClass mcp, List keys, Map relations) {
+        super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         propKeys = [];
         relationKeys = [];
         keys.each{
@@ -47,11 +47,7 @@ class GetMethod extends AbstractRapidDomainStaticMethod{
         this.relations = relations;
     }
 
-    public boolean isWriteOperation() {
-        return false;
-    }
-
-    protected Object _invoke(Class clazz, Object[] arguments) {
+    protected Object _invoke(Object clazz, Object[] arguments) {
 
 
         def searchParams = arguments[0];

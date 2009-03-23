@@ -28,15 +28,11 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
  * Time: 6:20:13 PM
  * To change this template use File | Settings | File Templates.
  */
-class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainMethod{
+class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod{
     Map relations;
-    public GetRelatedObjectPropertyValuesMethod(MetaClass mc, Map relations) {
-        super(mc);
+    public GetRelatedObjectPropertyValuesMethod(MetaClass mcp, Map relations) {
+        super(mcp);
         this.relations = relations;
-    }
-
-    public boolean isWriteOperation() {
-        return false;
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {

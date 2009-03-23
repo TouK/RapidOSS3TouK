@@ -56,7 +56,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        assertTrue (add.isWriteOperation());
+        assertTrue (add instanceof AbstractRapidDomainWriteMethod);
 
         def props = [prop1:expectedDomainObject1.prop1, id:-5000];
         AddMethodDomainObject1 addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
@@ -98,14 +98,14 @@ class AddMethodTest extends RapidCmdbTestCase{
     {
         AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        String lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        String lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
         assertEquals(AddMethodDomainObject1.name+"prop1Value", lockName);
         add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1", "prop2"]);
-        lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
         assertEquals(AddMethodDomainObject1.name+"prop1Value"+"prop2Value", lockName);
 
         add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], []);
-        lockName = add.getLockName ([[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
         assertEquals(null, lockName);
     }
 

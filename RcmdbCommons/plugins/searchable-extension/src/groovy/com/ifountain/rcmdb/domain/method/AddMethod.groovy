@@ -31,7 +31,7 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
-class AddMethod extends AbstractRapidDomainStaticMethod
+class AddMethod extends AbstractRapidDomainWriteMethod
 {
     def relations;
     GetMethod getMethod
@@ -39,8 +39,8 @@ class AddMethod extends AbstractRapidDomainStaticMethod
     Validator validator;
     Class rootDomainClass;
     List keys;
-    public AddMethod(MetaClass mc, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
-        super(mc);
+    public AddMethod(MetaClass mcp, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
+        super(mcp);
         this.keys = keys;
         this.validator = validator;
         allFields.each{String fieldName, field->
@@ -51,11 +51,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
         getMethod = new GetMethod(mc, keys, relations);
     }
 
-    public boolean isWriteOperation() {
-        return true;
-    }
-
-    public String getLockName(Object[] args) {
+    public String getLockName(Object clazz, Object[] args) {
         if(keys.isEmpty()) return null;
         Map params = args[0];
         StringBuffer bf = new StringBuffer(rootDomainClass.name);
@@ -67,7 +63,7 @@ class AddMethod extends AbstractRapidDomainStaticMethod
 
 
 
-    protected Object _invoke(Class clazz, Object[] arguments) {
+    protected Object _invoke(Object clazz, Object[] arguments) {
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];

@@ -19,20 +19,20 @@ import com.ifountain.rcmdb.domain.DomainMethodExecutor
  * To change this template use File | Settings | File Templates.
  */
 
-public class AbstractDomainMethodTest extends RapidCmdbTestCase
+public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 {
     public void testSynchronization()
     {
         Object waitLock = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl1.closureToBeInvoked ={domainObject, arguments->
             synchronized (waitLock)
             {
                 waitLock.wait();                 
             }
         }
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
         def instance1 = modelClass.newInstance();
         def instance2 = modelClass.newInstance();
@@ -69,7 +69,7 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
     {
         Object waitLock = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl1.closureToBeInvoked ={domainObject, arguments->
             synchronized (waitLock)
             {
@@ -77,7 +77,7 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
             }
             throw new RuntimeException("An exception");
         }
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
         def instance1 = modelClass.newInstance();
         def instance2 = modelClass.newInstance();
@@ -117,57 +117,18 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
         assertEquals(3, thread1State);
     }
 
-    public void testSynchronizationWillNotBeAppliedToReadOperations()
-    {
-        Object waitLock = new Object();
-        Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        impl1.closureToBeInvoked ={domainObject, arguments->
-            synchronized (waitLock)
-            {
-                waitLock.wait();
-            }
-        }
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        impl2.isWriteOperation = false;
-
-        def instance1 = modelClass.newInstance();
-        def instance2 = modelClass.newInstance();
-        instance1["keyProp"] = "keyvalue1"
-        instance2["keyProp"] = "keyvalue1"
-        int thread1State = 0;
-        def t1 = Thread.start {
-            thread1State = 1;
-            impl1.invoke(instance1, null)
-            thread1State = 2;
-        }
-        Thread.sleep(300);
-        assertEquals(1, thread1State)
-
-        int thread2State = 0;
-        def t2 = Thread.start {
-            thread2State = 1;
-            impl2.invoke(instance2, null)
-            thread2State = 2;
-        }
-
-        Thread.sleep(400);
-        assertEquals(2, thread2State);
-    }
-
-
     public void testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull()
     {
         Object waitLock = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl1.closureToBeInvoked ={domainObject, arguments->
             synchronized (waitLock)
             {
                 waitLock.wait();
             }
         }
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl2.lockKeyClosure = {
             return null;
         }
@@ -200,11 +161,11 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
     {
         Object waitLock = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
-        AbstractRapidDomainMethodImpl subRequest = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl subRequest = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl1.closureToBeInvoked ={domainObject, arguments->
             subRequest.invoke(domainObject, arguments); //lock should not be released before this method returned
             synchronized (waitLock)
@@ -253,7 +214,7 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
 
         Object waitLock = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl impl1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
         impl1.closureToBeInvoked ={domainObject, arguments->
             synchronized (waitLock)
             {
@@ -261,7 +222,7 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
             }
         }
 
-        AbstractRapidDomainMethodImpl impl2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl impl2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
 
         def instance1 = modelClass.newInstance();
@@ -302,10 +263,10 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl instance1Request1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance1Request2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance2Request1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance2Request2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance1Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance1Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance2Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance2Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
         boolean willBlock1 = true;
         boolean willBlock2 = true;
@@ -395,10 +356,10 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainMethodImpl instance1Request1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance1Request2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance2Request1 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainMethodImpl instance2Request2 = new AbstractRapidDomainMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance1Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance1Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance2Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        AbstractRapidDomainWriteMethodImpl instance2Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
 
         def instance1 = modelClass.newInstance();
         def instance1Clone = modelClass.newInstance();
@@ -583,39 +544,29 @@ public class AbstractDomainMethodTest extends RapidCmdbTestCase
         return [modelClass];
     }
 }
-class DummyAbstractRapidDomainMethodImpl extends AbstractRapidDomainMethod
+class DummyAbstractRapidDomainMethodImpl extends AbstractRapidDomainWriteMethod
 {
 
     public DummyAbstractRapidDomainMethodImpl(MetaClass mc) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public boolean isWriteOperation() {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     protected Object _invoke(Object domainObject, Object[] arguments) {
         return null; //To change body of implemented methods use File | Settings | File Templates.
     }
-
 }
-class AbstractRapidDomainMethodImpl extends AbstractRapidDomainMethod
-{
 
-    public boolean isWriteOperation = true;
+class AbstractRapidDomainWriteMethodImpl extends AbstractRapidDomainWriteMethod
+{
     def closureToBeInvoked;
     def lockKeyClosure= {domainObject->
         return domainObject["keyProp"];        
     }
-    def AbstractRapidDomainMethodImpl(mc) {
+    def AbstractRapidDomainWriteMethodImpl(mc) {
         super(mc);
     }
 
-
-    public boolean isWriteOperation() {
-        return isWriteOperation;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-    public String getLockName(Object domainObject)
+    public String getLockName(Object domainObject, Object[] arguments)
     {
         return lockKeyClosure(domainObject)
     }
@@ -627,3 +578,5 @@ class AbstractRapidDomainMethodImpl extends AbstractRapidDomainMethod
     }
 
 }
+
+

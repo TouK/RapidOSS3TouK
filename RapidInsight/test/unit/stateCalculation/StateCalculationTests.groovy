@@ -69,7 +69,13 @@ class StateCalculationTests extends RapidCmdbWithCompassTestCase {
         def script=CmdbScript.addScript([name:"findMaxTest",scriptFile:"findMaxTest.groovy",type: CmdbScript.ONDEMAND],true)
         assertFalse(script.hasErrors());
 
-        def result=CmdbScript.runScript(script,[:]);
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            fail("Error in script. Reason ${e}");
+        }
     }
 
     public void testCriticalPercentTest()
@@ -89,7 +95,13 @@ class StateCalculationTests extends RapidCmdbWithCompassTestCase {
         def script=CmdbScript.addScript([name:"criticalPercentTest",scriptFile:"criticalPercentTest.groovy",type: CmdbScript.ONDEMAND],true)
         assertFalse(script.hasErrors());
 
-        def result=CmdbScript.runScript(script,[:]);
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            fail("Error in script. Reason ${e}");
+        }
     }
 
 

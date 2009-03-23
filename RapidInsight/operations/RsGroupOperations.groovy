@@ -49,11 +49,11 @@ public class RsGroupOperations extends RsTopologyObjectOperations {
 			childObjects.each{child->
 				stateList.add(child.currentState())
 			}
-			def percent = (stateList.findAll{it == CRITICAL}.size()/stateList.size())*100
+			def percent = (stateList.findAll{it == Constants.CRITICAL}.size()/stateList.size())*100
 			switch(percent) {
-				case {it > CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
-				case {it > MAJOR_PERCENTAGE}: currentState = MAJOR;break
-				default: currentState = INDETERMINATE
+				case {it > Constants.CRITICAL_PERCENTAGE}: currentState = Constants.CRITICAL;break
+				case {it >Constants.MAJOR_PERCENTAGE}: currentState = Constants.MAJOR;break
+				default: currentState = Constants.INDETERMINATE
 			}
 		}
 		return currentState;

@@ -119,7 +119,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 			def criticalList = severityList.findAll{it == Constants.CRITICAL};
 			def percent = (criticalList.size()/severityList.size())*100
 			switch(percent) {
-				case {it > Constants.CRITICAL_PERCENTAGE}: currentState = CRITICAL;break
+				case {it > Constants.CRITICAL_PERCENTAGE}: currentState = Constants.CRITICAL;break
 				case {it > Constants.MAJOR_PERCENTAGE}: currentState = Constants.MAJOR;break
 				default: currentState = Constants.INDETERMINATE
 			}

@@ -22,6 +22,7 @@ import connection.SnmpConnection
 import script.CmdbScript
 import datasource.SnmpDatasource
 import com.ifountain.rcmdb.domain.util.ControllerUtils
+import datasource.BaseDatasource
 
 /**
 * Created by IntelliJ IDEA.
@@ -167,9 +168,10 @@ class SnmpConnectorController {
         SnmpConnector snmpConnector = SnmpConnector.add(ControllerUtils.getClassProperties(params, SnmpConnector));
         if (!snmpConnector.hasErrors()) {
             params.name = snmpConnector.getConnectionName(snmpConnector.name);
-            SnmpConnection snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))
+            SnmpConnection snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))            
             if (!snmpConnection.hasErrors()) {
                 snmpConnector.addRelation(connection: snmpConnection);
+                
                 def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
                 params.name = snmpConnector.name;
                 params.type = CmdbScript.LISTENING;
@@ -178,8 +180,9 @@ class SnmpConnectorController {
                 CmdbScript script = CmdbScript.addScript(scriptClassParams, true);
                 if (!script.hasErrors())
                 {
-                    def datasource = SnmpDatasource.add(name: datasourceName, connection: snmpConnection, listeningScript: script);
                     snmpConnector.addRelation(script: script);
+                    
+                    def datasource = SnmpDatasource.add(name: datasourceName, connection: snmpConnection, listeningScript: script);
                     if (!datasource.hasErrors())
                     {
                         redirect(action: show, id: snmpConnector.id)
@@ -188,22 +191,24 @@ class SnmpConnectorController {
                     {
                         script.remove();
                         snmpConnector.remove();
-                        render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: new CmdbScript()])
+                        render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script,datasource:datasource])
                     }
                 }
                 else
                 {
+                    snmpConnection.remove();
                     snmpConnector.remove();
-                    render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script]);
+                    render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script,datasource:new BaseDatasource()]);
                 }
             }
             else {
-                render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: new CmdbScript()])
+                snmpConnector.remove();
+                render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: new CmdbScript(),datasource:new BaseDatasource()])
             }
 
         }
         else {
-            render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: new SnmpConnection(), script: new CmdbScript()])
+            render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: new SnmpConnection(), script: new CmdbScript(),datasource:new BaseDatasource()])
         }
     }
 

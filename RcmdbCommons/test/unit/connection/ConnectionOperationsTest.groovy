@@ -133,7 +133,7 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
             callParams.connection=connection;
         }
 
-        conn.afterUpdate();
+        conn.afterUpdate([:]);
         assertEquals(callParams.connection,conn)
 
     }

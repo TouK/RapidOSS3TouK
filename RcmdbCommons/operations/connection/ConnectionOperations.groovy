@@ -35,7 +35,7 @@ class ConnectionOperations extends com.ifountain.rcmdb.domain.operation.Abstract
           RcmdbConnectionManagerAdapter.getInstance().removeConnection(this.name);
     }
 
-    def afterUpdate(){
+    def afterUpdate(params){
           RcmdbConnectionManagerAdapter.getInstance().addConnection(this.domainObject);
     }
     def afterInsert(){

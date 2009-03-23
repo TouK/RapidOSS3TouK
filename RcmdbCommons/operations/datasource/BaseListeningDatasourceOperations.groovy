@@ -44,7 +44,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
             logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
         }
     }  
-     def afterUpdate(){
+     def afterUpdate(params){
         try
         {
             ListeningAdapterManager.getInstance().addAdapterIfNotExists (this.domainObject);

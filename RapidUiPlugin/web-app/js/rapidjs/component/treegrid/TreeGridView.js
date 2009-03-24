@@ -179,7 +179,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
     },
 
-    selectionChanged: function(row, triggerEvent)
+    selectionChanged: function(row, triggerEvent, event)
     {
         var treeNode = this.expandedNodes[row.rowIndex];
         this.events['treenodeclicked'].fireDirect(treeNode);
@@ -191,6 +191,12 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 if (triggerEvent == true) {
                     this.events["selectionchanged"].fireDirect(treeNode);
                 }
+                this.selectedRow = row;
+            }
+            else if(event.ctrlKey){
+               YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
+               this.selectedNode = null; 
+               this.selectedRow = null; 
             }
         }
         else {
@@ -199,8 +205,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             if (triggerEvent == true) {
                 this.events["selectionchanged"].fireDirect(treeNode);
             }
+            this.selectedRow = row;
         }
-        this.selectedRow = row;
     },
 
     expandNode: function(treeRow) {
@@ -563,7 +569,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 this.showRowMenu(target, row);
             }
             else {
-                this.selectionChanged(row, true);
+                this.selectionChanged(row, true, e);
             }
         }
     },

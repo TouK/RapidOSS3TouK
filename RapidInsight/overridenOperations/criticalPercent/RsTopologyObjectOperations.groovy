@@ -98,7 +98,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     {
         if(needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
         {
-            def severityFrequencyMap = RsEvent.propertySummary("elementName:\"${name.toQuery()}\"", "severity");
+            def severityFrequencyMap = RsEvent.propertySummary("elementName:${name.exactQuery()}", "severity");
             def maxValue = 0;
             severityFrequencyMap.severity.each{propValue, numberOfObjects->
                 if(propValue >= 0 && maxValue < propValue)

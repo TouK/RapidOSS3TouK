@@ -278,7 +278,6 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         def calledDatasource=null;
         def callResult=true;
         ListeningAdapterManager.metaClass.isStartable= { BaseListeningDatasource listeningDatasource ->
-            println "stopAdapter in beforedelete";
             calledDatasource = listeningDatasource;
             return callResult;
         }

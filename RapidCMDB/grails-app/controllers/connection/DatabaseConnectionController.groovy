@@ -23,204 +23,196 @@ import java.text.SimpleDateFormat;
 class DatabaseConnectionController {
     def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
-    def index = { redirect(action:list,params:params) }
+    def index = {redirect(action: list, params: params)}
 
     // the delete, save and update actions only accept POST requests
-    def allowedMethods = [delete:'POST', save:'POST', update:'POST']
+    def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        if(!params.max) params.max = 10
-        [ databaseConnectionList: DatabaseConnection.list( params ) ]
+        if (!params.max) params.max = 10
+        [databaseConnectionList: DatabaseConnection.list(params)]
     }
 
     def show = {
-        def databaseConnection = DatabaseConnection.get([id:params.id])
+        def databaseConnection = DatabaseConnection.get([id: params.id])
 
-        if(!databaseConnection) {
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            if(databaseConnection.class != DatabaseConnection)
+            if (databaseConnection.class != DatabaseConnection)
             {
                 def controllerName = databaseConnection.class.simpleName;
-                if(controllerName.length() == 1)
+                if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
                 }
                 else
                 {
-                    controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
+                    controllerName = controllerName.substring(0, 1).toLowerCase() + controllerName.substring(1);
                 }
-                redirect(action:show, controller:controllerName, id:params.id)
+                redirect(action: show, controller: controllerName, id: params.id)
             }
             else
             {
-                return [ databaseConnection : databaseConnection ]
+                return [databaseConnection: databaseConnection]
             }
         }
     }
 
     def delete = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id])
-        if(databaseConnection) {
-            try{
-                databaseConnection.remove()
-                flash.message = "DatabaseConnection ${params.id} deleted"
-                redirect(action:list)
-            }
-            catch(e){
-                addError("default.couldnot.delete", [DatabaseConnection, databaseConnection])
-                flash.errors = this.errors;
-                redirect(action:show, id:databaseConnection.id)
-            }
-
+        def databaseConnection = DatabaseConnection.get([id: params.id])
+        if (databaseConnection) {
+            databaseConnection.remove()
+            flash.message = "DatabaseConnection ${params.id} deleted"
+            redirect(action: list)
         }
         else {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
     }
 
     def edit = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
+        def databaseConnection = DatabaseConnection.get([id: params.id])
 
-        if(!databaseConnection) {
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            return [ databaseConnection : databaseConnection ]
+            return [databaseConnection: databaseConnection]
         }
     }
 
-    
+
     def update = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
-        if(databaseConnection) {
+        def databaseConnection = DatabaseConnection.get([id: params.id])
+        if (databaseConnection) {
             databaseConnection.update(ControllerUtils.getClassProperties(params, DatabaseConnection));
-            if(!databaseConnection.hasErrors()) {
+            if (!databaseConnection.hasErrors()) {
                 flash.message = "DatabaseConnection ${params.id} updated"
-                redirect(action:show, id:databaseConnection.id);
+                redirect(action: show, id: databaseConnection.id);
             }
             else {
-                render(view:'edit',model:[databaseConnection:databaseConnection])
+                render(view: 'edit', model: [databaseConnection: databaseConnection])
             }
         }
         else {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action: edit, id: params.id)
         }
     }
 
     def create = {
         def databaseConnection = new DatabaseConnection()
         databaseConnection.properties = params
-        return ['databaseConnection':databaseConnection]
+        return ['databaseConnection': databaseConnection]
     }
 
     def save = {
         def databaseConnection = DatabaseConnection.add(ControllerUtils.getClassProperties(params, DatabaseConnection))
-        if(!databaseConnection.hasErrors()) {
+        if (!databaseConnection.hasErrors()) {
             flash.message = "DatabaseConnection ${databaseConnection.id} created"
-            redirect(action:show, id:databaseConnection.id)
+            redirect(action: show, id: databaseConnection.id)
         }
         else {
-            render(view:'create',model:[databaseConnection:databaseConnection])
+            render(view: 'create', model: [databaseConnection: databaseConnection])
         }
     }
 
     def addTo = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
-        if(!databaseConnection){
+        def databaseConnection = DatabaseConnection.get([id: params.id])
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
             def relationName = params.relationName;
-            if(relationName){
+            if (relationName) {
                 def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(databaseConnection.class, "relations")[relationName].type;
                 def relatedObjectList = [];
-                if(otherClass){
+                if (otherClass) {
                     relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
                 }
-                return [databaseConnection:databaseConnection, relationName:relationName, relatedObjectList:relatedObjectList]
+                return [databaseConnection: databaseConnection, relationName: relationName, relatedObjectList: relatedObjectList]
             }
-            else{
-               flash.message = "No relation name specified for add relation action"
-               redirect(action:edit,id:databaseConnection.id)
+            else {
+                flash.message = "No relation name specified for add relation action"
+                redirect(action: edit, id: databaseConnection.id)
             }
         }
     }
 
     def addRelation = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
-        if(!databaseConnection) {
+        def databaseConnection = DatabaseConnection.get([id: params.id])
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
             def relationName = params.relationName;
             def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(databaseConnection.class, "relations")[relationName].type;
-            if(otherClass){
+            if (otherClass) {
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if(res){
-                      def relationMap = [:];
-                      relationMap[relationName] = res;
-                      databaseConnection.addRelation(relationMap);
-                      if(databaseConnection.hasErrors()){
-                          def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                          render(view:'addTo',model:[databaseConnection:databaseConnection, relationName:relationName, relatedObjectList:relatedObjectList])
-                      }
-                      else{
-                          flash.message = "DatabaseConnection ${params.id} updated"
-                          redirect(action:edit,id:databaseConnection.id)
-                      }
+                if (res) {
+                    def relationMap = [:];
+                    relationMap[relationName] = res;
+                    databaseConnection.addRelation(relationMap);
+                    if (databaseConnection.hasErrors()) {
+                        def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
+                        render(view: 'addTo', model: [databaseConnection: databaseConnection, relationName: relationName, relatedObjectList: relatedObjectList])
+                    }
+                    else {
+                        flash.message = "DatabaseConnection ${params.id} updated"
+                        redirect(action: edit, id: databaseConnection.id)
+                    }
 
                 }
-                else{
+                else {
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:addTo, id:params.id, relationName:relationName)
+                    redirect(action: addTo, id: params.id, relationName: relationName)
                 }
             }
-            else{
+            else {
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:addTo, id:params.id, relationName:relationName)
+                redirect(action: addTo, id: params.id, relationName: relationName)
             }
         }
     }
 
     def removeRelation = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
-        if(!databaseConnection) {
+        def databaseConnection = DatabaseConnection.get([id: params.id])
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
             def relationName = params.relationName;
             def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(databaseConnection.class, "relations")[relationName].type;
-            if(otherClass){
+            if (otherClass) {
                 def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if(res){
-                      def relationMap = [:];
-                      relationMap[relationName] = res;
-                      databaseConnection.removeRelation(relationMap);
-                      if(databaseConnection.hasErrors()){
-                          render(view:'edit',model:[databaseConnection:databaseConnection])
-                      }
-                      else{
-                          flash.message = "DatabaseConnection ${params.id} updated"
-                          redirect(action:edit,id:databaseConnection.id)
-                      }
+                if (res) {
+                    def relationMap = [:];
+                    relationMap[relationName] = res;
+                    databaseConnection.removeRelation(relationMap);
+                    if (databaseConnection.hasErrors()) {
+                        render(view: 'edit', model: [databaseConnection: databaseConnection])
+                    }
+                    else {
+                        flash.message = "DatabaseConnection ${params.id} updated"
+                        redirect(action: edit, id: databaseConnection.id)
+                    }
                 }
-                else{
+                else {
                     flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action:edit,id:databaseConnection.id)
+                    redirect(action: edit, id: databaseConnection.id)
                 }
             }
-            else{
+            else {
                 flash.message = "No relation exist with name ${relationName}"
-                redirect(action:edit,id:databaseConnection.id)
+                redirect(action: edit, id: databaseConnection.id)
             }
         }
     }
@@ -234,39 +226,39 @@ class DatabaseConnectionController {
 
                 modelClass.metaClass.invokeStaticMethod(modelClass, "reloadOperations", [] as Object[]);
                 flash.message = "Model operations reloaded"
-                redirect(action:list)
+                redirect(action: list)
             } catch (t)
             {
                 flash.message = "Exception occurred while reloading model operations Reason:${t.toString()}"
-                 redirect(action:list)
+                redirect(action: list)
             }
         }
         else
         {
             flash.message = "Model currently not loaded by application. You should reload application."
-            redirect(action:list)
+            redirect(action: list)
         }
     }
 
     def test = {
-        def databaseConnection = DatabaseConnection.get( [id:params.id] )
+        def databaseConnection = DatabaseConnection.get([id: params.id])
 
-        if(!databaseConnection) {
+        if (!databaseConnection) {
             flash.message = "DatabaseConnection not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
             try
             {
                 databaseConnection.checkConnection();
                 flash.message = "Successfully connected to server."
-            }catch(Throwable t)
+            } catch (Throwable t)
             {
                 addError("connection.test.exception", [databaseConnection.name, t.toString()]);
                 log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
                 flash.errors = this.errors;
             }
-            redirect(action:list);
+            redirect(action: list);
         }
     }
 }

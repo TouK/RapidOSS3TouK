@@ -36,7 +36,7 @@ class RsUserController {
     }
 
     def show = {
-        flash.errors = null; 
+        flash.errors = null;
         def rsUser = RsUser.get(id: params.id)
 
         if (!rsUser) {
@@ -49,26 +49,17 @@ class RsUserController {
     def delete = {
         def rsUser = RsUser.get(id: params.id)
         if (rsUser) {
-            if(session.username!=rsUser.username)
+            if (session.username != rsUser.username)
             {
-                try {
-                    rsUser.remove()
-                    flash.message = "User ${params.id} deleted"
-                    redirect(action: list)
-                }
-                catch (e) {
-                    addError("default.couldnot.delete", [RsUser.class.getName(), rsUser])
-                    flash.errors = this.errors;
-                    redirect(action: show, id: rsUser.id)
-                }
+                rsUser.remove()
+                flash.message = "User ${params.id} deleted"
+                redirect(action: list)
             }
-            else{
+            else {
                 addError("default.custom.error", ["Can not delete your own account"])
                 flash.errors = this.errors;
                 redirect(action: list)
             }
-
-
 
         }
         else {
@@ -86,7 +77,7 @@ class RsUserController {
         }
         else {
             def availableGroups = availableGroupsForUser(rsUser);
-            return [rsUser: rsUser, availableGroups:availableGroups]
+            return [rsUser: rsUser, availableGroups: availableGroups]
         }
     }
 
@@ -94,10 +85,10 @@ class RsUserController {
     {
         def availableGroups = Group.list();
         def userGroups = [:];
-        rsUser?.groups.each{
-            userGroups[it.name]  = it;
+        rsUser?.groups.each {
+            userGroups[it.name] = it;
         };
-        return availableGroups .findAll {!userGroups.containsKey (it.name)}
+        return availableGroups.findAll {!userGroups.containsKey(it.name)}
     }
 
 
@@ -107,7 +98,7 @@ class RsUserController {
 
             withFormat {
                 xml {
-                    render(contentType: "text/xml"){
+                    render(contentType: "text/xml") {
                         Edit {
                             email(rsUser.email)
                         }
@@ -126,7 +117,7 @@ class RsUserController {
     def changeProfile = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
-            def updateParams=[:]
+            def updateParams = [:]
 
             def password1 = params["password1"];
             def password2 = params["password2"];
@@ -147,11 +138,11 @@ class RsUserController {
                     }
                     return;
                 }
-                updateParams.passwordHash=new Sha1Hash(password1).toHex();
+                updateParams.passwordHash = new Sha1Hash(password1).toHex();
             }
 
 
-            updateParams.email=params["email"]
+            updateParams.email = params["email"]
             rsUser.update(updateParams)
             if (!rsUser.hasErrors()) {
                 withFormat {
@@ -176,40 +167,40 @@ class RsUserController {
         def rsUser = RsUser.get(id: params.id)
 
         if (rsUser) {
-            def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
-            def updateParams=[:]
+            def returnedProps = ControllerUtils.getClassProperties(params, RsUser);
+            def updateParams = [:]
             def password1 = params["password1"];
             def password2 = params["password2"];
             if (password1 != password2) {
-                addError("default.passwords.dont.match",[])
+                addError("default.passwords.dont.match", [])
                 flash.errors = errors;
-                returnedProps.each{String propName, value->
-                    rsUser.setProperty (propName, value, false);
+                returnedProps.each {String propName, value ->
+                    rsUser.setProperty(propName, value, false);
                 }
-                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups: availableGroupsForUser(rsUser)])
                 return;
             }
             if (password1 && password1 != "") {
-                params.passwordHash=new Sha1Hash(password1).toHex();
+                params.passwordHash = new Sha1Hash(password1).toHex();
             }
-            if(returnedProps.groups.isEmpty())
+            if (returnedProps.groups.isEmpty())
             {
                 addError("no.group.specified", [])
                 flash.errors = this.errors;
-                returnedProps.each{String propName, value->
-                    rsUser.setProperty (propName, value, false);
+                returnedProps.each {String propName, value ->
+                    rsUser.setProperty(propName, value, false);
                 }
-                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups: availableGroupsForUser(rsUser)])
             }
             else
             {
                 rsUser.update(returnedProps)
                 if (!rsUser.hasErrors()) {
                     flash.message = "User ${params.id} updated"
-                    redirect(action: show, id:rsUser.id)
+                    redirect(action: show, id: rsUser.id)
                 }
                 else {
-                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+                    render(view: 'edit', model: [rsUser: rsUser, availableGroups: availableGroupsForUser(rsUser)])
                 }
             }
         }
@@ -222,40 +213,40 @@ class RsUserController {
     def create = {
         def rsUser = new RsUser()
         rsUser.properties = params
-        return ['rsUser': rsUser, availableGroups:Group.list()]
+        return ['rsUser': rsUser, availableGroups: Group.list()]
     }
 
     def save = {
         def password1 = params["password1"];
         params.passwordHash = new Sha1Hash(password1).toHex();
         def password2 = params["password2"];
-        def returnedProps = ControllerUtils.getClassProperties (params, RsUser);
+        def returnedProps = ControllerUtils.getClassProperties(params, RsUser);
         if (password1 != password2) {
             addError("default.passwords.dont.match", [])
             flash.errors = this.errors;
             returnedProps.remove("id");
             def tmpUser = new RsUser(returnedProps);
-            render(view: 'create', model: [rsUser: tmpUser, availableGroups:availableGroupsForUser(tmpUser)])
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUser(tmpUser)])
             return;
         }
 
-        if(returnedProps.groups == null || returnedProps.groups.isEmpty())
+        if (returnedProps.groups == null || returnedProps.groups.isEmpty())
         {
             addError("no.group.specified", [])
             flash.errors = this.errors;
             returnedProps.remove("id");
             def tmpUser = new RsUser(returnedProps);
-            render(view: 'create', model: [rsUser: tmpUser, availableGroups:availableGroupsForUser(tmpUser)])
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUser(tmpUser)])
         }
         else
         {
             def rsUser = RsUser.add(returnedProps);
             if (!rsUser.hasErrors()) {
                 flash.message = "User ${rsUser.id} created"
-                redirect(action: show, id:rsUser.id)
+                redirect(action: show, id: rsUser.id)
             }
             else {
-                render(view: 'create', model: [rsUser: rsUser, availableGroups:availableGroupsForUser(rsUser)])
+                render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUser(rsUser)])
             }
         }
     }

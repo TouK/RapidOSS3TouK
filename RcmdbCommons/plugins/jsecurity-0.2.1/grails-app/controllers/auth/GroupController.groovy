@@ -69,17 +69,9 @@ class GroupController {
     def delete = {
         def group = Group.get([id: params.id])
         if (group) {
-            try {
-                group.remove()
-                flash.message = "Group ${params.id} deleted"
-                redirect(action: list)
-            }
-            catch (e) {
-                addError("default.couldnot.delete", [Group, group])
-                flash.errors = this.errors;
-                redirect(action: show, id: group.id)
-            }
-
+            group.remove()
+            flash.message = "Group ${params.id} deleted"
+            redirect(action: list)
         }
         else {
             flash.message = "Group not found with id ${params.id}"
@@ -97,11 +89,11 @@ class GroupController {
         else {
             def availableUsers = RsUser.list();
             def groupUsers = [:];
-            group.users.each{
-                groupUsers[it.username]  = it;
+            group.users.each {
+                groupUsers[it.username] = it;
             };
-            availableUsers = availableUsers .findAll {!groupUsers.containsKey (it.username)}
-            return [group: group, availableUsers:availableUsers]
+            availableUsers = availableUsers.findAll {!groupUsers.containsKey(it.username)}
+            return [group: group, availableUsers: availableUsers]
         }
     }
 
@@ -113,7 +105,7 @@ class GroupController {
             group.update(ControllerUtils.getClassProperties(params, Group));
             if (!group.hasErrors()) {
                 flash.message = "Group ${params.id} updated"
-                redirect(action: show, id:group.id)
+                redirect(action: show, id: group.id)
             }
             else {
                 render(view: 'edit', model: [group: group])
@@ -128,14 +120,14 @@ class GroupController {
     def create = {
         def group = new Group()
         group.properties = params
-        return ['group': group, availableUsers:RsUser.list()]
+        return ['group': group, availableUsers: RsUser.list()]
     }
 
     def save = {
         def group = Group.add(ControllerUtils.getClassProperties(params, Group))
         if (!group.hasErrors()) {
             flash.message = "Group ${group.id} created"
-            redirect(action: show, id:group.id)
+            redirect(action: show, id: group.id)
         }
         else {
             render(view: 'create', model: [group: group])

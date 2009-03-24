@@ -62,6 +62,7 @@ if(testOptions.RCMDB_COMMONS == "true")
 if(testOptions.RCMDB == "true")
 {
     watchConfig.add([new File("${workspaceDir}/RapidModules/RapidCMDB"), new File("${rootDir.absolutePath}/RapidSuite")]);
+    watchConfig.add([new File("${workspaceDir}/LicencedJars/lib/jdbc"), new File("${rootDir.absolutePath}/RapidSuite/lib"), []]);
 }
 if(testOptions.EXT == "true")
 {

@@ -22,35 +22,35 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 class ModelPropertyController {
 
-	def index = {redirect(action: list, params: params)}
+    def index = {redirect(action: list, params: params)}
     def list = {
-        if(!params.max) params.max = 10
-        [ modelPropertyList: ModelProperty.list( params ) ]
+        if (!params.max) params.max = 10
+        [modelPropertyList: ModelProperty.list(params)]
     }
 
     def edit = {
-        def modelProperty = ModelProperty.get( [id:params.id] )
+        def modelProperty = ModelProperty.get([id: params.id])
 
-        if(!modelProperty) {
+        if (!modelProperty) {
             flash.message = "ModelProperty not found with id \${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            return [ modelProperty : modelProperty ]
+            return [modelProperty: modelProperty]
         }
     }
 
     def create = {
         def modelProperty = new ModelProperty()
-        if(params["model.id"] != null){
-            def model = Model.get([id:params["model.id"]]);
+        if (params["model.id"] != null) {
+            def model = Model.get([id: params["model.id"]]);
             modelProperty.model = model;
         }
-        return ['modelProperty':modelProperty]
+        return ['modelProperty': modelProperty]
     }
 
     def show = {
-        def modelProperty = ModelProperty.get(id:params.id)
+        def modelProperty = ModelProperty.get(id: params.id)
         if (!modelProperty) {
             flash.message = "ModelProperty not found with id ${params.id}"
             redirect(action: list)
@@ -59,8 +59,8 @@ class ModelPropertyController {
     }
     def save = {
         if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-            def datasourceName = DatasourceName.get(id:params["datasource.id"]);
-            def currentModel = Model.get(id:params["model.id"]);
+            def datasourceName = DatasourceName.get(id: params["datasource.id"]);
+            def currentModel = Model.get(id: params["model.id"]);
             def tempModel = currentModel;
             def modelDatasource = null;
             while (tempModel != null && !modelDatasource) {
@@ -78,18 +78,18 @@ class ModelPropertyController {
 
             if (!modelDatasource) {
                 def isMaster = false;
-                if (datasourceName.name == RapidCMDBConstants.RCMDB ) {
+                if (datasourceName.name == RapidCMDBConstants.RCMDB) {
                     isMaster = true;
                 }
                 modelDatasource = ModelDatasource.add(model: currentModel, datasource: datasourceName);
             }
-            params["propertyDatasource.id"] = ""+modelDatasource.id;
-            params["propertyDatasource"] = ["id":modelDatasource.id];
+            params["propertyDatasource.id"] = "" + modelDatasource.id;
+            params["propertyDatasource"] = ["id": modelDatasource.id];
         }
         else
         {
             params["propertyDatasource.id"] = "null";
-            params["propertyDatasource"] = ["id":"null"];
+            params["propertyDatasource"] = ["id": "null"];
         }
         def modelProperty = ModelProperty.add(ControllerUtils.getClassProperties(params, ModelProperty))
         if (!modelProperty.hasErrors()) {
@@ -102,20 +102,13 @@ class ModelPropertyController {
     }
 
     def delete = {
-        def modelProperty = ModelProperty.get(id:params.id)
+        def modelProperty = ModelProperty.get(id: params.id)
         if (modelProperty) {
             def modelId = modelProperty.model?.id;
             def modelPropertyName = modelProperty.toString();
-            try {
-                modelProperty.remove()
-                flash.message = "Property ${modelPropertyName} deleted"
-                redirect(action: show, controller: 'model', id: modelId)
-            }
-            catch (e) {
-                addError("default.couldnot.delete", [ModelProperty.class.getName(), modelProperty])
-                flash.errors = this.errors;
-                redirect(action: show, id: modelProperty.id)
-            }
+            modelProperty.remove()
+            flash.message = "Property ${modelPropertyName} deleted"
+            redirect(action: show, controller: 'model', id: modelId)
         }
         else {
             flash.message = "Property not found"
@@ -124,11 +117,11 @@ class ModelPropertyController {
     }
 
     def update = {
-        def modelProperty = ModelProperty.get(id:params.id)
+        def modelProperty = ModelProperty.get(id: params.id)
         if (modelProperty) {
             if (params["datasource.id"] != null && params["datasource.id"] != "null") {
-                def datasourceName = DatasourceName.get(id:params["datasource.id"]);
-                def currentModel = Model.get(id:params["model.id"]);
+                def datasourceName = DatasourceName.get(id: params["datasource.id"]);
+                def currentModel = Model.get(id: params["model.id"]);
                 def tempModel = currentModel;
                 def modelDatasource = null;
                 while (tempModel != null && !modelDatasource) {
@@ -151,11 +144,11 @@ class ModelPropertyController {
                     }
                     modelDatasource = ModelDatasource.add(model: currentModel, datasource: datasourceName);
                 }
-                params["propertyDatasource"] = ["id":modelDatasource.id];
+                params["propertyDatasource"] = ["id": modelDatasource.id];
             }
             else
             {
-                params["propertyDatasource"] = ["id":"null"];
+                params["propertyDatasource"] = ["id": "null"];
             }
             modelProperty.update(ControllerUtils.getClassProperties(params, ModelProperty));
             if (!modelProperty.hasErrors()) {

@@ -61,17 +61,9 @@ class ComponentConfigController {
     def delete = {
         def componentConfig = ComponentConfig.get([id: params.id])
         if (componentConfig) {
-            try {
-                componentConfig.remove()
-                flash.message = "ComponentConfig ${params.id} deleted"
-                redirect(action: list)
-            }
-            catch (e) {
-                addError("default.couldnot.delete", [ComponentConfig, componentConfig])
-                flash.errors = this.errors;
-                redirect(action: show, id: componentConfig.id)
-            }
-
+            componentConfig.remove()
+            flash.message = "ComponentConfig ${params.id} deleted"
+            redirect(action: list)
         }
         else {
             flash.message = "ComponentConfig not found with id ${params.id}"
@@ -141,12 +133,12 @@ class ComponentConfigController {
         }
     }
 
-     def get = {
+    def get = {
         def configName = params.name;
-        def componentConfig = ComponentConfig.get(name:configName, username:session.username);
-        if(componentConfig){
-            render(contentType: "text/xml"){
-                ComponentConfig(name:componentConfig.name, pollingInterval:componentConfig.pollingInterval)
+        def componentConfig = ComponentConfig.get(name: configName, username: session.username);
+        if (componentConfig) {
+            render(contentType: "text/xml") {
+                ComponentConfig(name: componentConfig.name, pollingInterval: componentConfig.pollingInterval)
             }
         }
         else {
@@ -155,7 +147,7 @@ class ComponentConfigController {
                 xml {render(text: errorsToXml(errors), contentType: "text/xml")}
             }
         }
-     }
+    }
 
     def addTo = {
         def componentConfig = ComponentConfig.get([id: params.id])

@@ -26,26 +26,26 @@ class ModelController {
 
     def index = {redirect(action: list, params: params)}
     def list = {
-        if(!params.max) params.max = 10
-        [ modelList: Model.list( params ) ]
+        if (!params.max) params.max = 10
+        [modelList: Model.list(params)]
     }
 
     def edit = {
-        def model = Model.get( [id:params.id] )
+        def model = Model.get([id: params.id])
 
-        if(!model) {
+        if (!model) {
             flash.message = "Model not found with id \${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            return [ model : model ]
+            return [model: model]
         }
     }
 
     def create = {
         def model = new Model()
         model.properties = params
-        return ['model':model]
+        return ['model': model]
     }
 
     def save = {
@@ -60,7 +60,7 @@ class ModelController {
     }
 
     def update = {
-        def model = Model.get(id:params.id)
+        def model = Model.get(id: params.id)
         if (model) {
             //validating parentModel, should be implemented in validator
             if (model.parentModel && (params.parentModel.id == null || params.parentModel.id == "null")) {
@@ -127,7 +127,7 @@ class ModelController {
         def modelOpertionSortProp = params.modelOpertionSortProp != null ? params.modelOpertionSortProp : "name"
         def modelOpertionSortOrder = params.modelOpertionSortOrder != null ? params.modelOpertionSortOrder : "asc"
 
-        def model = Model.get(id:params.id)
+        def model = Model.get(id: params.id)
         if (!model) {
             flash.message = MODEL_DOESNOT_EXIST
             redirect(action: list)
@@ -143,23 +143,13 @@ class ModelController {
     def delete = {
         if (params.id)
         {
-            def model = Model.get(id:params.id)
+            def model = Model.get(id: params.id)
             if (model) {
-                try {
-                    model.remove()
-                }
-                catch (e)
-                {
-                    addError("default.couldnot.delete", [Model.class.getName(), model])
-                    flash.errors = this.errors;
-                    redirect(action: show, controller: 'model', id: model?.id)
-                    return;
-
-                }
+                model.remove()
                 try
                 {
                     def models = Model.list();
-                    FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
+                    FileUtils.deleteDirectory(ModelGenerator.getInstance().getTempModelDir());
                     com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
                     flash.message = "Model ${params.id} deleted"
                     redirect(action: list, controller: 'model');
@@ -185,19 +175,19 @@ class ModelController {
 
 
     def generate = {
-            def models = Model.list();
-            try
-            {
-                FileUtils.deleteDirectory (ModelGenerator.getInstance().getTempModelDir());
-                com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
-                flash.message = "Models are generated successfully"
-                redirect(action: list, controller: 'model')
-            }
-            catch (Exception e)
-            {
-                log.error("Exception occurred while generating models", e);
-                flash.message = e.getMessage();
-                redirect(action: list, controller: 'model')
-            }
+        def models = Model.list();
+        try
+        {
+            FileUtils.deleteDirectory(ModelGenerator.getInstance().getTempModelDir());
+            com.ifountain.rcmdb.domain.generation.ModelGeneratorAdapter.generateModels(models);
+            flash.message = "Models are generated successfully"
+            redirect(action: list, controller: 'model')
+        }
+        catch (Exception e)
+        {
+            log.error("Exception occurred while generating models", e);
+            flash.message = e.getMessage();
+            redirect(action: list, controller: 'model')
+        }
     }
 }

@@ -17,115 +17,108 @@
 * USA.
 */
 package model;
-          
+
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 class DatasourceNameController {
 
-    def index = { redirect(action:list,params:params) }
+    def index = {redirect(action: list, params: params)}
 
     // the delete, save and update actions only accept POST requests
-    def allowedMethods = [delete:'POST', save:'POST', update:'POST']
+    def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        if(!params.max) params.max = 10
-        [ datasourceNameList: DatasourceName.list( params ) ]
+        if (!params.max) params.max = 10
+        [datasourceNameList: DatasourceName.list(params)]
     }
 
     def show = {
-        def datasourceName = DatasourceName.get([id:params.id])
+        def datasourceName = DatasourceName.get([id: params.id])
 
-        if(!datasourceName) {
+        if (!datasourceName) {
             flash.message = "DatasourceName not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            if(datasourceName.class != DatasourceName)
+            if (datasourceName.class != DatasourceName)
             {
                 def controllerName = datasourceName.class.simpleName;
-                if(controllerName.length() == 1)
+                if (controllerName.length() == 1)
                 {
                     controllerName = controllerName.toLowerCase();
                 }
                 else
                 {
-                    controllerName = controllerName.substring(0,1).toLowerCase()+controllerName.substring(1);
+                    controllerName = controllerName.substring(0, 1).toLowerCase() + controllerName.substring(1);
                 }
-                redirect(action:show, controller:controllerName, id:params.id)
+                redirect(action: show, controller: controllerName, id: params.id)
             }
             else
             {
-                return [ datasourceName : datasourceName ]
+                return [datasourceName: datasourceName]
             }
         }
     }
 
     def delete = {
-        def datasourceName = DatasourceName.get( id:params.id )
-        if(datasourceName) {
-            try{
-                datasourceName.remove()
-                flash.message = "DatasourceName ${params.id} deleted"
-                redirect(action:list)
-            }
-            catch(e){
-                addError("default.couldnot.delete", [DatasourceName.class.getName(), datasourceName])
-                flash.errors = this.errors;
-                redirect(action:show, id:datasourceName.id)
-            }
+        def datasourceName = DatasourceName.get(id: params.id)
+        if (datasourceName) {
+            datasourceName.remove()
+            flash.message = "DatasourceName ${params.id} deleted"
+            redirect(action: list)
         }
         else {
             flash.message = "DatasourceName not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
     }
 
     def edit = {
-        def datasourceName = DatasourceName.get( [id:params.id] )
+        def datasourceName = DatasourceName.get([id: params.id])
 
-        if(!datasourceName) {
+        if (!datasourceName) {
             flash.message = "DatasourceName not found with id ${params.id}"
-            redirect(action:list)
+            redirect(action: list)
         }
         else {
-            return [ datasourceName : datasourceName ]
+            return [datasourceName: datasourceName]
         }
     }
 
 
     def update = {
-        def datasourceName = DatasourceName.get( [id:params.id] )
-        if(datasourceName) {
+        def datasourceName = DatasourceName.get([id: params.id])
+        if (datasourceName) {
             datasourceName.update(ControllerUtils.getClassProperties(params, DatasourceName));
-            if(!datasourceName.hasErrors()) {
+            if (!datasourceName.hasErrors()) {
                 flash.message = "DatasourceName ${params.id} updated"
-                redirect(action:show,id:datasourceName.id)
+                redirect(action: show, id: datasourceName.id)
             }
             else {
-                render(view:'edit',model:[datasourceName:datasourceName])
+                render(view: 'edit', model: [datasourceName: datasourceName])
             }
         }
         else {
             flash.message = "DatasourceName not found with id ${params.id}"
-            redirect(action:edit,id:params.id)
+            redirect(action: edit, id: params.id)
         }
     }
 
     def create = {
         def datasourceName = new DatasourceName()
         datasourceName.properties = params
-        return ['datasourceName':datasourceName]
+        return ['datasourceName': datasourceName]
     }
 
     def save = {
         def datasourceName = DatasourceName.add(ControllerUtils.getClassProperties(params, DatasourceName))
-        if(!datasourceName.hasErrors()) {
+        if (!datasourceName.hasErrors()) {
             flash.message = "DatasourceName ${datasourceName.id} created"
-            redirect(action:show,id:datasourceName.id)
+            redirect(action: show, id: datasourceName.id)
         }
         else {
-            render(view:'create',model:[datasourceName:datasourceName])
+            render(view: 'create', model: [datasourceName: datasourceName])
         }
     }
 

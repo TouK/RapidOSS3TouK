@@ -72,8 +72,8 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
 
-    getSearchClasses: function(){
-       var cb = {
+    getSearchClasses: function() {
+        var cb = {
             success: this.searchClassesSuccess,
             failure: this.processFailure,
             timeout: this.timeout,
@@ -82,9 +82,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         };
         YAHOO.util.Connect.asyncRequest('GET', this.searchClassesUrl, cb);
     },
-    searchClassesSuccess:function(response){
+    searchClassesSuccess:function(response) {
         var classes = response.responseXML.getElementsByTagName("Class");
-        for(var i=0; i< classes.length; i++){
+        for (var i = 0; i < classes.length; i++) {
             var className = classes[i].getAttribute('name')
             SelectUtils.addOption(this.classesInput, className, className);
         }
@@ -611,14 +611,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                 YAHOO.util.Dom.replaceClass(row, 'rcmdb-search-rowunselected', 'rcmdb-search-rowselected');
                 this.fireSelectionChange(dataNode, event);
                 this.selectedNode = searchNode;
+                this.selectedRow = row;
+            }
+            else if (event.ctrlKey) {
+                YAHOO.util.Dom.replaceClass(this.selectedRow, 'rcmdb-search-rowselected', 'rcmdb-search-rowunselected');
+                this.selectedNode = null;
+                this.selectedRow = null;
             }
         }
         else {
             YAHOO.util.Dom.replaceClass(row, 'rcmdb-search-rowunselected', 'rcmdb-search-rowselected');
             this.fireSelectionChange(dataNode, event);
             this.selectedNode = searchNode;
+            this.selectedRow = row;
         }
-        this.selectedRow = row;
+
     },
 
     fireRowHeaderMenuClick: function(data, id, parentId) {
@@ -671,8 +678,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return params;
     },
 
-    getSearchClass:function(){
-        return this.classesInput.options[this.classesInput.selectedIndex].value;  
+    getSearchClass:function() {
+        return this.classesInput.options[this.classesInput.selectedIndex].value;
     },
 
     showCurrentState: function() {

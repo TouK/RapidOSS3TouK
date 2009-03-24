@@ -24,7 +24,7 @@ if(query!=null || query=="")
     query=query.trim();
 }
 
-def devices = RsComputerSystem.search("name:${query.toQuery()}*", [max:20,sort:"name"]).results;
+def devices = RsComputerSystem.search("name:${query.exactQuery()}*", [max:20,sort:"name"]).results;
 
 def writer = new StringWriter();
 def builder = new MarkupBuilder(writer);

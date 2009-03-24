@@ -164,7 +164,7 @@ public class UiTabOperations extends AbstractDomainOperation
     def getGlobalActionTrigers()
     {
         def actionTriggers = [:];
-        def triggers = UiActionTrigger.searchEvery("type:\"${UiActionTrigger.GLOBAL_TYPE}\"");
+        def triggers = UiActionTrigger.searchEvery("type:${UiActionTrigger.GLOBAL_TYPE.exactQuery()}");
         triggers.each {UiActionTrigger actionTrigger ->
             if (actionTrigger.action.tab.name == name)
             {

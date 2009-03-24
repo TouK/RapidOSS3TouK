@@ -15,11 +15,11 @@
     <g:if test="${domainObject instanceof RsComputerSystem}">
         <%
             def links = domainObject.connectedVia.name;
-            def query = "elementName:\"${domainObject.name}\"";
+            def query = "elementName:${domainObject.name.exactQuery()}";
             if (links.size() > 0) {
                 def queryArray = [];
                 links.each {
-                    queryArray.add("elementName:\"${it.toQuery()}\"")
+                    queryArray.add("elementName:${it.exactQuery()}")
                 }
                 query += " OR ${queryArray.join(' OR ')}";
             }
@@ -28,7 +28,7 @@
     </g:if>
     <g:else>
         <%
-            events = RsEvent.searchEvery("elementName:\"${domainObject.name}\"");
+            events = RsEvent.searchEvery("elementName:${domainObject.name.exactQuery()}");
         %>
     </g:else>
     <div style="display:block">

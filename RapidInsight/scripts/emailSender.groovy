@@ -17,7 +17,7 @@ def date=new Date();
 def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.emailDatasource
 if(ds!=null)
 {
-    def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:\"${RsMessage.EMAIL.toQuery()}\"", [sort: "id",order:"asc",max:100]).results;
+    def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:${RsMessage.EMAIL.exactQuery()}", [sort: "id",order:"asc",max:100]).results;
 
     messages.each{ message ->
         

@@ -31,7 +31,7 @@ class GridViewController {
 
     def list = {
         def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
-        def gridViews = GridView.searchEvery("username:\"${session.username.toQuery()}\" OR (username:\"${auth.RsUser.RSADMIN}\" AND isPublic:true)", params);
+        def gridViews = GridView.searchEvery("username:${session.username.exactQuery()} OR (username:${auth.RsUser.RSADMIN.exactQuery()} AND isPublic:true)", params);
         withFormat {
             xml {
                 render(contentType: 'text/xml') {

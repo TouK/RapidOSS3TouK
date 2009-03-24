@@ -37,7 +37,7 @@ def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
 SearchQueryGroup.add(name:"My Queries", username:web.session.username, type:"default");
-def queryGroups = SearchQueryGroup.searchEvery("( type:\"${filterType}\" OR type:\"default\" ) AND  ( ( username:\"${RsUser.RSADMIN}\" AND isPublic:true) OR (username:\"${user.username.toQuery()}\") )");
+def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${"default".exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
 queryBuilder.Filters
 {
     queryGroups.each {SearchQueryGroup group ->

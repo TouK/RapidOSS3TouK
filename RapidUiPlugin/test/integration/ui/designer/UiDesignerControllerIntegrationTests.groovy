@@ -156,7 +156,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         ];
         
         filesWillBeSavedToTrashList.each{fileName->
-            assertNotNull(DesignerTrashFile.searchEvery("fileName:\"${fileName.toQuery()}\"")[0])
+            assertNotNull(DesignerTrashFile.searchEvery("fileName:${fileName.exactQuery()}")[0])
             assertTrue (new File("${System.getProperty("base.dir")}/${fileName}").exists());
         }
         def urlsAfterReSave = UiWebPage.list();

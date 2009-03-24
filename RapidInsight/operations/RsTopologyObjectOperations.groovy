@@ -112,7 +112,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 		if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
 		{
 			currentState = Constants.INDETERMINATE
-			def eventList = RsEvent.search("elementName:\"${name.toQuery()}\"",max:1000000);
+			def eventList = RsEvent.search("elementName:${name.exactQuery()}",max:1000000);
 			if (eventList.total==0)
 				return currentState
 			def severityList = eventList.results.severity;

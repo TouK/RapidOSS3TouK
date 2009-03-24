@@ -24,7 +24,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     public static void processDelayedEmails(Logger externalLogger)
     {
         def now=(new Date()).getTime();
-        def delayingMessages=RsMessage.searchEvery("state:${RsMessage.STATE_IN_DELAY} AND sendAfter:[0 TO ${now}] AND destinationType:\"${RsMessage.EMAIL}\"")
+        def delayingMessages=RsMessage.searchEvery("state:${RsMessage.STATE_IN_DELAY} AND sendAfter:[0 TO ${now}] AND destinationType:${RsMessage.EMAIL.exactQuery()}")
         delayingMessages.each{
             it.update(state:RsMessage.STATE_READY)
             externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");

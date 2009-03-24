@@ -30,10 +30,10 @@ def location = params.location;
 
 def searchResults = null;
 if (nodeType == "Container") {
-    searchResults = RsComputerSystem.search("${CONTAINER_PROPERTY}:\"${name.toQuery()}\" AND location:\"${location.toQuery()}\"", params)
+    searchResults = RsComputerSystem.search("${CONTAINER_PROPERTY}:${name.exactQuery()} AND location:${location.exactQuery()}", params)
 }
 else {
-    searchResults = RsComputerSystem.search("name:\"${name.toQuery()}\" AND location:\"${location.toQuery()}\"", params);
+    searchResults = RsComputerSystem.search("name:${name.exactQuery()} AND location:${location.exactQuery()}", params);
 }
 def sortOrder = 0;
 web.render(contentType: "text/xml") {

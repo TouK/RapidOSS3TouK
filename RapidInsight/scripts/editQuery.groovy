@@ -40,7 +40,7 @@ else {
     def userName = web.session.username;
     def queryType = params.queryType;
     def extraFilteredProps = ["rsDatasource"];
-    def gridViews = GridView.searchEvery("username:\"${userName.toQuery()}\" OR (username:\"${RsUser.RSADMIN.toQuery()}\" AND isPublic:true)", [sort: "name"]);
+    def gridViews = GridView.searchEvery("username:${userName.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)", [sort: "name"]);
     if (queryType == "event" || queryType == "historicalEvent") {
         def className = queryType == "notification" ? "RsEvent" : "RsHistoricalEvent";
         def allProps = [];

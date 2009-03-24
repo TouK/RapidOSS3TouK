@@ -51,7 +51,7 @@ users.each{ user ->
             //processing for RsEvent creates
             //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
             def newMaxCreateId=maxCreateId;
-            def createRules=RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:\"${RsMessage.EMAIL.toQuery()}\" AND enabled:true")
+            def createRules=RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${RsMessage.EMAIL.exactQuery()} AND enabled:true")
             createRules.each{ rule ->
                 def delay=rule.delay
                 def searchQuery=SearchQuery.get(id:rule.searchQueryId)
@@ -91,7 +91,7 @@ users.each{ user ->
             //process Event Clears, HistoricalEvent Creates
             //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
             def newMaxClearId=maxClearId;
-            def clearRules=RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:\"${RsMessage.EMAIL.toQuery()}\" AND clearAction:true AND enabled:true")
+            def clearRules=RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${RsMessage.EMAIL.exactQuery()} AND clearAction:true AND enabled:true")
             clearRules.each{ rule ->
                 def searchQuery=SearchQuery.get(id:rule.searchQueryId)
                 if(searchQuery)

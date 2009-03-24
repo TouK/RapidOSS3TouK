@@ -22,7 +22,7 @@
 <g:else>
     <%
         def url = mode == 'create' ? "searchQuery/save?format=xml&type=${queryType}" : "searchQuery/update?format=xml&type=${queryType}";
-        def gridViews = ui.GridView.searchEvery("username:\"${userName.toQuery()}\" OR (username:\"${RsUser.RSADMIN}\" AND isPublic:true)", [sort: "name"]);
+        def gridViews = ui.GridView.searchEvery("username:${userName.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)", [sort: "name"]);
         def className;
         switch (queryType) {
             case 'event': className = 'RsEvent'; break;

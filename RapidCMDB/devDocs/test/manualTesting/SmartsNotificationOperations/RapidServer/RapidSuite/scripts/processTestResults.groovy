@@ -16,7 +16,7 @@ processor.checkOperationLessThen("Remove",["SmartsNotification"],"AvarageDuratio
 processor.checkOperationLessThen("Search",["SmartsNotification"],"AvarageDuration",0.03,true)
 
 def memoryLimit=processor.getFirstMemory()+20
-memoryLimit+=RsEvent.countHits("alias:*")*0.002
+memoryLimit+=RsEvent.countHits("alias:*")*0.004
 
 processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,true)
 

@@ -14,7 +14,7 @@
     <g:render template="/common/messages" model="[flash:flash]"></g:render>
     <h1>Show Model</h1>
     <div class="dialog">
-        <table style="width:900;">
+        <table>
             <tbody>
 
                 <tr class="prop">
@@ -35,7 +35,7 @@
     </div>
 
     <div style="margin-top:20px;">
-        <table style="width:900;">
+        <table>
             <tr>
                 <td>
                     <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Property List</span>
@@ -105,7 +105,7 @@
             </tr>
         </table></div>
     <div style="margin-top:20px;">
-        <table style="width:900;">
+        <table>
             <tr>
                 <td>
                     <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Relation List</span>
@@ -170,7 +170,7 @@
             </tr>
         </table>
         <div style="margin-top:20px;">
-            <table style="width:900;">
+            <table>
                 <tr>
                     <td>
                         <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Datasource List</span>

@@ -23,7 +23,7 @@
 <div class="body">
     <br>
     <div style="margin-top:0px;">
-        <table style="width:900;">
+        <table>
             <tr>
               <td>
                 <div>
@@ -65,7 +65,7 @@
         </table>
     </div>
     <div style="margin-top:20px;">
-        <table style="width:900;">
+        <table>
             <tr>
               <td>
                 <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Database Datasource List</span>
@@ -99,7 +99,7 @@
         </table>
     </div>
     <div style="margin-top:20px;">
-        <table style="width:900;">
+        <table>
             <tr>
               <td>
                 <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">Single Table Database Datasource List</span>

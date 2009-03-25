@@ -18,8 +18,7 @@ class StateCalculationTests extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
           //to run in Hudson
-        base_directory = "../RapidSuite";
-        //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
+        base_directory = "../../Distribution/RapidModules/RapidInsight";        
         def canonicalPath=new File(".").getCanonicalPath();
         //to run in developer pc
         if(canonicalPath.endsWith("RapidModules"))

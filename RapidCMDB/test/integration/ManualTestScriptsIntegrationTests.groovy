@@ -21,7 +21,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 class ManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase
 {
     static transactional = false;
-
+    /*
 
     def base_directory="";
     public void setUp() {
@@ -66,6 +66,6 @@ class ManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase
             fail("Error in script. Reason ${e}");
         }
     }
-
+   */
 
 }

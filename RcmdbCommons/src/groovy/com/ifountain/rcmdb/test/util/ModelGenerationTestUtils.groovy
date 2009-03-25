@@ -32,10 +32,22 @@ class ModelGenerationTestUtils {
     public static String base_Dir = "../testOutput/base"
     public static String temp_Dir = "../testOutput/temp"
     public static boolean isInitialized = false;
-    public static String getModelText(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations)
+    //replacement paremeter is a list of list. It will replace the specified regular expression with specified text
+    //for example replacement = [["constraints\\s{", "constraints{prop1(nullable:false)"]] 
+    public static String getModelText(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations, List replacements)
     {
         String modelXml = createModel(modelDefinitionProperties, modelProperties, keyProperties, relations);
-        return getModelGenerator().getModelText(modelXml)
+        String modelString = getModelGenerator().getModelText(modelXml)
+        replacements.each{List replacementInfo->
+            String replacedText = replacementInfo[0];
+            String replacement = replacementInfo[1];
+            modelString = modelString.replaceAll (replacedText, replacement);
+        }
+        return modelString;
+    }
+    public static String getModelText(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations)
+    {
+        return getModelText(modelDefinitionProperties, modelProperties, keyProperties, relations, null);
     }
     private static ModelGenerator getModelGenerator()
     {

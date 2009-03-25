@@ -74,7 +74,9 @@ class SmartsModuleBuild extends Build {
             ant.fileset(file:"${env.rapid_smarts}/applications/RapidInsightForSmarts/grails-app/domain/*.groovy");
         }
         ant.copy(todir: rapidSuiteDir) {
-            ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts")
+            ant.fileset(dir: "$env.rapid_smarts/applications/RapidInsightForSmarts") {
+                ant.exclude(name: "**/overridenOperations/**")
+            }
         }
         if(!TEST){            
             ant.copy(todir: "$rapidSuiteDir/operations",overwrite:true) {

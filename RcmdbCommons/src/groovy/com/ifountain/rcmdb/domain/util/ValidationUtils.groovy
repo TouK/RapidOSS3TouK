@@ -50,47 +50,20 @@ class ValidationUtils {
         (( BindingResult ) errors).addError( error );
     }
 
-    public static Object createValidationBean(Object domainObject, Map props, Map relationMetData, Map fields, boolean clearOldValues = false)
+    public static Object getValidationRelationValue(Object value, RelationMetaData relationMetaData)
     {
-        def emptyBean = domainObject.class.newInstance()
-        fields.each{String propName, type->
-            if(relationMetData.containsKey(propName))
-            {
-                def value = null
-                if(domainObject.id != null)
-                {
-                    value = domainObject[propName];
-                }
-                if(props.containsKey(propName))
-                {
-                    def newValue = props[propName];
-                    def metaData = relationMetData[propName]
-                    if(metaData.isOneToOne() || metaData.isManyToOne())
-                    {
-                        value = newValue instanceof Collection?newValue[0]:newValue;
-                    }
-                    else
-                    {
-                        value = !clearOldValues && value instanceof Collection?value:[];
-                        def isCollection = newValue instanceof Collection;
-                        if(newValue != null && !isCollection)
-                        {
-                            value.add(newValue)
-                        }
-                        else if(isCollection)
-                        {
-                            value.addAll(newValue);
-                        }
-                    }
-                }
-                emptyBean.setProperty(propName, value, false);
-            }
-            else
-            {
-                def propValue = domainObject[propName];
-                emptyBean.setProperty(propName, propValue, false);
-            }
+        if(relationMetaData.isOneToOne() || relationMetaData.isManyToOne())
+        {
+            if(value instanceof Collection)
+            value = value[0];
         }
-        return emptyBean;
+        else
+        {
+            if(value == null)
+                value = [];
+            else if(!(value instanceof Collection))
+                value = [value];
+        }
+        return value;
     }
 }

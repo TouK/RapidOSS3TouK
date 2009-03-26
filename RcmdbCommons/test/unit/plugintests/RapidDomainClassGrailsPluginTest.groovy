@@ -118,9 +118,6 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         assertEquals (domainClass2Instance1.id, domainClass1Instance1.rel1[0].id);
         assertEquals (domainClass1Instance1.id, domainClass2Instance1.revRel1[0].id);
         assertNotSame (domainClass1Instance1.rel1, domainClass1Instance1.rel1);
-
-        domainClass1Instance1.setProperty("rel1", ["nonemptyulist"], false);
-        assertSame (domainClass1Instance1.rel1, domainClass1Instance1.rel1);
     }
 
     public void testPropertyInterceptingThrowsMissingPropertyExceptionInvokesGetterAndSetterMethods()

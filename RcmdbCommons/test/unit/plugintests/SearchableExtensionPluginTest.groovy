@@ -84,6 +84,81 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
 
     }
 
+    //this test is written to check whether can we access relation inside other validators
+    public void testAddMethodWithConstraintsAndAccessingRelationFromPropertyConstraint()
+    {
+        def errorCode = "invalid.relation.object"
+        def replacementParts = [
+                child:[
+                        ["static\\s*constraints\\s*=\\s*\\{", """static constraints={
+                                prop1(nullable:true, blank:true, validator:{val, obj ->
+                                    println obj.rel1
+                                    if(obj.rel1.size() == 0)
+                                    {
+                                        return ["${errorCode}"];
+                                    }
+                                }
+                            );"""
+                        ]
+                ],
+        ]
+        Map classes = initializePluginAndClasses(replacementParts);
+
+        def addedObjectProps = [keyProp:"object1", prop1:"prop1Value"]
+        def addedObject = classes.child.add(addedObjectProps);
+        assertTrue(addedObject.hasErrors());
+        assertEquals (errorCode, addedObject.errors.allErrors[0].code);
+
+        def relatedObjectProps = [keyProp:"relatedObj1", prop1:"prop1Value"]
+        def relatedObject = classes.related.add(relatedObjectProps);
+        assertFalse(relatedObject.hasErrors());
+
+        addedObjectProps = [keyProp:"object2", prop1:"prop1Value", rel1:relatedObject]
+        addedObject = classes.child.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+
+    }
+
+    //this test is written to check whether can we access relation inside other validators
+    public void testUpdateethodWithConstraintsAndAccessingRelationFromPropertyConstraint()
+    {
+        def errorCode = "invalid.relation.object"
+        def replacementParts = [
+                child:[
+                        ["static\\s*constraints\\s*=\\s*\\{", """static constraints={
+                                prop1(nullable:true, blank:true, validator:{val, obj ->
+                                    println obj.class.name
+                                    if(obj.rel1.size() == 0)
+                                    {
+                                        return ["${errorCode}"];
+                                    }
+                                }
+                            );"""
+                        ]
+                ],
+        ]
+        Map classes = initializePluginAndClasses(replacementParts);
+
+        def relatedObjectProps = [keyProp:"relatedObj1", prop1:"prop1Value"]
+        def relatedObject = classes.related.add(relatedObjectProps);
+        assertFalse(relatedObject.hasErrors());
+
+        def addedObjectProps = [keyProp:"object2", prop1:"prop1Value", rel1:relatedObject]
+        def addedObject = classes.child.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+
+        def updatedObjectProps = [keyProp:"object2", prop1:"prop1UpdatedValue"]
+        def updatedObject = addedObject.update(updatedObjectProps);
+        assertFalse(updatedObject.hasErrors());
+        assertFalse(addedObject.hasErrors());
+
+        updatedObjectProps = [keyProp:"object2", prop1:"prop1UpdatedValue", rel1:[]];
+        updatedObject = addedObject.update(updatedObjectProps);
+        assertTrue(updatedObject.hasErrors());
+        assertTrue(addedObject.hasErrors());
+
+    }
+
     public void testRemoveMethod()
     {
         Map classes = initializePluginAndClasses();
@@ -187,6 +262,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
 
     private Map initializePluginAndClasses()
     {
+        initializePluginAndClasses([:]);    
+    }
+    private Map initializePluginAndClasses(Map additionalParts)
+    {
         def parentModelName = "ParentModel";
         def childModelName = "ChildModel";
         def relatedModelName = "RelatedModel";
@@ -200,9 +279,9 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
         def relatedModelMetaProps = [name:relatedModelName]
         def modelProps = [keyProp, prop1];
         def keyPropList = [keyProp];
-        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, modelProps, keyPropList, [])
-        String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1])
-        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1])
+        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, modelProps, keyPropList, [], additionalParts["parent"])
+        String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1], additionalParts["child"])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1], additionalParts["related"])
         this.gcl.parseClass(parentModelString+childModelString+relatedModelString);
         Class parentModelClass = this.gcl.loadClass(parentModelName);
         Class childModelClass = this.gcl.loadClass(childModelName);

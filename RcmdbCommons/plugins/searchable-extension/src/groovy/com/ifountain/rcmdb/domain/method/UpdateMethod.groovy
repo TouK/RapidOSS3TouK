@@ -9,6 +9,8 @@ import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.validator.IRapidValidator
+import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -38,8 +40,8 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
     public static final String UPDATED_PROPERTIES = "updatedProps"
     def relations;
     def fieldTypes = [:]
-    Validator validator;
-    public UpdateMethod(MetaClass mcp, Validator validator, Map allFields, Map relations) {
+    IRapidValidator validator;
+    public UpdateMethod(MetaClass mcp, IRapidValidator  validator, Map allFields, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
         allFields.each{fieldName, field->
@@ -55,6 +57,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def relationToBeAddedMap = [:]
+        def updatedPropsOldValues = [:];
         def updatedProps = [:];
         def relationToBeRemovedMap = [:]
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
@@ -64,14 +67,15 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-                    updatedProps[propName] = domainObject.getProperty(propName);
+                    updatedPropsOldValues[propName] = domainObject.getProperty(propName);
                     MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
+                    updatedProps[propName] = domainObject.getProperty(propName);
                 }
             }
             else
             {
                 def currentRelatedObjects = domainObject[propName];
-                updatedProps[propName] = currentRelatedObjects;
+                updatedPropsOldValues[propName] = currentRelatedObjects;
                 if(currentRelatedObjects)
                 {
                     relationToBeRemovedMap[propName] = currentRelatedObjects;
@@ -80,14 +84,16 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 {
                     relationToBeAddedMap[propName] = value;
                 }
+                def relationMetaData = relations[propName];
+                updatedProps[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
             }
         }
         def triggeredEventParams = [:];
-        triggeredEventParams[UPDATED_PROPERTIES] = updatedProps;
+        triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
         EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
         if(!errors.hasErrors())
         {
-            validator.validate (ValidationUtils.createValidationBean(domainObject, props, relations, fieldTypes, true), errors)
+            validator.validate (new DomainClassValidationWrapper(domainObject, updatedProps), domainObject, errors)
         }
         if(!errors.hasErrors())
         {

@@ -204,7 +204,12 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObject1 relatedObject4 = new AddMethodDomainObject1(id:100);
 
         def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
-        "rel2":new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY)];
+        "rel2":new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+        "rel3":new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
+        "rel4":new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+        "rel5":new RelationMetaData("rel5", "revRel5", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+        "rel6":new RelationMetaData("rel6", "revRel6", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
+        ];
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, relations, ["prop1"]);
 
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
@@ -217,7 +222,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         addedObject.rel2 += relatedObject3;
         AddMethodDomainObject1.indexList.clear();
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null, rel2:relatedObject4];
+        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null, rel2:relatedObject4, rel3:[], rel4:[relatedObject4], rel5:null, rel6:null];
         def validator = new MockValidator();
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, relations);
         AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
@@ -225,18 +230,25 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
 
-        assertEquals(1, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(2, updatedObject.relationsShouldBeAdded.size());
         assertEquals(2, updatedObject.relationsShouldBeRemoved.size());
         assertEquals(relatedObject4, updatedObject.relationsShouldBeAdded.get("rel2"));
+        assertEquals(relatedObject4, updatedObject.relationsShouldBeAdded.get("rel4")[0]);
         assertEquals(relatedObject1, updatedObject.relationsShouldBeRemoved.get("rel1"));
+
         assertEquals(2, updatedObject.relationsShouldBeRemoved.get("rel2").size());
         assertEquals(relatedObject2, updatedObject.relationsShouldBeRemoved.get("rel2")[0]);
         assertEquals(relatedObject3, updatedObject.relationsShouldBeRemoved.get("rel2")[1]);
         assertEquals (1, AddMethodDomainObject1.indexList.size())
         assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
         assertNull(validator.validatedObject.rel1);
+        assertNull(validator.validatedObject.rel6);
+        assertNull(validator.validatedObject.rel3);
         assertEquals(1, validator.validatedObject.rel2.size());
+        assertEquals(1, validator.validatedObject.rel4.size());
+        assertEquals(0, validator.validatedObject.rel5.size());
         assertTrue(validator.validatedObject.rel2.contains(relatedObject4));
+        assertTrue(validator.validatedObject.rel4.contains(relatedObject4));
 
         updatedObject.relationsShouldBeAdded.clear()
         updatedObject.relationsShouldBeRemoved.clear()

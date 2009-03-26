@@ -30,6 +30,7 @@ import org.springframework.validation.FieldError
 import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import org.springframework.validation.ObjectError
+import com.ifountain.rcmdb.domain.validator.IRapidValidator
 
 /**
 * Created by IntelliJ IDEA.
@@ -395,6 +396,8 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     def rel2;
     def rel3;
     def rel4;
+    def rel5;
+    def rel6;
     int numberOfFlushCalls = 0;
     List isFlushedByProperty = [];
     Errors errors;
@@ -542,7 +545,7 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     }
 }
 
-class MockValidator implements Validator{
+class MockValidator implements IRapidValidator{
     boolean supports = false;
     FieldError error;
     def validatedObject;
@@ -550,12 +553,15 @@ class MockValidator implements Validator{
         return supports; //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void validate(Object o, Errors errors) {
-        validatedObject = o;
+    public void validate(wrapper, Object o, Errors errors) {
+        validatedObject = wrapper;
         if(error)
         {
             (( BindingResult ) errors).addError( error );
         }
+    }
+    public void validate(Object o, Errors errors) {
+
     }
 
 }

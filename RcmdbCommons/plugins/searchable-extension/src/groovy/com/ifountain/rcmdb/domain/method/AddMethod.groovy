@@ -30,17 +30,19 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
+import com.ifountain.rcmdb.domain.validator.IRapidValidator
 
 class AddMethod extends AbstractRapidDomainWriteMethod
 {
     def relations;
     GetMethod getMethod
     def fieldTypes = [:]
-    Validator validator;
+    IRapidValidator validator;
     Class rootDomainClass;
     List keys;
     boolean willReturnErrorIfExist = false;
-    public AddMethod(MetaClass mcp, Class rootDomainClass, Validator validator, Map allFields, Map relations, List keys) {
+    public AddMethod(MetaClass mcp, Class rootDomainClass, IRapidValidator validator, Map allFields, Map relations, List keys) {
         super(mcp);
         this.keys = keys;
         this.validator = validator;
@@ -87,7 +89,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         def sampleBean = clazz.newInstance()
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
-
+        def addedprops = [:]
         props.each{propName,value->
             RelationMetaData relation = relations.get(propName);
             if(!relation)
@@ -100,7 +102,9 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             }
             else
             {
+                def relationMetaData = relations[propName];
                 relatedInstances[propName] = value;
+                addedprops[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
             }
         }
         if(willReturnErrorIfExist && existingInstance != null)
@@ -117,7 +121,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             return sampleBean;
         }
         EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
-        validator.validate (ValidationUtils.createValidationBean(sampleBean, props, relations, fieldTypes), errors)
+        validator.validate (new DomainClassValidationWrapper(sampleBean, addedprops), sampleBean, errors)
 
         if(errors. hasErrors())
         {

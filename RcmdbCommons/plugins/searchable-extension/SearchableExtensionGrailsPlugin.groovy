@@ -26,6 +26,8 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.springframework.validation.BindException
 import org.springframework.validation.Errors
+import org.codehaus.groovy.grails.validation.GrailsDomainClassValidator
+import com.ifountain.rcmdb.domain.validator.RapidGrailsDomainClassValidator
 
 /**
 * Created by IntelliJ IDEA.
@@ -41,6 +43,12 @@ class SearchableExtensionGrailsPlugin {
     def loadAfter = ['searchable', 'hibernate']
     def domainClassMap;
     def doWithSpring = {
+        for(dc in application.domainClasses) {
+            "${dc.fullName}Validator"(RapidGrailsDomainClassValidator) {
+                messageSource = ref("messageSource")
+                domainClass = ref("${dc.fullName}DomainClass")                
+            }
+		}
     }
 
     def doWithApplicationContext = {applicationContext ->

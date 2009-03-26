@@ -325,16 +325,15 @@ class RapidDomainClassGrailsPlugin {
         dc.metaClass.getProperty = {String name->
             try
             {
-                def propValue = propertyInterceptor.getDomainClassProperty (delegate, name);
-                if(!propValue)
+                def relation = relations[name];
+                if(relation)
                 {
-                    def relation = relations[name];
-                    if(relation)
-                    {
-                        return RelationUtils.getRelatedObjects(delegate, relation);
-                    }
+                    return RelationUtils.getRelatedObjects(delegate, relation);
                 }
-                return propValue;
+                else
+                {
+                    return propertyInterceptor.getDomainClassProperty (delegate, name);
+                }
             }
             catch(MissingPropertyException propEx)
             {

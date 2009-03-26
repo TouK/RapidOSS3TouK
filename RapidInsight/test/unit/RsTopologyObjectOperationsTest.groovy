@@ -15,22 +15,22 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
         initializeClasses();
         clearMetaClasses();
         initialize([RsTopologyObject,RsObjectState,RsEvent], []);
-
-
     }
 
     public void tearDown() {
         clearMetaClasses();
         super.tearDown();
     }
-     private void clearMetaClasses()
+     public static void clearMetaClasses()
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObject)
-        GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObjectOperationsTest.classes.RsTopologyObjectOperations)
+        RsTopologyObjectOperationsTest.classes.each { className, classInstance ->
+            GroovySystem.metaClassRegistry.removeMetaClass(classInstance)
+        }
         ExpandoMetaClass.enableGlobally();
     }
-    public static def initializeClasses()
+    public def initializeClasses()
     {
         def classMap=[:];
         classMap.RsTopologyObjectOperations=RsTopologyObjectOperations;
@@ -38,12 +38,9 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
     }
     public static def initializeClassesFrom(classesToLoad)
     {
-        RsTopologyObjectOperationsTest.classes=classesToLoad;
-        RsTopologyObjectOperationsTest.classes.RsTopologyObjectOperations=RsTopologyObjectOperations;
+        RsTopologyObjectOperationsTest.classes=classesToLoad;        
     }
-
-
-     public static void testRemoveDeletesRsObjectStateInstance()
+    public static void testRemoveDeletesRsObjectStateInstance()
      {
          CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
 
@@ -84,11 +81,8 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(newState,object.loadState())
 
      }
-     public void testNeedToCalculate()
-     {
-         RsTopologyObjectOperationsTest._testNeedToCalculate();
-     }
-     public static void _testNeedToCalculate()
+
+     public static void testNeedToCalculate()
      {
 
         CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
@@ -135,11 +129,8 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
             assertFalse(object.needToCalculate(currentState+1,currentState,currentState-1))
         }
      }
-     public void testFindMaxSeverity()
-     {
-         RsTopologyObjectOperationsTest._testFindMaxSeverity();
-     }
-     public static void _testFindMaxSeverity()
+
+     public static void testFindMaxSeverity()
      {
 
         CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
@@ -166,11 +157,8 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
             assertEquals(counter+1,object.findMaxSeverity(counter+1,counter+1,counter+1));
         }
      }
-     public void testCriticalPercent()
-     {
-         RsTopologyObjectOperationsTest._testCriticalPercent();
-     }
-     public static void _testCriticalPercent()
+
+     public static void testCriticalPercent()
      {
 
         CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
@@ -256,16 +244,15 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
             assertEquals(counter+1,object.criticalPercent(counter+1,counter+1,counter+1));
         }
      }
-     public void testCalculateStateCallsFindMaxSeverity()
-     {
-         RsTopologyObjectOperationsTest._testCalculateStateCallsFindMaxSeverity();
-     }
-     public static void _testCalculateStateCallsFindMaxSeverity()
+
+     public static void testCalculateStateCallsFindMaxSeverity()
      {
 
         int findMaxSeverityReturnValue;
+        def callParams=[:]
         classes.RsTopologyObjectOperations.metaClass.findMaxSeverity = {currentState,  oldPropagatedState, newPropagatedState  ->
             println "findmax in test"
+            callParams=[currentState:currentState,oldPropagatedState:oldPropagatedState,newPropagatedState:newPropagatedState]
             return findMaxSeverityReturnValue;
         }
 
@@ -275,15 +262,16 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
         assertFalse(object.hasErrors());
 
         5.times{ counter ->
+            callParams=[:]
             findMaxSeverityReturnValue=counter+1;
-            assertEquals(counter+1,object.calculateState(1,1,1));
+            assertEquals(counter+1,object.calculateState(1,2,3));
+            assertEquals(1,callParams.currentState);
+            assertEquals(2,callParams.oldPropagatedState);
+            assertEquals(3,callParams.newPropagatedState);
         }
      }
-     public void testCurrentStateCallsLoadState()
-     {
-         RsTopologyObjectOperationsTest._testCurrentStateCallsLoadState();
-     }
-     public static void _testCurrentStateCallsLoadState()
+
+     public static void testCurrentStateCallsLoadState()
      {
 
         int loadStateReturnValue;
@@ -303,19 +291,19 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
         }
      }
 
-    public void testGetState()
+    public static void testGetState()
     {
 
         int calculateStateReturnValue;
         def callParams=[:];
-         RsTopologyObjectOperations.metaClass.calculateState = {currentState,  oldPropagatedState, newPropagatedState  ->
+         classes.RsTopologyObjectOperations.metaClass.calculateState = {currentState,  oldPropagatedState, newPropagatedState  ->
             println "calculateState in test"
             callParams=[currentState:currentState,oldPropagatedState:oldPropagatedState,newPropagatedState:newPropagatedState]
             return calculateStateReturnValue;
 
         }
 
-        CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
 
         def object=RsTopologyObject.add(name:"testobject");
         assertFalse(object.hasErrors());
@@ -353,26 +341,26 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
 
 
     }
-    public void testSetState()
+    public static void testSetState()
     {
 
         int calculateStateReturnValue;
         def calculateStateCallParams=[:];
         def propagateStateStateCallParams=[:];
         
-        RsTopologyObjectOperations.metaClass.calculateState = {currentState,  oldPropagatedState, newPropagatedState  ->
+        classes.RsTopologyObjectOperations.metaClass.calculateState = {currentState,  oldPropagatedState, newPropagatedState  ->
             println "calculateState in test"
             calculateStateCallParams=[currentState:currentState,oldPropagatedState:oldPropagatedState,newPropagatedState:newPropagatedState]
             return calculateStateReturnValue;
 
         }
-        RsTopologyObjectOperations.metaClass.propagateState = {oldState, newState  ->
+        classes.RsTopologyObjectOperations.metaClass.propagateState = {oldState, newState  ->
             println "calculateState in test"
             propagateStateStateCallParams=[oldState:oldState,newState:newState]
 
         }
 
-        CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
         def object=RsTopologyObject.add(name:"testobject");
         assertFalse(object.hasErrors());
 
@@ -452,10 +440,10 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
             assertEquals(0,propagateStateStateCallParams.size());
         }
     }
-     public void testCalculateWeight()
+     public static void testCalculateWeight()
      {
 
-        CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
 
         //add 1 object and  test calculate weight
         //Tree : object
@@ -505,16 +493,16 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase{
 
 
      }
-     public void testPropagateStateCallsSetStateOfParentObjects()
+     public static void testPropagateStateCallsSetStateOfParentObjects()
      {
 
         def setStateStateCallParams=[:];
-        RsTopologyObjectOperations.metaClass.setState = {newState, oldState   ->
+        classes.RsTopologyObjectOperations.metaClass.setState = {newState, oldState   ->
             println "calculateState in test"
             setStateStateCallParams[id]=[oldState:oldState,newState:newState]
 
         }
-        CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport(RsTopologyObject,classes.RsTopologyObjectOperations);
 
         //add 1 object and  test calculate weight
         //Tree : object

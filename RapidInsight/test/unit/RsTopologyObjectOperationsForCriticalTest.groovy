@@ -9,13 +9,12 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * To change this template use File | Settings | File Templates.
 */
 class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTestCase{
-     static def base_directory="";
+     def base_directory="";
      public void setUp() {
         super.setUp();
         initializeClasses();
         clearMetaClasses();
         initialize([RsTopologyObject,RsObjectState,RsEvent], []);
-
 
     }
 
@@ -25,12 +24,9 @@ class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTest
     }
      private void clearMetaClasses()
     {
-        ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObject)
-        GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObjectOperationsTest.classes.RsTopologyObjectOperations)
-        ExpandoMetaClass.enableGlobally();
+        RsTopologyObjectOperationsTest.clearMetaClasses();
     }
-    public static def initializeClasses()
+    public def initializeClasses()
     {
 
           //to run in Hudson
@@ -48,7 +44,7 @@ class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTest
         RsTopologyObjectOperationsTest.initializeClassesFrom(classMap);
     }
 
-    public static File getOperationPathAsFile(opdir,opfile)
+    public File getOperationPathAsFile(opdir,opfile)
     {
         return new File("${base_directory}/${opdir}/${opfile}.groovy");
     }
@@ -63,21 +59,60 @@ class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTest
      }
      public void testNeedToCalculate()
      {
-         RsTopologyObjectOperationsTest._testNeedToCalculate();
+         RsTopologyObjectOperationsTest.testNeedToCalculate();
      }
      public void testFindMaxSeverity()
      {
-         RsTopologyObjectOperationsTest._testFindMaxSeverity();
+         RsTopologyObjectOperationsTest.testFindMaxSeverity();
      }
      public void testCriticalPercent()
      {
-         RsTopologyObjectOperationsTest._testCriticalPercent();
+         RsTopologyObjectOperationsTest.testCriticalPercent();
      }
      public void testCurrentStateCallsLoadState()
      {
-         RsTopologyObjectOperationsTest._testCurrentStateCallsLoadState();
+         RsTopologyObjectOperationsTest.testCurrentStateCallsLoadState();
      }
+     public void testGetState()
+    {
+        RsTopologyObjectOperationsTest.testGetState();
+    }
+    public void testSetState()
+    {
+        RsTopologyObjectOperationsTest.testSetState();
+    }
+    public void testCalculateWeight()
+    {
+        RsTopologyObjectOperationsTest.testCalculateWeight();
+    }
+    public static void testPropagateStateCallsSetStateOfParentObjects()
+    {
+        RsTopologyObjectOperationsTest.testPropagateStateCallsSetStateOfParentObjects();
+    }
+    public static void testCalculateStateCallsCriticalPercent()
+     {
+        def operationsClass=RsTopologyObjectOperationsTest.classes.RsTopologyObjectOperations;
 
+        int criticalPercentReturnValue;
+        def callParams=[:]
+        operationsClass.metaClass.criticalPercent = {currentState,  oldPropagatedState, newPropagatedState  ->
+            println "criticalPercent in test"
+            callParams=[currentState:currentState,oldPropagatedState:oldPropagatedState,newPropagatedState:newPropagatedState]
+            return criticalPercentReturnValue;
+        }
 
+        CompassForTests.addOperationSupport(RsTopologyObject,operationsClass);
 
+        def object=RsTopologyObject.add(name:"testobject");
+        assertFalse(object.hasErrors());
+
+        5.times{ counter ->
+            callParams=[:]
+            criticalPercentReturnValue=counter+1;
+            assertEquals(counter+1,object.calculateState(1,2,3));
+            assertEquals(1,callParams.currentState);
+            assertEquals(2,callParams.oldPropagatedState);
+            assertEquals(3,callParams.newPropagatedState);
+        }
+     }
 }

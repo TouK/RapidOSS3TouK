@@ -210,6 +210,53 @@ class ModelGenerator
                 }
             }
         }
+
+        validateSmaePropertyWithDifferentTypeExist(modelMetaDatas);
+    }
+
+    def validateSmaePropertyWithDifferentTypeExist(modelMetaDatas)
+    {
+        def rootModels = getRootModels(modelMetaDatas);
+        def allPropertiesInHierachy = [:];
+        rootModels.each{ModelMetaData rootModelMetaData->
+            def childModels = getChildModels(modelMetaDatas, rootModelMetaData.modelName);
+            childModels.each{ModelMetaData childModelMetaData->
+                childModelMetaData.propertyList.each{propConfig->
+                    def propName = propConfig.name;
+                    def previousPropConfig = allPropertiesInHierachy.get(propName);
+                    if(previousPropConfig != null && previousPropConfig.type != propConfig.type)
+                    {
+                        throw ModelGenerationException.samePropertyWithDifferentType(childModelMetaData.modelName, previousPropConfig.modelName, propName)
+                    }
+                    allPropertiesInHierachy[propName] = [modelName:childModelMetaData.modelName, type:propConfig.type];
+                }
+            }
+        }
+    }
+
+    def getRootModels(modelMetaDatas)
+    {
+        def rootModels = [];
+        modelMetaDatas.each{String modelName, ModelMetaData modelMetaData->
+            if(modelMetaData.parentModelName == null)
+            {
+                rootModels.add(modelMetaData);    
+            }
+        }
+        return rootModels;
+    }
+
+    def getChildModels(modelMetaDatas, String parentModelName)
+    {
+        def childModels = [];
+        modelMetaDatas.each{String modelName, ModelMetaData modelMetaData->
+            if(modelMetaData.parentModelName == parentModelName)
+            {
+                childModels.add(modelMetaData);
+                childModels.addAll (getChildModels(modelMetaDatas, modelMetaData.modelName));
+            }
+        }
+        return childModels;
     }
 
     def checkInvalidProperty(modelName, propName, isRelation)

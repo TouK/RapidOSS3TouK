@@ -115,4 +115,8 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Duplicate property ${propertyName} in model ${modelName}.");
     }
+    public static ModelGenerationException samePropertyWithDifferentType(String propOwnerModel1, String propOwnerModel2, String propName)
+    {
+        return new ModelGenerationException("Property ${propName} is defined with different type in models ${propOwnerModel1} and ${propOwnerModel2}.");
+    }
 }

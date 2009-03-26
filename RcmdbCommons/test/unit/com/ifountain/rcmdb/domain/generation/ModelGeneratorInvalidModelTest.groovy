@@ -223,6 +223,62 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     }
 
 
+    public void testThrowsExceptionIfTwoChildrenHavePropertyWithSameNameAndDiffeentTypeDefined()
+    {
+        def prop1InLevel2ChildModel1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop1InLevel2ChildModel2 = [name:"prop1", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1"]
+        def ds1 = [name:"RCMDB",keyMappings:[]]
+        String parentModelName = "ParentModel";
+        String level1ChildModel1 = "Level1ChildModel1";
+        String level1ChildModel2 = "Level1ChildModel2";
+        String level2ChildModel1 = "Level2ChildModel1";
+        String level2ChildModel2 = "Level2ChildModel2";
+        def parentModelXml = createModel (parentModelName, null, [ds1], [], [], []);
+        def level1ChildModel1Xml = createModel (level1ChildModel1, parentModelName, [], [], []);
+        def level1ChildModel2Xml = createModel (level1ChildModel2, parentModelName, [], [], []);
+        def level2ChildModel1Xml = createModel (level2ChildModel1, level1ChildModel1, [prop1InLevel2ChildModel1], [], []);
+        def level2ChildModel2Xml = createModel (level2ChildModel2, level1ChildModel2, [prop1InLevel2ChildModel2], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([parentModelXml, level1ChildModel1Xml, level1ChildModel2Xml, level2ChildModel1Xml, level2ChildModel2Xml])
+            fail("Should throw exception since smae property is defined with different property type in different classes");
+        }catch(ModelGenerationException e)
+        {
+            def expectedMessage1 = ModelGenerationException.samePropertyWithDifferentType(level2ChildModel1, level2ChildModel2, prop1InLevel2ChildModel1.name).getMessage();
+            def expectedMessage2 = ModelGenerationException.samePropertyWithDifferentType(level2ChildModel2, level2ChildModel1, prop1InLevel2ChildModel1.name).getMessage();
+            assertTrue(expectedMessage1 == e.getMessage() || expectedMessage2 == e.getMessage());
+        }
+
+        //test doesnot throw exception if prop types are same
+        level2ChildModel2Xml = createModel (level2ChildModel2, level1ChildModel2, [prop1InLevel2ChildModel1], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([parentModelXml, level1ChildModel1Xml, level1ChildModel2Xml, level2ChildModel1Xml, level2ChildModel2Xml])
+        }catch(ModelGenerationException e)
+        {
+            fail("Should not throw exception since same property with same type is allowed");
+        }
+
+        //test throw exception if prop types are different in different hierachies
+        def parentModel2Name = "ParentModel2"
+        def level1ChildOfParentModel2Name = "ParentModel2Level1Child"
+        def parentModel2Xml = createModel (parentModel2Name, null, [ds1], [], [], []);
+        def level1ChildOfParentModel2 = createModel (level1ChildOfParentModel2Name, parentModel2Name, [], [prop1InLevel2ChildModel2], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([parentModelXml, level1ChildModel1Xml, level1ChildModel2Xml, level2ChildModel1Xml, level2ChildModel2Xml, parentModel2Xml, level1ChildOfParentModel2])
+            fail("Should throw exception since smae property is defined with different property type in different classes");
+        }catch(ModelGenerationException e)
+        {
+            def expectedMessage1 = ModelGenerationException.samePropertyWithDifferentType(level1ChildOfParentModel2Name, level2ChildModel1, prop1InLevel2ChildModel1.name).getMessage();
+            def expectedMessage2 = ModelGenerationException.samePropertyWithDifferentType(level2ChildModel1, level1ChildOfParentModel2Name, prop1InLevel2ChildModel1.name).getMessage();
+            def expectedMessage3 = ModelGenerationException.samePropertyWithDifferentType(level2ChildModel2, level1ChildOfParentModel2Name, prop1InLevel2ChildModel1.name).getMessage();
+            def expectedMessage4 = ModelGenerationException.samePropertyWithDifferentType(level1ChildOfParentModel2Name, level2ChildModel2, prop1InLevel2ChildModel1.name).getMessage();
+            assertTrue(expectedMessage1 == e.getMessage() || expectedMessage2 == e.getMessage() || expectedMessage3 == e.getMessage() || expectedMessage4 == e.getMessage());
+        }
+    }
+
+
     public void testThrowsExceptionIfModelNameIsInInvalidList()
     {
         ModelGenerator.getInstance().invalidNames = ["InvalidName"]

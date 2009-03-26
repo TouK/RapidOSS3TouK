@@ -40,15 +40,22 @@ class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTest
         GroovyClassLoader loader=new GroovyClassLoader();
         def classMap=[];
         classMap=[:];
+        classMap.Constants=Constants;
         classMap.RsTopologyObjectOperations=loader.parseClass(getOperationPathAsFile("overridenOperations/criticalPercent","RsTopologyObjectOperations"));
         RsTopologyObjectOperationsTest.initializeClassesFrom(classMap);
     }
-
+    static def getClasses()
+    {
+        return RsTopologyObjectOperationsTest.getClasses();
+    }
     public File getOperationPathAsFile(opdir,opfile)
     {
         return new File("${base_directory}/${opdir}/${opfile}.groovy");
     }
-
+     public void testConstants()
+     {
+         RsTopologyObjectOperationsTest.testConstants();
+     }
      public void testRemoveDeletesRsObjectStateInstance()
      {
          RsTopologyObjectOperationsTest.testRemoveDeletesRsObjectStateInstance();

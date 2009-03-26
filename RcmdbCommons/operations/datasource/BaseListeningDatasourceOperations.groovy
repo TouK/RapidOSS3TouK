@@ -78,6 +78,11 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
         return ListeningAdapterManager.getInstance().isStartable(this.domainObject);
     }
 
+    def isSubscribed()
+    {
+        return ListeningAdapterManager.getInstance().isSubscribed(this.domainObject);
+    }
+
     def getListeningAdapter(Map params,Logger adapterLogger){
         return null;
     }

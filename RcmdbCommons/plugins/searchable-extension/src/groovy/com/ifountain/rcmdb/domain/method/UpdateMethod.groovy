@@ -58,7 +58,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         def relationToBeAddedMap = [:]
         def updatedPropsOldValues = [:];
-        def updatedProps = [:];
+        def updatedRelations = [:];
         def relationToBeRemovedMap = [:]
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
         props.each{propName,value->
@@ -69,7 +69,6 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 {
                     updatedPropsOldValues[propName] = domainObject.getProperty(propName);
                     MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
-                    updatedProps[propName] = domainObject.getProperty(propName);
                 }
             }
             else
@@ -85,7 +84,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                     relationToBeAddedMap[propName] = value;
                 }
                 def relationMetaData = relations[propName];
-                updatedProps[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
+                updatedRelations[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
             }
         }
         def triggeredEventParams = [:];
@@ -93,7 +92,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
         if(!errors.hasErrors())
         {
-            validator.validate (new DomainClassValidationWrapper(domainObject, updatedProps), domainObject, errors)
+            validator.validate (new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
         }
         if(!errors.hasErrors())
         {

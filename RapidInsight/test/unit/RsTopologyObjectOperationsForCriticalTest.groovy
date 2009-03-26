@@ -98,7 +98,7 @@ class RsTopologyObjectOperationsForCriticalTest extends RapidCmdbWithCompassTest
     }
     public static void testCalculateStateCallsCriticalPercent()
      {
-        def operationsClass=RsTopologyObjectOperationsTest.classes.RsTopologyObjectOperations;
+        def operationsClass=getClasses().RsTopologyObjectOperations;
 
         int criticalPercentReturnValue;
         def callParams=[:]

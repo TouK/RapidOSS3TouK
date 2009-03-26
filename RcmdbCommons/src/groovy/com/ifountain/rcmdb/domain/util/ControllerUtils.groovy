@@ -159,7 +159,7 @@ class ControllerUtils {
         domainObjectpropertyNames = domainObjectpropertyNames.unique().findAll {(domainProperties.containsKey (it) || relations.containsKey(it)) && !returnedParams.containsKey(it)}
         DataBindingUtils.bindObjectToInstance(instance, clonedMap);
         domainObjectpropertyNames.each {
-            def propValue = instance.getProperty(it);
+            def propValue = instance.getRealPropertyValue(it);
             if (relations.containsKey(it) && !(propValue instanceof Collection) && propValue.id == -1l)
             {
                 returnedParams.put(it, null);

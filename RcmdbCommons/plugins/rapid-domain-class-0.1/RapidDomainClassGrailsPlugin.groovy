@@ -322,6 +322,9 @@ class RapidDomainClassGrailsPlugin {
             }
         }
 
+        dc.metaClass.getRealPropertyValue = {String name->
+            return propertyInterceptor.getDomainClassProperty (delegate, name);
+        }
         dc.metaClass.getProperty = {String name->
             try
             {

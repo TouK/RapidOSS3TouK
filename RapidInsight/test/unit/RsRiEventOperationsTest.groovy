@@ -29,6 +29,8 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
     private void clearMetaClasses()
      {
         ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RsRiEvent)
+        GroovySystem.metaClassRegistry.removeMetaClass(RsRiEventOperations)
         GroovySystem.metaClassRegistry.removeMetaClass(RsComputerSystem)        
         ExpandoMetaClass.enableGlobally();
      }
@@ -103,6 +105,44 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(addedJournal2.details,RsEventJournal.MESSAGE_UPDATE);
         
      }
+    void testIfEventHasErrorsEventIsNotProcessed()
+    {
+        initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
+
+        def callParams=[:]
+        RsRiEventOperations.metaClass.propagateElementState = {  ->
+            println "propagateElementState in test"
+            callParams["id"]=id;
+        }
+
+        CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+        //we first test successfull case and propageElementstate is called
+        assertEquals(0,RsRiEvent.list().size());
+        assertEquals(0,RsEventJournal.list().size());
+
+        def addProps=[name:"testev",identifier:"ev1",severity:5];
+        def addedEvent=RsRiEvent.notify(addProps);
+        assertFalse(addedEvent.hasErrors());
+        assertEquals(1,RsRiEvent.list().size());
+        assertEquals(1,RsEventJournal.list().size());
+        assertEquals(addedEvent.id,callParams.id);
+
+        //now we test the fail case
+        RsRiEvent.removeAll();
+        RsEventJournal.removeAll();
+        callParams=[:];
+
+        assertEquals(0,RsRiEvent.list().size());
+        assertEquals(0,RsEventJournal.list().size());
+
+        addProps=[name:null,identifier:"ev1",severity:5];
+
+        addedEvent=RsRiEvent.notify(addProps);
+        assertTrue(addedEvent.hasErrors());
+        assertEquals(0,RsRiEvent.list().size());
+        assertEquals(0,RsEventJournal.list().size());
+        assertEquals(0,callParams.size());
+    }
      public void testNotifyDoesNotSetCreatedAtAndChangedAtIfGiven()
      {
          initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
@@ -173,10 +213,17 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(callParams.state,event2.severity)
 
      }
-    void testIfEventHasErrorsEventIsNotProcessed()
-    {
-        fail("should be implemented");
-    }
+     public void testHistoricalEventModel()
+     {
+         initialize([RsEvent,RsRiEvent,], []);
+         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+
+         def event=RsRiEvent.add(name:"testev");
+         assertFalse(event.hasErrors());
+
+         assertEquals(RsRiHistoricalEvent,event.historicalEventModel())
+     }
+
 
 
 

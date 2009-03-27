@@ -223,12 +223,15 @@ class ModelGenerator
             childModels.each{ModelMetaData childModelMetaData->
                 childModelMetaData.propertyList.each{propConfig->
                     def propName = propConfig.name;
-                    def previousPropConfig = allPropertiesInHierachy.get(propName);
-                    if(previousPropConfig != null && previousPropConfig.type != propConfig.type)
+                    if(!childModelMetaData.relations.containsKey(propName))
                     {
-                        throw ModelGenerationException.samePropertyWithDifferentType(childModelMetaData.modelName, previousPropConfig.modelName, propName)
+                        def previousPropConfig = allPropertiesInHierachy.get(propName);
+                        if(previousPropConfig != null && previousPropConfig.type != propConfig.type)
+                        {
+                            throw ModelGenerationException.samePropertyWithDifferentType(childModelMetaData.modelName, previousPropConfig.modelName, propName)
+                        }
+                        allPropertiesInHierachy[propName] = [modelName:childModelMetaData.modelName, type:propConfig.type];
                     }
-                    allPropertiesInHierachy[propName] = [modelName:childModelMetaData.modelName, type:propConfig.type];
                 }
             }
         }

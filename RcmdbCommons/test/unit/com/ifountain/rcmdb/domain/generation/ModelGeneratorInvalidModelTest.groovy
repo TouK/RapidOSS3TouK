@@ -223,6 +223,34 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     }
 
 
+    public void testDoesNotThrowExceptionIfTwoChildrenHaveRelationWithSameNameAndDiffeentTypeDefined()
+    {
+        def ds1 = [name:"RCMDB",keyMappings:[]]
+        String parentModelName = "ParentModel";
+        String level1ChildModel1 = "Level1ChildModel1";
+        String level1ChildModel2 = "Level1ChildModel2";
+        String level2ChildModel1 = "Level2ChildModel1";
+        String level2ChildModel2 = "Level2ChildModel2";
+        def level1rel1 = [name:"rel1",  reverseName:"revrel1", toModel:level1ChildModel2, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def level1revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:level1ChildModel1, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+        def level2rel1 = [name:"rel1",  reverseName:"revrel1", toModel:level2ChildModel1, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def level2revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:level2ChildModel2, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+
+        def parentModelXml = createModel (parentModelName, null, [ds1], [], [], []);
+        def level1ChildModel1Xml = createModel (level1ChildModel1, parentModelName, [], [], [level1rel1]);
+        def level1ChildModel2Xml = createModel (level1ChildModel2, parentModelName, [], [], [level1revrel1]);
+        def level2ChildModel1Xml = createModel (level2ChildModel1, level1ChildModel1, [], [], [level2revrel1]);
+        def level2ChildModel2Xml = createModel (level2ChildModel2, level1ChildModel2, [], [], [level1rel1]);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([parentModelXml, level1ChildModel1Xml, level1ChildModel2Xml, level2ChildModel1Xml, level2ChildModel2Xml])
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace();
+            fail("Should not throw exception since same relation name with different types are allowed");
+        }
+
+    }
     public void testThrowsExceptionIfTwoChildrenHavePropertyWithSameNameAndDiffeentTypeDefined()
     {
         def prop1InLevel2ChildModel1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
@@ -259,6 +287,7 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             fail("Should not throw exception since same property with same type is allowed");
         }
 
+
         //test throw exception if prop types are different in different hierachies
         def parentModel2Name = "ParentModel2"
         def level1ChildOfParentModel2Name = "ParentModel2Level1Child"
@@ -276,6 +305,8 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             def expectedMessage4 = ModelGenerationException.samePropertyWithDifferentType(level1ChildOfParentModel2Name, level2ChildModel2, prop1InLevel2ChildModel1.name).getMessage();
             assertTrue(expectedMessage1 == e.getMessage() || expectedMessage2 == e.getMessage() || expectedMessage3 == e.getMessage() || expectedMessage4 == e.getMessage());
         }
+
+
     }
 
 

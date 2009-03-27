@@ -78,7 +78,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 	ApplicationContext appCtx
     def loadedClasses;
     def resolver = new PathMatchingResourcePatternResolver()
-    def previousGrailsApp;
+//    def previousGrailsApp;
     def indexDir;
     static indexCount = 0;
     public void setUp() {
@@ -86,7 +86,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         indexCount++;
         indexDir = "${rootIndexDir}/${this.class.simpleName}${indexCount}";
         System.clearProperty("index.dir")
-        previousGrailsApp = ApplicationHolder.application;
+//        previousGrailsApp = ApplicationHolder.application;
         configParams = [:]
         CommonTestUtils.waitFor (new ClosureWaitAction({
             FileUtils.deleteDirectory(new File(indexDir));    
@@ -190,7 +190,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         springConfig = null
         resolver = null
         originalHandler = null
-        ApplicationHolder.application = previousGrailsApp;
+//        ApplicationHolder.application = previousGrailsApp;
         PluginManagerHolder.pluginManager = null;
         ServletContextHolder.servletContext = null;
         ExpandoMetaClass.disableGlobally()

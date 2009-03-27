@@ -17,10 +17,7 @@
 * USA.
 */
 public class RsGroupOperations extends RsTopologyObjectOperations {
-    def whogr()
-    {
-        return "gr in critical percent operations"
-    }
+
   def calculateState(currentState, oldPropagatedState, newPropagatedState)
     {
 //        return findMaxSeverity(currentState,  oldPropagatedState, newPropagatedState);

@@ -104,29 +104,22 @@
             </table>
         </div>
         <div class="buttons">
-            <g:form style="display:inline">
-	            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-	            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-	            <%
-                    def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
-                    if (isSubscribed) {
-	            %>
-	                <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>
-	            <%
-	                }
-	                else {
-	            %>
-                    <td><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></td>
-
-	            <%
-	                }
-	            %>
-	        </g:form>
-            <g:form style="display:inline" controller="script">
-	            <input type="hidden" name="id" value="${snmpConnector?.script?.name}"/>
-	            <input type="hidden" name="targetURI" value="/snmpConnector/edit/${snmpConnector.id}"/>
-	            <span class="button"><g:actionSubmit class="refresh" value="Reload Script" action="Reload"/></span>
-        	</g:form>
+            <span class="button"><g:actionSubmit class="save" value="Update"/></span>
+            <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+            <%
+                def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
+                if (isSubscribed) {
+            %>
+                <span class="button"><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></span>
+            <%
+                }
+                else {
+            %>
+                <span class="button"><g:link action="stopConnector" controller="snmpConnector" id="${snmpConnector.id}" class="stop">Stop</g:link></span>
+            <%
+                }
+            %>
+            <span class="button"><g:link action="reload" controller="script" id="${snmpConnector?.script?.name}" class="refresh" params="${[targetURI:'/snmpConnector/edit/' + snmpConnector.id]}">Reload Script</g:link></span>
         </div>
     </g:form>
 </div>

@@ -68,47 +68,8 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             }
         """);
     }
-    def createStartErrorScriptFile(String scriptFileName)
-    {
-        def file = new File("${System.getProperty("base.dir")}/scripts/${scriptFileName}.groovy");
-        file.setText("""
-            def getParameters(){
-               return [:]
-            }
 
-            def init(){
 
-            }
-
-            def cleanUp(){
-               throw new Exception("test exception from cleanUp")
-            }
-
-            def update(eventTrap){
-            }
-        """);
-    }
-    def createStopErrorScriptFile(String scriptFileName)
-    {
-        def file = new File("${System.getProperty("base.dir")}/scripts/${scriptFileName}.groovy");
-        file.setText("""
-            def getParameters(){
-               return [:]
-            }
-
-            def init(){
-
-            }
-
-            def cleanUp(){
-               throw new Exception("test exception from cleanUp")
-            }
-
-            def update(eventTrap){
-
-            }
-        """);
-    }
     def getSnmpControllerForSave(String connectorName, params)
     {
         createScriptFile(params.scriptFile);
@@ -513,8 +474,11 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     public void testSaveRollsBackIfConnectorHasErrors()
     {
         String connectorName = "snmpTestConnector";
+
+        def existingConnector=SnmpConnector.add(name:connectorName);
+        assertFalse(existingConnector.hasErrors());
+
         def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-        controller.params.remove("name");
         controller.save();
 
         assertTrue(controller.modelAndView.model.snmpConnector.hasErrors());
@@ -522,6 +486,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertNull(controller.modelAndView.model.script.id);
         assertNull(controller.modelAndView.model.datasource.id);
 
+        existingConnector.remove();
 
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());
@@ -532,17 +497,22 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     public void testSaveRollsBackIfConnectionHasErrors()
     {
-        fail("should be implemented when different addmethod is added or should be implemented when connector logic moved to operations ")
+
         String connectorName = "snmpTestConnector";
+
+        def existingConnection=SnmpConnection.add(name:SnmpConnector.getConnectionName(connectorName));
+        assertFalse(existingConnection.hasErrors());
+
         def controller = getSnmpControllerForSave(connectorName,connectorSaveParams);
-        controller.params.port=null;
         controller.save();
 
-        assertNull(controller.modelAndView.model.snmpConnector.hasErrors());
+        assertFalse(controller.modelAndView.model.snmpConnector.hasErrors());
         assertTrue(controller.modelAndView.model.snmpConnection.hasErrors());
         assertNull(controller.modelAndView.model.script.id);
         assertNull(controller.modelAndView.model.datasource.id);
 
+        existingConnection.remove();
+        
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());
         assertEquals(0, SnmpDatasource.list().size());
@@ -552,15 +522,22 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     public void testSaveRollsBackIfScriptHasErrors()
     {
         String connectorName = "snmpTestConnector";
+
+        createScriptFile(connectorName);
+        def existingScript=CmdbScript.addScript(name:connectorName);
+        assertFalse(existingScript.hasErrors());
+
         def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-        controller.params.remove("scriptFile");
         controller.save();
+
+        println controller.modelAndView.model.snmpConnector.hasErrors()
 
         assertFalse(controller.modelAndView.model.snmpConnector.hasErrors());
         assertFalse(controller.modelAndView.model.snmpConnection.hasErrors());
         assertTrue(controller.modelAndView.model.script.hasErrors());
         assertNull(controller.modelAndView.model.datasource.id);
 
+        existingScript.remove();
 
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());
@@ -570,10 +547,14 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     }
     public void testSaveRollsBackIfDatasourceHasErrors()
     {
-        fail("should be implemented when different addmethod is added or should be implemented when connector logic moved to operations ")
+
         String connectorName = "snmpTestConnector";
+        def connectionForDs=SnmpConnection.add(name:"testcon");
+        assertFalse(connectionForDs.hasErrors());
+        def existingDatasource=SnmpDatasource.add(name:SnmpConnector.getDatasourceName(connectorName),connection:connectionForDs);
+        assertFalse(existingDatasource.hasErrors());
+
         def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-        controller.params.remove("scriptFile");
         controller.save();
 
         assertFalse(controller.modelAndView.model.snmpConnector.hasErrors());
@@ -581,6 +562,8 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertFalse(controller.modelAndView.model.script.hasErrors());
         assertTrue(controller.modelAndView.model.datasource.hasErrors());
 
+        connectionForDs.remove();
+        existingDatasource.remove();
 
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());

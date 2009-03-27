@@ -165,24 +165,25 @@ class SnmpConnectorController {
     }
 
     def save = {
-        SnmpConnector snmpConnector = SnmpConnector.add(ControllerUtils.getClassProperties(params, SnmpConnector));
+        SnmpConnector snmpConnector = SnmpConnector.addUnique(ControllerUtils.getClassProperties(params, SnmpConnector));
         if (!snmpConnector.hasErrors()) {
             params.name = snmpConnector.getConnectionName(snmpConnector.name);
-            SnmpConnection snmpConnection = SnmpConnection.add(ControllerUtils.getClassProperties(params, SnmpConnection))            
+            SnmpConnection snmpConnection = SnmpConnection.addUnique(ControllerUtils.getClassProperties(params, SnmpConnection))
             if (!snmpConnection.hasErrors()) {
                 snmpConnector.addRelation(connection: snmpConnection);
                 
-                def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
+
                 params.name = snmpConnector.name;
                 params.type = CmdbScript.LISTENING;
                 def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
                 scriptClassParams.logFileOwn = true;
-                CmdbScript script = CmdbScript.addScript(scriptClassParams, true);
+                CmdbScript script = CmdbScript.addUniqueScript(scriptClassParams, true);
                 if (!script.hasErrors())
                 {
                     snmpConnector.addRelation(script: script);
-                    
-                    def datasource = SnmpDatasource.add(name: datasourceName, connection: snmpConnection, listeningScript: script);
+
+                    def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
+                    def datasource = SnmpDatasource.addUnique(name: datasourceName, connection: snmpConnection, listeningScript: script);
                     if (!datasource.hasErrors())
                     {
                         redirect(action: show, id: snmpConnector.id)
@@ -190,6 +191,7 @@ class SnmpConnectorController {
                     else
                     {
                         script.remove();
+                        snmpConnection.remove();
                         snmpConnector.remove();
                         render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script,datasource:datasource])
                     }

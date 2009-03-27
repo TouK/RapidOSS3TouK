@@ -44,98 +44,85 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
     private ConnectionParam param;
     private String connectionName;
     private MockBaseListeningAdapter listeningAdapter;
-    
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         connectionParameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(connectionParameterSupplier);
-        
+
         connectionName = "conn1";
         param = createConnectionParam(connectionName);
         connectionParameterSupplier.setParam(param);
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 0);
     }
 
-    public void testCloseConnectionAfterUnsubscribe()
-    {
+    public void testCloseConnectionAfterUnsubscribe() {
         fail("Should be tested automated and manually");
     }
-    
-    public void testSubscribe() throws Exception
-    {
+
+    public void testSubscribe() throws Exception {
         listeningAdapter.subscribe();
         assertTrue(listeningAdapter.getConnection().isConnected());
         assertTrue(listeningAdapter.getConnection().checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
     }
-    
-    public void testSubscribeThrowsExceptionIfSubscriptionIsNotSuccessfully() throws Exception
-    {
-        
+
+    public void testSubscribeThrowsExceptionIfSubscriptionIsNotSuccessfully() throws Exception {
+
         final Exception expectedException = new Exception("Exception occurred while subscribing.");
-        listeningAdapter = new MockBaseListeningAdapter(connectionName, 0){
-          @Override
+        listeningAdapter = new MockBaseListeningAdapter(connectionName, 0) {
+            @Override
             protected void _subscribe() throws Exception {
                 throw expectedException;
-            }  
+            }
         };
-        try
-        {
+        try {
             listeningAdapter.subscribe();
             fail("Should throw exception");
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             assertEquals(expectedException, e);
         }
-        TestAction action = new TestAction()
-        {
-            public void execute() throws Throwable
-            {
+        TestAction action = new TestAction() {
+            public void execute() throws Throwable {
                 ConnectionManager.getConnection(connectionName);
             }
         };
-        
+
         final TestActionExecutorThread th = new TestActionExecutorThread(action);
         th.start();
-        try
-        {
-            CommonTestUtils.waitFor(new WaitAction(){
-                public void check()
-                {
+        try {
+            CommonTestUtils.waitFor(new WaitAction() {
+                public void check() {
                     assertTrue(th.isExecutedSuccessfully());
                 }
             });
         }
-        finally
-        {
+        finally {
             th.interrupt();
             th.join();
         }
     }
-    
-    public void testSubscribeThrowsExceptionIfConnectionCannotBeReceived() throws Exception
-    {
+
+    public void testSubscribeThrowsExceptionIfConnectionCannotBeReceived() throws Exception {
         connectionParameterSupplier.setParam(null);
-        try
-        {
+        try {
             listeningAdapter.subscribe();
             fail("Should throw exception");
         }
-        catch (UndefinedConnectionException e)
-        {
+        catch (UndefinedConnectionException e) {
             assertEquals(new UndefinedConnectionException(connectionName), e);
         }
     }
-    
+
     public void testUnsubscribeReleasesConnection() throws Exception {
         param.setMaxNumberOfConnectionsInPool(1);
         listeningAdapter.subscribe();
         assertTrue(listeningAdapter.getConnection().isConnected());
         assertTrue(listeningAdapter.getConnection().checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
-        
+
         listeningAdapter.unsubscribe();
         assertFalse(listeningAdapter.isSubscribed());
         IConnection conn = ConnectionManager.getConnection(connectionName);
@@ -149,36 +136,35 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertTrue(listeningAdapter.getConnection().checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
         listeningAdapter.unSubscribeException = new RuntimeException();
-        try
-        {
+        try {
             listeningAdapter.unsubscribe();
             fail("Should throw exception");
         }
-        catch(Exception e)
-        {
+        catch (Exception e) {
             assertEquals(listeningAdapter.unSubscribeException, e);
         }
         assertFalse(listeningAdapter.isSubscribed());
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertTrue(conn.isConnected());
     }
-    
+
     public void testDelegatingUpdateEventsToSubscribers() throws Exception {
         final ObservableSource source = new ObservableSource();
         final Object changeArg = new Object();
         source.setChangeArg(changeArg);
-        listeningAdapter = new MockBaseListeningAdapter(connectionName){
+        listeningAdapter = new MockBaseListeningAdapter(connectionName) {
             @Override
             protected void _subscribe() throws Exception {
                 source.addObserver(this);
             }
+
             @Override
             public Object _update(Observable o, Object arg) {
                 return changeArg;
             }
         };
         final List<Object> argList = new ArrayList<Object>();
-        Observer subscriber = new Observer(){
+        Observer subscriber = new Observer() {
             @Override
             public void update(Observable o, Object arg) {
                 argList.add(arg);
@@ -191,22 +177,23 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertEquals(1, argList.size());
         assertSame(changeArg, argList.get(0));
     }
-    
+
     public void testNullValuesAreNotDelegated() throws Exception {
         final ObservableSource source = new ObservableSource();
         source.setChangeArg(new Object());
-        listeningAdapter = new MockBaseListeningAdapter(connectionName){
+        listeningAdapter = new MockBaseListeningAdapter(connectionName) {
             @Override
             protected void _subscribe() throws Exception {
                 source.addObserver(this);
             }
+
             @Override
             public Object _update(Observable o, Object arg) {
                 return null;
             }
         };
         final List<Object> argList = new ArrayList<Object>();
-        Observer subscriber = new Observer(){
+        Observer subscriber = new Observer() {
             @Override
             public void update(Observable o, Object arg) {
                 argList.add(arg);
@@ -214,30 +201,175 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         };
         listeningAdapter.addObserver(subscriber);
         listeningAdapter.subscribe();
-        
+
         source.sourceChanged();
         assertEquals(0, argList.size());
     }
 
-    
-    private ConnectionParam createConnectionParam(String connectionName)
-    {
+    public void testUnsubscribeWaitsToUpdateFinishItsJobEvenIfUnsubscribeThrowsRuntimeException() throws Exception {
+        _testUnsubscribeWaitsToUpdateFinishItsJob(true);
+    }
+
+    public void testUnsubscribeWaitsToUpdateFinishItsJob() throws Exception {
+        _testUnsubscribeWaitsToUpdateFinishItsJob(false);
+    }
+
+
+    public void _testUnsubscribeWaitsToUpdateFinishItsJob(boolean willThrowException) throws Exception {
+        final Object updateWaitLock = new Object();
+        final ObservableSource source = new ObservableSource();
+        final Object changeArg = new Object();
+        source.setChangeArg(changeArg);
+        listeningAdapter = new MockBaseListeningAdapter(connectionName) {
+            @Override
+            protected void _subscribe() throws Exception {
+                source.addObserver(this);
+            }
+
+            @Override
+            public Object _update(Observable o, Object arg) {
+                return changeArg;
+            }
+
+        };
+        if (willThrowException) {
+            listeningAdapter.unSubscribeException = new RuntimeException();
+        }
+        final List<Object> argList = new ArrayList<Object>();
+        Observer subscriber = new Observer() {
+            @Override
+            public void update(Observable o, Object arg) {
+                try {
+                    synchronized (updateWaitLock) {
+                        updateWaitLock.wait();
+                    }
+                }
+                catch (Exception e) {
+                }
+
+                argList.add(arg);
+            }
+        };
+        listeningAdapter.addObserver(subscriber);
+        listeningAdapter.subscribe();
+        Thread updateThread = new Thread() {
+            public void run() {
+                source.sourceChanged();
+            }
+        };
+        Thread unsubscribeThread = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.unsubscribe();
+                }
+                catch (Exception e) {
+                }
+
+            }
+        };
+        updateThread.start();
+        Thread.sleep(200);
+        unsubscribeThread.start();
+        Thread.sleep(200);
+        assertTrue(unsubscribeThread.isAlive());
+        assertFalse(listeningAdapter.isSubscribed());
+        synchronized (updateWaitLock) {
+            updateWaitLock.notifyAll();
+        }
+        Thread.sleep(100);
+        assertFalse(unsubscribeThread.isAlive());
+    }
+
+    public void testKillMethodCancelsUpdateWait() throws Exception {
+        final Object updateWaitLock = new Object();
+        final ObservableSource source = new ObservableSource();
+        final Object changeArg = new Object();
+        source.setChangeArg(changeArg);
+        listeningAdapter = new MockBaseListeningAdapter(connectionName) {
+            @Override
+            protected void _subscribe() throws Exception {
+                source.addObserver(this);
+            }
+
+            @Override
+            public Object _update(Observable o, Object arg) {
+                return changeArg;
+            }
+
+        };
+
+        final List<Object> argList = new ArrayList<Object>();
+        Observer subscriber = new Observer() {
+            @Override
+            public void update(Observable o, Object arg) {
+                try {
+                    synchronized (updateWaitLock) {
+                        updateWaitLock.wait();
+                    }
+                }
+                catch (Exception e) {
+                }
+
+                argList.add(arg);
+            }
+        };
+        listeningAdapter.addObserver(subscriber);
+        listeningAdapter.subscribe();
+        Thread updateThread = new Thread() {
+            public void run() {
+                source.sourceChanged();
+            }
+        };
+        Thread unsubscribeThread = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.unsubscribe();
+                }
+                catch (Exception e) {
+                }
+
+            }
+        };
+        updateThread.start();
+        Thread.sleep(200);
+        unsubscribeThread.start();
+        Thread.sleep(200);
+        try {
+            assertTrue(unsubscribeThread.isAlive());
+            assertFalse(listeningAdapter.isSubscribed());
+            listeningAdapter.kill();
+            Thread.sleep(100);
+            assertFalse(unsubscribeThread.isAlive());
+            assertTrue(updateThread.isAlive());
+        }
+        finally {
+           synchronized (updateWaitLock){
+               updateWaitLock.notifyAll();
+           }
+        }
+
+    }
+
+
+    private ConnectionParam createConnectionParam(String connectionName) {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
         ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
         param.setMaxNumberOfConnectionsInPool(3);
         return param;
     }
-    
-    class ObservableSource extends Observable{
+
+    class ObservableSource extends Observable {
         private Object changeArg;
-        public void sourceChanged(){
+
+        public void sourceChanged() {
             setChanged();
             notifyObservers(changeArg);
         }
+
         public void setChangeArg(Object changeArg) {
             this.changeArg = changeArg;
         }
     }
-    
+
 }

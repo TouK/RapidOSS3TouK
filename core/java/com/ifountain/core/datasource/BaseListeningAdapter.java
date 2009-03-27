@@ -44,7 +44,10 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     protected boolean isSubscribed = false;
     protected boolean stoppedByUser = false;
     private Object subscriptionLock = new Object();
+    private Object isUpdateProcessingLock = new Object();
+    private Object updateWaitLock = new Object();
     protected ActionExecutor executorAdapter;
+    private boolean isUpdateProcessing = false;
 
     public BaseListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
         this.connectionName = connectionName;
@@ -52,10 +55,28 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         this.logger = logger;
     }
 
+    private void setIsUpdateProcessing(boolean isUpdateProcessing) {
+        synchronized (isUpdateProcessingLock) {
+            this.isUpdateProcessing = isUpdateProcessing;
+        }
+    }
+
+    private boolean isUpdateProcessing() {
+        synchronized (isUpdateProcessingLock) {
+            return this.isUpdateProcessing;
+        }
+    }
+
     @Override
     public void update(Observable o, Object arg) {
+        setIsUpdateProcessing(true);
         Object objectToDelegate = _update(o, arg);
         sendDataToObservers(objectToDelegate);
+        synchronized (updateWaitLock) {
+            setIsUpdateProcessing(false);
+            updateWaitLock.notifyAll();
+        }
+        //updateLock.notifyAll();
     }
 
     public void sendDataToObservers(Object data) {
@@ -107,6 +128,12 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         executorAdapter.releaseConnection(getConnection());
     }
 
+    public void kill() {
+        synchronized (updateWaitLock) {
+            updateWaitLock.notifyAll();
+        }
+    }
+
     private void unsubscribeInternally() throws Exception {
         try {
             if (isSubscribed()) {
@@ -115,13 +142,18 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                 }
                 finally {
                     isSubscribed = false;
+                    synchronized (updateWaitLock) {
+                        if (isUpdateProcessing()) {
+                            updateWaitLock.wait();
+                        }
+                    }
                     releaseConnection();
                 }
             }
         }
         finally {
-            if(executorAdapter != null){
-                executorAdapter.destroy();    
+            if (executorAdapter != null) {
+                executorAdapter.destroy();
             }
         }
 

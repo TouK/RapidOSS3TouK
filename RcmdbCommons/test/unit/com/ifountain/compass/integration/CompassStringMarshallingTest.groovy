@@ -12,6 +12,8 @@ import org.compass.core.CompassQuery
 import org.compass.core.CompassQueryBuilder
 import com.ifountain.compass.DefaultCompassConfiguration
 import com.ifountain.compass.converter.CompassStringConverter
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import com.ifountain.compass.CompassConstants
 
 
 /**
@@ -38,17 +40,19 @@ class CompassStringMarshallingTest extends AbstractSearchableCompassTests {
 
     public void testEmptyAndNullStringProperty()
     {
+        DomainClassDefaultPropertyValueHolder.initialize ([CompassTestObject]);
         GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])
         ApplicationHolder.application = application;
-        CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
         Map mappings = [:];
 
         compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
         def id = 0;
         def instancesToBeSaved = [
-                new CompassTestObject(id: id++, prop1: ""),
-                new CompassTestObject(id: id++, prop1: null),
-                new CompassTestObject(id: id++, prop1: "part1 ${CompassStringConverter.EMPTY_VALUE} part3")
+                new CompassTestObject(id: id++, prop1: "", prop48:"nonnullvalue", prop57:"anotherValue"),
+                new CompassTestObject(id: id++, prop1: null, prop48:"nonnullvalue", prop57:"anotherValue"),
+                new CompassTestObject(id: id++, prop1: "part1 ${CompassStringConverter.EMPTY_VALUE} part3", prop48:"nonnullvalue", prop57:"anotherValue"),
+                new CompassTestObject(id: id++, prop1:"anotherValue", prop48: null, prop57:"anotherValue"),
+                new CompassTestObject(id: id++, prop1:"anotherValue", prop48:"anotherValue", prop57: null),
         ] as Object[];
         TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
 
@@ -56,19 +60,62 @@ class CompassStringMarshallingTest extends AbstractSearchableCompassTests {
         TestCompassUtils.withCompassQueryBuilder (compass, {CompassQueryBuilder builder->
             CompassQuery query = builder.queryString ("prop1:\"\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
             def hits = query.hits();
-            assertEquals(2, hits.length());
+            assertEquals(1, hits.length());
             CompassTestObject obj1 = hits.hit(0).getData();
-            CompassTestObject obj2 = hits.hit(1).getData();
             assertEquals (instancesToBeSaved[0].id, obj1.id);
-            assertEquals (instancesToBeSaved[1].id, obj2.id);
             assertEquals ("", obj1.prop1);
-            assertEquals ("", obj2.prop1);
 
+            //test null property will be saved as its default value
+            query = builder.queryString ("prop1:\"${CompassTestObject.newInstance().prop1}\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals(1, hits.length());
+            CompassTestObject obj2 = hits.hit(0).getData();
+            assertEquals (instancesToBeSaved[1].id, obj2.id);
+            assertEquals ("Null object properties should be saved as their default value if default value exist", CompassTestObject.newInstance().prop1, obj2.prop1);
+
+            //test null property will be saved as its default value
+            query = builder.queryString ("prop57:\"\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals(1, hits.length());
+            CompassTestObject obj5 = hits.hit(0).getData();
+            assertEquals (instancesToBeSaved[4].id, obj5.id);
+            assertEquals (instancesToBeSaved[4].prop1, obj5.prop1);
+            println "<${obj5.prop57}>"
+            assertEquals ("Null property will be saved as empty if property default value is empty", new CompassTestObject().prop57, obj5.prop57);
+
+
+            //test null property will be saved as empty if its default value is null too
+            query = builder.queryString ("prop48:\"\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals(1, hits.length());
+            CompassTestObject obj4 = hits.hit(0).getData();
+            assertEquals (instancesToBeSaved[3].id, obj4.id);
+            assertEquals ("Null object properties should be saved as empty if their default value not exist", "", obj4.prop48);
         })
     }
 
-    public void testFieldsMarshallingUnmarshallingTest()
+    public void testNullStringsWillBeConvetredToEmptyIfClassDoesnotExistInDefaultValues()
     {
-        fail("to be implemented");
+        DomainClassDefaultPropertyValueHolder.destroy();
+        GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])
+        ApplicationHolder.application = application;
+        Map mappings = [:];
+
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
+        def id = 0;
+        def instancesToBeSaved = [
+                new CompassTestObject(id: id++, prop1: null)
+        ] as Object[];
+        TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
+
+
+        TestCompassUtils.withCompassQueryBuilder (compass, {CompassQueryBuilder builder->
+            CompassQuery query = builder.queryString ("prop1:\"\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            def hits = query.hits();
+            assertEquals(1, hits.length());
+            CompassTestObject obj1 = hits.hit(0).getData();
+            assertEquals (instancesToBeSaved[0].id, obj1.id);
+            assertEquals ("", obj1.prop1);
+        })
     }
 }

@@ -131,6 +131,7 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase {
         assertEquals ("", res[0].prop1);
         assertEquals (modelClass.name, res[1].alias);
         assertEquals (modelInstance2.id, res[1].id);
+        println "<"+res[1].prop1+">"
         assertEquals ("", res[1].prop1);
     }
 

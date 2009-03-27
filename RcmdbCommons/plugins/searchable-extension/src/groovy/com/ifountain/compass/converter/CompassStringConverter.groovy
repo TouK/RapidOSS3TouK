@@ -7,6 +7,7 @@ import org.compass.core.mapping.Mapping
 import org.compass.core.mapping.ResourcePropertyMapping
 import org.compass.core.marshall.MarshallingContext
 import com.ifountain.compass.CompassConstants
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -29,13 +30,17 @@ class CompassStringConverter extends AbstractCompassConverterWrapper{
 
     public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) {
         Object objectToBePassed = o;
-        if(objectToBePassed == null || String.valueOf(objectToBePassed).trim().length() == 0)
+        String propName = mapping.getName();
+        if(o != null)
         {
-            objectToBePassed = EMPTY_VALUE;
-        }
-        if(mapping.getName().startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
-        {
-            objectToBePassed = String.valueOf(objectToBePassed).toLowerCase();
+            if(String.valueOf(objectToBePassed).trim().length() == 0)
+            {
+                objectToBePassed = EMPTY_VALUE;
+            }
+            else if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                objectToBePassed = String.valueOf(objectToBePassed).toLowerCase();
+            }
         }
         return super.marshall(resource, objectToBePassed, mapping, marshallingContext);
     }
@@ -52,6 +57,23 @@ class CompassStringConverter extends AbstractCompassConverterWrapper{
 
     protected Object getDefaultValue() {
         return "";
+    }
+
+    protected Object convertNullProperty(String alias, String propName) {
+        def value = super.convertNullProperty(alias, propName); //To change body of overridden methods use File | Settings | File Templates.
+        if(value == "")
+        {
+            return EMPTY_VALUE;
+        }
+        else if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+        {
+            return value.toLowerCase();
+        }
+        return value;
+    }
+
+    protected Object getMarshallingDefaultValue() {
+        return EMPTY_VALUE;
     }
 
 

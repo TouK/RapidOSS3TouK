@@ -19,6 +19,7 @@
 package com.ifountain.compass.converter
 
 import org.compass.core.converter.Converter
+import org.compass.core.converter.basic.FormatConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +38,12 @@ public class CompassDateConverter extends AbstractCompassFormattedConverterWrapp
 
     protected Converter getConverter() {
         return dateConverter; //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public FormatConverter copy() {
+        CompassDateConverter copiedCon = new CompassDateConverter();
+        copiedCon.dateConverter = dateConverter.copy();
+        return copiedCon; //To change body of implemented methods use File | Settings | File Templates.
     }
 
     protected Object getDefaultValue() {

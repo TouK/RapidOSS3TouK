@@ -28,6 +28,8 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import application.ObjectId
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder;
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -124,6 +126,60 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def realPropValue = ["nonemptyulist"];
         domainClass1Instance1.setProperty("rel1", realPropValue, false);
         assertSame (realPropValue, domainClass1Instance1.getRealPropertyValue("rel1"));
+    }
+
+    public void testInitializesDefaultPropertyManager()
+    {
+        def prop1DefaultValue = "defaultValue"
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                static searchable = {
+                    except:[]
+                }
+                Long id;
+                Long version;
+                String prop1 = "${prop1DefaultValue}";
+                static relations = [:]
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass, relation.Relation, application.ObjectId];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        assertEquals (prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName, "prop1"));
+
+        destroy();
+        gcl = new GroovyClassLoader(this.class.classLoader);
+        def domainClassName2 = "DomainClass2"
+        prop1DefaultValue = "defaultValue"
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName2}{
+                static searchable = {
+                    except:[]
+                }
+                Long id;
+                Long version;
+                String prop1 = "${prop1DefaultValue}";
+                static relations = [:]
+            }
+        """)
+        classesTobeLoaded = [loadedDomainClass, relation.Relation, application.ObjectId];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        assertEquals (prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName2, "prop1"));
+        try
+        {
+            DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName, "prop1");
+            fail("Should throw exception");
+        }catch(Exception e)
+        {
+            assertEquals (DomainClassDefaultPropertyValueHolder.DOMAIN_NOT_FOUND_EXCEPTION_MESSAGE, e.getMessage());
+        }
+
+
     }
 
     public void testPropertyInterceptingThrowsMissingPropertyExceptionInvokesGetterAndSetterMethods()

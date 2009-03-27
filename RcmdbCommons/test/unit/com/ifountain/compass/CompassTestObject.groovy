@@ -17,13 +17,16 @@
 * USA.
 */
 package com.ifountain.compass
+
+import java.text.SimpleDateFormat
+
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Jul 28, 2008
- * Time: 12:20:43 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: Administrator
+* Date: Jul 28, 2008
+* Time: 12:20:43 PM
+* To change this template use File | Settings | File Templates.
+*/
 class CompassTestObject {
     static searchable = {
         storageType CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE
@@ -78,6 +81,24 @@ class CompassTestObject {
     String prop45 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";
     String prop46 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";
     String prop47 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";
+    String prop48 = null;
+    Long prop49;
+    Long prop50 = 5;
+    Date prop51;
+    Date prop52 = new SimpleDateFormat("yyyy-MM-dd").parse("2009-01-01");
+    Double prop53;
+    Double prop54 = 2.5;
+    Boolean prop55;
+    Boolean prop56 = true;
+    String prop57 = "";
+
+    static constraints = {
+        prop48(nullable:true);
+        prop49(nullable:true);
+        prop51(nullable:true);
+        prop53(nullable:true);
+        prop55(nullable:true);
+    }
 
 
 }

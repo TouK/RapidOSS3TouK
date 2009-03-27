@@ -35,7 +35,11 @@ import com.ifountain.compass.index.WrapperIndexDeletionPolicy;
 class TestCompassFactory {
     static indexDirectory = "../testindex";
     static getGrailsApplication(Collection classes) {
-        def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader())) //new GroovyClassLoader())
+        return getGrailsApplication(classes, new GroovyClassLoader(Thread.currentThread().getContextClassLoader()));
+    }
+
+    static getGrailsApplication(Collection classes, GroovyClassLoader classLoader) {
+        def grailsApplication = new DefaultGrailsApplication(classes as Class[], classLoader) //new GroovyClassLoader())
         grailsApplication.initialise()
         return grailsApplication
     }

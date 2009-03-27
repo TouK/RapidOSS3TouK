@@ -44,6 +44,7 @@ import com.ifountain.rcmdb.domain.method.KeySetMethod
 import com.ifountain.rcmdb.domain.method.GetOperationsMethod
 import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = [:]
@@ -67,6 +68,7 @@ class RapidDomainClassGrailsPlugin {
             propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME);
             classLoader = application.getClassLoader()
         }
+        DomainClassDefaultPropertyValueHolder.initialize (application.domainClasses.clazz);
     }
 
     def doWithApplicationContext = { applicationContext ->

@@ -33,9 +33,4 @@ abstract class AbstractCompassFormattedConverterWrapper extends AbstractCompassC
     public void setFormat(String s) {
         ((FormatConverter)getConverter()).setFormat (s);
     }
-
-    public FormatConverter copy() {
-        return ((FormatConverter)getConverter()).copy();
-    }
-
 }

@@ -19,6 +19,7 @@
 package com.ifountain.compass.converter
 
 import org.compass.core.converter.Converter
+import org.compass.core.converter.basic.FormatConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,6 +35,13 @@ public class CompassLongConverter extends AbstractCompassFormattedConverterWrapp
     {
         longConverter = new org.compass.core.converter.basic.LongConverter();
     }
+
+    public FormatConverter copy() {
+        CompassLongConverter copyConverter = new CompassLongConverter(); //To change body of implemented methods use File | Settings | File Templates.
+        copyConverter.longConverter = longConverter.copy();
+        return copyConverter;
+    }
+    
     protected Converter getConverter() {
         return longConverter; //To change body of implemented methods use File | Settings | File Templates.
     }

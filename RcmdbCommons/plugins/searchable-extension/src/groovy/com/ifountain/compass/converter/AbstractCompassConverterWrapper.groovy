@@ -30,6 +30,8 @@ import org.compass.core.mapping.Mapping
 import org.compass.core.mapping.ResourcePropertyMapping
 import org.compass.core.marshall.MarshallingContext
 import org.compass.core.converter.basic.FormatConverter
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import com.ifountain.compass.CompassConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -42,7 +44,7 @@ abstract class AbstractCompassConverterWrapper  implements ResourcePropertyConve
     public boolean marshall(Resource resource, Object o, Mapping mapping, MarshallingContext marshallingContext) {
         if(o == null)
         {
-            o = getDefaultValue();
+            o = convertNullProperty(resource.getAlias(), mapping.name);
         }
         return getConverter().marshall(resource, o, mapping, marshallingContext);
     }
@@ -92,4 +94,13 @@ abstract class AbstractCompassConverterWrapper  implements ResourcePropertyConve
 
     protected abstract Converter getConverter();
     protected abstract Object getDefaultValue();
+    protected Object getMarshallingDefaultValue()
+    {
+        return getDefaultValue();
+    }
+
+    protected Object convertNullProperty(String alias, String propName)
+    {
+       return CompassConverterUtils.getNullPropertyValue(alias, propName, getMarshallingDefaultValue());
+    }
 }

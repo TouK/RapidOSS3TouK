@@ -43,6 +43,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
      protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         IdGenerator.initialize (new MockIdGeneratorStrategy());
+        AddMethodDomainObjectWithEvents.eventCalls = [];
         AddMethodDomainObject1.searchResult =  [total:0, results:[]];
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
@@ -61,6 +62,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        AddMethodDomainObjectWithEvents.eventCalls = [];
     }
 
     public void testUpdateMethod()
@@ -115,13 +117,11 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3, rel1:new AddMethodDomainObjectWithEvents()];
 
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertEquals (objectBeforeAdd, addedObject);
 
         AddMethodDomainObject1.indexList.clear();
-        addedObject.isBeforeInsertCalled = false;
-        addedObject.isAfterInsertCalled = false;
-        addedObject.isOnLoadCalled = false;
+        AddMethodDomainObjectWithEvents.eventCalls = [];
         props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:new AddMethodDomainObjectWithEvents()];
 
         def beforeUpdateParams = [];
@@ -140,14 +140,9 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals ("newProp2Value", updatedObject.prop2);
         assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
         assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+        assertEquals (["beforeUpdate", "index", "removeRelation", "addRelation","afterUpdate", "onLoad"], AddMethodDomainObjectWithEvents.eventCalls);
 
-        assertTrue (updatedObject.isOnLoadCalled);
-        assertFalse (updatedObject.isBeforeInsertCalled);
-        assertFalse (updatedObject.isAfterInsertCalled);
-        assertTrue (updatedObject.isBeforeUpdateCalled);
-        assertTrue (updatedObject.isAfterUpdateCalled);
-        assertFalse (updatedObject.isBeforeDeleteCalled);
-        assertFalse (updatedObject.isAfterDeleteCalled);
+
         assertEquals(1, beforeUpdateParams.size());
         Map params = beforeUpdateParams[0];
         assertEquals(3, params[UpdateMethod.UPDATED_PROPERTIES].size())
@@ -175,9 +170,6 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals (objectBeforeAdd, addedObject);
 
         AddMethodDomainObject1.indexList.clear();
-        addedObject.isBeforeInsertCalled = false;
-        addedObject.isAfterInsertCalled = false;
-        addedObject.isOnLoadCalled = false;
         
         def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
         addedObject.closureToBeInvokedBeforeUpdate = {params->

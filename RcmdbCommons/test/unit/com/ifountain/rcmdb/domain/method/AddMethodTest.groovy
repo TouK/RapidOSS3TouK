@@ -46,6 +46,7 @@ class AddMethodTest extends RapidCmdbTestCase{
         IdGenerator.initialize (new MockIdGeneratorStrategy());
         AddMethodDomainObject1.searchResult =  [total:0, results:[]];
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
+        AddMethodDomainObjectWithEvents.eventCalls = [];
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
         validator = new MockValidator();
@@ -54,6 +55,7 @@ class AddMethodTest extends RapidCmdbTestCase{
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
+        AddMethodDomainObjectWithEvents.eventCalls = [];
     }
 
     public void testAddMethod()
@@ -157,30 +159,23 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithEvents()
     {
         AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
-        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1];
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertTrue (addedObject.isOnLoadCalled);
-        assertTrue (addedObject.isBeforeInsertCalled);
-        assertTrue (addedObject.isAfterInsertCalled);
-        assertFalse (addedObject.isBeforeUpdateCalled);
-        assertFalse (addedObject.isAfterUpdateCalled);
-        assertFalse (addedObject.isBeforeDeleteCalled);
-        assertFalse (addedObject.isAfterDeleteCalled);
+        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)]
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1:expectedDomainObject1.prop1, rel1: new AddMethodDomainObject1()];
+        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (["beforeInsert", "index", "addRelation", "afterInsert","onLoad"], addedObject.eventCalls);
         assertEquals (expectedDomainObject1, addedObject);
+
+
         assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
-        assertNull(addedObject.relationsShouldBeAdded)
+        assertSame(props.rel1, addedObject.relationsShouldBeAdded.rel1)
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObjectWithEvents.query);
-        
+
+        //test add method with existing instance (It will update instance)
         AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
-
+        AddMethodDomainObjectWithEvents.eventCalls = [];
         addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-
-        assertFalse (addedObject.isOnLoadCalled);
-        assertFalse (addedObject.isBeforeInsertCalled);
-        assertFalse (addedObject.isAfterInsertCalled);
-        assertFalse (addedObject.isBeforeDeleteCalled);
-        assertFalse (addedObject.isAfterDeleteCalled);
+        assertEquals (0,  AddMethodDomainObjectWithEvents.eventCalls.size());
     }
 
     public void testBeforeInsertShouldBeCalledBeforeValidation()
@@ -389,6 +384,7 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     def static searchResult = [total:0, results:[]];
     def static query;
     def static indexList = [];
+    static List eventCalls = []
     def relationsShouldBeAdded;
     def relationsShouldBeRemoved;
     def propertiesToBeUpdated;
@@ -417,6 +413,7 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
 
     def static index(objectList)
     {
+        eventCalls.add("index")
         indexList.add(objectList);
     }
 
@@ -432,12 +429,14 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     }
     def addRelation(Map relations)
     {
+        eventCalls.add("addRelation")
         relationsShouldBeAdded = relations;
         return this;
     }
 
     def removeRelation(Map relations)
     {
+        eventCalls.add("removeRelation")
         relationsShouldBeRemoved = relations;
         return this;
     }
@@ -500,48 +499,41 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     def static closureToBeInvokedBeforeInsert;
     def closureToBeInvokedBeforeUpdate;
     def closureToBeInvokedAfterUpdate;
-    boolean isOnLoadCalled = false;
-    boolean isBeforeInsertCalled = false;
-    boolean isAfterInsertCalled = false;
-    boolean isBeforeUpdateCalled = false;
-    boolean isAfterUpdateCalled = false;
-    boolean isBeforeDeleteCalled = false;
-    boolean isAfterDeleteCalled = false;
-
     def onLoad(){
-        isOnLoadCalled = true;
+        eventCalls.add("onLoad");
     }
 
+
     def beforeInsert(params){
-        isBeforeInsertCalled = true;
+        eventCalls.add("beforeInsert");
         if(closureToBeInvokedBeforeInsert)
         {
             closureToBeInvokedBeforeInsert(this);
         }
     }
     def beforeUpdate(params){
-        isBeforeUpdateCalled = true;
+        eventCalls.add("beforeUpdate");
         if(closureToBeInvokedBeforeUpdate)
         {
             closureToBeInvokedBeforeUpdate(params);
         }
     }
     def beforeDelete(){
-        isBeforeDeleteCalled = true;
+        eventCalls.add("beforeDelete");
     }
 
     def afterInsert(){
-        isAfterInsertCalled = true;
+        eventCalls.add("afterInsert");
     }
     def afterUpdate(params){
-        isAfterUpdateCalled = true;
+        eventCalls.add("afterUpdate");
         if(closureToBeInvokedAfterUpdate)
         {
             closureToBeInvokedAfterUpdate(params);
         }
     }
     def afterDelete(){
-        isAfterDeleteCalled = true;
+        eventCalls.add("afterDelete");
     }
 }
 

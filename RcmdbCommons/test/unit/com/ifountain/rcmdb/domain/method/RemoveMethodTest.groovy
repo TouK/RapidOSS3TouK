@@ -81,13 +81,6 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         
         assertSame(objectToBeRemoved, RemoveMethodDomainObjectWithEvents.unIndexList[0][0]);
         assertEquals (rel1Object,objectToBeRemoved.relationsToBeRemoved.rel1[0]);
-        assertTrue (objectToBeRemoved.isBeforeDeleteCalled);
-        assertTrue (objectToBeRemoved.isAfterDeleteCalled);
-        assertFalse (objectToBeRemoved.isBeforeUpdateCalled);
-        assertFalse (objectToBeRemoved.isAfterUpdateCalled);
-        assertFalse (objectToBeRemoved.isBeforeInsertCalled);
-        assertFalse (objectToBeRemoved.isAfterInsertCalled);
-        assertFalse (objectToBeRemoved.isOnLoadCalled);
 
         def eventCallList=["beforeDelete","removeRelation","unindex","afterDelete"];
         assertEquals(eventCallList,RemoveMethodDomainObject.eventCallList);
@@ -175,40 +168,26 @@ class RemoveMethodDomainObject
 
 class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
 {
-    boolean isOnLoadCalled = false;
-    boolean isBeforeInsertCalled = false;
-    boolean isAfterInsertCalled = false;
-    boolean isBeforeUpdateCalled = false;
-    boolean isAfterUpdateCalled = false;
-    boolean isBeforeDeleteCalled = false;
-    boolean isAfterDeleteCalled = false;
     def onLoad = {
-        isOnLoadCalled = true;
         eventCallList.add("onLoad");
     }
 
     def beforeInsert = {
-        isBeforeInsertCalled = true;
         eventCallList.add("beforeInsert");
     }
     def beforeUpdate = {
-        isBeforeUpdateCalled = true;
         eventCallList.add("beforeUpdate");
     }
     def beforeDelete = {
-        isBeforeDeleteCalled = true;
         eventCallList.add("beforeDelete");
     }
     def afterInsert = {
-        isAfterInsertCalled = true;
         eventCallList.add("afterInsert");
     }
     def afterUpdate = {
-        isAfterUpdateCalled = true;
         eventCallList.add("afterUpdate");
     }
     def afterDelete = {
-        isAfterDeleteCalled = true;
         eventCallList.add("afterDelete");
     }
 }

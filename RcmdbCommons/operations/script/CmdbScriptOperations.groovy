@@ -51,7 +51,13 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             }
         }
     }
+    static def addUniqueScript(Map params, boolean fromController)  throws Exception {
+         _addScript(params,fromController,true);
+    }
     static def addScript(Map params, boolean fromController) throws Exception {
+         _addScript(params,fromController,false);
+    }
+    private static def _addScript(Map params, boolean fromController,boolean addUnique) throws Exception {
         if (!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
             params["scriptFile"] = params.name;
@@ -60,7 +66,16 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         {
             params["logFile"] = params.name;
         }
-        def script = CmdbScript.add(params)
+        def script;
+        if(addUnique)
+        {
+            script=CmdbScript.addUnique(params);
+        }
+        else
+        {
+            script=CmdbScript.add(params);
+        }
+
         if (!script.hasErrors()) {
             ScriptManager.getInstance().addScript(script.scriptFile);
             scheduleScript(script);

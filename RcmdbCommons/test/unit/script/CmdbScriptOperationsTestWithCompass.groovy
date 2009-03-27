@@ -104,6 +104,61 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
             fail("should not throw exception")
         }
     }
+    void testAddScriptUpdatesExistingScript()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        def logLevel = Level.DEBUG;
+        def logParams = [:]
+        logParams["logLevel"] = logLevel.toString();
+
+
+        def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: true]
+
+        assertEquals(0, CmdbScript.list().size());
+        CmdbScript script = CmdbScript.addScript(params)
+        assertFalse(script.hasErrors())
+
+        assertEquals(1, CmdbScript.list().size());
+
+        assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
+
+        def params2=[name: "myscript",  enabledForAllGroups: false, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn:false]
+        CmdbScript script2 = CmdbScript.addScript(params2)
+        assertFalse(script2.hasErrors())
+
+        assertEquals(1, CmdbScript.list().size());
+
+        assertEquals(false,CmdbScript.get(id:script.id).logFileOwn);
+    }
+    void testAddUniqueScriptGeneratesErrorWhenScriptExists()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        def logLevel = Level.DEBUG;
+        def logParams = [:]
+        logParams["logLevel"] = logLevel.toString();
+
+
+        def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: true]
+
+        assertEquals(0, CmdbScript.list().size());
+        CmdbScript script = CmdbScript.addScript(params)
+        assertFalse(script.hasErrors())
+
+        assertEquals(1, CmdbScript.list().size());
+
+        assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
+
+        def params2=[name: "myscript",  enabledForAllGroups: false, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn:false]
+        CmdbScript script2 = CmdbScript.addUniqueScript(params2,true)
+        assertTrue(script2.hasErrors())
+
+        assertEquals(1, CmdbScript.list().size());
+        assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
+    }
     void testAddScript() {
         initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
@@ -1102,7 +1157,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
     }
 
-    void testAddScriptsGeneratesExceptionWhenErrorOccurs()
+    void testAddScriptGeneratesExceptionWhenErrorOccurs()
     {
         CmdbScriptOperations.metaClass.static.createScriptException = {CmdbScript script ->
             return new Exception("injectedTestMessage");

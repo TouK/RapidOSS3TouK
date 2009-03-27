@@ -405,7 +405,7 @@ functionActionCondition7360Condition=""
     
 </rui:action>
 
-<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false" title="Save Group"
  
  
  
@@ -417,7 +417,7 @@ functionActionCondition7360Condition=""
 x='85' y='50'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryForm" width="385" height="213" resizable="false"
+<rui:popupWindow componentId="saveQueryForm" width="385" height="213" resizable="false" title="Save Query"
  
  
  

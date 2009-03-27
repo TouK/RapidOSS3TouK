@@ -423,13 +423,13 @@ functionActionCondition6526Condition=""
 x='85' y='50'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryForm" width="385" height="190" resizable="false"
+<rui:popupWindow componentId="saveQueryForm" width="385" height="190" resizable="false"  title="Save Query"
  
  
  
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false" title="Save Group"
  
  
  

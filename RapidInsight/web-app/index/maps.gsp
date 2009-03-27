@@ -296,13 +296,13 @@ x='50' y='85'
 x='100' y='80'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveMapGroupForm" width="330" height="100" resizable="false" title="Save Group"
  
  
  
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapForm" width="385" height="125" resizable="false"
+<rui:popupWindow componentId="saveMapForm" width="385" height="125" resizable="false"  title="Save Map"
  
  
  

@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-
+import com.ifountain.rcmdb.util.RapidDateUtilities
+import com.ifountain.rcmdb.converter.*
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -11,7 +12,16 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
-
+        RapidDateUtilities.registerDateUtils();
+        registerDefaultConverters();
+    }
+     def registerDefaultConverters()
+    {
+        def dateFormat = "yyyy-dd-MM HH:mm:ss";
+        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
 
     public void tearDown() {
@@ -41,6 +51,18 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
 
          assertFalse(addedEvent.asMap() == updatedEvent.asMap());
+     }
+     public void testHistoricalEventModel()
+     {
+         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject], []);
+         CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
+
+         def event=RsEvent.add(name:"testev");
+         assertFalse(event.hasErrors());
+         assertEquals(1,RsEvent.countHits("alias:*"));
+         event.clear();
+         assertEquals(0,RsEvent.countHits("alias:*"));
+         assertEquals(1,RsHistoricalEvent.countHits("activeId:${event.id}"));
      }
 
 }

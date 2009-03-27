@@ -213,15 +213,18 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(callParams.state,event2.severity)
 
      }
+
      public void testHistoricalEventModel()
      {
-         initialize([RsEvent,RsRiEvent,], []);
+         initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject], []);
          CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
 
          def event=RsRiEvent.add(name:"testev");
          assertFalse(event.hasErrors());
-
-         assertEquals(RsRiHistoricalEvent,event.historicalEventModel())
+         assertEquals(1,RsRiEvent.countHits("alias:*"));
+         event.clear();
+         assertEquals(0,RsRiEvent.countHits("alias:*"));
+         assertEquals(1,RsRiHistoricalEvent.countHits("activeId:${event.id}"));
      }
 
 

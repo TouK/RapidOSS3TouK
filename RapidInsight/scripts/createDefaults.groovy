@@ -34,8 +34,6 @@ scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
 scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])
 scriptsToAdd.add([name:"queryList", enabledForAllGroups:true])
-scriptsToAdd.add([name:"createQuery", enabledForAllGroups:true])
-scriptsToAdd.add([name:"editQuery", enabledForAllGroups:true])
 scriptsToAdd.add([name:"reloadOperations", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getViewFields", enabledForAllGroups:true])
 
@@ -60,8 +58,6 @@ scriptsToAdd.add([name:"getHistoricalEventClassesForSearch", enabledForAllGroups
 
 
 // topology scripts
-scriptsToAdd.add([name:"createMap", enabledForAllGroups:true])
-scriptsToAdd.add([name:"editMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"expandMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"mapList", enabledForAllGroups:true])

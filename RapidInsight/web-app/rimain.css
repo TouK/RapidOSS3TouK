@@ -35,11 +35,11 @@
 
 .rimain a.start {
     background: transparent url( images/skin/control_forward_blue.gif ) no-repeat scroll 5px 50%;
-    padding-left: 28px;
+    padding: 3 6 0 25;
 }
 .rimain a.stop {
     background: transparent url( images/skin/stop.png ) no-repeat scroll 5px 50%;
-    padding-left: 28px;
+    padding: 3 6 0 25;
 }
 .rimain .paginateButtons{
    background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0pt -1300px;

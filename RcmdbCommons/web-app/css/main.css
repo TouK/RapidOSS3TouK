@@ -119,9 +119,9 @@ padding:7px 12px;
     right:0;
 }
 
-.menuButton a.refresh {
+a.refresh {
     background: url(../images/skin/arrow_refresh.png) center left no-repeat;
-    padding-left: 25px;
+    padding: 3 6 0 25;
     color: #333;
 }
 

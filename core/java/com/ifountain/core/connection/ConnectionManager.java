@@ -223,7 +223,7 @@ public class ConnectionManager
     public static List getBorrowedConnections(String connectionName){
         synchronized (getConnectionLock)
         {
-            List result=new ArrayList();
+            List result=null;
             ConnectionPool pool = (ConnectionPool) pools.get(connectionName);
             if(pool != null )
             {
@@ -231,5 +231,11 @@ public class ConnectionManager
             }
             return result;
         }
+    }
+
+    //for testing
+    protected static Map<String, ConnectionPool> getPoolsMap()
+    {
+        return pools;
     }
 }

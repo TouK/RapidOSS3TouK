@@ -95,19 +95,25 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         import ${DataStore.name};
         import ${ListeningAdapterRunnerTest.name};
         def init(){
+            println "scriptForStateMechanism: starting init"
             synchronized(ListeningAdapterRunnerTest.stateWaitLock){
                  ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
             }
+            println "scriptForStateMechanism: init done "
         }
         def cleanUp(){
+            println "scriptForStateMechanism: starting cleanUp"
              synchronized(ListeningAdapterRunnerTest.stateWaitLock){
                  ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
             }
+            println "scriptForStateMechanism: cleanUp done "
         }
         def getParameters(){
+            println "scriptForStateMechanism: starting getParameters"
             synchronized(ListeningAdapterRunnerTest.stateWaitLock){
                  ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
             }
+            println "scriptForStateMechanism: getParameters done "
             return [:]
         }
         def update(data){

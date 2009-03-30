@@ -750,6 +750,8 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
     }
     public void subscribe() throws Exception
     {
+        println "BaseListeningAdapterMock: starting subscribe"
+
         if(waitLock != null){
             synchronized(waitLock){
                 waitLock.wait(1000);    
@@ -757,9 +759,13 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
         }
         subscribeCalled = true;
         isSubscribed = true;
+
+        println "BaseListeningAdapterMock: subscribe done"
     }
     public void unsubscribe() throws Exception
     {
+        println "BaseListeningAdapterMock: starting unsubscribe"
+
         if(unsubscribeException != null){
             throw unsubscribeException;
         }
@@ -770,6 +776,8 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
         }
         unsubscribeCalled = true;
         isSubscribed = false;
+
+        println "BaseListeningAdapterMock: unsubscribe done"
     }
     protected void _unsubscribe()
     {

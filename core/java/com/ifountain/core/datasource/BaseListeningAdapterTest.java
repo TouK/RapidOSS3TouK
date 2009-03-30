@@ -57,10 +57,6 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 0);
     }
 
-    public void testCloseConnectionAfterUnsubscribe() {
-        fail("Should be tested automated and manually");
-    }
-
     public void testSubscribe() throws Exception {
         listeningAdapter.subscribe();
         assertTrue(listeningAdapter.getConnection().isConnected());

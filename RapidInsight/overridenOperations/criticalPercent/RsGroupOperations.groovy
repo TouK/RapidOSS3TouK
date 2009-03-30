@@ -28,7 +28,7 @@ public class RsGroupOperations extends RsTopologyObjectOperations {
     {
     	if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
     	{
-            def maxValue = 0;
+            def maxValue = Constants.INDETERMINATE;
             childObjects.each {
                 def childState = it.getState();
                 if (childState >= 0 && maxValue < childState)

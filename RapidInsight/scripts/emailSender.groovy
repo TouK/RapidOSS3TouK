@@ -10,7 +10,8 @@ import connector.EmailConnector
 import message.RsMessage
 
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
-def from="IFountainEmailSender"
+//should be a valid email address
+def from="IFountainEmailSender@ifountain.com"
 
 def date=new Date();
 

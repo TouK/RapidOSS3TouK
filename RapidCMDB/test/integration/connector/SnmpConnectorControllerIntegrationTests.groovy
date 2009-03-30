@@ -6,7 +6,10 @@ import datasource.SnmpDatasource
 import script.CmdbScript
 import org.apache.log4j.Level
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager;
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import com.ifountain.rcmdb.datasource.ListeningAdapterRunner;
 
 
 /**
@@ -329,6 +332,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         controller.params.id=snmpConnector.id;
         controller.startConnector();
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        }))
+
         assertFalse(ds.isStartable());
         def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 

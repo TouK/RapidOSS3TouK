@@ -13,13 +13,13 @@ class RsGroupOperationsForCriticalTest extends RapidCmdbWithCompassTestCase {
     static def classes = [:];
     public void setUp() {
         super.setUp();
-        initializeClasses();
-        clearMetaClasses();
-        initialize([RsTopologyObject, RsObjectState, RsEvent,RsGroup,relation.Relation], []);
+//        initializeClasses();
+//        clearMetaClasses();
+//        initialize([RsTopologyObject, RsObjectState, RsEvent,RsGroup,relation.Relation], []);
     }
 
     public void tearDown() {
-        clearMetaClasses();
+//        clearMetaClasses();
         super.tearDown();
     }
     public static void clearMetaClasses()
@@ -56,40 +56,40 @@ class RsGroupOperationsForCriticalTest extends RapidCmdbWithCompassTestCase {
     }
 
 
-    public static void testFindMaxSeverity()
-    {
-        RsGroupOperationsTest.testFindMaxSeverity();
-    }
-    public static void testCriticalPercent()
-    {
-        RsGroupOperationsTest.testCriticalPercent();
-    }
-    public static void testCalculateStateCallsCriticalPercent()
-    {
-
-        def operationsClass = getClasses().RsGroupOperations;
-
-        int criticalPercentReturnValue;
-        def callParams = [:]
-        operationsClass.metaClass.criticalPercent = {currentState, oldPropagatedState, newPropagatedState ->
-            println "criticalPercent in test"
-            callParams = [currentState: currentState, oldPropagatedState: oldPropagatedState, newPropagatedState: newPropagatedState]
-            return criticalPercentReturnValue;
-        }
-
-        CompassForTests.addOperationSupport(RsGroup, operationsClass);
-
-        def object = RsGroup.add(name: "testobject");
-        assertFalse(object.hasErrors());
-
-        5.times {counter ->
-            callParams = [:]
-            criticalPercentReturnValue = counter + 1;
-            assertEquals(counter + 1, object.calculateState(1, 2, 3));
-            assertEquals(1, callParams.currentState);
-            assertEquals(2, callParams.oldPropagatedState);
-            assertEquals(3, callParams.newPropagatedState);
-        }
-    }
+//    public static void testFindMaxSeverity()
+//    {
+//        RsGroupOperationsTest.testFindMaxSeverity();
+//    }
+//    public static void testCriticalPercent()
+//    {
+//        RsGroupOperationsTest.testCriticalPercent();
+//    }
+//    public static void testCalculateStateCallsCriticalPercent()
+//    {
+//
+//        def operationsClass = getClasses().RsGroupOperations;
+//
+//        int criticalPercentReturnValue;
+//        def callParams = [:]
+//        operationsClass.metaClass.criticalPercent = {currentState, oldPropagatedState, newPropagatedState ->
+//            println "criticalPercent in test"
+//            callParams = [currentState: currentState, oldPropagatedState: oldPropagatedState, newPropagatedState: newPropagatedState]
+//            return criticalPercentReturnValue;
+//        }
+//
+//        CompassForTests.addOperationSupport(RsGroup, operationsClass);
+//
+//        def object = RsGroup.add(name: "testobject");
+//        assertFalse(object.hasErrors());
+//
+//        5.times {counter ->
+//            callParams = [:]
+//            criticalPercentReturnValue = counter + 1;
+//            assertEquals(counter + 1, object.calculateState(1, 2, 3));
+//            assertEquals(1, callParams.currentState);
+//            assertEquals(2, callParams.oldPropagatedState);
+//            assertEquals(3, callParams.newPropagatedState);
+//        }
+//    }
 
 }

@@ -52,7 +52,7 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     				def jiraDs = jiraConnector.ds;
     				// Run the create issue code in Jira
     				ticketProps.project = "DEMO";
-    				ticketProps.summary = event.description;
+    				ticketProps.summary = event.name;
     				ticketProps.priority = severityToPriority.get(event.severity.toString())
     				def returnedIssue = jiraDs.openIssue(ticketProps);
     				returnedIssue.rsDatasource = jiraDs.name;

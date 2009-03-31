@@ -64,7 +64,8 @@ class JiraPluginBuild extends Build{
             ant.fileset(dir: "$env.rapid_insight/operations"){
             	ant.include(name: "**/*Jira*.groovy")
             }
-        }        
+        }
+        ant.move(file:"${rapidSuiteDir}/operations/RsTicketOperationsForJira.groovy", toFile:"${rapidSuiteDir}/operations/RsTicketOperations.groovy")
         ant.copy(todir: "${rapidSuiteDir}/lib") {
             ant.fileset(dir: "$env.rapid_jira/lib")
         }

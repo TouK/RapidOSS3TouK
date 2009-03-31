@@ -19,6 +19,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void tearDown() {
         clearMetaClasses();
+        RsTopologyObjectOperationsTest.clearClasses();
         super.tearDown();
     }
     public static void clearMetaClasses()
@@ -29,6 +30,10 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
             GroovySystem.metaClassRegistry.removeMetaClass(classInstance)
         }
         ExpandoMetaClass.enableGlobally();
+    }
+    public static void clearClasses()
+    {
+        classes=[:];
     }
     public def initializeClasses()
     {

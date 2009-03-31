@@ -132,7 +132,10 @@ runGrailsTests() {
     fi
     mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
+    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
+
     ./rsmodeler.sh -testIntegration
+
     sleep 5
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/Modeler ]
@@ -144,6 +147,9 @@ runGrailsTests() {
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
+
+    sed -i "s/-Xmx512m/-Xmx1024m/g" rs.sh
+
     ./rs.sh -testUnit
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
@@ -192,6 +198,7 @@ generateTestDomainClasses() {
     chmod +x *.sh
 
     sed -i "s/-Dserver.port=12223/-Dserver.port=9999/g" rsmodeler.sh
+
 
     ./rsmodeler.sh -start
     dataDir=data

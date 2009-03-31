@@ -49,7 +49,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
     {
         assertEquals(5, getClasses().Constants.CRITICAL);
         assertEquals(4, getClasses().Constants.MAJOR);
-        assertEquals(1, getClasses().Constants.INDETERMINATE);
+        assertEquals(0, getClasses().Constants.NORMAL);
         assertEquals(-1, getClasses().Constants.NOTSET);
         assertTrue(getClasses().Constants.CRITICAL_PERCENTAGE > getClasses().Constants.MAJOR_PERCENTAGE);
         assertTrue(getClasses().Constants.MAJOR_PERCENTAGE > 0);
@@ -153,7 +153,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(object.hasErrors());
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.findMaxSeverity(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.findMaxSeverity(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
         }
         RsEvent.add(name: "ev1", elementName: object.name, severity: 1)
         RsEvent.add(name: "ev2", elementName: object.name, severity: 2)
@@ -183,7 +183,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
         def eventCount = 10;
         def events = [];
         eventCount.times {counter ->
-            events.add(RsEvent.add(name: "ev${counter}", elementName: object.name, severity: getClasses().Constants.INDETERMINATE))
+            events.add(RsEvent.add(name: "ev${counter}", elementName: object.name, severity: getClasses().Constants.NORMAL))
         }
         //these 2 events here must not effect calculation
         RsEvent.add(name: "otherev1", severity: 1)
@@ -195,7 +195,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(criticalCount, RsEvent.countHits("elementName:${object.name} AND severity:${getClasses().Constants.CRITICAL}"));
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
             //need to calculate is false
             assertEquals(counter + 1, object.criticalPercent(counter + 1, counter + 1, counter + 1));
         }
@@ -211,7 +211,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
 
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
             //need to calculate is false
             assertEquals(counter + 1, object.criticalPercent(counter + 1, counter + 1, counter + 1));
         }

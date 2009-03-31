@@ -28,7 +28,7 @@ public class RsGroupOperations extends RsTopologyObjectOperations {
     {
     	if (needToCalculate(currentState,  oldPropagatedState, newPropagatedState))
     	{
-            def maxValue = Constants.INDETERMINATE;
+            def maxValue = Constants.NORMAL;
             childObjects.each {
                 def childState = it.getState();
                 if (childState >= 0 && maxValue < childState)
@@ -53,7 +53,7 @@ public class RsGroupOperations extends RsTopologyObjectOperations {
 			switch(percent) {
 				case {it > Constants.CRITICAL_PERCENTAGE}: currentState = Constants.CRITICAL;break
 				case {it >Constants.MAJOR_PERCENTAGE}: currentState = Constants.MAJOR;break
-				default: currentState = Constants.INDETERMINATE
+				default: currentState = Constants.NORMAL
 			}
 		}
 		return currentState;

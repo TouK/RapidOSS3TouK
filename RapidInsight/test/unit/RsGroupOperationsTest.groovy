@@ -59,7 +59,7 @@ class RsGroupOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(object.hasErrors());
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.findMaxSeverity(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.findMaxSeverity(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
         }
         def childObjects=[];
 
@@ -109,7 +109,7 @@ class RsGroupOperationsTest extends RapidCmdbWithCompassTestCase {
 
         childObjectCount.times {counter ->
             def childObject=RsTopologyObject.add(name: "ev${counter}", parentObjects:[object]);
-            childObject.saveState(getClasses().Constants.INDETERMINATE);
+            childObject.saveState(getClasses().Constants.NORMAL);
             childObjects.add(childObject)
 
         }
@@ -129,7 +129,7 @@ class RsGroupOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(criticalCount + 2, RsObjectState.countHits("state:${getClasses().Constants.CRITICAL}"));
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
             //need to calculate is false
             assertEquals(counter + 1, object.criticalPercent(counter + 1, counter + 1, counter + 1));
         }
@@ -146,7 +146,7 @@ class RsGroupOperationsTest extends RapidCmdbWithCompassTestCase {
 
         5.times {counter ->
             //need to calculate is true
-            assertEquals(getClasses().Constants.INDETERMINATE, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
+            assertEquals(getClasses().Constants.NORMAL, object.criticalPercent(counter + 1, getClasses().Constants.NOTSET, getClasses().Constants.NOTSET));
             //need to calculate is false
             assertEquals(counter + 1, object.criticalPercent(counter + 1, counter + 1, counter + 1));
         }

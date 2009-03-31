@@ -1,10 +1,10 @@
 logger.warn("Starting..............")
 
-//RI- FINDMAX
+//RI- FINDMAX                           r
 final static int CRITICAL = 5
 final static int MAJOR = 4
 final static int WARNING = 2
-final static int INDETERMINATE = 1
+final static int NORMAL = 0
 final static int NOTSET = -1
 
 RsCustomer.removeAll()
@@ -37,26 +37,26 @@ serv12.addRelation(childObjects:[device121,device122])
 serv21.addRelation(childObjects:[device211,device212])
 serv22.addRelation(childObjects:[device221,device222])
 
-def event1111 = RsEvent.add(name:"Event1111", elementName:device111.name, severity:INDETERMINATE)
+def event1111 = RsEvent.add(name:"Event1111", elementName:device111.name, severity:NORMAL)
 assert device111.currentState() == NOTSET
 assert serv11.currentState() == NOTSET
 assert cust1.currentState() == NOTSET
 device111.setState(event1111.severity)
-assert device111.currentState() == INDETERMINATE
-assert serv11.currentState() == INDETERMINATE
-assert cust1.currentState() == INDETERMINATE
+assert device111.currentState() == NORMAL
+assert serv11.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
 
 def event1112 = RsEvent.add(name:"Event1112", elementName:device111.name,severity:MAJOR)
 device111.setState(event1112.severity)
-assert device111.currentState() == INDETERMINATE
-assert serv11.currentState() == INDETERMINATE
-assert cust1.currentState() == INDETERMINATE
+assert device111.currentState() == NORMAL
+assert serv11.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
 
 def event1113 = RsEvent.add(name:"Event1113", elementName:device111.name,severity:CRITICAL)
 device111.setState(event1113.severity)
 assert device111.currentState() == MAJOR
-assert serv11.currentState() == INDETERMINATE
-assert cust1.currentState() == INDETERMINATE
+assert serv11.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
 
 event1112.severity = CRITICAL
 device111.setState(event1112.severity,MAJOR)
@@ -67,8 +67,8 @@ assert cust1.currentState() == CRITICAL
 event1112.severity = MAJOR
 device111.setState(event1112.severity,CRITICAL)
 assert device111.currentState() == MAJOR
-assert serv11.currentState() == INDETERMINATE
-assert cust1.currentState() == INDETERMINATE
+assert serv11.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
 
 def event1221 = RsEvent.add(name:"Event1221", elementName:device122.name,severity:CRITICAL)
 device122.setState(event1221.severity)

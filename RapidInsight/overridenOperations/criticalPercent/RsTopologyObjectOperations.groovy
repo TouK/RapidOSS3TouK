@@ -94,7 +94,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     {
         if (needToCalculate(currentState, oldPropagatedState, newPropagatedState))
         {
-            def maxValue = Constants.INDETERMINATE;
+            def maxValue = Constants.NORMAL;
             def severityResults = RsEvent.getPropertyValues("elementName:${name.exactQuery()}", ["severity"], [sort: "severity", order: "desc", max: 1]).severity;
             if (severityResults.size() > 0)
             {
@@ -108,7 +108,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     {
         if (needToCalculate(currentState, oldPropagatedState, newPropagatedState))
         {
-            currentState = Constants.INDETERMINATE
+            currentState = Constants.NORMAL
             def totalEventCount = RsEvent.countHits("elementName:${name.exactQuery()}");
             if (totalEventCount == 0)
                 return currentState
@@ -118,7 +118,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
             switch (percent) {
                 case {it > Constants.CRITICAL_PERCENTAGE}: currentState = Constants.CRITICAL; break
                 case {it > Constants.MAJOR_PERCENTAGE}: currentState = Constants.MAJOR; break
-                default: currentState = Constants.INDETERMINATE
+                default: currentState = Constants.NORMAL
             }
         }
         return currentState;

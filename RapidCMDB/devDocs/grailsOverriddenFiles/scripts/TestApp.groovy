@@ -242,7 +242,7 @@ def runTests = {suite, TestResult result, Closure callback ->
     for (TestSuite test in suite.tests()) {
         def totalMemory = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
         def freeMemory = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
-        def usedMemory = total - free;
+        def usedMemory = totalMemory - freeMemory;
         
         new File("${testDir}/TEST-${test.name}.xml").withOutputStream {xmlOut ->
             new File("${testDir}/plain/TEST-${test.name}.txt").withOutputStream {plainOut ->

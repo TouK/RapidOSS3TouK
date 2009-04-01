@@ -240,6 +240,10 @@ def runTests = {suite, TestResult result, Closure callback ->
     def specialTestClasses = getSpecialTestsList();
 
     for (TestSuite test in suite.tests()) {
+        def totalMemory = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
+        def freeMemory = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
+        def usedMemory = total - free;
+        
         new File("${testDir}/TEST-${test.name}.xml").withOutputStream {xmlOut ->
             new File("${testDir}/plain/TEST-${test.name}.txt").withOutputStream {plainOut ->
 
@@ -256,7 +260,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     def junitTest = new JUnitTest(test.name)
                     plainOutput.startTestSuite(junitTest)
                     xmlOutput.startTestSuite(junitTest)
-                    savedOut.println "Running test ${test.name}..."
+                    savedOut.println "Running test ${test.name}... Used Memory:${usedMemory} Total Memory:${totalMemory}"
                     def start = System.currentTimeMillis()
                     def runCount = 0
                     def failureCount = 0

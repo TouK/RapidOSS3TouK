@@ -44,7 +44,11 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
     }
     public static def initializeClassesFrom(classesToLoad)
     {
-        RsTopologyObjectOperationsTest.classes = classesToLoad;
+        if(classes!=null)
+        {
+            classes.clear();
+        }
+        classes = classesToLoad.clone();
     }
     static def getClasses()
     {

@@ -46,7 +46,11 @@ class RsGroupOperationsTest extends RapidCmdbWithCompassTestCase {
     }
     public static def initializeClassesFrom(classesToLoad)
     {
-        RsGroupOperationsTest.classes = classesToLoad;
+        if(classes!=null)
+        {
+            classes.clear();
+        }   
+        classes = classesToLoad.clone();
     }
     static def getClasses()
     {

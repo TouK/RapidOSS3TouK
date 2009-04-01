@@ -261,7 +261,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     plainOutput.startTestSuite(junitTest)
                     xmlOutput.startTestSuite(junitTest)
                     savedOut.println "Running test ${test.name}..."
-                    savedOut.println "Used Memory:${usedMemory} Total Memory:${totalMemory}"
+                    savedOut.println "     Used Memory:${usedMemory} Total Memory:${totalMemory}"
                     def start = System.currentTimeMillis()
                     def runCount = 0
                     def failureCount = 0

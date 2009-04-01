@@ -70,20 +70,22 @@ deviceMap.each{deviceName, deviceConfigMap->
                         edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
                         if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
                         {
-                            def expandable = isExpandable(otherSide, edgeMap);
-                            deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : expandable, "expanded":"false" ];
+                            deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : "false", "expanded":"false" ];
                         }
                     }
                 }
 
             }
         }
-        else
-        {
-            deviceConfigMap.expandable = isExpandable(deviceName, edgeMap);
-        }
-
     }
+}
+
+//we should generate isExpandable after all map is generated for only unexpanded devices
+deviceSet.each{devName, devConfig->
+     if(devConfig.expanded=="false")
+     {
+        devConfig.expandable = isExpandable(devName, edgeMap);
+     }
 }
 
 def getOtherSideName(link, deviceName)

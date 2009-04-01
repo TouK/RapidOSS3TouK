@@ -236,13 +236,18 @@ def getSpecialTestsList()
     }
     return specialTestClasses;
 }
+def printMemoryUsage(output)
+{
+   def totalMemory = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
+   def freeMemory = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
+   def usedMemory = totalMemory - freeMemory;
+   output.println "   Used Memory:${usedMemory} Total Memory:${totalMemory}"
+}
 def runTests = {suite, TestResult result, Closure callback ->
     def specialTestClasses = getSpecialTestsList();
 
     for (TestSuite test in suite.tests()) {
-        def totalMemory = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
-        def freeMemory = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
-        def usedMemory = totalMemory - freeMemory;
+
         
         new File("${testDir}/TEST-${test.name}.xml").withOutputStream {xmlOut ->
             new File("${testDir}/plain/TEST-${test.name}.txt").withOutputStream {plainOut ->
@@ -261,7 +266,8 @@ def runTests = {suite, TestResult result, Closure callback ->
                     plainOutput.startTestSuite(junitTest)
                     xmlOutput.startTestSuite(junitTest)
                     savedOut.println "Running test ${test.name}..."
-                    savedOut.println "   Used Memory:${usedMemory} Total Memory:${totalMemory}"
+                    printMemoryUsage(savedOut);
+
                     def start = System.currentTimeMillis()
                     def runCount = 0
                     def failureCount = 0
@@ -275,6 +281,8 @@ def runTests = {suite, TestResult result, Closure callback ->
                         String fullName = test.name+"."+t.name;
                         if(!specialTestClasses.contains(fullName))
                         {
+
+
                             System.out.println "--Output from ${t.name}--"
                             System.err.println "--Output from ${t.name}--"
 
@@ -295,6 +303,8 @@ def runTests = {suite, TestResult result, Closure callback ->
                                 thisTest.failures().each {result.addFailure(t, it.thrownException())}
                             }
                             else {savedOut.println "SUCCESS"}
+
+                            printMemoryUsage(savedOut);
                         }
                         else
                         {

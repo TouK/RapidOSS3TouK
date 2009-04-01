@@ -241,7 +241,7 @@ def printMemoryUsage(output)
    def totalMemory = Runtime.getRuntime().totalMemory() / Math.pow(2,20);
    def freeMemory = Runtime.getRuntime().freeMemory() / Math.pow(2,20);
    def usedMemory = totalMemory - freeMemory;
-   output.println "   Used Memory:${usedMemory} Total Memory:${totalMemory}"
+   output.println "                                        Used Memory:${usedMemory} Total Memory:${totalMemory}"
 }
 def runTests = {suite, TestResult result, Closure callback ->
     def specialTestClasses = getSpecialTestsList();

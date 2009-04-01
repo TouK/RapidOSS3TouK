@@ -46,7 +46,7 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
         def rsTopologyObject = RsTopologyObject.get(name:topologyObjectName);
         if(rsTopologyObject instanceof RsTopologyObject)
         {
-            rsTopologyObject.setState(-1, severity);
+            rsTopologyObject.setState(Constants.NOTSET, severity);
         }
     }
 

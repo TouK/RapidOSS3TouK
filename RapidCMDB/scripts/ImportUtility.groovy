@@ -113,6 +113,7 @@ def importObjects(web, fname){
 // ex: changedPropNameMap = ["surname":"lastname", "address":"addressLine1"]
 // where keys in the map are old prop names in the xml file, values are the new prop names in the model.
 def importRenamedProperties(web, Map changedPropNameMap, fname){
+	idmapFilledDuringImportObjects = [:]
 	def slurper = new XmlSlurper();
 	def data = slurper.parse(fname);
 	data.Objects.Object.each{obj->
@@ -131,7 +132,8 @@ def importRenamedProperties(web, Map changedPropNameMap, fname){
 		id = props.id;
 		props.remove("id");
 		props.remove("modelName");
-		model.add(props)
+		def modifiedObj = model.add(props)
+		idmapFilledDuringImportObjects.put(id,modifiedObj.id)
 	}	
 }
 

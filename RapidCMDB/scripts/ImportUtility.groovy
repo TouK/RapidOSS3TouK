@@ -29,6 +29,8 @@
 import groovy.xml.MarkupBuilder
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 
+idmapFilledDuringImportObjects = [:];
+
 // Import Configuration data.
 // NOTE: This method removes the existing config data, and imports them from the xml file.
 def importConfigData(web, fname){
@@ -89,6 +91,7 @@ def importConfigData(web, fname){
 def importObjects(web, fname){
 	def slurper = new XmlSlurper();
 	def data = slurper.parse(fname);
+	idmapFilledDuringImportObjects = [:]
 	data.Objects.Object.each{obj->
 		def props = [:];
 		obj.attributes().each{key, value->	
@@ -96,8 +99,11 @@ def importObjects(web, fname){
 		}
 		
 		def model = web.grailsApplication.getDomainClass(props["modelName"]).clazz;
+		def oldId = props.id
 		props.remove("modelName");
 		props.remove("id");
+		def newObj = model.add(props)
+		idmapFilledDuringImportObjects.put(oldId,newObj.id)
 	}	
 }
 
@@ -125,8 +131,7 @@ def importRenamedProperties(web, Map changedPropNameMap, fname){
 		id = props.id;
 		props.remove("id");
 		props.remove("modelName");
-		def updatedObj = model.get(id:id);
-		updatedObj.update(props);
+		model.add(props)
 	}	
 }
 
@@ -147,6 +152,11 @@ def importRenamedRelations(web, Map changedRelationNameMap, fname){
 		}
 		from=rel.attributes().fromObjectId;
 		to=rel.attributes().toObjectId;
+		if (idmapFilledDuringImportObjects.size()>0){
+			from=idmapFilledDuringImportObjects[from];
+			to=idmapFilledDuringImportObjects[to];
+		}
+		
 		fromModelName=rel.attributes().fromModel
 		toModelName=rel.attributes().toModel
 		def fromModel = web.grailsApplication.getDomainClass(fromModelName).clazz;
@@ -191,4 +201,9 @@ def importForTypeChangedProperty(web, changedProp, Map oldValueNewValueMap, fnam
 def importBothObjectsAndRelationsForAModelAndItsChildren(web, Map changedRelationNameMap, Map changedPropNameMap,fname){
 	importRenamedProperties(web, changedPropNameMap, fname);
 	importRenamedRelations(web, changedRelationNameMap, fname);
+}
+
+def importBothObjectsAndRelationsForAModelAndItsChildren(web,fname){
+	importObjects(web, fname);
+	importRelations(web, fname);
 }

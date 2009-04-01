@@ -58,7 +58,7 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     				returnedIssue.rsDatasource = jiraDs.name;
     				def ticket = RsTicket.add(returnedIssue);
     				
-    				ticket.addRelation("relatedEvent":event);
+    				ticket.addRelation("relatedEvents":event);
     				
     				if (ticketProps.elementName!="" && ticketProps.elementName!=null){
     					def topoObj = RsTopologyObject.get(name:ticketProps.elementName);

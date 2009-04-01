@@ -67,13 +67,12 @@ event = RsEvent.get(name:"RsEvent1");
 assert event == null;
 
 historicalEvent = RsHistoricalEvent.search("name:RsEvent1");
-assert historicalEvent.results[0].active == false
+assert historicalEvent.results[0].activeId == oldid
 
 journal = RsEventJournal.search("eventId:${oldid}");
-assert journal.total == 0;
-
-journal = RsEventJournal.search("eventId:${historicalEvent.results[0].id}")
 assert journal.total == 4;
+
+
 
 event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",createdAt:now,changedAt:now, clearedAt:now]);
 oldid = event.id;
@@ -82,13 +81,11 @@ event.setOwnership(true,"Tugrul");
 event.clear();
 
 historicalEvent = RsHistoricalEvent.search("name:RsRiEvent1");
-assert historicalEvent.results[0].active == false
+assert historicalEvent.results[0].activeId == oldid
 
 journal = RsEventJournal.search("eventId:${oldid}");
-assert journal.total == 0;
-
-journal = RsEventJournal.search("eventId:${historicalEvent.results[0].id}")
 assert journal.total == 4;
+
 
 event = RsRiEvent.notify([name:"RsRiEvent1",eventName:"Down", owner:"Karl",createdAt:now,changedAt:now, clearedAt:now]);
 event.clear();

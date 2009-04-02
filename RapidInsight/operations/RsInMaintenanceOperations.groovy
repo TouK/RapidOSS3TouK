@@ -4,7 +4,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 {
     public static boolean getObjectInMaintenance(object)
     {
-        def o = RsInMaintenance.get(objectId:object.id)
+        def o = RsInMaintenance.get(objectName:object.name)
 		if (o?.active)
 		  return true
 		else
@@ -12,7 +12,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     }
     public static void  putObjectInMaintenance(object,maintParams)
     {
-        maintParams.objectId=object.id;
+        maintParams.objectName=object.name;
         def maintObj=RsInMaintenance.add(maintParams);
         if(maintObj.active == true)
         {
@@ -21,7 +21,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     }
     public static void takeObjectOutOfMaintenance(object)
     {
-       def maintObj = RsInMaintenance.get(objectId:object.id)
+       def maintObj = RsInMaintenance.get(objectName:object.name)
 	   maintObj?.remove()
        eventsInMaintenance(false,object.name);
     }
@@ -45,7 +45,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
             logger.debug("starting.getTime(): ${it.starting.getTime()}")
             if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
                 it.active = true
-                def object = RsTopologyObject.get(id:it.objectId)
+                def object = RsTopologyObject.get(name:it.objectName)
                 logger.debug("activating maintenance for: ${object}")
                 if(object!=null)
                 {
@@ -66,7 +66,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
         activeItems.results.each{
             logger.debug("ending.getTime(): ${it.ending.getTime()}")
             if (it.ending.getTime()>nullDate && it.ending.getTime() <= currentTime){
-                def object = RsTopologyObject.get(id:it.objectId)
+                def object = RsTopologyObject.get(name:it.objectName)
                 logger.debug("deactivating maintenance for: ${object}")
                 if(object!=null)
                 {

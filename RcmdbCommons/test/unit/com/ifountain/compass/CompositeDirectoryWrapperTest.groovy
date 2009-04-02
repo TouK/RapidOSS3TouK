@@ -31,6 +31,7 @@ import org.apache.lucene.store.Directory
 import org.apache.lucene.store.FSDirectory
 import org.compass.core.config.CompassSettings
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import org.apache.lucene.store.NoLockFactory
 
 /**
  * Created by IntelliJ IDEA.
@@ -106,16 +107,22 @@ class CompositeDirectoryWrapperTest extends  AbstractSearchableCompassTests{
             mappings[mapping.getMappedClass().name] = mapping;            
         }
         Directory mainDir = FSDirectory.getDirectory("trial");
+        mainDir.setLockFactory (NoLockFactory.getNoLockFactory())
         Directory dir = provider.wrap(mappings[SubIndexSpecifiedMirrorProviderDomainClass.name].subIndex, mainDir);
         assertTrue (dir instanceof MemoryMirrorDirectoryWrapper);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
         dir = provider.wrap(mappings[RamProviderDomainClass.name].subIndex,  mainDir);
         assertTrue (dir instanceof RAMDirectory);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
         dir = provider.wrap(mappings[FileProviderDomainClass.name].subIndex,  mainDir);
         assertTrue (dir instanceof FSDirectory);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
         dir = provider.wrap(mappings[MirrorProviderDomainClass.name].subIndex,  mainDir);
         assertTrue (dir instanceof MemoryMirrorDirectoryWrapper);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
         dir = provider.wrap(mappings[NullProviderDomainClass.name].subIndex,  mainDir);
         assertTrue (dir instanceof FSDirectory);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
     }
 }
 

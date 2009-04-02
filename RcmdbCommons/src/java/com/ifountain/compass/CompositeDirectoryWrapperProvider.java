@@ -90,7 +90,9 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
             }
             else if(storageType.equalsIgnoreCase(RAM_DIR_TYPE))
             {
-                return new RAMDirectory(dir);
+                RAMDirectory ramdir = new RAMDirectory(dir);
+                ramdir.setLockFactory(dir.getLockFactory());
+                return ramdir;
             }
             else  if(storageType.equalsIgnoreCase(MIRRORED_DIR_TYPE))
             {

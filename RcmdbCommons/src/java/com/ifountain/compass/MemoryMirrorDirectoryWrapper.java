@@ -65,8 +65,13 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
         this.maxNumberOfUnProcessedBytes = maxNumberOfUnProcessedBytes;
         this.minNumberOfUnProcessedBytes = minNumberOfUnProcessedBytes;
         this.ramDir = new RAMDirectory(dir);
+        this.ramDir.setLockFactory(dir.getLockFactory());
         this.executorService = executorService;
         this.awaitTermination = awaitTermination;
+    }
+
+    public LockFactory getLockFactory() {
+        return ramDir.getLockFactory();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public void deleteFile(final String name) throws IOException {

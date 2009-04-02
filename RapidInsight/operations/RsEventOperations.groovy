@@ -19,7 +19,6 @@
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
 	def beforeInsert(){
-println "THIS IS EXECUTED ++++++++++++++++++++++++++++++++++++++++++++++++++++"
 		putInMaintenance()
 	}
 	

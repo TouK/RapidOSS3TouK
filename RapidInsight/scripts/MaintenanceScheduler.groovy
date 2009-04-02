@@ -14,7 +14,7 @@ def activateScheduledItems(){
 		logger.debug("starting.getTime(): ${it.starting.getTime()}")
 		if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
 			it.active = true	
-			def object = RsTopologyObject.get(name:it.objectName)
+			def object = RsTopologyObject.get(id:it.objectId)
 			logger.debug("activating maintenance for: ${object}")
 			object?.eventsInMaintenance(true)
 		}
@@ -31,7 +31,7 @@ def expireItems(){
 	activeItems.results.each{
 		logger.debug("ending.getTime(): ${it.ending.getTime()}")
 		if (it.ending.getTime()>nullDate && it.ending.getTime() <= currentTime){
-			def object = RsTopologyObject.get(name:it.objectName)
+			def object = RsTopologyObject.get(id:it.objectId)
 			logger.debug("deactivating maintenance for: ${object}")
 			object?.eventsInMaintenance(false)
 			it.remove()

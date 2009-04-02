@@ -148,7 +148,7 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     }
     
 	def getInMaintenance() {
-		def o = RsInMaintenance.get(objectName:name)
+		def o = RsInMaintenance.get(objectId:id)
 		if (o?.active) 
 		  return true 
 		else 
@@ -156,21 +156,21 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 	}
 
 	def putInMaintenance() {
-		RsInMaintenance.add(objectName:name, active:true)
+		RsInMaintenance.add(objectId:id, active:true)
 		eventsInMaintenance(true)
 	}
 
 	def putInMaintenance(endDate) {
-		RsInMaintenance.add(objectName:name,ending:endDate, active:true)
+		RsInMaintenance.add(objectId:id,ending:endDate, active:true)
 		eventsInMaintenance(true)
 	}
 
 	def putInMaintenance(startDate, endDate) {
-		RsInMaintenance.add(objectName:name,starting:startDate, ending:endDate)
+		RsInMaintenance.add(objectId:id,starting:startDate, ending:endDate)
 	}
 
 	def takeOutOfMaintenance() {
-		def maintObj = RsInMaintenance.get(objectName:name)
+		def maintObj = RsInMaintenance.get(objectId:id)
 		maintObj?.remove()
 		eventsInMaintenance(false)
 	}

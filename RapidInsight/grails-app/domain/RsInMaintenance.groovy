@@ -13,10 +13,10 @@ class RsInMaintenance
         storageType "FileAndMemory"
     
     };
-    static datasources = ["RCMDB":["keys":["objectName":["nameInDs":"objectName"]]]]
+    static datasources = ["RCMDB":["keys":["objectId":["nameInDs":"objectId"]]]]
 
     
-    String objectName ="";
+    Long objectId =0;
     
     Date starting =new Date(0);
     
@@ -38,7 +38,7 @@ class RsInMaintenance
     static relations = [:]    
     
     static constraints={
-    objectName(blank:false,nullable:false,key:[])
+    objectId(blank:false,nullable:false,key:[])
         
      starting(nullable:true)
         
@@ -60,7 +60,7 @@ class RsInMaintenance
     
     public String toString()
     {
-    	return "${getClass().getName()}[objectName:${getProperty("objectName")}]";
+    	return "${getClass().getName()}[objectId:${getProperty("objectId")}]";
     }
     
     public boolean equals(Object obj) {

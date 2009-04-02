@@ -3,15 +3,6 @@ package scripts
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
 
-import connection.EmailConnection
-import datasource.EmailDatasource
-import connector.EmailConnectorController
-import connector.EmailConnector
-import connection.Connection
-import datasource.BaseDatasource
-import com.ifountain.rcmdb.scripting.ScriptManager
-import org.apache.log4j.Logger
-
 import script.ScriptController
 
 /**
@@ -25,7 +16,6 @@ import script.ScriptController
 
 
 // Warning :  this test assumes that getSummaryData from RapidInsight is in the scripts directory
-// TODO : another version must be written for Smarts getSummaryData
 class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
     def classes=[:]
@@ -53,6 +43,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         severityMap[INDETERMINATE]=1;
         severityMap[NORMAL]=0;
         severityMap[INVALID]=50;
+        copyScript("getSummaryData");
     }
 
     void tearDown() throws Exception {
@@ -76,6 +67,17 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             classes[loadedClass.getSimpleName()]=loadedClass
         }
     }
+    void copyScript(scriptName)
+    {
+
+        def scriptPath= "../../../RapidModules/RapidInsight/scripts/${scriptName}.groovy";
+
+        def ant=new AntBuilder();
+
+        ant.copy(file: scriptPath, toDir: "scripts",overwrite:true);
+
+    }
+
     void testSummaryDataWithNoEvent(){
         def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
         assertFalse(summaryScript.hasErrors());
@@ -120,7 +122,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         }
         def totalEventCount=classes.RsEvent.list().size();
-
+        assertEquals(eventCounts.values().sum(),totalEventCount)
 
 
         def params=[name:"TESTDS",nodeType:"Container"]
@@ -170,7 +172,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
         }
         def totalEventCount=classes.RsEvent.list().size();
-
+        assertEquals(eventCounts.values().sum(),totalEventCount)
 
 
         def params=[name:"TESTDS",nodeType:"Container"]

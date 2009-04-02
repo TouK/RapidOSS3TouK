@@ -19,7 +19,7 @@
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
 	def beforeInsert(){
-		putInMaintenance()
+        RsInMaintenance.eventInBeforeInsert(this.domainObject)
 	}
 	
     static notify(Map eventProps) {
@@ -99,8 +99,5 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 		RsEventJournal.add(propsTemp);
 	}
 	
-	def putInMaintenance(){
-		def object = RsTopologyObject.get(name:elementName)
-		if(object.inMaintenance) inMaintenance = true
-	}
+
 }

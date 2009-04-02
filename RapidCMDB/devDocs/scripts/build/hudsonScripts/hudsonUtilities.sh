@@ -88,7 +88,7 @@ runTestBuildAndJavaTests() {
     echo E_WINDOWS=false >> $optionsFile
     echo E_UNIX=false >> $optionsFile
     echo TEST=true >> $optionsFile
-    echo JREDIR=/opt/jre1.6.0_04 >> $optionsFile
+    echo JREDIR=/usr/java/jdk1.6.0_04/jre >> $optionsFile
     groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild $optionsFile
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     cp $WORKSPACE/LicencedJars/lib/smarts/*.jar $WORKSPACE/Distribution/RapidServer/lib
@@ -111,7 +111,7 @@ runTestBuildAndJavaTestsForRCMDB() {
     echo SAMPLE2=false >> $optionsFile
     echo ZIP=false>> $optionsFile
     echo TEST=true >> $optionsFile
-    echo JREDIR=/opt/jre1.6.0_04 >> $optionsFile
+    echo JREDIR=/usr/java/jdk1.6.0_04/jre >> $optionsFile
     groovy RapidCMDB/devDocs/scripts/build/RapidCmdbBuild $optionsFile
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest

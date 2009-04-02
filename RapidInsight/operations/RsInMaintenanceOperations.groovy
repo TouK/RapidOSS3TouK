@@ -87,6 +87,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     }
 
     public static void removeExpiredItems(logger){
+        logger.debug("BEGIN removeExpiredItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")
 

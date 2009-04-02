@@ -105,7 +105,8 @@ public class RapidTestCase extends TestCase
         super.tearDown();
         long runtime = timer.stop();
         double usedMem = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/Math.pow(2, 20);
-        System.out.println("Test " + this.getName() + " finished in " + runtime + " milliseconds. Used Memory "+usedMem+" MB and Free Memory:" + Runtime.getRuntime().freeMemory()+" MB");
+        double freeMem = Runtime.getRuntime().freeMemory()/Math.pow(2, 20);
+        System.out.println("Test " + this.getName() + " finished in " + runtime + " milliseconds. Used Memory "+usedMem+" MB and Free Memory:" + freeMem +" MB");
 
         testRuntimes.add(new TestResult(this.getClass().getName() + "." + this.getName(), runtime));
     }

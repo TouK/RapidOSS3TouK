@@ -113,7 +113,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def deleteScript(String scriptName) throws Exception {
-        CmdbScript script = CmdbScript.findByName(scriptName)
+        CmdbScript script = CmdbScript.get(name:scriptName)
         if (script) {
             deleteScript(script)
         }
@@ -171,7 +171,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def runScript(String scriptName, Map params) throws Exception {
-        CmdbScript script = CmdbScript.findByName(scriptName)
+        CmdbScript script = CmdbScript.get(name:scriptName)
         if (script) {
             return runScript(script, params);
         }

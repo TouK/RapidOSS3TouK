@@ -85,7 +85,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             this.setTitle(title)
         }
         this.fireBodyClear();
-        this.body.update("");
         if (url)
         {
             this.url = url;
@@ -96,6 +95,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         }
         else
         {
+            this.body.update("");
             this.doPostRequest(this.url, this.params);
         }
         this.showMask();

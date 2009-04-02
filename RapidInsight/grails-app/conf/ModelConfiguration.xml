@@ -145,6 +145,15 @@
       			<Property Name="active" Type="boolean"/>
    			</Properties>
 		</Model>
+        <Model Name="SnmpTrap">
+			<Properties>
+				<Property Name='name' Type='string' IsKey="true"/>
+				<Property Name='trapVersion' Type='number' />
+				<Property Name='destination' Type='string' />
+				<Property Name='port' Type='number' Default="162"/>
+				<Property Name='community' Type='string' Default="public"/>
+			</Properties>
+		</Model>
 		
     </Models>
 	<Relations>

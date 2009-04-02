@@ -148,39 +148,25 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     }
     
 	def getInMaintenance() {
-		def o = RsInMaintenance.get(objectId:id)
-		if (o?.active) 
-		  return true 
-		else 
-		  return false
+		return RsInMaintenance.getObjectInMaintenance(this.domainObject)
 	}
 
 	def putInMaintenance() {
-		RsInMaintenance.add(objectId:id, active:true)
-		eventsInMaintenance(true)
+		RsInMaintenance.putObjectInMaintenance(this.domainObject,[active:true])
 	}
 
 	def putInMaintenance(endDate) {
-		RsInMaintenance.add(objectId:id,ending:endDate, active:true)
-		eventsInMaintenance(true)
+        RsInMaintenance.putObjectInMaintenance(this.domainObject,[ending:endDate, active:true])
 	}
 
 	def putInMaintenance(startDate, endDate) {
-		RsInMaintenance.add(objectId:id,starting:startDate, ending:endDate)
+        RsInMaintenance.putObjectInMaintenance(this.domainObject,[starting:startDate, ending:endDate])
 	}
 
 	def takeOutOfMaintenance() {
-		def maintObj = RsInMaintenance.get(objectId:id)
-		maintObj?.remove()
-		eventsInMaintenance(false)
+        RsInMaintenance.takeObjectOutOfMaintenance(this.domainObject);
 	}
 
-	def eventsInMaintenance(boolean maint) {
-		def events = RsEvent.search("elementName:${name}")
-		events.results.each{
-			if (it.inMaintenance != maint)
-				it.inMaintenance = maint	
-		}
-	}     
+
 }
     

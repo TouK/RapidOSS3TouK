@@ -16,7 +16,7 @@ class SnmpTrap
     
     String name ="";
     
-    Long trapVersion =0;
+    String trapVersion ="v1";
     
     String destination ="";
     
@@ -40,7 +40,7 @@ class SnmpTrap
     static constraints={
     name(blank:false,nullable:false,key:[])
         
-     trapVersion(nullable:true)
+     trapVersion(blank:true,nullable:true)
         
      destination(blank:true,nullable:true)
         

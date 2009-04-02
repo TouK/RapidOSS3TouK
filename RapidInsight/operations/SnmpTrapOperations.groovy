@@ -8,7 +8,7 @@ public class SnmpTrapOperations extends com.ifountain.rcmdb.domain.operation.Abs
         def varbinds = trapProps["varbinds"] != null ? trapProps["varbinds"]: [];
         def timestamp = trapProps["timestamp"] != null ? trapProps["timestamp"] : 0
         def trapCommunity = trapProps["community"] != null ? trapProps["community"] : community;
-        if(trapVersion == SnmpUtils.VERSION_1){
+        if(trapVersion == "v1"){
             return SnmpUtils.sendV1Trap(transportAddress, trapProps["agent"], trapCommunity, trapProps["enterprise"], timestamp, trapProps["generic"], trapProps["specific"], varbinds)
         }
         else{

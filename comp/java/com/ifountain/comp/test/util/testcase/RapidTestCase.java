@@ -104,7 +104,9 @@ public class RapidTestCase extends TestCase
     protected void tearDown() throws Exception {
         super.tearDown();
         long runtime = timer.stop();
-        System.out.println("Test " + this.getName() + " finished in " + runtime + " milliseconds.");
+        double usedMem = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/Math.pow(2, 20);
+        System.out.println("Test " + this.getName() + " finished in " + runtime + " milliseconds. Used Memory "+usedMem+" MB and Free Memory:" + Runtime.getRuntime().freeMemory()+" MB");
+
         testRuntimes.add(new TestResult(this.getClass().getName() + "." + this.getName(), runtime));
     }
     

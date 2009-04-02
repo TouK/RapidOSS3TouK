@@ -39,6 +39,8 @@ class RsEvent {
     
     Boolean acknowledged =false;
     
+    Boolean inMaintenance =false;
+    
     Long severity =0;
     
     String source ="";
@@ -87,6 +89,8 @@ class RsEvent {
         
      acknowledged(nullable:true)
         
+     inMaintenance(nullable:true)
+        
      severity(nullable:true)
         
      source(blank:true,nullable:true)
@@ -130,6 +134,7 @@ class RsEvent {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

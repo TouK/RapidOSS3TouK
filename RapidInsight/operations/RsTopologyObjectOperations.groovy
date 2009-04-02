@@ -146,5 +146,41 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
         }
         return w
     }
+    
+	def getInMaintenance() {
+		def o = RsInMaintenance.get(objectName:name)
+		if (o?.active) 
+		  return true 
+		else 
+		  return false
+	}
+
+	def putInMaintenance() {
+		RsInMaintenance.add(objectName:name, active:true)
+		eventsInMaintenance(true)
+	}
+
+	def putInMaintenance(endDate) {
+		RsInMaintenance.add(objectName:name,ending:endDate, active:true)
+		eventsInMaintenance(true)
+	}
+
+	def putInMaintenance(startDate, endDate) {
+		RsInMaintenance.add(objectName:name,starting:startDate, ending:endDate)
+	}
+
+	def takeOutOfMaintenance() {
+		def maintObj = RsInMaintenance.get(objectName:name)
+		maintObj?.remove()
+		eventsInMaintenance(false)
+	}
+
+	def eventsInMaintenance(boolean maint) {
+		def events = RsEvent.search("elementName:${name}")
+		events.results.each{
+			if (it.inMaintenance != maint)
+				it.inMaintenance = maint	
+		}
+	}     
 }
     

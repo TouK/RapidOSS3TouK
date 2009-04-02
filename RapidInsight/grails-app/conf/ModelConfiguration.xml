@@ -4,7 +4,8 @@
 			<Properties>
 				<Property Name="name" Type="string" IsKey="true"/>
 				<Property Name="owner" Type="string" />
-				<Property Name="acknowledged" Type="boolean" Default="false" />
+				<Property Name="acknowledged" Type="boolean" Default="false"/>
+				<Property Name="inMaintenance" Type="boolean" Default="false"/>
 				<Property Name="severity" Type="number" Default="0"/>
 				<Property Name="source" Type="string" />
 				<Property Name="createdAt" Type="number" />
@@ -136,6 +137,15 @@
 				<Property Name="rsDatasource" Type="string"/>
             </Properties>
 		</Model>
+		<Model Name="RsInMaintenance" StorageType="FileAndMemory">
+   			<Properties>
+      			<Property Name="objectName" Type="string" IsKey="true"/>
+      			<Property Name="starting" Type="date"/>
+      			<Property Name="ending" Type="date"/>
+      			<Property Name="active" Type="boolean"/>
+   			</Properties>
+		</Model>
+		
     </Models>
 	<Relations>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>

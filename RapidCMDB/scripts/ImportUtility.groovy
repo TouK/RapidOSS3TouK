@@ -31,6 +31,8 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 idmapFilledDuringImportObjects = [:];
 
+return 	importConfigData(web, "config.xml")
+
 // Import Configuration data.
 // NOTE: This method removes the existing config data, and imports them from the xml file.
 def importConfigData(web, fname){
@@ -41,46 +43,57 @@ def importConfigData(web, fname){
 	data.Objects.Object.each{obj->
 		objs.add(obj.attributes());
 	}
+	def domClasses = web.grailsApplication.getDomainClasses().clazz.name;
 	
 	data.Models.Model.each{
 		def modelName = it.@name.toString();
-		def model = web.grailsApplication.getDomainClass(modelName).clazz;
-		model.removeAll();
+		if (domClasses.contains(modelName)){
+			def model = web.grailsApplication.getDomainClass(modelName).clazz;
+			model.removeAll();
+		}
+		else{
+			logger.warn("Model <$modelName> does not exist in this version!")			
+		}
 	}
 	
 	def instances = [];
 	objs.each{obj->
 		def modelName = obj.modelName;
-		def clazz = web.grailsApplication.getDomainClass(modelName).clazz;
-		def instance = clazz.newInstance();
-		def propList = clazz.getPropertiesList();
-		def skip = false;
-			
-		if (modelName == "relation.Relation"){
-			obj.objectId = idMap[obj.objectId];
-			obj.reverseObjectId = idMap[obj.reverseObjectId];
-			if (obj.objectId == null || obj.reverseObjectId == null){
-				logger.warn("One or more objects for this relation in XML file ($fname) do not exist: Relation id: <${obj.id}>")
-				skip = true;
-			}
+		if (!domClasses.contains(modelName)){
+			logger.warn("Ignored object <${obj.objectId}> since its model <$modelName> does not exist in this version!")
 		}
-		if (!skip){
-			propList.each{prop->
-				def propValFromXml = obj."$prop.name";
-				if (prop.name == "id"){
-					def oldIdFromXml = propValFromXml;
-					propValFromXml = com.ifountain.rcmdb.domain.IdGenerator.getInstance().getNextId().toString();
-					idMap.put(oldIdFromXml, propValFromXml);
-				}
-				if (prop!="modelName" && propValFromXml!=null && propValFromXml!=''){
-					// code to change the prop type from string to internal type
-					def fieldType = clazz.metaClass.getMetaProperty(prop.name).type;
-					def converter = RapidConvertUtils.getInstance().lookup(fieldType);
-					def propVal = converter.convert(fieldType, propValFromXml);
-	 				instance.setProperty(prop.name, propVal, false);
+		else{
+			def clazz = web.grailsApplication.getDomainClass(modelName).clazz;
+			def instance = clazz.newInstance();
+			def propList = clazz.getPropertiesList();
+			def skip = false;
+				
+			if (modelName == "relation.Relation"){
+				obj.objectId = idMap[obj.objectId];
+				obj.reverseObjectId = idMap[obj.reverseObjectId];
+				if (obj.objectId == null || obj.reverseObjectId == null){
+					logger.warn("One or more objects for this relation in XML file ($fname) do not exist: Relation id: <${obj.id}>")
+					skip = true;
 				}
 			}
-	 		clazz.index(instance);
+			if (!skip){
+				propList.each{prop->
+					def propValFromXml = obj."$prop.name";
+					if (prop.name == "id"){
+						def oldIdFromXml = propValFromXml;
+						propValFromXml = com.ifountain.rcmdb.domain.IdGenerator.getInstance().getNextId().toString();
+						idMap.put(oldIdFromXml, propValFromXml);
+					}
+					if (prop!="modelName" && propValFromXml!=null && propValFromXml!=''){
+						// code to change the prop type from string to internal type
+						def fieldType = clazz.metaClass.getMetaProperty(prop.name).type;
+						def converter = RapidConvertUtils.getInstance().lookup(fieldType);
+						def propVal = converter.convert(fieldType, propValFromXml);
+		 				instance.setProperty(prop.name, propVal, false);
+					}
+				}
+		 		clazz.index(instance);
+			}
 		}
 	}
 }

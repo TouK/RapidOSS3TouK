@@ -15,7 +15,7 @@ import script.ScriptController
 
 
 
-// Warning :  this test assumes that getSummaryData from RapidInsight is in the scripts directory
+// Warning :  this test copies getSummaryData script from parent - svn RapidInsight directory to the scripts directory
 class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
     def classes=[:]

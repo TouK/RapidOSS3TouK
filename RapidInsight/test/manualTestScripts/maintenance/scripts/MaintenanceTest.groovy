@@ -57,21 +57,27 @@ assert(!RsEvent.get(name:event14.name).inMaintenance)
 
 // scheduled inMaintenance
 def startTime = new Date(System.currentTimeMillis()+ 500)
-endTime = new Date(System.currentTimeMillis() + 1000)
+endTime = new Date(System.currentTimeMillis() + 1200)
 device1.putInMaintenance(startTime, endTime)
+
+
+
 script.CmdbScript.runScript(maintScheduler) // not yet in maintenance
 assert(!device1.inMaintenance)
 assert(!RsEvent.get(name:event11.name).inMaintenance)
 assert(!RsEvent.get(name:event12.name).inMaintenance)
 assert(!RsEvent.get(name:event14.name).inMaintenance)
 
-sleep(600)
+sleep(550)
+
 script.CmdbScript.runScript(maintScheduler) // now in maintenance
 assert(device1.inMaintenance)
 assert(RsEvent.get(name:event11.name).inMaintenance)
 assert(RsEvent.get(name:event12.name).inMaintenance)
 
 sleep(200)
+
+
 script.CmdbScript.runScript(maintScheduler) // still in maintenance
 assert(device1.inMaintenance)
 assert(RsEvent.get(name:event11.name).inMaintenance)

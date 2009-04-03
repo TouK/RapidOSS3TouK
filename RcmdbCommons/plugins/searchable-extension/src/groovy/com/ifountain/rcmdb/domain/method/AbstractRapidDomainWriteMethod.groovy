@@ -17,11 +17,12 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
         super(mc);
     }
 
-    public final Object invoke(Object domainObject, Object[] arguments) {
+    public final Object invoke(Object domainObject, Object[] argumentsp) {
         def bulkIndexLockClosure = {
-            String lockName = getLockName(domainObject, arguments);
+            String lockName = getLockName(domainObject, argumentsp);
             def executionClosure = {
-                return _invoke(domainObject, arguments);
+                def res = _invoke(domainObject, argumentsp);
+                return res;
             }
             def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
             return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)

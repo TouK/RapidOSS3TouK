@@ -84,11 +84,10 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
                     RelationUtils.removeRelations(domainObject, relation, value, source);
                 }
             }
-            statistics.stop();
-            statistics.numberOfOperations = numberOfRemovedRelations;
-            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
-            return domainObject;
         }
-
+        statistics.stop();
+        statistics.numberOfOperations = numberOfRemovedRelations;
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
+        return domainObject;
     }
 }

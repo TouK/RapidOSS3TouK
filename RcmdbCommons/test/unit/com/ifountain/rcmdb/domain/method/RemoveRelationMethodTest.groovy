@@ -80,11 +80,12 @@ class RemoveRelationMethodTest extends RapidCmdbWithCompassTestCase{
 
 
         props = [rel1:[notRelatedObject], rel2:[notRelatedObject], rel3:[notRelatedObject], rel4:[notRelatedObject]];
-        expectedDomainObject1.removeRelation(props);
+        def returnedObject = expectedDomainObject1.removeRelation(props);
 
         props = [rel1:null, rel2:null, rel3:null, rel4:null];
         expectedDomainObject1.removeRelation(props);
-        
+
+        assertEquals (returnedObject.id, expectedDomainObject1.id);
         assertNull (expectedDomainObject1.rel1);
         assertNull (expectedDomainObject2.revRel1);
 

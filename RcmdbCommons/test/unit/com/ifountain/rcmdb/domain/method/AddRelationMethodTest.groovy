@@ -253,7 +253,9 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
         initialize([parentModelClass,childModelClass, relatedModelClass], [])
         def childObj = childModelClass.'add'(keyProp:"child1");
         def relatedObj = relatedModelClass.'add'(keyProp:"relatedObj1");
-        childObj.addRelation(rel1:relatedObj);
+        def returnedObject = childObj.addRelation(rel1:relatedObj);
+        assertFalse(returnedObject.hasErrors());
+        assertEquals(returnedObject.id, childObj.id);
         assertFalse (childObj.hasErrors());
         assertEquals (relatedObj.id, childObj.rel1[0].id);
     }

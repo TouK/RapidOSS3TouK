@@ -166,7 +166,9 @@ class SearchableExtensionGrailsPlugin {
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
+        def bulkAddRelationMethod = new BulkAddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
+        def bulkRemoveRelationMethod = new BulkRemoveRelationMethod(mc, relations);
 
         mc.update = {Map props->
             return updateMethod.invoke(delegate,  [props] as Object[])
@@ -174,7 +176,12 @@ class SearchableExtensionGrailsPlugin {
         mc.addRelation = {Map props->
           return addRelationMethod.invoke(delegate,  [props, null, true] as Object[])
         }
-
+        mc.'static'.bulkAddRelation = {Collection relationList->
+          return bulkAddRelationMethod.invoke(delegate,  [relationList] as Object[])
+        }
+        mc.'static'.bulkRemoveRelation = {Collection relationList->
+          return bulkRemoveRelationMethod.invoke(delegate,  [relationList] as Object[])
+        }
         mc.addRelation = {Map props, String source->
           return addRelationMethod.invoke(delegate,  [props, source,  true] as Object[])
         }

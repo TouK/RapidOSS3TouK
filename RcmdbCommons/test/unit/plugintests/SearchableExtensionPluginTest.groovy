@@ -280,6 +280,117 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
 
     }
 
+
+    public void testBulkAddRelations()
+    {
+        Map classes = initializePluginAndClasses();
+        def addedObjectProps1 = [keyProp:"object1", prop1:"prop1Value1"]
+        def addedObjectProps2 = [keyProp:"object2", prop1:"prop1Value2"]
+        def relatedObject1Props = [keyProp:"object2", prop1:"prop1Value2"]
+        def relatedObject2Props = [keyProp:"object4", prop1:"prop1Value4"]
+        def relatedObject3Props = [keyProp:"object5", prop1:"prop1Value5"]
+        def addedObject1 = classes.child.add(addedObjectProps1);
+        def addedObject2 = classes.child.add(addedObjectProps2);
+        def relatedObject1 = classes.related.add(relatedObject1Props);
+        def relatedObject2 = classes.related.add(relatedObject2Props);
+        def relatedObject3 = classes.related.add(relatedObject3Props);
+        assertFalse(addedObject1.hasErrors());
+        assertFalse(addedObject2.hasErrors());
+        assertFalse(relatedObject1.hasErrors());
+        assertFalse(relatedObject2.hasErrors());
+        assertFalse(relatedObject3.hasErrors());
+        assertEquals (1, classes.child.countHits("id:${addedObject1.id}"));
+        assertEquals (1, classes.child.countHits("id:${addedObject2.id}"));
+        assertEquals (1, classes.related.countHits("id:${relatedObject1.id}"));
+        assertEquals (1, classes.related.countHits("id:${relatedObject2.id}"));
+        assertEquals (1, classes.related.countHits("id:${relatedObject3.id}"));
+        def object1InRepo = classes.child.search("id:${addedObject1.id}").results[0];
+
+        assertEquals (0, addedObject1.rel1.size());
+        assertEquals (0, object1InRepo.rel1.size());
+
+        //test bulk add relation
+        def returnedObjects = classes.child.bulkAddRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1, relatedObject3]]],
+                    [object:addedObject2, relations:["rel1":relatedObject2]]
+                ]
+        );
+        assertEquals(2, returnedObjects.size());
+        assertEquals(2, returnedObjects[0].rel1.size());
+        assertEquals(1, returnedObjects[1].rel1.size());
+        assertNotNull(returnedObjects[0].rel1.find {it.id == relatedObject1.id});
+        assertNotNull(returnedObjects[0].rel1.find {it.id == relatedObject3.id});
+        assertNotNull(returnedObjects[1].rel1.find {it.id == relatedObject2.id});
+
+        //test bulk remove relation
+        def returnedObjectsAfterBulkRemove = classes.child.bulkRemoveRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1]]],
+                    [object:addedObject2, relations:["rel1":relatedObject2]]
+                ]
+        );
+        assertEquals(2, returnedObjects.size());
+        assertEquals(1, returnedObjects[0].rel1.size());
+        assertEquals(0, returnedObjects[1].rel1.size());
+        assertNotNull(returnedObjects[0].rel1.find {it.id == relatedObject3.id});
+    }
+
+    public void testBulkAddRelationsWithSource()
+    {
+        Map classes = initializePluginAndClasses();
+        def addedObjectProps1 = [keyProp:"object1", prop1:"prop1Value1"]
+        def relatedObject1Props = [keyProp:"object2", prop1:"prop1Value2"]
+        def relatedObject2Props = [keyProp:"object4", prop1:"prop1Value4"]
+        def addedObject1 = classes.child.add(addedObjectProps1);
+        def relatedObject1 = classes.related.add(relatedObject1Props);
+        def relatedObject2 = classes.related.add(relatedObject2Props);
+        assertFalse(addedObject1.hasErrors());
+        assertFalse(relatedObject1.hasErrors());
+        assertFalse(relatedObject2.hasErrors());
+        assertEquals (1, classes.child.countHits("id:${addedObject1.id}"));
+        assertEquals (1, classes.related.countHits("id:${relatedObject1.id}"));
+        assertEquals (1, classes.related.countHits("id:${relatedObject2.id}"));
+        def object1InRepo = classes.child.search("id:${addedObject1.id}").results[0];
+
+        assertEquals (0, addedObject1.rel1.size());
+        assertEquals (0, object1InRepo.rel1.size());
+
+        //test bulk add relation
+        def returnedObjects1 = classes.child.bulkAddRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1, relatedObject2]], source:"src1"],
+                ]
+        );
+        def returnedObjects2 = classes.child.bulkAddRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1, relatedObject2]], source:"src2"],
+                ]
+        );
+        assertEquals(1, returnedObjects1.size());
+        assertEquals(2, returnedObjects1[0].rel1.size());
+        assertNotNull(returnedObjects1[0].rel1.find {it.id == relatedObject1.id});
+        assertNotNull(returnedObjects1[0].rel1.find {it.id == relatedObject2.id});
+
+        //remove relation with src1 and see relation is still accessible
+        def returnedObjectsAfterBulkRemove = classes.child.bulkRemoveRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1, relatedObject2]], source:"src1"],
+                ]
+        );
+        assertEquals(2, returnedObjectsAfterBulkRemove[0].rel1.size());
+        assertNotNull(returnedObjectsAfterBulkRemove[0].rel1.find {it.id == relatedObject1.id});
+        assertNotNull(returnedObjectsAfterBulkRemove[0].rel1.find {it.id == relatedObject2.id})
+
+        //after removing relation with src2 
+        returnedObjectsAfterBulkRemove = classes.child.bulkRemoveRelation(
+                [
+                    [object:addedObject1, relations:["rel1":[relatedObject1, relatedObject2]], source:"src2"],
+                ]
+        );
+        assertEquals("relations should be removed from repository completely since all sources removed", 0, returnedObjectsAfterBulkRemove[0].rel1.size());
+    }
+
     private Map initializePluginAndClasses()
     {
         initializePluginAndClasses([:]);    

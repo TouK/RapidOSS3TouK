@@ -119,14 +119,13 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod{
 
                         }
                         RelationUtils.addRelatedObjects(domainObject, relation, value, source);
-                        statistics.stop();
-                        statistics.numberOfOperations = value.size();
-                        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_RELATION_OPERATION_NAME, statistics);
-
+                        statistics.numberOfOperations += value.size();
                     }
                 }
             }
         }
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_RELATION_OPERATION_NAME, statistics);
         return domainObject;
     }
 

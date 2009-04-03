@@ -24,7 +24,7 @@ package com.ifountain.rcmdb.domain.method
  * Time: 2:47:56 PM
  * To change this template use File | Settings | File Templates.
  */
-class RelationMethodDomainObject2 {
+public class RelationMethodDomainObject2 {
      //AUTO_GENERATED_CODE
     static searchable = {
         except = ["revRel1", "revRel2", "revRel3", "revRel4", "errors", "__operation_class__", "__is_federated_properties_loaded__"];

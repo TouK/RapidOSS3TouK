@@ -20,8 +20,11 @@ public class AddCommentAction implements Action {
     }
 
     public void execute(IConnection conn) throws Exception {
-    	String token = ((JiraConnectionImpl)conn).getToken();
-    	JiraSoapService jiraSoapService = ((JiraConnectionImpl)conn).getJiraSoapService();
+    	def jiraConn = (JiraConnectionImpl)conn;
+    	jiraConn.connect();
+    	String token = jiraConn.getToken();
+    	JiraSoapService jiraSoapService = jiraConn.getJiraSoapService();
+    	
     	RemoteComment remoteComment = new RemoteComment();
     	remoteComment.setBody(comment);
     	jiraSoapService.addComment(token, issueId, remoteComment);

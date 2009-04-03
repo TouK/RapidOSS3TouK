@@ -70,4 +70,8 @@ public class JiraConnectionImpl extends BaseConnection{
     public String getUsername(){
     	return this.username;
     }
+    
+    public String getPassword(){
+    	return this.password;
+    }
 }

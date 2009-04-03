@@ -33,8 +33,8 @@ public class JiraAdapter extends BaseAdapter {
         return action.getIssue();
     }
 
-    public void closeIssue(String issueId, String resolution) throws Exception {
-        CloseIssueAction action = new CloseIssueAction(logger, issueId, resolution);
+    public void closeIssue(String issueId) throws Exception {
+        CloseIssueAction action = new CloseIssueAction(logger, issueId);
         executeAction(action);
     }
 

@@ -82,7 +82,7 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 			primaryValues.put(key, keyValue);
 			updatedProps.remove(key);
 		}
-		if(updatedProps.size() == 0) return false;
+		if(updatedProps.size() == 0) return null;
 		def row = getMultiKeyRecord(primaryValues);
 		if (row.size() > 0) {
 			def params = getUpdateParams(fields);
@@ -161,10 +161,6 @@ public class SingleTableDatabaseAdapter extends DatabaseAdapter {
 			query.append(" where ").append(whereClause);
 		}
 		return executeQuery(query.toString(), []);
-    }
-
-    public void testGetNotificationUsingMapListParams() throws Exception {
-    	assertTrue("To be implemented", false);
     }
 
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception

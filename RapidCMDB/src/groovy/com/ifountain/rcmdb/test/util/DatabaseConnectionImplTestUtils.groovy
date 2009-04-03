@@ -32,61 +32,66 @@ import java.sql.SQLException;
 
 public class DatabaseConnectionImplTestUtils {
     public static final String DATABASE_CONN_NAME = "dbConn";
-    public static DatabaseConnectionParams getConnectionParams(String type){
-        if(type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)){
+    public static DatabaseConnectionParams getConnectionParams(String type) {
+        if (type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)) {
             return new DatabaseConnectionParams(CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_DRIVER),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_URL),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_USER),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_PASSWORD)
-                    );
+            );
         }
         return null;
     }
-    public static DatabaseConnectionParams getConnectionParams(){
+    public static DatabaseConnectionParams getConnectionParams() {
         return getConnectionParams(DatabaseTestConstants.MYSQL);
     }
-    
-    public static ConnectionParam getConnectionParam(String type){
+
+    public static ConnectionParam getConnectionParam(String type) {
         DatabaseConnectionParams connectionParams = getConnectionParams(type);
         Map<String, Object> otherParams = new HashMap<String, Object>();
         otherParams.put(DatabaseConnectionImpl.DRIVER, connectionParams.getDriver());
         otherParams.put(DatabaseConnectionImpl.URL, connectionParams.getUrl());
         otherParams.put(DatabaseConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams );
+        return new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
     }
-    public static ConnectionParam getConnectionParam(){
+    public static ConnectionParam getConnectionParam() {
         return getConnectionParam(DatabaseTestConstants.MYSQL);
     }
-    
+
     public static void createTableConnectionTrials() throws ClassNotFoundException {
+        createTable("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL)");
+    }
+
+    public static void createTable(String sql) throws ClassNotFoundException {
         DatabaseConnectionParams params = getConnectionParams();
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             Class.forName(params.getDriver());
-            conn = DriverManager.getConnection(params.getUrl(),params.getUsername(),params.getPassword());
-            stmt = conn.prepareStatement("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL)");
+            conn = DriverManager.getConnection(params.getUrl(), params.getUsername(), params.getPassword());
+            stmt = conn.prepareStatement(sql);
             stmt.execute();
         } catch (SQLException e) {
-        }  finally {
-            if(stmt != null)
+        } finally {
+            if (stmt != null)
             {
                 try {
                     stmt.close();
                 } catch (SQLException e1) {
-                    
+
                 }
             }
-            if(conn != null)
+            if (conn != null)
             {
                 try {
                     conn.close();
                 } catch (SQLException e1) {
-                    
+
                 }
             }
         }
+
     }
 
     public static void addRecordIntoConnectionTrialsTable(int id, String className, String instanceName) throws ClassNotFoundException, SQLException {
@@ -95,14 +100,14 @@ public class DatabaseConnectionImplTestUtils {
         PreparedStatement stmt = null;
         try {
             Class.forName(params.getDriver());
-            conn = DriverManager.getConnection(params.getUrl(),params.getUsername(),params.getPassword());
+            conn = DriverManager.getConnection(params.getUrl(), params.getUsername(), params.getPassword());
             stmt = conn.prepareStatement("insert into connectiontrials (id,classname,instancename) values (?,?,?)");
-            stmt.setInt(1,id);
-            stmt.setString(2,className);
-            stmt.setString(3,instanceName);
+            stmt.setInt(1, id);
+            stmt.setString(2, className);
+            stmt.setString(3, instanceName);
             stmt.executeUpdate();
-        }  finally {
-            if(stmt != null)
+        } finally {
+            if (stmt != null)
             {
                 try {
                     stmt.close();
@@ -110,7 +115,7 @@ public class DatabaseConnectionImplTestUtils {
                     e1.printStackTrace();
                 }
             }
-            if(conn != null)
+            if (conn != null)
             {
                 try {
                     conn.close();
@@ -120,33 +125,35 @@ public class DatabaseConnectionImplTestUtils {
             }
         }
     }
-    
-    public static void clearConnectionTrialsTable() throws Exception {
+    public static void clearTable(String tableName) throws Exception {
         DatabaseConnectionParams params = getConnectionParams();
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             Class.forName(params.getDriver());
-            conn = DriverManager.getConnection(params.getUrl(),params.getUsername(),params.getPassword());
-            stmt = conn.prepareStatement("delete from connectiontrials");
+            conn = DriverManager.getConnection(params.getUrl(), params.getUsername(), params.getPassword());
+            stmt = conn.prepareStatement("delete from " + tableName);
             stmt.execute();
-        }  finally {
-            if(stmt != null)
+        } finally {
+            if (stmt != null)
             {
                 try {
                     stmt.close();
                 } catch (SQLException e1) {
-                    
+
                 }
             }
-            if(conn != null)
+            if (conn != null)
             {
                 try {
                     conn.close();
                 } catch (SQLException e1) {
-                    
+
                 }
             }
-        }       
+        }
+    }
+    public static void clearConnectionTrialsTable() throws Exception {
+        clearTable("connectiontrials");
     }
 }

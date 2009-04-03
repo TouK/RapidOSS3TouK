@@ -31,7 +31,7 @@ import java.sql.PreparedStatement
 import java.sql.SQLException;
 
 public class DatabaseConnectionImplTestUtils {
-
+    public static final String DATABASE_CONN_NAME = "dbConn";
     public static DatabaseConnectionParams getConnectionParams(String type){
         if(type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)){
             return new DatabaseConnectionParams(CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_DRIVER),
@@ -53,7 +53,7 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.URL, connectionParams.getUrl());
         otherParams.put(DatabaseConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam("Database", "conn", DatabaseConnectionImpl.class.getName(), otherParams );
+        return new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams );
     }
     public static ConnectionParam getConnectionParam(){
         return getConnectionParam(DatabaseTestConstants.MYSQL);

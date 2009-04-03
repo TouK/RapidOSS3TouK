@@ -17,12 +17,11 @@
 * USA.
 */
 package datasource
+
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.core.datasource.BaseAdapter
 import java.sql.ResultSet
 import org.apache.log4j.Logger
-import org.apache.commons.lang.exception.ExceptionUtils
-import java.sql.SQLException;
 
 public class DatabaseAdapter extends BaseAdapter {
 

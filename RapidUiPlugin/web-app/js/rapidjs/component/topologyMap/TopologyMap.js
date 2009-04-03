@@ -552,17 +552,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 this.setLayout(layout*1);
             }
             for (var index = 0; index < nodeXmlData.length; index++) {
-                var nodeID = nodeXmlData[index].getAttribute("id");
-                var nodeModel = nodeXmlData[index].getAttribute("model");
-                var nodeType = nodeXmlData[index].getAttribute("type");
-                var isGauged = nodeXmlData[index].getAttribute("gauged");
-                var doesExpand = nodeXmlData[index].getAttribute("expandable");
-                var expanded = nodeXmlData[index].getAttribute("expanded");
-                var x = nodeXmlData[index].getAttribute("x");
-                var y = nodeXmlData[index].getAttribute("y");
-                var node = {
-                    id : nodeID, model : nodeModel, type : nodeType, gauged : isGauged, expandable : doesExpand, expanded:expanded
-                };
+                var nodeData=YAHOO.rapidjs.ObjectUtils.clone(nodeXmlData[index].getAttributes());
+                var nodeID = nodeData["id"];
+                var x = nodeData["x"];
+                var y = nodeData["y"];
                 if( this.getLayout() == 2 && (x == null || x == "" || y == null || y == "") )
                 {
                     x = 250;
@@ -570,11 +563,11 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 }
                 if(x != null && y != null)
                 {
-                    node["x"] = x;
-                    node["y"] = y;
+                    nodeData["x"] = x;
+                    nodeData["y"] = y;
                 }
-                this.mapNodes[nodeID] = node;
-                nodes.push( node);
+                this.mapNodes[nodeID] = nodeData;
+                nodes.push( nodeData);
             }
 
             for (var index = 0; index < edgeXmlData.length; index++) {

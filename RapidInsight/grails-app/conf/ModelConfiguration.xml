@@ -154,6 +154,14 @@
 				<Property Name='community' Type='string' Default="public"/>
 			</Properties>
 		</Model>
+		<Model Name="RsHeartBeat">
+   			<Properties>
+      			<Property Name="objectName" Type="string" IsKey="true"/>
+      			<Property Name="lastChangedAt" Type="number"/>
+      			<Property Name="consideredDownAt" Type="number"/>
+      			<Property Name="interval" Type="number"/>
+   			</Properties>
+		</Model>		
 		
     </Models>
 	<Relations>

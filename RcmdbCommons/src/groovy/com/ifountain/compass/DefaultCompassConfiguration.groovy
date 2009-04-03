@@ -17,7 +17,7 @@ import com.ifountain.compass.query.RapidLuceneQueryParser
 * Time: 10:49:43 AM
 * To change this template use File | Settings | File Templates.
 */
-class DefaultCompassConfiguration {
+public class DefaultCompassConfiguration {
     public static Map getDefaultSettings(groovy.util.ConfigObject configObject)
     {
         def defaultDateFormat = configObject?.toProperties()?.get("rapidcmdb.date.format");

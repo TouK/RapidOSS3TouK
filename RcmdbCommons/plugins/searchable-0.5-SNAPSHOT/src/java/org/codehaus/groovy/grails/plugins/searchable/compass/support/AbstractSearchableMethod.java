@@ -15,12 +15,12 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.support;
 
+import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager;
+import com.ifountain.compass.transaction.CompassTransaction;
+import com.ifountain.compass.transaction.ICompassTransaction;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
-import org.compass.core.CompassTemplate;
-import org.compass.core.CompassTransaction;
-import org.compass.core.lucene.engine.transaction.readcommitted.BitSetByAliasFilter;
 import org.springframework.util.Assert;
 
 import java.util.Map;
@@ -51,8 +51,20 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
     }
 
     protected Object doInCompass(CompassCallback compassCallback) {
-        CompassTemplate template = new CompassTemplate(compass);
-        return template.execute(compassCallback);   
+        ICompassTransaction tr = (ICompassTransaction) RapidCmdbTransactionManager.startTransaction();
+        try {
+            Object res = compassCallback.doInCompass(tr.getSession());
+            tr.commit();
+            return res;
+        }
+        catch (RuntimeException e) {
+            tr.rollback();
+            throw e;
+        }
+        catch (Error e) {
+            tr.rollback();
+            throw e;
+        }
     }
 
     public Map getDefaultOptions() {

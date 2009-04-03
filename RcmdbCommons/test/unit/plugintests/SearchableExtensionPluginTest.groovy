@@ -8,6 +8,7 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.domain.method.UpdateMethod
+import com.ifountain.rcmdb.domain.method.AddMethod
 
 /**
 * Created by IntelliJ IDEA.
@@ -58,6 +59,25 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase{
         assertEquals (addedObjectProps.keyProp, objectInRepo.keyProp);
         assertEquals (addedObjectProps.prop1, objectInRepo.prop1);
     }
+
+
+    public void testBulkAddMethod()
+    {
+        Map classes = initializePluginAndClasses();
+        def objectsToBeAdded = [];
+        objectsToBeAdded[0] = [keyProp:"object1", prop1:"prop1Value1"]
+        objectsToBeAdded[1] = [keyProp:"object2", prop1:"prop1Value2"]
+        objectsToBeAdded[2] = [keyProp:"object3", prop1:"prop1Value2"]
+        def addedObjects = classes.child.bulkAdd(objectsToBeAdded);
+        assertEquals(objectsToBeAdded.size(), addedObjects.size());
+        for(int i=0; i < addedObjects.size(); i++){
+            def addedObject = addedObjects[i];
+            def objectInRepo = classes.child.search("id:${addedObject.id}").results[0];
+            assertEquals (objectsToBeAdded[i].keyProp, objectInRepo.keyProp);
+            assertEquals (objectsToBeAdded[i].prop1, objectInRepo.prop1);
+        }
+    }
+
 
     public void testAddMethodsWithTriggeringEvents()
     {

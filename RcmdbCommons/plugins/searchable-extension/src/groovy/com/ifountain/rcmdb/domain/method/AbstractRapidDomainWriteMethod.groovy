@@ -1,6 +1,8 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
+import com.ifountain.rcmdb.domain.DomainMethodExecutorAction
+import com.ifountain.rcmdb.domain.DomainLockManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,11 +18,16 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
     }
 
     public final Object invoke(Object domainObject, Object[] arguments) {
-        String lockName = getLockName(domainObject, arguments);
-        def executionClosure = {
-            return _invoke(domainObject, arguments);
+        def bulkIndexLockClosure = {
+            String lockName = getLockName(domainObject, arguments);
+            def executionClosure = {
+                return _invoke(domainObject, arguments);
+            }
+            def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
+            return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
         }
-        return DomainMethodExecutor.executeAction(Thread.currentThread(), lockName, executionClosure)
+        def bulkIndexLockExecutionAction = new DomainMethodExecutorAction(DomainLockManager.BULK_INDEX_CHECK_LOCK, mc.theClass.name, bulkIndexLockClosure);
+        return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), bulkIndexLockExecutionAction)
     }
 
     public String getLockName(Object domainObject, Object[] arguments) {

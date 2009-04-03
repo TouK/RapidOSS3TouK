@@ -50,6 +50,16 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         _testAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 20);
     }
 
+    public void testBulkAddOperationPerformanceWithFileStorageType()
+    {
+        _testBulkAddOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 60);
+    }
+
+    public void testBulkAddOperationPerformanceWithFileAndMemoryStorageType()
+    {
+        _testBulkAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 70);
+    }
+
     private void _testAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {
         Class modelClass = intializeCompassWithSimpleObjects(storageType);
@@ -58,7 +68,25 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         {
             modelClass.'add'(keyProp:"keyPropValue"+i);
         }
-        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        assertEquals(numberOfObjectsToBeInserted, modelClass.'search'("alias:*").total);
+        def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
+        println "Number of objects inserted per second:"+numberOfObjectsInsertedPerSecond
+        assertTrue ("Number of inserted objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
+    }
+
+    private void _testBulkAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
+    {
+        Class modelClass = intializeCompassWithSimpleObjects(storageType);
+        def objectsToBeInserted = [];
+
+        for(int i=0; i < numberOfObjectsToBeInserted; i++)
+        {
+            objectsToBeInserted.add([keyProp:"keyPropValue"+i]);
+        }
+        long t = System.nanoTime();
+        modelClass.bulkAdd(objectsToBeInserted);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
         assertEquals(numberOfObjectsToBeInserted, modelClass.'search'("alias:*").total);
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
         println "Number of objects inserted per second:"+numberOfObjectsInsertedPerSecond
@@ -80,7 +108,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         {
             modelClass.'add'(keyProp:"keyPropValue"+i);
         }
-        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
         println "Number of objects update per second:"+numberOfObjectsInsertedPerSecond
         assertTrue ("Number of updated objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
@@ -99,7 +127,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
         long t = System.nanoTime();
         modelIntances*.remove();
-        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
 
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted;
         if(totalTime > 0)
@@ -192,7 +220,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
 
         long t = System.nanoTime();
         singleModelInstance.addRelation(rel1:relatedModelInstances);
-        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
 
         def numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted;
         if(totalTime > 0)
@@ -240,7 +268,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         {
             relatedModelInstancesGroup1[i].addRelation(rel1:relatedModelInstancesGroup2[i]);
         }
-        long totalTime = (System.nanoTime() - t)/Math.pow(10,9);
+        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
 
         def numberOfRelationsInsertedPerSecond = numberOfRelationsToBeInserted;
         if(totalTime > 0)

@@ -28,6 +28,9 @@ import org.springframework.validation.BindException
 import org.springframework.validation.Errors
 import org.codehaus.groovy.grails.validation.GrailsDomainClassValidator
 import com.ifountain.rcmdb.domain.validator.RapidGrailsDomainClassValidator
+import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
+import com.ifountain.compass.transaction.CompassTransactionFactory
+import org.springframework.beans.factory.config.RuntimeBeanReference
 
 /**
 * Created by IntelliJ IDEA.
@@ -58,6 +61,8 @@ class SearchableExtensionGrailsPlugin {
     }
 
     def doWithDynamicMethods = {ctx ->
+        CompassTransactionFactory factory = new CompassTransactionFactory(ctx.getBean("compass"));
+		RapidCmdbTransactionManager.initializeTransactionManager (factory);
         IdGenerator.initialize(new IdGeneratorStrategyImpl());
         domainClassMap = [:];
         for (dc in application.domainClasses) {
@@ -152,6 +157,7 @@ class SearchableExtensionGrailsPlugin {
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
+        def addBulkMethod = new BulkAddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def addUniqueMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         addUniqueMethod.setWillReturnErrorIfExist (true);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
@@ -214,6 +220,9 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.'static'.add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);
+        }
+        mc.'static'.bulkAdd = {Collection objectProps->
+            return addBulkMethod.invoke(mc.theClass, [objectProps] as Object[]);
         }
         mc.'static'.addUnique = {Map props->
             return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);

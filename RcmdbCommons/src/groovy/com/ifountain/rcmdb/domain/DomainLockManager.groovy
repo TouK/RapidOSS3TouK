@@ -17,12 +17,41 @@ import org.apache.log4j.Logger
 
 public class DomainLockManager
 {
-    public static int WRITE_LOCK = 1;
+    public static int WRITE_LOCK = 3;
+    public static int BULK_INDEX_LOCK = 4;
+    public static int BULK_INDEX_CHECK_LOCK = 5;
     private static long lockTimeout = 10000;
     private static GenericLockManager lockManager;
-    public static void getLock(Object owner, String lockName)
+    public static void getWriteLock(Object owner, String lockName)
     {
-        lockManager.lock(owner, lockName, WRITE_LOCK, true, lockTimeout);
+        lockManager.lock(owner, lockName, WRITE_LOCK, GenericLock.COMPATIBILITY_REENTRANT, false, lockTimeout);
+    }
+
+    public static void getLock(int type, Object owner, String lockName)
+    {
+        switch (type)
+        {
+            case WRITE_LOCK:
+                getWriteLock(owner, lockName)
+                break;
+            case BULK_INDEX_LOCK:
+                getBulkIndexLock(owner, lockName)
+                break;
+            case BULK_INDEX_CHECK_LOCK:
+                getBulkIndexCheckLock(owner, lockName)
+                break;
+            default:
+                throw new Exception("Invalid lock type "+ type);
+        }
+    }
+    public static void getBulkIndexCheckLock(Object owner, String lockName)
+    {
+        lockManager.lock(owner, lockName, BULK_INDEX_CHECK_LOCK, GenericLock.COMPATIBILITY_REENTRANT_AND_SUPPORT, false, lockTimeout);
+    }
+
+    public static void getBulkIndexLock(Object owner, String lockName)
+    {
+        lockManager.lock(owner, lockName, BULK_INDEX_LOCK, GenericLock.COMPATIBILITY_REENTRANT, true, lockTimeout);
     }
 
     public static void releaseLock(Object owner, String lockName)
@@ -43,12 +72,11 @@ public class DomainLockManager
     public static void initialize(long lockTimeout, Logger logger)
     {
         DomainLockManager.lockTimeout = lockTimeout;
-        lockManager = new GenericLockManager(WRITE_LOCK, new Log4jLogger(logger));
+        lockManager = new GenericLockManager(BULK_INDEX_CHECK_LOCK, new Log4jLogger(logger));
     }
 
     public static void destroy()
     {
     }
 
-    
 }

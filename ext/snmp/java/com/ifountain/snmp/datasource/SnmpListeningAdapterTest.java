@@ -46,7 +46,7 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("127.0.0.1", new Long(162)));
-        adapter = new SnmpListeningAdapter(SNMP_TEST_CONNECTION_NAME, 0, TestLogUtils.log);
+        adapter = new SnmpListeningAdapter(SNMP_TEST_CONNECTION_NAME, TestLogUtils.log);
     }
 
     @Override

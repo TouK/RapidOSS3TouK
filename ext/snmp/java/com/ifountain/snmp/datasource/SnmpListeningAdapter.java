@@ -51,8 +51,8 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     private int numDispatcherThreads = 2;
 
 
-    public SnmpListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
-        super(connectionName, reconnectInterval, logger);
+    public SnmpListeningAdapter(String connectionName, Logger logger) {
+        super(connectionName, 0, logger);
     }
 
     protected boolean isConnectionException(Throwable t) {

@@ -38,8 +38,8 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
     	def issue = this.adapter.resolveIssue(issueId, resolution)
     }
     
-    def closeIssue(String issueId, String resolution) {
-    	def issue = this.adapter.closeIssue(issueId, resolution)
+    def closeIssue(String issueId) {
+    	def issue = this.adapter.closeIssue(issueId)
     }
     
     def reopenIssue(String issueId) {

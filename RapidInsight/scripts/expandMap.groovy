@@ -57,8 +57,8 @@ deviceMap.each{deviceName, deviceConfigMap->
         deviceSet[deviceName] = deviceConfigMap;
         if(deviceConfigMap.expanded == "true")
         {
-            deviceConfigMap.expandable = "true"
-            def links = device.connectedVia;
+            deviceConfigMap.expandable = "true"            
+            def links=RsLink.searchEvery("a_ComputerSystemName:${deviceName.exactQuery()} OR z_ComputerSystemName:${deviceName.exactQuery()}");
             links.each {link->
                 def otherSide = getOtherSideName(link, deviceName);
 

@@ -84,7 +84,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(source.hasErrors())
         def target=RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
         assertFalse(target.hasErrors())
-        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name,connectedSystems:[source,target]);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1.hasErrors())
 
         def params=[:];
@@ -104,7 +104,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeData,source.name,target.name);
 
         // add a duplicate link ,  and check that result is same
-        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name,connectedSystems:[source,target]);
+        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1Duplicate.hasErrors())
 
         def duplicateExpandData=getExpandMapData(params);
@@ -121,7 +121,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeDuplicateData,source.name,target.name);
 
         // add a reverse link , link is duplicated , and check that result is same
-        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name,connectedSystems:[source,target]);
+        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
         assertFalse(link1Reverse.hasErrors())
 
         def reverseExpandData=getExpandMapData(params);
@@ -148,9 +148,9 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(node2.hasErrors())
         def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
         assertFalse(node3.hasErrors())
-        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name,connectedSystems:[node1,node2]);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
         assertFalse(link1.hasErrors())
-        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name,connectedSystems:[node2,node3]);
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
         assertFalse(link2.hasErrors())
 
 
@@ -222,11 +222,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(node2.hasErrors())
         def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
         assertFalse(node3.hasErrors())
-        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name,connectedSystems:[node1,node2]);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
         assertFalse(link1.hasErrors())
-        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name,connectedSystems:[node2,node3]);
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
         assertFalse(link2.hasErrors())
-        def link3=RsLink.add(name:"l3",a_ComputerSystemName:node3.name,z_ComputerSystemName:node1.name,connectedSystems:[node3,node1]);
+        def link3=RsLink.add(name:"l3",a_ComputerSystemName:node3.name,z_ComputerSystemName:node1.name);
         assertFalse(link3.hasErrors())
 
         def params=[:];
@@ -319,14 +319,14 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             targets[target.name]=target;
 
             assertFalse(target.hasErrors())
-            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:sourceNode.name,z_ComputerSystemName:target.name,connectedSystems:[sourceNode,target]);
+            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:sourceNode.name,z_ComputerSystemName:target.name);
             assertFalse(link.hasErrors())
             subTargetCount.times{ subCounter ->
                 def subTarget=RsComputerSystem.add(name:"subtarget${counter}_${subCounter}",model:"modelt",className:"classt");
                 targets[subTarget.name]=subTarget;
 
                 assertFalse(subTarget.hasErrors())
-                def subLink=RsLink.add(name:"subl${counter}_${subCounter}",a_ComputerSystemName:subTarget.name,z_ComputerSystemName:target.name,connectedSystems:[subTarget,target]);
+                def subLink=RsLink.add(name:"subl${counter}_${subCounter}",a_ComputerSystemName:subTarget.name,z_ComputerSystemName:target.name);
                 assertFalse(link.hasErrors())
 
             }

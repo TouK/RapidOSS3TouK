@@ -51,31 +51,27 @@ nodes.each{node->
 
 def deviceSet = [:]
 deviceMap.each{deviceName, deviceConfigMap->
-    def device = RsComputerSystem.get( name : deviceName);
-    if(device != null)
+    deviceSet[deviceName] = deviceConfigMap;
+    if(deviceConfigMap.expanded == "true")
     {
-        deviceSet[deviceName] = deviceConfigMap;
-        if(deviceConfigMap.expanded == "true")
-        {
-            deviceConfigMap.expandable = "true"            
-            def links=RsLink.searchEvery("a_ComputerSystemName:${deviceName.exactQuery()} OR z_ComputerSystemName:${deviceName.exactQuery()}");
-            links.each {link->
-                def otherSide = getOtherSideName(link, deviceName);
+        deviceConfigMap.expandable = "true"
+        def links=RsLink.searchEvery("a_ComputerSystemName:${deviceName.exactQuery()} OR z_ComputerSystemName:${deviceName.exactQuery()}");
+        links.each {link->
+            def otherSide = getOtherSideName(link, deviceName);
 
-                if(otherSide != null && !edgeMap.containsKey(deviceName + otherSide)
-                            && !edgeMap.containsKey(otherSide + deviceName))
-                {
-                    def otherSideDevice = RsComputerSystem.get(name:otherSide);
-                    if(otherSideDevice != null){
-                        edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
-                        if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
-                        {
-                            deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : "false", "expanded":"false" ];
-                        }
+            if(otherSide != null && !edgeMap.containsKey(deviceName + otherSide)
+                        && !edgeMap.containsKey(otherSide + deviceName))
+            {
+                def otherSideDevice = RsComputerSystem.get(name:otherSide);
+                if(otherSideDevice != null){
+                    edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
+                    if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
+                    {
+                        deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : "false", "expanded":"false" ];
                     }
                 }
-
             }
+
         }
     }
 }

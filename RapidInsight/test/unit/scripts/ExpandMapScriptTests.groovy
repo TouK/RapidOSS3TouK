@@ -301,7 +301,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
     }
-    def testExpandMapWith1ToNToMNodes()
+    public void  testExpandMapWith1ToNToMNodes()
     {
         def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
         assertFalse(script.hasErrors());

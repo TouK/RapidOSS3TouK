@@ -14,6 +14,7 @@ class UiAutocomplete extends UiComponent{
     String url = "";
     String suggestionAttribute = "";
     Long cacheSize = 0;
+    Long timeout = 0;
     Boolean animated = false;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
@@ -24,6 +25,7 @@ class UiAutocomplete extends UiComponent{
         suggestionAttribute(nullable:false, blank:false)
         cacheSize(nullable:true)
         animated(nullable:true)
+        timeout(nullable:true)
     }
 
     static propertyConfiguration= [:]

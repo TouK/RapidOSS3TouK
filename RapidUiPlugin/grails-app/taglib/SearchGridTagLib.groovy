@@ -170,6 +170,8 @@ class SearchGridTagLib {
             cArray.add("queryEnabled:${config['queryEnabled']}")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
+        if (config["timeout"])
+            cArray.add("timeout:${config['timeout']}")
         if (config["maxRowsDisplayed"])
             cArray.add("maxRowsDisplayed:${config['maxRowsDisplayed']}")
         if (config["defaultQuery"])

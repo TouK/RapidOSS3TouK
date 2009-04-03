@@ -13,12 +13,14 @@ class UiHtml extends UiComponent{
     };
 
     Long pollingInterval= 0;
+    Long timeout= 30;
     Boolean iframe=false;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={
         pollingInterval(nullable:true)
+        timeout(nullable:true)
         iframe(nullable:true)
     }
 

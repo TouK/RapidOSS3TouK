@@ -8,4 +8,4 @@
 %>
 <rui:pieChart id="${uiElement.name}" url="../${uiElement.url}" dataField="${uiElement.dataField}" contentPath="${uiElement.contentPath}" title="${uiElement.title}"
         categoryField="${uiElement.categoryField}" legend="${uiElement.legend}" swfURL="../js/yui/charts/assets/charts.swf" pollingInterval="${uiElement.pollingInterval}"
-            ${colorsString != ""?"colors=\""+colorsString+"\"":""}></rui:pieChart>
+            ${colorsString != ""?"colors=\""+colorsString+"\"":""} timeout="${uiElement.timeout}"></rui:pieChart>

@@ -112,7 +112,8 @@ class TreeGridTagLib {
             cArray.add("tooltip:${config['tooltip']}")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
-
+        if (config["timeout"])
+            cArray.add("timeout:${config['timeout']}")
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];
         menuItems.each {menuItem ->

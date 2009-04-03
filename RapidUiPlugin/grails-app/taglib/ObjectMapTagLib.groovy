@@ -133,6 +133,8 @@ class ObjectMapTagLib {
             cArray.add("nodeSize:${config['nodeSize']}")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
+        if (config["timeout"])
+            cArray.add("timeout:${config['timeout']}")
         def edgeColors = config["edgeColors"];
         def edgeColorDataKey = config["edgeColorDataKey"];
         def edgeNodesArray = [];

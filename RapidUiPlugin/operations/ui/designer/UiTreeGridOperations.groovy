@@ -27,6 +27,7 @@ class UiTreeGridOperations extends UiComponentOperations{
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         expanded: [descr: "Parameter to display TreeGrid branches either expanded or collapsed"],
                         tooltip: [descr: "Parameter to display a tooltip over rows."],
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration:
                 [

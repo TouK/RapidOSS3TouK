@@ -26,6 +26,7 @@ class UiSearchGrid extends UiComponent {
     String defaultSearchClass = "RsEvent"
     String searchClassesUrl = "script/run/getEventClassesForSearch"
     Long pollingInterval = 0;
+    Long timeout = 30;
     Boolean queryEnabled = true;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
@@ -50,6 +51,7 @@ class UiSearchGrid extends UiComponent {
         offsetAttribute(blank:false)
         queryParameter(blank:false)
         pollingInterval(nullable: true)
+        timeout(nullable: true)
         queryEnabled(nullable: true)
         maxRowsDisplayed(nullable: true)
         defaultQuery(nullable: true, blank: true)

@@ -61,6 +61,7 @@ class AutocompleteTagLib {
             contentPath:'${attrs["contentPath"]}',
             ${attrs["cacheSize"] ? "cacheSize:${attrs["cacheSize"]}," : ""}
             ${attrs["animated"] ? "animated:${attrs["animated"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             suggestionAttribute:'${attrs["suggestionAttribute"]}'
         }"""
     }

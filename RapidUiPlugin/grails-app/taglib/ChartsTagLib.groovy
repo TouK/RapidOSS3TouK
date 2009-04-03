@@ -49,6 +49,7 @@ class ChartsTagLib {
             ${attrs["legend"] ? "legend:'${attrs["legend"]}'," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             ${attrs["colors"] ? "colors:${attrs["colors"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             dataField:'${attrs["dataField"]}'
         }"""
     }
@@ -92,6 +93,7 @@ class ChartsTagLib {
             rootTag:'${attrs["rootTag"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             swfURL:'${attrs["swfURL"]}'
         }"""
     }

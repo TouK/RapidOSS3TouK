@@ -59,6 +59,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
             fields: [this.suggestionAttribute]
         };
         this.datasource.maxCacheEntries = this.cacheSize;
+        if(this.timeout){
+            this.datasource.connTimeout = this.timeout * 1000
+        }
+        else{
+            this.datasource.connTimeout = 30000;
+        }
         this.autoComp = new YAHOO.widget.AutoComplete(this.searchInput, this.suggestion, this.datasource);
         this.autoComp.useIFrame = true;
         this.autoComp.allowBrowserAutocomplete = false;

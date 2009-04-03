@@ -206,6 +206,8 @@ class SearchListTagLib {
             cArray.add("title:'${config['title']}'")
         if (config["pollingInterval"])
             cArray.add("pollingInterval:${config['pollingInterval']}")
+        if (config["timeout"])
+            cArray.add("timeout:${config['timeout']}")
         if (config["defaultFields"]) {
             def fArray = [];
             config['defaultFields'].each {

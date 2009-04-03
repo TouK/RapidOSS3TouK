@@ -12,6 +12,7 @@ class UiTimeline extends UiComponent{
     };
     String url = "";
     Long pollingInterval= 0;
+    Long timeout= 30;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
     List bands=[];
@@ -21,6 +22,7 @@ class UiTimeline extends UiComponent{
     static constraints={
         url(blank:false)
         pollingInterval(nullable:true)
+        timeout(nullable:true)
     }
 
     static propertyConfiguration= [:]

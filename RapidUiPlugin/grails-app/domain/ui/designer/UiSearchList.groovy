@@ -26,6 +26,7 @@ class UiSearchList extends UiComponent{
     Long showMax = 0;
     Long lineSize = 3;
     Long pollingInterval = 0;
+    Long timeout = 30;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
     String defaultSearchClass = "RsEvent"
@@ -52,6 +53,7 @@ class UiSearchList extends UiComponent{
         sortOrderAttribute(blank:false)
         queryParameter(blank:false)
         pollingInterval(nullable: true)
+        timeout(nullable: true)
         showMax(nullable: true)
         lineSize(nullable: true)
         defaultFields(nullable: true)

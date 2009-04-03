@@ -36,6 +36,7 @@ class UiSearchListOperations extends UiComponentOperations{
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
                         defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],
                         lineSize: [descr: "How many lines a row consists of."],
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration:
                 [

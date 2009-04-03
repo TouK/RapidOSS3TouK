@@ -25,7 +25,8 @@ class UiObjectMapOperations extends UiComponentOperations {
                         nodeSize: [descr: "Height of the node (width is 1.5 times height)"],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         edgeColorDataKey: [descr: "The attribute name of the edge node which uniquely identifies the edge color."],
-                        edgeColors: [descr: "The edge color mapping"]
+                        edgeColors: [descr: "The edge color mapping"],
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration:
                 [

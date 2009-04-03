@@ -101,6 +101,7 @@ class TimelineTagLib {
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             Bands:[${bandsArray.join(',\n')}]
         }"""

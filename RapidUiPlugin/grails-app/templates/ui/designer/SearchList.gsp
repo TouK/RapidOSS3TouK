@@ -5,7 +5,7 @@
 <rui:searchList id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}" keyAttribute="${uiElement.keyAttribute}"
     lineSize="${uiElement.lineSize}" title="${uiElement.title}" queryParameter="${uiElement.queryParameter}" totalCountAttribute="${uiElement.totalCountAttribute}" offsetAttribute="${uiElement.offsetAttribute}" sortOrderAttribute="${uiElement.sortOrderAttribute}"
     pollingInterval="${uiElement.pollingInterval}" defaultFields='\${[${defaultFieldsString}]}' ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""} defaultQuery="${uiElement.defaultQuery}"
-    defaultSearchClass="${uiElement.defaultSearchClass}" searchClassesUrl="../${uiElement.searchClassesUrl}"
+    defaultSearchClass="${uiElement.defaultSearchClass}" searchClassesUrl="../${uiElement.searchClassesUrl}" timeout="${uiElement.timeout}"
     <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);

@@ -96,6 +96,7 @@ class RFormTagLib {
             ${attrs["saveUrl"] ? "saveUrl:'${attrs["saveUrl"]}'," : ""}
             ${attrs["updateUrl"] ? "updateUrl:'${attrs["updateUrl"]}'," : ""}
             ${attrs["submitAction"] ? "submitAction:'${attrs["submitAction"]}'," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             width:'${attrs["width"]}'
          }"""
     }

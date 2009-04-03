@@ -19,6 +19,7 @@ class UiTreeGrid extends UiComponent{
     String contentPath = "";
     String keyAttribute = "";
     Long pollingInterval = 0;
+    Long timeout= 30;
     Boolean expanded = false;
     Boolean tooltip = false;
     List columns = [];
@@ -37,6 +38,7 @@ class UiTreeGrid extends UiComponent{
         contentPath(blank:false)
         keyAttribute(blank:false)
         pollingInterval(nullable: true)
+        timeout(nullable: true)
         expanded(nullable: true)
         tooltip(nullable: true)
     }

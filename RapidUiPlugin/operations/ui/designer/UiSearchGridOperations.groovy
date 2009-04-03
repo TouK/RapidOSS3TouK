@@ -36,6 +36,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                         searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
                         defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration:
                 [

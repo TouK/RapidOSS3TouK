@@ -24,7 +24,8 @@ class UiFlexPieChartOperations extends UiComponentOperations
                 propertyConfiguration: [
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         rootTag: [descr: "The root node name of AJAX response which FlexPieChart takes as starting point to get its data."],
-                        pollingInterval: [descr: "Time delay between two server requests.", required:true]
+                        pollingInterval: [descr: "Time delay between two server requests.", required:true],
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration: []
         ];

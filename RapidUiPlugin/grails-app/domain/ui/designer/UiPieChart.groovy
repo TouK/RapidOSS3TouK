@@ -17,6 +17,7 @@ class UiPieChart extends UiComponent{
     String colors = "";
     String url = "";
     Long pollingInterval= 0;
+    Long timeout= 30;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
@@ -26,6 +27,7 @@ class UiPieChart extends UiComponent{
         url(blank:false)
         legend(nullable:false, blank:false, inList:["top", "right", "bottom", "left", "none"])
         pollingInterval(nullable:true)
+        timeout(nullable:true)
         colors(blank:true, nullable:true)
     }
 

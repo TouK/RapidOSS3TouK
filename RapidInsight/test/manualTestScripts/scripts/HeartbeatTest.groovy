@@ -12,7 +12,10 @@ def conf2 = RsHeartBeat.configureHeartBeatMonitoring(DB,2)
 // receiving heartbeat for an unconfigured system is OK
 RsHeartBeat.recordHeartBeat(logger, "UnconfiguredSystem")
 
-assert(RsEvent.list().size()==0)
+RsHeartBeat.checkHeartBeat(logger)
+// Both systems are  considered down since no heartbeat have been received for either, yet.
+assert(RsEvent.list().size()==2)
+RsEvent.removeAll()
 
 RsHeartBeat.recordHeartBeat(logger, SMARTS)
 sleep(100)
@@ -21,7 +24,7 @@ RsHeartBeat.recordHeartBeat(logger, DB)
 RsHeartBeat.checkHeartBeat(logger)
 assert(RsEvent.list().size()==0)
 
-sleep(600)
+sleep(1000)
 // only smarts down - passed at least 1000 and no heartbeat
 RsHeartBeat.checkHeartBeat(logger)
 assert(RsEvent.list().size()==1)
@@ -30,7 +33,7 @@ assert(event != null)
 event = RsEvent.get(name:"${DB}_Down") 
 assert(event == null)
 
-sleep(1200)
+sleep(1000)
 // now both down
 RsHeartBeat.checkHeartBeat(logger)
 assert(RsEvent.list().size()==2)
@@ -46,5 +49,19 @@ assert(event != null)
 assert(RsHistoricalEvent.list().size()==1)
 event = RsHistoricalEvent.findByName("${SMARTS}_Down") 
 assert(event != null)
+//RsEvent.removeAll()
+
+//unit test for heartbeat search
+RsHeartBeat.configureHeartBeatMonitoring("System1",1)
+RsHeartBeat.configureHeartBeatMonitoring("System2",1)
+RsHeartBeat.configureHeartBeatMonitoring("System3",1)
+RsHeartBeat.configureHeartBeatMonitoring("System4",1)
+
+RsHeartBeat.get(objectName:"System1").consideredDownAt = new Date().getTime();
+RsHeartBeat.get(objectName:"System2").consideredDownAt = new Date().getTime();
+RsHeartBeat.get(objectName:"System3").consideredDownAt = new Date().getTime() + 10000;
+sleep(5)
+RsHeartBeat.checkHeartBeat(logger)
+assert(RsEvent.list().size()==5) //3 more is added to existing 2 (System1, 2, and 4)
 
 return "SUCCESS";

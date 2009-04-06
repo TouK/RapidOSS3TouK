@@ -325,17 +325,17 @@ class RapidCmdbBuild extends Build {
     def copyCommons(toDir, copyTests) {
         ant.copy(todir: toDir) {
             ant.fileset(dir: "$env.rapid_cmdb_commons_cvs") {
-                if (TEST && copyTests){
-                    ant.include(name: "**/test/**")
-                }
-                else if (TEST && !copyTests)
-                {
-                    ant.include(name: "**/*TestCase*")
-                }
-                else {
+//                if (TEST && copyTests){
+//                    ant.include(name: "**/test/**")
+//                }
+//                else if (TEST && !copyTests)
+//                {
+//                    ant.include(name: "**/*TestCase*")
+//                }
+//                else {
                     ant.exclude(name: "**/test/**")
                     ant.exclude(name: "**/*Test*")
-                }
+//                }
                 ant.include(name: "**/grails-app/**");
                 ant.include(name: "**/plugins/**");
                 ant.include(name: "**/src/**");

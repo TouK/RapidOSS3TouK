@@ -161,7 +161,16 @@
       			<Property Name="consideredDownAt" Type="number"/>
       			<Property Name="interval" Type="number"/>
    			</Properties>
-		</Model>		
+		</Model>
+        <Model Name="RsMapConnection">
+			<Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name="a_Name" Type="string"/>
+				<Property Name="a_ClassName" Type="string"/>
+				<Property Name="z_Name" Type="string"/>
+				<Property Name="z_ClassName" Type="string"/>
+			</Properties>
+		</Model>
 		
     </Models>
 	<Relations>

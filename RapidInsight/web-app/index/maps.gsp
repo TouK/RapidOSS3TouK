@@ -109,7 +109,7 @@ rootImage7394Visible="params.data.nodeType == 'map'"
         </rui:omImages>
         <rui:omTexts>
             
-            <rui:omText id="name" x="15" y="20" width="70" height="30" dataKey="id"></rui:omText>
+            <rui:omText id="name" x="15" y="20" width="70" height="30" dataKey="displayName"></rui:omText>
             
         </rui:omTexts>
         <rui:omGauges>

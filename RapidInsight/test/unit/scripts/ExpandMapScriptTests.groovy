@@ -16,9 +16,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
-        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink,relation.Relation], []);
+        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         initializeScriptManager();
+        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
+        assertFalse(script.hasErrors());
     }
 
     public void tearDown() {
@@ -45,8 +47,6 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testExpandMapWith1Node()
     {
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
 
         def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
@@ -77,8 +77,6 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
      public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
     {
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
 
         def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
@@ -139,8 +137,6 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testExpandMapWith1To1To1Nodes()
     {
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
 
         def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
         assertFalse(node1.hasErrors())
@@ -213,9 +209,6 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testExpandMapWithTriangleNodes()
     {
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
-
         def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
         assertFalse(node1.hasErrors())
         def node2=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
@@ -303,9 +296,6 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void  testExpandMapWith1ToNToMNodes()
     {
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
-
         def sourceNode=RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
         assertFalse(sourceNode.hasErrors())
 
@@ -493,14 +483,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     def checkNodeData(nodeData,node,expanded,expandable,x,y)
     {
         assertEquals(node.name,nodeData.id);
-        assertEquals(node.model,nodeData.model);
-        assertEquals(node.className,nodeData.type);
         assertEquals(expanded,nodeData.expanded);
         assertEquals(expandable,nodeData.expandable);
         assertEquals(x,nodeData.x);
         assertEquals(y,nodeData.y);
 
-        assertEquals("true",nodeData.gauged);
     }
     def getEdgeFrom(edges,sourceName,targetName)
     {
@@ -549,7 +536,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         results.nodes=[:];
         results.edges=[:];
 
-        def nodeProps=["id","model","type","gauged","expanded","expandable","x","y"];
+        def nodeProps=["id","model","type","gauged","expanded","expandable","x","y","displayName"];
 
         resultXml.node.each {    dataRow->
             def nodeData=[:];

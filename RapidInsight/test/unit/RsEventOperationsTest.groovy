@@ -14,6 +14,10 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         RapidDateUtilities.registerDateUtils();
         registerDefaultConverters();
+
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RsInMaintenance], []);
+         CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
+         CompassForTests.addOperationSupport(RsInMaintenance,RsInMaintenanceOperations);
     }
      def registerDefaultConverters()
     {
@@ -30,8 +34,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
      public void testNotifyAddsRsEvent()
      {
-         initialize([RsEvent], []);
-         CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
+
 
          assertEquals(0,RsEvent.list().size());
 
@@ -54,8 +57,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
      }
      public void testHistoricalEventModel()
      {
-         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject], []);
-         CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
+
 
          def event=RsEvent.add(name:"testev");
          assertFalse(event.hasErrors());

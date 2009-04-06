@@ -17,3 +17,4 @@ SmartsStateCalculationTests
 NetcoolEventOperationsTest
 ApgEventOperationsTest
 OpenNmsEventOperationsTest
+com.ifountain.compass.integration.CompassTransactionTest

@@ -52,6 +52,7 @@ class IdGenerator {
     }
     public synchronized getNextId()
     {
+        println "getting next id from strategy ${strategy.class.name}"
         return strategy.getNextId();   
     }
 }

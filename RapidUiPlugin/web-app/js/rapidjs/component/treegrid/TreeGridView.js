@@ -32,8 +32,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
         'contextmenuclicked' : new YAHOO.util.CustomEvent('contextmenuclicked'),
         'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
     };
-    YAHOO.ext.util.Config.apply(this, config);
-    this.configureTimeout(config);
+    YAHOO.ext.util.Config.apply(this, config);    
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.sortState = {header:null, direction:null};
     this.isSortingDisabled = false;

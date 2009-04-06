@@ -164,7 +164,7 @@ runGrailsTests() {
     #  then
     #    mkdir $WORKSPACE/TestResults/RapidSuite
     #fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    #mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     cd $WORKSPACE
 }
 

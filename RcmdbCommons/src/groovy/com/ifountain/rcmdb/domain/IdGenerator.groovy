@@ -37,11 +37,13 @@ class IdGenerator {
     {
         if(!idGenerator)
         {
+            println "getting id generator with strategy ${strategy.class.name}"
             idGenerator = new IdGenerator(strategy);
         }
     }
     public static void destroy()
     {
+        println "destroying id generator"
         idGenerator = null;
     }
     public static IdGenerator getInstance()

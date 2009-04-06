@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.FlexPieChart = function(container, config) {
     YAHOO.rapidjs.component.FlexPieChart.superclass.constructor.call(this, container, config);
     this.swfURL = null;
     YAHOO.ext.util.Config.apply(this, config);
+    this.configureTimeout(config);
     this.gradients = {};
     var events = {
         'itemClicked': new YAHOO.util.CustomEvent('itemClicked')

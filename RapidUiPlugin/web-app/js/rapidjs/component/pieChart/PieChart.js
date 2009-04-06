@@ -25,6 +25,7 @@ YAHOO.rapidjs.component.PieChart = function(container, config) {
     this.categoryField = null;
     this.colors = null;
     YAHOO.ext.util.Config.apply(this, config);
+    this.configureTimeout(config);
     this.chart = null;
     this.chartIsReady = false;
     YAHOO.widget.Chart.SWFURL = this.swfURL;

@@ -5,23 +5,6 @@
     <g:layoutHead/>
 </head>
 <body class="yui-skin-sam">
-<rui:form id="changeProfileDialog" width="35em" saveUrl="\${createLink(controller:'rsUser', action:'changeProfile', params:[format:'xml'])}" createUrl="\${createLink(controller:'rsUser', action:'changeProfileData', params:[format:'xml', username:session.username])}">
-    <div>
-        <div class="hd">Change My Profile</div>
-        <div class="bd">
-            <form method="POST" action="javascript://nothing">
-                <table>
-                    <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
-                    <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
-                    <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-                    <tr><td width="50%"><label>Email:</label></td><td width="50%"><input type="text" name="email" style="width:175px"/></td></tr>
-                </table>
-                <input type="hidden" name="username">
-            </form>
-
-        </div>
-    </div>
-</rui:form>
 
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
@@ -54,6 +37,8 @@
     </tr>
     </tbody></table>
 </div>
+<rui:html id="changeProfileDialog" iframe="false"></rui:html>
+<rui:popupWindow componentId="changeProfileDialog" width="390" height="170" resizable="false"></rui:popupWindow>
 <script>
 YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
 YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');
@@ -63,7 +48,9 @@ YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', 'non
 }, this, true);
 
 YAHOO.util.Event.addListener(document.getElementById('rsUser'), 'click', function(){
-YAHOO.rapidjs.Components['changeProfileDialog'].show(YAHOO.rapidjs.component.Form.CREATE_MODE, null, {username:"\${session.username}"});
+var profileDlg = YAHOO.rapidjs.Components['changeProfileDialog'];
+profileDlg.popupWindow.show();
+profileDlg.show(createURL("userProfileForm.gsp"));
 },this, true)
 </script>
 <g:layoutBody/>

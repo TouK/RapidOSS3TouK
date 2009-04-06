@@ -177,7 +177,7 @@ target(compileTests: "Compiles the test cases") {
         event("StatusFinal", ["Compilation Error: ${e.message}"])
         exit(1)
     }
-
+    println "destination dir ${destDir}"
     classLoader = new URLClassLoader([new File(destDir).toURI().toURL()] as URL[], getClass().classLoader.rootLoader)
     Thread.currentThread().contextClassLoader = classLoader
 

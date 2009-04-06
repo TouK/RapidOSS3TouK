@@ -55,17 +55,15 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void initializeModels(classes)
     {
-        initialize([CmdbScript,RsTopologyObject,RsCustomer,RsEvent,RsGroup,RsService,RsObjectState,relation.Relation], []);
+        initialize([CmdbScript,RsTopologyObject,RsCustomer,RsEvent,RsGroup,RsService,RsObjectState,relation.Relation,RsInMaintenance], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,classes.RsTopologyObjectOperations);
         CompassForTests.addOperationSupport (RsGroup,classes.RsGroupOperations);
         CompassForTests.addOperationSupport (RsCustomer,classes.RsCustomerOperations);
         CompassForTests.addOperationSupport (RsService,classes.RsServiceOperations);
-
-
-
-    }
+        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+   }
     public File getOperationPathAsFile(opdir,opfile)
     {
         return new File("${base_directory}/${opdir}/${opfile}.groovy");
@@ -122,13 +120,15 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void testRsEventOperations()
     {
-        initialize([CmdbScript,RsEvent,RsRiEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject], []);
+        initialize([CmdbScript,RsEvent,RsRiEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RsInMaintenance], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsRiEvent,RsRiEventOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+
 
         initializeScriptManager("operationTests");
 

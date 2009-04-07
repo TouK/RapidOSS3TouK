@@ -62,14 +62,9 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.wMode = config.wMode;
     this.dataURL = config.dataURL;
     this.expandURL = config.expandURL;
-    this.nodePropertyListString = config.nodePropertyList;
-    this.nodePropertyList = new Array();
-    if(this.nodePropertyListString)
-    {
-    	this.nodePropertyList = this.nodePropertyListString.split(",")
-    }
-    
-    this.mapType="";
+    this.setNodePropertyListString(config.nodePropertyList);
+
+    this.setMapType("");
     if(!config.nodeSize)
         config.nodeSize = 60;
     this.configureTimeout(config);
@@ -443,9 +438,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
     getMapData : function () {
-        var nodes = this.getPropertiesString(this.getNodes(), ["id", "x", "y"]);
+        var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+        var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
         var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-        return {nodes:nodes, edges:edges};
+        return {nodes:nodes, edges:edges,nodePropertyList:nodePropertyList};
     },
 
     getNodes : function () {
@@ -559,6 +555,18 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             {
                 this.setLayout(layout*1);
             }
+            var mapType = node.firstChild().getAttribute("mapType");
+            if(mapType!= null )
+            {
+                this.setMapType(mapType);
+            }
+            var nodePropertyListString= node.firstChild().getAttribute("nodePropertyList");
+            if(nodePropertyListString != null)
+            {
+                this.setNodePropertyListString(nodePropertyListString);
+            }
+
+
             for (var index = 0; index < nodeXmlData.length; index++) {
                 var nodeData=YAHOO.rapidjs.ObjectUtils.clone(nodeXmlData[index].getAttributes());
                 var nodeID = nodeData["id"];
@@ -613,24 +621,34 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     loadMapForNode : function( nodeParams)
     {
-        nodeParams["expanded"]="true";
-        nodeParams["x"]="250";
-        nodeParams["y"]="250";
-        this.mapType=nodeParams.mapType?nodeParams.mapType:"";
+        var loadMap=false;
+        var nodePropertyListToCheck=this.getNodePropertyListToSend([]);
+        for (var index = 0; index < nodePropertyListToCheck.length; index++) {
+            if(nodeParams[nodePropertyListToCheck[index]]!=null)
+            {
+                loadMap=true;
+            }
+        }
+        if(loadMap)
+        {
+            nodeParams["expanded"]="true";
+            nodeParams["x"]="250";
+            nodeParams["y"]="250";
+            this.mapType=nodeParams.mapType?nodeParams.mapType:"";
 
-        var tempNodes=new Array();
-        tempNodes[0]=nodeParams;
+            var tempNodes=new Array();
+            tempNodes[0]=nodeParams;
 
-        var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
-        var nodeString=this.getPropertiesString(tempNodes, nodePropertyList);        
-        
-        this.firstResponse = null;
-        var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapType:this.mapType};
-        this.url = this.expandURL;
-        this.lastLoadMapRequestData = {isMap:false, params:params}
-        this.firstLoadMapRequestData = {isMap:false, params:params};
-        this.doPostRequest(this.url, params);
+            var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+            var nodeString=this.getPropertiesString(tempNodes, nodePropertyList);
 
+            this.firstResponse = null;
+            var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapType:this.mapType};
+            this.url = this.expandURL;
+            this.lastLoadMapRequestData = {isMap:false, params:params}
+            this.firstLoadMapRequestData = {isMap:false, params:params};
+            this.doPostRequest(this.url, params);
+        }
     },
 
 
@@ -649,8 +667,37 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         return propList.join(";");
     },
 
-    getNodesString: function(){
-        return this.getPropertiesString(this.getNodes(), ["id", "x", "y", "expanded", "expandable"]);
+    getMapType: function(){
+        return this.mapType;
+    },
+    setMapType:function(mapType)
+    {
+        this.mapType=mapType;
+    },
+    getNodePropertyListString: function(){
+        return this.mapType;
+    },
+    setNodePropertyListString:function(nodePropertyListString)
+    {
+        this.nodePropertyListString = nodePropertyListString;
+
+        var tempPropertyList=new Array();
+
+        if(this.nodePropertyListString)
+        {
+            tempPropertyList = this.nodePropertyListString.split(",")
+        }
+
+        this.nodePropertyList = new Array();
+        for(var j=0; j < tempPropertyList.length; j++)
+        {
+            var propName=tempPropertyList[j];
+            if(propName!="id" && propName!="expanded" && propName!="expandable" && propName!="x" && propName!="y")
+            {
+                this.nodePropertyList.push(propName);
+            }
+        }
+
     },
     getNodePropertyListToSend: function(extraProps){
         var propertyList=["id"].concat(this.nodePropertyList).concat(extraProps);
@@ -658,16 +705,15 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     expandNode : function( expandedNodeName)
     {
-        var data = this.getMapData();
-        if( data ) {
-            var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
-            var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
-            var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-            var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapType:this.mapType};
-            this.lastLoadMapRequestData = {isMap:false, params:params}
-            this.url = this.expandURL;
-            this.doPostRequest(this.url, params);
-       }
+
+        var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+        var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
+        var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
+        var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapType:this.mapType};
+        this.lastLoadMapRequestData = {isMap:false, params:params}
+        this.url = this.expandURL;
+        this.doPostRequest(this.url, params);
+
     },
 
     getData : function()

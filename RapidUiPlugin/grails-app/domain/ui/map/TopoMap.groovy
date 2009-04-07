@@ -26,14 +26,18 @@ class TopoMap
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "consistOfDevices", "group"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "group"];
     };
     static datasources = ["RCMDB":["keys":["mapName":["nameInDs":"mapName"], "username":["nameInDs":"username"]]]]
-    static cascaded =[consistOfDevices:true]
+    static cascaded =[:]
     
     String mapName ="";
     
     String username ="";
+    String nodePropertyList="";
+    String nodes="";
+    String mapType="";
+
     Boolean isPublic = false;
     Long layout;
     String rsOwner = "p"
@@ -47,16 +51,19 @@ class TopoMap
     
     Object __is_federated_properties_loaded__ ;
     
-    List consistOfDevices =[];
+
     
     MapGroup group ;
     
     static relations = [
-            consistOfDevices:[reverseName:"belongsToMap", isMany:true, type:MapNode],
             group:[reverseName:"maps", isMany:false, type:MapGroup]
     ]
     static constraints={
     mapName(blank:false,nullable:false)
+    mapType(blank:true,nullable:false)
+    nodePropertyList(blank:false,nullable:false)
+    nodes(blank:false,nullable:false)
+
         
      username(blank:false,nullable:false,key:["mapName"])
       isPublic(nullable:true)  

@@ -65,20 +65,8 @@ class MapGroupController {
             mapGroup.remove();
             def username = session.username;
             maps.each {
-                def mapName = it.mapName;
-                def edges = EdgeNode.list().findAll {
-                    it.mapName == mapName && it.username == username;
-                };
-                edges.each() {
-                    it.remove();
-                }
-                def devices = it.consistOfDevices;
                 it.remove();
-                devices.each {
-                    it.remove();
-                }
             }
-
             withFormat {
                 html {
                     flash.message = "MapGroup ${params.id} deleted"

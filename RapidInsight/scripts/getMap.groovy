@@ -32,16 +32,7 @@ def isPublic = params.isPublic;
 
 def map = TopoMap.get( mapName : mapName2, username : isPublic == "true"? RsUser.RSADMIN: username2)
 
-def deviceMap = [:];
-
-def devices =  map.consistOfDevices;
-def devicesMap = [:];
-def devicesToBeExpanded = "";
-devices.each{
-    devicesMap[it.nodeIdentifier] = it;
-    devicesToBeExpanded += "${it.nodeIdentifier},${it.expanded},${it.xlocation},${it.ylocation};"
-}
-def res = CmdbScript.runScript("expandMap", [params:[nodes:devicesToBeExpanded]]);
+def res = CmdbScript.runScript("expandMap", [params:[nodes:map.nodes,nodePropertyList:map.nodePropertyList,mapType:map.mapType]]);
 def slurper = new XmlSlurper().parseText(res);
 def nodeXmls = slurper.node;
 def edgeXmls = slurper.edge;
@@ -49,14 +40,14 @@ def edgeXmls = slurper.edge;
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-mapBuilder.graph(layout:map.layout)
+mapBuilder.graph(layout:map.layout,mapType:map.mapType,nodePropertyList:map.nodePropertyList)
 {
     nodeXmls.each {
-        mapBuilder.node( id: it.@id.text(), model : it.@model.text(), type : it.@type.text(), gauged : it.@gauged.text(), expanded : it.@expanded.text(), expandable : it.@expandable.text(), x: it.@x.text(), y: it.@y.text());
+        mapBuilder.node( it.attributes());
     }
 
     edgeXmls.each {
-        mapBuilder.edge( source : it.@source.text(), target : it.@target.text());
+        mapBuilder.edge( it.attributes());
     }
 
 }

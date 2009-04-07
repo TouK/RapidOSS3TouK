@@ -194,7 +194,7 @@ functionActionCondition7483Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[createURL('mapForm.gsp', {mode:'create', nodes: YAHOO.rapidjs.Components['topologyMap'].getNodesString(), layout: YAHOO.rapidjs.Components['topologyMap'].getLayout()})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('mapForm.gsp',  getMapSaveParams())]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     

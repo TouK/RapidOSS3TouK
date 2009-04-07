@@ -31,17 +31,12 @@ class MapNode {
 
     String rsOwner = "p"
     String nodeIdentifier ="";
-    
-    Long xlocation =0;
-    
-    Long ylocation =0;
-    
+
     String username ="";
-    
     String mapName ="";
 
-    String expandable = "";
-    String expanded = "";
+
+    String nodeProperties=""
 
     Long id ;
     
@@ -58,13 +53,7 @@ class MapNode {
     static relations = [belongsToMap:[reverseName:"consistOfDevices", isMany:false, type:TopoMap]]
     static constraints={
     nodeIdentifier(blank:false,nullable:false)
-        
-     xlocation(nullable:true)
-        
-     ylocation(nullable:true)
-
-     expandable(nullable:true)
-     expanded(nullable:true)
+    nodeProperties(blank:false,nullable:false)
 
      username(blank:false,nullable:false)
         

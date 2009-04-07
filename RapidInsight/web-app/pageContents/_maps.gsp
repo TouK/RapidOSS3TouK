@@ -26,15 +26,21 @@
             var strQueryString = strHref.substr(strHref.indexOf("?")+1);
             var aQueryString = strQueryString.split("&");
             for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
-                    var aParam = aQueryString[iParam].split("=");                              
+                    var aParam = aQueryString[iParam].split("=");
                     paramMap[aParam[0]]=decodeURIComponent(aParam[1]);
             }
-        }        
+        }
         return paramMap;
     }
-
-    var tree = YAHOO.rapidjs.Components['mapTree'];             
-    var topologyMap = YAHOO.rapidjs.Components['topologyMap'];             
+	function getMapSaveParams()
+	{
+		var topologyMap	=YAHOO.rapidjs.Components['topologyMap'];
+		mapData=topologyMap.getMapData();
+		var saveParams={mode:'create', nodes:mapData.nodes, nodePropertyList:mapData.nodePropertyList,layout:topologyMap.getLayout(),mapType:topologyMap.getMapType()};
+		return saveParams;
+	}
+    var tree = YAHOO.rapidjs.Components['mapTree'];
+    var topologyMap = YAHOO.rapidjs.Components['topologyMap'];
     tree.addToolbarButton({
         className:'r-filterTree-groupAdd',
         scope:this,
@@ -51,7 +57,7 @@
         tooltip: 'Save Map',
         click:function() {
             var queryForm = YAHOO.rapidjs.Components['saveMapForm'];
-        	queryForm.show(createURL('mapForm.gsp', {mode:'create', nodes:topologyMap.getNodesString(), layout:topologyMap.getLayout()}));
+        	queryForm.show(createURL('mapForm.gsp',getMapSaveParams()));
         	queryForm.popupWindow.show();
         }
     });

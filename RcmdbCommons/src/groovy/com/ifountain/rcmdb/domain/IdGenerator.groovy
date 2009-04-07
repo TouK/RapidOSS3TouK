@@ -37,16 +37,11 @@ class IdGenerator {
     {
         if(!idGenerator)
         {
-            println "getting id generator with strategy ${strategy.class.name}"
-//            if(!(strategy instanceof MockIdGeneratorStrategy)){
-//                throw new Exception("Strategy is wrong")
-//            }
             idGenerator = new IdGenerator(strategy);
         }
     }
     public static void destroy()
     {
-        println "destroying id generator"
         idGenerator = null;
     }
     public static IdGenerator getInstance()
@@ -55,8 +50,7 @@ class IdGenerator {
     }
     public synchronized getNextId()
     {
-        println "getting next id from strategy ${strategy.class.name}"
-        return strategy.getNextId();   
+        return strategy.getNextId();
     }
 }
 

@@ -15,7 +15,10 @@
         if(object instanceof RsLink){
            relatedObject = object.a_ComputerSystemName; 
         }
-        response.sendRedirect(URLUtils.createURL("index/maps.gsp", [name:relatedObject]))
+
+        def rsClassName=params.rsClassName?params.rsClassName:"";
+        def mapType=params.mapType?params.mapType:"";
+        response.sendRedirect(URLUtils.createURL("index/maps.gsp", [name:relatedObject,rsClassName:rsClassName,mapType:mapType]))
     %>
      </head>
 </html>

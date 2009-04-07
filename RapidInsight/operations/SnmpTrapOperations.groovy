@@ -4,11 +4,13 @@ public class SnmpTrapOperations extends com.ifountain.rcmdb.domain.operation.Abs
 {
 
     def send(Map trapProps){
-        def transportAddress = "${destination}/${port}"
+        def trapPort = trapProps["port"] != null ? trapProps["port"] : port;
+        def transportAddress = "${destination}/${trapPort}"
         def varbinds = trapProps["varbinds"] != null ? trapProps["varbinds"]: [];
-        def timestamp = trapProps["timestamp"] != null ? trapProps["timestamp"] : 0
+        def timestamp = trapProps["timestamp"] != null ? trapProps["timestamp"] : (long) Math.floor(System.currentTimeMillis()/1000);
         def trapCommunity = trapProps["community"] != null ? trapProps["community"] : community;
-        if(trapVersion == "v1"){
+        def tVersion = trapProps["trapVersion"] != null ? trapProps["trapVersion"] : trapVersion;
+        if(tVersion == "v1"){
             return SnmpUtils.sendV1Trap(transportAddress, trapProps["agent"], trapCommunity, trapProps["enterprise"], timestamp, trapProps["generic"], trapProps["specific"], varbinds)
         }
         else{

@@ -29,7 +29,12 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 		def currentTime = new Date().getTime() 
 		def after = RsHeartBeat.search("consideredDownAt:{* TO $currentTime}")
 		logger.info("Found heartbeat item size: $after.total")
-		after.results.each {
+		return after.results
+	}
+	
+	public static processHeartBeats(logger){
+		def results = checkHeartBeat(logger)
+		results.each {
 		    def eventProps = [name:"${it.objectName}_Down", elementName:it.objectName]
 		    logger.info("Creating event: ${eventProps.name}")
 		    RsEvent.notify(eventProps)

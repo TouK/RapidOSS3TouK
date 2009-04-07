@@ -65,7 +65,6 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
             /**
              * search: Returns a subset of the instances of this class matching the given query
              */
-            println "adding search method for class ${grailsDomainClass.clazz.name}"
             grailsDomainClass.metaClass.'static'.search << { Object[] args ->
                 OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
                 statistics.start();

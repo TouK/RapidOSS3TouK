@@ -90,7 +90,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         return addScript(params, false);
     }
     protected static Exception createScriptException(CmdbScript script) {
-        println "script has error ${script.errors.allErrors}"
         return new Exception(script.messageService.getMessage(script.errors.allErrors[0]))
     }
     static def deleteScript(CmdbScript script) throws Exception {

@@ -30,6 +30,7 @@ import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import application.ObjectId
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder;
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.domain.IdGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,6 +46,13 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
     }
+
+    public void tearDown() {
+        IdGenerator.destroy();
+        super.tearDown();
+    }
+
+
 
     public void testDoWithSpring()
     {

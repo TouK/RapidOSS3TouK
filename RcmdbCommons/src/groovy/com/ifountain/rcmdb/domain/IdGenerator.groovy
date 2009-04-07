@@ -38,9 +38,9 @@ class IdGenerator {
         if(!idGenerator)
         {
             println "getting id generator with strategy ${strategy.class.name}"
-            if(!(strategy instanceof MockIdGeneratorStrategy)){
-                throw new Exception("Strategy is wrong") 
-            }
+//            if(!(strategy instanceof MockIdGeneratorStrategy)){
+//                throw new Exception("Strategy is wrong")
+//            }
             idGenerator = new IdGenerator(strategy);
         }
     }

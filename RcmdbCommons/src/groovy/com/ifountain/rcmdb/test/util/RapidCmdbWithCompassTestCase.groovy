@@ -33,6 +33,7 @@ import relation.Relation
 public class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
     def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
     {
+        IdGenerator.destroy();
         IdGenerator.initialize(new MockIdGeneratorStrategy());
         pluginsToLoad +=  DomainClassGrailsPlugin;
         pluginsToLoad +=  gcl.loadClass("SearchableGrailsPlugin");

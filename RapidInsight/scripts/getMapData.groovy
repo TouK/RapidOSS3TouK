@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -18,7 +18,7 @@
 */
 import groovy.xml.MarkupBuilder
 // ------------------ CONFIGURATION --------------------------------------
-CONFIG=new mapConfiguration().getConfiguration();
+CONFIG=new mapConfiguration().getConfiguration(params.mapType);
 // ------------------ END OF CONFIGURATION --------------------------------
 
 
@@ -40,16 +40,14 @@ def mapDataBuilder = new MarkupBuilder(writer);
 
 mapDataBuilder.graphData {
 
-    nodes.each {
-        def deviceName=it;
-        def rsAlias="";
-        def nodeModel=getNodeModel(rsAlias)
-        def device = nodeModel.get( name : deviceName);
+    nodes.each {  nodeParam->
+        def nodeData = extractNodeDataFromParameter(nodeParam);
+        def device = nodeData.nodeModel.get( name : nodeData.name);
         mapDataBuilder.node( buildNodeData(device));
     }
 
-    edges.each {
-        def edgeTokens = it.splitPreserveAllTokens(",");
+    edges.each { edgeParam->
+        def edgeTokens = edgeParam.splitPreserveAllTokens(",");
         def source = edgeTokens[0];
         def target = edgeTokens[1];
         def links = getLinkModel().searchEvery( "${CONFIG.CONNECTION_SOURCE_PROPERTY}:${source.exactQuery()} ${CONFIG.CONNECTION_TARGET_PROPERTY}: ${target.exactQuery()}");
@@ -67,11 +65,50 @@ mapDataBuilder.graphData {
 return writer.toString();
 
 //utility functions
+def getLinksofDevice(sourceName,targetName)
+{
+   return getLinkModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${source.exactQuery()} ${CONFIG.CONNECTION_TARGET_PROPERTY}: ${targetName.exactQuery()} ) ${getMapTypeQuery()} ");
+}
+def getMapTypeQuery()
+{
+    def query="";
+    if(CONFIG.USE_MAP_TYPE)
+    {
+        def mapType=params.mapType;
+        if(mapType == null || mapType == "")
+        {
+            mapType=CONFIG.DEFAULT_MAP_TYPE;
+        }
+
+        query=" AND mapType:${mapType.exactQuery()}";
+    }
+    return query;
+}
+def extractNodeDataFromParameter(nodeParam)
+{
+    def nodeData=[:];
+    def nodePropertyList=params.nodePropertyList.splitPreserveAllTokens(",")
+    def nodeProperties = nodeParam.splitPreserveAllTokens(",")
+
+    nodePropertyList.size().times{ index ->
+        nodeData[nodePropertyList[index]]=nodeProperties[index];
+    }
+
+    if(CONFIG.USE_DEFAULT_NODE_MODEL)
+    {
+        nodeData.rsClassName=CONFIG.DEFAULT_NODE_MODEL;
+    }
+    nodeData.nodeModel=this.class.classLoader.loadClass(nodeData.rsClassName);
+    return nodeData;
+}
+
 def buildNodeData(device)
 {
-     def nodeData=["gauged":"true"]     
+     def nodeData=["gauged":"true"]
      nodeData["id"]=device.name;
-     nodeData["state"]=device.getState();
+     nodeData["name"]=device.name;
+     nodeData["rsClassName"]=device.class.name;
+     nodeData["state"]=device.getState();     
      CONFIG.NODE_PROPERTY_MAPPING.each{ dataPropName,modelPropName ->
         nodeData[dataPropName]=device.getProperty(modelPropName);
      }
@@ -83,20 +120,3 @@ def getLinkModel()
 {
     return this.class.classLoader.loadClass(CONFIG.DEFAULT_CONNECTION_MODEL);
 }
-def getNodeModel(rsAlias)
-{
-    def className=null;
-    if(CONFIG.USE_DEFAULT_NODE_MODEL)
-    {
-        className=CONFIG.DEFAULT_NODE_MODEL;
-    }
-    else
-    {
-        className=rsAlias;
-    }
-    return this.class.classLoader.loadClass(className);
-}
-
-
-
-

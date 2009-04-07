@@ -306,6 +306,8 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
      def getMapDataFromScript(params){
+        params.nodePropertyList="name"
+
         def script=CmdbScript.get(name:"getMapData")
 
         def scriptResult=CmdbScript.runScript(script,["params":params]);

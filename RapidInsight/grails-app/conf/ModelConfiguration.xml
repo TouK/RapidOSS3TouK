@@ -165,10 +165,11 @@
         <Model Name="RsMapConnection">
 			<Properties>
                 <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='mapType' Type='string' IsKey="true" Default="default"/>
                 <Property Name="a_Name" Type="string"/>
-				<Property Name="a_ClassName" Type="string"/>
+				<Property Name="a_RsClassName" Type="string"/>
 				<Property Name="z_Name" Type="string"/>
-				<Property Name="z_ClassName" Type="string"/>
+				<Property Name="z_RsClassName" Type="string"/>
 			</Properties>
 		</Model>
 		

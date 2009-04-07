@@ -127,6 +127,7 @@ class ObjectMapTagLib {
         cArray.add("id: '${config["id"]}'")
         cArray.add("expandURL: '${config["expandURL"]}'")
         cArray.add("dataURL: '${config["dataURL"]}'")
+        cArray.add("nodeIdentificationParams: '${config["nodeIdentificationParams"]}'")
         if (config["title"])
             cArray.add("title:'${config['title']}'")
         if (config["nodeSize"])

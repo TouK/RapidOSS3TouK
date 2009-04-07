@@ -54,6 +54,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         //calling with no expandedNodeName
         def params=[:];
         params.nodes="start,false,50,100;"
+        
 
         def expandData=getExpandMapData(params);
         assertEquals(1,expandData.nodes.size());
@@ -84,6 +85,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(target.hasErrors())
         def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1.hasErrors())
+
 
         def params=[:];
         params.nodes="start,false,50,100;"
@@ -524,6 +526,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
      def getExpandMapData(params){
+        params.nodePropertyList="name,expanded,x,y"
+        
         def script=CmdbScript.get(name:"expandMap")
 
         def scriptResult=CmdbScript.runScript(script,["params":params]);
@@ -536,7 +540,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         results.nodes=[:];
         results.edges=[:];
 
-        def nodeProps=["id","model","type","gauged","expanded","expandable","x","y","displayName"];
+        def nodeProps=["id","expanded","expandable","x","y","displayName"];
 
         resultXml.node.each {    dataRow->
             def nodeData=[:];

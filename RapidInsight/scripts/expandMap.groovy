@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -18,9 +18,10 @@
 */
 import groovy.xml.MarkupBuilder;
 // ------------------ CONFIGURATION --------------------------------------
-CONFIG=new mapConfiguration().getConfiguration();
+CONFIG=new mapConfiguration().getConfiguration(params.mapType);
 // ------------------ END OF CONFIGURATION --------------------------------
 
+//Default params.nodePropertyList ["name","rsClassName","expanded","x","y"]
 
 def startTime = System.nanoTime();
 def expandedNodeName = params.expandedNodeName;
@@ -37,15 +38,14 @@ def edgeMap = [:]
 def deviceMap = [:];
 nodes.each{nodeParam->
     def nodeData = extractNodeDataFromParameter(nodeParam);
-    println nodeData;
-    def device = nodeData.nodeModel.get( name : nodeData.nodeName);
+    def device = nodeData.nodeModel.get( name : nodeData.name);
     if(device != null)
     {
-        if(nodeData.nodeName == expandedNodeName)
+        if(nodeData.name == expandedNodeName)
         {
-            nodeData.isExpanded = "true";
+            nodeData.expanded = "true";
         }
-        deviceMap[device.name] = buildNodeData(device,nodeData.isExpanded,nodeData.x,nodeData.y);
+        deviceMap[device.name] = buildNodeData(device,nodeData.expanded,nodeData.x,nodeData.y);
     }
 
 }
@@ -55,8 +55,8 @@ deviceMap.each{deviceName, deviceConfigMap->
     deviceSet[deviceName] = deviceConfigMap;
     if(deviceConfigMap.expanded == "true")
     {
-        deviceConfigMap.expandable = "true"
-        def links=getLinkModel().searchEvery("${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()}");
+        deviceConfigMap.expandable = "true"        
+        def links=getLinksofDevice(deviceName);
         links.each {link->
             def otherSide = getOtherSideName(link, deviceName);
 
@@ -70,7 +70,6 @@ deviceMap.each{deviceName, deviceConfigMap->
                     edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
                     if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
                     {
-                        //deviceSet[otherSide] = [ "id" : otherSide, "model" : otherSideDevice.model, "type": otherSideDevice.className, "gauged" : "true", "expandable" : "false", "expanded":"false","rsAlias":getNodeModelNameForOutput(otherSideDevice) ];
                         deviceSet[otherSide]= buildNodeData(otherSideDevice,"false","","");
                     }
                 }
@@ -108,54 +107,55 @@ return writer.toString();
 
 
 //utility functions
+def getLinksofDevice(deviceName)
+{
+   return getLinkModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()} ) ${getMapTypeQuery()} ");
+}
+def getMapTypeQuery()
+{
+    def query="";
+    if(CONFIG.USE_MAP_TYPE)
+    {
+        def mapType=params.mapType;
+        if(mapType == null || mapType == "")
+        {
+            mapType=CONFIG.DEFAULT_MAP_TYPE;
+        }
+
+        query=" AND mapType:${mapType.exactQuery()}";
+    }
+    return query;
+}
 def extractNodeDataFromParameter(nodeParam)
 {
     def nodeData=[:];
+    def nodePropertyList=params.nodePropertyList.splitPreserveAllTokens(",")
+    def nodeProperties = nodeParam.splitPreserveAllTokens(",")
 
-    def nodeTokens = nodeParam.splitPreserveAllTokens(",")
-    def nodeNameParam = nodeTokens[0];
-
-    nodeData.isExpanded = nodeTokens[1];
-    nodeData.x = nodeTokens[2];
-    nodeData.y = nodeTokens[3];
+    nodePropertyList.size().times{ index ->
+        nodeData[nodePropertyList[index]]=nodeProperties[index];
+    }
 
     if(CONFIG.USE_DEFAULT_NODE_MODEL)
     {
-        nodeData.nodeName=nodeNameParam;
-        nodeData.nodeModelName=CONFIG.DEFAULT_NODE_MODEL;
+        nodeData.rsClassName=CONFIG.DEFAULT_NODE_MODEL;
     }
-    else
-    {
-        def nameTokens=nodeNameParam.splitPreserveAllTokens("/");
-        nodeData.nodeName=nodeTokens[0];
-        nodeData.nodeModelName=nodeTokens[1];        
-    }
-    nodeData.nodeModel=this.class.classLoader.loadClass(nodeData.nodeModelName);
+    nodeData.nodeModel=this.class.classLoader.loadClass(nodeData.rsClassName);
     return nodeData;
 }
 
-def buildNodeData(device,isExpanded,x,y)
+def buildNodeData(device,expanded,x,y)
 {
-     def nodeData=["expanded":isExpanded,"expandable":"false","x":x,"y":y]
-     //nodeData["rsAlias"]=getNodeModelNameForOutput(device);
+     def nodeData=["expanded":expanded,"expandable":"false","x":x,"y":y]
      nodeData["id"]=device.name;
+     nodeData["rsClassName"]=device.class.name;
+     nodeData["name"]=device.name;
      return nodeData;
 
 }
 def getLinkModel()
 {
     return this.class.classLoader.loadClass(CONFIG.DEFAULT_CONNECTION_MODEL);
-}
-def getNodeModelNameForOutput(node)
-{
-    if(CONFIG.USE_DEFAULT_NODE_MODEL)
-    {
-        return "";
-    }
-    else
-    {
-        return node.class.name;
-    }
 }
 def getOtherSideModel(link, deviceName)
 {
@@ -204,7 +204,7 @@ def getOtherSideName(link, deviceName)
 def isExpandable( devName, edgeMap)
 {
     def expandable = "false";
-    def links = getLinkModel().searchEvery("${CONFIG.CONNECTION_SOURCE_PROPERTY}:${devName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${devName.exactQuery()}");
+    def links = getLinksofDevice(devName);
     links.each{link->
         def otherSide = getOtherSideName(link, devName);
         if( otherSide != null ){

@@ -416,7 +416,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             "loadMapForNode":{
                 descr:"Loads the map for the given object name.",
                 args:{
-                    "name":"Name of the object"
+                    "nodeParams":"Map of properties that will identify the node"
                 }
             },
             "loadMap":{

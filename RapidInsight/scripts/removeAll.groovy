@@ -10,8 +10,13 @@
  * To change this template use File | Settings | File Templates.
  */
 
-RsTopologyObject.removeAll();
-RsEvent.removeAll();
-RsHistoricalEvent.removeAll();
-RsManagementSystem.removeAll();
-RsObjectState.removeAll();
+ RsTopologyObject.removeAll();
+ RsEvent.removeAll();
+ RsHistoricalEvent.removeAll();
+ RsEventJournal.removeAll();
+ RsLookup.removeAll();
+ RsTicket.removeAll();
+ RsInMaintenance.removeAll();
+ SnmpTrap.removeAll();
+ RsManagementSystem.removeAll();
+ RsObjectState.removeAll();

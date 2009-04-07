@@ -14,7 +14,7 @@ class UiObjectMap extends UiComponent{
 
     String expandURL="script/run/expandMap"
     String dataURL="script/run/getMapData"
-    String nodeIdentificationParams="name,rsClassName";
+    String nodePropertyList="name,rsClassName";
     Long pollingInterval= 0;
     Long timeout= 30;
     Long nodeSize= 60;
@@ -31,7 +31,7 @@ class UiObjectMap extends UiComponent{
     static constraints={
         expandURL(blank:false)
         dataURL(blank:false)
-        nodeIdentificationParams(blank:false)
+        nodePropertyList(blank:false)
         nodeSize(nullable:true)
         edgeColors(nullable:true)
         edgeColorDataKey(nullable:true)

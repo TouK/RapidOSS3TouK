@@ -10,9 +10,6 @@
         <customNs />
       </configuration>
     </facet>
-    <facet type="Grails" name="Grails" implicit="true">
-      <configuration />
-    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />

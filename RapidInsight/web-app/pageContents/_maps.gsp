@@ -17,7 +17,7 @@
         return decodeURIComponent(strReturn);
     }
 
-    function getURLParameters(){
+    function getURLParams(){
         var paramMap={};
 
         var strHref = window.location.search;

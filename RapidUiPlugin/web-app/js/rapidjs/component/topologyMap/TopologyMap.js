@@ -62,14 +62,14 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.wMode = config.wMode;
     this.dataURL = config.dataURL;
     this.expandURL = config.expandURL;
-    this.nodeIdentificationParams = config.nodeIdentificationParams;
-    this.mapType="";
-    this.nodeIdentificationParamsList = new Array();
-    if(config.nodeIdentificationParams)
+    this.nodePropertyListString = config.nodePropertyList;
+    this.nodePropertyList = new Array();
+    if(this.nodePropertyListString)
     {
-    	this.nodeIdentificationParamsList = config.nodeIdentificationParams.split(",")
+    	this.nodePropertyList = this.nodePropertyListString.split(",")
     }
-
+    
+    this.mapType="";
     if(!config.nodeSize)
         config.nodeSize = 60;
     this.configureTimeout(config);
@@ -653,7 +653,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         return this.getPropertiesString(this.getNodes(), ["id", "x", "y", "expanded", "expandable"]);
     },
     getNodePropertyListToSend: function(extraProps){
-        var propertyList=["id"].concat(this.nodeIdentificationParamsList).concat(extraProps);
+        var propertyList=["id"].concat(this.nodePropertyList).concat(extraProps);
         return propertyList;
     },
     expandNode : function( expandedNodeName)

@@ -73,7 +73,7 @@ rootImage7394Visible="params.data.nodeType == 'map'"
 <rui:html id="saveMapForm" iframe="false"></rui:html>
 
 
-<rui:objectMap id="topologyMap" expandURL="../script/run/expandMap" dataURL="../script/run/getMapData" nodeSize="60" edgeColorDataKey="state" edgeColors="${['5':0xffde2c26,'4':0xfff79229,'3':0xfffae500,'2':0xff20b4e0,'1':0xffac6bac,'0':0xff62b446,'default':0xff62b446]}"
+<rui:objectMap id="topologyMap" expandURL="../script/run/expandMap" dataURL="../script/run/getMapData" nodePropertyList="name,rsClassName" nodeSize="60" edgeColorDataKey="state" edgeColors="${['5':0xffde2c26,'4':0xfff79229,'3':0xfffae500,'2':0xff20b4e0,'1':0xffac6bac,'0':0xff62b446,'default':0xff62b446]}"
 
         onMapInitialized="${['loadMapForNodeAction']}"
     
@@ -161,14 +161,14 @@ functionActionCondition7453Condition=""
 </rui:action>
 
 <%
-functionActionCondition7464Condition="getURLParam('name') != null"
+functionActionCondition7464Condition=""
 %>
 
 <rui:action id="loadMapForNodeAction" type="function" function="loadMapForNode" componentId='topologyMap' condition="$functionActionCondition7464Condition"
 
 >
     
-    <rui:functionArg><![CDATA[getURLParam('name')]]></rui:functionArg>
+    <rui:functionArg><![CDATA[getURLParams()]]></rui:functionArg>
     
 </rui:action>
 

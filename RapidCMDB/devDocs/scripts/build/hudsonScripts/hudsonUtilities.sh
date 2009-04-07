@@ -123,6 +123,7 @@ runGrailsTests() {
 
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+    chmod +x *.sh
     ./rsmodeler.sh -testUnit
     sleep 5
     rm -r test/reports/TESTS-TestSuites.xml

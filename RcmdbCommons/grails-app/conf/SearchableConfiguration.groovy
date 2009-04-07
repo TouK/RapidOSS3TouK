@@ -25,7 +25,13 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 * This file is created by "grails install-searchable-config"
 */
 class SearchableConfiguration {
-
+    public SearchableConfiguration()
+    {
+        if(System.getProperty("compass.transaction.lockTimeout") != null)
+        {
+            compassSettings.put("compass.transaction.lockTimeout", System.getProperty("compass.transaction.lockTimeout"));
+        }
+    }
     /**
      * The location of the Compass index
      *

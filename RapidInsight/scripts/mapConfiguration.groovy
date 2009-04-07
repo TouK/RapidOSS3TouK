@@ -8,13 +8,13 @@
 def getConfiguration(mapType)
 {
     CONFIG=[:]
-    if(mapType=="" || mapType==null)
+    if(!mapType)
     {
         CONFIG.DEFAULT_NODE_MODEL="RsComputerSystem";
 	    CONFIG.USE_DEFAULT_NODE_MODEL=true; //if false nodeModel will be extracted from node name parameters
 	    CONFIG.NODE_PROPERTY_MAPPING=["displayName":"name","model":"model","type":"className"];
 
-	    CONFIG.USE_MAP_TYPE=false;    //if true search query will have mapType:"mapType" appended
+	    CONFIG.USE_MAP_TYPE=false;
 	    CONFIG.DEFAULT_MAP_TYPE="default"; //used if mapType is not passed as a parameter to script
 
 	    CONFIG.DEFAULT_CONNECTION_MODEL="RsLink";
@@ -29,7 +29,7 @@ def getConfiguration(mapType)
 	    CONFIG.USE_DEFAULT_NODE_MODEL=false; //if false nodeModel will be extracted from node name parameters
 	    CONFIG.NODE_PROPERTY_MAPPING=["displayName":"name"];
 
-	    CONFIG.USE_MAP_TYPE=true;  //if true search query will have mapType:"mapType" appended
+	    CONFIG.USE_MAP_TYPE=true;
 	    CONFIG.DEFAULT_MAP_TYPE="default"; //used if mapType is not passed as a parameter to script
 
 	    CONFIG.DEFAULT_CONNECTION_MODEL="RsMapConnection";

@@ -19,7 +19,7 @@
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
 	def beforeInsert(){
-        RsInMaintenance.eventInBeforeInsert(this.domainObject)
+        RsInMaintenance.putEventInMaintenance(this.domainObject)
 	}
 	
     static notify(Map eventProps) {

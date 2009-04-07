@@ -10,7 +10,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 		else
 		  return false
     }
-    public static void eventInBeforeInsert(event)
+    public static void putEventInMaintenance(event)
     {
          if(isObjectInMaintenance(event.elementName))
          {

@@ -175,4 +175,84 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 
+    public void testRsTicketOperationsTest()
+    {
+        initialize([CmdbScript,RsEvent,RsTopologyObject,RsTicket,JiraConnector], []);
+        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
+        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport (RsTicket,RsTicketOperations);
+        CompassForTests.addOperationSupport (JiraConnector,JiraConnectorOperations);
+
+        initializeScriptManager("ticketing");
+
+        def script=CmdbScript.addScript([name:"RsTicketOperationsTest",scriptFile:"RsTicketOperationsTest.groovy",type: CmdbScript.ONDEMAND],true)
+        println script.errors
+        assertFalse(script.hasErrors());
+
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            fail("Error in script. Reason ${e}");
+
+        }
+    }
+    
+    public void testRemoveAllScriptTest()
+    {
+        initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance], []);
+        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
+        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+
+        initializeScriptManager("testScripts");
+
+        def script=CmdbScript.addScript([name:"removeAllScriptTest",scriptFile:"removeAllScriptTest.groovy",type: CmdbScript.ONDEMAND],true)
+        println script.errors
+        assertFalse(script.hasErrors());
+
+        def removeAllScript=CmdbScript.addScript([name:"removeAll",scriptFile:"removeAll.groovy",type: CmdbScript.ONDEMAND],true)
+        println removeAllScript.errors
+        assertFalse(removeAllScript.hasErrors());
+
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            fail("Error in script. Reason ${e}");
+
+        }
+    }
+    
+    public void testHeartBeatTest()
+    {
+        initialize([CmdbScript,RsEvent,RsHeartBeat,RsEventJournal,RsHistoricalEvent], []);
+        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
+        CompassForTests.addOperationSupport (RsHeartBeat,RsHeartBeatOperations);
+        CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
+        CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
+
+        initializeScriptManager("testScripts");
+
+        def script=CmdbScript.addScript([name:"HeartbeatTest",scriptFile:"HeartbeatTest.groovy",type: CmdbScript.ONDEMAND],true)
+        println script.errors
+        assertFalse(script.hasErrors());
+
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            fail("Error in script. Reason ${e}");
+
+        }
+    }
 }

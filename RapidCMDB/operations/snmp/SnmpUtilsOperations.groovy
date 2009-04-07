@@ -91,11 +91,11 @@ class SnmpUtilsOperations extends com.ifountain.rcmdb.domain.operation.AbstractD
         sendV2cTrap(transportAddress, agent, SnmpUtils.DEFAULT_COMMUNITY, timestamp, snmpTrapOid, varbinds);
     }
     public static PDU sendV2cTrap(String transportAddress, String agent, List varbinds) throws IOException {
-        sendV2cTrap(transportAddress, agent, 0, null, varbinds);
+        sendV2cTrap(transportAddress, agent, (long) Math.floor(System.currentTimeMillis()/1000), null, varbinds);
     }
 
     public static PDU sendV2cTrap(String transportAddress, List varbinds) throws IOException {
-        sendV2cTrap(transportAddress, null, 0, null, varbinds);
+        sendV2cTrap(transportAddress, null, (long) Math.floor(System.currentTimeMillis()/1000), null, varbinds);
     }
 
     public static PDU set(String transportAddress, String oid, String value, String type, String community, int version) throws IOException {

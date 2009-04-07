@@ -123,26 +123,26 @@ runGrailsTests() {
 
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-    #./rsmodeler.sh -testUnit
-    #sleep 5
-    #rm -r test/reports/TESTS-TestSuites.xml
-    #if [ ! -d $WORKSPACE/TestResults/Modeler ]
-    #  then
-    #    mkdir $WORKSPACE/TestResults/Modeler
-    #fi
-    #mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+    ./rsmodeler.sh -testUnit
+    sleep 5
+    rm -r test/reports/TESTS-TestSuites.xml
+    if [ ! -d $WORKSPACE/TestResults/Modeler ]
+      then
+        mkdir $WORKSPACE/TestResults/Modeler
+    fi
+    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
-    #sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
+    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
 
-    #./rsmodeler.sh -testIntegration
+    ./rsmodeler.sh -testIntegration
 
-    #sleep 5
-    #rm -r test/reports/TESTS-TestSuites.xml
-    #if [ ! -d $WORKSPACE/TestResults/Modeler ]
-    #  then
-    #    mkdir $WORKSPACE/TestResults/Modeler
-    #fi
-    #mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+    sleep 5
+    rm -r test/reports/TESTS-TestSuites.xml
+    if [ ! -d $WORKSPACE/TestResults/Modeler ]
+      then
+        mkdir $WORKSPACE/TestResults/Modeler
+    fi
+    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
@@ -158,13 +158,13 @@ runGrailsTests() {
     fi
     mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
 
-    #./rs.sh -testIntegration
-    #rm -r test/reports/TESTS-TestSuites.xml
-    #if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
-    #  then
-    #    mkdir $WORKSPACE/TestResults/RapidSuite
-    #fi
-    #mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    ./rs.sh -testIntegration
+    rm -r test/reports/TESTS-TestSuites.xml
+    if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
+      then
+        mkdir $WORKSPACE/TestResults/RapidSuite
+    fi
+    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     cd $WORKSPACE
 }
 

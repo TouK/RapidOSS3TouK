@@ -25,7 +25,10 @@ class ExecutionContextFilters {
                 }
             }
             afterView = {
-                ExecutionContextManager.getInstance().endExecutionContext();
+                if(ExecutionContextManager.getInstance().hasExecutionContext())
+                {
+                    ExecutionContextManager.getInstance().endExecutionContext();
+                }
             }
 		}
     }   

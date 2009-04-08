@@ -9,6 +9,9 @@
 <html>
     <head>
     <%
+        def rsClassName=params.rsClassName?params.rsClassName:"";
+        def mapType=params.mapType?params.mapType:"";
+
         def objectName = params.name;
         def relatedObject = objectName;
         def object = RsTopologyObject.get(name:objectName);
@@ -16,8 +19,7 @@
            relatedObject = object.a_ComputerSystemName; 
         }
 
-        def rsClassName=params.rsClassName?params.rsClassName:"";
-        def mapType=params.mapType?params.mapType:"";
+
         response.sendRedirect(URLUtils.createURL("index/maps.gsp", [name:relatedObject,rsClassName:rsClassName,mapType:mapType]))
     %>
      </head>

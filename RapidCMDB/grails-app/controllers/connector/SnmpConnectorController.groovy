@@ -57,7 +57,7 @@ class SnmpConnectorController {
         SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
         if (snmpConnector) {
             try {
-                deleteConnector(snmpConnector)
+                SnmpConnector.deleteConnector(snmpConnector)
                 flash.message = "SnmpConnector ${snmpConnector.name} deleted"
                 redirect(action: list)
             }
@@ -75,15 +75,6 @@ class SnmpConnectorController {
         }
     }
 
-
-    def deleteConnector(SnmpConnector snmpConnector)
-    {
-        if (snmpConnector.script) {
-            CmdbScript.deleteScript(snmpConnector.script);
-        }
-        snmpConnector.connection?.remove();
-        snmpConnector.remove();
-    }
 
     def edit = {
         SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
@@ -169,10 +160,9 @@ class SnmpConnectorController {
             redirect(action: list)
         }
         else {
-            def script = snmpConnector.script
             try
             {
-                CmdbScript.startListening(script.name);
+                SnmpConnector.startConnector(snmpConnector)
                 flash.message = "Connector ${snmpConnector.name} successfully started"
             }
             catch (Throwable t)
@@ -192,10 +182,9 @@ class SnmpConnectorController {
             redirect(action: list)
         }
         else {
-            def script = snmpConnector.script
             try
             {
-                CmdbScript.stopListening(script.name);
+                SnmpConnector.stopConnector(snmpConnector)
                 flash.message = "Connector ${snmpConnector.name} successfully stopped"
             }
             catch (Throwable t)
@@ -207,27 +196,5 @@ class SnmpConnectorController {
             redirect(action: list)
         }
     }
-
-    def reloadOperations = {
-        def modelClass = grailsApplication.getClassForName("connector.SnmpConnector")
-        if (modelClass)
-        {
-            try
-            {
-
-                modelClass.metaClass.invokeStaticMethod(modelClass, "reloadOperations", [] as Object[]);
-                flash.message = "Model operations reloaded"
-                redirect(action: list)
-            } catch (t)
-            {
-                flash.message = "Exception occurred while reloading model operations Reason:${t.toString()}"
-                redirect(action: list)
-            }
-        }
-        else
-        {
-            flash.message = "Model currently not loaded by application. You should reload application."
-            redirect(action: list)
-        }
-    }
+    
 }

@@ -313,4 +313,53 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         //script rollback
         assertEquals(connectorSaveParams["logLevel"], snmpConnector.script.logLevel)
     }
+
+    public void testSuccessfulDelete()
+    {
+        def createdObjects = SnmpConnectorOperations.addConnector(connectorSaveParams);
+
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorSaveParams["name"], snmpConnector.name);
+
+        assertEquals(1, SnmpConnector.list().size());
+        assertEquals(1, SnmpConnection.list().size());
+        assertEquals(1, SnmpDatasource.list().size());
+        assertEquals(1, CmdbScript.list().size());
+
+        SnmpConnectorOperations.deleteConnector(snmpConnector)
+
+        assertEquals(0, SnmpConnector.list().size());
+        assertEquals(0, SnmpConnection.list().size());
+        assertEquals(0, SnmpDatasource.list().size());
+        assertEquals(0, CmdbScript.list().size());
+    }
+
+    public void testStartConnector() {
+        def createdObjects = SnmpConnectorOperations.addConnector(connectorSaveParams);
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorSaveParams["name"], snmpConnector.name);
+        assertFalse(snmpConnector.script.listeningDatasource.isSubscribed);
+
+        SnmpConnectorOperations.startConnector(snmpConnector);
+        assertTrue(snmpConnector.script.listeningDatasource.isSubscribed)
+    }
+
+     public void testStopConnector() {
+        def createdObjects = SnmpConnectorOperations.addConnector(connectorSaveParams);
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorSaveParams["name"], snmpConnector.name);
+        assertFalse(snmpConnector.script.listeningDatasource.isSubscribed);
+
+        SnmpConnectorOperations.startConnector(snmpConnector);
+        assertTrue(snmpConnector.script.listeningDatasource.isSubscribed)
+
+        SnmpConnectorOperations.stopConnector(snmpConnector);
+        assertFalse(snmpConnector.script.listeningDatasource.isSubscribed)
+    }
 }

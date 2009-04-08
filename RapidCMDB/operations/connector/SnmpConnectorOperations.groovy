@@ -137,4 +137,22 @@ class SnmpConnectorOperations extends com.ifountain.rcmdb.domain.operation.Abstr
             }
         }
     }
+
+    public static void deleteConnector(SnmpConnector snmpConnector) {
+        if (snmpConnector.script) {
+            CmdbScript.deleteScript(snmpConnector.script);
+        }
+        snmpConnector.connection?.remove();
+        snmpConnector.remove();
+    }
+
+    public static void startConnector(SnmpConnector snmpConnector) {
+        def script = snmpConnector.script
+        CmdbScript.startListening(script.name);
+    }
+
+    public static void stopConnector(SnmpConnector snmpConnector) {
+        def script = snmpConnector.script
+        CmdbScript.stopListening(script.name);
+    }
 }

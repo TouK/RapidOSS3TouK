@@ -3,6 +3,10 @@ package com.ifountain.rcmdb.domain.operation
 import org.codehaus.groovy.grails.commons.GrailsClassUtils
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.runtime.NullObject
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.execution.ExecutionContextManager
+import com.ifountain.rcmdb.execution.ExecutionContext
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -40,6 +44,24 @@ abstract class AbstractDomainOperation {
         else
         {
             return domainObject.getProperty(propName);
+        }
+    }
+
+    public static Logger getLogger()
+    {
+        ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
+        if(context != null)
+        {
+            Logger logger = context[RapidCMDBConstants.LOGGER];
+            if(logger == null)
+            {
+                logger = Logger.getLogger(AbstractDomainOperation);
+            }
+            return logger;
+        }
+        else
+        {
+            return Logger.getLogger(AbstractDomainOperation);
         }
     }
 

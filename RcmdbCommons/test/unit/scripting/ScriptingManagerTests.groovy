@@ -25,6 +25,11 @@ import com.ifountain.rcmdb.test.util.TestDatastore
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.execution.ExecutionContextManager
+import com.ifountain.rcmdb.execution.ExecutionContext
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.scripting.ScriptObjectWrapper
 
 /**
 * Created by IntelliJ IDEA.
@@ -237,9 +242,10 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
 
     public void testGetScriptObjectCreatesLogger()
     {
+        ExecutionContextManager.destroy();
         def scriptName = "script1.groovy";
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("return logger");
+        scriptFile.write("return ${RapidCMDBConstants.LOGGER}");
         manager.addScript(scriptName)
 
         def bindings = [:];
@@ -249,13 +255,14 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         logger.setLevel(logLevel);
 
         def scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
-        assertEquals(scriptObject.logger, logger);
-        assertEquals(scriptObject.logger.getLevel(), logLevel);
-        assertEquals(scriptObject.logger.getName(), "testlogger");
+        assertTrue ("Script obejcts should be wrapped to add execution context", scriptObject instanceof ScriptObjectWrapper);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER], logger);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), logLevel);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getName(), "testlogger");
 
         logger.setLevel(Level.INFO);
         scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
-        assertEquals(scriptObject.logger.getLevel(), Level.INFO);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), Level.INFO);
 
     }
     public void testGetScriptObjectCreatesBindingsAndOperationInstance()
@@ -322,14 +329,18 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
 
     public void testRunScript()
     {
+        DataStore.clear();
         def scriptName = "script1.groovy";
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("return name");
+        scriptFile.write("""
+        ${DataStore.class.name}.put("contextLogger", ${ExecutionContextManager.class.name}.getInstance().getExecutionContext()[\"${RapidCMDBConstants.LOGGER}\"])
+return name""");
         manager.addScript(scriptName)
 
         def bindings = ["name": "user1"]
         assertEquals("user1", manager.runScript(scriptName, bindings, testLogger));
         assertEquals("user1", manager.runScript("script1", bindings, testLogger));
+        assertSame (testLogger, DataStore.get("contextLogger"));
     }
     public void testRunScriptCallsBase()
     {

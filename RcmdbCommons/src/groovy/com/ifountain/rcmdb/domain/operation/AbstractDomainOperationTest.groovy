@@ -2,6 +2,9 @@ package com.ifountain.rcmdb.domain.operation
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.util.DataStore
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import com.ifountain.rcmdb.execution.ExecutionContextManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -95,6 +98,33 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         assertEquals (null, DataStore.get("params").prop1);
         assertEquals(null, DataStore.get("params").prop2);
         assertEquals(objectToBeReturned, returnedObject);
+    }
+
+    public void testGetLogger()
+    {
+        ExecutionContextManager.destroy();
+        AbstractDomainOperationTestImpl domainOpr = new AbstractDomainOperationTestImpl();
+        assertEquals("If there is no execution context should return logger belonging to operation", Logger.getLogger(AbstractDomainOperation.name), AbstractDomainOperationTestImpl.getLogger());
+        assertEquals("We should be able to access logger as property", Logger.getLogger(AbstractDomainOperation.name), domainOpr.logger);
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            def logger = AbstractDomainOperationTestImpl.getLogger();
+            assertEquals ("If there is no logger in execution context should return logger belonging to operation", Logger.getLogger(AbstractDomainOperation.name), logger);
+            logger = AbstractDomainOperationTestImpl.logger
+            assertEquals ("If there is no logger in execution context should return logger belonging to operation", Logger.getLogger(AbstractDomainOperation.name), logger);
+            logger = domainOpr.logger
+            assertEquals ("If there is no logger in execution context should return logger belonging to operation", Logger.getLogger(AbstractDomainOperation.name), logger);
+        }
+
+
+        Logger loggerToBeAddedtoContext = Logger.getLogger("logger1");
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addLoggerToCurrentContext (loggerToBeAddedtoContext)
+            assertEquals(loggerToBeAddedtoContext, AbstractDomainOperationTestImpl.getLogger());
+            assertEquals(loggerToBeAddedtoContext, AbstractDomainOperationTestImpl.logger);
+            assertEquals(loggerToBeAddedtoContext, domainOpr.logger);
+        }
     }
 }
 

@@ -213,7 +213,7 @@ public class ScriptManager {
                 
                 scriptObject.setProperty ("operationInstance",operationClass.newInstance())
             }
-            return scriptObject;            
+            return new ScriptObjectWrapper(scriptObject);
         }
         else
         {

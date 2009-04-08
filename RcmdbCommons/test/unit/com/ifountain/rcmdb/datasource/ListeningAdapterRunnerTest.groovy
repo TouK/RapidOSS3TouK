@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.log4j.Logger
 import script.CmdbScript
 import script.CmdbScriptOperations
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.execution.ExecutionContextManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -65,20 +67,28 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
     }
     private CmdbScript createScriptObject()
     {
+        Closure executionContextLoggerStatementClosure = {String datastoreEntryName->
+            return """ ${DataStore.class.name}.put("${datastoreEntryName}", ${ExecutionContextManager.class.name}.getInstance().getExecutionContext()) """
+        };
         def code = """
         import ${DataStore.name};
         if(DataStore.get("runException") != null)throw DataStore.get("runException");
+        ${executionContextLoggerStatementClosure("runContext")}
         def init(){
+            ${executionContextLoggerStatementClosure("initContext")}
             if(DataStore.get("initException") != null)throw DataStore.get("initException");
         }
         def cleanUp(){
+            ${executionContextLoggerStatementClosure("cleanUpContext")}
             if(DataStore.get("cleanUpException") != null)throw DataStore.get("cleanUpException");
         }
         def getParameters(){
+            ${executionContextLoggerStatementClosure("getParametersContext")}
             if(DataStore.get("getParametersException") != null)throw DataStore.get("getParametersException");
             return [:]
         }
         def update(data){
+            ${executionContextLoggerStatementClosure("updateContext")}
             def receivedObjects = DataStore.get("receivedObjects");
             if(receivedObjects == null){
                 receivedObjects = [];
@@ -147,6 +157,12 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         def receivedData = receivedObjects.get(0);
         assertEquals("value1", receivedData["param1"]);
         runner.stop();
+        runner.cleanUp();
+        def logger  = CmdbScript.getScriptLogger(ds.listeningScript);
+        assertEquals(logger, DataStore.get ("runContext")[RapidCMDBConstants.LOGGER]);
+        assertEquals(logger, DataStore.get ("initContext")[RapidCMDBConstants.LOGGER]);
+        assertEquals(logger, DataStore.get ("getParametersContext")[RapidCMDBConstants.LOGGER]);
+        assertEquals(logger, DataStore.get ("cleanUpContext")[RapidCMDBConstants.LOGGER]);
     }
 
     public void testGetLastStateChangeTime()

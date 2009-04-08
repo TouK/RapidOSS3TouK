@@ -206,12 +206,14 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     
     public void testHeartBeatTest()
     {
-        initialize([CmdbScript,RsEvent,RsHeartBeat,RsEventJournal,RsHistoricalEvent], []);
+        initialize([CmdbScript,RsEvent,RsHeartBeat,RsEventJournal,RsHistoricalEvent,RsInMaintenance,RsTopologyObject], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsHeartBeat,RsHeartBeatOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
 
         initializeScriptManager("testScripts");
 

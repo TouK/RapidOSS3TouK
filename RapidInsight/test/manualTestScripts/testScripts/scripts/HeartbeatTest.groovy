@@ -60,7 +60,7 @@ assert(RsEvent.list().size()==1)
 event = RsEvent.get(name:"${DB}_Down") 
 assert(event != null)
 assert(RsHistoricalEvent.list().size()==1)
-event = RsHistoricalEvent.findByName("${SMARTS}_Down") 
+event = RsHistoricalEvent.search("name:${SMARTS}_Down").results[0]
 assert(event != null)
 RsHeartBeat.recordHeartBeat(logger, SMARTS)
 RsHeartBeat.recordHeartBeat(logger, DB)

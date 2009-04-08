@@ -473,9 +473,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
         if(this.lastLoadMapRequestData != null)
         {
-                var nodes = this.getPropertiesString(this.getNodes(), ["id", "expanded", "x", "y"]);
+                var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+                var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
                 var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-                var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges };
+                var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapType:this.mapType};
                 this.url = this.expandURL;
                 this.doPostRequest(this.url, params);
         }

@@ -25,6 +25,7 @@ class ExecutionContextFilters {
                 }
             }
             afterView = {
+                //TODO:In afterview context should never be empty. The if statement should be unnecessary
                 if(ExecutionContextManager.getInstance().hasExecutionContext())
                 {
                     ExecutionContextManager.getInstance().endExecutionContext();

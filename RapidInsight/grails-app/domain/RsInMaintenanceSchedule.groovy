@@ -1,7 +1,7 @@
 
 import com.ifountain.core.domain.annotations.*;
 
-class RsInMaintenance {
+class RsInMaintenanceSchedule {
 
     //AUTO_GENERATED_CODE
 
@@ -12,16 +12,18 @@ class RsInMaintenance {
         storageType "FileAndMemory"
     
     };
-    static datasources = ["RCMDB":["keys":["objectName":["nameInDs":"objectName"]]]]
+    static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
 
     
     String objectName ="";
     
     String info ="";
-
-    String source="";
+    
+    Date starting =new Date(0);
     
     Date ending =new Date(0);
+    
+    Boolean active =false;
     
     org.springframework.validation.Errors errors ;
     
@@ -37,13 +39,15 @@ class RsInMaintenance {
     static relations = [:]    
     
     static constraints={
-    objectName(blank:false,nullable:false,key:[])
+    objectName(blank:true,nullable:true)
         
      info(blank:true,nullable:true)
-
-     source(blank:true,nullable:true)
+        
+     starting(nullable:true)
         
      ending(nullable:true)
+        
+     active(nullable:true)
         
      errors(nullable:true)
         
@@ -59,13 +63,12 @@ class RsInMaintenance {
     
     public String toString()
     {
-    	return "${getClass().getName()}[objectName:${getProperty("objectName")}]";
+    	return "${getClass().getName()}[id:${getProperty("id")}]";
     }
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
-
-
+    
 }

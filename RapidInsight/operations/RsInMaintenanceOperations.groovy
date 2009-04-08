@@ -4,47 +4,32 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 {
     public static boolean isObjectInMaintenance(objectName)
     {
-        def maintObject = RsInMaintenance.get(objectName:objectName)
-		if (maintObject?.active)
-		  return true
-		else
-		  return false
+        return RsInMaintenance.countHits("objectName:${objectName.exactQuery()}");
     }
-    public static void putEventInMaintenance(event)
+    public static boolean isEventInMaintenance(event)
     {
-         if(isObjectInMaintenance(event.elementName))
-         {
-             event.setPropertyWithoutUpdate("inMaintenance",true);
-         }
+        return isObjectInMaintenance(event.elementName);
     }
-    public static RsInMaintenance putObjectInMaintenance(String objectName)
+    public static RsInMaintenance putObjectInMaintenance(String objectName,String source,String info)
     {
         def addParams=[:];
         addParams.objectName=objectName;
-        addParams.active=true;
+        addParams.source=source;
+        addParams.info=info;
         def maintObj=RsInMaintenance.add(addParams);
         eventsInMaintenance(true,objectName);
         return maintObj;
         
     }
-    public static RsInMaintenance putObjectInMaintenance(String objectName,Date endTime)
+    public static RsInMaintenance putObjectInMaintenance(String objectName,String source,String info,Date endTime)
     {
         def addParams=[:];
         addParams.objectName=objectName;
+        addParams.source=source;
+        addParams.info=info;
         addParams.ending=endTime;
-        addParams.active=true;
         def maintObj=RsInMaintenance.add(addParams);
         eventsInMaintenance(true,objectName);
-        return maintObj;
-
-    }
-    public static RsInMaintenance putObjectInMaintenance(String objectName,Date startTime,Date endTime)
-    {
-        def addParams=[:];
-        addParams.objectName=objectName;
-        addParams.starting=startTime;
-        addParams.ending=endTime;
-        def maintObj=RsInMaintenance.add(addParams);
         return maintObj;
 
     }
@@ -56,8 +41,6 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
        eventsInMaintenance(false,objectName);
     }
 
-
-
     public static void eventsInMaintenance(boolean maint,String objectName) {
 		def events = RsEvent.search("elementName:${objectName}")
 		events.results.each{
@@ -66,37 +49,17 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 		}
 	}
 
-	public static void activateScheduledItems(logger){
-        logger.debug("BEGIN activateScheduledItems")
-        def currentTime = new Date().getTime()
-        logger.debug("current time: $currentTime")
-        def nullDate = new Date(0).getTime()
-        def scheduledItems = RsInMaintenance.search("active:false")
-        logger.debug("scheduled item count: ${scheduledItems.total}")
-        scheduledItems.results.each{
-            logger.debug("starting.getTime(): ${it.starting.getTime()}")
-            if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
-                it.active = true
-                logger.debug("activating maintenance for: ${it.objectName}")
-                RsInMaintenance.eventsInMaintenance(true,it.objectName);
 
-
-            }
-        }
-        logger.debug("END activateScheduledItems")
-    }
 
     public static void removeExpiredItems(logger){
         logger.debug("BEGIN removeExpiredItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")
 
-
+        def activeItems = RsInMaintenance.searchEvery("alias:*")
+        logger.debug("active item count: ${activeItems.size()}")
         def nullDate = new Date(0).getTime()
-        def activeItems = RsInMaintenance.search("active:true")
-        logger.debug("active item count: ${activeItems.total}")
-
-        activeItems.results.each{
+        activeItems.each{
             logger.debug("ending.getTime(): ${it.ending.getTime()}")
             if (it.ending.getTime()>nullDate && it.ending.getTime() <= currentTime){
                 logger.debug("deactivating maintenance for: ${it.objectName}")

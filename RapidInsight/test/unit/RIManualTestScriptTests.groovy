@@ -148,19 +148,20 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void testMaintenanceTest()
     {
-        initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance], []);
+        initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance,RsInMaintenanceSchedule], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
 
         initializeScriptManager("maintenance");
 
-        def script=CmdbScript.addScript([name:"MaintenanceTest",scriptFile:"MaintenanceTest.groovy",type: CmdbScript.ONDEMAND],true)
+        def script=CmdbScript.addScript([name:"MaintenanceTest",type: CmdbScript.ONDEMAND],true)
         println script.errors
         assertFalse(script.hasErrors());
 
-        def maintScript=CmdbScript.addScript([name:"MaintenanceScheduler",scriptFile:"MaintenanceScheduler.groovy",type: CmdbScript.ONDEMAND],true)
+        def maintScript=CmdbScript.addScript([name:"MaintenanceScheduler",type: CmdbScript.ONDEMAND],true)
         println maintScript.errors
         assertFalse(maintScript.hasErrors());
 
@@ -174,7 +175,35 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
         }
     }
-    
+    public void testMaintenanceScheduleTest()
+    {
+        initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance,RsInMaintenanceSchedule], []);
+        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
+        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
+
+        initializeScriptManager("maintenance");
+
+        def script=CmdbScript.addScript([name:"MaintenanceScheduleTest",type: CmdbScript.ONDEMAND],true)
+        println script.errors
+        assertFalse(script.hasErrors());
+
+        def maintScript=CmdbScript.addScript([name:"MaintenanceScheduler",type: CmdbScript.ONDEMAND],true)
+        println maintScript.errors
+        assertFalse(maintScript.hasErrors());
+
+        try{
+            def result=CmdbScript.runScript(script,[:]);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            fail("Error in script. Reason ${e}");
+
+        }
+    }
     public void testRemoveAllScriptTest()
     {
         initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance], []);

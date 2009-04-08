@@ -23,6 +23,7 @@ import script.CmdbScript
 import datasource.SnmpDatasource
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import datasource.BaseDatasource
+import com.ifountain.rcmdb.exception.MessageSourceException
 
 /**
 * Created by IntelliJ IDEA.
@@ -98,7 +99,7 @@ class SnmpConnectorController {
     def updateLogLevel = {
         SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
         if (snmpConnector) {
-            CmdbScript.updateLogLevel(snmpConnector.script, params.logLevel? params.logLevel : snmpConnector.script.logLevel, true);
+            CmdbScript.updateLogLevel(snmpConnector.script, params.logLevel ? params.logLevel : snmpConnector.script.logLevel, true);
             if (!snmpConnector.script.hasErrors()) {
                 flash.message = "SnmpConnector with id ${params.id} successfully updated."
                 redirect(action: list)
@@ -117,40 +118,23 @@ class SnmpConnectorController {
     def update = {
         SnmpConnector snmpConnector = SnmpConnector.get([id: params.id])
         if (snmpConnector) {
-            if (snmpConnector.script.listeningDatasource.isStartable()) {
-                snmpConnector.update(ControllerUtils.getClassProperties(params, SnmpConnector));
-                if (!snmpConnector.hasErrors()) {
-                    params.name = snmpConnector.connection.name;
-                    def connectionParams = ControllerUtils.getClassProperties(params, SnmpConnection);
-                    def isConnectionChanged = connectionParams.host != snmpConnector.connection.host || snmpConnector.connection.port.toString() != connectionParams.port;
-                    if (isConnectionChanged) {
-                        snmpConnector.connection.update(connectionParams);
-                        if (snmpConnector.connection.hasErrors()) {
-                            render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
-                            return;
-                        }
-                    }
-                    params.name = snmpConnector.name;
-                    def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
-                    CmdbScript.updateScript(snmpConnector.script, scriptClassParams, true);
-                    if (!snmpConnector.script.hasErrors()) {
-                        flash.message = "SnmpConnector with id ${params.id} successfully updated."
-                        redirect(action: show, id: snmpConnector.id)
-                    }
-                    else {
-                        render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
-                    }
+            def connectorParams = ControllerUtils.getClassProperties(params, CmdbScript);
+            connectorParams.putAll(ControllerUtils.getClassProperties(params, SnmpConnection));
+            connectorParams.putAll(ControllerUtils.getClassProperties(params, SnmpConnector));
+            def updatedObjects = SnmpConnector.updateConnector(snmpConnector, connectorParams);
+            MessageSourceException ex = updatedObjects.remove("exception");
+            def objectWithErrors = updatedObjects.values().findAll {it.hasErrors()};
+            if (ex != null || objectWithErrors.size() > 0) {
+                if (ex != null) {
+                    addError(ex.code, Arrays.asList(ex.args))
+                    flash.errors = this.errors;
                 }
-                else {
-                    render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
-                }
+                render(view: 'edit', model: updatedObjects)
             }
             else {
-                addError("connector.update.exception", []);
-                flash.errors = errors;
-                render(view: 'edit', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnector.connection, script: snmpConnector.script])
+                flash.message = "SnmpConnector with id ${params.id} successfully updated."
+                redirect(action: show, id: snmpConnector.id)
             }
-
         }
         else {
             flash.message = "SnmpConnector not found with id ${params.id}"
@@ -165,52 +149,16 @@ class SnmpConnectorController {
     }
 
     def save = {
-        SnmpConnector snmpConnector = SnmpConnector.addUnique(ControllerUtils.getClassProperties(params, SnmpConnector));
-        if (!snmpConnector.hasErrors()) {
-            params.name = snmpConnector.getConnectionName(snmpConnector.name);
-            SnmpConnection snmpConnection = SnmpConnection.addUnique(ControllerUtils.getClassProperties(params, SnmpConnection))
-            if (!snmpConnection.hasErrors()) {
-                snmpConnector.addRelation(connection: snmpConnection);
-                
-
-                params.name = snmpConnector.name;
-                params.type = CmdbScript.LISTENING;
-                def scriptClassParams = ControllerUtils.getClassProperties(params, CmdbScript);
-                scriptClassParams.logFileOwn = true;
-                CmdbScript script = CmdbScript.addUniqueScript(scriptClassParams, true);
-                if (!script.hasErrors())
-                {
-                    snmpConnector.addRelation(script: script);
-
-                    def datasourceName = snmpConnector.getDatasourceName(snmpConnector.name);
-                    def datasource = SnmpDatasource.addUnique(name: datasourceName, connection: snmpConnection, listeningScript: script);
-                    if (!datasource.hasErrors())
-                    {
-                        redirect(action: show, id: snmpConnector.id)
-                    }
-                    else
-                    {
-                        script.remove();
-                        snmpConnection.remove();
-                        snmpConnector.remove();
-                        render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script,datasource:datasource])
-                    }
-                }
-                else
-                {
-                    snmpConnection.remove();
-                    snmpConnector.remove();
-                    render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: script,datasource:new BaseDatasource()]);
-                }
-            }
-            else {
-                snmpConnector.remove();
-                render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: snmpConnection, script: new CmdbScript(),datasource:new BaseDatasource()])
-            }
-
+        def connectorParams = ControllerUtils.getClassProperties(params, CmdbScript);
+        connectorParams.putAll(ControllerUtils.getClassProperties(params, SnmpConnection));
+        connectorParams.putAll(ControllerUtils.getClassProperties(params, SnmpConnector));
+        def createdObjects = SnmpConnector.addConnector(connectorParams);
+        def objectsWithError = createdObjects.values().findAll {it.hasErrors()};
+        if (objectsWithError.size() > 0) {
+            render(view: 'create', model: createdObjects)
         }
         else {
-            render(view: 'create', model: [snmpConnector: snmpConnector, snmpConnection: new SnmpConnection(), script: new CmdbScript(),datasource:new BaseDatasource()])
+            redirect(action: show, id: createdObjects["snmpConnector"].id)
         }
     }
 

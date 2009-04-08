@@ -28,38 +28,45 @@ import connection.SnmpConnection
 * Time: 2:16:23 PM
 */
 class SnmpConnector {
-   static searchable = {
+    static searchable = {
         except = ["errors"];
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
-    String name ="";
+    static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
+    Long id;
+    Long version;
+    String name = "";
     String rsOwner = "p";
     CmdbScript script;
     SnmpConnection connection;
-    org.springframework.validation.Errors errors ;
+    org.springframework.validation.Errors errors;
+    Object __operation_class__;
+    Object __is_federated_properties_loaded__;
 
-    static relations  =[
-        script:[type:CmdbScript, isMany:false],
-        connection:[type:SnmpConnection, isMany:false]
+
+    static relations = [
+            script: [type: CmdbScript, isMany: false],
+            connection: [type: SnmpConnection, isMany: false]
     ]
-    static constraints={
-      name(blank:false,nullable:false,key:[])
-      script(nullable:true)
-      connection(nullable:true)
-      errors(nullable:true)
+    static constraints = {
+        name(blank: false, nullable: false, key: [])
+        script(nullable: true)
+        connection(nullable: true)
+        errors(nullable: true)
+        __operation_class__(nullable: true)
+        __is_federated_properties_loaded__(nullable: true)
     }
     static transients = ["errors"];
 
     public String toString()
     {
-    	return name;
+        return name;
     }
 
-    static def getConnectionName(connectorName){
+    static def getConnectionName(connectorName) {
         return "${connectorName}Conn";
     }
 
-    static def getDatasourceName(connectorName){
+    static def getDatasourceName(connectorName) {
         return "${connectorName}Ds";
     }
 }

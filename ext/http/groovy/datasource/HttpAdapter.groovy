@@ -19,10 +19,10 @@
 package datasource
 
 import com.ifountain.core.datasource.BaseAdapter
-import org.apache.log4j.Logger
 import java.awt.image.BufferedImage
+import org.apache.commons.httpclient.ConnectTimeoutException
 import org.apache.commons.lang.exception.ExceptionUtils
-import com.ifountain.comp.utils.HttpStatusException;
+import org.apache.log4j.Logger
 
 public class HttpAdapter extends BaseAdapter{
     
@@ -35,7 +35,7 @@ public class HttpAdapter extends BaseAdapter{
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfType(t, IOException.class) > -1;
+        return ExceptionUtils.indexOfType(t, SocketException.class) > -1 || ExceptionUtils.indexOfType(t, ConnectTimeoutException.class) > -1;
     }
     
     public HttpAdapter(connectionName, reconnectInterval, logger){

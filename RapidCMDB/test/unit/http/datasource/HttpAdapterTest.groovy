@@ -2,6 +2,7 @@ package http.datasource
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import datasource.HttpAdapter
+import org.apache.commons.httpclient.ConnectTimeoutException
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,13 +21,16 @@ class HttpAdapterTest extends RapidCmdbTestCase{
         SocketException socketException = new SocketException();
         assertTrue (adapter.isConnectionException(socketException));
 
+        ConnectTimeoutException connectTimeoutException = new ConnectTimeoutException();
+        assertTrue (adapter.isConnectionException(connectTimeoutException));
+
         NoRouteToHostException noRouteToHostException = new NoRouteToHostException();
         assertTrue (adapter.isConnectionException(noRouteToHostException));
 
         IOException ioException = new IOException()
-        assertTrue (adapter.isConnectionException(ioException));
+        assertFalse (adapter.isConnectionException(ioException));
 
-        Exception nestedException = new Exception(new IOException());
+        Exception nestedException = new Exception(new SocketException());
         assertTrue (adapter.isConnectionException(nestedException));
 
         Exception otherException = new Exception();

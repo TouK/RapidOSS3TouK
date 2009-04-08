@@ -22,6 +22,12 @@ import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import relation.Relation
+import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.LongConverter
+import com.ifountain.rcmdb.converter.DoubleConverter
+import com.ifountain.rcmdb.converter.BooleanConverter
+import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.util.RapidDateUtilities
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,12 +41,23 @@ public class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
     {
         IdGenerator.destroy();
         IdGenerator.initialize(new MockIdGeneratorStrategy());
+        RapidDateUtilities.registerDateUtils();
+        registerDefaultConverters();
         pluginsToLoad +=  DomainClassGrailsPlugin;
         pluginsToLoad +=  gcl.loadClass("SearchableGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("SearchableExtensionGrailsPlugin");
         pluginsToLoad +=  gcl.loadClass("RapidDomainClassGrailsPlugin");
         classesToBeLoaded += Relation;
         super.initialize(classesToBeLoaded, pluginsToLoad, isPersistant);
+    }
+
+    def registerDefaultConverters()
+    {
+        def dateFormat = "yyyy-dd-MM HH:mm:ss";
+        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
 
 }

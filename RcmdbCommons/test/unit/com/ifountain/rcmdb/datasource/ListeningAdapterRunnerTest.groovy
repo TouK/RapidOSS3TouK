@@ -347,34 +347,34 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         Thread.start{
             runner.start(ds);
         }
-        Thread.sleep(300);
+        Thread.sleep(500);
         assertEquals(AdapterStateProvider.INITIALIZING, runner.getState());
         
         //getParameters should pass
         synchronized(stateWaitLock){
             stateWaitLock.notify();    
         }
-        Thread.sleep(100)
+        Thread.sleep(300)
         assertEquals(AdapterStateProvider.INITIALIZING, runner.getState());
 
         //init should pass
         synchronized(stateWaitLock){
             stateWaitLock.notify();
         }
-        Thread.sleep(100)
+        Thread.sleep(300)
         assertEquals(AdapterStateProvider.INITIALIZED, runner.getState());
 
         //subscribe should pass
         synchronized(stateWaitLock){
             stateWaitLock.notify();
         }
-        Thread.sleep(100)
+        Thread.sleep(300)
         assertEquals(AdapterStateProvider.STARTED, runner.getState());
 
         Thread.start{
             runner.stop();
         }
-        Thread.sleep(300);
+        Thread.sleep(500);
         assertEquals(AdapterStateProvider.STOPPING, runner.getState());
         
         //unsubscribe should pass but the state is still stopping
@@ -386,13 +386,13 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         Thread.start{
             runner.cleanUp();
         }
-        Thread.sleep(300);
+        Thread.sleep(500);
         assertEquals(AdapterStateProvider.STOPPING, runner.getState());
          //cleanup should pass 
         synchronized(stateWaitLock){
             stateWaitLock.notify();
         }
-        Thread.sleep(100);
+        Thread.sleep(300);
         assertEquals(AdapterStateProvider.STOPPED, runner.getState());
         
     }

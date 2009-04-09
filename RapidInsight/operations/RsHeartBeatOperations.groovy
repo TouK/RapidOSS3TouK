@@ -4,7 +4,8 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 		RsHeartBeat.add(objectName:name,interval:interval)
 	}
 	
-	public static void recordHeartBeat(logger, systemName) {
+	public static void recordHeartBeat(systemName) {
+		def logger = getLogger()
 		def heartbeat = RsHeartBeat.get(objectName:systemName)
 		logger.info("Recording heartbeat for: $systemName")
 		if(heartbeat!=null){
@@ -16,7 +17,8 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 		}
 	}
 	
-	private static void clearEvent(logger, systemName){
+	private static void clearEvent(systemName){
+		def logger = getLogger()
 		def eventName = "${systemName}_Down"
 		def event = RsEvent.get(name:eventName)
 		if(event!=null){
@@ -25,14 +27,16 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 		}
 	}
 
-	public static checkHeartBeat(logger){
+	public static checkHeartBeat(){
+		def logger = getLogger()
 		def currentTime = new Date().getTime() 
 		def after = RsHeartBeat.search("consideredDownAt:{* TO $currentTime}")
 		logger.info("Found heartbeat item size: $after.total")
 		return after.results
 	}
 	
-	public static processHeartBeats(logger){
+	public static processHeartBeats(){
+		def logger = getLogger()
 		def results = checkHeartBeat(logger)
 		results.each {
 		    def eventProps = [name:"${it.objectName}_Down", elementName:it.objectName]

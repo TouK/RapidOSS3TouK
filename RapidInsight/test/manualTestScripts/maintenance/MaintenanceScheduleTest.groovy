@@ -92,7 +92,8 @@ script.CmdbScript.runScript(maintScheduler) // now in maintenance
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)
 assert(RsInMaintenanceSchedule.countHits("objectName:${objectName.exactQuery()}")==1)
 
-RsInMaintenance.putObjectInMaintenance(objectName,"userX",info)
+def props = ["objectname":objectName, "source":"userX", "info":info]
+RsInMaintenance.putObjectInMaintenance(props)
 RsInMaintenanceSchedule.removeSchedule(maintSchedule.id);
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)
 assert(RsInMaintenanceSchedule.countHits("objectName:${objectName.exactQuery()}")==0)

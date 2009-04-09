@@ -10,8 +10,10 @@
  */
 
 import script.*
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
-def domClasses = web.grailsApplication.getDomainClasses();
+def domClasses = ApplicationHolder.application.getDomainClasses();
+
 
 domClasses.each{
 	def modelName = it.clazz.name;
@@ -47,7 +49,8 @@ domClasses.each{
 	def modelName = it.clazz.name;
 	def model = it.clazz
 	if (modelName.indexOf('.')==-1 && model.superclass.name == Object.name){
-		def instanceCnt = model.list().size()
+        println "checking model ${modelName} "
+        def instanceCnt = model.list().size()
 		assert instanceCnt == 0
 	}
 }

@@ -45,6 +45,8 @@ OPENNMS=false
 HYPERIC=false
 NETCOOL=false
 SMARTS=false
+JIRA=TRUE
+EXT=TRUE
 RAPID_UI=true
 **/
 def testOptions = Build.getBuildOptions("testopts.txt")
@@ -67,8 +69,9 @@ if(testOptions.RCMDB == "true")
 if(testOptions.EXT == "true")
 {
     watchConfig.add([new File("${workspaceDir}/RapidModules/ext/database/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);
-    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/http/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);    
 }
+
 if(testOptions.RI == "true")
 {
     buildProperties.put("RI_UNIX", "false")
@@ -111,6 +114,12 @@ if(testOptions.OPENNMS == "true")
     watchConfig.add([new File("${workspaceDir}/OpenNms"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/OpenNms/applications").canonicalPath, new File("${workspaceDir}/OpenNms/application.properties").canonicalPath]]);
     watchConfig.add([new File("${workspaceDir}/OpenNms/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
     watchConfig.add([new File("${workspaceDir}/OpenNms/test/integration"), new File("${rootDir.absolutePath}/OpenNms/test/integration")]);
+}
+if(testOptions.JIRA == "true")
+{
+    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/jira/lib"), new File("${rootDir.absolutePath}/RapidSuite/lib")]);
+    watchConfig.add([new File("${workspaceDir}/ThirdParty/lib/webservices"), new File("${rootDir.absolutePath}/RapidSuite/lib")]);
+    watchConfig.add([new File("${workspaceDir}/RapidModules/ext/jira/src/groovy"), new File("${rootDir.absolutePath}/RapidSuite/grails-app/ext")]);
 }
 if(testOptions.RAPID_UI == "true")
 {

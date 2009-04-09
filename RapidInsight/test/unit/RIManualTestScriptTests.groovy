@@ -204,34 +204,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
         }
     }
-    public void testRemoveAllScriptTest()
-    {
-        initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance], []);
-        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
-        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
-        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
-
-        initializeScriptManager("testScripts");
-
-        def script=CmdbScript.addScript([name:"removeAllScriptTest",scriptFile:"removeAllScriptTest.groovy",type: CmdbScript.ONDEMAND],true)
-        println script.errors
-        assertFalse(script.hasErrors());
-
-        def removeAllScript=CmdbScript.addScript([name:"removeAll",scriptFile:"removeAll.groovy",type: CmdbScript.ONDEMAND],true)
-        println removeAllScript.errors
-        assertFalse(removeAllScript.hasErrors());
-
-        try{
-            def result=CmdbScript.runScript(script,[:]);
-        }
-        catch(e)
-        {
-            e.printStackTrace();
-            fail("Error in script. Reason ${e}");
-
-        }
-    }
     
     public void testHeartBeatTest()
     {

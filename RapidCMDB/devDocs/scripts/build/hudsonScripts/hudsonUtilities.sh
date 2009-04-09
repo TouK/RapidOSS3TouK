@@ -59,7 +59,16 @@ checkOutTag() {
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Apg ./Apg
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/OpenNms ./OpenNms
 }
-runTestBuildAndJavaTests() {
+
+runTestBuildAndJavaTests(){
+  runTestBuild
+  cd RapidModules/
+  groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
+  groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
+  groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+  cd $WORKSPACE
+}
+runTestBuild() {
 
     rm -rf TestResults/
     mkdir TestResults
@@ -92,9 +101,6 @@ runTestBuildAndJavaTests() {
     groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild $optionsFile
     cp $WORKSPACE/LicencedJars/lib/jdbc/*.jar $WORKSPACE/Distribution/RapidServer/lib
     cp $WORKSPACE/LicencedJars/lib/smarts/*.jar $WORKSPACE/Distribution/RapidServer/lib
-    groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
-    groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
-    groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
     cd $WORKSPACE
 }
 

@@ -7,7 +7,8 @@ import com.ifountain.core.connection.exception.UndefinedConnectionParameterExcep
 
 import javax.mail.Session;
 import com.sun.mail.smtp.SMTPTransport;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +40,7 @@ class EmailConnectionImpl extends BaseConnection{
 
     public boolean isConnectionException(Throwable t)
     {
-        return false;
+        return ExceptionUtils.indexOfType(t, SocketException.class) > -1 || t.toString().indexOf(SocketException.name) > -1;
     }
     
 
@@ -50,7 +51,8 @@ class EmailConnectionImpl extends BaseConnection{
         props.put("mail."+smtpProtocol+".user", username);
         props.put("mail."+smtpProtocol+".host", smtpHost);
         props.put("mail."+smtpProtocol+".port", "" + smtpPort);
-        props.put("mail." + smtpProtocol + ".timeout", "30000");
+        props.put("mail." + smtpProtocol + ".timeout", ""+getTimeout());
+        props.put("mail." + smtpProtocol + ".connectiontimeout", ""+getTimeout());
         props.put("mail." + smtpProtocol + ".auth", "true");
         session = Session.getInstance(props);
         transport = (SMTPTransport) session.getTransport(smtpProtocol);
@@ -111,7 +113,10 @@ class EmailConnectionImpl extends BaseConnection{
         }
         return (String) params.getOtherParams().get(parameterName);
     }
-
+    public String getProtocol()
+    {
+        return protocol;
+    }
     public SMTPTransport getEmailConnection(){
         return transport;
     }

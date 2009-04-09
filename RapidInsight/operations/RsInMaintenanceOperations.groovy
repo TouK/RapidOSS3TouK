@@ -10,28 +10,15 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     {
         return isObjectInMaintenance(event.elementName);
     }
-    public static RsInMaintenance putObjectInMaintenance(String objectName,String source,String info)
+    
+    //map should contain objectName and can optionally contain ending, source, and info
+    public static RsInMaintenance putObjectInMaintenance(props)
     {
-        def addParams=[:];
-        addParams.objectName=objectName;
-        addParams.source=source;
-        addParams.info=info;
-        def maintObj=RsInMaintenance.add(addParams);
-        eventsInMaintenance(true,objectName);
+    	if(props.objectName==null) throw new Exception("endTime should be greater than startTime ");
+        def maintObj=RsInMaintenance.add(props);
+        eventsInMaintenance(true,props.objectName);
         return maintObj;
         
-    }
-    public static RsInMaintenance putObjectInMaintenance(String objectName,String source,String info,Date endTime)
-    {
-        def addParams=[:];
-        addParams.objectName=objectName;
-        addParams.source=source;
-        addParams.info=info;
-        addParams.ending=endTime;
-        def maintObj=RsInMaintenance.add(addParams);
-        eventsInMaintenance(true,objectName);
-        return maintObj;
-
     }
 
     public static void takeObjectOutOfMaintenance(objectName)
@@ -51,7 +38,8 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 
 
 
-    public static void removeExpiredItems(logger){
+    public static void removeExpiredItems(){
+    	def logger = getLogger()
         logger.debug("BEGIN removeExpiredItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")

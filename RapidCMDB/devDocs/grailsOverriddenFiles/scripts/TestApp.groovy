@@ -523,7 +523,7 @@ def resolveTestResources(patternResolver) {
 def getTestNames(testNamesString) {
     // If a list of test class names is provided, split it into ant
     // file patterns.
-    def nameSuffix = 'Tests'
+    def nameSuffix = ''
     if (config.grails.testing.nameSuffix) {
         nameSuffix = config.grails.testing.nameSuffix
     }

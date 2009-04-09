@@ -64,7 +64,8 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
             if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
                 it.active = true
                 logger.debug("activating maintenance for: ${it.objectName}")
-                RsInMaintenance.putObjectInMaintenance(it.objectName,SCHEDULE_SOURCE,it.info,it.ending);
+                def putInMaintProps = ["objectName":it.objectName, "source":SCHEDULE_SOURCE, "info": it.info, "ending":it.ending]
+                RsInMaintenance.putObjectInMaintenance(putInMaintProps);
             }
         }
         logger.debug("END activateScheduledItems")

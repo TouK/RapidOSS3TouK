@@ -188,7 +188,7 @@ case "$1" in
   ;;
 
     *)
-        echo "usage :: rs.sh -start | -stop $1"
+        echo "usage :: rs.sh -start | -stop "
         exit 1
         ;;
 esac

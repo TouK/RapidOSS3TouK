@@ -51,7 +51,8 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
     }
 
 
-	public static void activateScheduledItems(logger){
+	public static void activateScheduledItems(){
+		def logger = getLogger()
         logger.debug("BEGIN activateScheduledItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")
@@ -63,13 +64,14 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
             if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
                 it.active = true
                 logger.debug("activating maintenance for: ${it.objectName}")
-                RsInMaintenance.putObjectInMaintenance(it.objectName,"schedule",it.info,it.ending);
+                RsInMaintenance.putObjectInMaintenance(it.objectName,SCHEDULE_SOURCE,it.info,it.ending);
             }
         }
         logger.debug("END activateScheduledItems")
     }
 
-    public static void removeExpiredItems(logger){
+    public static void removeExpiredItems(){
+    	def logger = getLogger()
         logger.debug("BEGIN removeExpiredItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")

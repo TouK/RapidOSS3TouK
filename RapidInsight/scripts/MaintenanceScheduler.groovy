@@ -1,6 +1,6 @@
 
-RsInMaintenance.removeExpiredItems(logger)
-RsInMaintenanceSchedule.activateScheduledItems(logger)
-RsInMaintenanceSchedule.removeExpiredItems(logger)
+RsInMaintenance.removeExpiredItems()
+RsInMaintenanceSchedule.activateScheduledItems()
+RsInMaintenanceSchedule.removeExpiredItems()
 
 

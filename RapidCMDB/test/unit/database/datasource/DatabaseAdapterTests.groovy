@@ -1,10 +1,10 @@
 package database.datasource
 
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.core.test.util.DatasourceTestUtils
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
 import datasource.DatabaseAdapter
-import com.ifountain.core.test.util.DatasourceTestUtils
-import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -28,6 +28,28 @@ class DatabaseAdapterTests extends RapidCoreTestCase {
 
     protected void tearDown() throws Exception {
         super.tearDown();
+    }
+
+    public void testIsConnectionException()
+    {
+        DatabaseAdapter adapter = new DatabaseAdapter();
+        ConnectException  exception = new ConnectException("exception");
+        assertTrue (adapter.isConnectionException(exception));
+
+        SocketException socketException = new SocketException();
+        assertTrue (adapter.isConnectionException(socketException));
+
+        NoRouteToHostException noRouteToHostException = new NoRouteToHostException();
+        assertTrue (adapter.isConnectionException(noRouteToHostException));
+
+        IOException ioException = new IOException()
+        assertFalse (adapter.isConnectionException(ioException));
+
+        Exception nestedException = new Exception(new SocketException());
+        assertTrue (adapter.isConnectionException(nestedException));
+
+        Exception otherException = new Exception();
+        assertFalse(adapter.isConnectionException(otherException));
     }
 
     public void testExecuteQuery() throws Exception {

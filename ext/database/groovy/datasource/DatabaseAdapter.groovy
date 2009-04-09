@@ -22,6 +22,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.core.datasource.BaseAdapter
 import java.sql.ResultSet
 import org.apache.log4j.Logger
+import org.apache.commons.lang.exception.ExceptionUtils
 
 public class DatabaseAdapter extends BaseAdapter {
 
@@ -34,7 +35,7 @@ public class DatabaseAdapter extends BaseAdapter {
     }
 
     protected boolean isConnectionException(Throwable t) {
-        return false;//ExceptionUtils.indexOfThrowable(t, SQLException.class) > -1
+        return ExceptionUtils.indexOfType(t, SocketException.class) > -1;
     }
     public static getInstance(datasourceName, tableName, keys){
     	return new SingleTableDatabaseAdapter(datasourceName, tableName, keys, 0, Logger.getRootLogger());

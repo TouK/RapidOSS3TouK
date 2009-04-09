@@ -18,6 +18,35 @@
 */
 
 class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-
-    }
+//	Creates a ticket both in RI and in its datasource 
+	static openTicket(Map ticketProps){ 
+   	}
+//  Resolves as fixed, but keeps the ticket open	
+	public resolveTicket(){
+	}
+//	Resolves with a given value, but keeps the ticket open
+	public resolveTicket(resolution){
+	}
+//	Closes the ticket as fixed	
+	public closeTicket(String eventName, String elementName){
+	}
+//	Closes the ticket with a given resolution value	
+	public closeTicket(String eventName, String elementName, resolution){
+	}
+//	Updates the ticket both in datasource and RI	
+	public updateTicket(Map props){
+	}
+//	Retrieves the ticket details from its datasource	
+	public retrieveDetails(){
+	}
+//	Adds logs for the ticket in its datasource
+	public addToLog(String comment){
+	}
+//	Gets the logs for the ticket from its datasource	
+	public getLogEntries(){
+	}
+//  Reopens a closed ticket	
+	public reopenTicket(){
+	}
+}
         

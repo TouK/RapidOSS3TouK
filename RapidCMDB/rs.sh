@@ -65,8 +65,8 @@ start() {
  fi
 }
 testApp() {
-   	. $GRAILS_HOME/bin/startGrails test-app -unit
-	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app
+   	. $GRAILS_HOME/bin/startGrails test-app $@
+	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app $@
 }
 testAppUnit() {
    	. $GRAILS_HOME/bin/startGrails test-app -unit
@@ -173,7 +173,7 @@ case "$1" in
   ;;
 
   '-test')
-      testApp
+      testApp $2 $3 $4 $5 $6 $7
   ;;
 
      '-stop')

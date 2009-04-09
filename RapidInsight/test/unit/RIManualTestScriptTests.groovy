@@ -4,9 +4,6 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
-import com.ifountain.comp.test.util.logging.TestLogUtils
-import org.codehaus.groovy.grails.compiler.GrailsClassLoader
-import com.ifountain.rcmdb.util.RapidDateUtilities
 import com.ifountain.rcmdb.converter.*
 import org.apache.commons.io.FileUtils;
 
@@ -32,18 +29,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         {
             base_directory = "RapidInsight";
         }
-        RapidDateUtilities.registerDateUtils();
-        registerDefaultConverters();
         initializeScriptManager();
 
-    }
-     def registerDefaultConverters()
-    {
-        def dateFormat = "yyyy-dd-MM HH:mm:ss";
-        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
-        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
-        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
-        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
     }
 
     public void tearDown() {

@@ -148,7 +148,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def model = controller.modelAndView.model;
         def ds = model.emailDatasource;
         assertTrue(ds.hasErrors())
-        assertEquals("rapidcmdb.invalid.instanceof.existing", ds.errors.allErrors[0].code)
+        assertEquals("rapidcmdb.instance.already.exist", ds.errors.allErrors[0].code)
     }
 
      public void testSuccessfulUpdate()
@@ -243,7 +243,6 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def updateParams=[:]
         updateParams.putAll(params)
         updateParams["name"]="newEmailConnector"
-        updateParams["smtpHost"] =null;
         updateParams["id"]=EmailConnector.list()[0].id
 
         def baseConn = Connection.add(name:updateParams.name)
@@ -293,7 +292,6 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def updateParams=[:]
         updateParams.putAll(params)
         updateParams["name"]="newEmailConnector"
-        updateParams["smtpHost"] =null;
         updateParams["id"]=EmailConnector.list()[0].id
 
         def baseDs = BaseDatasource.add(name:EmailConnector.getEmailDatasourceName(updateParams.name))

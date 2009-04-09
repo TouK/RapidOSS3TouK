@@ -115,7 +115,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
             threadRunLock.notifyAll();
         }
 
-        Thread.sleep (200);
+        Thread.sleep (500);
 
         threads.each{
             assertTrue("All threads should be started",  it.threadState >= 3)
@@ -125,7 +125,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         assertEquals (1, DataStore.get ("numberOfInitCalls"));
 
         //All threads should be finished because start adapter is threaded
-        Thread.sleep (200);
+        Thread.sleep (500);
         def threadNotFinished = threads.findAll {it.threadState == 3}
         assertEquals (0, threadNotFinished.size());
         def threadsNotFinishedWithException = threads.findAll {it.threadState == 5}

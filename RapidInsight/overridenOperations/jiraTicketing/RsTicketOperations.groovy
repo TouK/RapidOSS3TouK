@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -27,7 +27,7 @@
     3: In Progress			2: Critical 		4: Major
     4: Reopened				3: Major			3: Minor
     5: Resolved				4: Minor			2: Warning
-    6: Closed				5: Trivial			1: Indeterminate 
+    6: Closed				5: Trivial			1: Indeterminate
     											0: Clear (NOT MAPPED IN JIRA)
     Issue Type codes		Resolution codes	Actions
     1: Bug					1: Fixed			5: Resolve Issue -> 701: Close Issue
@@ -35,14 +35,14 @@
     3: Task					3: Duplicate
     4: Improvement			4: Incomplete
     						5: Cannot Reproduce
-*/		
-class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-    	
-    	static openTicket(Map ticketProps){ 
+*/
+class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+
+    	static openTicket(Map ticketProps){
    		// project, type and summary are required to open a ticket.
    		// project is hard coded as DEMO in this method.
    		// summary is formed from the event description
-   		// type is assumed to be provided in the ticketProps  
+   		// type is assumed to be provided in the ticketProps
     		def severityToPriority = ["5":"1","4":"2","3":"3","2":"4","1":"5"];
     		def connectorName = ticketProps.connectorName;
     		if (connectorName!=null && ticketProps.eventName!=null){
@@ -57,9 +57,9 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     				def returnedIssue = jiraDs.openIssue(ticketProps);
     				returnedIssue.rsDatasource = jiraDs.name;
     				def ticket = RsTicket.add(returnedIssue);
-    				
+
     				ticket.addRelation("relatedEvents":event);
-    				
+
     				if (ticketProps.elementName!="" && ticketProps.elementName!=null){
     					def topoObj = RsTopologyObject.get(name:ticketProps.elementName);
     					ticket.addRelation("relatedObjects":topoObj);
@@ -69,62 +69,62 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     			}
     		}
     	}
-    	
+
     	public resolveTicket(){
     		resolveTicket("1"); // Default resolution is "Fixed"
-    		
+
     		status = "5"; //RESOLVED;
     	}
-    	
+
     	public resolveTicket(resolution){
     		if (status!=5){
 	    		def jiraDs = JiraDatasource.get(name:rsDatasource);
-	    		jiraDs.resolveIssue(name, resolution); 
-	    		
+	    		jiraDs.resolveIssue(name, resolution);
+
 	    		status = "5"; //RESOLVED;
     		}
     	}
-    	
+
     	public closeTicket(String eventName, String elementName){
     		if (status!=6){
 	    		def jiraDs = JiraDatasource.get(name:rsDatasource);
 	    		if (status != "5") resolveTicket("1") // Default resolution is "Fixed"
-	    		jiraDs.closeIssue(name); 
+	    		jiraDs.closeIssue(name);
 	    		def event = RsEvent.get(name:eventName);
 	    		removeRelation("relatedEvents":event);
-	    		
+
 	    		if (elementName!=""){
 	    			def topoObj = RsTopologyObject.get(name:elementName);
 	    			removeRelation("relatedObjects":topoObj);
 	    		}
-	    		
+
 	    		status = "6"; //CLOSED;
     		}
     	}
-    	
+
     	public closeTicket(String eventName, String elementName, resolution){
     		if (status!=6){
 	    		def jiraDs = JiraDatasource.get(name:rsDatasource);
 	    		if (status != "5") resolveTicket(resolution)
-	    		jiraDs.closeIssue(name); 
+	    		jiraDs.closeIssue(name);
 	    		def event = RsEvent.get(name:eventName);
 	    		removeRelation("relatedEvents":event);
-	    		
+
 	    		if (elementName!=""){
 	    			def topoObj = RsTopologyObject.get(name:elementName);
 	    			removeRelation("relatedObjects":topoObj);
 	    		}
-	    		
+
 	    		status = "6"; //CLOSED;
     		}
     	}
-    	
+
     	public updateTicket(Map props){
     		def tempProps = [:];
     		tempProps.putAll(props);
     		tempProps.project = "DEMO"
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
-    		
+
     		jiraDs.updateIssue(name, tempProps);
     		def modelProps = getPropertiesList()
     		def toBeUpdated = [:]
@@ -135,7 +135,7 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     		}
     		update(toBeUpdated)
     	}
-    	
+
     	public retrieveDetails(){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    return jiraDs.retrieveDetails(name);
@@ -145,16 +145,16 @@ class RsTicketOperationsForJira  extends com.ifountain.rcmdb.domain.operation.Ab
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    jiraDs.addComment(name, comment);
     	}
-    	
+
     	public getLogEntries(){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    return jiraDs.getComments(name);
     	}
-    	
+
     	public reopenTicket(){
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
     	    jiraDs.reopenIssue(name);
     	    status = "4";
     	}
     }
-        
+

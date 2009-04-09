@@ -338,9 +338,7 @@ class RapidInsightBuild extends Build {
             ant.fileset(file: "${env.rapid_insight}/grails-app/templates/**");
         }
         ant.copy(toDir: "${env.dist_rapid_suite}/operations",overwrite:true) {
-            ant.fileset(file: "${env.rapid_insight}/operations/**"){
-            	ant.exclude(name: "RsTicketOperationsForJira.groovy")
-            }
+            ant.fileset(file: "${env.rapid_insight}/operations/**");
         }
 
         ant.copy(file: "${env.rapid_insight}/rs.exe", toDir: "${env.dist_rapid_suite}",overwrite:true)

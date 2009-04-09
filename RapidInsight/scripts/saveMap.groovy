@@ -26,12 +26,16 @@ if(!groupName || groupName == ""){
 def mapName =  params.mapName
 def layout =  params.layout
 def nodes =  params.nodes;
+def username = web.session.username;
 
-
-def map = TopoMap.get(mapName:mapName, username:RsUser.RSADMIN, isPublic:true);
-if(map){
-    throw new Exception("There is a public map with name ${mapName}. Save is not allowed.")
+if(username != RsUser.RSADMIN)
+{
+    def map = TopoMap.get(mapName:mapName, username:RsUser.RSADMIN, isPublic:true);
+    if(map){
+        throw new Exception("There is a public map with name ${mapName}. Save is not allowed.")
+    }
 }
+
 def user = RsUser.findByUsername(web.session.username);
 
 def group = MapGroup.add( groupName : groupName, username : user );

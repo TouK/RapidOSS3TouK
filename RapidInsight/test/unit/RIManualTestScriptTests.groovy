@@ -8,6 +8,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 import org.codehaus.groovy.grails.compiler.GrailsClassLoader
 import com.ifountain.rcmdb.util.RapidDateUtilities
 import com.ifountain.rcmdb.converter.*
+import org.apache.commons.io.FileUtils;
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,6 +19,9 @@ import com.ifountain.rcmdb.converter.*
 */
 class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory="";
+    def script_manager_directory="../testoutput/";
+    def script_directory;
+
     public void setUp() {
         super.setUp();
           //to run in Hudson
@@ -30,6 +34,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
         RapidDateUtilities.registerDateUtils();
         registerDefaultConverters();
+        initializeScriptManager();
 
     }
      def registerDefaultConverters()
@@ -45,13 +50,19 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         super.tearDown();
 
     }
-    void initializeScriptManager(script_directory)
+    void initializeScriptManager()
     {
-        def script_base_directory= base_directory+"/test/manualTestScripts/${script_directory}";
-        println "script base path is :"+new File(script_base_directory).getCanonicalPath();
+        //def script_base_directory= base_directory+"/test/manualTestScripts/${script_directory}";
+        //println "script base path is :"+new File(script_base_directory).getCanonicalPath();
 
         ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
+        if(new File(script_manager_directory).exists())
+        {
+            FileUtils.deleteDirectory (new File(script_manager_directory));
+        }
+        manager.initialize(this.class.getClassLoader(), script_manager_directory, [], [:]);
+        script_directory="$script_manager_directory/$ScriptManager.SCRIPT_DIRECTORY";
+        new File(script_directory).mkdirs();
     }
     public void initializeModels(classes)
     {
@@ -68,6 +79,23 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     {
         return new File("${base_directory}/${opdir}/${opfile}.groovy");
     }
+    void copyManualTestScript(scriptFolder,scriptName)
+    {
+        def scriptPath= "${base_directory}/test/manualTestScripts/${scriptFolder}/${scriptName}.groovy";
+
+        def ant=new AntBuilder();
+
+        ant.copy(file: scriptPath, toDir: script_directory,overwrite:true);
+    }
+
+     void copyScript(scriptName)
+    {
+        def scriptPath= "${base_directory}/scripts/${scriptName}.groovy";
+
+        def ant=new AntBuilder();
+
+        ant.copy(file: scriptPath, toDir: script_directory,overwrite:true);
+    }
     public void testFindMaxTest()
     {
         def classes=[:];
@@ -76,7 +104,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classes.RsCustomerOperations=RsCustomerOperations;
         classes.RsServiceOperations=RsServiceOperations;
         initializeModels(classes)
-        initializeScriptManager("stateCalculation");
+
+        copyManualTestScript("stateCalculation","findMaxTest");
 
         def script=CmdbScript.addScript([name:"findMaxTest",scriptFile:"findMaxTest.groovy",type: CmdbScript.ONDEMAND],true)
         println script.errors
@@ -104,7 +133,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classes.RsCustomerOperations=loader.parseClass(getOperationPathAsFile("operations","RsCustomerOperations"));
         classes.RsServiceOperations=loader.parseClass(getOperationPathAsFile("operations","RsServiceOperations"));
         initializeModels(classes)
-        initializeScriptManager("stateCalculation");
+
+        copyManualTestScript("stateCalculation","criticalPercentTest");
 
         def script=CmdbScript.addScript([name:"criticalPercentTest",scriptFile:"criticalPercentTest.groovy",type: CmdbScript.ONDEMAND],true)
         assertFalse(script.hasErrors());
@@ -130,7 +160,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
 
 
-        initializeScriptManager("operationTests");
+        copyManualTestScript("operationTests","rsEventOperationsTestScript");
 
         def script=CmdbScript.addScript([name:"rsEventOperationsTestScript",scriptFile:"rsEventOperationsTestScript.groovy",type: CmdbScript.ONDEMAND],true)
         println script.errors
@@ -155,7 +185,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
 
-        initializeScriptManager("maintenance");
+        copyScript("MaintenanceScheduler");
+        copyManualTestScript("maintenance","MaintenanceTest");
 
         def script=CmdbScript.addScript([name:"MaintenanceTest",type: CmdbScript.ONDEMAND],true)
         println script.errors
@@ -184,7 +215,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
 
-        initializeScriptManager("maintenance");
+        copyScript("MaintenanceScheduler");
+        copyManualTestScript("maintenance","MaintenanceScheduleTest");
 
         def script=CmdbScript.addScript([name:"MaintenanceScheduleTest",type: CmdbScript.ONDEMAND],true)
         println script.errors
@@ -216,7 +248,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
 
-        initializeScriptManager("testScripts");
+
+        copyManualTestScript("Heartbeat","HeartbeatTest");
 
         def script=CmdbScript.addScript([name:"HeartbeatTest",scriptFile:"HeartbeatTest.groovy",type: CmdbScript.ONDEMAND],true)
         println script.errors

@@ -51,13 +51,13 @@ class RIManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void testRemoveAllScriptTest()
     {
         copyScript("removeAll");
-        copyManualTestScript("testScripts/scripts","removeAllScriptTest");
+        copyManualTestScript("defaultScriptTests","removeAllScriptTest");
 
-        def script=CmdbScript.addScript([name:"removeAllScriptTest",scriptFile:"removeAllScriptTest.groovy",type: CmdbScript.ONDEMAND],true)
+        def script=CmdbScript.addScript([name:"removeAllScriptTest",type: CmdbScript.ONDEMAND],true)
         println script.errors
         assertFalse(script.hasErrors());
 
-        def removeAllScript=CmdbScript.addScript([name:"removeAll",scriptFile:"removeAll.groovy",type: CmdbScript.ONDEMAND],true)
+        def removeAllScript=CmdbScript.addScript([name:"removeAll",type: CmdbScript.ONDEMAND],true)
         println removeAllScript.errors
         assertFalse(removeAllScript.hasErrors());
 

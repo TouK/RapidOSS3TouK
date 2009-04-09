@@ -1,8 +1,22 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 
-YAHOO.rapidjs.component.HtmlEmbeddableForm = function(container, htmlComponent) {
+YAHOO.rapidjs.component.HtmlEmbeddableForm = function(container, config, htmlComponent) {
+    var configClone=YAHOO.rapidjs.ObjectUtils.clone(config,true);
+    var id=YAHOO.util.Dom.generateId(null, 'r-htmlembeddable-form')
+    if(configClone["id"])
+    {
+        id=configClone["id"];
+    }
+    this.useDefaultButtons=true;
+    if(configClone["useDefaultButtons"]!=null)
+    {
+       if(configClone["useDefaultButtons"]==false)
+       {
+          this.useDefaultButtons=false; 
+       }
+    }
     YAHOO.rapidjs.component.HtmlEmbeddableForm.superclass.constructor.call(this, container,
-    {id:YAHOO.util.Dom.generateId(null, 'r-htmlembeddable-form'),subscribeToHistoryChange:false})
+    {id:id,subscribeToHistoryChange:false})
     this.htmlComp = htmlComponent;
     htmlComponent.events['bodyCleared'].subscribe(this.destroy, this, true);
     this.events['loadstatechanged'].subscribe(this.hideMask, this, true);
@@ -26,30 +40,36 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     },
 
     renderButtons: function() {
-        var dh = YAHOO.ext.DomHelper;
-        var oSpan = dh.append(document.body, {tag:'span', cls:'button-group'});
-        this.saveButton = new YAHOO.widget.Button({label:'Save', onclick:{fn:this.submit, obj:this, scope:this}})
-        this.saveButton.appendTo(oSpan);
-        this.saveButton.addClass('default');
-        this.cancelButton = new YAHOO.widget.Button({label:'Cancel', onclick:{fn:this.cancel, obj:this, scope:this}})
-        this.cancelButton.appendTo(oSpan);
-        if (this.htmlComp.popupWindow) {
-            this.htmlComp.popupWindow.dialog.panel.setFooter(oSpan);
-            var buttons = this.htmlComp.popupWindow.dialog.getButtons();
-            buttons[buttons.length] = this.saveButton;
-            buttons[buttons.length] = this.cancelButton;
-        }
-        else {
-            var footer = dh.append(this.container, {tag:'div'});
-            footer.appendChild(oSpan);
+        if(this.useDefaultButtons)
+        {
+            var dh = YAHOO.ext.DomHelper;
+            var oSpan = dh.append(document.body, {tag:'span', cls:'button-group'});
+            this.saveButton = new YAHOO.widget.Button({label:'Save', onclick:{fn:this.submit, obj:this, scope:this}})
+            this.saveButton.appendTo(oSpan);
+            this.saveButton.addClass('default');
+            this.cancelButton = new YAHOO.widget.Button({label:'Cancel', onclick:{fn:this.cancel, obj:this, scope:this}})
+            this.cancelButton.appendTo(oSpan);
+            if (this.htmlComp.popupWindow) {
+                this.htmlComp.popupWindow.dialog.panel.setFooter(oSpan);
+                var buttons = this.htmlComp.popupWindow.dialog.getButtons();
+                buttons[buttons.length] = this.saveButton;
+                buttons[buttons.length] = this.cancelButton;
+            }
+            else {
+                var footer = dh.append(this.container, {tag:'div'});
+                footer.appendChild(oSpan);
+            }
         }
     },
 
     handleSuccess: function(response)
     {
         this.events['submitSuccessful'].fireDirect(response);
-        if (this.htmlComp.popupWindow) {
-            this.htmlComp.popupWindow.hide();
+        if(this.useDefaultButtons)
+        {
+            if (this.htmlComp.popupWindow) {
+                this.htmlComp.popupWindow.hide();
+            }
         }
     },
 
@@ -66,8 +86,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
             var cEvent = this.events[event];
             cEvent.unsubscribeAll();
         }
-        this.saveButton.destroy();
-        this.cancelButton.destroy();
+        if(this.useDefaultButtons)
+        {
+            this.saveButton.destroy();
+            this.cancelButton.destroy();
+        }
         if (this.htmlComp.popupWindow) {
             this.htmlComp.popupWindow.dialog._buttons = [];
         }
@@ -80,13 +103,19 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     },
     hideMask:function() {
         this.htmlComp.hideMask();
-        this.saveButton.set('disabled', false)
-        this.cancelButton.set('disabled', false)
+        if(this.useDefaultButtons)
+        {
+            this.saveButton.set('disabled', false)
+            this.cancelButton.set('disabled', false)
+        }
     },
     showMask: function() {
         this.htmlComp.showMask();
-        this.saveButton.set('disabled', true)
-        this.cancelButton.set('disabled', true)
+        if(this.useDefaultButtons)
+        {
+            this.saveButton.set('disabled', true)
+            this.cancelButton.set('disabled', true)
+        }
     },
     _getFormAttributes : function(oForm) {
         var attrs = {

@@ -55,6 +55,35 @@ class RFormTagLib {
     static def fFormRemote(attrs, bodyString) {
         def onSuccess = attrs.remove("onSuccess");
         def componentId = attrs.remove("componentId");
+        def formId=attrs.remove("formId");
+        def useDefaultButtons=attrs.remove("useDefaultButtons");
+        def configAttrs=[:];
+        if(formId)
+        {
+            configAttrs["id"]="\"${formId}\"";
+        }
+        if(useDefaultButtons)
+        {
+            if(useDefaultButtons=="false")
+            {
+                configAttrs["useDefaultButtons"]="false";
+            }
+            else
+            {
+                configAttrs["useDefaultButtons"]="true";
+            }
+        }
+
+        def configJs="";
+        configAttrs.each{ key , value ->
+            configJs+="${key}:${value},";
+        }
+        if(configAttrs.size()>0)
+        {
+            configJs=configJs.substring(0,configJs.size()-1);
+        }
+
+
         def successJs;
         if (onSuccess != null) {
             successJs = """
@@ -73,9 +102,10 @@ class RFormTagLib {
                 </form>
            </div>
            <script type="text/javascript">
+               var config={ ${configJs} }
                var htmlComponent = YAHOO.rapidjs.Components['${componentId}'];
                var formContainer = document.getElementById('${containerId}');
-               var formRemote = new YAHOO.rapidjs.component.HtmlEmbeddableForm(formContainer, htmlComponent);
+               var formRemote = new YAHOO.rapidjs.component.HtmlEmbeddableForm(formContainer,config, htmlComponent);
                 ${successJs ? successJs : ""}
            </script>
         """;

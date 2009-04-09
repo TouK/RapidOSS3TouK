@@ -122,7 +122,7 @@ class WrapperIndexDeletionPolicyTest extends AbstractSearchableCompassTests{
         {
             action.blockingObject.notifyAll();
         }
-        Thread.sleep(500);
+        Thread.sleep(800);
         assertEquals(2, action.numberOfCalls);
         assertEquals(2, snapshotThreadState);
 

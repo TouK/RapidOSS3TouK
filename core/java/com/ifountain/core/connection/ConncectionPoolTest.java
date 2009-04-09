@@ -433,6 +433,11 @@ class MockConnection implements IConnection
     boolean privateIsValid = true;
     boolean privateCheckConnectionResult = true;
     long timeout;
+
+    public boolean isConnectionException(Throwable t)
+    {
+        return false;
+    }
     public MockConnection(int id) {
         this.id = id;
         disconnectCalledFor.put(id, 0);

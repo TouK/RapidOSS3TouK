@@ -36,6 +36,11 @@ class EmailConnectionImpl extends BaseConnection{
     {
 
     }
+
+    public boolean isConnectionException(Throwable t)
+    {
+        return false;
+    }
     
 
     protected void connect() throws Exception {

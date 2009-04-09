@@ -36,6 +36,11 @@ public class SnmpConnectionImpl extends BaseConnection{
     protected void connect() throws Exception {
     }
 
+    public boolean isConnectionException(Throwable t)
+    {
+        return false;
+    }
+
     protected void disconnect() {
     }
 

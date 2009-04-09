@@ -34,10 +34,6 @@ public class HttpAdapter extends BaseAdapter{
     	super(connectionName, 0, logger);
     }
 
-    protected boolean isConnectionException(Throwable t) {
-        return ExceptionUtils.indexOfType(t, SocketException.class) > -1 || ExceptionUtils.indexOfType(t, ConnectTimeoutException.class) > -1;
-    }
-    
     public HttpAdapter(connectionName, reconnectInterval, logger){
     	super(connectionName, reconnectInterval, logger);
     }    

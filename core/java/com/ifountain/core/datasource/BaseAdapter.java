@@ -49,7 +49,7 @@ public abstract class BaseAdapter implements Adapter {
         this.logger = logger;
     }
 
-    protected abstract boolean isConnectionException(Throwable t);
+//    protected abstract boolean isConnectionException(Throwable t);
 
     public abstract Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception;
 
@@ -91,7 +91,7 @@ public abstract class BaseAdapter implements Adapter {
 
             }
             catch (Exception e) {
-                boolean isConnectionException = isConnectionException(e);
+                boolean isConnectionException = conn.isConnectionException(e);
                 if (!isConnectionException && conn.checkConnection()) {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Exception occurred while executing action with connection " + connectionName, e);

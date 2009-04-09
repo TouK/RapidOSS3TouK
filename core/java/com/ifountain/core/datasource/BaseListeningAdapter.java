@@ -94,8 +94,6 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     protected abstract void _unsubscribe();
 
-    protected abstract boolean isConnectionException(Throwable t);
-
     private void subscribeInternally() throws Exception {
         if (!isSubscribed()) {
             logger.info("Subscribing to connection with name " + connectionName);
@@ -207,10 +205,6 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         public ActionExecutor(BaseListeningAdapter listeningAdapter, String connConfigName, long reconnectInterval, Logger logger) {
             super(connConfigName, reconnectInterval, logger);
             this.listeningAdapter = listeningAdapter;
-        }
-
-        protected boolean isConnectionException(Throwable t) {
-            return listeningAdapter.isConnectionException(t);
         }
 
         public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception {

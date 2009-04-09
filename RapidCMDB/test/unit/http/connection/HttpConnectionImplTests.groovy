@@ -21,7 +21,8 @@ package http.connection
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
-import connection.HttpConnectionImpl;
+import connection.HttpConnectionImpl
+import org.apache.commons.httpclient.ConnectTimeoutException;
 
 public class HttpConnectionImplTests extends RapidCoreTestCase {
 
@@ -44,5 +45,30 @@ public class HttpConnectionImplTests extends RapidCoreTestCase {
         } catch (UndefinedConnectionParameterException e) {
         }
        
+    }
+
+    public void testIsConnectionException()
+    {
+        HttpConnectionImpl connection = new HttpConnectionImpl();
+        ConnectException  exception = new ConnectException("exception");
+        assertTrue (connection.isConnectionException(exception));
+
+        SocketException socketException = new SocketException();
+        assertTrue (connection.isConnectionException(socketException));
+
+        ConnectTimeoutException connectTimeoutException = new ConnectTimeoutException();
+        assertTrue (connection.isConnectionException(connectTimeoutException));
+
+        NoRouteToHostException noRouteToHostException = new NoRouteToHostException();
+        assertTrue (connection.isConnectionException(noRouteToHostException));
+
+        IOException ioException = new IOException()
+        assertFalse (connection.isConnectionException(ioException));
+
+        Exception nestedException = new Exception(new SocketException());
+        assertTrue (connection.isConnectionException(nestedException));
+
+        Exception otherException = new Exception();
+        assertFalse(connection.isConnectionException(otherException));
     }
 }

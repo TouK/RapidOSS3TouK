@@ -55,10 +55,6 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
         super(connectionName, 0, logger);
     }
 
-    protected boolean isConnectionException(Throwable t) {
-        return false;//ExceptionUtils.indexOfThrowable(t, IOException.class) > -1;
-    }
-
     public void _subscribe() throws Exception {
 
         String host = ((SnmpConnectionImpl) getConnection()).getHost();

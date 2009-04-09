@@ -136,7 +136,7 @@ public class BaseAdapterTest extends RapidCoreTestCase
         createConnectionParam(connectionName);
         IConnection conn = ConnectionManager.getConnection(connectionName);
         ConnectionManager.releaseConnection(conn);
-        impl.isConnectionException = true;
+        MockConnectionImpl.isConnectionException = true;
         MockActionImpl dsAction = new MockActionImpl();
         Exception expectedException = new Exception("Exception occurred while executing action.");
         dsAction.setExceptionWillBeThrown(expectedException);
@@ -158,6 +158,9 @@ public class BaseAdapterTest extends RapidCoreTestCase
     
     private ConnectionParam createConnectionParam(String connectionName)
     {
+        MockConnectionImpl.globalConnectionException = null;
+        MockConnectionImpl.isConnectionExceptionParams.clear();;
+        MockConnectionImpl.isConnectionException = false;
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
         ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);

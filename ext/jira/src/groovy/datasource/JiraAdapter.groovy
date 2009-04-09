@@ -19,14 +19,6 @@ public class JiraAdapter extends BaseAdapter {
         return action.getProps();
     }
 
-    protected boolean isConnectionException(Throwable t) {
-        return false;/*ExceptionUtils.indexOfThrowable(t, RemoteException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t, RemotePermissionException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t, RemoteAuthenticationException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t, RemoteValidationException.class) > -1 ||
-                ExceptionUtils.indexOfThrowable(t, com.atlassian.jira.rpc.exception.RemoteException.class) > -1*/
-    }
-
     public openIssue(Map params) throws Exception {
         OpenIssueAction action = new OpenIssueAction(logger, params);
         executeAction(action);

@@ -144,8 +144,5 @@ class BaseDatasourceTestAdapter extends BaseAdapter{
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) {
         return null; 
     }
-    protected boolean isConnectionException(Throwable t) {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
-    }
 }
 

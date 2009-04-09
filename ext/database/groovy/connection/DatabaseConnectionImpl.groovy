@@ -22,7 +22,8 @@ import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import java.sql.*
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 public class DatabaseConnectionImpl extends BaseConnection{
 
@@ -102,6 +103,10 @@ public class DatabaseConnectionImpl extends BaseConnection{
 
     public java.sql.Connection getConnection() {
         return connection;
+    }
+
+    public boolean isConnectionException(Throwable t) {
+        return ExceptionUtils.indexOfType(t, SocketException.class) > -1;
     }
 
     public static void setStatementParameters(Object[] queryParams, PreparedStatement stmt) throws SQLException {

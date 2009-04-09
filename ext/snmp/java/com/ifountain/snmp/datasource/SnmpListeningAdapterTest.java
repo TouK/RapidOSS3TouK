@@ -56,11 +56,6 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         }
         super.tearDown();
     }
-    public void testIsConnectionException()
-    {
-        assertFalse(adapter.isConnectionException(null));
-        assertFalse(adapter.isConnectionException(new Exception()));
-    }
     public void testOpenThrowsExceptionIfHostNameIsInvalid() throws Exception {
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam("invalidHost", new Long(162)));
         try {

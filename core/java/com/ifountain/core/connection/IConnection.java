@@ -33,5 +33,6 @@ public interface IConnection
     public boolean checkConnection();
     public void setTimeout(long timeout);
     public long getTimeout();
+    public boolean isConnectionException(Throwable t);
     public void _connect() throws Exception;
 }

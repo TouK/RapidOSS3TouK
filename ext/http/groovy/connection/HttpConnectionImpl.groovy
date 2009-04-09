@@ -22,6 +22,8 @@ import com.ifountain.comp.utils.HttpUtils
 import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
+import org.apache.commons.lang.exception.ExceptionUtils
+import org.apache.commons.httpclient.ConnectTimeoutException
 
 public class HttpConnectionImpl extends BaseConnection{
 
@@ -67,6 +69,10 @@ public class HttpConnectionImpl extends BaseConnection{
 
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public boolean isConnectionException(Throwable t) {
+        return ExceptionUtils.indexOfType(t, SocketException.class) > -1 || ExceptionUtils.indexOfType(t, ConnectTimeoutException.class) > -1;
     }
 
 }

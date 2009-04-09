@@ -50,6 +50,9 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         super.setUp();
         MockConnectionImpl.defaultTimeout = 7777;
         MockConnectionImpl.globalConnectionException = null;
+        MockConnectionImpl.isConnectionException = false;
+        MockConnectionImpl.isConnectionExceptionParams.clear();
+
         connectionParameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(connectionParameterSupplier);
         connectionName = "ds1";
@@ -272,7 +275,7 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
         listeningAdapter = new MockBaseListeningAdapter(connectionName, 0);
         IConnection connection = listeningAdapter.getConnection();
         listeningAdapter.subscribeException = new Exception();
-        listeningAdapter.isConnectionException = true;
+        MockConnectionImpl.isConnectionException = true;
 
         try
         {

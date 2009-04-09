@@ -47,6 +47,28 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         }
         super.tearDown();
     }
+
+    public void testIsConnectionException()
+    {
+        DatabaseConnectionImpl connection = new DatabaseConnectionImpl();
+        ConnectException  exception = new ConnectException("exception");
+        assertTrue (connection.isConnectionException(exception));
+
+        SocketException socketException = new SocketException();
+        assertTrue (connection.isConnectionException(socketException));
+
+        NoRouteToHostException noRouteToHostException = new NoRouteToHostException();
+        assertTrue (connection.isConnectionException(noRouteToHostException));
+
+        IOException ioException = new IOException()
+        assertFalse (connection.isConnectionException(ioException));
+
+        Exception nestedException = new Exception(new SocketException());
+        assertTrue (connection.isConnectionException(nestedException));
+
+        Exception otherException = new Exception();
+        assertFalse(connection.isConnectionException(otherException));
+    }
     
     public void testInit() throws Exception {
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();

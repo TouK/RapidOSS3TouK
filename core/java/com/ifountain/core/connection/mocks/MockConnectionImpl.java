@@ -26,12 +26,21 @@ import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.IConnection;
 import com.ifountain.core.connection.BaseConnection;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class MockConnectionImpl extends BaseConnection
 {
     public static long defaultTimeout = 7777;
     public static Exception globalConnectionException;
+    public static boolean isConnectionException = false;
+    public static List isConnectionExceptionParams = new ArrayList();
     private Exception connectionException = null;
-    
+    public boolean isConnectionException(Throwable t)
+    {
+        isConnectionExceptionParams.add(t);
+        return isConnectionException;
+    }
     public void init(ConnectionParam param)throws Exception
     {
         super.init(param);

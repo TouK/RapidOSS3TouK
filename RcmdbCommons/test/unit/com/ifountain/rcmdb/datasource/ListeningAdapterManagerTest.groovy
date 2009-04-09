@@ -32,6 +32,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import junit.framework.TestSuite
 
 /**
  * Created by IntelliJ IDEA.
@@ -699,6 +700,16 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+    public static junit.framework.TestSuite suite()
+    {
+        TestSuite suite = new TestSuite();
+        for(int i=0; i < 100; i++)
+        {
+            suite.addTestSuite (ListeningAdapterManagerTest.class);
+        }
+        return suite;
+    }
+
 }
 
 class BaseListeningDatasourceCompassMock extends BaseListeningDatasource
@@ -731,11 +742,6 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
     def unsubscribeCalled = false;
     def unsubscribeException = null;
     def waitLock = null;
-
-
-    protected boolean isConnectionException(Throwable t) {
-        return false; //To change body of implemented methods use File | Settings | File Templates.
-    }
 
     public BaseListeningAdapterMock()
     {

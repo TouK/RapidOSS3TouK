@@ -30,28 +30,6 @@ class DatabaseAdapterTests extends RapidCoreTestCase {
         super.tearDown();
     }
 
-    public void testIsConnectionException()
-    {
-        DatabaseAdapter adapter = new DatabaseAdapter();
-        ConnectException  exception = new ConnectException("exception");
-        assertTrue (adapter.isConnectionException(exception));
-
-        SocketException socketException = new SocketException();
-        assertTrue (adapter.isConnectionException(socketException));
-
-        NoRouteToHostException noRouteToHostException = new NoRouteToHostException();
-        assertTrue (adapter.isConnectionException(noRouteToHostException));
-
-        IOException ioException = new IOException()
-        assertFalse (adapter.isConnectionException(ioException));
-
-        Exception nestedException = new Exception(new SocketException());
-        assertTrue (adapter.isConnectionException(nestedException));
-
-        Exception otherException = new Exception();
-        assertFalse(adapter.isConnectionException(otherException));
-    }
-
     public void testExecuteQuery() throws Exception {
         DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();
         String sqlQuery = "select * from connectiontrials";

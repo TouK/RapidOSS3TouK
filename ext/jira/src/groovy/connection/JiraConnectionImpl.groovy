@@ -24,6 +24,11 @@ public class JiraConnectionImpl extends BaseConnection{
     	token = jiraSoapService.login(username, password);
     }
 
+    public boolean isConnectionException(Throwable t)
+    {
+        return false;
+    }
+
     protected void disconnect() {
     	if (token=="" || token==null) return;
     	jiraSoapService.logout(token);

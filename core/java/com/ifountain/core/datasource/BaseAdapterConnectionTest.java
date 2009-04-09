@@ -49,6 +49,9 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
     protected void setUp() throws Exception
     {
         super.setUp();
+        MockConnectionImpl.isConnectionException = false;
+        MockConnectionImpl.isConnectionExceptionParams.clear();;
+        MockConnectionImpl.globalConnectionException = null;
         connectionParameterSupplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.setParamSupplier(connectionParameterSupplier);
         connectionConfigName = "BaseAdapterConnectionTestds1";
@@ -218,7 +221,7 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
     {
         createConnectionParam(connectionConfigName, MockConnectionImpl.class);
         impl = new MockBaseAdapterImpl(connectionConfigName, 0);
-        impl.isConnectionException = true;
+        MockConnectionImpl.isConnectionException = true;
         final Exception connectionException = new Exception("Exception due to connection");
         final MockActionImpl dsAction = new MockActionImpl()
         {
@@ -242,8 +245,8 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
             assertFalse(t1.isExecutedSuccessfully());
             assertTrue(t1.getThrowedException() instanceof ConnectionException);
             assertSame(connectionException, t1.getThrowedException().getCause());
-            assertEquals(1, impl.connectionExceptionParameters.size());
-            assertTrue(impl.connectionExceptionParameters.contains(connectionException));
+            assertEquals(1, MockConnectionImpl.isConnectionExceptionParams.size());
+            assertTrue(MockConnectionImpl.isConnectionExceptionParams.contains(connectionException));
         }
         finally {
             t1.interrupt();

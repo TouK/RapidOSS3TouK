@@ -32,21 +32,14 @@ import org.apache.log4j.Logger;
 
 public class MockBaseListeningAdapter extends BaseListeningAdapter {
 
-    public boolean isConnectionException = false;
     public Exception subscribeException;
     public RuntimeException unSubscribeException;
-    public List isConnectionExceptionsList = new ArrayList();
     public MockBaseListeningAdapter(String connectionName, long reconnectInterval) {
         super(connectionName, reconnectInterval, TestLogUtils.log);
     }
 
     public MockBaseListeningAdapter(String connectionName){
         this(connectionName, 0);
-    }
-
-    protected boolean isConnectionException(Throwable t) {
-        isConnectionExceptionsList.add(t);
-        return isConnectionException;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

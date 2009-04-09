@@ -14,8 +14,8 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     //map should contain objectName and can optionally contain ending, source, and info
     public static RsInMaintenance putObjectInMaintenance(props)
     {
-    	if(props.objectName==null) throw new Exception("objectName must be specified.");
         def maintObj=RsInMaintenance.add(props);
+        if(maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
         eventsInMaintenance(true,props.objectName);
         return maintObj;
         

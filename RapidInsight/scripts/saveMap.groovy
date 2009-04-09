@@ -38,9 +38,17 @@ def group = MapGroup.add( groupName : groupName, username : user );
 if(params.mapId && params.mapId != ""){
     map = TopoMap.get(id:params.mapId);
     map.update(mapName:mapName, layout:layout, mapType:params.mapType,nodePropertyList:params.nodePropertyList,nodes:nodes)
+    if(map.hasErrors())
+    {
+        throw new Exception(map.errors.toString());
+    }
 }
 else{
     map = TopoMap.add( mapName : mapName, username : user, layout : layout, mapType:params.mapType,nodePropertyList:params.nodePropertyList,nodes:nodes);
+    if(map.hasErrors())
+    {
+        throw new Exception(map.errors.toString());
+    }
 }
 
 group.addRelation( maps : map);

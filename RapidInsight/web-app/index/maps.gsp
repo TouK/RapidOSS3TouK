@@ -180,7 +180,7 @@ functionActionCondition7472Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[createURL('mapForm.gsp', {mapId:params.data.id, mode:'edit'})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('mapForm.gsp', getMapUpdateParams(params.data.id))]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     

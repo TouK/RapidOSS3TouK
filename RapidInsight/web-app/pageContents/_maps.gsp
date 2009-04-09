@@ -39,6 +39,13 @@
 		var saveParams={mode:'create', nodes:mapData.nodes, nodePropertyList:mapData.nodePropertyList,layout:topologyMap.getLayout(),mapType:topologyMap.getMapType()};
 		return saveParams;
 	}
+    function getMapUpdateParams(mapId)
+	{
+        var updateParams=getMapSaveParams();
+        updateParams["mapId"]=mapId;
+        updateParams["mode"]='edit';
+        return updateParams;
+    }
     var tree = YAHOO.rapidjs.Components['mapTree'];
     var topologyMap = YAHOO.rapidjs.Components['topologyMap'];
     tree.addToolbarButton({

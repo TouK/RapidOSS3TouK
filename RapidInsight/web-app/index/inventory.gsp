@@ -90,15 +90,15 @@ lessThanOrEqualToVisible="YAHOO.lang.isNumber(parseInt(params.value))"
     </rui:slPropertyMenuItems>
      <rui:slFields>
     <%
-fieldExpression18743Visible="params.data.rsAlias == 'RsComputerSystem'"
+fieldExpression5580Visible="params.data.rsAlias == 'RsComputerSystem'"
 %>
 
-        <rui:slField exp="${fieldExpression18743Visible}" fields='${["className", " name", " vendor", " model", " managementServer", " location", " snmpAddress"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression5580Visible}" fields='${["className", " name", " vendor", " model", " managementServer", " location", " snmpAddress"]}'></rui:slField>
     <%
-fieldExpression18745Visible="params.data.rsAlias == 'RsLink'"
+fieldExpression5582Visible="params.data.rsAlias == 'RsLink'"
 %>
 
-        <rui:slField exp="${fieldExpression18745Visible}" fields='${["className", " name", " a_ComputerSystemName", " a_Name", " z_ComputerSystemName", "z_Name"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression5582Visible}" fields='${["className", " name", " a_ComputerSystemName", " a_Name", " z_ComputerSystemName", "z_Name"]}'></rui:slField>
     
     </rui:slFields>
     <rui:slImages>
@@ -159,15 +159,15 @@ copyQueryVisible="params.data.nodeType == 'filter'"
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage18778Visible="params.data.nodeType == 'group'"
+rootImage5615Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage18778Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage5615Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <%
-rootImage18780Visible="params.data.nodeType == 'filter'"
+rootImage5617Visible="params.data.nodeType == 'filter'"
 %>
 
-        <rui:tgRootImage visible="${rootImage18780Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage5617Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
@@ -181,10 +181,10 @@ rootImage18780Visible="params.data.nodeType == 'filter'"
 <rui:html id="inMaintenanceForm" iframe="false"  timeout="30"></rui:html>
 
 <%
-functionActionCondition18800Condition="params.data.nodeType == 'filter'"
+functionActionCondition5637Condition="params.data.nodeType == 'filter'"
 %>
 
-<rui:action id="setQueryAction" type="function" function="setQuery" componentId='inventoryList' condition="$functionActionCondition18800Condition"
+<rui:action id="setQueryAction" type="function" function="setQuery" componentId='inventoryList' condition="$functionActionCondition5637Condition"
 
 >
     
@@ -199,7 +199,7 @@ functionActionCondition18800Condition="params.data.nodeType == 'filter'"
 </rui:action>
 
 <%
-functionActionCondition18814Condition=""
+functionActionCondition5651Condition=""
 %>
 
 <rui:action id="exceptAction" type="function" function="appendExceptQuery" componentId='inventoryList' 
@@ -213,7 +213,7 @@ functionActionCondition18814Condition=""
 </rui:action>
 
 <%
-functionActionCondition18825Condition=""
+functionActionCondition5662Condition=""
 %>
 
 <rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
@@ -227,7 +227,7 @@ functionActionCondition18825Condition=""
 </rui:action>
 
 <%
-functionActionCondition18836Condition=""
+functionActionCondition5673Condition=""
 %>
 
 <rui:action id="copyQueryAction" type="function" function="show" componentId='saveQueryForm' 
@@ -241,7 +241,7 @@ functionActionCondition18836Condition=""
 </rui:action>
 
 <%
-functionActionCondition18847Condition=""
+functionActionCondition5684Condition=""
 %>
 
 <rui:action id="saveQueryAction" type="function" function="show" componentId='saveQueryForm' 
@@ -255,7 +255,7 @@ functionActionCondition18847Condition=""
 </rui:action>
 
 <%
-functionActionCondition18857Condition=""
+functionActionCondition5694Condition=""
 %>
 
 <rui:action id="queryUpdateAction" type="function" function="show" componentId='saveQueryForm' 
@@ -269,7 +269,7 @@ functionActionCondition18857Condition=""
 </rui:action>
 
 <%
-functionActionCondition18868Condition=""
+functionActionCondition5705Condition=""
 %>
 
 <rui:action id="queryGroupUpdateAction" type="function" function="show" componentId='saveQueryGroupForm' 
@@ -283,7 +283,7 @@ functionActionCondition18868Condition=""
 </rui:action>
 
 <%
-functionActionCondition18879Condition=""
+functionActionCondition5716Condition=""
 %>
 
 <rui:action id="sortAscAction" type="function" function="sort" componentId='inventoryList' 
@@ -297,7 +297,7 @@ functionActionCondition18879Condition=""
 </rui:action>
 
 <%
-functionActionCondition18890Condition=""
+functionActionCondition5727Condition=""
 %>
 
 <rui:action id="sortDescAction" type="function" function="sort" componentId='inventoryList' 
@@ -311,7 +311,7 @@ functionActionCondition18890Condition=""
 </rui:action>
 
 <%
-functionActionCondition18901Condition=""
+functionActionCondition5738Condition=""
 %>
 
 <rui:action id="lessThanOrEqualToAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -323,7 +323,7 @@ functionActionCondition18901Condition=""
 </rui:action>
 
 <%
-functionActionCondition18910Condition=""
+functionActionCondition5747Condition=""
 %>
 
 <rui:action id="greaterThanOrEqualToAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -335,7 +335,7 @@ functionActionCondition18910Condition=""
 </rui:action>
 
 <%
-functionActionCondition18919Condition=""
+functionActionCondition5756Condition=""
 %>
 
 <rui:action id="lessThanAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -347,7 +347,7 @@ functionActionCondition18919Condition=""
 </rui:action>
 
 <%
-functionActionCondition18928Condition=""
+functionActionCondition5765Condition=""
 %>
 
 <rui:action id="greaterThanAction" type="function" function="appendToQuery" componentId='inventoryList' 
@@ -359,7 +359,7 @@ functionActionCondition18928Condition=""
 </rui:action>
 
 <%
-functionActionCondition18937Condition=""
+functionActionCondition5774Condition=""
 %>
 
 <rui:action id="inMaintenanceAction" type="function" function="show" componentId='inMaintenanceForm' 
@@ -373,7 +373,7 @@ functionActionCondition18937Condition=""
 </rui:action>
 
 <%
-requestActionCondition18948Condition=""
+requestActionCondition5785Condition=""
 %>
 
 <rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" 
@@ -382,15 +382,15 @@ requestActionCondition18948Condition=""
     
 >
     <%
-parameter18951Visible="params.data.id"
+parameter5788Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter18951Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter5788Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition18957Condition=""
+requestActionCondition5794Condition=""
 %>
 
 <rui:action id="deleteQueryGroupAction" type="request" url="../searchQueryGroup/delete?format=xml" components="${['filterTree']}" 
@@ -399,27 +399,27 @@ requestActionCondition18957Condition=""
     
 >
     <%
-parameter18960Visible="params.data.id"
+parameter5797Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter18960Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter5797Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-linkUrl18966Visible="createURL('redirectToMap.gsp', {name:params.data.name})"
+linkUrl5803Visible="createURL('redirectToMap.gsp', {name:params.data.name})"
 %>
 <%
-linkActionCondition18966Condition=""
+linkActionCondition5803Condition=""
 %>
 
-<rui:action id="showMapAction" type="link" url="${linkUrl18966Visible}" 
+<rui:action id="showMapAction" type="link" url="${linkUrl5803Visible}" 
 
 >
 </rui:action>
 
 <%
-functionActionCondition18972Condition=""
+functionActionCondition5809Condition=""
 %>
 
 <rui:action id="refreshQueriesAction" type="function" function="poll" componentId='filterTree' 
@@ -465,13 +465,13 @@ x='85' y='50'
         
 
 
-    <rui:innerLayout id="18737">
+    <rui:innerLayout id="5574">
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='18996' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='5833' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='center' gutter='0px' id='18993' isActive='true' scroll='false' useShim='false' component='inventoryList'>
+            <rui:layoutUnit position='center' gutter='0px' id='5830' isActive='true' scroll='false' useShim='false' component='inventoryList'>
         
             </rui:layoutUnit>
         

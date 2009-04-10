@@ -55,7 +55,7 @@
             <UiElement designerType="Html" id="17942" name="objectDetails" title=""/>
             <UiElement designerType="Html" id="17944" name="saveQueryForm" title=""/>
             <UiElement designerType="Html" id="17946" name="saveQueryGroupForm" title=""/>
-            <UiElement designerType="Html" id="17948" name="inMaintenanceForm" title="In Maintenance"/>
+            <UiElement designerType="Html" id="17948" name="inMaintenanceForm" title=""/>
           </UiElement>
           <UiElement designerType="Layout" id="17876">
             <UiElement designerType="CenterUnit" id="18126" component="eventsGrid"/>
@@ -259,7 +259,7 @@
             <UiElement designerType="Html" id="18207" name="objectDetails" title=""/>
             <UiElement designerType="Html" id="18209" name="saveQueryForm" title=""/>
             <UiElement designerType="Html" id="18211" name="saveQueryGroupForm" title=""/>
-            <UiElement designerType="Html" id="18213" name="inMaintenanceForm" title="In Maintenance"/>
+            <UiElement designerType="Html" id="18213" name="inMaintenanceForm" title=""/>
           </UiElement>
           <UiElement designerType="Layout" id="18132">
             <UiElement designerType="CenterUnit" id="18460" component="eventList"/>
@@ -724,7 +724,7 @@
             <UiElement designerType="Html" id="18792" name="saveQueryGroupForm" title=""/>
             <UiElement designerType="Html" id="18794" name="objectDetails" title=""/>
             <UiElement designerType="Html" id="18796" name="saveQueryForm" title=""/>
-            <UiElement designerType="Html" id="18798" name="inMaintenanceForm" title="In Maintenance"/>
+            <UiElement designerType="Html" id="18798" name="inMaintenanceForm" title=""/>
           </UiElement>
           <UiElement designerType="Layout" id="18737">
             <UiElement designerType="CenterUnit" id="18993" component="inventoryList"/>

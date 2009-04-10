@@ -38,7 +38,6 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
         };
         assertEquals (4, securityFilterHandlers.size());
         FilterToHandlerAdapter authenticationAdapter = securityFilterHandlers["authentication"]; 
-        assertEquals ("/**", authenticationAdapter.getUriPattern());
         assertNotNull(authenticationAdapter.getFilterConfig().before);
         assertNull(authenticationAdapter.getFilterConfig().after);
         assertNull(authenticationAdapter.getFilterConfig().afterView);
@@ -50,6 +49,7 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
         loginAs(rsUser.username, userPassword);
         assertFalse(authenticationAdapter.preHandle (req, resp, null));
         loginAs (RsUser.RSADMIN, RsUser.DEFAULT_PASSWORD);
+        assertEquals ("/**", authenticationAdapter.getUriPattern());
     }
 
     private createUser(String username, String userPassword)

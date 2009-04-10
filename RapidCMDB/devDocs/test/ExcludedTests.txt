@@ -2,3 +2,4 @@ com.ifountain.rcmdb.domain.util.ControllerUtilsTest
 netcool.conversion.NetcoolRuleFunctionsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests
 com.ifountain.rcmdb.datasource.ListeningAdapterRunnerTest
+

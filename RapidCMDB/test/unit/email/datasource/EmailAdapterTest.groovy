@@ -3,7 +3,8 @@ import datasource.EmailAdapter
 
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.core.datasource.Action
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.test.util.EmailConnectionImplTestUtils;
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -27,7 +28,7 @@ class EmailAdapterTest extends RapidCoreTestCase{
         ExpandoMetaClass.enableGlobally();
     }
     public void testSendEmailPassesParamsAndLoggerToAction(){        
-        def params=["from":"a@b","to":"b@c","subject":"testsbj","body":"testbdy"]
+        def params= EmailConnectionImplTestUtils.getSendEmailParams("a@b", "b@c", "testsbj", "testbdy")
         def adapter=new EmailAdapterMock();
         adapter.sendEmail(params)
         def action=adapter.callParams.action;

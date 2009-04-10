@@ -38,7 +38,12 @@ import com.ifountain.comp.exception.RapidMissingParameterException
 
 
 public class SendEmailAction implements Action {
-
+    public static final String FROM_PARAM_NAME = "from";
+    public static final String TO_PARAM_NAME = "to";
+    public static final String SUBJECT_PARAM_NAME = "subject";
+    public static final String BODY_PARAM_NAME = "body";
+    public static final String CONTENT_TYPE_PARAM_NAME = "contentType";
+    public static final List PARAMS_TO_BE_CHECKED = [FROM_PARAM_NAME, TO_PARAM_NAME, SUBJECT_PARAM_NAME, BODY_PARAM_NAME];
     private Logger logger;
     private int type;
     private Map params;
@@ -47,27 +52,29 @@ public class SendEmailAction implements Action {
     public SendEmailAction(Logger logger,  Map params) {
         this.logger = logger;
         this.params = params;
-        checkParams(["from","to","subject","body"]);        
-        if(!params.containsKey("contentType"))
+        checkParams(PARAMS_TO_BE_CHECKED);
+        if(!params.containsKey(CONTENT_TYPE_PARAM_NAME))
         {
-            params.contentType=EmailAdapter.PLAIN;
+            params[CONTENT_TYPE_PARAM_NAME]=EmailAdapter.PLAIN;
         }
     }
 
     public void execute(IConnection conn) throws Exception {
-
-        logger.debug("Sending email with params:\n" + params);
+        if(logger.isDebugEnabled())
+        {
+            logger.debug("Sending email with params:\n" + params);
+        }
 
         SMTPTransport emailConnection=conn.getEmailConnection();
         
         Message m = new MimeMessage((Session)conn.getEmailSession());
 
-        String from=params.from;        
+        String from=params[FROM_PARAM_NAME];
         m.setFrom(new InternetAddress(from,from));
 
-        m.setSubject(params.subject);
-        m.addRecipient(Message.RecipientType.TO, new InternetAddress(params.to));
-        m.setContent(params.body, params.contentType);
+        m.setSubject(params[SUBJECT_PARAM_NAME]);
+        m.addRecipient(Message.RecipientType.TO, new InternetAddress(params[TO_PARAM_NAME]));
+        m.setContent(params[BODY_PARAM_NAME], params[CONTENT_TYPE_PARAM_NAME]);
         m.setSentDate(new Date());
         m.saveChanges();
 

@@ -51,7 +51,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
 
      public void testConnectAndDisconnect()
      {
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+        Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
          def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
          conParams.setMinTimeout (15000);
 
@@ -83,11 +83,11 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
          con._disconnect()
      }
      public void testConnectThrowsExceptionWithWrongAccount(){
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+        Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
         params.Password="xxxxxxxxxxx55555555yyyyyyyyyyyyyyyy"
 
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
-
+        conParams.setMinTimeout (15000);
         def con=new EmailConnectionImpl()
         con.init(conParams)
 
@@ -108,7 +108,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
      }
      public void testInitConvertsSmtpPortToInt()
      {
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+        Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
         params.SmtpPort="66"
 
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);

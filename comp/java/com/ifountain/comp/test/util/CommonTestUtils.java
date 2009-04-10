@@ -62,10 +62,10 @@ public class CommonTestUtils
         }
     }
     public static String getTestProperty(String propertyName) {
-        return testProperties.getProperty(propertyName).trim();
+        return testProperties.getProperty(String.valueOf(propertyName)).trim();
     }
     public static String getTestProperty(String propertyName, String defaultValue) {
-        return testProperties.getProperty(propertyName, defaultValue).trim();
+        return testProperties.getProperty(String.valueOf(propertyName), defaultValue).trim();
     }
     
     public static void waitFor(WaitAction waitAction) throws InterruptedException

@@ -85,10 +85,8 @@ class EmailConnectionImpl extends BaseConnection{
             {
                if(transport.isConnected())
                {
-                   if(transport.ehlo())
-                   {
-                     result=true;
-                   }
+                   transport.issueCommand("NOOP", 250)
+                   result = true;
                }
             }
             catch (javax.mail.MessagingException e)

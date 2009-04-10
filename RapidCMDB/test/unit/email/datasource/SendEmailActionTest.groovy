@@ -14,21 +14,42 @@ import com.ifountain.comp.exception.RapidMissingParameterException
 import org.apache.log4j.Logger
 import datasource.SendEmailAction
 import datasource.EmailAdapter
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import javax.mail.Message
+import javax.mail.internet.InternetAddress
 
 
 class SendEmailActionTest extends RapidCoreTestCase{
     protected void setUp() throws Exception {
         super.setUp();
-
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-    public void testExecute(){
-        Map params = EmailConnectionImplTestUtils.getConnectionParams();
+    public void testExecuteWithLocal()
+    {
+        _testExecute("Local", "User1", "User2", true);
+    }
+    public void testExecuteWithYahoo()
+    {
+        _testExecute("Yahoo", "Yahoo1", "Yahoo2", false);
+    }
+    public void testExecuteWithGoogle()
+    {
+        _testExecute("Google", "Google1", "Google2", false);
+    }
 
+
+    public void _testExecute(String serverId, String fromUserId, String toUserId, boolean searchTheMessageWithSubject){
+
+        Map fromUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(fromUserId)
+        Map toUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(toUserId)
+        Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams(fromUserId, serverId);
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+        conParams.setMinTimeout (20000)
+        conParams.setMaxTimeout(100000)
 
         def con=new EmailConnectionImpl()
         con.init(conParams)
@@ -36,10 +57,28 @@ class SendEmailActionTest extends RapidCoreTestCase{
         con._connect()
         assertTrue(con.checkConnection());
         assertTrue(con.isConnected());
+        println "CONNECTED TO SERVER"
+        def numberOfMessagesBeforeSendingMail = EmailConnectionImplTestUtils.getMessageCount(toUserId, serverId);
+        println "NUMBER OF MESSAGES BEFORE SENDING MAIL:"+numberOfMessagesBeforeSendingMail
 
-        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams();
+        String subject = "subject1${System.currentTimeMillis()}${Math.random()}";
+        String body = "body1${System.currentTimeMillis()}${Math.random()}";
+        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams(fromUser.Username, toUser.Username, subject, body);
         SendEmailAction action=new SendEmailAction(Logger.getRootLogger(),sendEmailParams)
-        action.execute(con)
+        action.execute(con);
+        CommonTestUtils.waitFor (new ClosureWaitAction({
+            def messageCountAfterSendingMail = EmailConnectionImplTestUtils.getMessageCount(toUserId, serverId);
+            assertEquals ("Message could not be sent successfully", numberOfMessagesBeforeSendingMail+1, messageCountAfterSendingMail);
+        }))
+        EmailConnectionImplTestUtils.getMessages(toUserId, serverId, {List messages->
+            Message lastMessage = messages[messages.size()-1];
+            if(searchTheMessageWithSubject)
+            {
+                lastMessage = messages.find {it.getSubject() == subject}    
+            }
+            assertEquals (body, lastMessage.getContent().toString().trim());
+            assertEquals (new InternetAddress(fromUser.Username, fromUser.Username).toString(), lastMessage.getFrom()[0].toString());
+        });
 
     }
 
@@ -70,7 +109,7 @@ class SendEmailActionTest extends RapidCoreTestCase{
 
     public void testConstructorGeneratesContentTypeWhenMissing()
     {
-        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams();
+        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams("User1", "User2", "subject", "body");
         def action=new SendEmailAction(Logger.getRootLogger(),sendEmailParams)
         assertEquals(action.getParams().contentType,EmailAdapter.PLAIN)
 

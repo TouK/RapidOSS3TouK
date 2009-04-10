@@ -175,7 +175,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         copyScript("MaintenanceScheduler");
         copyManualTestScript("maintenance","MaintenanceTest");
 
-        def script=CmdbScript.addScript([name:"MaintenanceTest",type: CmdbScript.ONDEMAND],true)
+        def script=CmdbScript.addScript([name:"MaintenanceTest",scriptFile:"MaintenanceTest.groovy",type: CmdbScript.ONDEMAND],true)
         println script.errors
         assertFalse(script.hasErrors());
 

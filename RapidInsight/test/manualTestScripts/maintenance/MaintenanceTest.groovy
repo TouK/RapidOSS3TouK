@@ -24,7 +24,7 @@ assert(!RsEvent.get(name:event12.name).inMaintenance)
 
 
 // indeterminate inMaintenance
-def props = ["objectname":"Device1", "source":source, "info":info]
+def props = ["objectName":"Device1", "source":source, "info":info]
 def maint1 = RsInMaintenance.putObjectInMaintenance(props)
 //def maint1 = RsInMaintenance.putObjectInMaintenance(["Device1",source,info)
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
@@ -46,7 +46,7 @@ assert(!event13.inMaintenance)
 def endTime = new Date(System.currentTimeMillis() + 1000)
 //device1.putInMaintenance(endTime, true)
 
-def props = ["objectname":"Device1", "source":source, "info":info, "ending":endTime]
+props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
 maint1 = RsInMaintenance.putObjectInMaintenance(props)
 //maint1 = RsInMaintenance.putObjectInMaintenance("Device1",source,info,endTime)
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
@@ -75,7 +75,7 @@ assert(!RsEvent.get(name:event14.name).inMaintenance)
 // inMaintenance with duration - user aborted
 endTime = new Date(System.currentTimeMillis() + 1000)
 //device1.putInMaintenance(endTime)
-def props = ["objectname":"Device1", "source":source, "info":info, "ending":endTime]
+props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
 maint1 = RsInMaintenance.putObjectInMaintenance(props)
 //maint1 = RsInMaintenance.putObjectInMaintenance("Device1",source,info,endTime)
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))

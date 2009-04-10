@@ -13,7 +13,7 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 		    props.lastChangedAt = new Date().getTime()
 		    props.consideredDownAt = props.lastChangedAt + (heartbeat.interval * 1000)
 		    heartbeat.update(props)
-		    clearEvent(logger, systemName)
+		    clearEvent(systemName)
 		}
 	}
 	
@@ -37,7 +37,7 @@ public class RsHeartBeatOperations extends com.ifountain.rcmdb.domain.operation.
 	
 	public static processHeartBeats(){
 		def logger = getLogger()
-		def results = checkHeartBeat(logger)
+		def results = checkHeartBeat()
 		results.each {
 		    def eventProps = [name:"${it.objectName}_Down", elementName:it.objectName]
 		    logger.info("Creating event: ${eventProps.name}")

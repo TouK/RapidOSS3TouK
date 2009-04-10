@@ -44,28 +44,28 @@ class Test extends Parent{
 				ant.formatter(type : "xml");
 			}
 		}
-        def testSuiteString = "</testsuite>";
-        def xmlFiles = new File(outputXmlDir).listFiles();
-        xmlFiles.each{File f->
-            if(f.getName().endsWith(".xml"))
-            {
-                def lines = f.readLines();
-                def strBuf = new StringBuffer();
-                lines.each{String line->
-                    if(line.indexOf("</testsuite>") < 0)
-                    {
-                        strBuf.append (line).append("\n");
-                    }
-                    else
-                    {
-                        strBuf.append (line.substring(0, line.indexOf(testSuiteString)+testSuiteString.length())).append("\n");
-                        return;
-                    }
-                }
-                println "new content for ${f.getCanonicalPath()} is ${strBuf.toString()}"
-                f.setText(strBuf.toString());
-            }
-        }
+//        def testSuiteString = "</testsuite>";
+//        def xmlFiles = new File(outputXmlDir).listFiles();
+//        xmlFiles.each{File f->
+//            if(f.getName().endsWith(".xml"))
+//            {
+//                def lines = f.readLines();
+//                def strBuf = new StringBuffer();
+//                lines.each{String line->
+//                    if(line.indexOf("</testsuite>") < 0)
+//                    {
+//                        strBuf.append (line).append("\n");
+//                    }
+//                    else
+//                    {
+//                        strBuf.append (line.substring(0, line.indexOf(testSuiteString)+testSuiteString.length())).append("\n");
+//                        return;
+//                    }
+//                }
+//                println "new content for ${f.getCanonicalPath()} is ${strBuf.toString()}"
+//                f.setText(strBuf.toString());
+//            }
+//        }
 //		ant.mkdir(dir :  htmlDir);
 //		ant.junitreport(todir : htmlDir ){
 //			ant.fileset(dir : outputXmlDir){

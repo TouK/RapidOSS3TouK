@@ -80,6 +80,12 @@ class NetcoolModuleBuild extends Build {
                 ant.exclude(name: "**/NetcoolDemoValues.groovy")
                 ant.exclude(name: "**/NetcoolRealValues.groovy")
                 ant.exclude(name: "**/demoGenerator.groovy")
+                ant.exclude(name: "**/overridenOperations/**")
+            }
+        }
+        if(!TEST){
+            ant.copy(todir: "$rapidSuiteDir/operations",overwrite:true) {
+                ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool/overridenOperations/default")
             }
         }
 //        replaceJavascriptAndCss("${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp", "/RapidSuite/indexLayout_${buildNo}.js", "/RapidSuite/indexLayout_${buildNo}.css")

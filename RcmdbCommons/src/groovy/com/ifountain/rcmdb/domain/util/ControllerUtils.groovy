@@ -39,6 +39,17 @@ class ControllerUtils {
         return writer.toString();
 
     }
+    def static convertErrorToXml(String errorMessage)
+    {
+        StringWriter writer = new StringWriter();
+        def builder = new MarkupBuilder(writer);
+
+        builder.Errors(){
+            builder.Error(error:errorMessage)           
+        }
+
+        return writer.toString();
+    }
 
     def static List getMultipleRelations(String relString, Class relType)
     {

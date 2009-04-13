@@ -21,75 +21,82 @@ package message
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod;
+import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod
+import groovy.xml.MarkupBuilder;
 
 
 class RsMessageRuleController {
 
-    def getTemplateName() {
-        return "/../../../../web-app/index/notifications"
-    }
+
     def index = {redirect(action: list, params: params)}
 
     // the delete, save and update actions only accept POST requests
-    def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
+    def allowedMethods = [save: 'POST', update: 'POST']
 
     def list = {
-        render(template: getTemplateName(), model: [currentAction: 'list']);
-    }
+        def userId=auth.RsUser.get(username:session.username)?.id
+        def myRules= message.RsMessageRule.searchEvery("userId:${userId}",[sort:"id",order:"asc"])
+        def ruleGroups=[];
+        ruleGroups.add(["id":"enabledRules","name":"Enabled Rules",'nodeType':'group',"rules":[]]);
+        ruleGroups.add(["id":"disabledRules","name":"Disabled Rules",'nodeType':'group',"rules":[]]);
+        myRules.each{ rule ->
 
-    def show = {
-        def rsMessageRule = RsMessageRule.get([id: params.id])
+            def searchQuery=search.SearchQuery.get(id:rule.searchQueryId);
+            def ruleProps=[:]
+            ruleProps.id=rule.id;
+            ruleProps.delay=rule.delay;
+            ruleProps.clearAction=rule.clearAction;
+            ruleProps.enabled=rule.enabled;
+            ruleProps.name=searchQuery?searchQuery.name:rule.searchQueryId;
+            ruleProps.nodeType='rule';
 
-        if (!rsMessageRule) {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
-        }
-        else {
-            if (rsMessageRule.class != RsMessageRule)
+            if(rule.enabled)
             {
-                def controllerName = rsMessageRule.class.simpleName;
-                if (controllerName.length() == 1)
-                {
-                    controllerName = controllerName.toLowerCase();
-                }
-                else
-                {
-                    controllerName = controllerName.substring(0, 1).toLowerCase() + controllerName.substring(1);
-                }
-                render(template: getTemplateName(), model: [currentAction: 'show', id: rsMessageRule.id]);
+                ruleGroups[0].rules.add(ruleProps);
             }
             else
             {
-                render(template: getTemplateName(), model: [currentAction: 'show', rsMessageRule: rsMessageRule]);
+                ruleGroups[1].rules.add(ruleProps);
             }
         }
+
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        builder.Rules() {
+            ruleGroups.each{ ruleGroup ->
+                def groupProps=ruleGroup.clone();
+                groupProps.remove("rules");
+                builder.Rule(groupProps){
+                    ruleGroup.rules.each{ ruleProps->
+                        builder.Rule(ruleProps);
+                    }
+                }
+
+            }            
+        }
+        render(contentType: "text/xml", text: sw.toString())
+
     }
+    def getRuleXml (rule)
+    {
+
+
+    }
+
 
     def delete = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {
             rsMessageRule.remove()
-            flash.message = "RsMessageRule ${params.id} deleted"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
+            render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} deleted"), contentType: "text/xml")
         }
         else {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
+            addError("default.couldnot.delete", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
+            render(text: errorsToXml(this.errors), contentType: "text/xml");
         }
     }
 
-    def edit = {
-        def rsMessageRule = RsMessageRule.get([id: params.id])
 
-        if (!rsMessageRule) {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
-        }
-        else {
-            render(template: getTemplateName(), model: [currentAction: 'edit', rsMessageRule: rsMessageRule])
-        }
-    }
 
 
     def update = {
@@ -99,39 +106,31 @@ class RsMessageRuleController {
             if (user.email == null || user.email == "")
             {
                 addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
-                flash.errors = this.errors;
-                render(template: getTemplateName(), model: [currentAction: 'edit', rsMessageRule: rsMessageRule])
+                render(text: errorsToXml(this.errors), contentType: "text/xml")
                 return;
             }
 
             rsMessageRule.update(ControllerUtils.getClassProperties(params, RsMessageRule));
             if (!rsMessageRule.hasErrors()) {
-                flash.message = "RsMessageRule ${params.id} updated"
-                render(template: getTemplateName(), model: [currentAction: 'list']);
+                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
             }
             else {
-                render(template: getTemplateName(), model: [currentAction: 'edit', rsMessageRule: rsMessageRule])
+                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
             }
         }
         else {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
+            addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
+            render(text: errorsToXml(this.errors), contentType: "text/xml")            
         }
     }
 
-    def create = {
-        def rsMessageRule = new RsMessageRule()
-        rsMessageRule.properties = params
-        render(template: getTemplateName(), model: [currentAction: 'create', rsMessageRule: rsMessageRule]);
-    }
 
     def save = {
         def user = auth.RsUser.get(username: session.username)
         if (user.email == null || user.email == "")
         {
             addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
-            flash.errors = this.errors;
-            render(template: getTemplateName(), model: [currentAction: 'create', rsMessageRule: new RsMessageRule()])
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
             return;
         }
         params.userId = user.id
@@ -140,31 +139,32 @@ class RsMessageRuleController {
             params.userId = String.valueOf(params.userId)
         }
 
-        def rsMessageRule = RsMessageRule.add(ControllerUtils.getClassProperties(params, RsMessageRule))
+        def rsMessageRule = RsMessageRule.add(ControllerUtils.getClassProperties(params, RsMessageRule))       
         if (!rsMessageRule.hasErrors()) {
-            flash.message = "RsMessageRule ${rsMessageRule.id} created"
-            render(template: getTemplateName(), model: [currentAction: 'list'])
+
+            render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
+
         }
-        else {
-            render(template: getTemplateName(), model: [rsMessageRule: rsMessageRule, currentAction: 'create'])
+        else {                                                                                                                     
+            render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")
+
         }
+
     }
     def enableRule = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {
             rsMessageRule.update(enabled: true);
             if (!rsMessageRule.hasErrors()) {
-                flash.message = "RsMessageRule ${params.id} enabled"
-                render(template: getTemplateName(), model: [currentAction: 'list']);
+                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
             }
             else {
-                flash.errors = rsMessageRule.errors;
-                render(template: getTemplateName(), model: [currentAction: 'list']);
+                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
             }
         }
         else {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
+            addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
         }
     }
     def disableRule = {
@@ -172,17 +172,15 @@ class RsMessageRuleController {
         if (rsMessageRule) {
             rsMessageRule.update(enabled: false);
             if (!rsMessageRule.hasErrors()) {
-                flash.message = "RsMessageRule ${params.id} disabled"
-                render(template: getTemplateName(), model: [currentAction: 'list']);
+                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
             }
             else {
-                flash.errors = rsMessageRule.errors;
-                render(template: getTemplateName(), model: [currentAction: 'list']);
+                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
             }
         }
         else {
-            flash.message = "RsMessageRule not found with id ${params.id}"
-            render(template: getTemplateName(), model: [currentAction: 'list']);
+            addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
         }
     }
 }

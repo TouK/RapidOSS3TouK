@@ -136,4 +136,16 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         assertEquals(message, xmlNode.text());
         assertEquals("Successful", xmlNode.name());
     }
+    public void testConvertErrorToXml()
+    {
+        String message = "message1";
+        def xml = ControllerUtils.convertErrorToXml(message);
+        println xml;
+        def xmlNode = new XmlParser().parseText(xml);
+        assertEquals("Errors", xmlNode.name());
+        println xmlNode.childNodes;
+        def errorNode=xmlNode.Error[0];
+        assertEquals(message, errorNode.@error);
+        assertEquals("Error", errorNode.name());
+    }
 }

@@ -177,15 +177,6 @@ class RelationUtils
             }
         }]);
     }
-    public static Map getAllRelatedObjectIds(objectId)
-    {
-        def query = "objectId:${objectId}";
-        def allRelatedObjectIds = [:];
-        allRelatedObjectIds.putAll(Relation.propertySummary(query, "reverseObjectId").reverseObjectId);
-        query = "reverseObjectId:${objectId}";
-        allRelatedObjectIds.putAll(Relation.propertySummary(query, "objectId").objectId);
-        return allRelatedObjectIds;
-    }
     public static Map getRelatedObjectsIdsByObjectId(objectId, String relationName, String otherSideName)
     {
         otherSideName = otherSideName == null?NULL_RELATION_NAME:otherSideName;

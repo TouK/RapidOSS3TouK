@@ -146,7 +146,7 @@ class RapidCmdbBuild extends Build {
 
         ant.copy(file: "${env.third_party}/lib/javamail/mailapi.jar", toDir: dirToCopyTo);
         ant.copy(file: "${env.third_party}/lib/javamail/smtp.jar", toDir: dirToCopyTo);
-        if (!TEST) {
+        if (TEST) {
             ant.copy(file: "${env.third_party}/lib/javamail/pop3.jar", toDir: dirToCopyTo);   
         }
         

@@ -51,7 +51,7 @@ public class DomainMethodExecutor
     {
         if(!methodExecutorAction.willBeLocked()) return methodExecutorAction.action();
 
-        boolean hasLockPreviously = DomainLockManager.hasLock(owner, methodExecutorAction.getLockName());
+        boolean hasLockPreviously = DomainLockManager.hasLock(owner, methodExecutorAction.getLockName(), methodExecutorAction.lockLevel);
         try
         {
             if (!hasLockPreviously) {

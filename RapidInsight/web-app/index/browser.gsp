@@ -7,7 +7,7 @@
 <rui:searchList id="objectList" url="../rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id"
     lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
     pollingInterval="0" defaultFields='${["id", "name"]}' showMax='6' defaultQuery=""
-    defaultSearchClass="connection.Connection" searchClassesUrl="../rsBrowser/getSearchClasses"
+    defaultSearchClass="connection.Connection" searchClassesUrl="../rsBrowser/getSearchClasses" timeout="30"
     
         onRowDoubleClicked="${['browseAction']}"
     
@@ -82,7 +82,7 @@ exceptVisible="true"
     </rui:slImages>
 </rui:searchList>
 
-<rui:treeGrid id="classTree" url="../rsBrowser/classes?format=xml" rootTag="Classes" pollingInterval="0"
+<rui:treeGrid id="classTree" url="../rsBrowser/classes?format=xml" rootTag="Classes" pollingInterval="0" timeout="30"
         keyAttribute="name" contentPath="Class" title="Classes" expanded="false"
 
         onNodeClicked="${['getInstancesAction']}"
@@ -107,30 +107,30 @@ propsAndOperationsVisible="params.data.name != 'System' && params.data.name != '
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage7931Visible="params.data.name != 'System' && params.data.name != 'Application'"
+rootImage2738Visible="params.data.name != 'System' && params.data.name != 'Application'"
 %>
 
-        <rui:tgRootImage visible="${rootImage7931Visible}" expanded="../images/rapidjs/component/tools/class.png" collapsed="../images/rapidjs/component/tools/class.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage2738Visible}" expanded="../images/rapidjs/component/tools/class.png" collapsed="../images/rapidjs/component/tools/class.png"></rui:tgRootImage>
         <%
-rootImage7933Visible="params.data.name == 'Application'"
+rootImage2740Visible="params.data.name == 'Application'"
 %>
 
-        <rui:tgRootImage visible="${rootImage7933Visible}" expanded="../images/rapidjs/component/tools/application.png" collapsed="../images/rapidjs/component/tools/application.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage2740Visible}" expanded="../images/rapidjs/component/tools/application.png" collapsed="../images/rapidjs/component/tools/application.png"></rui:tgRootImage>
         <%
-rootImage7935Visible="params.data.name == 'System'"
+rootImage2742Visible="params.data.name == 'System'"
 %>
 
-        <rui:tgRootImage visible="${rootImage7935Visible}" expanded="../images/rapidjs/component/tools/configure.png" collapsed="../images/rapidjs/component/tools/configure.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage2742Visible}" expanded="../images/rapidjs/component/tools/configure.png" collapsed="../images/rapidjs/component/tools/configure.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
 
-<rui:html id="objectDetails" iframe="false"></rui:html>
+<rui:html id="objectDetails" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="propsAndOperations" iframe="false"></rui:html>
+<rui:html id="propsAndOperations" iframe="false"  timeout="30"></rui:html>
 
 <%
-functionActionCondition7943Condition=""
+functionActionCondition2750Condition=""
 %>
 
 <rui:action id="browseAction" type="function" function="show" componentId='objectDetails' 
@@ -144,7 +144,7 @@ functionActionCondition7943Condition=""
 </rui:action>
 
 <%
-functionActionCondition7957Condition=""
+functionActionCondition2764Condition=""
 %>
 
 <rui:action id="propsAndOperationsAction" type="function" function="show" componentId='propsAndOperations' 
@@ -158,7 +158,7 @@ functionActionCondition7957Condition=""
 </rui:action>
 
 <%
-functionActionCondition7968Condition=""
+functionActionCondition2775Condition=""
 %>
 
 <rui:action id="greaterThanAction" type="function" function="appendToQuery" componentId='objectList' 
@@ -170,7 +170,7 @@ functionActionCondition7968Condition=""
 </rui:action>
 
 <%
-functionActionCondition7977Condition=""
+functionActionCondition2784Condition=""
 %>
 
 <rui:action id="lessThanAction" type="function" function="appendToQuery" componentId='objectList' 
@@ -182,7 +182,7 @@ functionActionCondition7977Condition=""
 </rui:action>
 
 <%
-functionActionCondition7986Condition=""
+functionActionCondition2793Condition=""
 %>
 
 <rui:action id="lessThanOrEqualToAction" type="function" function="appendToQuery" componentId='objectList' 
@@ -194,7 +194,7 @@ functionActionCondition7986Condition=""
 </rui:action>
 
 <%
-functionActionCondition7995Condition=""
+functionActionCondition2802Condition=""
 %>
 
 <rui:action id="greaterThanOrEqualToAction" type="function" function="appendToQuery" componentId='objectList' 
@@ -206,7 +206,7 @@ functionActionCondition7995Condition=""
 </rui:action>
 
 <%
-functionActionCondition8004Condition=""
+functionActionCondition2811Condition=""
 %>
 
 <rui:action id="exceptAction" type="function" function="appendExceptQuery" componentId='objectList' 
@@ -220,7 +220,7 @@ functionActionCondition8004Condition=""
 </rui:action>
 
 <%
-functionActionCondition8015Condition=""
+functionActionCondition2822Condition=""
 %>
 
 <rui:action id="sortAscAction" type="function" function="sort" componentId='objectList' 
@@ -234,7 +234,7 @@ functionActionCondition8015Condition=""
 </rui:action>
 
 <%
-functionActionCondition8026Condition=""
+functionActionCondition2833Condition=""
 %>
 
 <rui:action id="sortDescAction" type="function" function="sort" componentId='objectList' 
@@ -248,10 +248,10 @@ functionActionCondition8026Condition=""
 </rui:action>
 
 <%
-functionActionCondition8051Condition="params.data.name != 'System' && params.data.name != 'Application'"
+functionActionCondition2844Condition="params.data.name != 'System' && params.data.name != 'Application'"
 %>
 
-<rui:action id="getInstancesAction" type="function" function="setQuery" componentId='objectList' condition="$functionActionCondition8051Condition"
+<rui:action id="getInstancesAction" type="function" function="setQuery" componentId='objectList' condition="$functionActionCondition2844Condition"
 
 >
     
@@ -270,13 +270,13 @@ functionActionCondition8051Condition="params.data.name != 'System' && params.dat
 <rui:popupWindow componentId="objectDetails" width="850" height="500" resizable="true"
  
  
- 
+  
 ></rui:popupWindow>
 
 <rui:popupWindow componentId="propsAndOperations" width="550" height="600" resizable="true"
  
  
- 
+  
 ></rui:popupWindow>
 
 
@@ -292,13 +292,13 @@ functionActionCondition8051Condition="params.data.name != 'System' && params.dat
         
 
 
-    <rui:innerLayout id="7898">
+    <rui:innerLayout id="2705">
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='8076' isActive='true' resize='true' scroll='false' useShim='false' width='345' component='classTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='2869' isActive='true' resize='true' scroll='false' useShim='false' width='345' component='classTree'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='center' gutter='0px' id='8073' isActive='true' scroll='false' useShim='false' component='objectList'>
+            <rui:layoutUnit position='center' gutter='0px' id='2866' isActive='true' scroll='false' useShim='false' component='objectList'>
         
             </rui:layoutUnit>
         

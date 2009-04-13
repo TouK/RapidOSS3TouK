@@ -3,7 +3,7 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<rui:treeGrid id="mapTree" url="../script/run/mapList?format=xml" rootTag="Maps" pollingInterval="0"
+<rui:treeGrid id="mapTree" url="../script/run/mapList?format=xml" rootTag="Maps" pollingInterval="0" timeout="30"
         keyAttribute="id" contentPath="Map" title="Saved Maps" expanded="true"
 
         onNodeClicked="${['requestMapAction']}"
@@ -49,31 +49,31 @@ mapGroupUpdateVisible="params.data.isPublic != 'true' && params.data.name != 'De
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage7392Visible="params.data.nodeType == 'group'"
+rootImage2199Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage7392Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage2199Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <%
-rootImage7394Visible="params.data.nodeType == 'map'"
+rootImage2201Visible="params.data.nodeType == 'map'"
 %>
 
-        <rui:tgRootImage visible="${rootImage7394Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage2201Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
 
-<rui:html id="objectDetails" iframe="false"></rui:html>
+<rui:html id="objectDetails" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="eventDetails" iframe="false"></rui:html>
+<rui:html id="eventDetails" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="eventList" iframe="false"></rui:html>
+<rui:html id="eventList" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="saveMapGroupForm" iframe="false"></rui:html>
+<rui:html id="saveMapGroupForm" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="saveMapForm" iframe="false"></rui:html>
+<rui:html id="saveMapForm" iframe="false"  timeout="30"></rui:html>
 
 
-<rui:objectMap id="topologyMap" expandURL="../script/run/expandMap" dataURL="../script/run/getMapData" nodePropertyList="name,rsClassName" nodeSize="60" edgeColorDataKey="state" edgeColors="${['5':0xffde2c26,'4':0xfff79229,'3':0xfffae500,'2':0xff20b4e0,'1':0xffac6bac,'0':0xff62b446,'default':0xff62b446]}"
+<rui:objectMap id="topologyMap" expandURL="../script/run/expandMap" dataURL="../script/run/getMapData" nodePropertyList="name,rsClassName" nodeSize="60" edgeColorDataKey="state" edgeColors="${['5':0xffde2c26,'4':0xfff79229,'3':0xfffae500,'2':0xff20b4e0,'1':0xffac6bac,'0':0xff62b446,'default':0xff62b446]}" timeout="30"
 
         onMapInitialized="${['loadMapForNodeAction']}"
     
@@ -119,7 +119,7 @@ rootImage7394Visible="params.data.nodeType == 'map'"
 </rui:objectMap>
 
 <%
-functionActionCondition7431Condition=""
+functionActionCondition2238Condition=""
 %>
 
 <rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
@@ -133,7 +133,7 @@ functionActionCondition7431Condition=""
 </rui:action>
 
 <%
-functionActionCondition7442Condition=""
+functionActionCondition2249Condition=""
 %>
 
 <rui:action id="showEventsAction" type="function" function="show" componentId='eventList' 
@@ -147,7 +147,7 @@ functionActionCondition7442Condition=""
 </rui:action>
 
 <%
-functionActionCondition7453Condition=""
+functionActionCondition2260Condition=""
 %>
 
 <rui:action id="mapGroupUpdateAction" type="function" function="show" componentId='saveMapGroupForm' 
@@ -161,10 +161,10 @@ functionActionCondition7453Condition=""
 </rui:action>
 
 <%
-functionActionCondition7464Condition=""
+functionActionCondition2271Condition=""
 %>
 
-<rui:action id="loadMapForNodeAction" type="function" function="loadMapForNode" componentId='topologyMap' condition="$functionActionCondition7464Condition"
+<rui:action id="loadMapForNodeAction" type="function" function="loadMapForNode" componentId='topologyMap' 
 
 >
     
@@ -173,7 +173,7 @@ functionActionCondition7464Condition=""
 </rui:action>
 
 <%
-functionActionCondition7472Condition=""
+functionActionCondition2279Condition=""
 %>
 
 <rui:action id="updateMapAction" type="function" function="show" componentId='saveMapForm' 
@@ -187,21 +187,21 @@ functionActionCondition7472Condition=""
 </rui:action>
 
 <%
-functionActionCondition7483Condition=""
+functionActionCondition2290Condition=""
 %>
 
 <rui:action id="saveMapAction" type="function" function="show" componentId='saveMapForm' 
 
 >
     
-    <rui:functionArg><![CDATA[createURL('mapForm.gsp',  getMapSaveParams())]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('mapForm.gsp',getMapSaveParams())]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     
 </rui:action>
 
 <%
-requestActionCondition7494Condition=""
+requestActionCondition2301Condition=""
 %>
 
 <rui:action id="deleteMapAction" type="request" url="../topoMap/delete?format=xml" components="${['mapTree']}" 
@@ -210,15 +210,15 @@ requestActionCondition7494Condition=""
     
 >
     <%
-parameter7497Visible="params.data.id"
+parameter2304Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter7497Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter2304Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition7503Condition=""
+requestActionCondition2310Condition=""
 %>
 
 <rui:action id="deleteMapGroupAction" type="request" url="../mapGroup/delete?format=xml" components="${['mapTree']}" 
@@ -227,15 +227,15 @@ requestActionCondition7503Condition=""
     
 >
     <%
-parameter7506Visible="params.data.id"
+parameter2313Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter7506Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter2313Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition7512Condition=""
+requestActionCondition2319Condition=""
 %>
 
 <rui:action id="requestMapAction" type="request" url="../script/run/getMap?format=xml" components="${[]}" 
@@ -244,20 +244,20 @@ requestActionCondition7512Condition=""
     
 >
     <%
-parameter7514Visible="params.data.name"
+parameter2321Visible="params.data.name"
 %>
 
-    <rui:requestParam key="mapName" value="${parameter7514Visible}"></rui:requestParam>
+    <rui:requestParam key="mapName" value="${parameter2321Visible}"></rui:requestParam>
     <%
-parameter7516Visible="params.data.isPublic"
+parameter2323Visible="params.data.isPublic"
 %>
 
-    <rui:requestParam key="isPublic" value="${parameter7516Visible}"></rui:requestParam>
+    <rui:requestParam key="isPublic" value="${parameter2323Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-functionActionCondition7521Condition=""
+functionActionCondition2328Condition=""
 %>
 
 <rui:action id="loadMapAction" type="function" function="loadMap" componentId='topologyMap' 
@@ -269,7 +269,7 @@ functionActionCondition7521Condition=""
 </rui:action>
 
 <%
-functionActionCondition7529Condition=""
+functionActionCondition2336Condition=""
 %>
 
 <rui:action id="refreshMapsAction" type="function" function="poll" componentId='mapTree' 
@@ -281,31 +281,31 @@ functionActionCondition7529Condition=""
 <rui:popupWindow componentId="objectDetails" width="850" height="500" resizable="true"
  
  
-x='50' y='85'
+x='50' y='85' 
 ></rui:popupWindow>
 
 <rui:popupWindow componentId="eventDetails" width="850" height="500" resizable="true"
  
  
- 
+  
 ></rui:popupWindow>
 
 <rui:popupWindow componentId="eventList" width="850" height="700" resizable="true"
  
  
-x='100' y='80'
+x='100' y='80' 
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapGroupForm" width="330" height="100" resizable="false" title="Save Group"
+<rui:popupWindow componentId="saveMapGroupForm" width="330" height="100" resizable="false"
  
  
- 
+  title='Save Group'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapForm" width="385" height="125" resizable="false"  title="Save Map"
+<rui:popupWindow componentId="saveMapForm" width="385" height="125" resizable="false"
  
  
- 
+  title='Save Map'
 ></rui:popupWindow>
 
 
@@ -321,13 +321,13 @@ x='100' y='80'
         
 
 
-    <rui:innerLayout id="7384">
+    <rui:innerLayout id="2191">
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='7556' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='mapTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='2363' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='mapTree'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='center' gutter='0px' id='7553' isActive='true' scroll='false' useShim='false' component='topologyMap'>
+            <rui:layoutUnit position='center' gutter='0px' id='2360' isActive='true' scroll='false' useShim='false' component='topologyMap'>
         
             </rui:layoutUnit>
         

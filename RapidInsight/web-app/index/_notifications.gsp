@@ -6,7 +6,7 @@
 
 
 
-    <div id="loyutUnit7896web-app.pageContents._notificationsCenter.gsp">
+    <div id="loyutUnit2703web-app.pageContents._notificationsCenter.gsp">
         <rui:include template="pageContents/_notificationsCenter.gsp" model="${binding.variables}"></rui:include>
     </div>
 
@@ -18,9 +18,9 @@
         
 
 
-    <rui:innerLayout id="7892">
+    <rui:innerLayout id="2699">
         
-            <rui:layoutUnit position='center' contentFile='pageContents/_notificationsCenter.gsp' gutter='0px' id='7896' isActive='true' scroll='false' useShim='false' body='loyutUnit7896web-app.pageContents._notificationsCenter.gsp'>
+            <rui:layoutUnit position='center' contentFile='pageContents/_notificationsCenter.gsp' gutter='0px' id='2703' isActive='true' scroll='false' useShim='false' body='loyutUnit2703web-app.pageContents._notificationsCenter.gsp'>
         
             </rui:layoutUnit>
         

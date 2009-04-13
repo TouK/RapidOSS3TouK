@@ -47,13 +47,14 @@ public class HttpConnectionImpl extends BaseConnection{
     public boolean checkConnection() {
         return true;
     }
-    
+    //should be used driectly only in test methods
 	protected void setHttpConnection(){
-		httpUtils = new HttpUtils(); 
-	} 
-	
+		setHttpConnection (new HttpUtils());
+	}
+	//should be used driectly only in test methods
 	protected void setHttpConnection(HttpUtils httpUtils){
 		this.httpUtils = httpUtils;
+		this.httpUtils.setTimeout ((int)getTimeout());
 	}	
 	
 	public HttpUtils getHttpConnection(){

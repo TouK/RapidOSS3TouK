@@ -45,7 +45,23 @@ public class HttpUtils {
     private HttpClient httpClient = new HttpClient(manager);
     private HttpClient clientForBasicAuth = new HttpClient(manager);
     private static int INITIAL_BUFFER_SIZE = 4 * 1024;//4K
+    public void setTimeout(int timeout)
+    {
+        manager.getParams().setConnectionTimeout(timeout);
+        manager.getParams().setSoTimeout(timeout);
+    }
 
+    public int getTimeout()
+    {
+        return manager.getParams().getConnectionTimeout();
+    }
+
+    //should only be used from tests
+    protected HttpClient getClient()
+    {
+        return httpClient;
+    }
+    
     public String doPostRequest(String urlStr, Map params) throws HttpStatusException, IOException {
         PostMethod post = preparePostMethod(urlStr, params);
         return getHttpString(post, httpClient);
@@ -67,7 +83,8 @@ public class HttpUtils {
         GetMethod get = prepareGetMethod(urlStr, params);
         return executeGetImage(get, httpClient);
     }
-     public byte[] getBytes(String urlStr, Map params) throws HttpStatusException, IOException {
+
+    public byte[] getBytes(String urlStr, Map params) throws HttpStatusException, IOException {
         GetMethod get = prepareGetMethod(urlStr, params);
         return executeHttpMethod(get, httpClient);
     }
@@ -123,7 +140,7 @@ public class HttpUtils {
         Iterator iterator = params.keySet().iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            String value = String.valueOf( params.get(key));
+            String value = String.valueOf(params.get(key));
             nameValuePairs.add(new NameValuePair(key, value));
         }
         NameValuePair[] pairs = (NameValuePair[]) nameValuePairs.toArray(new NameValuePair[0]);

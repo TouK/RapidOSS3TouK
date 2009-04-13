@@ -25,6 +25,8 @@ package com.ifountain.comp.utils;
 import java.util.HashMap;
 
 import com.ifountain.comp.test.util.RCompTestCase;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpConnection;
 
 
 public class HttpUtilsTest extends RCompTestCase {
@@ -35,6 +37,28 @@ public class HttpUtilsTest extends RCompTestCase {
     	parameters.put("hl", "tr");
         String response = new HttpUtils().doGetRequest("http://www.google.com.tr/search", parameters);
         assertTrue(response.indexOf("www.ifountain.com") > -1);
+    }
+
+    public void testSetTimeout() throws Exception {
+        HttpUtils utils = new HttpUtils();
+        assertEquals(0, utils.getTimeout());
+        HostConfiguration connHost1 = new HostConfiguration();
+        connHost1.setHost("http://localhost1");
+        HttpConnection conn1 =  utils.getClient().getHttpConnectionManager().getConnection(connHost1);
+        assertEquals(0, conn1.getSoTimeout());
+        assertEquals(0, utils.getClient().getHttpConnectionManager().getParams().getConnectionTimeout());
+        assertEquals(0, utils.getClient().getHttpConnectionManager().getParams().getSoTimeout());
+
+
+        int timeoutValue = 10000;
+        utils.setTimeout(timeoutValue);
+        assertEquals(timeoutValue, utils.getTimeout());
+        HostConfiguration connHost2 = new HostConfiguration();
+        connHost2.setHost("http://localhost2");
+        HttpConnection conn2 =  utils.getClient().getHttpConnectionManager().getConnection(connHost2);
+        assertEquals(timeoutValue, conn2.getSoTimeout());
+        assertEquals(timeoutValue, utils.getClient().getHttpConnectionManager().getParams().getConnectionTimeout());
+        assertEquals(timeoutValue, utils.getClient().getHttpConnectionManager().getParams().getSoTimeout());
     }
     
     /**

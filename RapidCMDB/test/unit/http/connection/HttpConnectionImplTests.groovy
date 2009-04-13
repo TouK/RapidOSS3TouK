@@ -22,7 +22,8 @@ import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
 import connection.HttpConnectionImpl
-import org.apache.commons.httpclient.ConnectTimeoutException;
+import org.apache.commons.httpclient.ConnectTimeoutException
+import com.ifountain.comp.utils.HttpUtils;
 
 public class HttpConnectionImplTests extends RapidCoreTestCase {
 
@@ -37,14 +38,30 @@ public class HttpConnectionImplTests extends RapidCoreTestCase {
             fail("should not throw exception");
         }
         assertSame(param, conn.getParameters());
-        
+        assertEquals (param.getMinTimeout(), conn.getTimeout());
+        assertEquals (param.getMinTimeout(), conn.getMinTimeout());
+        assertEquals (param.getMaxTimeout(), conn.getMaxTimeout());
+
         param.getOtherParams().remove(HttpConnectionImpl.BASE_URL);
         try {
             conn.init(param);
             fail("should throw exception");
         } catch (UndefinedConnectionParameterException e) {
         }
-       
+    }
+
+    public void testGetConnection() throws Exception {
+        HttpConnectionImpl conn = new HttpConnectionImpl();
+        Map otherParams = [:];
+        otherParams.put(HttpConnectionImpl.BASE_URL, "http://www.google.com");
+        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams);
+        conn.init (param);
+
+
+        HttpUtils httpUtils = conn.getHttpConnection();
+        def expectedTimeoutValue = conn.getTimeout();
+        assertEquals (expectedTimeoutValue, httpUtils.getTimeout());
+        assertNotNull(httpUtils.doGetRequest ("http://www.google.com", [:]));
     }
 
     public void testIsConnectionException()

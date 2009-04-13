@@ -64,7 +64,7 @@ public class DomainLockManager
         return lockManager.getAll(owner)
     }
 
-    public static boolean hasLock(Object owner, String lockName)
+    public static boolean hasLock(Object owner, String lockName, int lockLevel)
     {
         return lockManager.hasLock(owner, lockName, WRITE_LOCK);
     }

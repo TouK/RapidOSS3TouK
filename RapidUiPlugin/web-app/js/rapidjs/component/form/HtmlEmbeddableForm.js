@@ -65,6 +65,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     handleSuccess: function(response)
     {
         this.events['submitSuccessful'].fireDirect(response);
+        this.htmlComp.fireSuccessEvent();
         if(this.useDefaultButtons)
         {
             if (this.htmlComp.popupWindow) {

@@ -56,7 +56,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         }
     },
 
-
+    fireSuccessEvent:function()
+    {
+       this.events["success"].fireDirect(this);
+    },
     processSuccess : function(response){
         YAHOO.rapidjs.ErrorManager.serverUp();
         try
@@ -69,7 +72,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
             }
             else if(YAHOO.rapidjs.Connect.containsError(response) == false)
             {
-                this.events["success"].fireDirect(this);
+                this.fireSuccessEvent();
                 this.handleSuccess(response);
             }
             else

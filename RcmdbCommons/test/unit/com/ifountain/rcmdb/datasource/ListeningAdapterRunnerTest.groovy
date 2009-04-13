@@ -11,6 +11,8 @@ import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.execution.ExecutionContextManager
+import junit.framework.Test
+import junit.framework.TestSuite
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,7 +22,6 @@ import com.ifountain.rcmdb.execution.ExecutionContextManager
 * To change this template use File | Settings | File Templates.
 */
 class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
-    public static Object stateWaitLock = new Object();
     GroovyClassLoader gcl = null;
     def static base_directory = "../testoutput/";
 
@@ -103,25 +104,25 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
     private CmdbScript createScriptForStateMechanism() {
         def code = """
         import ${DataStore.name};
-        import ${ListeningAdapterRunnerTest.name};
+        stateWaitLock = DataStore.get("stateWaitLock")
         def init(){
             println "scriptForStateMechanism: starting init ${new Date()}"
-            synchronized(ListeningAdapterRunnerTest.stateWaitLock){
-                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+            synchronized(stateWaitLock){
+                 stateWaitLock.wait(1000);
             }
             println "scriptForStateMechanism: init done ${new Date()}"
         }
         def cleanUp(){
             println "scriptForStateMechanism: starting cleanUp ${new Date()}"
-             synchronized(ListeningAdapterRunnerTest.stateWaitLock){
-                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+             synchronized(stateWaitLock){
+                 stateWaitLock.wait(1000);
             }
             println "scriptForStateMechanism: cleanUp done ${new Date()}"
         }
         def getParameters(){
             println "scriptForStateMechanism: starting getParameters ${new Date()}"
-            synchronized(ListeningAdapterRunnerTest.stateWaitLock){
-                 ListeningAdapterRunnerTest.stateWaitLock.wait(1000);
+            synchronized(stateWaitLock){
+                 stateWaitLock.wait(1000);
             }
             println "scriptForStateMechanism: getParameters done ${new Date()}"
             return [:]
@@ -340,6 +341,8 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
 
     public void testStateMechanism()
     {
+        def stateWaitLock = new Object();
+        DataStore.put("stateWaitLock", stateWaitLock)
         def ds = new RunnerBaseListeningDatasourceMock(id: 1);
         def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningScript = createScriptForStateMechanism();

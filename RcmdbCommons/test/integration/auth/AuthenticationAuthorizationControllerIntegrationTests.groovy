@@ -54,14 +54,25 @@ class AuthenticationAuthorizationControllerIntegrationTests extends RapidCmdbInt
 
     private createUser(String username, String userPassword)
     {
+        def grName = "gr1";
+        def groupController = new GroupController();
+        IntegrationTestUtils.resetController (groupController);
+        groupController.params["name"] = grName
+        groupController.save();
+        def group = Group.get(name:grName);
+        assertNotNull (group);
+        
         def userController = new RsUserController();
         IntegrationTestUtils.resetController (userController);
+
         userController.params["username"] = username
         userController.params["password1"] = userPassword
         userController.params["password2"] = userPassword
+        userController.params["groups"] = String.valueOf(group.id)
+        userController.params["groups.id"] = String.valueOf(group.id)
         userController.save();
-        def rsUser = RsUser.get(username:username).update(groups:[]);
-        assertFalse (rsUser.hasErrors());
+        def rsUser = RsUser.get(username:username);
+        assertNotNull(rsUser);
         return rsUser;
     }
 

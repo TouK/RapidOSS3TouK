@@ -1,6 +1,8 @@
 package com.ifountain.rcmdb.execution
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -80,27 +82,54 @@ class ExecutionContextManagerTest extends RapidCmdbTestCase {
         ExecutionContext t1ExecutionContext;
         ExecutionContext t1ExecutionContextAfterExecutingT2;
         ExecutionContext t2ExecutionContext;
+        def t2WaitLock = new Object();
         def param3Value = "newValueFromThread2"
+        Thread t2 = null;
+        def thread2State = -1;
+        def numberOfContextsInStackInThread2 = -1;
         Thread t1 = Thread.start {
             t1ExecutionContext = manager.startExecutionContext(t1ContextProps);
-            Thread t2 = Thread.start {
+            t2 = Thread.start {
                 t2ExecutionContext = manager.getExecutionContext();
-                t2ExecutionContext.param3 = param3Value
-                manager.endExecutionContext(); //this should not affect parent context
+                numberOfContextsInStackInThread2 = manager.getNumberOfContexts();
+                synchronized (t2WaitLock)
+                {
+                    thread2State = 0;
+                    t2WaitLock.wait ();
+                }
+                thread2State = 1;
+                try{
+                    t2ExecutionContext.param3 = param3Value
+                    manager.endExecutionContext(); //this should not affect parent context
+                    thread2State = 2;
+                }
+                catch(e)
+                {
+                    thread2State = 3;
+                }
             }
-            t2.join();
+            CommonTestUtils.waitFor (new ClosureWaitAction(){
+                assertEquals (0, thread2State);
+            })
             t1ExecutionContextAfterExecutingT2 = manager.getExecutionContext();
+            manager.endExecutionContext();
         }
         t1.join();
+        synchronized (t2WaitLock)
+        {
+            t2WaitLock.notifyAll();
+        }
+        t2.join ();
+        assertEquals (2, thread2State);
+        assertEquals (1, numberOfContextsInStackInThread2);
         assertSame("t1 stack should be seperated from child stack", t1ExecutionContext, t1ExecutionContextAfterExecutingT2);
         t1ContextProps.each {String propName, Object value ->
             assertEquals(value, t1ExecutionContext[propName])
             assertEquals(value, t2ExecutionContext[propName])
         }
-        assertEquals("Parent context should be affected", param3Value, t1ExecutionContext.param3);
+        assertNull("Parent context should not be affected", t1ExecutionContext.param3);
         assertEquals(param3Value, t2ExecutionContext.param3);
     }
-
     public void testChildThreadsWithParentWhichDoesNotHaveAnyContexs()
     {
         ExecutionContextManager manager = new ExecutionContextManager();

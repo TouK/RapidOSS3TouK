@@ -48,6 +48,11 @@ class ExecutionContextManager {
     {
         return contextStack.get().pop();
     }
+
+    protected synchronized int getNumberOfContexts()
+    {
+        return contextStack.get().size();
+    }
     public synchronized ExecutionContext startExecutionContext(Map contextParameters)
     {
         ExecutionContext newContext = new ExecutionContext();
@@ -67,15 +72,17 @@ class ExecutionContextThreadLock<T> extends InheritableThreadLocal {
     protected Object initialValue() {
         return new Stack<ExecutionContext>(); //To change body of overridden methods use File | Settings | File Templates.
     }
-
     protected Object childValue(Object parentValue) {
+        Stack<ExecutionContext> stck = new Stack<ExecutionContext>()
         Stack<ExecutionContext> parentStack = (Stack<ExecutionContext>) parentValue;
         try {
             ExecutionContext topContext = parentStack.peek();
-            get().push(topContext);
+            ExecutionContext newContext = new ExecutionContext(topContext);
+            stck.push(newContext);
+
         }
         catch (java.util.EmptyStackException e) {/*ignore*/}
-        return get();
+        return stck;
     }
 
 }

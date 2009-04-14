@@ -94,6 +94,7 @@ runTestBuild() {
     echo HYPERIC=true >> $optionsFile
     echo NETCOOL=true >> $optionsFile
     echo SMARTS=true >> $optionsFile
+    echo JIRA=true >> $optionsFile
     echo E_WINDOWS=false >> $optionsFile
     echo E_UNIX=false >> $optionsFile
     echo TEST=true >> $optionsFile

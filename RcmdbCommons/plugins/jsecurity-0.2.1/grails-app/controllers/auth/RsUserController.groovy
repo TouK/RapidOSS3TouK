@@ -181,7 +181,7 @@ class RsUserController {
                 return;
             }
             if (password1 && password1 != "") {
-                params.passwordHash = new Sha1Hash(password1).toHex();
+                returnedProps.passwordHash = new Sha1Hash(password1).toHex();
             }
             if (returnedProps.groups.isEmpty())
             {

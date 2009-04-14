@@ -76,4 +76,10 @@ assert device122.currentState() == CRITICAL
 assert serv12.currentState() == CRITICAL
 assert cust1.currentState() == CRITICAL
 
+event1221.clear();
+assert device122.currentState() == NORMAL
+assert serv12.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
+
+
 return "success"

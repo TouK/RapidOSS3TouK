@@ -53,7 +53,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void initializeModels(classes)
     {
-        initialize([CmdbScript,RsTopologyObject,RsCustomer,RsEvent,RsGroup,RsService,RsObjectState,relation.Relation,RsInMaintenance], []);
+        initialize([CmdbScript,RsTopologyObject,RsCustomer,RsEvent,RsGroup,RsService,RsObjectState,relation.Relation,RsInMaintenance,RsEventJournal,RsHistoricalEvent], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,classes.RsTopologyObjectOperations);
@@ -61,6 +61,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsCustomer,classes.RsCustomerOperations);
         CompassForTests.addOperationSupport (RsService,classes.RsServiceOperations);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
+        CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
    }
     public File getOperationPathAsFile(opdir,opfile)
     {

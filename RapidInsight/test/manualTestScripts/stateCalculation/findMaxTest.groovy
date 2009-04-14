@@ -94,4 +94,11 @@ assert device122.currentState() == WARNING
 assert serv12.currentState() == WARNING
 assert cust1.currentState() == WARNING
 
+event1221.clear()
+assert device122.currentState() == NORMAL
+assert serv12.currentState() == NORMAL
+assert cust1.currentState() == NORMAL
+
+
+
 return "success"

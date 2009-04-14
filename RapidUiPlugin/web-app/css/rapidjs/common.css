@@ -116,6 +116,15 @@
     color: #424973;
 }
 
+.rcmdb-html-body .button-group span.default {
+    background-position:0 -1400px;
+    border-color:#304369;    
+}
+
+.rcmdb-html-body .button-group span.default button {
+    color:#FFFFFF;
+}
+
 #yui-history-iframe {
     position: absolute;
     top: 0;

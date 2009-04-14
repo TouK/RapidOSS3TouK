@@ -50,14 +50,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
 
         if (this.iframe == true)
         {
-            this.body = dh.append(wrp, {tag: 'iframe', frameborder:0, scrolling:"no", height:this.height - this.header.offsetHeight, width:this.width }, true);
+            this.body = dh.append(wrp, {tag: 'iframe',cls:'rcmdb-html-body', frameborder:0, scrolling:"no", height:this.height - this.header.offsetHeight, width:this.width }, true);
         }
         else
         {
             this.mask = dh.append(wrp, {tag:'div', cls:'rcmdb-form-mask'}, true);
             this.maskMessage = dh.append(wrp, {tag:'div', cls:'rcmdb-form-mask-loadingwrp', html:'<div class="rcmdb-form-mask-loading">Loading...</div>'}, true)
             this.hideMask();
-            this.body = dh.append(wrp, {tag:'div', style:'overflow:auto'}, true);
+            this.body = dh.append(wrp, {tag:'div', cls:'rcmdb-html-body',style:'overflow:auto'}, true);
         }
     },
     inPopupWindow: function() {

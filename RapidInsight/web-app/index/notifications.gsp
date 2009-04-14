@@ -54,10 +54,10 @@ deleteVisible="params.data.nodeType =='rule'"
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage4448Visible="params.data.nodeType == 'group'"
+rootImage4589Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage4448Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage4589Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
@@ -65,10 +65,10 @@ rootImage4448Visible="params.data.nodeType == 'group'"
 <rui:html id="ruleContent" iframe="false"  timeout="30"></rui:html>
 
 <%
-functionActionCondition4458Condition=""
+functionActionCondition4599Condition="params.data.nodeType=='rule'"
 %>
 
-<rui:action id="ruleUpdateAction" type="function" function="show" componentId='ruleContent' 
+<rui:action id="ruleUpdateAction" type="function" function="show" componentId='ruleContent' condition="$functionActionCondition4599Condition"
 
 >
     
@@ -79,7 +79,7 @@ functionActionCondition4458Condition=""
 </rui:action>
 
 <%
-requestActionCondition4468Condition=""
+requestActionCondition4609Condition=""
 %>
 
 <rui:action id="ruleDisableAction" type="request" url="../rsMessageRule/disableRule" components="${['ruleTree']}" 
@@ -88,15 +88,15 @@ requestActionCondition4468Condition=""
     
 >
     <%
-parameter4471Visible="params.data.id"
+parameter4612Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4471Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter4612Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition4477Condition=""
+requestActionCondition4618Condition=""
 %>
 
 <rui:action id="ruleEnableAction" type="request" url="../rsMessageRule/enableRule" components="${['ruleContent']}" 
@@ -105,32 +105,32 @@ requestActionCondition4477Condition=""
     
 >
     <%
-parameter4480Visible="params.data.id"
+parameter4621Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4480Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter4621Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-requestActionCondition4486Condition="confirm('Are you sure to delete the Rule with Search Query: '+params.data.name)"
+requestActionCondition4627Condition="confirm('Are you sure to delete the Rule with Search Query: '+params.data.name)"
 %>
 
-<rui:action id="ruleDeleteAction" type="request" url="../rsMessageRule/delete" components="${['ruleTree']}" condition="$requestActionCondition4486Condition"
+<rui:action id="ruleDeleteAction" type="request" url="../rsMessageRule/delete" components="${['ruleTree']}" condition="$requestActionCondition4627Condition"
 
         onSuccess="${['ruleContentPoll','ruleTreePoll']}"
     
 >
     <%
-parameter4489Visible="params.data.id"
+parameter4630Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4489Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter4630Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-functionActionCondition4495Condition=""
+functionActionCondition4636Condition=""
 %>
 
 <rui:action id="ruleContentPoll" type="function" function="show" componentId='ruleContent' 
@@ -144,7 +144,7 @@ functionActionCondition4495Condition=""
 </rui:action>
 
 <%
-functionActionCondition4505Condition=""
+functionActionCondition4646Condition=""
 %>
 
 <rui:action id="ruleTreePoll" type="function" function="poll" componentId='ruleTree' 
@@ -166,13 +166,13 @@ functionActionCondition4505Condition=""
         
 
 
-    <rui:innerLayout id="4434">
+    <rui:innerLayout id="4575">
         
-            <rui:layoutUnit position='center' gutter='0px' id='4517' isActive='true' scroll='false' useShim='false' component='ruleContent'>
+            <rui:layoutUnit position='center' gutter='0px' id='4658' isActive='true' scroll='false' useShim='false' component='ruleContent'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4520' isActive='true' resize='false' scroll='false' useShim='false' width='500' component='ruleTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='4661' isActive='true' resize='false' scroll='false' useShim='false' width='500' component='ruleTree'>
         
             </rui:layoutUnit>
         

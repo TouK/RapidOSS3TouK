@@ -1,18 +1,16 @@
 package com.ifountain.rcmdb.datasource
 
+import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import datasource.BaseListeningDatasource
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.Logger
 import script.CmdbScript
 import script.CmdbScriptOperations
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import com.ifountain.rcmdb.execution.ExecutionContextManager
-import junit.framework.Test
-import junit.framework.TestSuite
 
 /**
 * Created by IntelliJ IDEA.

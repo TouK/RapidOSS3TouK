@@ -124,7 +124,7 @@ class GroupController {
     }
 
     def save = {
-        def group = Group.add(ControllerUtils.getClassProperties(params, Group))
+        def group = Group.addUnique(ControllerUtils.getClassProperties(params, Group))
         if (!group.hasErrors()) {
             flash.message = "Group ${group.id} created"
             redirect(action: show, id: group.id)

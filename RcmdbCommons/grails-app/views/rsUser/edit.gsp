@@ -12,19 +12,7 @@
 </div>
 <div class="body">
     <h1>Edit User</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${flash.errors}">
-        <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${rsUser}">
-        <div class="errors">
-            <g:renderErrors bean="${rsUser}" as="list"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[rsUser]]"></g:render>
     <g:form method="post">
         <input type="hidden" name="id" value="${rsUser?.id}"/>
         <div class="dialog">
@@ -74,7 +62,7 @@
                     </tr>
                     <tr>
                         <td valign="top" class="name" colspan="2">
-                            <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:rsUser?.groups]"></g:render>
+                            <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:userGroups]"></g:render>
                         </td>
                     </tr>
                     

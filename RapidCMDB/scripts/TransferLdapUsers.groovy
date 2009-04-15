@@ -124,7 +124,7 @@ try{
                 def userInformation=LdapUserInformation.add(userdn:userdn,ldapConnection:ldapConnection)
                 try {
                     
-                    def rsUser = RsUser.createUser([username: username, passwordHash:"",userInformation:userInformation],[localGroupName])
+                    def rsUser = RsUser.addUser([username: username, passwordHash:"",userInformation:userInformation],[localGroupName])
                     if (!rsUser.hasErrors()) {
                         output+= "<br>User ${rsUser.username} created"
 

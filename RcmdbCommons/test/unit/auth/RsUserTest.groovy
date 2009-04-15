@@ -1,7 +1,9 @@
 package auth
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.exception.MessageSourceException
 
 /**
  * Created by IntelliJ IDEA.
@@ -10,155 +12,244 @@ import com.ifountain.rcmdb.test.util.CompassForTests
  * Time: 3:35:57 PM
  * To change this template use File | Settings | File Templates.
  */
-class RsUserTest extends RapidCmdbTestCase{
-    public void testCreateUser()
-    {
-        CompassForTests.initialize ([RsUser, Group]);
+class RsUserTest extends RapidCmdbWithCompassTestCase{
+     public void setUp() {
+        super.setUp();
+        initialize([RsUser,Group], []);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
-
-        def userShouldBeReturned = new RsUser();
-        CompassForTests.addOperationData.setObjectsWillBeReturned([userShouldBeReturned]);
-        def userProps = [username:"user1", passwordHash:"password"];
-        RsUser user = RsUser.createUser(userProps);
-
-        assertSame (userShouldBeReturned, user);
-        assertEquals(1, CompassForTests.addOperationData.getParams(RsUser).size());
-        assertEquals (userProps, CompassForTests.addOperationData.getParams(RsUser)[0]);
+        CompassForTests.addOperationSupport (Group, GroupOperations);
     }
 
-    public void testCreateUserWithGroups()
-    {
-        CompassForTests.initialize ([RsUser, Group]);
-        CompassForTests.addOperationSupport (RsUser, RsUserOperations);
+    public void tearDown() {
 
-        def userShouldBeReturned = new RsUser();
-        def groupShouldBeReturned1 = new Group(name:"group1");
-        def groupShouldBeReturned2 = new Group(name:"group2");
-
-        CompassForTests.addOperationData.setObjectsWillBeReturned([userShouldBeReturned]);
-        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned1, groupShouldBeReturned2]);
-        def userProps = [username:"user1", passwordHash:"password"];
-        def groupsToBeAdded = ["group1", groupShouldBeReturned2]
-        RsUser user = RsUser.createUser(userProps, groupsToBeAdded);
-
-        assertSame (userShouldBeReturned, user);
-        def addMethodParams = CompassForTests.addOperationData.getParams(RsUser);
-        assertEquals(1, addMethodParams.size());
-        userProps.each{String propName, Object propValue->
-            assertEquals (addMethodParams[0][propName], propValue);
-        }
-
-        assertEquals (2, addMethodParams[0].groups.size())
-        assertSame(groupShouldBeReturned1, addMethodParams[0].groups[0])
-        assertSame(groupShouldBeReturned2, addMethodParams[0].groups[1])
-
-        def getMethodParams = CompassForTests.getOperationData.getParams(Group);
-        assertEquals(2, getMethodParams.size());
-        assertEquals (groupsToBeAdded[0], getMethodParams[0].name)
-        assertEquals (groupsToBeAdded[1].name, getMethodParams[1].name)
+        super.tearDown();
     }
 
 
-    
-    public void testCreateUserThrowsExceptionIfGroupDoesNotExist()
+    public void testAddUser()
     {
-        CompassForTests.initialize ([RsUser, Group]);
-        CompassForTests.addOperationSupport (RsUser, RsUserOperations);
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+        
+        def userProps = [username:"user1", password:"password",groups:[group1,group2]];
+        RsUser user = RsUser.addUser(userProps);
 
-        def userShouldBeReturned = new RsUser();
+        assertFalse(user.hasErrors());
+        assertEquals(userProps.username,user.username);
+        assertEquals(RsUser.hashPassword(userProps.password),user.passwordHash)
 
-        CompassForTests.addOperationData.setObjectsWillBeReturned([userShouldBeReturned]);
-        def userProps = [username:"user1", passwordHash:"password"];
+
+        assertEquals (2, user.groups.size())
+        assertEquals(group1.id, user.groups[0].id)
+        assertEquals(group2.id, user.groups[1].id)
+    }
+    public void testAddUserHasErrorIfUserAlreadyExists()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+
+        def userProps = [username:"user1", password:"password",groups:[group1,group2]];
+        RsUser user = RsUser.addUser(userProps);
+        assertFalse(user.hasErrors());
+        assertEquals (2, user.groups.size())
+        assertEquals(1,RsUser.list().size());
+
+        RsUser user2 = RsUser.addUser(userProps);
+        assertTrue(user2.hasErrors());
+        assertEquals(1,RsUser.list().size());
+
+    }
+    public void testAddUserWithGroupList()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+
+        def userProps = [username:"user1", password:"password"];
+        def groupsToBeAdded = ["group1", group2]
+        RsUser user = RsUser.addUser(userProps, groupsToBeAdded);
+        assertFalse(user.hasErrors());
+
+        assertEquals(userProps.username,user.username);
+        assertEquals(RsUser.hashPassword(userProps.password),user.passwordHash)
+
+
+        assertEquals (2, user.groups.size())
+        assertEquals(group1.id, user.groups[0].id)
+        assertEquals(group2.id, user.groups[1].id)
+
+    }
+    public void testAddUserWithGroupListThrowsExceptionIfGroupDoesNotExist()
+    {
+
+        def userProps = [username:"user1", password:"password"];
         def groupsToBeCreated = ["group1"]
         try
         {
-            RsUser.createUser(userProps, groupsToBeCreated);
+            RsUser.addUser(userProps, groupsToBeCreated);
             fail("Should throw exception");
         }
         catch(Exception e)
         {
 
         }
+        assertEquals(0,RsUser.list().size())
     }
 
-    public void testCreateUserThrowsExceptionIfParamsIsNull()
+    public void testAddUserThrowsExceptionIfGroupsEmptyOrNull()
     {
-        CompassForTests.initialize ([RsUser, Group]);
-        CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         try
         {
-            RsUser.createUser(null);
+            def userProps = [username:"user1", password:"password"];
+            RsUser.addUser(userProps);
             fail("Should throw exception");
         }
-        catch(Exception e)
+        catch(MessageSourceException e)
         {
-            assertEquals ("No user props specified", e.getMessage());
+            assertEquals ("no.group.specified", e.getCode());
         }
+        assertEquals(0,RsUser.list().size())
 
         try
         {
-            RsUser.createUser(null, []);
+            def userProps = [username:"user1", password:"password",groups:[]];
+            RsUser.addUser(userProps);
             fail("Should throw exception");
         }
-        catch(Exception e)
+        catch(MessageSourceException e)
         {
-            assertEquals ("No user props specified", e.getMessage());
+            assertEquals ("no.group.specified", e.getCode());
         }
+        assertEquals(0,RsUser.list().size())
+
+        try
+        {
+            def userProps = [username:"user1", password:"password"];
+            RsUser.addUser(userProps,[]);
+            fail("Should throw exception");
+        }
+        catch(MessageSourceException e)
+        {
+            assertEquals ("no.group.specified", e.getCode());
+        }
+        assertEquals(0,RsUser.list().size())
     }
 
-    public void testAddToGroups()
+      public void testUpdateUser()
     {
-        CompassForTests.initialize ([RsUser, Group]);
-        CompassForTests.addOperationSupport (RsUser, RsUserOperations);
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
 
-        def userShouldBeReturned = new RsUser();
-        def groupShouldBeReturned1 = new Group(name:"group1");
-        def groupShouldBeReturned2 = new Group(name:"group2");
+        def userProps = [username:"user1", password:"password",groups:[group1]];
+        RsUser user = RsUser.addUser(userProps);
 
-        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned1, groupShouldBeReturned2]);
-        def userProps = [username:"user1", passwordHash:"password"];
-        def groupsToBeAdded = [groupShouldBeReturned1.name, groupShouldBeReturned2]
-        userShouldBeReturned.addToGroups(groupsToBeAdded);
+        assertFalse(user.hasErrors());
 
-        def addRelMethodParams = CompassForTests.addRelationOperationData.getParams(RsUser);
-        assertEquals(1, addRelMethodParams.size());
-        assertEquals(1, addRelMethodParams[0].size());
-        assertEquals(2, addRelMethodParams[0].groups.size());
-        assertEquals (groupShouldBeReturned1.name, addRelMethodParams[0].groups[0].name)
-        assertEquals (groupShouldBeReturned2.name, addRelMethodParams[0].groups[1].name)
+        assertEquals (1, user.groups.size());
 
-        def getMethodParams = CompassForTests.getOperationData.getParams(Group);
-        assertEquals(2, getMethodParams.size());
-        assertEquals (groupsToBeAdded[0], getMethodParams[0].name)
-        assertEquals (groupsToBeAdded[1].name, getMethodParams[1].name)
+        //update all props
+        user=RsUser.get(id:user.id);
+        def updateProps=[username:"user2",password:"password2",groups:[group1,group2]];
+        RsUser updatedUser=RsUser.updateUser(user,updateProps);
+        assertFalse(updatedUser.hasErrors());
+        assertEquals(1,RsUser.list().size());
+
+        assertEquals(updateProps.username,updatedUser.username);
+        assertEquals(RsUser.hashPassword(updateProps.password),updatedUser.passwordHash);
+
+        assertEquals (2, updatedUser.groups.size())
+        assertEquals(group1.id, updatedUser.groups[0].id);
+        assertEquals(group2.id, updatedUser.groups[1].id);
+
+        //update only password
+        user=RsUser.get(id:user.id);
+        updateProps=[password:"password55"];
+        updatedUser=RsUser.updateUser(user,updateProps);
+        assertFalse(updatedUser.hasErrors());
+        assertEquals(user.username,updatedUser.username);
+        assertEquals(RsUser.hashPassword(updateProps.password),updatedUser.passwordHash);
+        assertEquals (2, updatedUser.groups.size())
+
+        //update only username
+        user=RsUser.get(id:user.id);
+        updateProps=[username:"testuser"];
+        updatedUser=RsUser.updateUser(user,updateProps);
+        assertFalse(updatedUser.hasErrors());
+        assertEquals(updateProps.username,updatedUser.username);
+        assertEquals(user.passwordHash,updatedUser.passwordHash);
+        assertEquals (2, updatedUser.groups.size())
+
+        //update only groups
+        user=RsUser.get(id:user.id);
+        updateProps=[groups:[group2]];
+        updatedUser=RsUser.updateUser(user,updateProps);
+        assertFalse(updatedUser.hasErrors());
+        assertEquals(user.username,updatedUser.username);
+        assertEquals(user.passwordHash,updatedUser.passwordHash);
+        assertEquals (1, updatedUser.groups.size())
+        assertEquals (group2.id, updatedUser.groups[0].id)
+
+
     }
-
-    public void testRemoveFromGroups()
+    public void testUpdateUserThrowsExceptionIfGroupsEmpty()
     {
-        CompassForTests.initialize ([RsUser, Group]);
-        CompassForTests.addOperationSupport (RsUser, RsUserOperations);
+        def group1=Group.add(name:"gr1");
+        def userProps = [username:"user1", password:"password",groups:[group1]];
+        def user=RsUser.addUser(userProps);
+        assertEquals(1,RsUser.list().size())
 
-        def userShouldBeReturned = new RsUser();
-        def groupShouldBeReturned1 = new Group(name:"group1");
-        def groupShouldBeReturned2 = new Group(name:"group2");
+        try
+        {
+            def updateProps=[groups:[]]
+            def updatedUser=RsUser.updateUser(user,updateProps);
 
-        CompassForTests.getOperationData.setObjectsWillBeReturned([groupShouldBeReturned1, groupShouldBeReturned2]);
-        def userProps = [username:"user1", passwordHash:"password"];
-        def groupsToBeRemoved = [groupShouldBeReturned1.name, groupShouldBeReturned2]
-        userShouldBeReturned.removeFromGroups(groupsToBeRemoved);
+            fail("Should throw exception");
+        }
+        catch(MessageSourceException e)
+        {
+            assertEquals ("no.group.specified", e.getCode());
+        }
+        assertEquals(1,RsUser.list().size())
 
-        def removeRelMethodParams = CompassForTests.removeRelationOperationData.getParams(RsUser);
-        assertEquals(1, removeRelMethodParams.size());
-        assertEquals(1, removeRelMethodParams[0].size());
-        assertEquals(2, removeRelMethodParams[0].groups.size());
-        assertEquals (groupShouldBeReturned1.name, removeRelMethodParams[0].groups[0].name)
-        assertEquals (groupShouldBeReturned2.name, removeRelMethodParams[0].groups[1].name)
-
-        def getMethodParams = CompassForTests.getOperationData.getParams(Group);
-        assertEquals(2, getMethodParams.size());
-        assertEquals (groupsToBeRemoved[0], getMethodParams[0].name)
-        assertEquals (groupsToBeRemoved[1].name, getMethodParams[1].name)
     }
 
+    public void testAddToGroupsAndRemoveFromGroups()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+        def userProps = [username:"user1",passwordHash:"password"];
+        def user=RsUser.add(userProps);
+        assertFalse(user.hasErrors());
+
+        assertEquals(0,user.groups.size());
+
+        def groupsToBeAdded = [group1.name, group2]
+        user.addToGroups(groupsToBeAdded);
+
+        assertEquals (2, user.groups.size())
+        assertEquals(group1.id, user.groups[0].id)
+        assertEquals(group2.id, user.groups[1].id)
+
+        //remove both groups
+        user.removeFromGroups([group1.name, group2]);
+        assertEquals(0,user.groups.size());
+
+        //add again
+        user.addToGroups(groupsToBeAdded);
+        assertEquals (2, user.groups.size())
+        assertEquals(group1.id, user.groups[0].id)
+        assertEquals(group2.id, user.groups[1].id)
+
+        //remove one of group
+        user.removeFromGroups([group2.name]);
+        assertEquals(1,user.groups.size())
+        assertEquals(group1.id, user.groups[0].id)
+
+        //remove the other
+        user.removeFromGroups([group1]);
+        assertEquals(0,user.groups.size())
+    }
 
 }

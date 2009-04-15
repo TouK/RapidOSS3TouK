@@ -61,7 +61,7 @@
                             </tr>
                             <tr>
                                 <td valign="top" class="name" colspan="2">
-                                    <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:rsUser?.groups]"></g:render>
+                                    <g:render template="/common/listToList" model="[id:'groups', inputName:'groups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'User Groups', fromListContent:availableGroups, toListContent:userGroups]"></g:render>
                                 </td>
                             </tr>
                         

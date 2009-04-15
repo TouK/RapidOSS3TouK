@@ -1,29 +1,69 @@
 package auth
+
+import org.jsecurity.crypto.hash.Sha1Hash
+import com.ifountain.rcmdb.exception.MessageSourceException
+
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Dec 17, 2008
- * Time: 3:21:02 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Dec 17, 2008
+* Time: 3:21:02 PM
+* To change this template use File | Settings | File Templates.
+*/
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    public static RsUser createUser(Map params)
-    {
-        return createUser(params, []);
-    }
 
-    public static RsUser createUser(Map params, List groups)
+    public static String hashPassword(password)
     {
-        if(params == null)
+        return  new Sha1Hash(password).toHex();
+    }
+    public boolean isPasswordSame(passwordParam)
+    {
+        return passwordHash==hashPassword(passwordParam);
+    }
+    public static RsUser updateUser(user,params)
+    {
+        if(params.password!=null)
         {
-            throw new Exception("No user props specified");
+            params.passwordHash = hashPassword(params.password);
+        }
+        
+        if (params.groups != null )
+        {
+            if(params.groups.isEmpty())
+            {
+                throw new MessageSourceException("no.group.specified", [] as Object[]);
+            }
         }
 
+        user.update(params);
+    
+
+        return user;
+    }
+    public static RsUser addUser(params)
+    {
+        params.passwordHash = hashPassword(params.password);
+
+        def rsUser=null;
+
+        if (params.groups == null || params.groups.isEmpty())
+        {
+            throw new MessageSourceException("no.group.specified", [] as Object[]);
+        }
+
+        rsUser = RsUser.addUnique(params);
+
+
+        return rsUser;
+    }
+
+    public static RsUser addUser(Map params, List groups)
+    {
         List groupsToBeAssigned = getGroupsFromRepository(groups)
         params["groups"] = groupsToBeAssigned;
-        RsUser rsUser = RsUser.add(params);
-        return rsUser;
+
+        return addUser(params);
     }
 
     private static List getGroupsFromRepository(List groups)
@@ -56,4 +96,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         List groupsToBeAssigned = getGroupsFromRepository(groups)
         removeRelation(groups:groupsToBeAssigned);
     }
+
+
+
 }

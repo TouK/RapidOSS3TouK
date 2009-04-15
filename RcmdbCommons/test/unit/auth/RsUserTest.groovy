@@ -4,6 +4,7 @@ package auth
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.exception.MessageSourceException
+import org.jsecurity.crypto.hash.Sha1Hash
 
 /**
  * Created by IntelliJ IDEA.
@@ -251,5 +252,27 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         user.removeFromGroups([group1]);
         assertEquals(0,user.groups.size())
     }
+
+    public void testPasswordMethods()
+    {
+        def passwordList=["xxx","ab11122","xddvfvfv",""];
+        passwordList.each{ password ->
+            assertEquals(new Sha1Hash(password).toHex(),RsUser.hashPassword());
+        }
+
+        def group1=Group.add(name:"testgr");
+
+        def user=RsUser.addUser(username:"testuser",password:"123",groups:[group1]);
+        assertTrue(user.isPasswordSame("123"));
+        assertFalse(user.isPasswordSame("12"));
+        assertFalse(user.isPasswordSame(""));
+
+        def user2=RsUser.addUser(username:"testuser2",password:"",groups:[group2]);
+        assertTrue(user.isPasswordSame(""));
+        assertFalse(user.isPasswordSame("abc"));
+        assertFalse(user.isPasswordSame("12"));
+    }
+
+
 
 }

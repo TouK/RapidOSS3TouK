@@ -1,7 +1,5 @@
 package com.ifountain.rcmdb.test.util
 
-import com.ifountain.comp.test.util.WaitAction
-
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -9,14 +7,6 @@ import com.ifountain.comp.test.util.WaitAction
 * Time: 11:59:45 AM
 * To change this template use File | Settings | File Templates.
 */
-public class ClosureWaitAction implements WaitAction{
-    Closure closure;
-    public ClosureWaitAction(Closure closure)
-    {
-        this.closure = closure;
-    }
-    public void check() {
-        closure();
-    }
+public class ClosureWaitAction extends com.ifountain.rcmdb.util.ClosureWaitAction{
 
 }

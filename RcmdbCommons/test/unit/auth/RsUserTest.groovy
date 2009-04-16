@@ -257,20 +257,24 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
     {
         def passwordList=["xxx","ab11122","xddvfvfv",""];
         passwordList.each{ password ->
-            assertEquals(new Sha1Hash(password).toHex(),RsUser.hashPassword());
+            assertEquals(new Sha1Hash(password).toHex(),RsUser.hashPassword(password));
         }
 
         def group1=Group.add(name:"testgr");
 
         def user=RsUser.addUser(username:"testuser",password:"123",groups:[group1]);
+        assertFalse(user.hasErrors());
+
         assertTrue(user.isPasswordSame("123"));
         assertFalse(user.isPasswordSame("12"));
         assertFalse(user.isPasswordSame(""));
 
-        def user2=RsUser.addUser(username:"testuser2",password:"",groups:[group2]);
-        assertTrue(user.isPasswordSame(""));
-        assertFalse(user.isPasswordSame("abc"));
-        assertFalse(user.isPasswordSame("12"));
+        def user2=RsUser.addUser(username:"testuser2",password:"",groups:[group1]);
+        assertFalse(user2.hasErrors());
+
+        assertTrue(user2.isPasswordSame(""));
+        assertFalse(user2.isPasswordSame("abc"));
+        assertFalse(user2.isPasswordSame("12"));
     }
 
 

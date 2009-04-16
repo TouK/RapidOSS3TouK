@@ -35,7 +35,7 @@ public class DefaultCompassConfiguration {
                 "compass.engine.store.wrapper.wrapper1.type": "com.ifountain.compass.CompositeDirectoryWrapperProvider",
                 "compass.engine.store.wrapper.wrapper1.awaitTermination": "10000000",
                 "compass.cache.first": "org.compass.core.cache.first.NullFirstLevelCache",
-                "compass.transaction.lockTimeout": "45",
+                "compass.transaction.lockTimeout": "3600",
                 "compass.engine.store.indexDeletionPolicy.type": WrapperIndexDeletionPolicy.name,
                 "compass.engine.queryParser.default.type": RapidLuceneQueryParser.class.name
         ]

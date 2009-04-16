@@ -50,6 +50,7 @@ class Test extends Parent {
             new XmlSlurper().parseText(xmlText)
         }
         catch (e) {
+            println "fixing ${outputXmlFile}"
             def testSuiteString = "</testsuite>"
             if (xmlText.indexOf(testSuiteString)) {
                 xmlText = xmlText.substring(0, xmlText.indexOf(testSuiteString) + testSuiteString.length());

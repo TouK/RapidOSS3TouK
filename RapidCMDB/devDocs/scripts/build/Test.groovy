@@ -44,7 +44,7 @@ class Test extends Parent {
                 ant.formatter(type: "xml");
             }
         }
-        def testResultFile = new File("${outputXmlDir}/${outputXmlFile}");
+        def testResultFile = new File("${outputXmlDir}/${outputXmlFile}.xml");
         def xmlText = testResultFile.getText();
         try {
             new XmlSlurper().parseText(xmlText)
@@ -55,6 +55,7 @@ class Test extends Parent {
                 xmlText = xmlText.substring(0, xmlText.indexOf(testSuiteString) + testSuiteString.length());
                 testResultFile.setText(xmlText);
             }
+
         }
     }
 

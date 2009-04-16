@@ -8,5 +8,8 @@ package com.ifountain.rcmdb.test.util
 * To change this template use File | Settings | File Templates.
 */
 public class ClosureWaitAction extends com.ifountain.rcmdb.util.ClosureWaitAction{
-
+    public ClosureWaitAction(Closure closure)
+    {
+        super(closure);
+    }
 }

@@ -31,6 +31,7 @@ class SearchableConfiguration {
         {
             compassSettings.put("compass.transaction.lockTimeout", System.getProperty("compass.transaction.lockTimeout"));
         }
+        compassSettings.put(org.compass.core.lucene.LuceneEnvironment.LockFactory.TYPE, org.compass.core.lucene.LuceneEnvironment.LockFactory.Type.SINGLE_INSTANCE);
     }
     /**
      * The location of the Compass index

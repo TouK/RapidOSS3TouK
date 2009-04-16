@@ -205,7 +205,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     void tearDown() {
         destroy();
         System.clearProperty("index.dir")
-        super.tearDown();
+        //super.tearDown();
 
     }
 }

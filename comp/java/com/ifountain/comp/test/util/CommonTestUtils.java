@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import junit.framework.AssertionFailedError;
-
+import com.ifountain.comp.utils.*;
 
 
 public class CommonTestUtils
@@ -68,12 +68,12 @@ public class CommonTestUtils
         return testProperties.getProperty(String.valueOf(propertyName), defaultValue).trim();
     }
     
-    public static void waitFor(WaitAction waitAction) throws InterruptedException
+    public static void waitFor(com.ifountain.comp.utils.WaitAction waitAction) throws InterruptedException
     {
     	com.ifountain.comp.utils.SmartWait.waitFor(waitAction);
     }
 
-    public static void waitFor(WaitAction waitAction, int maxNumberOfIterations) throws InterruptedException
+    public static void waitFor(com.ifountain.comp.utils.WaitAction waitAction, int maxNumberOfIterations) throws InterruptedException
     {
     	com.ifountain.comp.utils.SmartWait.waitFor(waitAction, maxNumberOfIterations);
     }

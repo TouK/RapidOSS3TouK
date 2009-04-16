@@ -2,7 +2,6 @@ package com.ifountain.comp.utils;
 
 import junit.framework.AssertionFailedError;
 
-import com.ifountain.comp.test.util.WaitAction;
 
 public class SmartWait {
     public static void waitFor(WaitAction waitAction) throws InterruptedException{

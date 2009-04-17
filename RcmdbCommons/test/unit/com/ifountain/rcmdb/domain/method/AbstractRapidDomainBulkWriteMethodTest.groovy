@@ -43,10 +43,10 @@ class AbstractRapidDomainBulkWriteMethodTest extends RapidCmdbTestCase
 
 
 
-    public void testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull()
-    {
-        AbstractRapidDomainWriteMethodTest._testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull(AbstractRapidDomainBulkWriteMethodImpl);
-    }
+//    public void testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull()
+//    {
+//        AbstractRapidDomainWriteMethodTest._testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull(AbstractRapidDomainBulkWriteMethodImpl);
+//    }
 
 
     public void testSynchronizationWithAThreadRequestingSameLock()

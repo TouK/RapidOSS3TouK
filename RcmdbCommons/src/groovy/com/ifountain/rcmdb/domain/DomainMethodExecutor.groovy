@@ -51,18 +51,16 @@ public class DomainMethodExecutor
     {
         if(!methodExecutorAction.willBeLocked()) return methodExecutorAction.action();
 
-        boolean hasLockPreviously = DomainLockManager.hasLock(owner, methodExecutorAction.getLockName(), methodExecutorAction.lockLevel);
+        boolean hasLockPreviously = DomainLockManager.getLocks(owner).size()  != 0;
         try
         {
-            if (!hasLockPreviously) {
-                DomainLockManager.getLock(methodExecutorAction.lockLevel, owner, methodExecutorAction.getLockName())
-            }
+            DomainLockManager.getLock(methodExecutorAction.lockLevel, owner, methodExecutorAction.getLockName())
             return methodExecutorAction.action();
         }
         finally
         {
             if (!hasLockPreviously) {
-                DomainLockManager.releaseLock(owner, methodExecutorAction.getLockName())
+                DomainLockManager.releaseAllLocks(owner)
             }
         }
     }

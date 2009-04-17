@@ -54,6 +54,10 @@ public class DomainLockManager
         lockManager.lock(owner, lockName, BULK_INDEX_LOCK, GenericLock.COMPATIBILITY_REENTRANT, true, lockTimeout);
     }
 
+    public static void releaseAllLocks(Object owner)
+    {
+        lockManager.releaseAll (owner);
+    }
     public static void releaseLock(Object owner, String lockName)
     {
         lockManager.release(owner, lockName)
@@ -66,7 +70,7 @@ public class DomainLockManager
 
     public static boolean hasLock(Object owner, String lockName, int lockLevel)
     {
-        return lockManager.hasLock(owner, lockName, WRITE_LOCK);
+        return lockManager.hasLock(owner, lockName, lockLevel);
     }
 
     public static void initialize(long lockTimeout, Logger logger)

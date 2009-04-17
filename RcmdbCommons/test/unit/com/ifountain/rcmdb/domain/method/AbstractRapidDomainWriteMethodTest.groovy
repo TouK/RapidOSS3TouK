@@ -10,6 +10,8 @@ import com.ifountain.comp.utils.LoggerUtils
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import junit.framework.TestSuite
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,6 +23,14 @@ import com.ifountain.rcmdb.domain.DomainMethodExecutor
 
 public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 {
+    protected void setUp() {
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DomainMethodExecutor.setMaxNumberOfRetries (1);
+    }
+
+    protected void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+    }
 
     public void testSynchronization()
     {
@@ -43,7 +53,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
     public void testSynchronizationWithAThreadRequestingSameLock()
     {
-        _testSynchronizationWithAThreadRequestingSameLock(AbstractRapidDomainWriteMethodImpl);   
+        _testSynchronizationWithAThreadRequestingSameLock(AbstractRapidDomainWriteMethodImpl);
     }
 
 
@@ -55,47 +65,135 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
     public void testDeadLockDetection()
     {
+        DomainMethodExecutor.setMaxNumberOfRetries (10);
         _testDeadLockDetection(AbstractRapidDomainWriteMethodImpl);
+    }
+
+    public void testWriteWillSuccessfullyProcessTwoSubsequentRequests(){
+        Class modelClass = createModels()[0];
+        def impl1 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        def instance1 = modelClass.newInstance();
+        def instance2 = modelClass.newInstance();
+        instance1["keyProp"] = "keyvalue1"
+        instance2["keyProp"] = "keyvalue2"
+        int thread1State = 0;
+        def t1 = Thread.start {
+            thread1State = 1;
+            impl1.invoke(instance1, null)
+            thread1State = 2;
+        }
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            assertEquals(2, thread1State);
+        });
+
+        int thread2State = 0;
+        def t2 = Thread.start {
+            thread2State = 1;
+            impl1.invoke(instance2, null)
+            thread2State = 2;
+        }
+
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            assertEquals(2, thread2State);
+        });
+    }
+    public void testWriteBelongsToDifferentObjectsWillNotBeBlocked(){
+        Object waitLock = new Object();
+        Class modelClass = createModels()[0];
+        AbstractRapidDomainWriteMethodImpl impl1 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        impl1.closureToBeInvoked ={domainObject, arguments->
+            synchronized (waitLock)
+            {
+                waitLock.wait();
+            }
+        }
+        def impl2 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        def instance1 = modelClass.newInstance();
+        def instance2 = modelClass.newInstance();
+        instance1["keyProp"] = "keyvalue1"
+        instance2["keyProp"] = "keyvalue2"
+        int thread1State = 0;
+        def t1 = Thread.start {
+            thread1State = 1;
+            impl1.invoke(instance1, null)
+            thread1State = 2;
+        }
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            assertEquals(1, thread1State);
+        });
+
+        int thread2State = 0;
+        def t2 = Thread.start {
+            thread2State = 1;
+            impl2.invoke(instance2, null)
+            thread2State = 2;
+        }
+
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            assertEquals(2, thread2State);
+        });
+        synchronized (waitLock)
+        {
+            waitLock.notifyAll();
+        }
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            assertEquals(2, thread1State);
+        });
+
+        t1.join ();
+        t2.join ();
     }
 
     public void testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetries()
     {
         DomainLockManager.initialize(2000, TestLogUtils.log);
+        DomainMethodExecutor.setMaxNumberOfRetries (1);
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
         Class modelClass = createModels()[0];
-        AbstractRapidDomainWriteMethodImpl instance1Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainWriteMethodImpl instance1Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainWriteMethodImpl instance2Request1 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
-        AbstractRapidDomainWriteMethodImpl instance2Request2 = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        def instance1Request1 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        def instance1Request2 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        def instance2Request1 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
+        def instance2Request2 = AbstractRapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
 
+        boolean willBlock1 = true;
+        boolean willBlock2 = true;
         def instance1 = modelClass.newInstance();
         def instance1Clone = modelClass.newInstance();
         def instance2 = modelClass.newInstance();
         def instance2Clone = modelClass.newInstance();
-        instance1["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue1"
-        instance1Clone["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue1"
-        instance2["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue2"
-        instance2Clone["keyProp"] = "testThrowsDeadLockDetectionIfItExceededMaxNumberOfRetrieskeyvalue2"
+        instance1["keyProp"] = "keyvalue1"
+        instance1Clone["keyProp"] = "keyvalue1"
+        instance2["keyProp"] = "keyvalue2"
+        instance2Clone["keyProp"] = "keyvalue2"
         int numberOfExecutionOfInvoke = 0;
         instance1Request1.closureToBeInvoked ={domainObject, arguments->
+            println "REQUEST1 EXECUTING"
             numberOfExecutionOfInvoke++;
-            synchronized (waitLock1)
+            if(willBlock1)
             {
-                waitLock1.wait();
+                synchronized (waitLock1)
+                {
+                    waitLock1.wait();
+                }
             }
+            println "REQUEST1 EXECUTING REQUEST2"
             instance2Request2.invoke(instance2Clone, null)
         }
         instance2Request1.closureToBeInvoked ={domainObject, arguments->
-            synchronized (waitLock2)
+            println "REQUEST2 EXECUTING"
+            if(willBlock2)
             {
-                waitLock2.wait();
+                synchronized (waitLock2)
+                {
+                    waitLock2.wait();
+                }
             }
+            println "REQUEST2 EXECUTING REQUEST1"
             instance1Request2.invoke(instance1Clone, null)
         }
 
-        int maxRetry = 3;
-        DomainMethodExecutor.setMaxNumberOfRetries(maxRetry);
+
 
         def thread1State = 0;
         def t1 = Thread.start {
@@ -110,76 +208,37 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
                 thread1State = 3;
             }
         }
-        println "STARTED THREAD "+ t1
-
-
-
-        for(int i=0; i < maxRetry; i++)
+        int thread2State = 0;
+        def t2 = Thread.start {
+            thread2State = 1;
+            try
+            {
+                instance2Request1.invoke(instance2, null)
+                thread2State = 2;
+            }
+            catch(org.apache.commons.transaction.locking.LockException ex)
+            {
+                thread2State = 3;
+            }
+        }
+        Thread.sleep(300);
+        assertEquals(1, thread1State);
+        assertEquals(1, thread2State);
+        synchronized (waitLock1)
         {
-            println "NUMBEROF RETRY:"+i;
-            int numberOfRetriesToFindNumberOfExecution = 0;
-            while(numberOfExecutionOfInvoke != i+1 && numberOfRetriesToFindNumberOfExecution < 1000)
-            {
-                Thread.sleep (1);
-                numberOfRetriesToFindNumberOfExecution++;
-            }
-            assertEquals (i+1, numberOfExecutionOfInvoke);
-            int thread2State = 0;
-            def t2 = Thread.start {
-                thread2State = 1;
-                try
-                {
-                    instance2Request1.invoke(instance2, null)
-                    thread2State = 2;
-                }
-                catch(Throwable ex)
-                {
-                    thread2State = 3;
-                }
-            }
-            println "STARTED THREAD "+ t2
-            Thread.sleep(300);
-            assertEquals(1, thread1State);
-            assertEquals(1, thread2State);
-            synchronized (waitLock1)
-            {
-                waitLock1.notifyAll();
-            }
-            Thread.sleep(200);
+            waitLock1.notifyAll();
+        }
+        willBlock1 = false;
+        Thread.sleep(100);
 
-            synchronized (waitLock2)
-            {
-                waitLock2.notifyAll();
-            }
-            Thread.sleep(1800);
-            if(i != maxRetry-1)
-            {
-                assertEquals(1, thread1State);
-            }
-            else
-            {
-                assertEquals(3, thread1State);    
-            }
-            int thread2StateCheckCount = 0;
-            while(thread2StateCheckCount < 20)
-            {
-                thread2StateCheckCount++;
-                synchronized (waitLock2)
-                {
-                    waitLock2.notifyAll();
-                }
-                Thread.sleep(300);
-                if(thread2State == 2)
-                {
-                    break;
-                }
-            }
-
-            assertTrue("Thread2 state should be 2 after deadlock detection", thread2StateCheckCount < 8);
-            t2.join ();
+        synchronized (waitLock2)
+        {
+            waitLock2.notifyAll();
         }
         Thread.sleep(500);
-        assertEquals(3, thread1State);
+        assertTrue(thread1State == 2 && thread2State == 3 || thread1State == 3 && thread2State == 2 );
+        t1.join ();
+        t2.join ();
     }
 
     public void testGetLockName()
@@ -194,7 +253,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         GroovyClassLoader gcl = new GroovyClassLoader();
         gcl.parseClass(modelString);
         Class modelClass = gcl.loadClass(modelName);
-        
+
         modelClass.metaClass.keySet = {
             return [new RapidDomainClassProperty(name:"keyProp")];
         }
@@ -281,6 +340,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         Thread.sleep(400);
         assertEquals(2, thread2State);
         assertEquals(2, thread1State);
+        t1.join ();
+        t2.join ();
     }
     public static void _testThrowsExceptionReleasesLockIfExceptionOccursInActions(Class rapidDomainWriteMethodImpl)
     {
@@ -332,6 +393,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         Thread.sleep(400);
         assertEquals(2, thread2State);
         assertEquals(3, thread1State);
+        t1.join ();
+        t2.join ();
     }
     public static void _testSynchronizationWillNotBeAppliedToMethodsReturningLockKeyAsNull(Class rapidDomainWriteMethodImpl)
     {
@@ -345,7 +408,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             }
         }
         def impl2 = rapidDomainWriteMethodImpl.newInstance(modelClass.metaClass);
-        impl2.lockKeyClosure = {
+        impl2.lockKeyClosure = {object, args->
             return null;
         }
 
@@ -371,6 +434,12 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
         Thread.sleep(400);
         assertEquals(2, thread2State);
+        synchronized (waitLock)
+        {
+            waitLock.notifyAll();
+        }
+        t1.join ();
+        t2.join ();
     }
     public static void _testSynchronizationWithAThreadRequestingSameLock(Class rapidDomainWriteMethodImpl)
     {
@@ -421,6 +490,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
         assertEquals(2, thread1State);
         assertEquals(2, thread2State);
+        t1.join ();
+        t2.join ();
     }
     public static void _testTimeoutMechanismWithoutDeadLock(Class rapidDomainWriteMethodImpl)
     {
@@ -469,6 +540,12 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         Thread.sleep(3000);
         assertEquals(1, thread1State);
         assertEquals(3, thread2State);
+        synchronized (waitLock)
+        {
+            waitLock.notifyAll();
+        }
+        t1.join ();
+        t2.join ();
     }
     public static void _testDeadLockDetection(Class rapidDomainWriteMethodImpl)
     {
@@ -491,10 +568,10 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         instance1Clone["keyProp"] = "keyvalue1"
         instance2["keyProp"] = "keyvalue2"
         instance2Clone["keyProp"] = "keyvalue2"
-        int numberOfExecutionOfInvoke = 0;
+        int numberOfExecutionOfInvokeOfInstance1 = 0;
         instance1Request1.closureToBeInvoked ={domainObject, arguments->
             println "REQUEST1 EXECUTING"
-            numberOfExecutionOfInvoke++;
+            numberOfExecutionOfInvokeOfInstance1++;
             if(willBlock1)
             {
                 synchronized (waitLock1)
@@ -505,8 +582,10 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             println "REQUEST1 EXECUTING REQUEST2"
             instance2Request2.invoke(instance2Clone, null)
         }
+        int numberOfExecutionOfInvokeOfInstance2 = 0;
         instance2Request1.closureToBeInvoked ={domainObject, arguments->
             println "REQUEST2 EXECUTING"
+            numberOfExecutionOfInvokeOfInstance2++;
             if(willBlock2)
             {
                 synchronized (waitLock2)
@@ -526,10 +605,12 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             try
             {
                 instance1Request1.invoke(instance1, null)
+                println "finished t1"
                 thread1State = 2;
             }
             catch(Exception e)
             {
+                e.printStackTrace();
                 thread1State = 3;
             }
         }
@@ -540,6 +621,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             {
                 instance2Request1.invoke(instance2, null)
                 thread2State = 2;
+                println "finished t2"
             }
             catch(org.apache.commons.transaction.locking.LockException ex)
             {
@@ -552,17 +634,21 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         synchronized (waitLock1)
         {
             waitLock1.notifyAll();
+            willBlock1 = false;
         }
-        willBlock1 = false;
-        Thread.sleep(100);
 
+        Thread.sleep(300);
+
+        assertEquals(1, thread1State);
+        assertEquals(1, thread2State);
         synchronized (waitLock2)
         {
             waitLock2.notifyAll();
         }
+
         Thread.sleep(500);
         assertEquals(2, thread1State);
-        assertEquals(2, numberOfExecutionOfInvoke);
+        assertTrue("One of the threads should be selecetd a deadlock victim and should be executed twice", numberOfExecutionOfInvokeOfInstance1 == 2 || numberOfExecutionOfInvokeOfInstance2 == 2 );
         assertEquals(2, thread2State);
     }
 
@@ -596,8 +682,8 @@ class DummyAbstractRapidDomainMethodImpl extends AbstractRapidDomainWriteMethod
 class AbstractRapidDomainWriteMethodImpl extends AbstractRapidDomainWriteMethod
 {
     def closureToBeInvoked;
-    def lockKeyClosure= {domainObject->
-        return domainObject["keyProp"];        
+    def lockKeyClosure= {domainObject, args->
+        return domainObject["keyProp"];
     }
     def AbstractRapidDomainWriteMethodImpl(mc) {
         super(mc);
@@ -605,7 +691,7 @@ class AbstractRapidDomainWriteMethodImpl extends AbstractRapidDomainWriteMethod
 
     public String getLockName(Object domainObject, Object[] arguments)
     {
-        return lockKeyClosure(domainObject)
+        return lockKeyClosure(domainObject, arguments)
     }
     protected Object _invoke(Object domainObject, Object[] arguments) {
         def res = null;

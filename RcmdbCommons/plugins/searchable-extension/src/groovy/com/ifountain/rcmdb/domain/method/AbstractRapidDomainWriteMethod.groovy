@@ -18,17 +18,13 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
     }
 
     public final Object invoke(Object domainObject, Object[] argumentsp) {
-        def bulkIndexLockClosure = {
-            String lockName = getLockName(domainObject, argumentsp);
-            def executionClosure = {
-                def res = _invoke(domainObject, argumentsp);
-                return res;
-            }
-            def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
-            return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
+        String lockName = getLockName(domainObject, argumentsp);
+        def executionClosure = {
+            def res = _invoke(domainObject, argumentsp);
+            return res;
         }
-        def bulkIndexLockExecutionAction = new DomainMethodExecutorAction(DomainLockManager.BULK_INDEX_CHECK_LOCK, mc.theClass.name, bulkIndexLockClosure);
-        return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), bulkIndexLockExecutionAction)
+        def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
+        return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
     }
 
     public String getLockName(Object domainObject, Object[] arguments) {

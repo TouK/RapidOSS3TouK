@@ -1,2 +1,2 @@
 com.ifountain.compass.integration.CompassTransactionTest
-
+RIManualTestScriptIntegrationTests

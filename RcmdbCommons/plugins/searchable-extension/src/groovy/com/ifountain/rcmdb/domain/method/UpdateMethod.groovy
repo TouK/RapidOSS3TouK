@@ -61,14 +61,22 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         def updatedRelations = [:];
         def relationToBeRemovedMap = [:]
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
+        domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
+        boolean willBeIndexed = false;
+        boolean willRelationsBeIndexed = false;
         props.each{propName,value->
             if(!relations.containsKey(propName))
             {
                 def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-                    updatedPropsOldValues[propName] = domainObject.getProperty(propName);
+                    def propValueBeforeUpdate = domainObject.getProperty(propName);
+                    updatedPropsOldValues[propName] = propValueBeforeUpdate;
                     MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
+                    if(domainObject.getProperty(propName) != propValueBeforeUpdate)
+                    {
+                        willBeIndexed = true;
+                    }
                 }
             }
             else
@@ -85,29 +93,32 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 }
                 def relationMetaData = relations[propName];
                 updatedRelations[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
+                willRelationsBeIndexed = true;
             }
         }
-        def triggeredEventParams = [:];
-        triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
-        EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
-        if(!errors.hasErrors())
+        if(willBeIndexed || willRelationsBeIndexed)
         {
-            validator.validate (new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
-        }
-        if(!errors.hasErrors())
-        {
-            domainObject.index(domainObject);
-            statistics.stop();
-            domainObject.removeRelation(relationToBeRemovedMap);
-            domainObject.addRelation(relationToBeAddedMap);
-            statistics.start();
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
-            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
-        }
-        else
-        {
-            domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
+            def triggeredEventParams = [:];
+            triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
+            if(!errors.hasErrors())
+            {
+                validator.validate (new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
+            }
+            if(!errors.hasErrors())
+            {
+                if(willBeIndexed)
+                {
+                    domainObject.index(domainObject);
+                }
+                statistics.stop();
+                domainObject.removeRelation(relationToBeRemovedMap);
+                domainObject.addRelation(relationToBeAddedMap);
+                statistics.start();
+                EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
+                EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
+            }
         }
         return domainObject;
     }

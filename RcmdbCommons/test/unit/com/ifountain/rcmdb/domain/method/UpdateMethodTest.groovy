@@ -106,6 +106,104 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     }
 
     
+    public void testUpdateMethodWillNotCallIndexIfNoPropertyHasChanged()
+    {
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        def relations = [:];
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObjectWithEvents.eventCalls.clear();
+        AddMethodDomainObjectWithEvents.indexList.clear();
+        props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        //id property will be ignored
+        assertEquals (objectBeforeAdd.id, updatedObject.id);
+        assertEquals (objectBeforeAdd.prop2, updatedObject.prop2);
+        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals (0, AddMethodDomainObjectWithEvents.indexList.size());
+        assertSame (updatedObject, addedObject);
+        assertEquals (0, AddMethodDomainObjectWithEvents.eventCalls.size());
+    }
+
+    public void testUpdateMethodWillReturnErrorsIfErrorsOccurredWhileConvertingStringProperties()
+    {
+        def dateFormat = "yyyy-dd-MM HH:mm:ss";
+        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value", prop5:new Date());
+        def relations = [:];
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3, prop5:objectBeforeAdd.prop5];
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObjectWithEvents.eventCalls.clear();
+        AddMethodDomainObjectWithEvents.indexList.clear();
+        props = [prop1:objectBeforeAdd.prop1, prop5:"invalid date prop"];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        //id property will be ignored
+        assertEquals (objectBeforeAdd.id, updatedObject.id);
+        assertEquals (objectBeforeAdd.prop5, updatedObject.prop5);
+        assertEquals (0, AddMethodDomainObjectWithEvents.indexList.size());
+        assertTrue (updatedObject.hasErrors());
+        assertSame (updatedObject, addedObject);
+        assertEquals (0, AddMethodDomainObjectWithEvents.eventCalls.size());
+    }
+
+    public void testUpdateMethodWillNotCallIndexButWillCallAddRemoveRelationsIfNoPropertyHasChangedButRelationsIsSpecified()
+    {
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObjectWithEvents relatedObject = new AddMethodDomainObjectWithEvents(id:100, prop1:"object2Prop1Value");
+
+        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals (objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObjectWithEvents.eventCalls.clear();
+        AddMethodDomainObjectWithEvents.indexList.clear();
+        def relsToBeRemoved = [new AddMethodDomainObjectWithEvents()];
+        addedObject.rel1 = relsToBeRemoved;
+        props["rel1"] = new  AddMethodDomainObjectWithEvents();
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
+        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
+
+        //id property will be ignored
+        assertEquals (objectBeforeAdd.id, updatedObject.id);
+        assertEquals (objectBeforeAdd.prop1, updatedObject.prop1);
+        assertEquals (objectBeforeAdd.prop2, updatedObject.prop2);
+        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals(1, updatedObject.relationsShouldBeAdded.size());
+        assertEquals(1, updatedObject.relationsShouldBeRemoved.size());
+        assertSame(relsToBeRemoved[0], updatedObject.relationsShouldBeRemoved.rel1[0]);
+        assertSame(props.rel1, updatedObject.relationsShouldBeAdded.rel1);
+        assertEquals (0, AddMethodDomainObject1.indexList.size());
+        assertSame (updatedObject, addedObject);
+
+        assertEquals("beforeUpdate", AddMethodDomainObjectWithEvents.eventCalls[0])
+        assertEquals("removeRelation", AddMethodDomainObjectWithEvents.eventCalls[1])
+        assertEquals("addRelation", AddMethodDomainObjectWithEvents.eventCalls[2])
+        assertEquals("afterUpdate", AddMethodDomainObjectWithEvents.eventCalls[3])
+    }
+
+
+    
 
 
     public void testUpdateMethodWithEvents()

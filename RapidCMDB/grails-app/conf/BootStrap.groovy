@@ -24,7 +24,6 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.compass.core.Compass
-import org.jsecurity.crypto.hash.Sha1Hash
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
@@ -142,10 +141,9 @@ class BootStrap {
         def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
         def adminUser = RsUser.get(username:RsUser.RSADMIN);
         if(!adminUser){
-            adminUser = RsUser.add(username: RsUser.RSADMIN, passwordHash: new Sha1Hash("changeme").toHex());            
+            adminUser=RsUser.addUser(username:RsUser.RSADMIN,password:"changeme",groups:[adminGroup])            
         }
 
-        adminUser.addRelation(groups:adminGroup);
 
     }
 

@@ -18,7 +18,6 @@
 */
 package auth
 
-import org.jsecurity.crypto.hash.Sha1Hash
 import org.jsecurity.SecurityUtils
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.exception.MessageSourceException

@@ -177,7 +177,14 @@ target(compileTests: "Compiles the test cases") {
         event("StatusFinal", ["Compilation Error: ${e.message}"])
         exit(1)
     }
-    classLoader = new URLClassLoader([new File(destDir).toURI().toURL()] as URL[], getClass().classLoader.rootLoader)
+    def classUrlPaths=[destDir];
+
+    def classUrls=[];
+    classUrlPaths.each{ path ->
+        classUrls.add(new File(path).toURI().toURL())
+    }
+
+    classLoader = new URLClassLoader(classUrls as URL[], getClass().classLoader.rootLoader)
     Thread.currentThread().contextClassLoader = classLoader
 
     event("CompileEnd", ['tests'])

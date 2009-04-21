@@ -58,18 +58,8 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
         }
 		def historicalEvent = historicalEventModel().'add'(props)
 		remove()
-		//updateObjectState();
+		
 	}
-//	public void updateObjectState()
-//    {
-//        def topologyObjectName = elementName;
-//        def rsTopologyObject = RsTopologyObject.get(name:topologyObjectName);
-//        if(rsTopologyObject instanceof RsTopologyObject)
-//        {
-//            rsTopologyObject.setState(Constants.NORMAL, severity);
-//        }
-//    }
-
 	public Class historicalEventModel()
     {
         return RsHistoricalEvent;    

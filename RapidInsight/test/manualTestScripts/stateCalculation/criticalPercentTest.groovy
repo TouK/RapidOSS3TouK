@@ -1,6 +1,8 @@
 logger.warn("Starting..............")
+//StateCalculator.calculateMethod="criticalPercent";
+RsUtility.getUtility("StateCalculator").calculateMethod="criticalPercent";
 
-//RI- FINDMAX                           r
+//RI- FINDMAX
 final static int CRITICAL = 5
 final static int MAJOR = 4
 final static int WARNING = 2
@@ -37,41 +39,43 @@ serv12.addRelation(childObjects:[device121,device122])
 serv21.addRelation(childObjects:[device211,device212])
 serv22.addRelation(childObjects:[device221,device222])
 
-def event1111 = RsEvent.add(name:"Event1111", elementName:device111.name, severity:NORMAL)
 assert device111.currentState() == NOTSET
 assert serv11.currentState() == NOTSET
 assert cust1.currentState() == NOTSET
-device111.setState(event1111.severity)
+
+
+def event1111 = RsEvent.add(name:"Event1111", elementName:device111.name, severity:NORMAL)
+
 assert device111.currentState() == NORMAL
 assert serv11.currentState() == NORMAL
 assert cust1.currentState() == NORMAL
 
 def event1112 = RsEvent.add(name:"Event1112", elementName:device111.name,severity:MAJOR)
-device111.setState(event1112.severity)
+
 assert device111.currentState() == NORMAL
 assert serv11.currentState() == NORMAL
 assert cust1.currentState() == NORMAL
 
 def event1113 = RsEvent.add(name:"Event1113", elementName:device111.name,severity:CRITICAL)
-device111.setState(event1113.severity)
+
 assert device111.currentState() == MAJOR
 assert serv11.currentState() == NORMAL
 assert cust1.currentState() == NORMAL
 
 event1112.severity = CRITICAL
-device111.setState(event1112.severity,MAJOR)
+
 assert device111.currentState() == CRITICAL
 assert serv11.currentState() == CRITICAL
 assert cust1.currentState() == CRITICAL
 
 event1112.severity = MAJOR
-device111.setState(event1112.severity,CRITICAL)
+
 assert device111.currentState() == MAJOR
 assert serv11.currentState() == NORMAL
 assert cust1.currentState() == NORMAL
 
 def event1221 = RsEvent.add(name:"Event1221", elementName:device122.name,severity:CRITICAL)
-device122.setState(event1221.severity)
+
 assert device122.currentState() == CRITICAL
 assert serv12.currentState() == CRITICAL
 assert cust1.currentState() == CRITICAL
@@ -81,5 +85,11 @@ assert device122.currentState() == NORMAL
 assert serv12.currentState() == NORMAL
 assert cust1.currentState() == NORMAL
 
+
+//test RsObjectState removed when object is removed
+def objectId=device122.id;
+assert RsObjectState.get(objectId:objectId).state == NORMAL
+device122.remove();
+assert RsObjectState.get(objectId:objectId)==null
 
 return "success"

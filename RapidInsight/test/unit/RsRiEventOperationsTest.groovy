@@ -4,6 +4,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.util.RapidDateUtilities
 
 import com.ifountain.rcmdb.converter.*
+import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,15 +17,16 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
         clearMetaClasses();
-        RapidDateUtilities.registerDateUtils();
-        registerDefaultConverters();
-         initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RsInMaintenance,RsComputerSystem], []);
+
+         initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RsUtility,RsComputerSystem], []);
          CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
-         CompassForTests.addOperationSupport(RsInMaintenance,RsInMaintenanceOperations);
+         CompassForTests.addOperationSupport(RsUtility,RsUtilityOperations);
+         RsUtilityTestUtils.clearProcessors();
 
     }
 
     public void tearDown() {
+        RsUtilityTestUtils.setToDefaultProcessors();
         clearMetaClasses();
         super.tearDown();
     }
@@ -36,14 +38,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         GroovySystem.metaClassRegistry.removeMetaClass(RsComputerSystem)        
         ExpandoMetaClass.enableGlobally();
      }
-     def registerDefaultConverters()
-    {
-        def dateFormat = "yyyy-dd-MM HH:mm:ss";
-        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
-        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
-        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
-        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
-    }
+
 
      public void testNotifyAddsRsRiEvent()
      {

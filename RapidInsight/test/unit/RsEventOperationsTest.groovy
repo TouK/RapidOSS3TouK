@@ -1,7 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.util.RapidDateUtilities
-import com.ifountain.rcmdb.converter.*
+import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
+
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -12,30 +12,20 @@ import com.ifountain.rcmdb.converter.*
 class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
-        RapidDateUtilities.registerDateUtils();
-        registerDefaultConverters();
 
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RsInMaintenance], []);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RsUtility], []);
          CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
-         CompassForTests.addOperationSupport(RsInMaintenance,RsInMaintenanceOperations);
-    }
-     def registerDefaultConverters()
-    {
-        def dateFormat = "yyyy-dd-MM HH:mm:ss";
-        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
-        RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
-        RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
-        RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
+         CompassForTests.addOperationSupport(RsUtility,RsUtilityOperations);
+         RsUtilityTestUtils.clearProcessors();
     }
 
     public void tearDown() {
+        RsUtilityTestUtils.setToDefaultProcessors();
         super.tearDown();
     }
 
      public void testNotifyAddsRsEvent()
      {
-
-
          assertEquals(0,RsEvent.list().size());
 
          def addProps=[name:"ev1",severity:5];
@@ -57,8 +47,6 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
      }
      public void testHistoricalEventModel()
      {
-
-
          def event=RsEvent.add(name:"testev");
          assertFalse(event.hasErrors());
          assertEquals(1,RsEvent.countHits("alias:*"));

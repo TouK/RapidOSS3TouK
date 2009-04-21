@@ -18,12 +18,27 @@
 */
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-	def beforeInsert(){        
-        def inMaintenance=RsInMaintenance.isEventInMaintenance(this.domainObject);
-        setPropertyWithoutUpdate("inMaintenance",inMaintenance);
+	def beforeInsert(){
+        RsUtility.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
 	}
-	
+	def beforeUpdate(params)
+    {
+        RsUtility.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
+    }
+	def afterInsert(){
+        RsUtility.getUtility("EventProcessor").eventIsAdded(this.domainObject);
+    }
+    def afterUpdate(params){
+        RsUtility.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
+    }
+    def afterDelete()
+    {
+        RsUtility.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
+    }
+
+
     static notify(Map eventProps) {
+
         def event=RsEvent.add(eventProps);
         return event;
     }
@@ -43,17 +58,17 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
         }
 		def historicalEvent = historicalEventModel().'add'(props)
 		remove()
-		updateObjectState();
+		//updateObjectState();
 	}
-	public void updateObjectState()
-    {
-        def topologyObjectName = elementName;
-        def rsTopologyObject = RsTopologyObject.get(name:topologyObjectName);
-        if(rsTopologyObject instanceof RsTopologyObject)
-        {
-            rsTopologyObject.setState(Constants.NORMAL, severity);
-        }
-    }
+//	public void updateObjectState()
+//    {
+//        def topologyObjectName = elementName;
+//        def rsTopologyObject = RsTopologyObject.get(name:topologyObjectName);
+//        if(rsTopologyObject instanceof RsTopologyObject)
+//        {
+//            rsTopologyObject.setState(Constants.NORMAL, severity);
+//        }
+//    }
 
 	public Class historicalEventModel()
     {

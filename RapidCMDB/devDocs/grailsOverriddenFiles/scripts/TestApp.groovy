@@ -177,7 +177,7 @@ target(compileTests: "Compiles the test cases") {
         event("StatusFinal", ["Compilation Error: ${e.message}"])
         exit(1)
     }
-    def classUrlPaths=[destDir];
+    def classUrlPaths=[destDir,"${basedir}/operations"];
 
     def classUrls=[];
     classUrlPaths.each{ path ->

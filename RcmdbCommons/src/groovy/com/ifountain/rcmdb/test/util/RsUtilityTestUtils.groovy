@@ -25,7 +25,7 @@ class RsUtilityTestUtils {
 
 class RsUtilityOperationsMock  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
     public static def getUtility(utilityName)
-    {            
-        return RsUtilityOperationsMock.class.classLoader.loadClass (utilityName);
+    {
+        return Thread.currentThread().contextClassLoader.loadClass (utilityName);        
     }
 }

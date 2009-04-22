@@ -22,3 +22,10 @@ class RsUtilityTestUtils {
         return RsUtilityTestUtils.class.classLoader.loadClass("RsUtility");
    }
 }
+
+class RsUtilityOperationsMock  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+    public static def getUtility(utilityName)
+    {            
+        return RsUtilityOperationsMock.class.classLoader.loadClass (utilityName);
+    }
+}

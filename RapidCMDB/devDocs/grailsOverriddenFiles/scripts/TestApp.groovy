@@ -177,14 +177,7 @@ target(compileTests: "Compiles the test cases") {
         event("StatusFinal", ["Compilation Error: ${e.message}"])
         exit(1)
     }
-    def classUrlPaths=[destDir,"${basedir}/operations"];
-
-    def classUrls=[];
-    classUrlPaths.each{ path ->
-        classUrls.add(new File(path).toURI().toURL())
-    }
-
-    classLoader = new URLClassLoader(classUrls as URL[], getClass().classLoader.rootLoader)
+    classLoader = new URLClassLoader([new File(destDir).toURI().toURL()] as URL[], getClass().classLoader.rootLoader)
     Thread.currentThread().contextClassLoader = classLoader
 
     event("CompileEnd", ['tests'])
@@ -254,7 +247,7 @@ def runTests = {suite, TestResult result, Closure callback ->
 
     for (TestSuite test in suite.tests()) {
 
-        
+
         new File("${testDir}/TEST-${test.name}.xml").withOutputStream {xmlOut ->
             new File("${testDir}/plain/TEST-${test.name}.txt").withOutputStream {plainOut ->
 

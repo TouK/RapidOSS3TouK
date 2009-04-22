@@ -15,7 +15,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         initializeClasses();
         clearMetaClasses();
-        initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility], []);
+        initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility,RsGroup], []);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
         RsUtilityTestUtils.setToDefaultProcessors();
     }
@@ -161,16 +161,16 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     }
 
 
-    public static void testFindMaxSeverity()
+    public static void testFindMaxSeverityForRsTopologyObject()
     {
-        def _Contants=getClasses().Constants;
+        def _Constants=getClasses().Constants;
         def _StateCalculator=getClasses().StateCalculator;
 
         def object = RsTopologyObject.add(name: "testobject");
         assertFalse(object.hasErrors());
         5.times {counter ->
             //need to calculate is true
-            assertEquals(_Contants.NORMAL, _StateCalculator.findMaxSeverity(object,counter + 1, _Contants.NOTSET, _Contants.NOTSET));
+            assertEquals(_Constants.NORMAL, _StateCalculator.findMaxSeverity(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
         }
         RsEvent.add(name: "ev1", elementName: object.name, severity: 1)
         RsEvent.add(name: "ev2", elementName: object.name, severity: 2)
@@ -183,13 +183,59 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         5.times {counter ->
             //need to calculate is true
-            assertEquals(3, _StateCalculator.findMaxSeverity(object,counter + 1, _Contants.NOTSET, _Contants.NOTSET));
+            assertEquals(3, _StateCalculator.findMaxSeverity(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.findMaxSeverity(object,counter + 1, counter + 1, counter + 1));
+        }
+    }
+    public static void testFindMaxSeverityForRsGroup()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def object = RsGroup.add(name: "testobject");
+        assertFalse(object.hasErrors());
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.NORMAL, _StateCalculator.findMaxSeverity(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+        }
+        def childObjects=[];
+
+
+        childObjects.add(RsTopologyObject.add(name: "ev1", parentObjects:[object]))
+        childObjects.add(RsTopologyObject.add(name: "ev2", parentObjects:[object]))
+        childObjects.add(RsTopologyObject.add(name: "ev3", parentObjects:[object]))
+
+        _StateCalculator.saveObjectState(childObjects[0],1);
+        _StateCalculator.saveObjectState(childObjects[1],2);
+        _StateCalculator.saveObjectState(childObjects[2],3);
+
+
+
+        //these 2 child object here must not effect calculation
+        def nonChildObjects=[];
+        nonChildObjects.add(RsTopologyObject.add(name: "ev4"))
+        nonChildObjects.add(RsTopologyObject.add(name: "ev5"))
+
+        _StateCalculator.saveObjectState(nonChildObjects[0],4);
+        _StateCalculator.saveObjectState(nonChildObjects[1],5);
+
+
+        assertEquals(3,object.childObjects.size());
+
+        //assertEquals(5, RsTopologyObject.countHits("alias:RsTopologyObject"));
+        assertEquals(5, RsTopologyObject.countHits("name:ev*"));
+        assertEquals(1, RsGroup.countHits("alias:*"));
+
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(3, _StateCalculator.findMaxSeverity(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
             //need to calculate is false
             assertEquals(counter + 1, _StateCalculator.findMaxSeverity(object,counter + 1, counter + 1, counter + 1));
         }
     }
 
-    public static void testCriticalPercent()
+    public static void testCriticalPercentForRsTopologyObject()
     {
 
         def _Constants=getClasses().Constants;
@@ -268,6 +314,105 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
             events[index].update(severity: _Constants.CRITICAL);
         }
         assertEquals(criticalCount, RsEvent.countHits("elementName:${object.name} AND severity:${_Constants.CRITICAL}"));
+
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.CRITICAL, _StateCalculator.criticalPercent(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.criticalPercent(object,counter + 1, counter + 1, counter + 1));
+        }
+    }
+
+    public static void testCriticalPercentForRsGroup()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def object = RsGroup.add(name: "testobject");
+        assertFalse(object.hasErrors());
+
+        def childObjectCount = 10;
+        def childObjects=[];
+
+        childObjectCount.times {counter ->
+            def childObject=RsTopologyObject.add(name: "ev${counter}", parentObjects:[object]);
+            _StateCalculator.saveObjectState(childObject,_Constants.NORMAL);
+            childObjects.add(childObject)
+
+        }
+
+        //these 2 child object here must not effect calculation
+        def nonChildObjects=[];
+        nonChildObjects.add(RsTopologyObject.add(name: "evchild1"))
+        nonChildObjects.add(RsTopologyObject.add(name: "evchild2"))
+
+        _StateCalculator.saveObjectState(nonChildObjects[0],_Constants.CRITICAL);
+        _StateCalculator.saveObjectState(nonChildObjects[1],_Constants.CRITICAL);
+
+
+        assertEquals(childObjectCount,object.childObjects.size());
+        assertEquals(childObjectCount + 2, RsTopologyObject.countHits("name:ev*"));
+        //testing with 0 critical count
+        int criticalCount = 0;
+        assertEquals(criticalCount + 2, RsObjectState.countHits("state:${_Constants.CRITICAL}"));
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.NORMAL, _StateCalculator.criticalPercent(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.criticalPercent(object,counter + 1, counter + 1, counter + 1));
+        }
+
+
+        //testing with critical count 1 less than MAJOR PERCENTAGE
+
+        //we update some of the events severity : critical until the limit of major percentage
+        criticalCount = Math.floor((childObjectCount * _Constants.MAJOR_PERCENTAGE / 100)) - 1;
+        criticalCount.times {index ->
+            _StateCalculator.saveObjectState(childObjects[index],_Constants.CRITICAL);
+        }
+        assertEquals(criticalCount + 2, RsObjectState.countHits("state:${_Constants.CRITICAL}"));
+
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.NORMAL, _StateCalculator.criticalPercent(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.criticalPercent(object,counter + 1, counter + 1, counter + 1));
+        }
+
+        //testing with critical count 1 less than CRITICAL PERCENTAGE
+        criticalCount = Math.floor((childObjectCount * _Constants.CRITICAL_PERCENTAGE / 100)) - 1;
+        criticalCount.times {index ->
+            _StateCalculator.saveObjectState(childObjects[index],_Constants.CRITICAL);
+        }
+        assertEquals(criticalCount + 2, RsObjectState.countHits("state:${_Constants.CRITICAL}"));
+
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.MAJOR, _StateCalculator.criticalPercent(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.criticalPercent(object,counter + 1, counter + 1, counter + 1));
+        }
+
+        //testing with critical count 1 more than CRITICAL PERCENTAGE
+        criticalCount = Math.floor((childObjectCount * _Constants.CRITICAL_PERCENTAGE / 100)) + 1;
+        criticalCount.times {index ->
+            _StateCalculator.saveObjectState(childObjects[index],_Constants.CRITICAL);
+        }
+        assertEquals(criticalCount + 2, RsObjectState.countHits("state:${_Constants.CRITICAL}"));
+
+        5.times {counter ->
+            //need to calculate is true
+            assertEquals(_Constants.CRITICAL, _StateCalculator.criticalPercent(object,counter + 1, _Constants.NOTSET, _Constants.NOTSET));
+            //need to calculate is false
+            assertEquals(counter + 1, _StateCalculator.criticalPercent(object,counter + 1, counter + 1, counter + 1));
+        }
+
+        //testing with all critical
+        criticalCount = childObjectCount;
+        criticalCount.times {index ->
+            _StateCalculator.saveObjectState(childObjects[index],_Constants.CRITICAL);
+        }
+        assertEquals(criticalCount + 2, RsObjectState.countHits("state:${_Constants.CRITICAL}"));
 
         5.times {counter ->
             //need to calculate is true

@@ -138,7 +138,7 @@ class StateCalculator {
     	{
             def maxValue = Constants.NORMAL;
             object.childObjects.each {
-                def childState = it.getState();
+                def childState = getObjectState(it);
                 if (childState >= 0 && maxValue < childState)
                 {
                     maxValue = childState;
@@ -187,7 +187,7 @@ class StateCalculator {
 		{
 			def stateList = [];
 			object.childObjects.each{child->
-				stateList.add(child.currentState())
+				stateList.add(getObjectState(child))
 			}
 			def percent = (stateList.findAll{it == Constants.CRITICAL}.size()/stateList.size())*100
 			switch(percent) {

@@ -1,13 +1,8 @@
-/**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Apr 16, 2009
- * Time: 2:37:31 PM
- * To change this template use File | Settings | File Templates.
- */
+
 import com.ifountain.core.domain.annotations.*;
 
-class RsUtility {
+class RsUtility
+{
 
     //AUTO_GENERATED_CODE
 

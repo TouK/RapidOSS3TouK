@@ -17,6 +17,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         clearMetaClasses();
         initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility], []);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
+        RsUtilityTestUtils.setToDefaultProcessors();
     }
 
     public void tearDown() {
@@ -36,6 +37,8 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     public static void clearClasses()
     {
         classes=[:];
+        RsUtility.getUtility("StateCalculator").setToDefault();
+
     }
     public def initializeClasses()
     {
@@ -465,6 +468,53 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         object.parentObjects.each {parentObject ->
             assertEquals(oldState, setStateStateCallParams[parentObject.id].oldState)
             assertEquals(newState, setStateStateCallParams[parentObject.id].newState)
+        }
+    }
+
+    public static void testCalculateStateCallsMethodInCalculateMethodProperty()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        int findMaxSeverityReturnValue;
+        int criticalPercentReturnValue;
+        
+        def findMaxSeverityCallParams = [:]
+        def criticalPercentCallParams = [:]
+
+        _StateCalculator.metaClass.'static'.findMaxSeverity = {object,currentState, oldPropagatedState, newPropagatedState ->
+            println "findmax in test"
+            findMaxSeverityCallParams = [currentState: currentState, oldPropagatedState: oldPropagatedState, newPropagatedState: newPropagatedState]
+            return findMaxSeverityReturnValue;
+        }
+
+        _StateCalculator.metaClass.'static'.criticalPercent = {object,currentState, oldPropagatedState, newPropagatedState ->
+            println "criticalPercent in test"
+            criticalPercentCallParams = [currentState: currentState, oldPropagatedState: oldPropagatedState, newPropagatedState: newPropagatedState]
+            return criticalPercentReturnValue;
+        }
+
+
+
+        def object = RsTopologyObject.add(name: "testobject");
+        assertFalse(object.hasErrors());
+
+        3.times {counter ->
+            findMaxSeverityCallParams = [:]
+            _StateCalculator.calculateMethod="findMaxSeverity";
+            findMaxSeverityReturnValue = counter + 1;
+            assertEquals(counter + 1, _StateCalculator.calculateObjectState(object,1, 2, 3));
+            assertEquals(1, findMaxSeverityCallParams.currentState);
+            assertEquals(2, findMaxSeverityCallParams.oldPropagatedState);
+            assertEquals(3, findMaxSeverityCallParams.newPropagatedState);
+
+            criticalPercentCallParams = [:]
+            _StateCalculator.calculateMethod="criticalPercent";
+            criticalPercentReturnValue = counter + 1;
+            assertEquals(counter + 1, _StateCalculator.calculateObjectState(object,1, 2, 3));
+            assertEquals(1, criticalPercentCallParams.currentState);
+            assertEquals(2, criticalPercentCallParams.oldPropagatedState);
+            assertEquals(3, criticalPercentCallParams.newPropagatedState);
         }
     }
 }

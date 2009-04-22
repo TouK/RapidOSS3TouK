@@ -181,7 +181,12 @@
 				<Property Name="z_RsClassName" Type="string"/>
 			</Properties>
 		</Model>
-		
+		<Model Name="RsUtility">
+            <Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='value' Type='string' />
+            </Properties>
+        </Model>
     </Models>
 	<Relations>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>

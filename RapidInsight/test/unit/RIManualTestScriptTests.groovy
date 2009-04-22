@@ -36,6 +36,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
+        RsUtility.getUtility("StateCalculator").setToDefault();
         RsUtilityTestUtils.setToDefaultProcessors();
         super.tearDown();
 
@@ -54,24 +55,20 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         script_directory="$script_manager_directory/$ScriptManager.SCRIPT_DIRECTORY";
         new File(script_directory).mkdirs();
     }
-    public void initializeModels(classes)
+    public void initializeModels()
     {
         initialize([CmdbScript,RsTopologyObject,RsCustomer,RsEvent,RsGroup,RsService,RsObjectState,relation.Relation,RsInMaintenance,RsEventJournal,RsHistoricalEvent,RsUtility], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
-        CompassForTests.addOperationSupport (RsTopologyObject,classes.RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsGroup,classes.RsGroupOperations);
-        CompassForTests.addOperationSupport (RsCustomer,classes.RsCustomerOperations);
-        CompassForTests.addOperationSupport (RsService,classes.RsServiceOperations);
+        CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
+        CompassForTests.addOperationSupport (RsGroup,RsGroupOperations);
+        CompassForTests.addOperationSupport (RsCustomer,RsCustomerOperations);
+        CompassForTests.addOperationSupport (RsService,RsServiceOperations);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
    }
-    public File getOperationPathAsFile(opdir,opfile)
-    {
-        return new File("${base_directory}/${opdir}/${opfile}.groovy");
-    }
     void copyManualTestScript(scriptFolder,scriptName)
     {
         def scriptPath= "${base_directory}/test/manualTestScripts/${scriptFolder}/${scriptName}.groovy";
@@ -91,12 +88,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void testFindMaxTest()
     {
-        def classes=[:];
-        classes.RsTopologyObjectOperations=RsTopologyObjectOperations;
-        classes.RsGroupOperations=RsGroupOperations;
-        classes.RsCustomerOperations=RsCustomerOperations;
-        classes.RsServiceOperations=RsServiceOperations;
-        initializeModels(classes)
+        initializeModels()
         
 
         copyManualTestScript("stateCalculation","findMaxTest");
@@ -116,17 +108,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void testCriticalPercentTest()
     {
-        def classes=[:];
-
-        //note that here we first parce RsTopologyObject operations
-        //and then we load other extending Operations , by this way all will extend from the first loaded ones
-        //if we do not load the parents first the childs will the the ones in original operations folder
-        GroovyClassLoader loader=new GroovyClassLoader();
-        classes.RsTopologyObjectOperations=loader.parseClass(getOperationPathAsFile("overridenOperations/criticalPercent","RsTopologyObjectOperations"));
-        classes.RsGroupOperations=loader.parseClass(getOperationPathAsFile("overridenOperations/criticalPercent","RsGroupOperations"));
-        classes.RsCustomerOperations=loader.parseClass(getOperationPathAsFile("operations","RsCustomerOperations"));
-        classes.RsServiceOperations=loader.parseClass(getOperationPathAsFile("operations","RsServiceOperations"));
-        initializeModels(classes)
+        initializeModels()
 
         copyManualTestScript("stateCalculation","criticalPercentTest");
 
@@ -154,6 +136,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
         RsUtilityTestUtils.clearProcessors();
 
+        println RsUtility.getUtility("StateCalculator").calculateMethod;
 
         copyManualTestScript("operationTests","rsEventOperationsTestScript");
 

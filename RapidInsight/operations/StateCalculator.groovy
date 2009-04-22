@@ -8,6 +8,11 @@
 class StateCalculator {
     static String calculateMethod="findMaxSeverity";
 
+    static setToDefault()
+    {
+        calculateMethod="findMaxSeverity";
+    }
+    
     static def eventIsAdded(event){
         def objects=getObjectsOfEvent(event);
         objects.each{ object ->

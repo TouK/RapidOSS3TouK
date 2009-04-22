@@ -1,5 +1,8 @@
 logger.warn("Starting..............")
 //StateCalculator.calculateMethod="criticalPercent";
+
+
+try{
 RsUtility.getUtility("StateCalculator").calculateMethod="criticalPercent";
 
 //RI- FINDMAX
@@ -93,3 +96,12 @@ device122.remove();
 assert RsObjectState.get(objectId:objectId)==null
 
 return "success"
+
+}
+catch(e)
+{
+    throw e;
+}
+finally{
+    RsUtility.getUtility("StateCalculator").setToDefault();
+}

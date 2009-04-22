@@ -103,11 +103,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
     {
         initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem,RsInMaintenance], []);
 
-        def callParams=[:]
-        RsRiEventOperations.metaClass.propagateElementState = {  ->
-            println "propagateElementState in test"
-            callParams["id"]=id;
-        }
+
 
         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
         CompassForTests.addOperationSupport(RsInMaintenance,RsInMaintenanceOperations);
@@ -120,12 +116,12 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertFalse(addedEvent.hasErrors());
         assertEquals(1,RsRiEvent.list().size());
         assertEquals(1,RsEventJournal.list().size());
-        assertEquals(addedEvent.id,callParams.id);
+
 
         //now we test the fail case
         RsRiEvent.removeAll();
         RsEventJournal.removeAll();
-        callParams=[:];
+
 
         assertEquals(0,RsRiEvent.list().size());
         assertEquals(0,RsEventJournal.list().size());
@@ -136,7 +132,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertTrue(addedEvent.hasErrors());
         assertEquals(0,RsRiEvent.list().size());
         assertEquals(0,RsEventJournal.list().size());
-        assertEquals(0,callParams.size());
+
     }
      public void testNotifyDoesNotSetCreatedAtAndChangedAtIfGiven()
      {
@@ -176,33 +172,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(updatedEvent.count,udpateProps.count);
 
      }
-     public void testPropagateElementStateAndNotifyCallsPropagateElementState(){
 
-         
-         def callParams=[:]
-         RsComputerSystem.metaClass.setState = { newPropagatedState ->            
-            callParams.state=newPropagatedState;
-            
-         }
-
-         def element=RsComputerSystem.add(name:"testsys");
-         assertFalse(element.hasErrors());
-
-
-         def event=RsRiEvent.add(name:"testev",elementId:element.id,severity:5);
-         assertFalse(event.hasErrors());
-
-         event.propagateElementState();
-         assertEquals(callParams.state,event.severity)
-
-         callParams=[:];
-
-        def event2=RsRiEvent.notify(name:"testev",elementId:element.id,severity:3);
-        assertFalse(event.hasErrors());
-
-        assertEquals(callParams.state,event2.severity)
-
-     }
 
      public void testHistoricalEventModel()
      {

@@ -51,8 +51,7 @@ public class RsRiEventOperations  extends RsEventOperations {
 		event = eventModel.add(eventProps)
 
 		if (!event.hasErrors()) {
-            RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)
-            event.propagateElementState();
+            RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:Date.toDate(now),details:journalDetails)            
 		}
 		else
         {
@@ -61,13 +60,6 @@ public class RsRiEventOperations  extends RsEventOperations {
 
         
         return event;
-    }
-    public void propagateElementState()
-    {
-        def element = RsComputerSystem.get(id:elementId);
-        if(element){
-            element.setState(severity);
-        }
     }
 	public Class historicalEventModel()
     {

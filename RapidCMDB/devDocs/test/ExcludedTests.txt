@@ -3,3 +3,4 @@ netcool.conversion.NetcoolRuleFunctionsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests
 RIManualTestScriptIntegrationTests
 com.ifountain.compass.integration.CompassTransactionTest
+RsEventOperationsTest

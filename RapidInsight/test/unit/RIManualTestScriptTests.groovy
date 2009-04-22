@@ -4,9 +4,9 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
-import com.ifountain.rcmdb.converter.*
 import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.test.util.RsUtilityTestUtils;
+import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,6 +31,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
             base_directory = "RapidInsight";
         }
         initializeScriptManager();
+
 
     }
 
@@ -65,7 +66,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
-        CompassForTests.addOperationSupport (RsUtility,RsUtilityOperations);
+        RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
    }
     public File getOperationPathAsFile(opdir,opfile)
     {
@@ -150,7 +151,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsUtility,RsUtilityOperations);
+        RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
         RsUtilityTestUtils.clearProcessors();
 
 
@@ -178,7 +179,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
-        CompassForTests.addOperationSupport (RsUtility,RsUtilityOperations);
+        RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
 
 
         copyScript("MaintenanceScheduler");
@@ -210,7 +211,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
-        CompassForTests.addOperationSupport (RsUtility,RsUtilityOperations);
+        RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
 
         copyScript("MaintenanceScheduler");
         copyManualTestScript("maintenance","MaintenanceScheduleTest");
@@ -242,7 +243,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsHeartBeat,RsHeartBeatOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
-        CompassForTests.addOperationSupport (RsUtility,RsUtilityOperations);
+        RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
         RsUtilityTestUtils.clearProcessors();
 

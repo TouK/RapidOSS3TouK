@@ -21,11 +21,8 @@ class RsUtilityTestUtils {
    {
         return RsUtilityTestUtils.class.classLoader.loadClass("RsUtility");
    }
-}
-
-class RsUtilityOperationsMock  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
-    public static def getUtility(utilityName)
-    {
-        return Thread.currentThread().contextClassLoader.loadClass (utilityName);        
-    }
+   static initializeRsUtilityOperations(domainClass)
+   {
+       CompassForTests.addOperationSupport(domainClass,RsUtilityOperationsMock);
+   }
 }

@@ -1,7 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
-import com.ifountain.rcmdb.test.util.RsUtilityOperationsMock
+
 
 
 
@@ -18,7 +18,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RsUtility], []);
          CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
-         CompassForTests.addOperationSupport(RsUtility,RsUtilityOperationsMock);
+         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
          RsUtilityTestUtils.clearProcessors();
 
     }

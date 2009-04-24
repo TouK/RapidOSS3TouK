@@ -33,6 +33,9 @@ assert(RsEvent.get(name:event12.name).inMaintenance)
 assert(maint1.source==source)
 assert(maint1.info==info)
 
+def eventDuringMaintenance1 = RsEvent.add(name:"eventDuringMaintenance1", elementName:maint1.objectName)
+assert(eventDuringMaintenance1.inMaintenance)
+
 RsInMaintenance.takeObjectOutOfMaintenance(maint1.objectName)
 assert(!RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(!RsEvent.get(name:event11.name).inMaintenance)
@@ -40,7 +43,7 @@ assert(!RsEvent.get(name:event12.name).inMaintenance)
 
 def event13 = RsEvent.add(name:"Event13", elementName:maint1.objectName)
 assert(!event13.inMaintenance)
-
+assert(!RsEvent.get(name:eventDuringMaintenance1.name).inMaintenance)
 
 // inMaintenance with duration
 def endTime = new Date(System.currentTimeMillis() + 1000)

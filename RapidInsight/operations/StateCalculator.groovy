@@ -13,8 +13,7 @@ class StateCalculator {
         calculateMethod="findMaxSeverity";
     }
     
-    static def eventIsAdded(event){
-        println "eventIsAdded original"
+    static def eventIsAdded(event){         
         def objects=getObjectsOfEvent(event);
         objects.each{ object ->
             setObjectState(object,event.severity,Constants.NOTSET);

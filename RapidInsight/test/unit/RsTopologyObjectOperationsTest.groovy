@@ -79,58 +79,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
 //
 
 
-//    public static void testCalculateWeight()
-//    {
-//
-//        CompassForTests.addOperationSupport(RsTopologyObject, getClasses().RsTopologyObjectOperations);
-//
-//        //add 1 object and  test calculate weight
-//        //Tree : object
-//        def object = RsTopologyObject.add(name: "testobject");
-//        assertFalse(object.hasErrors());
-//
-//        assertEquals(1, RsTopologyObject.countHits("alias:*"));
-//        assertEquals(1, object.calculateWeight());
-//        assertEquals(0, object.parentObjects.size());
-//
-//        //add 3 parentobjects and test calculate weight
-//        //Tree  object < parentLevel1
-//        3.times {counter ->
-//            RsTopologyObject.add(name: "parentlevel1_${counter}", childObjects: [object]);
-//        }
-//
-//        object = RsTopologyObject.get(name: "testobject");
-//        assertEquals(3, object.parentObjects.size());
-//        assertEquals(1 + 3, object.calculateWeight());
-//
-//        object.parentObjects.each {parentObject ->
-//            assertEquals(1, parentObject.calculateWeight());
-//        }
-//
-//        //add 6 parent object for each of the parent objects of the object
-//        //Tree  object < parentLevel1 <  parentLevel2
-//        object.parentObjects.each {parentObject ->
-//            3.times {counter ->
-//                RsTopologyObject.add(name: "parentlevel2a_${parentObject.name}_${counter}", childObjects: [parentObject]);
-//                RsTopologyObject.add(name: "parentlevel2b_${parentObject.name}_${counter}", childObjects: [parentObject]);
-//            }
-//        }
-//
-//        object = RsTopologyObject.get(name: "testobject");
-//        assertEquals(3, object.parentObjects.size());
-//        assertEquals(1 + 3 + 18, object.calculateWeight());
-//
-//        object.parentObjects.each {parentObject ->
-//            assertEquals(6, parentObject.parentObjects.size());
-//            assertEquals(1 + 6, parentObject.calculateWeight());
-//            parentObject.parentObjects.each {parentObject2 ->
-//                assertEquals(0, parentObject2.parentObjects.size());
-//                assertEquals(1, parentObject2.calculateWeight());
-//            }
-//
-//        }
-//
-//    }
+
 
 
 }

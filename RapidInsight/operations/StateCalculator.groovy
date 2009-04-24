@@ -16,7 +16,7 @@ class StateCalculator {
     static def eventIsAdded(event){
         def objects=getObjectsOfEvent(event);
         objects.each{ object ->
-            setObjectState(object,event.severity);
+            setObjectState(object,event.severity,Constants.NOTSET);
         }
 
     }
@@ -62,7 +62,7 @@ class StateCalculator {
         }
         return objects;
     }
-    static def setObjectState(object,newPropagatedState, oldPropagatedState = Constants.NOTSET)
+    static def setObjectState(object,newPropagatedState, oldPropagatedState)
     {
         def currentState = loadObjectState(object);
         def calculatedState = calculateObjectState(object,currentState, oldPropagatedState, newPropagatedState);

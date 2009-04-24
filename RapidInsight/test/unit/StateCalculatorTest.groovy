@@ -511,7 +511,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
             calculateStateReturnValue = counter + 1;
             def calculatedState = counter + 1;
-            assertEquals(calculatedState, _StateCalculator.setObjectState(object,counter + 1));
+            assertEquals(calculatedState, _StateCalculator.setObjectState(object,counter + 1,_Constants.NOTSET));
 
             assertEquals(calculatedState, _StateCalculator.loadObjectState(object));
             assertEquals(calculatedState, RsObjectState.get(objectId: object.id).state);
@@ -563,7 +563,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
             calculateStateReturnValue = counter + 1;
             def calculatedState = counter + 1;
-            assertEquals(calculatedState, _StateCalculator.setObjectState(object,counter + 1));
+            assertEquals(calculatedState, _StateCalculator.setObjectState(object,counter + 1,_Constants.NOTSET));
             assertEquals(calculatedState, savedState);
 
             assertEquals(calculatedState,  _StateCalculator.loadObjectState(object));
@@ -663,5 +663,141 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
             assertEquals(2, criticalPercentCallParams.oldPropagatedState);
             assertEquals(3, criticalPercentCallParams.newPropagatedState);
         }
+    }
+    public static void testGetObjectsOfEvent()
+    {
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def noneEvent = RsEvent.add(name: "noneEvent")
+        assertFalse(noneEvent.hasErrors())
+
+        def objects=_StateCalculator.getObjectsOfEvent(noneEvent);
+        assertEquals(0,objects.size());
+
+        def elObject=RsTopologyObject.add(name:"elObject");
+        assertFalse(elObject.hasErrors());
+
+        def elEvent = RsEvent.add(name: "elEvent", elementName: elObject.name)
+        assertFalse(elEvent.hasErrors())
+
+        objects=_StateCalculator.getObjectsOfEvent(elEvent);
+        assertEquals(1,objects.size());
+        assertEquals(elObject.id,objects[0].id);
+
+
+
+    }
+    public static void testEventIsAdded()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def event=RsEvent.add(name:"testEvent",severity:3);
+
+        def object1=RsTopologyObject.add(name:"object1");
+        def object2=RsTopologyObject.add(name:"object2");
+
+        assertFalse(event.hasErrors());
+        assertFalse(object1.hasErrors());
+        assertFalse(object2.hasErrors());
+
+
+        def eventObjects=[object1,object2];
+
+        _StateCalculator.metaClass.'static'.getObjectsOfEvent={ ev ->
+            return eventObjects;
+        }
+        def setObjectStateCallParams=[:];
+
+        _StateCalculator.metaClass.'static'.setObjectState={ object,newPropagatedState, oldPropagatedState ->
+            setObjectStateCallParams[object.id]=[newPropagatedState:newPropagatedState,oldPropagatedState:oldPropagatedState];
+        }
+
+        _StateCalculator.eventIsAdded(event);
+
+        assertEquals(eventObjects.size(),setObjectStateCallParams.size());
+        eventObjects.each{ eventObject ->
+            assertEquals(event.severity,setObjectStateCallParams[eventObject.id].newPropagatedState);
+            assertEquals(_Constants.NOTSET,setObjectStateCallParams[eventObject.id].oldPropagatedState);
+        }
+
+    }
+    public static void testEventIsUpdated()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def event=RsEvent.add(name:"testEvent",severity:3);
+
+        def object1=RsTopologyObject.add(name:"object1");
+        def object2=RsTopologyObject.add(name:"object2");
+
+        assertFalse(event.hasErrors());
+        assertFalse(object1.hasErrors());
+        assertFalse(object2.hasErrors());
+
+
+        def eventObjects=[object1,object2];
+
+        _StateCalculator.metaClass.'static'.getObjectsOfEvent={ ev ->
+            return eventObjects;
+        }
+        def setObjectStateCallParams=[:];
+
+        _StateCalculator.metaClass.'static'.setObjectState={ object,newPropagatedState, oldPropagatedState ->
+            setObjectStateCallParams[object.id]=[newPropagatedState:newPropagatedState,oldPropagatedState:oldPropagatedState];
+        }
+
+        //no changed props will do nothing
+        _StateCalculator.eventIsUpdated(event,[:]);
+
+        assertEquals(0,setObjectStateCallParams.size());
+
+        //severity prop is changed
+        def changedProps=[severity:4];
+        _StateCalculator.eventIsUpdated(event,changedProps);
+
+        assertEquals(eventObjects.size(),setObjectStateCallParams.size());
+        eventObjects.each{ eventObject ->
+            assertEquals(event.severity,setObjectStateCallParams[eventObject.id].newPropagatedState);
+            assertEquals(changedProps.severity,setObjectStateCallParams[eventObject.id].oldPropagatedState);
+        }
+
+    }
+    public static void testEventIsDeleted()
+    {
+        def _Constants=getClasses().Constants;
+        def _StateCalculator=getClasses().StateCalculator;
+
+        def event=RsEvent.add(name:"testEvent",severity:3);
+
+        def object1=RsTopologyObject.add(name:"object1");
+        def object2=RsTopologyObject.add(name:"object2");
+
+        assertFalse(event.hasErrors());
+        assertFalse(object1.hasErrors());
+        assertFalse(object2.hasErrors());
+
+
+        def eventObjects=[object1,object2];
+
+        _StateCalculator.metaClass.'static'.getObjectsOfEvent={ ev ->
+            return eventObjects;
+        }
+        def setObjectStateCallParams=[:];
+
+        _StateCalculator.metaClass.'static'.setObjectState={ object,newPropagatedState, oldPropagatedState ->
+            setObjectStateCallParams[object.id]=[newPropagatedState:newPropagatedState,oldPropagatedState:oldPropagatedState];
+        }
+
+        _StateCalculator.eventIsDeleted(event);
+
+        assertEquals(eventObjects.size(),setObjectStateCallParams.size());
+        eventObjects.each{ eventObject ->
+            assertEquals(_Constants.NORMAL,setObjectStateCallParams[eventObject.id].newPropagatedState);
+            assertEquals(event.severity,setObjectStateCallParams[eventObject.id].oldPropagatedState);
+
+        }
+
     }
 }

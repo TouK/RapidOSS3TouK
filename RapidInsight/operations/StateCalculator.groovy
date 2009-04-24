@@ -14,6 +14,7 @@ class StateCalculator {
     }
     
     static def eventIsAdded(event){
+        println "eventIsAdded original"
         def objects=getObjectsOfEvent(event);
         objects.each{ object ->
             setObjectState(object,event.severity,Constants.NOTSET);

@@ -89,14 +89,14 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
     public static void testSaveStateAndLoadState()
     {
-        def _Contants=getClasses().Constants;
+        def _Constants=getClasses().Constants;
         def _StateCalculator=getClasses().StateCalculator;
 
         def object = RsTopologyObject.add(name: "testobject");
         assertFalse(object.hasErrors());
 
         assertEquals(0, RsObjectState.list().size());
-        assertEquals(_Contants.NOTSET, _StateCalculator.loadObjectState(object))
+        assertEquals(_Constants.NOTSET, _StateCalculator.loadObjectState(object))
 
         def newState = 5
         getClasses().StateCalculator.saveObjectState(object,newState);
@@ -114,7 +114,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
     public static void testNeedToCalculate()
     {
-        def _Contants=getClasses().Constants;
+        def _Constants=getClasses().Constants;
         def _StateCalculator=getClasses().StateCalculator;
 
         def object = RsTopologyObject.add(name: "testobject");

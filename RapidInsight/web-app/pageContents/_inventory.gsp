@@ -29,5 +29,4 @@
         }
     });
     filterTree.poll();
-    inventoryList.poll();
 </script>

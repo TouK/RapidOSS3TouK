@@ -12,4 +12,13 @@
         }
         return value;
     }
+
+    classTree.events['nodeClicked'].subscribe(function(xmlData){
+    	var className = xmlData.getAttribute('name');
+    	if(className != 'System' && className != 'Application'){
+    		var domain = xmlData.getAttribute('logicalName');
+    		objectList._setQuery('', 'id', 'asc', className, {domain:domain});
+    	}
+
+    }, this, true)
 </script>

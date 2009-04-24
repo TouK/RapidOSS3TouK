@@ -63,12 +63,14 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     }
     public static void testConstants()
     {
-        assertEquals(5, getClasses().Constants.CRITICAL);
-        assertEquals(4, getClasses().Constants.MAJOR);
-        assertEquals(0, getClasses().Constants.NORMAL);
+        def _Constants=getClasses().Constants;
+
+        assertEquals(5, _Constants.CRITICAL);
+        assertEquals(4, _Constants.MAJOR);
+        assertEquals(0, _Constants.NORMAL);
         assertEquals(-1, getClasses().Constants.NOTSET);
-        assertTrue(getClasses().Constants.CRITICAL_PERCENTAGE > getClasses().Constants.MAJOR_PERCENTAGE);
-        assertTrue(getClasses().Constants.MAJOR_PERCENTAGE > 0);
+        assertTrue(_Constants.CRITICAL_PERCENTAGE > _Constants.MAJOR_PERCENTAGE);
+        assertTrue(_Constants.MAJOR_PERCENTAGE > 0);
     }
     public static void testRemoveDeletesRsObjectStateInstance()
     {

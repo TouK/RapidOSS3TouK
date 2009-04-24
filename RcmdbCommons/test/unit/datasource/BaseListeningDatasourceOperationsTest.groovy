@@ -104,7 +104,7 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         def callParams=[:];
         def exceptionToThrow=null;
         ListeningAdapterManager.metaClass.addAdapterIfNotExists= { BaseListeningDatasource listeningDatasource ->
-            println "addAdapterIfNotExists in test";
+            println "addAdapterIfNotExists in testInsert";
             callParams.listeningDatasource = listeningDatasource;
             if(exceptionToThrow != null)
             {
@@ -126,37 +126,6 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         }
         catch(Exception e)
         {               
-            fail("Should not throw exception");
-        }
-     }
-     void testUpdateCallsAddAdapterIfNotExistsAndDoesNotThrowException(){
-        BaseListeningDatasource ds=BaseListeningDatasource.add(name:"myds")
-        assertFalse(ds.hasErrors())
-
-        def callParams=[:];
-        def exceptionToThrow=null;
-        ListeningAdapterManager.metaClass.addAdapterIfNotExists= { BaseListeningDatasource listeningDatasource ->
-            println "addAdapterIfNotExists in test";
-            callParams.listeningDatasource = listeningDatasource;
-            if(exceptionToThrow != null)
-            {
-                callParams.exceptionToThrow=exceptionToThrow;
-                throw exceptionToThrow;
-            }
-        }
-        assertEquals(0,callParams.size());
-
-        exceptionToThrow = new Exception();
-        try
-        {
-            ds.update(isSubscribed:false)
-            assertFalse(ds.hasErrors())
-            assertEquals(callParams.listeningDatasource.id,ds.id);
-            assertEquals(callParams.listeningDatasource.name,ds.name);
-            assertEquals(callParams.exceptionToThrow,exceptionToThrow);
-        }
-        catch(Exception e)
-        {
             fail("Should not throw exception");
         }
      }

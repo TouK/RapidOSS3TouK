@@ -35,22 +35,13 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
     static Logger logger = Logger.getLogger(BaseListeningDatasourceOperations.class)
     static String logPrefix="[BaseListeningDatasource]: ";
 
-    def beforeDelete(){
+    def afterDelete(){
         try
         {
             ListeningAdapterManager.getInstance().removeAdapter(this.domainObject);
         }catch(Exception e)
         {
             logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
-        }
-    }  
-     def afterUpdate(params){
-        try
-        {
-            ListeningAdapterManager.getInstance().addAdapterIfNotExists (this.domainObject);
-        }catch(Exception e)
-        {
-            logger.info ("Exception occurred while adding adapter for ${this.domainObject.name} datasource", e);
         }
     }
     def afterInsert(){

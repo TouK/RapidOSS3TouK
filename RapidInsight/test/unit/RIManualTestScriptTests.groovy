@@ -70,7 +70,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsGroup,classMap.RsGroupOperations);
         CompassForTests.addOperationSupport (RsCustomer,classMap.RsCustomerOperations);
         CompassForTests.addOperationSupport (RsService,classMap.RsServiceOperations);
-        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         classes.StateCalculator=classMap.StateCalculator;

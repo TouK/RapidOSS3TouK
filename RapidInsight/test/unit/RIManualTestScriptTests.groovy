@@ -104,13 +104,13 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         def classMap = [:];
 
         GroovyClassLoader loader = new GroovyClassLoader();
-        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator"));
-        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "RsTopologyObjectOperations"));
+        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator"));
+        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "RsTopologyObjectOperations"));
         classMap.RsGroupOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsGroupOperations"));
         classMap.RsCustomerOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator")];
+        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
 
         RsUtility.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
@@ -137,13 +137,13 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         def classMap = [:];
 
         GroovyClassLoader loader = new GroovyClassLoader();
-        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator"));
-        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "RsTopologyObjectOperations"));
+        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator"));
+        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "RsTopologyObjectOperations"));
         classMap.RsGroupOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsGroupOperations"));
         classMap.RsCustomerOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations=loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator")];
+        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
 
         RsUtility.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
@@ -231,7 +231,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void testMaintenanceScheduleTest()
     {
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator")];
+        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
 
         initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance,RsInMaintenanceSchedule,RsUtility], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);

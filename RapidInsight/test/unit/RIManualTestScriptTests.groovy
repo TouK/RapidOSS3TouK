@@ -86,7 +86,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
      void copyScript(scriptName)
     {
-        def scriptPath= "${base_directory}/scripts/${scriptName}.groovy";
+        def scriptPath= "${base_directory}/solutions/inMaintenance/scripts/${scriptName}.groovy";
 
         def ant=new AntBuilder();
 
@@ -197,13 +197,22 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void testMaintenanceTest()
     {
+        def classMap=[:];
+        GroovyClassLoader loader = new GroovyClassLoader();
+
+        classMap.RsInMaintenanceOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceOperations"));
+        classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
+
+
         initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance,RsInMaintenanceSchedule,RsUtility], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
-        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,classMap.RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,classMap.RsInMaintenanceScheduleOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
+
+        RsUtilityTestUtils.utilityPaths=["InMaintenanceCalculator":getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
 
         RsUtility.getUtility("EventProcessor").beforeProcessors=["InMaintenanceCalculator"];
 
@@ -230,17 +239,26 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void testMaintenanceScheduleTest()
     {
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        def classMap=[:];
+        GroovyClassLoader loader = new GroovyClassLoader();
+
+        classMap.RsInMaintenanceOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceOperations"));
+        classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
+
 
         initialize([CmdbScript,RsEvent,RsTopologyObject,RsInMaintenance,RsInMaintenanceSchedule,RsUtility], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
-        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
+        CompassForTests.addOperationSupport (RsInMaintenance,classMap.RsInMaintenanceOperations);
+        CompassForTests.addOperationSupport (RsInMaintenanceSchedule,classMap.RsInMaintenanceScheduleOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
 
+        RsUtilityTestUtils.utilityPaths=["InMaintenanceCalculator":getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
+
         RsUtility.getUtility("EventProcessor").beforeProcessors=["InMaintenanceCalculator"];
+
+
 
         copyScript("MaintenanceScheduler");
         copyManualTestScript("maintenance","MaintenanceScheduleTest");

@@ -16,7 +16,6 @@
  RsEventJournal.removeAll();
  RsLookup.removeAll();
  RsTicket.removeAll();
- RsInMaintenance.removeAll();
  SnmpTrap.removeAll();
  RsManagementSystem.removeAll();
  RsObjectState.removeAll();

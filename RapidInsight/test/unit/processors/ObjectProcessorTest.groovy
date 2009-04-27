@@ -17,12 +17,11 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
         clearMetaClasses();
         initialize([RsEvent,RsUtility,RsInMaintenance,RsTopologyObject], []);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
-        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
-        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);        
     }
 
     public void tearDown() {
+        RsUtilityTestUtils.setToDefaultProcessors();
         clearMetaClasses();
         super.tearDown();
     }
@@ -36,47 +35,46 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
 
     public void testObjectInsert()
     {
-        EventProcessor.beforeProcessors=["ObjectBeforeProcessor"];
-        EventProcessor.afterProcessors=["ObjectAfterProcessor"];
+        ObjectProcessor.beforeProcessors=["ObjectBeforeProcessor"];
+        ObjectProcessor.afterProcessors=["ObjectAfterProcessor"];
 
         callParams.clear();
 
         def object=RsTopologyObject.add(name:"testObj");
         assertFalse(object.hasErrors());
 
-        callParams.clear();
 
         assertEquals(2,callParams.size());
-        assertEquals(object.name,callParams.eventInBeforeInsert.object.name);
-        assertEquals(null,callParams.eventInBeforeInsert.objectid);
-        assertEquals(object.name,callParams.eventIsAdded.object.name);
-        assertEquals(object.id,callParams.eventIsAdded.objectid);
+        assertEquals(object.name,callParams.objectInBeforeInsert.object.name);
+        assertEquals(null,callParams.objectInBeforeInsert.objectid);
+        assertEquals(object.name,callParams.objectIsAdded.object.name);
+        assertEquals(object.id,callParams.objectIsAdded.objectid);
     }
 
     public void testObjectUpdate()
     {
 
-        EventProcessor.beforeProcessors=["ObjectBeforeProcessor"];
-        EventProcessor.afterProcessors=["ObjectAfterProcessor"];
+        ObjectProcessor.beforeProcessors=["ObjectBeforeProcessor"];
+        ObjectProcessor.afterProcessors=["ObjectAfterProcessor"];
 
 
-        def event=RsEvent.add(name:"testEvent",severity:3,rsDatasource:"testds");
-        assertFalse(event.hasErrors());
+        def object=RsTopologyObject.add(name:"testObj",className:"testCls",description:"desc");
+        assertFalse(object.hasErrors());
 
         callParams.clear();
 
-        event.update(severity:5,rsDatasource:"dsfortest");
-        assertFalse(event.hasErrors());
+        object.update(className:"testCl2",description:"ddd");
+        assertFalse(object.hasErrors());
 
         assertEquals(2,callParams.size());
 
-        assertEquals(event.name,callParams.eventInBeforeUpdate.event.name);
-        assertEquals(3,callParams.eventInBeforeUpdate.changedProps.severity);
-        assertEquals("testds",callParams.eventInBeforeUpdate.changedProps.rsDatasource);
+        assertEquals(object.name,callParams.objectInBeforeUpdate.object.name);
+        assertEquals("testCls",callParams.objectInBeforeUpdate.changedProps.className);
+        assertEquals("desc",callParams.objectInBeforeUpdate.changedProps.description);
 
-        assertEquals(event.name,callParams.eventIsUpdated.event.name);
-        assertEquals(3,callParams.eventIsUpdated.changedProps.severity);
-        assertEquals("testds",callParams.eventIsUpdated.changedProps.rsDatasource);
+        assertEquals(object.name,callParams.objectIsUpdated.object.name);
+        assertEquals("testCls",callParams.objectIsUpdated.changedProps.className);
+        assertEquals("desc",callParams.objectIsUpdated.changedProps.description);
 
     }
 

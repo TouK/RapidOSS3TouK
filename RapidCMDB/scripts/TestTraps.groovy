@@ -10,9 +10,10 @@ def processTrap(t){
 	def device = RsComputerSystem.searchTop(deviceQuery)
 	if (device) {
 		props.elementName = device.name
-		props.elementId = device.id
+		props.elementDisplayName = device.name
 	} else {
 		props.elementName = t.Agent
+		props.elementDisplayName = t.Agent
 	}
 		
 	if (t.SpecificType == "1") {

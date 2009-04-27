@@ -15,7 +15,7 @@
 				<Property Name="willExpireAt" Type="number" />
 				<Property Name="state" Type="number" />
 				<Property Name="elementName" Type="string"/>
-				<Property Name="elementId" Type="number"/>
+				<Property Name="elementDisplayName" Type="string"/>
 				<Property Name="count" Type="number" Default="1" />
 			</Properties>
 		</Model>
@@ -48,7 +48,7 @@
 				<Property Name="willExpireAt" Type="number" />
 				<Property Name="state" Type="number" />
 				<Property Name="elementName" Type="string"/>
-				<Property Name="elementId" Type="number"/>
+				<Property Name="elementDisplayName" Type="string"/>
 				<Property Name="count" Type="number" Default="1" />
 			</Properties>
 		</Model>

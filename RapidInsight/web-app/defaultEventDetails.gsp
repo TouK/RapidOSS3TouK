@@ -16,9 +16,8 @@
     if (domainObject != null) {
         def allProperties = domainObject.getPropertiesList();
         def relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
-        def excludedProps = ["id", "rsDatasource", "createdAt", "changedAt", "clearedAt","elementId"]
+        def excludedProps = ["id", "rsDatasource", "createdAt", "changedAt", "clearedAt"]
         def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
-        def propertiesLinkedToObject=["elementName":"elementId"];
 %>
 <script type="text/javascript">
 window.showTopologyObject = function (url, title){
@@ -96,8 +95,8 @@ objectDialog.show(url, title);
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
                                         <td>
-                                            <g:if test="${propertiesLinkedToObject[propertyName]!=null}">
-                                               <g:set var="targetObject" value="${RsTopologyObject.get(id:domainObject[propertiesLinkedToObject[propertyName]])}" />
+                                            <g:if test="${propertyName =='elementName'}">
+                                               <g:set var="targetObject" value="${RsTopologyObject.get(name:domainObject[propertyName])}" />
                                                <g:if test="${targetObject!=null}">
                                                     <a style="cursor:pointer;text-decoration:underline;color:#006DBA" onclick="showTopologyObject(createURL('getObjectDetails.gsp', {name:'${targetObject.name}'}),' Details of ${targetObject.className} ${targetObject.name} ') ">${propertyValue}</a>
                                                </g:if>

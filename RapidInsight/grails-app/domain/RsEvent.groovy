@@ -59,7 +59,7 @@ class RsEvent {
     
     String elementName ="";
     
-    Long elementId =0;
+    String elementDisplayName="";
     
     Long count =1;
     
@@ -108,8 +108,8 @@ class RsEvent {
      state(nullable:true)
         
      elementName(blank:true,nullable:true)
-        
-     elementId(nullable:true)
+     elementDisplayName(blank:true,nullable:true)
+
         
      count(nullable:true)
         

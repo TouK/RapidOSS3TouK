@@ -57,7 +57,7 @@ class RsHistoricalEvent {
     
     String elementName ="";
     
-    Long elementId =0;
+    String elementDisplayName =0;
     
     Long count =1;
     
@@ -100,8 +100,8 @@ class RsHistoricalEvent {
      state(nullable:true)
         
      elementName(blank:true,nullable:true)
-        
-     elementId(nullable:true)
+     elementDisplayName(blank:true,nullable:true)
+
         
      count(nullable:true)
         

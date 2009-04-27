@@ -55,13 +55,6 @@ releaseOwnershipVisible="true"
         <rui:slMenuItem id="releaseOwnership" label="Release Ownership" visible="${releaseOwnershipVisible}" action="${['releaseOwnershipAction']}">
                
         </rui:slMenuItem>
-        <%
-inMaintenanceVisible="true"
-%>
-
-        <rui:slMenuItem id="inMaintenance" label="In Maintenance" visible="${inMaintenanceVisible}" action="${['inMaintenanceAction']}">
-               
-        </rui:slMenuItem>
         
     </rui:slMenuItems>
     <rui:slPropertyMenuItems>
@@ -118,43 +111,43 @@ lessThanOrEqualToVisible="YAHOO.lang.isNumber(parseInt(params.value))"
     </rui:slPropertyMenuItems>
      <rui:slFields>
     <%
-fieldExpression330Visible="params.data.rsAlias == 'RsRiEvent'"
+fieldExpression5035Visible="params.data.rsAlias == 'RsRiEvent'"
 %>
 
-        <rui:slField exp="${fieldExpression330Visible}" fields='${["elementName", " identifier", " owner", " acknowledged", " severity", " source", " changedAt"]}'></rui:slField>
+        <rui:slField exp="${fieldExpression5035Visible}" fields='${["elementName", " identifier", " owner", " acknowledged", " severity", " source", " changedAt"]}'></rui:slField>
     
     </rui:slFields>
     <rui:slImages>
     <%
-image332Visible="params.data.severity == '5'"
+image5037Visible="params.data.severity == '5'"
 %>
 
-        <rui:slImage visible="${image332Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:slImage>
+        <rui:slImage visible="${image5037Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:slImage>
     <%
-image334Visible="params.data.severity == '4'"
+image5039Visible="params.data.severity == '4'"
 %>
 
-        <rui:slImage visible="${image334Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:slImage>
+        <rui:slImage visible="${image5039Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:slImage>
     <%
-image336Visible="params.data.severity == '3'"
+image5041Visible="params.data.severity == '3'"
 %>
 
-        <rui:slImage visible="${image336Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:slImage>
+        <rui:slImage visible="${image5041Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:slImage>
     <%
-image338Visible="params.data.severity == '2'"
+image5043Visible="params.data.severity == '2'"
 %>
 
-        <rui:slImage visible="${image338Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:slImage>
+        <rui:slImage visible="${image5043Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:slImage>
     <%
-image340Visible="params.data.severity == '1'"
+image5045Visible="params.data.severity == '1'"
 %>
 
-        <rui:slImage visible="${image340Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:slImage>
+        <rui:slImage visible="${image5045Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:slImage>
     <%
-image342Visible="params.data.severity == '0'"
+image5047Visible="params.data.severity == '0'"
 %>
 
-        <rui:slImage visible="${image342Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:slImage>
+        <rui:slImage visible="${image5047Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:slImage>
     
     </rui:slImages>
 </rui:searchList>
@@ -212,15 +205,15 @@ copyQueryVisible="params.data.nodeType == 'filter'"
     </rui:tgMenuItems>
     <rui:tgRootImages>
         <%
-rootImage383Visible="params.data.nodeType == 'group'"
+rootImage5086Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage383Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage5086Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <%
-rootImage385Visible="params.data.nodeType == 'filter'"
+rootImage5088Visible="params.data.nodeType == 'filter'"
 %>
 
-        <rui:tgRootImage visible="${rootImage385Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage5088Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
@@ -233,13 +226,11 @@ rootImage385Visible="params.data.nodeType == 'filter'"
 
 <rui:html id="saveQueryGroupForm" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="inMaintenanceForm" iframe="false"  timeout="30"></rui:html>
-
 <%
-functionActionCondition407Condition="params.data.nodeType == 'filter'"
+functionActionCondition5108Condition="params.data.nodeType == 'filter'"
 %>
 
-<rui:action id="setQueryAction" type="function" function="setQuery" componentId='eventList' condition="$functionActionCondition407Condition"
+<rui:action id="setQueryAction" type="function" function="setQuery" componentId='eventList' condition="$functionActionCondition5108Condition"
 
 >
     
@@ -254,7 +245,7 @@ functionActionCondition407Condition="params.data.nodeType == 'filter'"
 </rui:action>
 
 <%
-functionActionCondition421Condition=""
+functionActionCondition5122Condition=""
 %>
 
 <rui:action id="eventDetailsAction" type="function" function="show" componentId='eventDetails' 
@@ -268,7 +259,7 @@ functionActionCondition421Condition=""
 </rui:action>
 
 <%
-functionActionCondition432Condition=""
+functionActionCondition5133Condition=""
 %>
 
 <rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
@@ -282,7 +273,7 @@ functionActionCondition432Condition=""
 </rui:action>
 
 <%
-functionActionCondition443Condition=""
+functionActionCondition5144Condition=""
 %>
 
 <rui:action id="copyQueryAction" type="function" function="show" componentId='saveQueryForm' 
@@ -296,7 +287,7 @@ functionActionCondition443Condition=""
 </rui:action>
 
 <%
-functionActionCondition454Condition=""
+functionActionCondition5155Condition=""
 %>
 
 <rui:action id="saveQueryAction" type="function" function="show" componentId='saveQueryForm' 
@@ -310,7 +301,7 @@ functionActionCondition454Condition=""
 </rui:action>
 
 <%
-functionActionCondition464Condition=""
+functionActionCondition5165Condition=""
 %>
 
 <rui:action id="queryUpdateAction" type="function" function="show" componentId='saveQueryForm' 
@@ -324,7 +315,7 @@ functionActionCondition464Condition=""
 </rui:action>
 
 <%
-functionActionCondition475Condition=""
+functionActionCondition5176Condition=""
 %>
 
 <rui:action id="queryGroupUpdateAction" type="function" function="show" componentId='saveQueryGroupForm' 
@@ -338,7 +329,7 @@ functionActionCondition475Condition=""
 </rui:action>
 
 <%
-functionActionCondition486Condition=""
+functionActionCondition5187Condition=""
 %>
 
 <rui:action id="sortAscAction" type="function" function="sort" componentId='eventList' 
@@ -352,7 +343,7 @@ functionActionCondition486Condition=""
 </rui:action>
 
 <%
-functionActionCondition497Condition=""
+functionActionCondition5198Condition=""
 %>
 
 <rui:action id="sortDescAction" type="function" function="sort" componentId='eventList' 
@@ -366,7 +357,7 @@ functionActionCondition497Condition=""
 </rui:action>
 
 <%
-functionActionCondition508Condition=""
+functionActionCondition5209Condition=""
 %>
 
 <rui:action id="exceptAction" type="function" function="appendExceptQuery" componentId='eventList' 
@@ -380,7 +371,7 @@ functionActionCondition508Condition=""
 </rui:action>
 
 <%
-functionActionCondition519Condition=""
+functionActionCondition5220Condition=""
 %>
 
 <rui:action id="greaterThanAction" type="function" function="appendToQuery" componentId='eventList' 
@@ -392,7 +383,7 @@ functionActionCondition519Condition=""
 </rui:action>
 
 <%
-functionActionCondition528Condition=""
+functionActionCondition5229Condition=""
 %>
 
 <rui:action id="lessThanAction" type="function" function="appendToQuery" componentId='eventList' 
@@ -404,7 +395,7 @@ functionActionCondition528Condition=""
 </rui:action>
 
 <%
-functionActionCondition537Condition=""
+functionActionCondition5238Condition=""
 %>
 
 <rui:action id="greaterThanOrEqualToAction" type="function" function="appendToQuery" componentId='eventList' 
@@ -416,7 +407,7 @@ functionActionCondition537Condition=""
 </rui:action>
 
 <%
-functionActionCondition546Condition=""
+functionActionCondition5247Condition=""
 %>
 
 <rui:action id="lessThanOrEqualToAction" type="function" function="appendToQuery" componentId='eventList' 
@@ -428,118 +419,7 @@ functionActionCondition546Condition=""
 </rui:action>
 
 <%
-functionActionCondition555Condition=""
-%>
-
-<rui:action id="inMaintenanceAction" type="function" function="show" componentId='inMaintenanceForm' 
-
->
-    
-    <rui:functionArg><![CDATA[createURL('inMaintenanceForm.gsp', {name:params.data.elementName?params.data.elementName:'', refreshComponent:'eventList'})]]></rui:functionArg>
-    
-    <rui:functionArg>null</rui:functionArg>
-    
-</rui:action>
-
-<%
-mergeActionCondition566Condition=""
-%>
-
-<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventList']}"  
-
->
-    <%
-parameter569Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter569Visible}"></rui:requestParam>
-    <%
-parameter571Visible="'true'"
-%>
-
-    <rui:requestParam key="acknowledged" value="${parameter571Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition577Condition=""
-%>
-
-<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventList']}"  
-
->
-    <%
-parameter580Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter580Visible}"></rui:requestParam>
-    <%
-parameter582Visible="'false'"
-%>
-
-    <rui:requestParam key="acknowledged" value="${parameter582Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition588Condition=""
-%>
-
-<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventList']}"  
-
->
-    <%
-parameter591Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter591Visible}"></rui:requestParam>
-    <%
-parameter593Visible="'true'"
-%>
-
-    <rui:requestParam key="act" value="${parameter593Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition599Condition=""
-%>
-
-<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventList']}"  
-
->
-    <%
-parameter602Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter602Visible}"></rui:requestParam>
-    <%
-parameter604Visible="'false'"
-%>
-
-    <rui:requestParam key="act" value="${parameter604Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-requestActionCondition610Condition=""
-%>
-
-<rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" 
-
-        onSuccess="${['refreshQueriesAction']}"
-    
->
-    <%
-parameter613Visible="params.data.id"
-%>
-
-    <rui:requestParam key="id" value="${parameter613Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-requestActionCondition619Condition=""
+requestActionCondition5256Condition=""
 %>
 
 <rui:action id="deleteQueryGroupAction" type="request" url="../searchQueryGroup/delete?format=xml" components="${['filterTree']}" 
@@ -548,15 +428,112 @@ requestActionCondition619Condition=""
     
 >
     <%
-parameter622Visible="params.data.id"
+parameter5259Visible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter622Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameter5259Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-functionActionCondition628Condition=""
+mergeActionCondition5265Condition=""
+%>
+
+<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventList']}"  
+
+>
+    <%
+parameter5268Visible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameter5268Visible}"></rui:requestParam>
+    <%
+parameter5270Visible="'true'"
+%>
+
+    <rui:requestParam key="acknowledged" value="${parameter5270Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionCondition5276Condition=""
+%>
+
+<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventList']}"  
+
+>
+    <%
+parameter5279Visible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameter5279Visible}"></rui:requestParam>
+    <%
+parameter5281Visible="'false'"
+%>
+
+    <rui:requestParam key="acknowledged" value="${parameter5281Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionCondition5287Condition=""
+%>
+
+<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventList']}"  
+
+>
+    <%
+parameter5290Visible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameter5290Visible}"></rui:requestParam>
+    <%
+parameter5292Visible="'true'"
+%>
+
+    <rui:requestParam key="act" value="${parameter5292Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionCondition5298Condition=""
+%>
+
+<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventList']}"  
+
+>
+    <%
+parameter5301Visible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameter5301Visible}"></rui:requestParam>
+    <%
+parameter5303Visible="'false'"
+%>
+
+    <rui:requestParam key="act" value="${parameter5303Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+requestActionCondition5309Condition=""
+%>
+
+<rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" 
+
+        onSuccess="${['refreshQueriesAction']}"
+    
+>
+    <%
+parameter5312Visible="params.data.id"
+%>
+
+    <rui:requestParam key="id" value="${parameter5312Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+functionActionCondition5318Condition=""
 %>
 
 <rui:action id="refreshQueriesAction" type="function" function="poll" componentId='filterTree' 
@@ -589,12 +566,6 @@ x='85' y='50'
   title='Save group'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="inMaintenanceForm" width="600" height="500" resizable="false"
- 
- 
-  title='In Maintenance'
-></rui:popupWindow>
-
 
 
 
@@ -608,13 +579,13 @@ x='85' y='50'
         
 
 
-    <rui:innerLayout id="324">
+    <rui:innerLayout id="5029">
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='655' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
+            <rui:layoutUnit position='center' gutter='0px' id='5339' isActive='true' scroll='false' useShim='false' component='eventList'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='center' gutter='0px' id='652' isActive='true' scroll='false' useShim='false' component='eventList'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='5342' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
         
             </rui:layoutUnit>
         

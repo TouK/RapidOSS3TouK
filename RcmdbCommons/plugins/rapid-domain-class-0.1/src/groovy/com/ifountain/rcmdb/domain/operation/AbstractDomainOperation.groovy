@@ -32,7 +32,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
  * Time: 3:03:18 PM
  * To change this template use File | Settings | File Templates.
  */
-abstract class AbstractDomainOperation {
+public abstract class AbstractDomainOperation {
     def domainObject;
     public Object getProperty(String propName)
     {

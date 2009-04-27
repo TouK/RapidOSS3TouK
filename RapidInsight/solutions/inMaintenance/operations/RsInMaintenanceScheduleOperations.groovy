@@ -3,7 +3,7 @@ import java.util.Date
 public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 	public static SCHEDULE_SOURCE = "schedule";
-	
+
     public static RsInMaintenanceSchedule addObjectSchedule(String objectName,String info,Date startTime,Date endTime)
     {
         if(endTime.compareTo(startTime)<=0)
@@ -40,7 +40,7 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         def schedule=RsInMaintenanceSchedule.get(id:scheduleId);
         if(schedule)
         {
-            def maintResults=RsInMaintenance.search("objectName:${schedule.objectName.exactQuery()} AND source:${SCHEDULE_SOURCE.exactQuery()}").results;            
+            def maintResults=RsInMaintenance.search("objectName:${schedule.objectName.exactQuery()} AND source:${SCHEDULE_SOURCE.exactQuery()}").results;
             if(maintResults.size()>0)
             {
                 maintResults[0].remove();

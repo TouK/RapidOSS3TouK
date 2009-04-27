@@ -137,23 +137,6 @@
 				<Property Name="rsDatasource" Type="string"/>
             </Properties>
 		</Model>
-		<Model Name="RsInMaintenance" StorageType="FileAndMemory">
-   			<Properties>
-      			<Property Name="objectName" Type="string" IsKey="true"/>
-                <Property Name="source" Type="string"/>
-                <Property Name="info" Type="string"/>
-                <Property Name="ending" Type="date"/>
-   			</Properties>
-		</Model>
-        <Model Name="RsInMaintenanceSchedule" StorageType="FileAndMemory">
-   			<Properties>
-      			<Property Name="objectName" Type="string"/>
-                <Property Name="info" Type="string"/>
-                <Property Name="starting" Type="date"/>
-      			<Property Name="ending" Type="date"/>
-      			<Property Name="active" Type="boolean"/>
-   			</Properties>
-		</Model>
         <Model Name="SnmpTrap">
 			<Properties>
 				<Property Name='name' Type='string' IsKey="true"/>

@@ -101,12 +101,11 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
      }
     void testIfEventHasErrorsEventIsNotProcessed()
     {
-        initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem,RsInMaintenance], []);
+        initialize([RsEvent,RsRiEvent,RsEventJournal,RsComputerSystem], []);
 
 
 
         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
-        CompassForTests.addOperationSupport(RsInMaintenance,RsInMaintenanceOperations);
         //we first test successfull case and propageElementstate is called
         assertEquals(0,RsRiEvent.list().size());
         assertEquals(0,RsEventJournal.list().size());

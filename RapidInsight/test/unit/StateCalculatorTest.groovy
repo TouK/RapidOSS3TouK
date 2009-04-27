@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.RsUtilityOperationsMock
 
 /**
 * Created by IntelliJ IDEA.
@@ -11,6 +12,8 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 */
 class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     static def classes = [:];
+    def base_directory = "";
+
     public void setUp() {
         super.setUp();
         initializeClasses();
@@ -18,9 +21,13 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility,RsGroup], []);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
         RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtility.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
+        RsUtility.getUtility("ObjectProcessor").afterProcessors=["StateCalculator"];
     }
 
     public void tearDown() {
+        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.clearUtilityPaths();
         clearMetaClasses();
         StateCalculatorTest.clearClasses();
         super.tearDown();
@@ -36,17 +43,33 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     }
     public static void clearClasses()
     {
+        getClasses().StateCalculator.setToDefault();
         classes=[:];
-        RsUtility.getUtility("StateCalculator").setToDefault();
-
     }
     public def initializeClasses()
     {
+        base_directory = "../../../RapidModules/RapidInsight";
+        def canonicalPath=new File(".").getCanonicalPath();
+        //to run in developer pc
+        if(canonicalPath.endsWith("RapidModules"))
+        {
+            base_directory = "RapidInsight";
+        }
+
         def classMap = [:];
+
+        GroovyClassLoader loader = new GroovyClassLoader();
         classMap.Constants = Constants;
-        classMap.StateCalculator=StateCalculator;
-        classMap.RsTopologyObjectOperations = RsTopologyObjectOperations;
+        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator"));
+        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "RsTopologyObjectOperations"));
+        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator")];
+        
         StateCalculatorTest.initializeClassesFrom(classMap);
+    }
+    public File getOperationPathAsFile(fromPlugin, opdir, opfile)
+    {
+        def plugin_base_dir = "${base_directory}";
+        return new File("${plugin_base_dir}/${opdir}/${opfile}.groovy");
     }
     public static def initializeClassesFrom(classesToLoad)
     {
@@ -74,6 +97,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     }
     public static void testRemoveDeletesRsObjectStateInstance()
     {
+        def _StateCalculator=getClasses().StateCalculator;
         CompassForTests.addOperationSupport(RsTopologyObject, getClasses().RsTopologyObjectOperations);
 
         def object = RsTopologyObject.add(name: "testobject");
@@ -81,7 +105,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(0, RsObjectState.list().size());
 
-        object.getState();
+        _StateCalculator.getObjectState(object);
         assertEquals(1, RsObjectState.list().size());
 
         object.remove();
@@ -101,13 +125,13 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         assertEquals(_Constants.NOTSET, _StateCalculator.loadObjectState(object))
 
         def newState = 5
-        getClasses().StateCalculator.saveObjectState(object,newState);
+        _StateCalculator.saveObjectState(object,newState);
         assertEquals(1, RsObjectState.list().size());
         assertEquals(newState, RsObjectState.get(objectId: object.id).state);
         assertEquals(newState, _StateCalculator.loadObjectState(object))
 
         newState = 3
-        getClasses().StateCalculator.saveObjectState(object,newState);
+        _StateCalculator.saveObjectState(object,newState);
         assertEquals(1, RsObjectState.list().size());
         assertEquals(newState, RsObjectState.get(objectId: object.id).state);
         assertEquals(newState, _StateCalculator.loadObjectState(object))

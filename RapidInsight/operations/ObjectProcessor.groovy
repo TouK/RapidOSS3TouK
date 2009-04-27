@@ -7,10 +7,10 @@
  */
 public class ObjectProcessor {
     static final def defaultBeforeProcessors=[];
-    static final def defaultAfterProcessors=["StateCalculator"];
+    static final def defaultAfterProcessors=[];
 
     static def beforeProcessors=[];
-    static def afterProcessors=["StateCalculator"];
+    static def afterProcessors=[];
 
     static def clearProcessors()
     {

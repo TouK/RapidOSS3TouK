@@ -7,6 +7,9 @@ package com.ifountain.rcmdb.test.util
  * To change this template use File | Settings | File Templates.
  */
 class RsUtilityTestUtils {
+   static def utilityPaths=[:];
+   static def loadedUtilities=[:];
+
    static clearProcessors()
    {
        getRsUtility().getUtility("EventProcessor").clearProcessors();
@@ -24,5 +27,23 @@ class RsUtilityTestUtils {
    static initializeRsUtilityOperations(domainClass)
    {
        CompassForTests.addOperationSupport(domainClass,RsUtilityOperationsMock);
+   }
+   static def clearUtilityPaths()
+   {
+       utilityPaths.clear();
+       loadedUtilities.clear();
+   }
+   static def loadUtility(utilityName)
+   {
+        if(RsUtilityTestUtils.utilityPaths.containsKey(utilityName))
+        {
+             if(!loadedUtilities.containsKey(utilityName))
+             {
+                GroovyClassLoader loader = new GroovyClassLoader();
+                loadedUtilities[utilityName]=loader.parseClass(RsUtilityTestUtils.utilityPaths[utilityName]);
+             }
+             return  loadedUtilities[utilityName];
+        }
+        return Thread.currentThread().contextClassLoader.loadClass (utilityName);
    }
 }

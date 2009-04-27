@@ -6,11 +6,11 @@
  * To change this template use File | Settings | File Templates.
  */
 public class EventProcessor {
-    static final def defaultBeforeProcessors=["InMaintenanceCalculator"];
-    static final def defaultAfterProcessors=["StateCalculator"];
+    static final def defaultBeforeProcessors=[];
+    static final def defaultAfterProcessors=[];
 
-    static def beforeProcessors=["InMaintenanceCalculator"];
-    static def afterProcessors=["StateCalculator"];
+    static def beforeProcessors=[];
+    static def afterProcessors=[];
 
     static def clearProcessors()
     {

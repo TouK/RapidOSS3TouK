@@ -1,9 +1,8 @@
 logger.warn("Starting..............")
-//StateCalculator.calculateMethod="criticalPercent";
 
 
 try{
-RsUtility.getUtility("StateCalculator").calculateMethod="criticalPercent";
+RsUtility.getUtility("StateCalculator").calculateMethod="criticalPercent"; 
 
 //RI- FINDMAX
 final static int CRITICAL = 5

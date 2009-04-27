@@ -8,8 +8,9 @@ package com.ifountain.rcmdb.test.util
  */
 
 class RsUtilityOperationsMock  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+
     public static def getUtility(utilityName)
     {
-        return Thread.currentThread().contextClassLoader.loadClass (utilityName);
+       return RsUtilityTestUtils.loadUtility(utilityName);
     }
 }

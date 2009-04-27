@@ -18,18 +18,18 @@
 */
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-    int getState()
-    {
-        return RsUtility.getUtility("StateCalculator").getObjectState(this.domainObject);
-    }
-    def currentState()
-    {
-        return RsUtility.getUtility("StateCalculator").loadObjectState(this.domainObject);
-    }
-    def afterDelete()
-    {
-        RsUtility.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
-    }
+//    int getState()
+//    {
+//        return RsUtility.getUtility("StateCalculator").getObjectState(this.domainObject);
+//    }
+//    def currentState()
+//    {
+//        return RsUtility.getUtility("StateCalculator").loadObjectState(this.domainObject);
+//    }
+//    def afterDelete()
+//    {
+//        RsUtility.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
+//    }
 
 }
 

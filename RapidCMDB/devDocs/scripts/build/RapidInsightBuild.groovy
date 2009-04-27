@@ -340,8 +340,11 @@ class RapidInsightBuild extends Build {
         ant.copy(toDir: "${env.dist_rapid_suite}/operations",overwrite:true) {
             ant.fileset(file: "${env.rapid_insight}/operations/**");
         }
-
+        ant.copy(toDir: "${env.dist_rapid_suite}/solutions",overwrite:true) {
+            ant.fileset(file: "${env.rapid_insight}/solutions/**");
+        }
         ant.copy(file: "${env.rapid_insight}/rs.exe", toDir: "${env.dist_rapid_suite}",overwrite:true)
+        
         if (TEST) {
             ant.copy(todir: "${env.dist_rapid_suite}/test") {
                 ant.fileset(dir: "$env.rapid_insight/test")

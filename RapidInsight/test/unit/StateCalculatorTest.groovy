@@ -20,7 +20,6 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         clearMetaClasses();
         initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility,RsGroup], []);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
-        RsUtilityTestUtils.setToDefaultProcessors();
         RsUtility.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
         RsUtility.getUtility("ObjectProcessor").afterProcessors=["StateCalculator"];
     }
@@ -42,7 +41,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.enableGlobally();
     }
     public static void clearClasses()
-    {
+    {            
         getClasses().StateCalculator.setToDefault();
         classes=[:];
     }
@@ -60,10 +59,12 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         GroovyClassLoader loader = new GroovyClassLoader();
         classMap.Constants = Constants;
-        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator"));
-        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/statecalculation/operations", "RsTopologyObjectOperations"));
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/statecalculation/operations", "StateCalculator")];
-        
+        classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator"));
+        classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "RsTopologyObjectOperations"));
+
+        RsUtilityTestUtils.clearUtilityPaths();
+        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+
         StateCalculatorTest.initializeClassesFrom(classMap);
     }
     public File getOperationPathAsFile(fromPlugin, opdir, opfile)

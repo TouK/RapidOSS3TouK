@@ -6,7 +6,7 @@ import org.apache.log4j.Logger
 class JiraDatasourceOperations extends BaseDatasourceOperations {
     JiraAdapter adapter;
     def onLoad() {
-        this.adapter = new JiraAdapter(getProperty("connection").name, reconnectInterval * 1000, Logger.getRootLogger());
+        this.adapter = new JiraAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
     }
 
     def getAdapters()

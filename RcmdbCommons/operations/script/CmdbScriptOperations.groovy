@@ -34,7 +34,6 @@ import org.apache.log4j.Logger
  */
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    static Logger logger = Logger.getLogger(CmdbScriptOperations.class)
 
 
     def reload() throws ScriptingException
@@ -101,7 +100,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             }
             catch (Exception e)
             {
-                logger.info("Exception occurred while stopListening for ${script.name} script", e);
+                getLogger().info("Exception occurred while stopListening for ${script.name} script", e);
             }
         }
         script.remove()
@@ -241,8 +240,8 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
 
     static def configureScriptLogger(CmdbScript script)
     {
-        def logger = getScriptLogger(script);
-        LoggerUtils.configureLogger(logger, Level.toLevel(script.logLevel), script.logFile, script.logFileOwn);
+        def scriptLogger = getScriptLogger(script);
+        LoggerUtils.configureLogger(scriptLogger, Level.toLevel(script.logLevel), script.logFile, script.logFileOwn);
 
     }
     static def stopScriptLogger(CmdbScript script)

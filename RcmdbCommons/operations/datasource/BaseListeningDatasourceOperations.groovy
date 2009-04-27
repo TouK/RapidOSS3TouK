@@ -32,7 +32,6 @@ import org.apache.log4j.Logger
 class BaseListeningDatasourceOperations extends BaseDatasourceOperations
 {
 
-    static Logger logger = Logger.getLogger(BaseListeningDatasourceOperations.class)
     static String logPrefix="[BaseListeningDatasource]: ";
 
     def afterDelete(){
@@ -41,7 +40,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
             ListeningAdapterManager.getInstance().removeAdapter(this.domainObject);
         }catch(Exception e)
         {
-            logger.info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
+            getLogger().info ("Exception occurred while removing adapter for ${this.domainObject.name} datasource", e);
         }
     }
     def afterInsert(){
@@ -50,7 +49,7 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
             ListeningAdapterManager.getInstance().addAdapterIfNotExists (this.domainObject);
         }catch(Exception e)
         {
-            logger.info ("Exception occurred while adding adapter for ${this.domainObject.name} datasource", e);
+            getLogger().info ("Exception occurred while adding adapter for ${this.domainObject.name} datasource", e);
         }
     }
 

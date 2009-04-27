@@ -55,7 +55,7 @@ public class RsRiEventOperations  extends RsEventOperations {
 		}
 		else
         {
-           Logger.getRootLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");
+           getLogger().warn("Could not add RsRiEvent ${eventProps} (skipping RsEventJournal add), Reason ${event.errors}");
         }
 
         

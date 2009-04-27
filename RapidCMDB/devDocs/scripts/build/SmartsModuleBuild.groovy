@@ -78,7 +78,7 @@ class SmartsModuleBuild extends Build {
                 ant.exclude(name: "**/overridenOperations/**")
             }
         }
-        ant.copy(toDir: "${rapidSuiteDir}/solutions",overwrite:true) {
+        ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
             ant.fileset(file: "${env.rapid_smarts}/applications/solutions/**");
         }
         

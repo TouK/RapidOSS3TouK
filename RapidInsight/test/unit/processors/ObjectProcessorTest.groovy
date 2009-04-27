@@ -30,12 +30,55 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObject)
-        GroovySystem.metaClassRegistry.removeMetaClass(StateCalculator)
-        GroovySystem.metaClassRegistry.removeMetaClass(InMaintenanceCalculator)
         ExpandoMetaClass.enableGlobally();
     }
 
 
+    public void testObjectInsert()
+    {
+        EventProcessor.beforeProcessors=["ObjectBeforeProcessor"];
+        EventProcessor.afterProcessors=["ObjectAfterProcessor"];
+
+        callParams.clear();
+
+        def object=RsTopologyObject.add(name:"testObj");
+        assertFalse(object.hasErrors());
+
+        callParams.clear();
+
+        assertEquals(2,callParams.size());
+        assertEquals(object.name,callParams.eventInBeforeInsert.object.name);
+        assertEquals(null,callParams.eventInBeforeInsert.objectid);
+        assertEquals(object.name,callParams.eventIsAdded.object.name);
+        assertEquals(object.id,callParams.eventIsAdded.objectid);
+    }
+
+    public void testObjectUpdate()
+    {
+
+        EventProcessor.beforeProcessors=["ObjectBeforeProcessor"];
+        EventProcessor.afterProcessors=["ObjectAfterProcessor"];
+
+
+        def event=RsEvent.add(name:"testEvent",severity:3,rsDatasource:"testds");
+        assertFalse(event.hasErrors());
+
+        callParams.clear();
+
+        event.update(severity:5,rsDatasource:"dsfortest");
+        assertFalse(event.hasErrors());
+
+        assertEquals(2,callParams.size());
+
+        assertEquals(event.name,callParams.eventInBeforeUpdate.event.name);
+        assertEquals(3,callParams.eventInBeforeUpdate.changedProps.severity);
+        assertEquals("testds",callParams.eventInBeforeUpdate.changedProps.rsDatasource);
+
+        assertEquals(event.name,callParams.eventIsUpdated.event.name);
+        assertEquals(3,callParams.eventIsUpdated.changedProps.severity);
+        assertEquals("testds",callParams.eventIsUpdated.changedProps.rsDatasource);
+
+    }
 
     public void testObjectDelete()
     {
@@ -73,7 +116,7 @@ public class ObjectBeforeProcessor
 public class ObjectAfterProcessor
 {
     static def objectIsAdded(object){
-        ObjectProcessorTest.object.objectIsAdded=[object:object,objectid:object.id];
+        ObjectProcessorTest.callParams.objectIsAdded=[object:object,objectid:object.id];
     }
     static def objectIsUpdated(object,changedProps){
         ObjectProcessorTest.callParams.objectIsUpdated=[object:object,changedProps:changedProps];

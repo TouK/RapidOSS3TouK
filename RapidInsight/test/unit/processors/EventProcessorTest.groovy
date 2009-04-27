@@ -31,8 +31,6 @@ class EventProcessorTest extends RapidCmdbWithCompassTestCase{
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObject)
-        GroovySystem.metaClassRegistry.removeMetaClass(StateCalculator)
-        GroovySystem.metaClassRegistry.removeMetaClass(InMaintenanceCalculator)
         ExpandoMetaClass.enableGlobally();
     }
 

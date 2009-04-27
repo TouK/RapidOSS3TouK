@@ -15,7 +15,7 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
         clearMetaClasses();
-        initialize([RsEvent,RsUtility,RsInMaintenance,RsTopologyObject], []);
+        initialize([RsEvent,RsUtility,RsTopologyObject], []);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);        
     }

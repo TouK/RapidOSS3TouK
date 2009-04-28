@@ -62,6 +62,35 @@ class RapidQueryParserTest extends RapidCmdbTestCase
     }
 
 
+    public void testFieldQueryWithAlias()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String aliasFieldName = compass.getSearchEngineFactory().getAliasProperty();
+        String extendedAliasFieldName = compass.getSearchEngineFactory().getExtendedAliasProperty();
+        String aliasFieldValue = "Class1";
+        QueryParser qp = RapidQueryParser.newInstance(aliasFieldName, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        Query q = qp.parse("${aliasFieldName}:\"${aliasFieldValue}\"");
+        String fieldQuery = q.toString();
+        assertEquals ("${aliasFieldName}:${aliasFieldValue} ${extendedAliasFieldName}:${aliasFieldValue}".toString(), fieldQuery);
+
+        qp = RapidQueryParser.newInstance(aliasFieldName, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = qp.parse("${aliasFieldName}:\"${QueryParserUtils.EXACT_QUERY_START}${aliasFieldValue}${QueryParserUtils.EXACT_QUERY_END}\"");
+        fieldQuery = q.toString();
+        assertEquals ("${aliasFieldName}:${aliasFieldValue}".toString(), fieldQuery);
+
+
+        qp = RapidMultiQueryParser.newInstance([aliasFieldName] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = qp.parse("${aliasFieldName}:\"${aliasFieldValue}\"");
+        fieldQuery = q.toString();
+        assertEquals ("${aliasFieldName}:${aliasFieldValue}".toString(), fieldQuery);
+
+        qp = RapidMultiQueryParser.newInstance([aliasFieldName] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = qp.parse("${aliasFieldName}:\"${QueryParserUtils.EXACT_QUERY_START}${aliasFieldValue}${QueryParserUtils.EXACT_QUERY_END}\"");
+        fieldQuery = q.toString();
+        assertEquals ("${aliasFieldName}:${aliasFieldValue}".toString(), fieldQuery);
+    }
+
+
     public void testExactPhraseValidQueries()
     {
         compass = TestCompassFactory.getCompass([CompassTestObject]);

@@ -2,6 +2,11 @@ package com.ifountain.compass.utils;
 
 import org.compass.core.converter.basic.DateMathParser;
 import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.index.Term;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -96,13 +101,25 @@ public class QueryParserUtils {
         }
     }
 
+    public static String trimExactQuerySymbols(String queryText)
+    {
+        return queryText.substring(1, queryText.length()-1);        
+    }
+
+    public static Query getAliasQuery(String alias, String queryText)
+    {
+        BooleanQuery query = new BooleanQuery();
+        query.add(new TermQuery(new Term(alias, queryText)), BooleanClause.Occur.SHOULD);
+        return query;
+    }
+
     public static FieldQueryParameter createFieldQueryParameters(String field, String queryText, List nonEscapedTerms) throws ParseException {
         if(field != null)
         {
             String lastNonEscapedTerm = (String)nonEscapedTerms.get(nonEscapedTerms.size()-1);
             if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) && endsWithExactQuery(lastNonEscapedTerm, queryText))
             {
-                queryText = queryText.substring(1, queryText.length()-1);
+                queryText = trimExactQuerySymbols(queryText);
                 field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
             }
             else if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) || endsWithExactQuery(lastNonEscapedTerm, queryText))

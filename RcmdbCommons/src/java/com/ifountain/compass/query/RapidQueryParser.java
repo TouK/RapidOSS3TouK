@@ -3,6 +3,9 @@ package com.ifountain.compass.query;
 import org.apache.lucene.queryParser.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.index.Term;
 import org.compass.core.converter.basic.DateMathParser;
 import org.compass.core.mapping.CompassMapping;
@@ -22,9 +25,11 @@ import com.ifountain.compass.converter.CompassStringConverter;
  * To change this template use File | Settings | File Templates.
  */
 public class RapidQueryParser extends CompassQueryParser{
-    List nonEscapedTerms = new ArrayList();  
+    List nonEscapedTerms = new ArrayList();
+    String untokenizedAliasFieldName;
     public RapidQueryParser(String f, Analyzer a, CompassMapping mapping, SearchEngineFactory searchEngineFactory, boolean forceAnalyzer) {
         super(f, a, mapping, searchEngineFactory, forceAnalyzer);
+        untokenizedAliasFieldName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+searchEngineFactory.getAliasProperty();
     }
 
     protected String discardEscapeChar(String s) throws ParseException {
@@ -34,7 +39,15 @@ public class RapidQueryParser extends CompassQueryParser{
 
     protected Query getFieldQuery(String field, String queryText) throws ParseException {
         FieldQueryParameter param = QueryParserUtils.createFieldQueryParameters(field, queryText, nonEscapedTerms);
-        return super.getFieldQuery(param.getField(), param.getQueryText());
+        if(untokenizedAliasFieldName.equals(param.getField()))
+        {
+            return QueryParserUtils.getAliasQuery(searchEngineFactory.getAliasProperty(), QueryParserUtils.trimExactQuerySymbols(queryText));
+        }
+        else
+        {
+            return super.getFieldQuery(param.getField(), param.getQueryText());    
+        }
+
     }
 
     protected Query getRangeQuery(String field, String start, String end, boolean inclusive) throws ParseException {

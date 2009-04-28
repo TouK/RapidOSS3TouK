@@ -135,14 +135,32 @@ public class CompassMappingUtils {
                 }
             }
         }
-
+        //TODO:Changed to support searching with alias of parent classes
         // resolve extend aliases
         for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
             CompassClassMapping classMapping = (CompassClassMapping) iter.next();
             Class mappedClassSuperClass = classMapping.getMappedClassSuperClass();
-            if (mappedClassSuperClass != null && classMapping.getExtend() == null) {
-                CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(mappedClassSuperClass);
-                classMapping.setExtend(mapping.getAlias());
+            StringBuffer sb = new StringBuffer();
+            if (classMapping.getExtend() == null) {
+                while(mappedClassSuperClass != null)
+                {
+                    CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(mappedClassSuperClass);
+                    if(mapping != null)
+                    {
+                        sb.append(mapping.getAlias()).append(",");
+                        mappedClassSuperClass = mapping.getMappedClassSuperClass();
+                    }
+                    else
+                    {
+                        break;
+                    }
+
+                }
+                if(sb.length() != 0)
+                {
+                    String aliases = sb.substring(0, sb.length()-1);
+                    classMapping.setExtend(aliases);
+                }
             }
         }
     }

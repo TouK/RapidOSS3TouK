@@ -1,6 +1,7 @@
 package com.ifountain.compass.integration
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.compass.utils.QueryParserUtils
 
 
 /**
@@ -21,7 +22,6 @@ class SearchWithAliasTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
-
         super.tearDown();
     }
 
@@ -42,21 +42,36 @@ class SearchWithAliasTest extends RapidCmdbWithCompassTestCase {
         assertFalse(customer.hasErrors());
 
         assertEquals(3,classes.RsTopologyObject.countHits("alias:*"));
-        assertEquals(1,classes.RsTopologyObject.countHits("alias:RsTopologyObject"));
-        assertEquals(1,classes.RsTopologyObject.countHits("alias:RsGroup"));
+        assertEquals(3,classes.RsTopologyObject.countHits("alias:RsTopologyObject"));
+        assertEquals(2,classes.RsTopologyObject.countHits("alias:RsGroup"));
         assertEquals(1,classes.RsTopologyObject.countHits("alias:RsCustomer"));
 
+        assertEquals(3,classes.RsTopologyObject.countHits("alias:RsTopologyObject AND (name:* OR id:*)"));
+        assertEquals(2,classes.RsTopologyObject.countHits("alias:RsGroup AND (name:* OR id:*)"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:RsCustomer AND (name:* OR id:*)"));
+
         assertEquals(2,classes.RsGroup.countHits("alias:*"));
-        assertEquals(0,classes.RsGroup.countHits("alias:RsTopologyObject"));
-        assertEquals(1,classes.RsGroup.countHits("alias:RsGroup"));
+        assertEquals(2,classes.RsGroup.countHits("alias:RsTopologyObject"));
+        assertEquals(2,classes.RsGroup.countHits("alias:RsGroup"));
         assertEquals(1,classes.RsGroup.countHits("alias:RsCustomer"));
 
         assertEquals(1,classes.RsCustomer.countHits("alias:*"));
-        assertEquals(0,classes.RsCustomer.countHits("alias:RsTopologyObject"));
-        assertEquals(0,classes.RsCustomer.countHits("alias:RsGroup"));
+        assertEquals(1,classes.RsCustomer.countHits("alias:RsTopologyObject"));
+        assertEquals(1,classes.RsCustomer.countHits("alias:RsGroup"));
         assertEquals(1,classes.RsCustomer.countHits("alias:RsCustomer"));
 
 
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsTopologyObject")}"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsGroup")}"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsCustomer")}"));
+
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsTopologyObject")} AND name:*"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsGroup")}  AND name:*"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsCustomer")} AND name:*"));
+
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsTopologyObject")} AND (name:* OR id:*)"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsGroup")}  AND (name:* OR id:*)"));
+        assertEquals(1,classes.RsTopologyObject.countHits("alias:${QueryParserUtils.toExactQuery ("RsCustomer")} AND (name:* OR id:*)"));
     }
 
 

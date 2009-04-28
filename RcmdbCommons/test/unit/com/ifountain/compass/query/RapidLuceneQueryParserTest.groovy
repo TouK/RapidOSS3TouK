@@ -4,6 +4,11 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.compass.query.RapidMultiQueryParser
 import com.ifountain.compass.query.RapidQueryParser
 import com.ifountain.compass.query.RapidLuceneQueryParser
+import org.compass.core.lucene.engine.LuceneSearchEngineFactory
+import org.compass.core.config.CompassSettings
+import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
+import org.compass.core.Compass
+import org.compass.core.impl.DefaultCompass
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,7 +21,9 @@ class RapidLuceneQueryParserTest extends RapidCmdbTestCase
 {
     public void testLuceneQueryParser()
     {
+        DefaultCompass compass = TestCompassFactory.getCompass ([],[],false)
         RapidLuceneQueryParser parser = new RapidLuceneQueryParser();
+        parser.setSearchEngineFactory (compass.getSearchEngineFactory());
         assertTrue(parser.createQueryParser(null, null, false) instanceof RapidQueryParser);
         assertTrue(parser.createMultiQueryParser(null, null, false) instanceof RapidMultiQueryParser);
     }

@@ -8,7 +8,7 @@
     def mergeActionConditionPropertyName = "mergeActionCondition"+uiElement.id+ "Condition";
     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(mergeActionConditionPropertyName, uiElement.condition, true);
 %>
-<rui:action id="${uiElement.name}" type="merge" url="../${uiElement.url}" components="${compNameString}" ${uiElement.removeAttribute != ""? "removeAttribute='"+uiElement.removeAttribute+"'":""} ${uiElement.condition != ""?"condition=\"\$"+mergeActionConditionPropertyName+"\"":""}
+<rui:action id="${uiElement.name}" type="merge" url="../${uiElement.url}" components="${compNameString}" submitType="${uiElement.submitType}" ${uiElement.removeAttribute != ""? "removeAttribute='"+uiElement.removeAttribute+"'":""} ${uiElement.condition != ""?"condition=\"\$"+mergeActionConditionPropertyName+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

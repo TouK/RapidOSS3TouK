@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
 {
     this.url = config.url;
     this.id = config.id;
+    this.submitType = config.submitType || 'GET'
     this.condition = config.condition;
     this.components = components;
     this.allowMultipleRequests = config.allowMultipleRequests;
@@ -85,18 +86,37 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             timeout: this.timeout
         };
         var tmpUrl = this.url;
-        if (postData && postData != "")
-        {
-            if (tmpUrl.indexOf("?") >= 0)
+        if (this.submitType == 'GET') {
+
+            if (postData && postData != "")
             {
-                tmpUrl = tmpUrl + "&" + postData;
+                if (tmpUrl.indexOf("?") >= 0)
+                {
+                    tmpUrl = tmpUrl + "&" + postData;
+                }
+                else
+                {
+                    tmpUrl = tmpUrl + "?" + postData;
+                }
             }
-            else
-            {
-                tmpUrl = tmpUrl + "?" + postData;
-            }
+            this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
         }
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
+        else {
+            var queryIndex = tmpUrl.indexOf("?");
+            if (queryIndex >= 0)
+            {
+                if (postData && postData != "")
+                {
+                    postData = postData + "&" + tmpUrl.substring(queryIndex + 1, tmpUrl.length)
+                }
+                else
+                {
+                    postData = tmpUrl.substring(queryIndex + 1, tmpUrl.length)
+                }
+                tmpUrl = tmpUrl.substring(0, queryIndex);
+            }
+            this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', tmpUrl, callback, postData);
+        }
     },
     processSuccess: function(response)
     {

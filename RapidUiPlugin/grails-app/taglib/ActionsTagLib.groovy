@@ -126,6 +126,7 @@ class ActionsTagLib {
                        var ${actionId}config = {
                          id:'${actionId}',
                          ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+                         ${attrs["submitType"] ? "submitType:'${attrs["submitType"]}'," : ""}
                          ${attrs["condition"] ? "condition:\"${attrs["condition"].encodeAsJavaScript()}\"," : ""}
                          url:'${attrs["url"]}'
                        }

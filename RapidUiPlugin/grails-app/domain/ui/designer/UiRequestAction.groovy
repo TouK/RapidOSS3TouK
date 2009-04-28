@@ -5,13 +5,15 @@ class UiRequestAction extends UiAction
 {
 
     //AUTO_GENERATED_CODE
-
+    public static String GET = "GET"
+    public static String POST = "POST" 
     static searchable = {
         except = ["parameters", "components"];
         storageType "FileAndMemory"
 
     };
     String url;
+    String submitType = GET;
     Long timeout = 60;
     List parameters = [];
     List components = [];
@@ -24,6 +26,7 @@ class UiRequestAction extends UiAction
     static constraints={
         url(blank:true)
         timeout(nullable:true)
+        submitType(blank:false, inList:[GET, POST])
     }
 
     static propertyConfiguration= [:]

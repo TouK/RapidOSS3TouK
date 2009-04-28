@@ -2,7 +2,7 @@
 
 tagSvn() {
     tagname=$1
-    taglist=`svn list http://dev.ifountain.org/repos/os/tags`
+    taglist="svn list http://dev.ifountain.org/repos/os/tags"
     if [ "$taglist" != "${taglist#*$tagname}" ]
       then
          svn delete -m "Deleting obsolete tag" http://dev.ifountain.org/repos/os/tags/$tagname

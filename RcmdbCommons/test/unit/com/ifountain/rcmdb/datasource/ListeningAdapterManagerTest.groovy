@@ -700,16 +700,6 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    public static junit.framework.TestSuite suite()
-    {
-        TestSuite suite = new TestSuite();
-        for(int i=0; i < 100; i++)
-        {
-            suite.addTestSuite (ListeningAdapterManagerTest.class);
-        }
-        return suite;
-    }
-
 }
 
 class BaseListeningDatasourceCompassMock extends BaseListeningDatasource

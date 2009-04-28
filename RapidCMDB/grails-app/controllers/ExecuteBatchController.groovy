@@ -202,7 +202,7 @@ class ExecuteBatchController {
                 builder.Error(Message: error)
             }
         }
-        render(contentType: 'text/xml', text: sw.toString);
+        render(contentType: 'text/xml', text: sw.toString());
     }
 
     def getLogPrefix() {

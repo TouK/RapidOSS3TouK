@@ -284,10 +284,16 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     
     public void testHeartBeatTest()
     {
+        def classMap=[:];
+        GroovyClassLoader loader = new GroovyClassLoader();
+
+        classMap.RsHeartBeatOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/heartbeat/operations", "RsHeartBeatOperations"));
+
+
         initialize([CmdbScript,RsEvent,RsHeartBeat,RsEventJournal,RsHistoricalEvent,RsUtility,RsTopologyObject], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
-        CompassForTests.addOperationSupport (RsHeartBeat,RsHeartBeatOperations);
+        CompassForTests.addOperationSupport (RsHeartBeat,classMap.RsHeartBeatOperations);
         CompassForTests.addOperationSupport (RsEventJournal,RsEventJournalOperations);
         CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);

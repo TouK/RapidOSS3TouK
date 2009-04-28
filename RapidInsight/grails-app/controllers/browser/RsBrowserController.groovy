@@ -249,7 +249,7 @@ class RsBrowserController {
                     def grailsClassProperties = [:]
                     def sortOrder = 0;
                     def sw = new StringWriter();
-                    def builder = new MarkupBuilder();
+                    def builder = new MarkupBuilder(sw);
                     builder.Objects(total: searchResults.total, offset: searchResults.offset) {
                         searchResults.results.each {result ->
                             def className = result.getClass().name;

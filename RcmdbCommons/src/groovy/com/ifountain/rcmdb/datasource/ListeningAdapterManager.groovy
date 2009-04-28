@@ -235,12 +235,12 @@ class ListeningAdapterManager {
         RunnerObject runner = getRunner(listeningDatasource.id)
         return runner != null && runner.isSubscribed();
     }
-    public boolean isStartable(BaseListeningDatasource listeningDatasource) {
+    public boolean isFree(BaseListeningDatasource listeningDatasource) {
         RunnerObject runner = getRunner(listeningDatasource.id)
         boolean result = true;
         if (runner != null)
         {
-            result = runner.isStartable();
+            result = runner.isFree();
         }
         return result;
     }

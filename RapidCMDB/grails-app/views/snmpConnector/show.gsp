@@ -70,7 +70,7 @@
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
              <%
 
-                if ((snmpConnector?.script.listeningDatasource.isStartable())) {
+                if ((snmpConnector?.script.listeningDatasource.isFree())) {
             %>
             <span class="button"><g:actionSubmit class="run" value="Start" action="StartConnector"/></span>
             <%

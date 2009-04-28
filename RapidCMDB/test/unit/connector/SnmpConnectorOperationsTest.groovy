@@ -59,7 +59,7 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->}
         ListeningAdapterManager.metaClass.startAdapter = {BaseListeningDatasource listeningDatasource ->}
         ListeningAdapterManager.metaClass.stopAdapter = {BaseListeningDatasource listeningDatasource ->}
-        ListeningAdapterManager.metaClass.isStartable = {BaseListeningDatasource listeningDatasource -> return true;}
+        ListeningAdapterManager.metaClass.isFree = {BaseListeningDatasource listeningDatasource -> return true;}
 
         CompassForTests.addOperationSupport(CmdbScript, script.CmdbScriptOperations);
         CompassForTests.addOperationSupport(SnmpDatasource, SnmpDatasourceOperations);
@@ -229,7 +229,7 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(updatedObjects["datasource"].id, snmpDatasource.id)
         assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
         assertEquals(snmpConnection.id, snmpDatasource.connection.id);
-        assertTrue(snmpDatasource.isStartable());
+        assertTrue(snmpDatasource.isFree());
 
         def scripts = CmdbScript.list();
         assertEquals(1, scripts.size());
@@ -253,7 +253,7 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         SnmpConnector snmpConnector = snmpConnectors[0]
         assertEquals(connectorSaveParams["name"], snmpConnector.name);
 
-        ListeningAdapterManager.metaClass.isStartable = {BaseListeningDatasource listeningDatasource -> return false;}
+        ListeningAdapterManager.metaClass.isFree = {BaseListeningDatasource listeningDatasource -> return false;}
 
         def updatedObjects = SnmpConnectorOperations.updateConnector(snmpConnector, connectorUpdateParams);
         assertTrue(updatedObjects["exception"] instanceof MessageSourceException)

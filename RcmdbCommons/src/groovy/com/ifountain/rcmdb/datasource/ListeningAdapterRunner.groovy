@@ -149,7 +149,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
         }
     }
 
-    public boolean isStartable() {
+    public boolean isFree() {
         synchronized (stateLock)
         {
             return getState() == NOT_STARTED || getState() == STOPPED_WITH_EXCEPTION || getState() == STOPPED;

@@ -63,9 +63,9 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
         this.update(isSubscribed:false);     
     }
 
-    def isStartable()
+    def isFree()
     {
-        return ListeningAdapterManager.getInstance().isStartable(this.domainObject);
+        return ListeningAdapterManager.getInstance().isFree(this.domainObject);
     }
 
     def isSubscribed()

@@ -462,7 +462,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         ListeningAdapterManager.getInstance().stopAdapter(ds);
         assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds))
     }
-    void testIsStartable()
+    void testisFree()
     {
         initialize();
 
@@ -472,23 +472,23 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         ds.name= "testds";
         ds.listeningScript = script;
 
-        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+        assertTrue(ListeningAdapterManager.getInstance().isFree(ds))
 
         ListeningAdapterManager.getInstance().addAdapter(ds);
-        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+        assertTrue(ListeningAdapterManager.getInstance().isFree(ds))
 
         ListeningAdapterManager.getInstance().startAdapter(ds);
         CommonTestUtils.waitFor(new ClosureWaitAction({
            assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(ds))
         }))
-        assertFalse(ListeningAdapterManager.getInstance().isStartable(ds))        
+        assertFalse(ListeningAdapterManager.getInstance().isFree(ds))
 
         ListeningAdapterManager.getInstance().stopAdapter(ds);
-        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+        assertTrue(ListeningAdapterManager.getInstance().isFree(ds))
 
 
         ListeningAdapterManager.getInstance().removeAdapter(ds);
-        assertTrue(ListeningAdapterManager.getInstance().isStartable(ds))
+        assertTrue(ListeningAdapterManager.getInstance().isFree(ds))
 
     }
     void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException() {
@@ -545,12 +545,12 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
         datasources.each { dsName , ds ->
             assertFalse(ListeningAdapterManager.getInstance().hasAdapter(ds.id));
-            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertTrue(ListeningAdapterManager.getInstance().isFree(ds));
             assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));                      
         }
         inactiveDatasources.each { dsName , ds ->
             assertFalse(ListeningAdapterManager.getInstance().hasAdapter(ds.id));
-            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertTrue(ListeningAdapterManager.getInstance().isFree(ds));
             assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));
         }
         assertNull(ListeningAdapterManager.getInstance().listeningScriptInitializerThread);
@@ -563,12 +563,12 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         
         datasources.each { dsName , ds ->
             assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.id));
-            assertFalse(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertFalse(ListeningAdapterManager.getInstance().isFree(ds));
             assertTrue(ListeningAdapterManager.getInstance().isSubscribed(ds));
         }
         inactiveDatasources.each { dsName , ds ->
             assertTrue(ListeningAdapterManager.getInstance().hasAdapter(ds.id));
-            assertTrue(ListeningAdapterManager.getInstance().isStartable(ds));
+            assertTrue(ListeningAdapterManager.getInstance().isFree(ds));
             assertFalse(ListeningAdapterManager.getInstance().isSubscribed(ds));                       
         }
 

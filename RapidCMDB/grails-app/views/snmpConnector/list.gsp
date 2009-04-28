@@ -51,7 +51,7 @@
                              </g:form>
                          </td>
                         <%
-                            def isSubscribed = snmpConnector.script.listeningDatasource.isStartable();
+                            def isSubscribed = snmpConnector.script.listeningDatasource.isFree();
                             if (isSubscribed) {
                         %>
                            <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>

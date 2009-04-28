@@ -140,7 +140,7 @@
             <span class="button"><g:actionSubmit class="refresh" value="Reload"/></span>
             <%
                 if (cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource) {
-                    if (cmdbScript.listeningDatasource.isStartable()) {
+                    if (cmdbScript.listeningDatasource.isFree()) {
             %>
             <span class="button"><g:actionSubmit class="run" value="Start"/></span>
             <%

@@ -24,7 +24,7 @@ class RunnerObject {
     public void start(BaseListeningDatasource listeningDatasource) {
         this.datasourceId = listeningDatasource.id;
         synchronized (adapterLock) {
-            if (!isStartable()) {
+            if (!isFree()) {
                 if (getState() == AdapterStateProvider.STOPPING) {
                     throw ListeningAdapterException.stoppingStateException(listeningDatasource.id, "start")
                 }
@@ -70,9 +70,9 @@ class RunnerObject {
         return AdapterStateProvider.NOT_STARTED;
     }
 
-    public boolean isStartable() {
+    public boolean isFree() {
         if (runner != null) {
-            return runner.isStartable();
+            return runner.isFree();
         }
         return true;
     }

@@ -227,7 +227,7 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         assertFalse(ds.hasErrors())
         assertNull(ds.getListeningAdapter(null,null));
      }
-     void testIsStartable(){
+     void testisFree(){
 
 
         def scriptFile="baselistening_test.groovy";
@@ -246,16 +246,16 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
 
         def calledDatasource=null;
         def callResult=true;
-        ListeningAdapterManager.metaClass.isStartable= { BaseListeningDatasource listeningDatasource ->
+        ListeningAdapterManager.metaClass.isFree= { BaseListeningDatasource listeningDatasource ->
             calledDatasource = listeningDatasource;
             return callResult;
         }
         assertNull(calledDatasource);
-        assertEquals(true,ds.isStartable());
+        assertEquals(true,ds.isFree());
         assertEquals(calledDatasource.id,ds.id);
         assertEquals(calledDatasource.name,ds.name);
         callResult=false;
-        assertEquals(false,ds.isStartable());
+        assertEquals(false,ds.isFree());
 
 
      }

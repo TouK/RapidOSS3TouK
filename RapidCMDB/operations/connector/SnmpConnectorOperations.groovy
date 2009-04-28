@@ -72,7 +72,7 @@ class SnmpConnectorOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         def throwedException = null;
         def connectorParamsCopy = connectorParams.clone();
         try {
-            if (snmpConnector.script.listeningDatasource.isStartable()) {
+            if (snmpConnector.script.listeningDatasource.isFree()) {
                 oldProperties[snmpConnector] = ControllerUtils.backupOldData(snmpConnector, connectorParamsCopy);
                 snmpConnector.update(connectorParamsCopy);
                 updatedObjects["snmpConnector"] = snmpConnector

@@ -121,7 +121,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         SnmpDatasource snmpDatasource = snmpDatasources[0]
         assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
         assertEquals(snmpConnection.id, snmpDatasource.connection.id);
-        assertTrue(snmpDatasource.isStartable());
+        assertTrue(snmpDatasource.isFree());
 
         def scripts = CmdbScript.list();
         assertEquals(1, scripts.size());
@@ -177,7 +177,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         SnmpDatasource snmpDatasource = snmpDatasources[0]
         assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
         assertEquals(snmpConnection.id, snmpDatasource.connection.id);
-        assertTrue(snmpDatasource.isStartable());
+        assertTrue(snmpDatasource.isFree());
 
         def scripts = CmdbScript.list();
         assertEquals(1, scripts.size());
@@ -239,7 +239,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1, CmdbScript.list().size());
 
         def ds = SnmpDatasource.list()[0];
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
 
         def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
@@ -247,7 +247,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         controller.params.id=snmpConnector.id;
         controller.startConnector();
-        assertFalse(ds.isStartable());
+        assertFalse(ds.isFree());
         def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
@@ -259,7 +259,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         controller.params.id=snmpConnector.id;
         controller.stopConnector();
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
         def lastDsStateChangeTimeAfterStop=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
@@ -287,7 +287,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1, CmdbScript.list().size());
         
         def ds = SnmpDatasource.list()[0];
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
 
         def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
@@ -297,7 +297,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(0, CmdbScript.list().size());
         controller.params.id=snmpConnector.id;
         controller.startConnector();
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
         def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         
@@ -324,7 +324,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1, CmdbScript.list().size());
 
         def ds = SnmpDatasource.list()[0];
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
 
         def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
@@ -336,7 +336,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
         }))
 
-        assertFalse(ds.isStartable());
+        assertFalse(ds.isFree());
         def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
@@ -349,7 +349,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         controller.params.id=snmpConnector.id;
         controller.stopConnector();
-        assertFalse(ds.isStartable());
+        assertFalse(ds.isFree());
         def lastDsStateChangeTimeAfterStop=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
@@ -372,7 +372,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
             assertEquals("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
             def ds = SnmpDatasource.list()[0];
-            assertTrue(ds.isStartable());
+            assertTrue(ds.isFree());
 
             def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
@@ -387,7 +387,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
             assertEquals(connectorName, snmpConnector.name);
 
             assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-            assertTrue(ds.isStartable());
+            assertTrue(ds.isFree());
             assertEquals(0, lastDsStateChangeTime.compareTo(ListeningAdapterManager.getInstance().getLastStateChangeTime(ds)));
 
         }
@@ -417,7 +417,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.params.id = snmpConnector.id;
         controller.startConnector();
         def ds = SnmpDatasource.list()[0];
-        assertFalse(ds.isStartable());
+        assertFalse(ds.isFree());
         assertTrue(controller.flash.message.indexOf("successfully started") > 0)
         assertEquals(0, controller.flash.errors.size());
 
@@ -435,7 +435,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertTrue(controller.flash.message.indexOf("successfully stopped") > 0)
         assertEquals(0, controller.flash.errors.size());
 
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
         ListeningAdapterManager.destroyInstance();
         ListeningAdapterManager.getInstance().initialize();
     }
@@ -455,7 +455,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.params.id = snmpConnector.id;
         controller.startConnector();
         def ds = SnmpDatasource.list()[0];
-        assertFalse(ds.isStartable());
+        assertFalse(ds.isFree());
         assertTrue(controller.flash.message.indexOf("successfully started") > 0)
         assertEquals(0, controller.flash.errors.size());
 
@@ -473,7 +473,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertTrue(controller.flash.message.indexOf("successfully stopped") > 0)
         assertEquals(0, controller.flash.errors.size());
 
-        assertTrue(ds.isStartable());
+        assertTrue(ds.isFree());
         ListeningAdapterManager.destroyInstance();
         ListeningAdapterManager.getInstance().initialize();
     }

@@ -17,6 +17,9 @@
 * USA.
 */
 package ui
+
+import groovy.xml.MarkupBuilder
+
 /**
 * Created by IntelliJ IDEA.
 * User: Sezgin Kucukkaraaslan
@@ -32,19 +35,21 @@ class GridViewController {
     def list = {
         def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
         def gridViews = GridView.searchEvery("username:${session.username.exactQuery()} OR (username:${auth.RsUser.RSADMIN.exactQuery()} AND isPublic:true)", params);
+
         withFormat {
             xml {
-                render(contentType: 'text/xml') {
-                    Views {
-                        for (view in gridViews) {
-                            View(id: view.id, name: view.name, defaultSortColumn: view.defaultSortColumn, sortOrder: view.sortOrder, isPublic: view.isPublic, updateAllowed: (!view.isPublic || isAdmin)) {
-                                view.gridColumns.each {GridColumn gridColumn ->
-                                    Column(attributeName: gridColumn.attributeName, header: gridColumn.header, width: gridColumn.width, columnIndex: gridColumn.columnIndex);
-                                }
+                def sw = new StringWriter();
+                def builder = new MarkupBuilder(sw);
+                builder.Views {
+                    for (view in gridViews) {
+                        builder.View(id: view.id, name: view.name, defaultSortColumn: view.defaultSortColumn, sortOrder: view.sortOrder, isPublic: view.isPublic, updateAllowed: (!view.isPublic || isAdmin)) {
+                            view.gridColumns.each {GridColumn gridColumn ->
+                                builder.Column(attributeName: gridColumn.attributeName, header: gridColumn.header, width: gridColumn.width, columnIndex: gridColumn.columnIndex);
                             }
                         }
                     }
                 }
+                render(contentType: 'text/xml', text: sw.toString())
             }
         }
     }

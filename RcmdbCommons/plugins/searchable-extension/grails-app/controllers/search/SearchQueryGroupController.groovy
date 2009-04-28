@@ -67,7 +67,7 @@ class SearchQueryGroupController {
                 }
 
             }
-            catch (e) {                
+            catch (e) {
                 addError("default.custom.error", [e.getMessage()])
 
                 withFormat {
@@ -99,30 +99,11 @@ class SearchQueryGroupController {
 
         if (!searchQueryGroup) {
             addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
+            flash.errors = errors;
+            redirect(action: list)
         }
         else {
-            withFormat{
-                html{
-                    return [searchQueryGroup: searchQueryGroup]
-                }
-                xml{
-	                render(contentType: 'text/xml') {
-		            	Edit{
-                            id(searchQueryGroup.id)
-                            name(searchQueryGroup.name)
-	                    }
-	            	}
-
-                }
-            }
-
+           return [searchQueryGroup: searchQueryGroup]
         }
     }
 

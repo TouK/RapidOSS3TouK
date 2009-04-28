@@ -1,5 +1,6 @@
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.text.MessageFormat
+import groovy.xml.MarkupBuilder
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -128,7 +129,7 @@ class ExecuteBatchController {
                             log.debug(getLogPrefix() + "Relation removed successfully.");
                         }
                     }
-                    else if(actionType == UPDATE_OBJECT){
+                    else if (actionType == UPDATE_OBJECT) {
                         def keys = [:];
                         row."${RapidCMDBConstants.MODEL}".Keys.children().each {
                             keys.put(it.name(), it.text());
@@ -140,8 +141,8 @@ class ExecuteBatchController {
                         }
                         def updateParams = [:];
                         row."${RapidCMDBConstants.MODEL}".children().each {
-                            if(it.name() != "Keys"){
-                              updateParams.put(it.name(), it.text());  
+                            if (it.name() != "Keys") {
+                                updateParams.put(it.name(), it.text());
                             }
 
                         }
@@ -194,13 +195,14 @@ class ExecuteBatchController {
     }
 
     def renderErrors(errorList) {
-        render(contentType: 'text/xml') {
-            Errors {
-                for (error in errorList) {
-                    Error(Message: error)
-                }
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        builder.Errors() {
+            for (error in errorList) {
+                builder.Error(Message: error)
             }
-        };
+        }
+        render(contentType: 'text/xml', text: sw.toString);
     }
 
     def getLogPrefix() {

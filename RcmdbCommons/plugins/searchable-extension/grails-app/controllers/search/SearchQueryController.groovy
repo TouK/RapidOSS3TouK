@@ -85,49 +85,11 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get([id: params.id])
         if (!searchQuery) {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
+            flash.errors = errors;
+            redirect(action: list)
         }
         else {
-            withFormat {
-                html {
-                    return [searchQuery: searchQuery]
-                }
-                xml {
-                    def userName = session.username;
-                    def searchQueryGroups = SearchQueryGroup.list().findAll {
-                        it.username == userName && it.isPublic == false
-                    };
-                    render(contentType: 'text/xml') {
-                        Edit {
-                            id(searchQuery.id)
-                            name(searchQuery.name)
-                            query(searchQuery.query)
-                            sortProperty(searchQuery.sortProperty);
-                            sortOrder {
-                                option(selected: searchQuery.sortOrder == 'desc', 'desc')
-                                option(selected: searchQuery.sortOrder == 'asc', 'asc')
-                            }
-                            group {
-                                searchQueryGroups.each {
-                                    if (it.name == searchQuery.group.name) {
-                                        option(selected: "true", it.name)
-                                    }
-                                    else {
-                                        option(it.name)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
+            return [searchQuery: searchQuery]
         }
 
     }
@@ -142,10 +104,10 @@ class SearchQueryController {
                 params.group = "My Queries";
                 groupType = "default"
             }
-            def group = SearchQueryGroup.get(name: params.group, username: session.username, type:groupType);
+            def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
             if (group == null)
             {
-                group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
+                group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
             }
             params["group"] = ["id": group.id];
             params["group.id"] = "${group.id}".toString();
@@ -183,29 +145,9 @@ class SearchQueryController {
     }
 
     def create = {
-        withFormat {
-            html {
-                def searchQuery = new SearchQuery()
-                searchQuery.properties = params
-                return ['searchQuery': searchQuery]
-            }
-            xml {
-                def userName = session.username;
-                def searchQueryGroups = SearchQueryGroup.list().findAll {
-                    it.username == userName && it.isPublic == false
-                };
-                render(contentType: 'text/xml') {
-                    Create {
-                        group {
-                            searchQueryGroups.each {
-                                option(it.name)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        def searchQuery = new SearchQuery()
+        searchQuery.properties = params
+        return ['searchQuery': searchQuery]
     }
 
     def save = {
@@ -216,10 +158,10 @@ class SearchQueryController {
             params.group = "My Queries";
             groupType = "default"
         }
-        def group = SearchQueryGroup.get(name: params.group, username: session.username, type:groupType);
+        def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
         if (group == null)
         {
-            group = SearchQueryGroup.add(name: params.group, username: session.username, type:groupType);
+            group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
         }
         params["group"] = ["id": group.id];
         params["group.id"] = "${group.id}".toString();

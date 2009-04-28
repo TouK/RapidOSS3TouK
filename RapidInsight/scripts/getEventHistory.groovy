@@ -22,8 +22,10 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import groovy.xml.MarkupBuilder;
 
 def CONTAINER_PROPERTY = "rsDatasource"
 
@@ -32,22 +34,22 @@ def formatter = new SimpleDateFormat(timeStampFormat);
 def nodeType = params.nodeType;
 def name = params.name;
 
-def searchParams = [max:"1000", sort:"clearedAt", order:"desc"];
+def searchParams = [max: "1000", sort: "clearedAt", order: "desc"];
 def historicalEvents = null;
-if(nodeType == "Container"){
+if (nodeType == "Container") {
     historicalEvents = RsHistoricalEvent.search("${CONTAINER_PROPERTY}:${name.exactQuery()}", searchParams).results;
 }
-else{
-   historicalEvents = RsHistoricalEvent.search("elementName:${name.exactQuery()}", searchParams).results;
+else {
+    historicalEvents = RsHistoricalEvent.search("elementName:${name.exactQuery()}", searchParams).results;
 }
-
-web.render(contentType: 'text/xml'){
-   data(){
-       historicalEvents.each{RsHistoricalEvent historicalEvent ->
-           def start = formatter.format(new Timestamp(historicalEvent.createdAt)) + " GMT";
-           def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
-           def title = historicalEvent.elementName + " " + historicalEvent.name;
-           event(title:title, start:start, end:end, isDuration:"true", historicalEvent.name)
-       }
-   }
+def sw = new StringWriter();
+def builder = new MarkupBuilder(sw);
+builder.data() {
+    historicalEvents.each {RsHistoricalEvent historicalEvent ->
+        def start = formatter.format(new Timestamp(historicalEvent.createdAt)) + " GMT";
+        def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
+        def title = historicalEvent.elementName + " " + historicalEvent.name;
+        builder.event(title: title, start: start, end: end, isDuration: "true", historicalEvent.name)
+    }
 }
+web.render(contentType: 'text/xml', text: sw.toString())

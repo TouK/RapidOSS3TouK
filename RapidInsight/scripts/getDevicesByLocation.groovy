@@ -1,9 +1,11 @@
+import groovy.xml.MarkupBuilder
+
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Dec 31, 2008
- * Time: 10:51:36 AM
- */
+* Created by IntelliJ IDEA.
+* User: Sezgin Kucukkaraaslan
+* Date: Dec 31, 2008
+* Time: 10:51:36 AM
+*/
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -36,14 +38,15 @@ else {
     searchResults = RsComputerSystem.search("name:${name.exactQuery()} AND location:${location.exactQuery()}", params);
 }
 def sortOrder = 0;
-web.render(contentType: "text/xml") {
-    Objects(total: searchResults.total, offset: searchResults.offset) {
-        searchResults.results.each {RsComputerSystem result ->
-            def props = ["id":result.id, "name":result.name, "className":result.className, "displayName":result.displayName,
-            state:result.getState(), "sortOrder":sortOrder++, "rsAlias":result.getClass().name];
-            Object(props);
-        }
+def sw = new StringWriter();
+def builder = new MarkupBuilder(sw);
+builder.Objects(total: searchResults.total, offset: searchResults.offset) {
+    searchResults.results.each {RsComputerSystem result ->
+        def props = ["id": result.id, "name": result.name, "className": result.className, "displayName": result.displayName,
+                state: result.getState(), "sortOrder": sortOrder++, "rsAlias": result.getClass().name];
+        builder.Object(props);
     }
 }
+web.render(contentType: "text/xml", text:sw.toString())
 
 

@@ -1,9 +1,11 @@
+import groovy.xml.MarkupBuilder
+
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Dec 25, 2008
- * Time: 3:04:11 PM
- */
+* Created by IntelliJ IDEA.
+* User: Sezgin Kucukkaraaslan
+* Date: Dec 25, 2008
+* Time: 3:04:11 PM
+*/
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -53,7 +55,7 @@ devices.each {RsComputerSystem device ->
             def cntr = location.get("cntr");
             cntr++;
             def deviceState = device.getState();
-            if(deviceState > location["state"]){
+            if (deviceState > location["state"]) {
                 location.put("state", deviceState)
             }
             location.put("cntr", cntr.toString());
@@ -62,47 +64,47 @@ devices.each {RsComputerSystem device ->
             def geos = device.geocodes.split("::");
             def lat = geos[0];
             def lng = geos[1];
-            locations.put(device.location, ["lat": lat, "lng": lng, "cntr": 1, "state":device.getState()]);
+            locations.put(device.location, ["lat": lat, "lng": lng, "cntr": 1, "state": device.getState()]);
         }
     }
 }
-
-web.render(contentType: "text/xml") {
-    Locations() {
-        locations.each {address, location ->
-            def tooltip = getTooltip(address, location);
-            //get appropriate marker image for the map which represents the state of the address.
-            def marker = getMarker(location);
-            def lat = location.get("lat");
-            def lng = location.get("lng");
-            Location(Address: address, Lat: lat, Lng: lng, Tooltip: tooltip, Marker: marker, NodeType:nodeType, Name:name);
-        }
+def sw = new StringWriter();
+def builder = new MarkupBuilder(sw);
+builder.Locations() {
+    locations.each {address, location ->
+        def tooltip = getTooltip(address, location);
+        //get appropriate marker image for the map which represents the state of the address.
+        def marker = getMarker(location);
+        def lat = location.get("lat");
+        def lng = location.get("lng");
+        builder.Location(Address: address, Lat: lat, Lng: lng, Tooltip: tooltip, Marker: marker, NodeType: nodeType, Name: name);
     }
 }
+web.render(contentType: "text/xml", text: sw.toString())
 
 def getTooltip(address, location) {
     return "<b>" + address + " (" + location.get("cntr") + " devices)</b>"
 
 }
 
-def getMarker(location){
+def getMarker(location) {
     def state = location.get("state");
-    if(state == 5){
+    if (state == 5) {
         return "http://www.mapbuilder.net/img/icons/marker_34_red.png";
     }
-    else if(state == 4){
+    else if (state == 4) {
         return "http://www.mapbuilder.net/img/icons/marker_34_orange.png";
     }
-    else if(state == 3){
+    else if (state == 3) {
         return "http://www.mapbuilder.net/img/icons/marker_34_yellow.png";
     }
-    else if(state == 2){
+    else if (state == 2) {
         return "http://www.mapbuilder.net/img/icons/marker_34_blue.png";
     }
-    else if(state == 1){
+    else if (state == 1) {
         return "http://www.mapbuilder.net/img/icons/marker_34_purple.png";
     }
-    else{
+    else {
         return "http://www.mapbuilder.net/img/icons/marker_34_green.png";
     }
 }

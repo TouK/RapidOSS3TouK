@@ -89,18 +89,20 @@ class RsBrowserController {
             def count = domainClass.clazz."count"();
             def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
             def objectList = domainClass.clazz."list"(params)
+
             if (params.format == 'xml') {
-                render(contentType: "text/xml") {
-                    Objects(total: count, offset: params.offset ? params.offset : 0) {
-                        objectList.each {object ->
-                            def props = ["id": object.id]
-                            propertyList.each {p ->
-                                props.put(p.name, object[p.name])
-                            }
-                            Object(props)
+                def sw = new StringWriter();
+                def builder = new MarkupBuilder(sw);
+                builder.Objects(total: count, offset: params.offset ? params.offset : 0) {
+                    objectList.each {object ->
+                        def props = ["id": object.id]
+                        propertyList.each {p ->
+                            props.put(p.name, object[p.name])
                         }
+                        builder.Object(props)
                     }
                 }
+                render(contentType: "text/xml", text: sw.toString())
             }
             else {
                 render(view: "listDomain", model: [objectList: objectList, propertyList: propertyList, count: count, domainName: domainClass.fullName])
@@ -128,37 +130,38 @@ class RsBrowserController {
                 def properties = objectClass.clazz."getPropertiesList"();
                 def keySet = objectClass.clazz."keySet"();
                 if (params.format == 'xml') {
-                    render(contentType: "text/xml") {
-                        Object() {
-                            id(domainObject.id)
-                            keySet.each {key ->
-                                if (key.name != "id") {
-                                    "${key.name}"(domainObject[key.name])
-                                }
+                    def sw = new StringWriter();
+                    def builder = new MarkupBuilder(sw);
+                    builder.Object() {
+                        builder.id(domainObject.id)
+                        keySet.each {key ->
+                            if (key.name != "id") {
+                                builder."${key.name}"(domainObject[key.name])
                             }
-                            properties.each {p ->
-                                if (p.name != "id" && !p.isKey) {
-                                    if (!p.isRelation) {
-                                        "${p.name}"(domainObject[p.name])
-                                    }
-                                    else {
-                                        if (p.isOneToMany() || p.isManyToMany()) {
-                                            "${p.name}"() {
-                                                def relatedObjects = domainObject[p.name];
-                                                relatedObjects.each {relatedObject ->
-                                                    Object(relatedObject)
-                                                }
+                        }
+                        properties.each {p ->
+                            if (p.name != "id" && !p.isKey) {
+                                if (!p.isRelation) {
+                                    builder."${p.name}"(domainObject[p.name])
+                                }
+                                else {
+                                    if (p.isOneToMany() || p.isManyToMany()) {
+                                        builder."${p.name}"() {
+                                            def relatedObjects = domainObject[p.name];
+                                            relatedObjects.each {relatedObject ->
+                                                builder.Object(relatedObject)
                                             }
                                         }
-                                        else {
-                                            def relatedObject = domainObject[p.name]
-                                            "${p.name}"(relatedObject ? relatedObject : "")
-                                        }
+                                    }
+                                    else {
+                                        def relatedObject = domainObject[p.name]
+                                        builder."${p.name}"(relatedObject ? relatedObject : "")
                                     }
                                 }
                             }
                         }
                     }
+                    render(contentType: "text/xml", text: sw.toString())
                 }
                 else {
                     render(view: "show", model: [keys: keySet, propertyList: properties, domainObject: domainObject])
@@ -213,10 +216,10 @@ class RsBrowserController {
                 }
                 if (searchQuery) {
                     query = searchQuery.query;
-                    if(params.sort == null){
+                    if (params.sort == null) {
                         params.sort = searchQuery.sortProperty
                     }
-                    if(params.order == null){
+                    if (params.order == null) {
                         params.order = searchQuery.sortOrder;
                     }
                 }
@@ -245,29 +248,30 @@ class RsBrowserController {
                 if (params.format == 'xml') {
                     def grailsClassProperties = [:]
                     def sortOrder = 0;
-                    render(contentType: "text/xml") {
-                        Objects(total: searchResults.total, offset: searchResults.offset) {
-                            searchResults.results.each {result ->
-                                def className = result.getClass().name;
-                                def grailsObjectProps = grailsClassProperties[className]
-                                if (grailsObjectProps == null)
-                                {
-                                    def objectDomainClass = grailsApplication.getDomainClass(className);
-                                    grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
-                                    grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                                }
-                                def props = ["id": result.id];
-                                grailsObjectProps.each {resultProperty ->
-                                    if (resultProperty.name != "id") {
-                                        props[resultProperty.name] = result[resultProperty.name];
-                                    }
-                                }
-                                props.put("rsAlias", className)
-                                props.put("sortOrder", sortOrder++)
-                                Object(props);
+                    def sw = new StringWriter();
+                    def builder = new MarkupBuilder();
+                    builder.Objects(total: searchResults.total, offset: searchResults.offset) {
+                        searchResults.results.each {result ->
+                            def className = result.getClass().name;
+                            def grailsObjectProps = grailsClassProperties[className]
+                            if (grailsObjectProps == null)
+                            {
+                                def objectDomainClass = grailsApplication.getDomainClass(className);
+                                grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
+                                grailsClassProperties[result.getClass().name] = grailsObjectProps;
                             }
+                            def props = ["id": result.id];
+                            grailsObjectProps.each {resultProperty ->
+                                if (resultProperty.name != "id") {
+                                    props[resultProperty.name] = result[resultProperty.name];
+                                }
+                            }
+                            props.put("rsAlias", className)
+                            props.put("sortOrder", sortOrder++)
+                            builder.Object(props);
                         }
                     }
+                    render(contentType: "text/xml", text: sw.toString())
                 }
                 else {
                     def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
@@ -299,13 +303,14 @@ class RsBrowserController {
 
     def getSearchClasses = {
         def domainClasses = grailsApplication.domainClasses;
-        render(contentType: "text/xml"){
-            Classes(){
-                domainClasses.each{
-                    Class(name:it.fullName);
-                }
+        def sw = new StringWriter();
+        def builder = new MarkupBuilder(sw);
+        builder.Classes() {
+            domainClasses.each {
+                builder.Class(name: it.fullName);
             }
         }
+        render(contentType: "text/xml", text:sw.toString())
     }
 
     def getPropertiesWhichCanBeListed(domainClass, max) {

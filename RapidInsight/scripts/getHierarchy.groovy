@@ -1,9 +1,11 @@
+import groovy.xml.MarkupBuilder
+
 /**
- * Created by IntelliJ IDEA.
- * User: Sezgin Kucukkaraaslan
- * Date: Dec 25, 2008
- * Time: 3:04:11 PM
- */
+* Created by IntelliJ IDEA.
+* User: Sezgin Kucukkaraaslan
+* Date: Dec 25, 2008
+* Time: 3:04:11 PM
+*/
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -27,17 +29,17 @@ def containerMap = [:]
 
 def summaryMap = RsComputerSystem.propertySummary("alias:*", [CONTAINER_PROPERTY]);
 def containers = summaryMap[CONTAINER_PROPERTY].keySet();
-
-web.render(contentType: 'text/xml') {
-    Objects() {
-        containers.each {containerName ->
-           Object(id:containerName, name:containerName, displayName:containerName, nodeType:'Container'){
-               def results = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:${containerName.exactQuery()}");
-               results.each{RsComputerSystem topoObj ->
-                   Object(id:topoObj.id, name:topoObj.name, displayName:topoObj.displayName, nodeType:'Object',
-                           "${CONTAINER_PROPERTY}":topoObj[CONTAINER_PROPERTY])
-               }
-           }
+def sw = new StringWriter();
+def builder = new MarkupBuilder(sw);
+builder.Objects() {
+    containers.each {containerName ->
+        builder.Object(id: containerName, name: containerName, displayName: containerName, nodeType: 'Container') {
+            def results = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:${containerName.exactQuery()}");
+            results.each {RsComputerSystem topoObj ->
+                builder.Object(id: topoObj.id, name: topoObj.name, displayName: topoObj.displayName, nodeType: 'Object',
+                        "${CONTAINER_PROPERTY}": topoObj[CONTAINER_PROPERTY])
+            }
         }
     }
 }
+web.render(contentType: 'text/xml', text: sw.toString()); 

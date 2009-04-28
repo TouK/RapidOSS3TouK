@@ -16,30 +16,33 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import auth.RsUser;
+
+import auth.RsUser
+import groovy.xml.MarkupBuilder;
 
 def notificationName = params.name;
 def user = RsUser.findByUsername(web.session.username);
 def acknowledged = params.acknowledged;
 
-def rsEvent = RsEvent.get(name:notificationName);
+def rsEvent = RsEvent.get(name: notificationName);
 if (rsEvent) {
-	    if (acknowledged == "true")
-        	rsEvent.acknowledge(true, user.username);
-    	else if (acknowledged == "false")
-        	rsEvent.acknowledge(false, user.username);
+    if (acknowledged == "true")
+        rsEvent.acknowledge(true, user.username);
+    else if (acknowledged == "false")
+        rsEvent.acknowledge(false, user.username);
 
     def props = [:];
     def grailsDomainClass = web.grailsApplication.getDomainClass(rsEvent.class.name);
     grailsDomainClass.getProperties().each {rsProperty ->
         props[rsProperty.name] = rsEvent[rsProperty.name];
     }
-    web.render(contentType: 'text/xml') {
-        Objects {
-            Object(props);
-        }
+    def sw = new StringWriter();
+    def builder = new MarkupBuilder(sw);
+    builder.Objects() {
+        builder.Object(props);
     }
+    web.render(contentType: 'text/xml', text:sw.toString()) 
 }
-else{
-    throw new Exception("RsEvent with name: ${notificationName} does not exist." );
+else {
+    throw new Exception("RsEvent with name: ${notificationName} does not exist.");
 }

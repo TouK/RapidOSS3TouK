@@ -75,23 +75,32 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     void testIfConnectorHasErrorsNothingIsAdded() {
-        connectorSaveParams.remove("name")
+
+        def existingConnector=EmailConnector.add(connectorSaveParams);
+        assertFalse(existingConnector.hasErrors());
+
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
         assertTrue(createdObjects.emailConnector.hasErrors())
-        assertEquals(0, EmailConnector.list().size())
+        assertEquals(1, EmailConnector.list().size())
         assertEquals(0, EmailConnection.list().size())
         assertEquals(0, EmailDatasource.list().size())
     }
 
     void testIfConnectionHasErrorsConnectorIsNotAdded() {
-        connectorSaveParams["smtpPort"] = "asdadsf"
-        def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
+        def connectionSaveParams=[:];
+        connectionSaveParams.name=EmailConnectorOperations.getEmailConnectionName(connectorSaveParams.name);
+        connectionSaveParams.smtpHost=connectorSaveParams.smtpHost;
+        connectionSaveParams.smtpPort=connectorSaveParams.smtpPort;
+        def existingConnection=EmailConnection.add(connectionSaveParams);
+        assertFalse(existingConnection.hasErrors());
 
+        def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
+        assertTrue(createdObjects.emailConnection.hasErrors())
         assertEquals(0, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
+        assertEquals(1, EmailConnection.list().size())
         assertEquals(0, EmailDatasource.list().size())
 
-        assertTrue(createdObjects.emailConnection.hasErrors())
+
     }
 
     void testIfDatasourceHasErrorsConnectorIsNotAdded() {

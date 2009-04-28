@@ -9,14 +9,14 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * Time: 3:03:46 PM
 * To change this template use File | Settings | File Templates.
 */
-class EventProcessorTest extends RapidCmdbWithCompassTestCase{      
+class EventProcessorTest extends RapidCmdbWithCompassTestCase{
     static def callParams=[:];
 
      public void setUp() {
         super.setUp();
         clearMetaClasses();
         initialize([RsEvent,RsUtility,RsTopologyObject], []);
-        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);        
+        CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
         RsUtilityTestUtils.clearProcessors();
     }

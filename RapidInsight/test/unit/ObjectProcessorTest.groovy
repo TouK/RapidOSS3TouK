@@ -11,13 +11,13 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 */
 class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
     static def callParams=[:] ;
-    
+
      public void setUp() {
         super.setUp();
         clearMetaClasses();
         initialize([RsEvent,RsUtility,RsTopologyObject], []);
         CompassForTests.addOperationSupport (RsTopologyObject,RsTopologyObjectOperations);
-        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);        
+        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
     }
 
     public void tearDown() {

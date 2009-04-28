@@ -22,9 +22,13 @@ class RapidLuceneQueryParserTest extends RapidCmdbTestCase
     public void testLuceneQueryParser()
     {
         DefaultCompass compass = TestCompassFactory.getCompass ([],[],false)
-        RapidLuceneQueryParser parser = new RapidLuceneQueryParser();
-        parser.setSearchEngineFactory (compass.getSearchEngineFactory());
-        assertTrue(parser.createQueryParser(null, null, false) instanceof RapidQueryParser);
-        assertTrue(parser.createMultiQueryParser(null, null, false) instanceof RapidMultiQueryParser);
+        try{
+            RapidLuceneQueryParser parser = new RapidLuceneQueryParser();
+            parser.setSearchEngineFactory (compass.getSearchEngineFactory());
+            assertTrue(parser.createQueryParser(null, null, false) instanceof RapidQueryParser);
+            assertTrue(parser.createMultiQueryParser(null, null, false) instanceof RapidMultiQueryParser);
+        }finally{
+            compass.close();
+        }
     }
 }

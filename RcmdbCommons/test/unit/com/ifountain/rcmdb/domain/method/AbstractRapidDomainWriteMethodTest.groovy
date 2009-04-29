@@ -550,7 +550,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
     }
     public static void _testDeadLockDetection(Class rapidDomainWriteMethodImpl)
     {
-        DomainLockManager.initialize(2000, TestLogUtils.log);
+        DomainLockManager.initialize(20000, TestLogUtils.log);
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
         Class modelClass = createModels()[0];

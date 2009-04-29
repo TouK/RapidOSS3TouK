@@ -54,7 +54,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         //calling with no expandedNodeName
         def params=[:];
         params.nodes="start,false,50,100;"
-        
+
 
         def expandData=getExpandMapData(params);
         assertEquals(1,expandData.nodes.size());
@@ -127,7 +127,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def reverseExpandData=getExpandMapData(params);
         assertEquals(2,reverseExpandData.nodes.size());
         assertEquals(1,reverseExpandData.edges.size());
-    
+
         def sourceReverseNodeData=reverseExpandData.nodes[source.name];
         def targetReverseNodeData=reverseExpandData.nodes[target.name];
         def edgeReverseData=getEdgeFrom(reverseExpandData.edges,source.name,target.name)
@@ -362,7 +362,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             def targetName="target${counter}".toString();
             params.nodes=nodeParamString;
             params.expandedNodeName=targetName;
-            
+
             def targetExpandData=getExpandMapData(params);
 
             assertEquals(1+targetCount+1*subTargetCount,targetExpandData.nodes.size());
@@ -375,7 +375,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             //check expanded node
             def expandedNode=targets[targetName];
             def expandedNodeData=targetExpandData.nodes[targetName];
-            
+
             checkNodeData(expandedNodeData,expandedNode,"true","true","","");
             def linkData=getEdgeFrom(targetExpandData.edges,sourceNode.name,expandedNode.name);
             checkEdgeData (linkData,sourceNode.name,expandedNode.name);
@@ -438,7 +438,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             expandedTargetNames[targetName]=targetName;
 
             def targetExpandData=getExpandMapData(params);
-            
+
             assertEquals(1+targetCount+expandedTargetNames.size()*subTargetCount,targetExpandData.nodes.size());
             assertEquals(targetCount+expandedTargetNames.size()*subTargetCount,targetExpandData.edges.size());
 
@@ -447,7 +447,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             checkNodeData(sourceNodeData,sourceNode,"true","true","","");
 
             //check expanded nodes
-            expandedTargetNames.each{ targetNameKey, targetNameValue ->                
+            expandedTargetNames.each{ targetNameKey, targetNameValue ->
                 def expandedNode=targets[targetNameKey];
                 def expandedNodeData=targetExpandData.nodes[targetNameKey];
 
@@ -527,7 +527,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
      def getExpandMapData(params){
         params.nodePropertyList="name,expanded,x,y"
-        
+
         def script=CmdbScript.get(name:"expandMap")
 
         def scriptResult=CmdbScript.runScript(script,["params":params]);
@@ -554,7 +554,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             def edgeData=[:];
             edgeProps.each{ propName ->
                 edgeData[propName]=dataRow.@"${propName}".toString();
-            }            
+            }
             results.edges.put(getEdgeMapKey(edgeData.source,edgeData.target),edgeData);
         }
         println "result parsed from xml ${results}"

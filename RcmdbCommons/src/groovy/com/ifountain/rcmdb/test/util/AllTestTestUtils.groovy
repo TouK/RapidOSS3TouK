@@ -30,7 +30,7 @@ class AllTestTestUtils {
 
         def testClasses = [];
         possibleTestFiles.each{File possibleTesFile->
-            if(possibleTesFile.name.endsWith("Test.java") || possibleTesFile.name.endsWith("Test.groovy"))
+            if(possibleTesFile.name.endsWith("Test.java") || possibleTesFile.name.endsWith("Test.groovy") || possibleTesFile.name.endsWith("Tests.groovy"))
             {
                 def fileName =  possibleTesFile.canonicalPath.substring(testsPath.canonicalPath.length()+1);
                 def className = StringUtils.substringBeforeLast(fileName, ".").replaceAll("/", ".").replaceAll("\\\\", ".");

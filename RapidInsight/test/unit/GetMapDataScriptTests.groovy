@@ -163,7 +163,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             def nodeCounter=counter+1;
             def params=[:];
             params.nodes="sourceNode;";
-    
+
             nodeCounter.times{ subCounter ->
                 def targetName="target${subCounter}".toString()
                 params.nodes+="${targetName};"
@@ -247,7 +247,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
                     def targetNodeData=getMapData.nodes[targetName];
                     checkNodeData(targetNodeData,targetNode);
                 }
-                
+
                 //check edges
                 linkCounter.times{ subCounter ->
                     def sourceName="source${subCounter}".toString();
@@ -263,7 +263,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         }
 
     }
- 
+
     def checkNodeData(nodeData,node)
     {
         assertEquals(node.name,nodeData.id);

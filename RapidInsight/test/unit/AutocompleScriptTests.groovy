@@ -15,7 +15,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 */
 class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
-    
+
     public void setUp() {
         super.setUp();
         initialize([CmdbScript,RsComputerSystem,RsTopologyObject], []);
@@ -28,7 +28,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         super.tearDown();
     }
     void initializeScriptManager()
-    {             
+    {
           //to run in Hudson
         def base_directory = "../RapidSuite";
         //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
@@ -40,10 +40,10 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         }
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
-        ScriptManager manager = ScriptManager.getInstance();        
+        ScriptManager manager = ScriptManager.getInstance();
         manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
         //new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-        
+
     }
     public void testAutoCompleteReturnsRsComputerSystemWithMaxAndSort()
     {
@@ -52,7 +52,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
         RsTopologyObject.add(name:"obj1");
         assertEquals(1,RsTopologyObject.countHits("alias:*"))
-        
+
         RsComputerSystem.add(name:"aad1");
         RsComputerSystem.add(name:"aab1");
         RsComputerSystem.add(name:"aac1");
@@ -74,14 +74,14 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(0,RsComputerSystem.countHits("alias:*"))
 
         30.times{ count ->
-            RsComputerSystem.add(name:"b${count}");    
+            RsComputerSystem.add(name:"b${count}");
         }
         assertEquals(30,RsComputerSystem.countHits("alias:*"))
 
         results=getAutoCompleteData("b");
         assertEquals(20,results.size());
 
-        
+
     }
     public void testAutoCompleteIgnoresLeftRightSpaceInQuery()
     {
@@ -94,7 +94,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         RsComputerSystem.add(name:"a3");
         RsComputerSystem.add(name:"b1");
         RsComputerSystem.add(name:"aa1");
-        
+
         assertEquals(5,RsComputerSystem.countHits("alias:*"));
 
         def spacedResults=getAutoCompleteData("a ");
@@ -108,13 +108,13 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
     }
      def getAutoCompleteData(query){
         def script=CmdbScript.get(name:"autocomplete")
-        
+
         def result=CmdbScript.runScript(script,["params":["query":query]]);
-        
+
         def resultXml = new XmlSlurper().parseText(result);
 
         def suggestions=resultXml.Suggestion;
-        
+
         def results=[]
         suggestions.each {
             results.add(it.@name.toString());

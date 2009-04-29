@@ -550,7 +550,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
     }
     public static void _testDeadLockDetection(Class rapidDomainWriteMethodImpl)
     {
-        DomainLockManager.initialize(20000, TestLogUtils.log);
+        DomainLockManager.initialize(6000, TestLogUtils.log);
         Object waitLock1 = new Object();
         Object waitLock2 = new Object();
         Class modelClass = createModels()[0];
@@ -651,7 +651,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             Assert.assertEquals(2, thread1State);
             Assert.assertTrue("One of the threads should be selecetd a deadlock victim and should be executed twice", numberOfExecutionOfInvokeOfInstance1 == 2 || numberOfExecutionOfInvokeOfInstance2 == 2 );
             Assert.assertEquals(2, thread2State);
-        });
+        }, 100);
 
     }
 

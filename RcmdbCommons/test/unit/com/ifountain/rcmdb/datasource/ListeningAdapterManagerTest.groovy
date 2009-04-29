@@ -58,6 +58,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     private void clearMetaClasses()
     {
         ListeningAdapterManager.destroyInstance();
+        ScriptManager.destroyInstance();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);        

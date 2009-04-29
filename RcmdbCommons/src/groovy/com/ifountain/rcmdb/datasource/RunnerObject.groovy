@@ -112,6 +112,8 @@ class AdapterRunnerThread extends Thread {
             runner.start(datasource);
         }
         catch (Exception e) {
+            println "Exception in start ${e}"
+            e.printStackTrace();
             logger.warn("Exception occurred while starting adapter with datasource id ${datasource.id}. Reason: " + e.getMessage(),e);
         }
     }

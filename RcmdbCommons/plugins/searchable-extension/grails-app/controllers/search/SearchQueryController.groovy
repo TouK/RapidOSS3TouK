@@ -18,7 +18,6 @@
 */
 package search
 
-import org.codehaus.groovy.grails.orm.hibernate.support.ClosureEventTriggeringInterceptor as Events
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import grails.converters.XML
 
@@ -99,10 +98,10 @@ class SearchQueryController {
         def searchQuery = SearchQuery.get([id: params.id])
         def groupType = params.type;
         if (searchQuery) {
-            if (params.group == "" || params.group == "My Queries")
+            if (params.group == "" || params.group.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
             {
-                params.group = "My Queries";
-                groupType = "default"
+                params.group = SearchQueryGroup.MY_QUERIES;
+                groupType = SearchQueryGroup.DEFAULT_TYPE
             }
             def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
             if (group == null)
@@ -153,10 +152,10 @@ class SearchQueryController {
     def save = {
         params["username"] = session.username
         def groupType = params.type;
-        if (params.group == "" || params.group == "My Queries")
+        if (params.group == "" || params.group.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
         {
-            params.group = "My Queries";
-            groupType = "default"
+            params.group = SearchQueryGroup.MY_QUERIES;
+            groupType = SearchQueryGroup.DEFAULT_TYPE
         }
         def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
         if (group == null)

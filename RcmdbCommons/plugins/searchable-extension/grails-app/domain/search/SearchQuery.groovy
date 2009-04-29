@@ -28,10 +28,10 @@ import auth.RsUser;
 */
 class SearchQuery {
     static searchable = {
-        except:["group", "errors"]
-     };
-     Long id;
-     Long version;
+        except: ["group", "errors"]
+    };
+    Long id;
+    Long version;
     String username;
     SearchQueryGroup group;
     String name;
@@ -39,21 +39,21 @@ class SearchQuery {
     String query;
     String sortProperty;
     String viewName = "default";
-    String type="";
-    String searchClass="";
+    String type = "";
+    String searchClass = "";
     boolean isPublic = false;
     String sortOrder = "asc";
-    org.springframework.validation.Errors errors ;
+    org.springframework.validation.Errors errors;
 
     static relations = [
-            group:[type:SearchQueryGroup, reverseName:"queries", isMany:false]
+            group: [type: SearchQueryGroup, reverseName: "queries", isMany: false]
     ]
     static constraints = {
-        name(blank:false, key:["username"]);
-        sortOrder(inList:["asc","desc"]);
-        viewName(blank:true, nullable:true);
-        sortProperty(blank:true, nullable:true);
-        errors(nullable:true)
+        name(blank: false, key: ["username", "type"]);
+        sortOrder(inList: ["asc", "desc"]);
+        viewName(blank: true, nullable: true);
+        sortProperty(blank: true, nullable: true);
+        errors(nullable: true)
     }
     static transients = ["errors"]
 }

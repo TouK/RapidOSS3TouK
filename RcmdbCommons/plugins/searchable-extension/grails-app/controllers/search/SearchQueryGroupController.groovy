@@ -103,7 +103,7 @@ class SearchQueryGroupController {
             redirect(action: list)
         }
         else {
-           return [searchQueryGroup: searchQueryGroup]
+            return [searchQueryGroup: searchQueryGroup]
         }
     }
 
@@ -111,6 +111,9 @@ class SearchQueryGroupController {
     def update = {
         def searchQueryGroup = SearchQueryGroup.get([id: params.id])
         if (searchQueryGroup) {
+            if (params.name && params.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
+                params.type = SearchQueryGroup.DEFAULT_TYPE;
+            }
             searchQueryGroup.update(ControllerUtils.getClassProperties(params, SearchQueryGroup));
             if (!searchQueryGroup.hasErrors()) {
                 withFormat {
@@ -153,6 +156,9 @@ class SearchQueryGroupController {
 
     def save = {
         params["username"] = session.username;
+        if (params.name && params.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
+            params.type = SearchQueryGroup.DEFAULT_TYPE;
+        }
         def searchQueryGroup = SearchQueryGroup.add(ControllerUtils.getClassProperties(params, SearchQueryGroup))
         if (!searchQueryGroup.hasErrors()) {
             withFormat {

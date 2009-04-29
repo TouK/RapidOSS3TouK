@@ -28,6 +28,8 @@ import auth.RsUser
  * To change this template use File | Settings | File Templates.
  */
 class SearchQueryGroup {
+   public static String MY_QUERIES = "My Queries"
+   public static String DEFAULT_TYPE = "default"
    static searchable = {
         except = ["queries","errors", "__operation_class__"];
     };

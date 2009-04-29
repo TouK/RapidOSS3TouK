@@ -138,7 +138,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
                 var keyValuePairs = postData.split("&");
                 for (var i = 0; i < keyValuePairs.length; i++) {
                     var keyValuePair = keyValuePairs[i].split("=");
-                    this.params[keyValuePair[0]] = keyValuePair[1];
+                    this.params[keyValuePair[0]] = decodeURIComponent(keyValuePair[1]);
                 }
             }
         }

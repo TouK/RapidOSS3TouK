@@ -24,7 +24,6 @@ YAHOO.rapidjs.component.Html = function(container, config)
     this.format = "html";
     this.params = {componentId:this.id}
     this.render();
-    this.url = null
     var events = {
         'bodyCleared': new YAHOO.util.CustomEvent('bodyCleared')
     }
@@ -87,11 +86,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.fireBodyClear();
         if (url)
         {
-            this.url = url;
+            this._setUrlAndParams(url)
         }
         if (this.iframe == true)
         {
-            this.body.dom.src = this.url;
+            this.body.dom.src = url;
         }
         else
         {
@@ -101,9 +100,53 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.showMask();
     },
 
+    poll: function() {
+        this._show(this.url, this.title);
+    },
+
+    refresh: function(params, title) {
+        if (params) {
+            for (var param in params) {
+                this.params[param] = params[param];
+            }
+        }
+        var paramsArray = [];
+        for (var param in this.params) {
+            paramsArray[paramsArray.length] = param + '=' + this.params[param];
+        }
+        var tmpUrl = this.url;
+        if (paramsArray.length > 0) {
+            if (tmpUrl.indexOf("?") >= 0)
+            {
+                tmpUrl = tmpUrl + "&" + paramsArray.join('&');
+            }
+            else
+            {
+                tmpUrl = tmpUrl + "?" + paramsArray.join('&');
+            }
+        }
+        this.show(tmpUrl, title);
+    },
+
+    _setUrlAndParams: function(url) {
+        if (url) {
+            var queryIndex = url.indexOf("?");
+            if (queryIndex >= 0)
+            {
+                this.url = url.substring(0, queryIndex);
+                var postData = url.substring(queryIndex + 1, url.length)
+                var keyValuePairs = postData.split("&");
+                for (var i = 0; i < keyValuePairs.length; i++) {
+                    var keyValuePair = keyValuePairs[i].split("=");
+                    this.params[keyValuePair[0]] = keyValuePair[1];
+                }
+            }
+        }
+    },
+
     show: function(url, title) {
         this._show(url, title);
-        this.saveHistoryChange(this.url + "!::!" + this.title);
+        this.saveHistoryChange(url + "!::!" + this.title);
     },
     historyChanged: function(state) {
         if (state != "noAction") {

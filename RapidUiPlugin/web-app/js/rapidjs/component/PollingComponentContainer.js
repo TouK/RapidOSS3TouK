@@ -46,7 +46,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
            this.params = {};
        }
        if(params){
-           for(param in params){
+           for(var param in params){
                this.params[param] = params[param];
            }
        }

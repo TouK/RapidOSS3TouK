@@ -373,6 +373,17 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "Html":{
+            "poll":{
+                descr:"Refreshes component's data with its already saved request url and parameters.",
+                args:{}
+            },
+            "refresh":{
+                descr:"Refreshes component's data with the given request parameters and already saved url.",
+                args:{
+                    "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
             "show":{
                 descr:"Retrieves the html content from the given url and changes the title.",
                 args:{

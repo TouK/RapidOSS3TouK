@@ -14,6 +14,7 @@ class UiHtml extends UiComponent{
 
     Long pollingInterval= 0;
     Long timeout= 30;
+    String url = "";
     Boolean iframe=false;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
@@ -22,6 +23,7 @@ class UiHtml extends UiComponent{
         pollingInterval(nullable:true)
         timeout(nullable:true)
         iframe(nullable:true)
+        url(blank:true,nullable:true)
     }
 
     static propertyConfiguration= [:]

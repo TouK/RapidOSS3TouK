@@ -7,6 +7,7 @@ When triggered, this action will make a server side call (specified by the url f
 <b>url</b>: Enter the URL of the script to be invoked (start with scripts folder, i.e. scripts/acknowledge.groovy)<br/>
 <b>timeout</b>: Timeout specifies, in seconds, when the call to the server will be considered to have timed out.<br/>
 <b>components</b>: Comma separated list of component names whose data will be updated/merged with the data returned from the server.<br/>
+<b>submitType</b>: HTTP method used to send the request to the server. Possible values are "GET" and "POST".<br/>
 <b>condition</b>: Specify a condition if you want this action to be executed conditionally.</p>
 <div class='panelMacro'><table class='warningMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>First, define your triggers and then come back and edit the condition since you will need to know what data is made available by the fired event selected by the trigger.</td></tr></table></div>
 <p>For example, you have defined a trigger for the SearchGrid component's propertyCliecked event. But the requirement is to execute the action only when the classname column is clicked. propertyCliecked event of SearchGrid makes the following data available:</p>

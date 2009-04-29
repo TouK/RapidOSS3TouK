@@ -21,6 +21,7 @@ class UiHtmlOperations extends UiComponentOperations
                 imageExpanded: "images/rapidjs/designer/html.png",
                 imageCollapsed: "images/rapidjs/designer/html.png",
                 propertyConfiguration: [
+                        url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         pollingInterval:[descr:"Time delay between two server requests."],
                         iframe:[descr:"Parameter to display the content in an iframe or embed it to Html component's body."],
                         timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]

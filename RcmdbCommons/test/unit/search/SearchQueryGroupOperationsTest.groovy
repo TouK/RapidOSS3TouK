@@ -31,9 +31,9 @@ class SearchQueryGroupOperationsTest  extends RapidCmdbWithCompassTestCase{
         def group=SearchQueryGroup.add(name:"testgroup",username:"user1",type:"fixtype");
         assertFalse(group.hasErrors())
 
-        def query1=SearchQuery.add(name:"testquery1",username:"user1",group:group,query:"abc");
+        def query1=SearchQuery.add(name:"testquery1",username:"user1",group:group,query:"abc", type:"test");
         assertFalse(query1.hasErrors());
-        def query2=SearchQuery.add(name:"testquery2",username:"user1",group:group,query:"abc");
+        def query2=SearchQuery.add(name:"testquery2",username:"user1",group:group,query:"abc", type:"test");
         assertFalse(query2.hasErrors());
 
         assertEquals(2,SearchQuery.list().size());

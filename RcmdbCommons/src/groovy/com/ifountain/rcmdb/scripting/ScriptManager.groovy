@@ -118,7 +118,8 @@ public class ScriptManager {
         scriptClassLoader.addClasspath(baseDirectory + "/${SCRIPT_DIRECTORY}");
         try
         {
-            Class cls = scriptClassLoader.loadClass(scriptPath);
+            def scriptFile=new File(baseDirectory + "/${SCRIPT_DIRECTORY}/${scriptPath}.groovy");
+            Class cls = scriptClassLoader.parseClass(scriptFile);
 
             defaultSupportedMethods.each{String methodName, methodClosure->
                 cls.metaClass."${methodName}" = methodClosure;                

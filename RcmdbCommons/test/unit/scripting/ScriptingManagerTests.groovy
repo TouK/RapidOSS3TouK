@@ -54,7 +54,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         super.tearDown();
         TestDatastore.clear();
         manager.destroyInstance();
-        FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+        //FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
     protected void initializeScriptManager()
     {
@@ -106,6 +106,70 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
             instance.method2()
             fail("Should throw exception");
         } catch (groovy.lang.MissingMethodException e) {e.printStackTrace()}
+    }
+    public void testManagerGeneratesExceptionIfScriptIsMissingInScriptsFolderEvenIfScriptClassIsInLoader()
+    {
+        ScriptManager.getInstance().destroy();
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
+        def scriptInOtherDirectory="scripting.ScriptingManagerTests";
+
+        //first test that script can be loaded with ScriptManager classloader
+        def scriptClassLoader = new GroovyClassLoader(ScriptManager.classLoader);
+        try{
+            scriptClassLoader.loadClass(scriptInOtherDirectory);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            fail("Should not throw exception ${e}");
+        }
+        assertNull(manager.getScript(scriptInOtherDirectory));
+        
+        //test that script manager generates exception , because file is not in scripts directory
+        try{
+            manager.addScript(scriptInOtherDirectory);
+            fail("should throw ScriptingException");
+        }
+        catch(ScriptingException e)
+        {
+             println e
+        }
+        assertNull(manager.getScript(scriptInOtherDirectory));
+
+
+        //test a nonexisting script
+        def scriptName = "script555.groovy";
+        try{
+            manager.addScript(scriptName);
+            fail("should throw ScriptingException");
+        }
+        catch(ScriptingException e)
+        {
+             println e
+        }
+        assertNull(manager.getScript(scriptName));
+
+        //add the script and test it is added successfully
+        createSimpleScript(scriptName)
+        manager.addScript(scriptName);
+        assertNotNull(manager.getScript(scriptName));
+        assertEquals("script555", manager.getScript(scriptName).name);
+        
+        //remove the script and test exception is generated
+        File scriptFile=new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}");
+        scriptFile.delete();
+        assertFalse(scriptFile.exists());
+        try{
+            manager.reloadScript (scriptName);
+            fail("should throw ScriptingException");
+        }
+        catch(ScriptingException e)
+        {
+             println e
+        }
+        //kee[s the old version
+        assertNotNull(manager.getScript(scriptName));
+
     }
     public void testRemoveScript()
     {

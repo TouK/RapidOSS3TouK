@@ -64,8 +64,8 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         {
             FileUtils.deleteDirectory(new File(base_directory));
         }
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
         testLogger = Logger.getLogger("scriptingtestlogger");
     }
     private void clearMetaClasses()

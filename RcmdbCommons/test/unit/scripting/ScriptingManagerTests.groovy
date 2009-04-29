@@ -54,7 +54,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         super.tearDown();
         TestDatastore.clear();
         manager.destroyInstance();
-        //FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+        FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
     protected void initializeScriptManager()
     {

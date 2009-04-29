@@ -25,14 +25,12 @@ import org.apache.log4j.Logger;
 import com.ifountain.rcmdb.test.util.CompassForTests;
 import com.ifountain.rcmdb.scripting.ScriptManager;
 import com.ifountain.core.datasource.BaseListeningAdapter;
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
-import junit.framework.TestSuite
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,11 +42,11 @@ import junit.framework.TestSuite
 class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     def static base_directory = "../testoutput/";
     
-    static def scriptMap= [:];
+
     public void setUp() {
         super.setUp();
         clearMetaClasses();
-        scriptMap = [:];
+        DataStore.put("scriptMap",[:])
     }
     public void tearDown() {
         clearMetaClasses();
@@ -77,27 +75,30 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
         def scriptName="ListeningAdapterManagerTestScript.groovy";
         def scriptContent="""
-        import com.ifountain.rcmdb.datasource.*
+        import com.ifountain.rcmdb.datasource.*;
+        import com.ifountain.rcmdb.util.DataStore;
 
-        ListeningAdapterManagerTest.scriptMap.datasource=datasource
-        ListeningAdapterManagerTest.scriptMap.staticParam=staticParam
-        ListeningAdapterManagerTest.scriptMap.staticParamMap=staticParamMap
-        ListeningAdapterManagerTest.scriptMap.logger=logger
+        scriptMap=DataStore.get("scriptMap");
+
+        scriptMap.datasource=datasource
+        scriptMap.staticParam=staticParam
+        scriptMap.staticParamMap=staticParamMap
+        scriptMap.logger=logger
 
 
         println "script started"
-        ListeningAdapterManagerTest.scriptMap.scriptRunStarted=true
+        scriptMap.scriptRunStarted=true
 
         println "script ended"
-        ListeningAdapterManagerTest.scriptMap.scriptRunEnded=true
+        scriptMap.scriptRunEnded=true
 
 
         def init(){
-        ListeningAdapterManagerTest.scriptMap.scriptInitInvoked=true
+            scriptMap.scriptInitInvoked=true
         }
 
         def cleanUp(){
-        ListeningAdapterManagerTest.scriptMap.cleanUpInvoked=true
+            scriptMap.cleanUpInvoked=true
         }
 
         def getParameters(){
@@ -266,7 +267,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         CommonTestUtils.waitFor(new ClosureWaitAction({
             assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(ds));    
         }))
-
+        def scriptMap=DataStore.get("scriptMap");
         assertEquals(scriptMap.logger.getLevel(), Level.DEBUG)
         assertEquals(scriptMap.logger, CmdbScript.getScriptLogger(script));
 
@@ -312,7 +313,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         assertTrue (ListeningAdapterManager.getInstance().hasAdapter(ds.id));
 
         ListeningAdapterManager.getInstance().removeAdapter(ds)
-        assertTrue ("Since adapter is not started cleanup should not be called", ListeningAdapterManagerTest.scriptMap.isEmpty());
+        assertTrue ("Since adapter is not started cleanup should not be called", DataStore.get("scriptMap").isEmpty());
         assertFalse (ListeningAdapterManager.getInstance().hasAdapter(ds.id));
 
         //add start and remove adapter will call stop
@@ -323,7 +324,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         ListeningAdapterManager.getInstance().addAdapter(ds)
         ListeningAdapterManager.getInstance().startAdapter(ds)
         ListeningAdapterManager.getInstance().removeAdapter(ds)
-        assertTrue ("Since adapter is started cleanup should be called", ListeningAdapterManagerTest.scriptMap.cleanUpInvoked);
+        assertTrue ("Since adapter is started cleanup should be called", DataStore.get("scriptMap").cleanUpInvoked);
         assertFalse (ListeningAdapterManager.getInstance().hasAdapter(ds.id));
     }
 
@@ -425,7 +426,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals(ListeningAdapterException.adapterAlreadyStoppedException(ds.id).getMessage(), e.getMessage())
         }
-        assertTrue(scriptMap.isEmpty());
+        assertTrue(DataStore.get("scriptMap").isEmpty());
 
         // now we will start and stop
         ListeningAdapterManager.getInstance().startAdapter(ds);
@@ -438,13 +439,13 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
 
         assertEquals(ds.listeningAdapter.unsubscribeCalled, true);
         assertEquals(ds.listeningAdapter.countObservers(), 0);
-        assertEquals(scriptMap.cleanUpInvoked, true);
+        assertEquals(DataStore.get("scriptMap").cleanUpInvoked, true);
 
     }
     void testCallingStartAdapterTwiceWillThrowException()
     {
         initialize();
-
+        def scriptMap=DataStore.get("scriptMap");
         def script = CmdbScript.addScript(name: "dummysc", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript", logFileOwn: true);
 
         def ds = new BaseListeningDatasourceMock(id:1);
@@ -458,10 +459,10 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         def oldAdapter = ds.listeningAdapter;
         assertEquals(false, oldAdapter.unsubscribeCalled);
         assertTrue(oldAdapter.countObservers() != 0);
-        assertEquals(null, scriptMap.cleanUpInvoked);
+        assertEquals(null, DataStore.get("scriptMap").cleanUpInvoked);
         assertEquals(1, ds.numberOfGetAdapterCalls);
 
-        ListeningAdapterManagerTest.scriptMap.clear();
+        DataStore.get("scriptMap").clear();
         oldAdapter.unsubscribeCalled = false;
         oldAdapter.subscribeCalled = false;
         //when adapter is started for the second time, it will throw already started exception
@@ -474,7 +475,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             assertEquals(ListeningAdapterException.adapterAlreadyStartedException(ds.id).getMessage(), e.getMessage());
         }
 
-        assertTrue("No script methods should be called", ListeningAdapterManagerTest.scriptMap.isEmpty());
+        assertTrue("No script methods should be called", DataStore.get("scriptMap").isEmpty());
         assertFalse(oldAdapter.subscribeCalled);
         assertFalse(oldAdapter.unsubscribeCalled);
         assertEquals(1, ds.numberOfGetAdapterCalls);
@@ -680,9 +681,9 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
        
         CmdbScriptOperations.metaClass.static.startListening = {CmdbScript script ->
             startListeningCallParams["startTime"]=new Date();
-            startListeningCallParams[script.name]=script;
-            Thread.sleep(500);
+            Thread.sleep(1000);
             startListeningCallParams["endTime"]=new Date();
+            startListeningCallParams[script.name]=script;
         }
 
         def script = CmdbScript.addScript(name: "testscript", type: CmdbScript.LISTENING, scriptFile: "ListeningAdapterManagerTestScript");
@@ -694,12 +695,16 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         def startTime=new Date();        
         ListeningAdapterManager.getInstance().initializeListeningDatasources();
         def endTime=new Date();
-        Thread.sleep(1500);
+        
 
-        assertTrue(startListeningCallParams.containsKey(script.name));
-        assertEquals(1,startListeningCallParams["startTime"].compareTo(startTime));
-        assertEquals(1,startListeningCallParams["endTime"].compareTo(startListeningCallParams["startTime"]));
-        assertEquals(1,startListeningCallParams["endTime"].compareTo(endTime));
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertTrue(startListeningCallParams.containsKey(script.name));
+            assertEquals(1,startListeningCallParams["endTime"].compareTo(startTime));
+            assertEquals(1,startListeningCallParams["endTime"].compareTo(startListeningCallParams["startTime"]));
+            assertEquals(1,startListeningCallParams["endTime"].compareTo(endTime));
+        }))
+
+
         
     }
      void testCallingDestroyInstanceDestroysListeningDatasourceInitializerThread() {

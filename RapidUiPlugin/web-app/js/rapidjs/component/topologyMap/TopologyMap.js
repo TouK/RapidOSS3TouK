@@ -442,9 +442,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
         var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-        var mapPropertyList=this.mapPropertyList;
+        var nodePropertyListString=nodePropertyList.join(',');
+        var mapPropertyListString=this.mapPropertyList.join(',');
         var mapProperties=this.getMapPropertiesString();
-        return {nodes:nodes, edges:edges,nodePropertyList:nodePropertyList,mapPropertyList:mapPropertyList,mapProperties:mapProperties};
+        return {nodes:nodes, edges:edges,nodePropertyList:nodePropertyListString,mapPropertyList:mapPropertyListString,mapProperties:mapProperties};
     },
 
     getNodes : function () {

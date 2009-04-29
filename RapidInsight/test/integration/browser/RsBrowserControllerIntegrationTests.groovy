@@ -248,7 +248,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         Connection.add(name:"b2")
         Connection.add(name:"b3");
         def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:RsUser.RSADMIN, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:RsUser.RSADMIN, isPublic:true, sortProperty:"name",
+        def searchQuery = SearchQuery.add(name:"myConnections", username:RsUser.RSADMIN, isPublic:true, sortProperty:"name", type:"connection",
                 sortOrder:"desc", query:"name:a*", group:searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 
@@ -276,7 +276,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         Connection.add(name:"b2")
         Connection.add(name:"b3");
         def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",
+        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id", type:"connection",
                 sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 
@@ -307,7 +307,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         Connection.add(name:"b2")
         Connection.add(name:"b3");
         def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",
+        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",  type:"connection",
                 sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 

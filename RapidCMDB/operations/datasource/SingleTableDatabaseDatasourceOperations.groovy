@@ -111,7 +111,7 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
         return convert(this.adapter.executeQuery(sql, queryParams));
     }
 
-    def runQuery(sql,  queryParams, fetchSize){
-        return this.adapter.executeQuery(sql, queryParams, fetchSize);
+    def runQuery(sql,  queryParams, fetchSize, closure){
+        this.adapter.executeQuery(sql, queryParams, fetchSize, closure);
     }
 }

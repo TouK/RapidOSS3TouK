@@ -41,7 +41,11 @@ class GridView {
     Object __is_federated_properties_loaded__ ;
 
     static constraints = {
-        name(blank: false, nullable: false, key: ["username"])
+        name(blank: false, nullable: false, key: ["username"], validator:{val, obj ->
+           if(val.toLowerCase().trim() == "default"){
+               return ['default.not.equal.message', val]
+           }
+        })
         username(blank: false, nullable: false)
         defaultSortColumn(blank:true, nullable: true)
         sortOrder(inList:["asc","desc"]);

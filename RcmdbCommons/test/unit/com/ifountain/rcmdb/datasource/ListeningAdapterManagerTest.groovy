@@ -42,7 +42,8 @@ import junit.framework.TestSuite
  * To change this template use File | Settings | File Templates.
  */
 class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
-
+    def static base_directory = "../testoutput/";
+    
     static def scriptMap;
     public void setUp() {
         super.setUp();
@@ -52,6 +53,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         clearMetaClasses();
         super.tearDown();
+        FileUtils.deleteDirectory(new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
     }
     private void clearMetaClasses()
     {
@@ -63,13 +65,57 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     }
     def initializeManagers()
     {
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), System.getProperty("base.dir"), [], [:]);
+        if (new File(base_directory).exists())
+        {
+            FileUtils.deleteDirectory(new File(base_directory));
+        }
+        new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), base_directory, [], [:]);
         ListeningAdapterManager.getInstance().initialize();
+
+
+        def scriptName="ListeningAdapterManagerTestScript.groovy";
+        def scriptContent="""
+        import com.ifountain.rcmdb.datasource.*
+
+        ListeningAdapterManagerTest.scriptMap.datasource=datasource
+        ListeningAdapterManagerTest.scriptMap.staticParam=staticParam
+        ListeningAdapterManagerTest.scriptMap.staticParamMap=staticParamMap
+        ListeningAdapterManagerTest.scriptMap.logger=logger
+
+
+        println "script started"
+        ListeningAdapterManagerTest.scriptMap.scriptRunStarted=true
+
+        println "script ended"
+        ListeningAdapterManagerTest.scriptMap.scriptRunEnded=true
+
+
+        def init(){
+        ListeningAdapterManagerTest.scriptMap.scriptInitInvoked=true
+        }
+
+        def cleanUp(){
+        ListeningAdapterManagerTest.scriptMap.cleanUpInvoked=true
+        }
+
+        def getParameters(){
+        return [
+               "returnparam1":"param1"
+        ]
+        }
+        """;
+
+        createScript(scriptName,scriptContent);
+    }
+    def createScript(scriptName,scriptContent)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write(scriptContent);
     }
     def initializeOperations()
     {
-        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
-        CompassForTests.addOperationSupport(BaseListeningDatasource, BaseListeningDatasourceOperations);
+        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);        
     }
     def initialize()
     {
@@ -284,8 +330,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     void testDestroyInstanceRemovesAllAdapters()
     {
 
-        def testOutputDir = new File("../testoutput");
-        FileUtils.deleteDirectory (testOutputDir);
+        initialize();
 
         //we will check number of cleanup calls and we will test if any of connection stop method throws exception destroy will
         //continue to stop other adapters
@@ -311,17 +356,11 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             }
         }
         """
-        def logLevel = Level.DEBUG;
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir.path, [], [:]);
-        ListeningAdapterManager.getInstance().initialize();
 
-        initialize([CmdbScript], []);
-        CompassForTests.addOperationSupport(CmdbScript, script.CmdbScriptOperations);
-        CompassForTests.addOperationSupport(BaseListeningDatasource, datasource.BaseListeningDatasourceOperations);
 
         def scriptName = "SynchronizationTestScript";
-        def scriptFile = new File("${testOutputDir}/${ScriptManager.SCRIPT_DIRECTORY}/${scriptName}.groovy");
-        scriptFile.setText (scriptText);
+        def scriptFile = "${scriptName}.groovy";
+        createScript(scriptFile,scriptText);
 
         def ds1 = new BaseListeningDatasourceMock(name:"ds1", id:1);
         def ds2 = new BaseListeningDatasourceMock(name:"ds2", id:2);

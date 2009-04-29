@@ -1,6 +1,8 @@
+com.ifountain.rcmdb.datasource.ListeningAdapterManagerTest
 SmartsStateCalculationIntegrationTests
 com.ifountain.rcmdb.domain.util.ControllerUtilsTest
 netcool.conversion.NetcoolRuleFunctionsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests
 RIManualTestScriptIntegrationTests
 com.ifountain.compass.integration.CompassTransactionTest
+

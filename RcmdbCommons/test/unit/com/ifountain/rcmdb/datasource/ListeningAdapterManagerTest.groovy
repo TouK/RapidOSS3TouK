@@ -44,7 +44,7 @@ import junit.framework.TestSuite
 class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
     def static base_directory = "../testoutput/";
     
-    static def scriptMap;
+    static def scriptMap= [:];
     public void setUp() {
         super.setUp();
         clearMetaClasses();

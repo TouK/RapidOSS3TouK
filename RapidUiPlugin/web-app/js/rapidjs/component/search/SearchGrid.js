@@ -444,7 +444,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     viewAdded: function(viewNode) {
         var view = viewNode.getAttribute('name');
-        SelectUtils.remove(this.viewInput, view);
+        for(var i = 0 ; i < this.viewInput.options.length ; i++)
+		{
+			if(this.viewInput.options[i].value.toLowerCase() == view.toLowerCase())
+			{
+				this.viewInput.remove(i);
+			}
+		}
         SelectUtils.addOption(this.viewInput, view, view);
         SelectUtils.selectTheValue(this.viewInput, view, 0);
         this.viewChanged();

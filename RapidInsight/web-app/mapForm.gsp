@@ -22,7 +22,10 @@
         def mapName = params.mapName ? params.mapName : mode == 'edit' ? topoMap.mapName : '';
         def nodes = params.nodes ? params.nodes : ''
         def nodePropertyList=params.nodePropertyList? params.nodePropertyList:''
-        def mapType= params.mapType ? params.mapType : ''
+        def mapProperties=params.mapProperties? params.mapProperties:''
+        def mapPropertyList=params.mapPropertyList? params.mapPropertyList:''
+
+
         def layout = params.layout ? params.layout : mode == 'edit' ? topoMap.layout : '0'
     %>
 
@@ -44,7 +47,8 @@
         <input type="hidden" name="nodes" value="${nodes.encodeAsHTML()}"/>
         <input type="hidden" name="layout" value="${layout.encodeAsHTML()}"/>
         <input type="hidden" name="mapId" value="${mode == 'edit'? topoMap.id : ''}"/>
-        <input type="hidden" name="mapType" value="${mapType.encodeAsHTML()}"/>
+        <input type="hidden" name="mapProperties" value="${mapProperties.encodeAsHTML()}"/>
+        <input type="hidden" name="mapPropertyList" value="${mapPropertyList.encodeAsHTML()}"/>
         <input type="hidden" name="nodePropertyList" value="${nodePropertyList.encodeAsHTML()}"/>
     </rui:formRemote>
 </g:else>

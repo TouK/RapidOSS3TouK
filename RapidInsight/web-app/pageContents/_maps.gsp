@@ -36,7 +36,7 @@
 	{
 		var topologyMap	=YAHOO.rapidjs.Components['topologyMap'];
 		mapData=topologyMap.getMapData();
-		var saveParams={mode:'create', nodes:mapData.nodes, nodePropertyList:mapData.nodePropertyList,layout:topologyMap.getLayout(),mapType:topologyMap.getMapType()};
+		var saveParams={mode:'create', nodes:mapData.nodes, nodePropertyList:mapData.nodePropertyList,mapPropertyList:mapData.mapPropertyList,mapProperties:mapData.mapProperties,layout:topologyMap.getLayout()};
 		return saveParams;
 	}
     function getMapUpdateParams(mapId)

@@ -17,8 +17,9 @@
 * USA.
 */
 import groovy.xml.MarkupBuilder
+MAPDATA=extractMapDataFromParameter();
 // ------------------ CONFIGURATION --------------------------------------
-CONFIG=new mapConfiguration().getConfiguration(params.mapType);
+CONFIG=new mapConfiguration().getConfiguration(MAPDATA.mapType);
 // ------------------ END OF CONFIGURATION --------------------------------
 
 
@@ -74,7 +75,7 @@ def getMapTypeQuery()
     def query="";
     if(CONFIG.USE_MAP_TYPE)
     {
-        def mapType=params.mapType;
+        def mapType=MAPDATA.mapType;
         if(mapType == null || mapType == "")
         {
             mapType=CONFIG.DEFAULT_MAP_TYPE;
@@ -101,7 +102,20 @@ def extractNodeDataFromParameter(nodeParam)
     nodeData.nodeModel=this.class.classLoader.loadClass(nodeData.rsClassName);
     return nodeData;
 }
+def extractMapDataFromParameter()
+{
+    def mapData=[:];
+    if(params.mapPropertyList && params.mapProperties)
+    {
+        def mapPropertyList=params.mapPropertyList.splitPreserveAllTokens(",")
+        def mapProperties = params.mapProperties.splitPreserveAllTokens(",")
 
+        mapPropertyList.size().times{ index ->
+            mapData[mapPropertyList[index]]=mapProperties[index];
+        }
+    }
+    return mapData;
+}
 def buildNodeData(device)
 {
      def nodeData=["gauged":"true"]

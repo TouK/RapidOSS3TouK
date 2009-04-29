@@ -23,6 +23,7 @@ class UiObjectMapOperations extends UiComponentOperations {
                         expandURL: [descr: "The default URL to be used for requests to the server to retrieve map topology (nodes, edges, locations, and etc.)"],
                         dataURL: [descr: "The default URL to be used for requests to the server to retrieve the data of each node and edges (state, cpu utilization, and etc.)"],
                         nodePropertyList: [descr: "Comma seperated list of properties to identify a node."],
+                        mapPropertyList: [descr: "Comma seperated list of properties to identify a map."],
                         nodeSize: [descr: "Height of the node (width is 1.5 times height)"],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         edgeColorDataKey: [descr: "The attribute name of the edge node which uniquely identifies the edge color."],

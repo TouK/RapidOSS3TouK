@@ -63,8 +63,9 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.dataURL = config.dataURL;
     this.expandURL = config.expandURL;
     this.setNodePropertyListString(config.nodePropertyList);
+    this.setMapPropertyListString(config.mapPropertyList);
+    this.mapProperties=new Object();
 
-    this.setMapType("");
     if(!config.nodeSize)
         config.nodeSize = 60;
     this.configureTimeout(config);
@@ -441,7 +442,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
         var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-        return {nodes:nodes, edges:edges,nodePropertyList:nodePropertyList};
+        var mapPropertyList=this.mapPropertyList;
+        var mapProperties=this.getMapPropertiesString();
+        return {nodes:nodes, edges:edges,nodePropertyList:nodePropertyList,mapPropertyList:mapPropertyList,mapProperties:mapProperties};
     },
 
     getNodes : function () {
@@ -476,7 +479,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
                 var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
                 var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-                var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapType:this.mapType};
+                var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
                 this.url = this.expandURL;
                 this.doPostRequest(this.url, params);
         }
@@ -556,11 +559,28 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             {
                 this.setLayout(layout*1);
             }
-            var mapType = node.firstChild().getAttribute("mapType");
-            if(mapType!= null )
+            var mapPropertyListString= node.firstChild().getAttribute("mapPropertyList");
+            if(mapPropertyListString != null)
             {
-                this.setMapType(mapType);
+                this.setMapPropertyListString(mapPropertyListString);
+
+                var mapProperties= node.firstChild().getAttribute("mapProperties");
+                if(mapProperties!=null)
+                {
+                    this.mapProperties=new Object();
+                    mapProperties=mapProperties.split(",");
+                    for (var propIndex = 0; propIndex < this.mapPropertyList.length; propIndex++) {
+                        var propName=this.mapPropertyList[propIndex];
+                        var propValue=mapProperties[propIndex];
+                        this.mapProperties[propName]=propValue?propValue:"";
+                    }
+                }
             }
+            
+
+
+
+
             var nodePropertyListString= node.firstChild().getAttribute("nodePropertyList");
             if(nodePropertyListString != null)
             {
@@ -620,7 +640,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
     },
 
-    loadMapForNode : function( nodeParams)
+    loadMapForNode : function( nodeParams,mapParams)
     {
         var loadMap=false;
         var nodePropertyListToCheck=this.getNodePropertyListToSend([]);
@@ -632,11 +652,11 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         if(loadMap)
         {
+            this.setMapProperties(mapParams);
+
             nodeParams["expanded"]="true";
             nodeParams["x"]="250";
             nodeParams["y"]="250";
-            this.mapType=nodeParams.mapType?nodeParams.mapType:"";
-
             var tempNodes=new Array();
             tempNodes[0]=nodeParams;
 
@@ -644,7 +664,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             var nodeString=this.getPropertiesString(tempNodes, nodePropertyList);
 
             this.firstResponse = null;
-            var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapType:this.mapType};
+            var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
             this.url = this.expandURL;
             this.lastLoadMapRequestData = {isMap:false, params:params}
             this.firstLoadMapRequestData = {isMap:false, params:params};
@@ -667,16 +687,20 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         return propList.join(";");
     },
-
-    getMapType: function(){
-        return this.mapType;
-    },
-    setMapType:function(mapType)
+    getMapPropertiesString: function()
     {
-        this.mapType=mapType;
+        var propList = [];
+        for(var i=0; i < this.mapPropertyList.length; i++)
+        {
+            var propName =this.mapPropertyList[i];
+            var propValue=this.mapProperties[propName];
+            propList[propList.length] =propValue?propValue:"" ;
+        }
+        return propList.join(",");
     },
+      
     getNodePropertyListString: function(){
-        return this.mapType;
+        return this.nodePropertyListString;
     },
     setNodePropertyListString:function(nodePropertyListString)
     {
@@ -700,17 +724,45 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
 
     },
+    setMapPropertyListString:function(mapPropertyListString)
+    {
+        this.mapPropertyListString = mapPropertyListString;
+
+        var tempPropertyList=new Array();
+
+        if(this.mapPropertyListString)
+        {
+            tempPropertyList = this.mapPropertyListString.split(",")
+        }
+
+        this.mapPropertyList = new Array();
+        for(var j=0; j < tempPropertyList.length; j++)
+        {
+            var propName=tempPropertyList[j];
+            this.mapPropertyList.push(propName);
+        }
+
+    },
+    setMapProperties:function(mapParams)
+    {
+        this.mapProperties=new Object();
+
+        for(var j=0; j < this.mapPropertyList.length; j++)
+        {
+            var propName=this.mapPropertyList[j];
+            this.mapProperties[propName]=mapParams[propName]?mapParams[propName]:"";
+        }
+    },
     getNodePropertyListToSend: function(extraProps){
         var propertyList=["id"].concat(this.nodePropertyList).concat(extraProps);
         return propertyList;
     },
     expandNode : function( expandedNodeName)
     {
-
         var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
         var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-        var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapType:this.mapType};
+        var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
         this.lastLoadMapRequestData = {isMap:false, params:params}
         this.url = this.expandURL;
         this.doPostRequest(this.url, params);
@@ -722,7 +774,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
       var nodePropertyList=this.getNodePropertyListToSend([]);
        var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
        var edges = this.getPropertiesString(this.getEdges(), ["source", "target"]);
-        var params = {  nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapType:this.mapType };
+        var params = {  nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString() };
         this.url = this.dataURL;
         this.doPostRequest(this.url, params);
     },

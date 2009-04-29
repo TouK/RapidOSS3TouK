@@ -36,7 +36,8 @@ class TopoMap
     String username ="";
     String nodePropertyList="";
     String nodes="";
-    String mapType="";
+    String mapProperties="";
+    String mapPropertyList="";
 
     Boolean isPublic = false;
     Long layout;
@@ -60,7 +61,8 @@ class TopoMap
     ]
     static constraints={
     mapName(blank:false,nullable:false)
-    mapType(blank:true,nullable:false)
+    mapProperties(blank:true,nullable:false)
+    mapPropertyList(blank:true,nullable:false)
     nodePropertyList(blank:false,nullable:false)
     nodes(blank:false,nullable:false)
 

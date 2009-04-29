@@ -32,7 +32,7 @@ def isPublic = params.isPublic;
 
 def map = TopoMap.get( mapName : mapName2, username : isPublic == "true"? RsUser.RSADMIN: username2)
 
-def res = CmdbScript.runScript("expandMap", [params:[nodes:map.nodes,nodePropertyList:map.nodePropertyList,mapType:map.mapType]]);
+def res = CmdbScript.runScript("expandMap", [params:[nodes:map.nodes,nodePropertyList:map.nodePropertyList,mapProperties:map.mapProperties,mapPropertyList:map.mapPropertyList]]);
 def slurper = new XmlSlurper().parseText(res);
 def nodeXmls = slurper.node;
 def edgeXmls = slurper.edge;
@@ -40,7 +40,7 @@ def edgeXmls = slurper.edge;
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-mapBuilder.graph(layout:map.layout,mapType:map.mapType,nodePropertyList:map.nodePropertyList)
+mapBuilder.graph(layout:map.layout,mapProperties:map.mapProperties,mapPropertyList:map.mapPropertyList,nodePropertyList:map.nodePropertyList)
 {
     nodeXmls.each {
         mapBuilder.node( it.attributes());

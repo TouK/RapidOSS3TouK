@@ -650,7 +650,7 @@ YAHOO.util.CustomEvent.prototype.fireDirect = function(){
     for (var i=0; i<len; ++i) {
         var s = this.subscribers[i];
         if(s){
-            var scope = (s.override) ? s.obj : this.scope;
+            var scope = (s.overrideContext) ? s.obj : this.scope;
             if(s.fn.apply(scope, arguments) === false){
                 return false;
             }

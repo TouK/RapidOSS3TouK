@@ -141,6 +141,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
                     this.params[keyValuePair[0]] = decodeURIComponent(keyValuePair[1]);
                 }
             }
+            else {
+                this.url = url;
+            }
         }
     },
 

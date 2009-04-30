@@ -65,6 +65,12 @@ class ApgBuild extends Build{
         }
         ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
             ant.fileset(dir: "$env.rapid_apg/src/groovy")
+            {
+                if(!TEST)
+                {
+                    ant.exclude(name: "**/test/**")
+                }
+            }
         }
         ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
             ant.fileset(file: "${env.rapid_apg}/applications/RapidInsight/grails-app/domain/*.groovy");

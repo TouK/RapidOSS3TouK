@@ -7,7 +7,7 @@ def scriptsToAdd=[]
 
 //in maintenance
 scriptsToAdd.add([name: "putInMaintenance", enabledForAllGroups:true]);
-scriptsToAdd.add([name: "MaintenanceScheduler", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
+scriptsToAdd.add([name: "MaintenanceScheduler", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 
 
 

@@ -67,7 +67,7 @@ scriptsToAdd.add([name:"createDefaultQueries"])
 scriptsToAdd.each{  scriptParams ->
 
     try{
-        CmdbScript.addScript(scriptParams)
+        CmdbScript.addUniqueScript(scriptParams)
     }
     catch(e)
     {

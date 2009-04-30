@@ -757,6 +757,19 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(callParams.fromController, false);
         assertEquals(callParams.params, scriptParams);
     }
+    void testAddUniqueScriptCallsBaseWithFromControllerFalse()
+    {
+        def callParams = [:]
+        CmdbScriptOperations.metaClass.static.addUniqueScript = {Map params, boolean fromController ->
+            callParams.params = params
+            callParams.fromController = fromController
+        }
+        def scriptParams = ["x": "a", "y": "b"]
+        CmdbScriptOperations.addUniqueScript(scriptParams);
+
+        assertEquals(callParams.fromController, false);
+        assertEquals(callParams.params, scriptParams);
+    }
     void testUpdateScriptWithOnlyParamsCallsBaseWithFromControllerFalse()
     {
         initialize([CmdbScript, Group], [])

@@ -50,6 +50,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
             }
         }
     }
+    static def addUniqueScript(Map params) throws Exception {
+        addUniqueScript(params,false);
+    }
     static def addUniqueScript(Map params, boolean fromController)  throws Exception {
          _addScript(params,fromController,true);
     }

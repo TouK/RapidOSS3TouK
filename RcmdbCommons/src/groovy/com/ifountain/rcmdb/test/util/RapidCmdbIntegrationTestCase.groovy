@@ -26,8 +26,7 @@ package com.ifountain.rcmdb.test.util
  */
 public class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
     static transactional = false;    
-    void setUp(){
-        RsUtility.reloadOperations();
+    void setUp(){        
     }
 
     void tearDown(){

@@ -1,3 +1,6 @@
+#-Dcom.sun.management.jmxremote.port=12223
+#-Dcom.sun.management.jmxremote.authenticate=false
+#-Dcom.sun.management.jmxremote.ssl=false
 -classpath/a %EXE4J_EXEDIR%\..\lib\tools.jar
 -Dtools.jar=%EXE4J_EXEDIR%\..\lib\tools.jar
 -Xmx512m

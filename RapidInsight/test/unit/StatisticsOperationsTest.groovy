@@ -104,4 +104,5 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
         Statistics.record("testStats",duration);
         assertEquals(3,Statistics.countHits("parameter:${insParam.name}"));
     }
+    
 }

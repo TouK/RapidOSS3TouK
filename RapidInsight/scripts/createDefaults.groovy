@@ -64,6 +64,13 @@ scriptsToAdd.add([name:"saveMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
 
+//instrumentation scripts
+scriptsToAdd.add([name:"createInstrumentationParameters"])
+scriptsToAdd.add([name:"memorySummarizer", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
+scriptsToAdd.add([name:"memoryHistogram", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:300,logFileOwn:true]);
+scriptsToAdd.add([name:"memoryDump"])
+
+
 scriptsToAdd.each{  scriptParams ->
 
     try{

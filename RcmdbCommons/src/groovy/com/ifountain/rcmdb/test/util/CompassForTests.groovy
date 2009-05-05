@@ -30,15 +30,25 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
  */
 class CompassForTests {
 //    static List classesToBeInitialized;
+    static List injectedClasses = [];
     static MockOperationData addOperationData = new MockOperationData();
     static MockOperationData getOperationData = new MockOperationData();
     static MockOperationData updateOperationData = new MockOperationData();
     static MockOperationData addRelationOperationData = new MockOperationData();
     static MockOperationData removeRelationOperationData = new MockOperationData();
     static Integer countHitsValue= null;
+    public static void destroy()
+    {
+        ExpandoMetaClass.disableGlobally();
+        injectedClasses.each{Class cls->
+            GroovySystem.getMetaClassRegistry().removeMetaClass (cls);
+        }
+        ExpandoMetaClass.disableGlobally();
+    }
     public static void initialize(List classesToBeInitialized)
     {
          ExpandoMetaClass.enableGlobally();
+         injectedClasses.addAll(classesToBeInitialized);
          addOperationData.initialize(classesToBeInitialized);
          getOperationData.initialize(classesToBeInitialized);
          updateOperationData.initialize(classesToBeInitialized);
@@ -107,6 +117,8 @@ class CompassForTests {
 
     public static void addOperationSupport(Class domainClass, Class operationClass)
     {
+        ExpandoMetaClass.enableGlobally();
+        injectedClasses.add(domainClass);
         MetaClass mc = domainClass.metaClass;
         if (mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {

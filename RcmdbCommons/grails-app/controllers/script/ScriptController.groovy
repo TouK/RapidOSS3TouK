@@ -36,7 +36,7 @@ class ScriptController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST', run: ['POST', 'GET']]
 
     def list = {
-        if (!params.max) params.max = 10
+        if (!params.max) params.max = 100
         if (!params.sort) params.sort = "name"
         [cmdbScriptList: CmdbScript.list(params)]
     }

@@ -31,7 +31,7 @@ class RsUserController {
 
     def list = {
         flash.errors = null;
-        if (!params.max) params.max = 10
+        if (!params.max) params.max = 100
         [userList: RsUser.list(params)]
     }
 

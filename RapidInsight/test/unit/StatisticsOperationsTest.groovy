@@ -13,7 +13,8 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
    public void setUp() {
         super.setUp();
         initialize([Statistics,InstrumentationParameters], []);
-        CompassForTests.addOperationSupport(Statistics,StatisticsOperations);        
+        CompassForTests.addOperationSupport(Statistics,StatisticsOperations);
+        Statistics.enableGlobally();
     }
 
     public void tearDown() {
@@ -104,5 +105,51 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
         Statistics.record("testStats",duration);
         assertEquals(3,Statistics.countHits("parameter:${insParam.name}"));
     }
+    public void testRecorStateDoesNotRecordIfDisabledGlobally()
+    {
+        def insParam=InstrumentationParameters.add(name:"testStats",enabled:true);
+        assertFalse(insParam.hasErrors());
+
+        def duration=500;
+
+        assertEquals(0,Statistics.countHits("alias:*"));
+
+        //first test successfull add
+        Statistics.record("testStats",duration);
+        assertEquals(1,Statistics.countHits("parameter:${insParam.name}"));
+
+        //disable  globally
+        Statistics.disableGlobally();
+
+
+        Statistics.record("testStats",duration);
+        assertEquals(1,Statistics.countHits("parameter:${insParam.name}"));
+
+        //enable back and test
+        Statistics.enableGlobally();
+
+        Statistics.record("testStats",duration);
+        assertEquals(2,Statistics.countHits("parameter:${insParam.name}"));
+
+    }
+    public void testGlobalEnableDisable()
+    {
+         System.clearProperty(StatisticsOperations.GLOBAL_ENABLE_KEY);
+
+         assertFalse(Statistics.isEnabledGlobally())
+
+         Statistics.enableGlobally();
+         assertTrue(Statistics.isEnabledGlobally())
+
+         Statistics.disableGlobally();
+         assertFalse(Statistics.isEnabledGlobally())
+
+         Statistics.enableGlobally();
+         assertTrue(Statistics.isEnabledGlobally())
+
+         System.clearProperty(StatisticsOperations.GLOBAL_ENABLE_KEY);
+         assertFalse(Statistics.isEnabledGlobally())
+    }
+
     
 }

@@ -3,6 +3,7 @@ package auth
 import org.jsecurity.SecurityUtils
 import org.jsecurity.authc.AuthenticationException
 import org.jsecurity.authc.UsernamePasswordToken
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 
 class AuthController {
     def jsecSecurityManager
@@ -44,6 +45,11 @@ class AuthController {
 
             log.info "Redirecting to '${targetUri}'."
             session.username = params.login;
+
+            ExecutionContextManagerUtils.addUsernameToCurrentContext (session.username)
+            def statClass=this.class.classLoader.loadClass("Statistics");
+            statClass.record("user.userLogin","");
+            
             if(params.format == "xml"){
                 render(contentType:'text/xml') {
                     Successful("Successfully logged in.")

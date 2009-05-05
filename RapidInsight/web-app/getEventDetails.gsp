@@ -1,4 +1,6 @@
 <%
+    Statistics.record("ui.eventDetails","");
+    
     def notificationName = params.name;
     def domainObject = RsEvent.get(name: notificationName);
     if (domainObject != null) {

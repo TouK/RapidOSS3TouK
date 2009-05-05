@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.util.DataStore
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.execution.ExecutionContextManager
+import auth.RsUser
 
 /**
 * Created by IntelliJ IDEA.
@@ -124,6 +125,32 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
             assertEquals(loggerToBeAddedtoContext, AbstractDomainOperationTestImpl.getLogger());
             assertEquals(loggerToBeAddedtoContext, AbstractDomainOperationTestImpl.logger);
             assertEquals(loggerToBeAddedtoContext, domainOpr.logger);
+        }
+    }
+    public void testGetCurrentUserName()
+    {
+        ExecutionContextManager.destroy();
+        AbstractDomainOperationTestImpl domainOpr = new AbstractDomainOperationTestImpl();
+        assertEquals("If there is no execution context should return RsUser.RSADMIN", RsUser.RSADMIN, AbstractDomainOperationTestImpl.getCurrentUserName());
+        assertEquals("We should be able to access currentUserName as property", RsUser.RSADMIN, domainOpr.currentUserName);
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            def currentUserName = AbstractDomainOperationTestImpl.getCurrentUserName();
+            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+            currentUserName = AbstractDomainOperationTestImpl.currentUserName
+            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+            currentUserName = domainOpr.currentUserName
+            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+        }
+
+
+        String currentUserNameToBeAddedtoContext = "testuser";
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addUsernameToCurrentContext (currentUserNameToBeAddedtoContext);
+            assertEquals(currentUserNameToBeAddedtoContext, AbstractDomainOperationTestImpl.getCurrentUserName());
+            assertEquals(currentUserNameToBeAddedtoContext, AbstractDomainOperationTestImpl.currentUserName);
+            assertEquals(currentUserNameToBeAddedtoContext, domainOpr.currentUserName);
         }
     }
 }

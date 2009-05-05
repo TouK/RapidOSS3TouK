@@ -17,8 +17,6 @@
  */
 package com.ifountain.comp.utils;
 
-
-
 /**
  * Created by IntelliJ IDEA.
  * User: kinikoglu
@@ -30,27 +28,18 @@ public class Timer {
     private long snapshot;
 
     public Timer() {
-        snapshot = System.currentTimeMillis();
+        start();
     }
-
-    public long restart(){
-    	long result = System.currentTimeMillis() - snapshot;
+    public void start(){
         snapshot = System.currentTimeMillis();
-        return result;
     }
 
     public long stop(){
+        long result = System.currentTimeMillis() - snapshot;
+        snapshot = System.currentTimeMillis();
+        return result;
+    }
+    public long getDuration(){
         return System.currentTimeMillis() - snapshot;
     }
-    
-    public void printAndRestart()
-    {
-    	System.out.println(restart() + " ms.");
-    }
-    
-    public void printAndRestart(String description)
-    {
-    	System.out.println(description + ": " + restart() + " ms.");
-    }
-    
 }

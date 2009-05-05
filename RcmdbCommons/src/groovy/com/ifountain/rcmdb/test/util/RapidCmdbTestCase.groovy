@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.test.util
 import com.ifountain.comp.test.util.testcase.RapidTestCase
 import com.ifountain.rcmdb.domain.DomainLockManager
 import org.apache.log4j.Logger
+import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,7 +32,14 @@ import org.apache.log4j.Logger
 */
 public class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
+    public static boolean isSetupCompleted = false;
     protected void setUp() {
+        if(!isSetupCompleted)
+        {
+            isSetupCompleted = true;
+            CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+            Locale.setDefault(Locale.ENGLISH);
+        }
         defaultBaseDir = System.getProperty("base.dir", ".");
         DomainLockManager.initialize(10000, Logger.getRootLogger()); 
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.

@@ -14,11 +14,7 @@ public class StatisticsOperations extends com.ifountain.rcmdb.domain.operation.A
     }
 
     static def recordStats(String param) {
-        def p = InstrumentationParameters.get(name: param)
-        if (p) {
-            if (p.enabled) return true
-        }
-        return false
+        return InstrumentationParameters.countHits("name:${param.exactQuery()} AND enabled:true")>0;
     }
 
     static def enableGlobally()

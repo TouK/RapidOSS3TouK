@@ -48,7 +48,7 @@ class AuthController {
 
             ExecutionContextManagerUtils.addUsernameToCurrentContext (session.username)
             def statClass=this.class.classLoader.loadClass("Statistics");
-            statClass.record("user.userLogin","");
+            statClass.record("user.login","");
             
             if(params.format == "xml"){
                 render(contentType:'text/xml') {

@@ -5,7 +5,7 @@ import com.ifountain.rcmdb.util.DataStore
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.execution.ExecutionContextManager
-import auth.RsUser
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -131,16 +131,16 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
     {
         ExecutionContextManager.destroy();
         AbstractDomainOperationTestImpl domainOpr = new AbstractDomainOperationTestImpl();
-        assertEquals("If there is no execution context should return RsUser.RSADMIN", RsUser.RSADMIN, AbstractDomainOperationTestImpl.getCurrentUserName());
-        assertEquals("We should be able to access currentUserName as property", RsUser.RSADMIN, domainOpr.currentUserName);
+        assertEquals("If there is no execution context should return system", "system", AbstractDomainOperationTestImpl.getCurrentUserName());
+        assertEquals("We should be able to access currentUserName as property", "system", domainOpr.currentUserName);
         ExecutionContextManagerUtils.executeInContext ([:])
         {
             def currentUserName = AbstractDomainOperationTestImpl.getCurrentUserName();
-            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
             currentUserName = AbstractDomainOperationTestImpl.currentUserName
-            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
             currentUserName = domainOpr.currentUserName
-            assertEquals ("If there is no logger in execution context should return RsUser.RSADMIN", RsUser.RSADMIN, currentUserName);
+            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
         }
 
 

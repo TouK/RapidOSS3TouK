@@ -7,7 +7,7 @@ import org.apache.log4j.Logger
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
 import com.ifountain.rcmdb.util.RapidCMDBConstants
-import auth.RsUser
+
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -73,13 +73,13 @@ public abstract class AbstractDomainOperation {
             def currentuser = context[RapidCMDBConstants.USERNAME];
             if(currentuser == null)
             {
-                currentuser = RsUser.RSADMIN;
+                currentuser = "system";
             }
             return currentuser;
         }
         else
         {
-            return RsUser.RSADMIN;
+            return "system";
         }
     }
 

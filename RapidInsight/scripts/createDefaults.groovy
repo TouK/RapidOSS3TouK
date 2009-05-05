@@ -71,7 +71,7 @@ scriptsToAdd.each{  scriptParams ->
     }
     catch(e)
     {
-       logger.warn("createDefaults: Could not add script with params : ${scriptParams}.Reason:${e}",e)
+       logger.warn("createDefaults: Could not add script with params : ${scriptParams}.Reason:${e}")
     }
 }
 

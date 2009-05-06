@@ -1,5 +1,6 @@
 <%
     Statistics.record("ui.objectDetails","");
+
     def objectName = params.name;
     def domainObject = RsTopologyObject.get(name: objectName);
     if (domainObject != null) {

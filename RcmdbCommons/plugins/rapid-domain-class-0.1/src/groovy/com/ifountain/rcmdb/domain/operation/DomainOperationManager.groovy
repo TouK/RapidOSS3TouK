@@ -39,7 +39,7 @@ class DomainOperationManager {
         this.defaultMethods = defaultMethods;
         this.operationsDirectory = operationsDirectory;
         this.domainClass = domainClass;
-        this.parentOperationManager = parentOperationManager; 
+        this.parentOperationManager = parentOperationManager;
     }
 
     public synchronized Class getOperationClass()
@@ -72,6 +72,7 @@ class DomainOperationManager {
             def operationName = domainClass.name+OPERATION_SUFFIX;
             def gcl = new GroovyClassLoader(parentClassLoader);
             gcl.addClasspath (operationsDirectory);
+            gcl.setShouldRecompile (true);
             Class cls = null;
             try
             {

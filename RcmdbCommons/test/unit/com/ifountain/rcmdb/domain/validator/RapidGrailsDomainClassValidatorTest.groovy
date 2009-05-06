@@ -94,9 +94,9 @@ public class RapidGrailsDomainClassValidatorTest extends RapidCmdbTestCase{
 
     private Map initializePluginAndClasses(Map additionalParts)
     {
-        def parentModelName = "ParentModel";
-        def childModelName = "ChildModel";
-        def relatedModelName = "RelatedModel";
+        def parentModelName = "RapidGrailsDomainClassValidatorTestParentModel";
+        def childModelName = "RapidGrailsDomainClassValidatorTestChildModel";
+        def relatedModelName = "RapidGrailsDomainClassValidatorTestRelatedModel";
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false];
         def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
         def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:childModelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];

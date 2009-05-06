@@ -3,18 +3,19 @@ public class StatisticsOperations extends com.ifountain.rcmdb.domain.operation.A
     static String GLOBAL_ENABLE_KEY="RIStatistics.enable";
     
     static def record(String param, value) {
-        if(isEnabledGlobally())
-        {
-            if (recordStats(param)) {//checks whether the param should be recorded at this time
-                def t = Date.now()
-                def user = getCurrentUserName() // get the name of the user
-                Statistics.add([timestamp: t, user: user, parameter: param, value: value])
-            }
+        if (recordStats(param)) {//checks whether the param should be recorded at this time
+            def t = Date.now()
+            def user = getCurrentUserName() // get the name of the user
+            Statistics.add([timestamp: t, user: user, parameter: param, value: value])
         }
     }
 
-    static def recordStats(String param) {
-        return InstrumentationParameters.countHits("name:${param.exactQuery()} AND enabled:true")>0;
+    static boolean recordStats(String param) {
+        if(isEnabledGlobally())
+        {
+            return InstrumentationParameters.countHits("name:${param.exactQuery()} AND enabled:true")>0;
+        }
+        return false;
     }
 
     static def enableGlobally()

@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
 import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,7 +35,7 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        RsUtility.reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
 
         createUtility(utilityName,utilityContent);
         assertEquals(5,RsUtility.getUtility("UtilForTest").x);
@@ -68,7 +69,7 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        RsUtility.reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
 
         createUtility(utilityName,utilityContent);
         assertEquals(5,RsUtility.getUtility("UtilForTest").x);
@@ -79,7 +80,7 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(15,RsUtility.getUtility("UtilForTest").x);
 
         //reload and see that original variable come
-        RsUtility.reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
         assertEquals(5,RsUtility.getUtility("UtilForTest").x);
 
         //change the utility see that before reload original remains
@@ -97,7 +98,7 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(5,RsUtility.getUtility("UtilForTest").x);
         assertEquals("method1result",RsUtility.getUtility("UtilForTest").method1());
 
-        RsUtility.reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
         assertEquals(45,RsUtility.getUtility("UtilForTest").x);
         assertEquals("newresult",RsUtility.getUtility("UtilForTest").method1());
 

@@ -27,13 +27,15 @@ package com.ifountain.rcmdb.domain.operation
 class DomainOperationManager {
     public static final String OPERATION_SUFFIX = "Operations";
     Class domainClass;
+    private ClassLoader parentClassLoader;
     private String operationsDirectory;
     private Class operationClass;
     private Map operationClassMethods = [:];
     private DomainOperationManager parentOperationManager;
     private Map defaultMethods;
-    public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager, Map defaultMethods)
+    public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager, Map defaultMethods, ClassLoader parentClassLoader)
     {
+        this.parentClassLoader = parentClassLoader;
         this.defaultMethods = defaultMethods;
         this.operationsDirectory = operationsDirectory;
         this.domainClass = domainClass;
@@ -68,7 +70,7 @@ class DomainOperationManager {
         if(operationFile.exists())
         {
             def operationName = domainClass.name+OPERATION_SUFFIX;
-            def gcl = new GroovyClassLoader();
+            def gcl = new GroovyClassLoader(parentClassLoader);
             gcl.addClasspath (operationsDirectory);
             Class cls = null;
             try

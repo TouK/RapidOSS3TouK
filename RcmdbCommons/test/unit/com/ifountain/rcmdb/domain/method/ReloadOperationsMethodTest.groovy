@@ -50,7 +50,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
     {
 
         def domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:]);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:], this.class.classLoader);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
@@ -91,7 +91,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
             }
         """);
         def domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:]);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:], this.class.classLoader);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
@@ -142,7 +142,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
             }
         """);
         def domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:]);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:], this.class.classLoader);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
@@ -189,7 +189,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
             }
         """);
         def domainClass = createSimpleDomainClass();
-        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:]);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, baseDir, null, [:], this.class.classLoader);
         manager.getOperationFile().setText (
                 """
                     class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}

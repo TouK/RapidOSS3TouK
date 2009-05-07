@@ -21,9 +21,11 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"enableInstrumentation",type: CmdbScript.ONDEMAND])
         assertFalse(script.hasErrors());
-
-        def script2=CmdbScript.addScript([name:"createInstrumentationParameters",type: CmdbScript.ONDEMAND])
+        def script2=CmdbScript.addScript([name:"disableInstrumentation",type: CmdbScript.ONDEMAND])
         assertFalse(script2.hasErrors());
+
+        def script3=CmdbScript.addScript([name:"createInstrumentationParameters",type: CmdbScript.ONDEMAND])
+        assertFalse(script3.hasErrors());
     }
 
     public void tearDown() {
@@ -47,7 +49,7 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
         manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
     }
 
-    public void testEnableDisableInstrumentationScript()
+    public void testEnableDisableInstrumentationScripts()
     {
         System.clearProperty (StatisticsOperations.GLOBAL_ENABLE_KEY);
 
@@ -57,7 +59,7 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
         assertTrue(Statistics.isEnabledGlobally());
 
 
-        result=CmdbScript.runScript("enableInstrumentation",[params:[enable:"false"]]);
+        result=CmdbScript.runScript("disableInstrumentation",[:]);
         assertFalse(Statistics.isEnabledGlobally());
 
         result=CmdbScript.runScript("enableInstrumentation",[:]);

@@ -22,7 +22,7 @@ class BackupAction implements IndexSnapshotAction{
     private String destinationDirectory;
     public BackupAction(DefaultCompass compass, String destinationDirectory)
     {
-        logger.info ("Initialized a backup action");
+        logger.warn ("Initialized a backup action");
         this.destinationDirectory = new File(destinationDirectory).getCanonicalPath();
         LuceneSearchEngineFactory serachEngineFactory = (LuceneSearchEngineFactory)compass.getSearchEngineFactory();
         String[] subIndexes = serachEngineFactory.getLuceneIndexManager().getStore().getSubIndexes();

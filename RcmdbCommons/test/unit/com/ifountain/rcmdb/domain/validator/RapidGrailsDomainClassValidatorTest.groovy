@@ -105,7 +105,7 @@ public class RapidGrailsDomainClassValidatorTest extends RapidCmdbTestCase{
         def childModelMetaProps = [name:childModelName, parentModel:parentModelName]
         def relatedModelMetaProps = [name:relatedModelName]
         def modelProps = [ prop1];
-        def keyPropList = [prop1];
+        def keyPropList = [];
         String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, modelProps, keyPropList, [], additionalParts["parent"])
         String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1], additionalParts["child"])
         String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1], additionalParts["related"])

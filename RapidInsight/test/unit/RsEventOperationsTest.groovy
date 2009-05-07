@@ -24,7 +24,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.clearProcessors();
         super.tearDown();
     }
 

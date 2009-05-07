@@ -6,23 +6,9 @@
  * To change this template use File | Settings | File Templates.
  */
 public class ObjectProcessor {
-    static final def defaultBeforeProcessors=[];
-    static final def defaultAfterProcessors=[];
 
     static def beforeProcessors=[];
     static def afterProcessors=[];
-
-    static def clearProcessors()
-    {
-        beforeProcessors.clear();
-        afterProcessors.clear();
-    }
-    static def setToDefaultProcessors()
-    {
-        beforeProcessors=defaultBeforeProcessors.clone();
-        afterProcessors=defaultAfterProcessors.clone();
-    }
-
 
     static def objectInBeforeInsert(object)
     {

@@ -25,7 +25,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.clearProcessors();
         RsUtilityTestUtils.clearUtilityPaths();
         clearMetaClasses();
         StateCalculatorTest.clearClasses();

@@ -42,7 +42,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         {
             classes.StateCalculator.setToDefault();
         }
-        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.clearProcessors();
         RsUtilityTestUtils.clearUtilityPaths();
         super.tearDown();
 

@@ -12,13 +12,17 @@ class RsUtilityTestUtils {
 
    static clearProcessors()
    {
-       getRsUtility().getUtility("EventProcessor").clearProcessors();
-       getRsUtility().getUtility("ObjectProcessor").clearProcessors();
+       getRsUtility().getUtility("EventProcessor").beforeProcessors.clear();
+       getRsUtility().getUtility("EventProcessor").afterProcessors.clear();
+       getRsUtility().getUtility("ObjectProcessor").beforeProcessors.clear();
+       getRsUtility().getUtility("ObjectProcessor").afterProcessors.clear();
    }
    static setToDefaultProcessors()
    {
-       getRsUtility().getUtility("EventProcessor").setToDefaultProcessors();
-       getRsUtility().getUtility("ObjectProcessor").setToDefaultProcessors();
+       getRsUtility().getUtility("EventProcessor").beforeProcessors.clear();
+       getRsUtility().getUtility("EventProcessor").afterProcessors.clear();
+       getRsUtility().getUtility("ObjectProcessor").beforeProcessors.clear();
+       getRsUtility().getUtility("ObjectProcessor").afterProcessors.clear();
    }
    static def getRsUtility()
    {

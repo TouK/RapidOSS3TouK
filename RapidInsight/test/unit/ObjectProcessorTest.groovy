@@ -21,7 +21,7 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-        RsUtilityTestUtils.setToDefaultProcessors();
+        RsUtilityTestUtils.clearProcessors();
         clearMetaClasses();
         super.tearDown();
     }

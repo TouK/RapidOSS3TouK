@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import auth.*;
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,8 +13,9 @@ import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
    public void setUp() {
         super.setUp();
-        initialize([Statistics,InstrumentationParameters], []);
+        initialize([Statistics,InstrumentationParameters,RsUser], []);
         CompassForTests.addOperationSupport(Statistics,StatisticsOperations);
+        CompassForTests.addOperationSupport(RsUser,RsUserOperations);
         Statistics.enableGlobally();
     }
 

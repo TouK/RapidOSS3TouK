@@ -5,7 +5,7 @@ public class StatisticsOperations extends com.ifountain.rcmdb.domain.operation.A
     static def record(String param, value) {
         if (recordStats(param)) {//checks whether the param should be recorded at this time
             def t = Date.now()
-            def user = getCurrentUserName() // get the name of the user
+            def user = auth.RsUser.getCurrentUserName() // get the name of the user
             Statistics.add([timestamp: t, user: user, parameter: param, value: value])
         }
     }

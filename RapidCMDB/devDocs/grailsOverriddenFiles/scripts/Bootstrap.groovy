@@ -59,20 +59,13 @@ target(loadApp:"Loads the Grails application object") {
 }                                      
 target(configureApp:"Configures the Grails application and builds an ApplicationContext") {
 	event("ConfigureAppStart", [grailsApp, appCtx])
-	println "ConfigureAppStart1"
     appCtx.resourceLoader = new  CommandLineResourceLoader()
-    println "ConfigureAppStart2"
 	profile("Performing runtime Spring configuration") {
-        println "ConfigureAppStart3"
         def config = new org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator(grailsApp,appCtx)
         appCtx = config.configure(servletContext)
-        println "ConfigureAppStart4"
         servletContext.setAttribute(ApplicationAttributes.APPLICATION_CONTEXT,appCtx );
-        println "ConfigureAppStart5"
         servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, appCtx);
-        println "ConfigureAppStart6"
 	}
-	println "ConfigureAppStart7"
 	event("ConfigureAppEnd", [grailsApp, appCtx])		
 }
 

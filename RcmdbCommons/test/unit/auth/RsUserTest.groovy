@@ -5,6 +5,8 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.exception.MessageSourceException
 import org.jsecurity.crypto.hash.Sha1Hash
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import com.ifountain.rcmdb.execution.ExecutionContextManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -277,6 +279,33 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertFalse(user2.isPasswordSame("12"));
     }
 
+    public void testGetCurrentUserName()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
 
+        def userProps = [username:"user1",passwordHash:"password"];
+        def user=RsUser.add(userProps);
+        assertFalse(user.hasErrors());
+
+        assertEquals("If there is no execution context should return system", "system", RsUser.getCurrentUserName());
+        assertEquals("We should be able to access currentUserName as property", "system", user.currentUserName);
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            def currentUserName = RsUser.getCurrentUserName();
+            assertEquals ("If there is no user in execution context should return system", "system", currentUserName);
+            currentUserName = user.currentUserName
+            assertEquals ("If there is no user in execution context should return system", "system", currentUserName);
+        }
+
+
+        String currentUserNameToBeAddedtoContext = "testuser";
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addUsernameToCurrentContext (currentUserNameToBeAddedtoContext);
+            assertEquals(currentUserNameToBeAddedtoContext, RsUser.getCurrentUserName());
+            assertEquals(currentUserNameToBeAddedtoContext, user.currentUserName);
+        }
+    }
 
 }

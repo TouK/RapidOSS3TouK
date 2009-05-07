@@ -65,23 +65,7 @@ public abstract class AbstractDomainOperation {
             return Logger.getLogger(AbstractDomainOperation);
         }
     }
-    public static String getCurrentUserName()
-    {
-        ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
-        if(context != null)
-        {
-            def currentuser = context[RapidCMDBConstants.USERNAME];
-            if(currentuser == null)
-            {
-                currentuser = "system";
-            }
-            return currentuser;
-        }
-        else
-        {
-            return "system";
-        }
-    }
+
 
     public Map getProperties()
     {
@@ -123,5 +107,5 @@ public abstract class AbstractDomainOperation {
         throw new MissingMethodException (methodName,  this.class, args); 
 
     }
-
+    
 }

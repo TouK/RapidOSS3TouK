@@ -127,32 +127,7 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
             assertEquals(loggerToBeAddedtoContext, domainOpr.logger);
         }
     }
-    public void testGetCurrentUserName()
-    {
-        ExecutionContextManager.destroy();
-        AbstractDomainOperationTestImpl domainOpr = new AbstractDomainOperationTestImpl();
-        assertEquals("If there is no execution context should return system", "system", AbstractDomainOperationTestImpl.getCurrentUserName());
-        assertEquals("We should be able to access currentUserName as property", "system", domainOpr.currentUserName);
-        ExecutionContextManagerUtils.executeInContext ([:])
-        {
-            def currentUserName = AbstractDomainOperationTestImpl.getCurrentUserName();
-            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
-            currentUserName = AbstractDomainOperationTestImpl.currentUserName
-            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
-            currentUserName = domainOpr.currentUserName
-            assertEquals ("If there is no logger in execution context should return system", "system", currentUserName);
-        }
-
-
-        String currentUserNameToBeAddedtoContext = "testuser";
-        ExecutionContextManagerUtils.executeInContext ([:])
-        {
-            ExecutionContextManagerUtils.addUsernameToCurrentContext (currentUserNameToBeAddedtoContext);
-            assertEquals(currentUserNameToBeAddedtoContext, AbstractDomainOperationTestImpl.getCurrentUserName());
-            assertEquals(currentUserNameToBeAddedtoContext, AbstractDomainOperationTestImpl.currentUserName);
-            assertEquals(currentUserNameToBeAddedtoContext, domainOpr.currentUserName);
-        }
-    }
+    
 }
 
 

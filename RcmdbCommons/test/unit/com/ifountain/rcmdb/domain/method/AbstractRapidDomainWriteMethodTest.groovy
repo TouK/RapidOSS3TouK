@@ -13,6 +13,7 @@ import com.ifountain.rcmdb.domain.DomainMethodExecutor
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import junit.framework.TestSuite
 import junit.framework.Assert
+import org.apache.commons.transaction.locking.LockException
 
 /**
  * Created by IntelliJ IDEA.
@@ -582,6 +583,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             }
             println "REQUEST1 EXECUTING REQUEST2"
             instance2Request2.invoke(instance2Clone, null)
+            println "REQUEST1 EXECUTED REQUEST2"
+            println "REQUEST1 EXECUTED"
         }
         int numberOfExecutionOfInvokeOfInstance2 = 0;
         instance2Request1.closureToBeInvoked ={domainObject, arguments->
@@ -596,6 +599,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             }
             println "REQUEST2 EXECUTING REQUEST1"
             instance1Request2.invoke(instance1Clone, null)
+            println "REQUEST2 EXECUTED REQUEST1"
+            println "REQUEST2 EXECUTED"
         }
 
 
@@ -611,7 +616,8 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             }
             catch(Exception e)
             {
-                e.printStackTrace();
+
+                println "t1 ${((LockException)e).getCode()} ${((LockException)e).getReason()}"
                 thread1State = 3;
             }
         }
@@ -626,6 +632,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             }
             catch(org.apache.commons.transaction.locking.LockException ex)
             {
+                println "t2 ${ex.getCode()} ${ex.getReason()}"
                 thread2State = 3;
             }
         }

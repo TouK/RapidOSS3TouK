@@ -40,6 +40,7 @@
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="module" module-name="RapidUiPlugin" />
+    <orderEntry type="library" name="compass" level="project" />
     <orderEntryProperties />
   </component>
 </module>

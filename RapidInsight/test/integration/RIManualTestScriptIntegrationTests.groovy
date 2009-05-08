@@ -42,7 +42,7 @@ class RIManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
     void copyOverridenOperation(folder,fileName)
     {
-        def path= "../../../RapidModules/RapidInsight/overridenOperations/${folder}/${fileName}.groovy";
+        def path= "../../RapidModules/RapidInsight/overridenOperations/${folder}/${fileName}.groovy";
 
         def ant=new AntBuilder();
 

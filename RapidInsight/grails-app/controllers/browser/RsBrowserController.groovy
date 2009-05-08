@@ -209,7 +209,7 @@ class RsBrowserController {
                 SearchQuery searchQuery = null;
                 def queryList = SearchQuery.searchEvery("name:${params.searchQuery.exactQuery()} AND username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true");
                 if (queryList.size() == 0) {
-                    searchQuery = SearchQuery.get(name: params.searchQuery, username: session.username);
+                    searchQuery = SearchQuery.searchEvery("name:${params.searchQuery.exactQuery()} AND username:${session.username}")[0];
                 }
                 else {
                     searchQuery = queryList[0]

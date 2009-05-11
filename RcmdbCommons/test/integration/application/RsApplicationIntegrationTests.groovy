@@ -1,3 +1,6 @@
+package application
+
+
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import script.CmdbScript
 import org.apache.commons.io.FileUtils
@@ -10,7 +13,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 * Time: 6:01:51 PM
 * To change this template use File | Settings | File Templates.
 */
-class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
+class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
     static transactional = false;
     void setUp() throws Exception {
         super.setUp();
@@ -35,19 +38,19 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsUtility.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsUtility.getUtility("UtilForTest").method1());
-        assertSame(RsUtility.getUtility("UtilForTest"),RsUtility.getUtility("UtilForTest"));
+        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
+        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
+        assertSame(RsApplication.getUtility("UtilForTest"),RsApplication.getUtility("UtilForTest"));
 
 
     }
     public void testGetUtilityThrowsExceptionIfUtilityDoesNotExist()
     {
         try{
-            RsUtility.getUtility("nonexistingutility");
+            RsApplication.getUtility("nonexistingutility");
             fail("Should throw ClassNotFoundException e");
         }
         catch(ClassNotFoundException e)
@@ -55,7 +58,7 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         }
     }
-    public void testReloadingRsUtilityReloadsUtilities()
+    public void testReloadingRsApplicationReloadsUtilities()
     {
        def utilityName="UtilForTest";
        def utilityContent="""
@@ -69,19 +72,19 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsUtility.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsUtility.getUtility("UtilForTest").method1());
-        
+        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
+        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
+
         //change the static variable
-        RsUtility.getUtility("UtilForTest").x=15;
-        assertEquals(15,RsUtility.getUtility("UtilForTest").x);
+        RsApplication.getUtility("UtilForTest").x=15;
+        assertEquals(15,RsApplication.getUtility("UtilForTest").x);
 
         //reload and see that original variable come
-        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
-        assertEquals(5,RsUtility.getUtility("UtilForTest").x);
+        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
 
         //change the utility see that before reload original remains
         utilityContent="""
@@ -95,12 +98,12 @@ class RsUtilityIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsUtility.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsUtility.getUtility("UtilForTest").method1());
+        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
+        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
 
-        ApplicationHolder.application.classLoader.loadClass("RsUtility").reloadOperations();
-        assertEquals(45,RsUtility.getUtility("UtilForTest").x);
-        assertEquals("newresult",RsUtility.getUtility("UtilForTest").method1());
+        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        assertEquals(45,RsApplication.getUtility("UtilForTest").x);
+        assertEquals("newresult",RsApplication.getUtility("UtilForTest").method1());
 
     }
 

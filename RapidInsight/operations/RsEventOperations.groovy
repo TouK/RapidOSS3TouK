@@ -1,4 +1,6 @@
-/* 
+import application.RsApplication
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -19,21 +21,21 @@
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
 	def beforeInsert(){
-        RsUtility.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
+        RsApplication.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
 	}
 	def beforeUpdate(params)
     {
-        RsUtility.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
+        RsApplication.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
     }
 	def afterInsert(){
-        RsUtility.getUtility("EventProcessor").eventIsAdded(this.domainObject);
+        RsApplication.getUtility("EventProcessor").eventIsAdded(this.domainObject);
     }
     def afterUpdate(params){
-        RsUtility.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
+        RsApplication.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
     }
     def afterDelete()
     {
-        RsUtility.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
+        RsApplication.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
     }
 
 

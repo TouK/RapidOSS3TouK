@@ -3,7 +3,8 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RsApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,11 +18,11 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
-        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsUtility], []);
+        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsApplication], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (RsComputerSystem,RsComputerSystemOperations);
         CompassForTests.addOperationSupport (RsLink,RsLinkOperations);
-        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
+        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
 
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"getMapData",type: CmdbScript.ONDEMAND])

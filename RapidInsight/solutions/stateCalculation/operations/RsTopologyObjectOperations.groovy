@@ -1,3 +1,5 @@
+import application.RsApplication
+
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -20,29 +22,29 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
 
     int getState()
     {
-        return RsUtility.getUtility("StateCalculator").getObjectState(this.domainObject);
+        return RsApplication.getUtility("StateCalculator").getObjectState(this.domainObject);
     }
     def currentState()
     {
-        return RsUtility.getUtility("StateCalculator").loadObjectState(this.domainObject);
+        return RsApplication.getUtility("StateCalculator").loadObjectState(this.domainObject);
     }
     
     def beforeInsert(){
-        RsUtility.getUtility("ObjectProcessor").objectInBeforeInsert(this.domainObject);
+        RsApplication.getUtility("ObjectProcessor").objectInBeforeInsert(this.domainObject);
 	}
 	def beforeUpdate(params)
     {
-        RsUtility.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
+        RsApplication.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
     }
 	def afterInsert(){
-        RsUtility.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
+        RsApplication.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
     }
     def afterUpdate(params){
-        RsUtility.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
+        RsApplication.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
     }
     def afterDelete()
     {
-        RsUtility.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
+        RsApplication.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
     }
 
 }

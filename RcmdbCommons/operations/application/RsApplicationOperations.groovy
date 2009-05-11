@@ -129,4 +129,9 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     def static reloadViews(){
         GroovyPagesTemplateEngine.pageCache.clear();
     }
+
+    public static def getUtility(utilityName)
+    {
+        return RsApplicationOperations.class.classLoader.loadClass (utilityName);
+    }
 }

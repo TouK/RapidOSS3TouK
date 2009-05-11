@@ -1,7 +1,8 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.test.util.RsUtilityOperationsMock
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RsApplication
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,15 +19,16 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         initializeClasses();
         clearMetaClasses();
-        initialize([RsTopologyObject, RsObjectState, RsEvent,RsUtility,RsGroup], []);
-        RsUtilityTestUtils.initializeRsUtilityOperations (RsUtility);
-        RsUtility.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
-        RsUtility.getUtility("ObjectProcessor").afterProcessors=["StateCalculator"];
+        initialize([RsTopologyObject, RsObjectState, RsEvent,RsApplication,RsGroup], []);
+        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        RsApplicationTestUtils.clearProcessors();
+        RsApplication.getUtility("EventProcessor").afterProcessors=["StateCalculator"];
+        RsApplication.getUtility("ObjectProcessor").afterProcessors=["StateCalculator"];
     }
 
     public void tearDown() {
-        RsUtilityTestUtils.clearProcessors();
-        RsUtilityTestUtils.clearUtilityPaths();
+        RsApplicationTestUtils.clearProcessors();
+        RsApplicationTestUtils.clearUtilityPaths();
         clearMetaClasses();
         StateCalculatorTest.clearClasses();
         super.tearDown();
@@ -62,8 +64,8 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         classMap.StateCalculator = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator"));
         classMap.RsTopologyObjectOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "RsTopologyObjectOperations"));
 
-        RsUtilityTestUtils.clearUtilityPaths();
-        RsUtilityTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        RsApplicationTestUtils.clearUtilityPaths();
+        RsApplicationTestUtils.utilityPaths=["StateCalculator":getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
 
         StateCalculatorTest.initializeClassesFrom(classMap);
     }

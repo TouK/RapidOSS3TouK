@@ -2,7 +2,8 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.util.RapidDateUtilities
-import com.ifountain.rcmdb.test.util.RsUtilityTestUtils
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RsApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,15 +17,15 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         clearMetaClasses();
 
-         initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RsUtility,RsComputerSystem], []);
+         initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RsApplication,RsComputerSystem], []);
          CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
-         RsUtilityTestUtils.initializeRsUtilityOperations(RsUtility);
-         RsUtilityTestUtils.clearProcessors();
+         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+         RsApplicationTestUtils.clearProcessors();
 
     }
 
     public void tearDown() {
-        RsUtilityTestUtils.clearProcessors();
+
         clearMetaClasses();
         super.tearDown();
     }

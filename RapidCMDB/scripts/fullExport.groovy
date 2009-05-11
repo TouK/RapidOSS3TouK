@@ -35,6 +35,7 @@ backup();
 generateAllModels();
 generateModelsToExport();
 exportModels();
+return "exported successfuly";
 
 
 logger.info("*****************FULL EXPORT ENDED *************************")
@@ -44,6 +45,8 @@ return "size ${MODELS_TO_EXPORT.size()}, content : ${MODELS_TO_EXPORT}";
 def backup()
 {
     logger.info("backing up current data to directory '${CONFIG.backupDir}'");
+    def ant=new AntBuilder();
+    ant.delete(dir:CONFIG.backupDir);
     application.RsApplication.backup(CONFIG.backupDir+File.separator+"index");
     logger.info("backing done");
 
@@ -88,7 +91,7 @@ def generateModelsToExport()
 
         tempModelList.clear();
         EXPORT_ALL_RELATIONS=true;
-        
+
         ALL_MODELS.each{ modelName, model ->
             tempModelList.add([model:modelName,childModels:false,relations:false])
         }
@@ -96,7 +99,7 @@ def generateModelsToExport()
     else
     {
         //if allmode is false, we have selective models
-        //relation model is exported but with only relation ids which are in RELATION_IDS_TO_EXPORT 
+        //relation model is exported but with only relation ids which are in RELATION_IDS_TO_EXPORT
         EXPORT_ALL_RELATIONS=false;
 
         //if conf mode conf models added to list
@@ -140,7 +143,7 @@ def generateModelsToExport()
 
 
     logger.info("generated MODELS_TO_EXPORT : ${MODELS_TO_EXPORT}");
-    
+
 }
 
 
@@ -153,7 +156,7 @@ def exportModels()
     def ant=new AntBuilder();
     ant.delete(dir:CONFIG.exportDir);
     ant.mkdir(dir:CONFIG.exportDir);
-    
+
     def compass=getCompass(CONFIG.backupDir);
     def session = compass.openSession()
     def tx = session.beginTransaction()
@@ -166,6 +169,7 @@ def exportModels()
     } finally {
         tx.commit()
         session.close()
+        compass.close()
     }
     logger.info("exporting successfuly done");
 }
@@ -195,7 +199,7 @@ def exportModel(session,modelName,relations)
 	    def objectIds=[];
 
         builder.Objects(model:modelName){
-            
+
             objectPerFile.times { objectCounter ->
                 int dataIndex= ( fileCounter * objectPerFile ) + objectCounter
                 if(dataIndex<hits.length)
@@ -280,7 +284,7 @@ def exportRelationsModel(session)
 	    def objectIds=[];
         def relationCount=0;
         def skipCount=0;
-        
+
         builder.Objects(model:modelName){
 
             objectPerFile.times { objectCounter ->

@@ -1,4 +1,3 @@
-
 def getExportConfiguration()
 {
     def CONFIG=[:];
@@ -7,11 +6,11 @@ def getExportConfiguration()
     CONFIG.objectPerFile=1000;
 
     CONFIG.MODELS=[];
-    //CONFIG.MODELS.add([model:"all"]);
+    CONFIG.MODELS.add([model:"all"]);
     //CONFIG.MODELS.add([model:"conf"]);
-    CONFIG.MODELS.add([model:"RsTopologyObject"]);
+    //CONFIG.MODELS.add([model:"RsTopologyObject"]);
     //CONFIG.MODELS.add([model:"RsGroup",childModels:false]);
-    CONFIG.MODELS.add([model:"auth.RsUser"]);
+    //CONFIG.MODELS.add([model:"auth.RsUser"]);
 
     return CONFIG;
 }
@@ -19,6 +18,8 @@ def getExportConfiguration()
 def getImportConfiguration()
 {
    def CONFIG=[:];
+   CONFIG.xmlDir="export";
+   CONFIG.dataDir="importData";
 
    return CONFIG;
 }

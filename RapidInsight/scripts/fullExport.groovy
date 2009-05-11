@@ -44,11 +44,7 @@ return "size ${MODELS_TO_EXPORT.size()}, content : ${MODELS_TO_EXPORT}";
 def backup()
 {
     logger.info("backing up current data to directory '${CONFIG.backupDir}'");
-    
-    //def ant=new AntBuilder();
-    //ant.delete(dir:CONFIG.backupDir);
-
-    //application.RsApplication.backup(CONFIG.backupDir+File.separator+"index");
+    application.RsApplication.backup(CONFIG.backupDir+File.separator+"index");
     logger.info("backing done");
 
 }

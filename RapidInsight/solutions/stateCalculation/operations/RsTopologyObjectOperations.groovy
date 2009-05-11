@@ -26,6 +26,20 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     {
         return RsUtility.getUtility("StateCalculator").loadObjectState(this.domainObject);
     }
+    
+    def beforeInsert(){
+        RsUtility.getUtility("ObjectProcessor").objectInBeforeInsert(this.domainObject);
+	}
+	def beforeUpdate(params)
+    {
+        RsUtility.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
+    }
+	def afterInsert(){
+        RsUtility.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
+    }
+    def afterUpdate(params){
+        RsUtility.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
+    }
     def afterDelete()
     {
         RsUtility.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);

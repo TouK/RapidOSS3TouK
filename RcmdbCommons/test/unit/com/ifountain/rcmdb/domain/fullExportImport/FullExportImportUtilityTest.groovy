@@ -3,7 +3,7 @@ package com.ifountain.rcmdb.domain.fullExportImport
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import application.RsApplicationOperations
-import com.ifountain.rcmdb.domain.FullExportImport
+import com.ifountain.rcmdb.domain.FullExportImportUtility
 import application.RsApplication
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
@@ -18,7 +18,7 @@ import org.compass.core.CompassHits
 * Time: 8:55:29 AM
 * To change this template use File | Settings | File Templates.
 */
-class FullExportImportTest extends RapidCmdbWithCompassTestCase{
+class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void setUp() {
         super.setUp();
@@ -52,7 +52,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
 
         }
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-        
+
 
         def backupPath="testbackup";
 
@@ -73,7 +73,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         assert(file2.exists());
 
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         fullExport.backup(backupPath);
 
         assertEquals(callParams.directory,indexDir.getPath());
@@ -83,7 +83,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
 
     }
     public void testGenerateModelsToExportWithSelectedModelWithChildsAndRelations()
-    {           
+    {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -96,7 +96,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"RsTopologyObject"]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -135,7 +135,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject",childModels:false,relations:false]);
         MODELS.add([model:"RsGroup",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -174,7 +174,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject"]);
         MODELS.add([model:"RsEvent",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -198,7 +198,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
             }
         }
     }
-    
+
     public void testGenerateModelsToExportWithAllModels()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
@@ -213,7 +213,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"all"]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -270,7 +270,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"conf"]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -317,7 +317,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject"]);
         MODELS.add([model:"RsEvent",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImport();
+        def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
@@ -347,7 +347,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     public void testBeginCompassStartsSuccessfully()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-        
+
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -378,15 +378,15 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
             assertFalse(obj.hasErrors());
         }
 
-        def fullExport=new FullExportImport();
-        println System.getProperty("index.dir"); 
+        def fullExport=new FullExportImportUtility();
+        println System.getProperty("index.dir");
 
         fullExport.beginCompass(System.getProperty("index.dir"));
         def tx=fullExport.beginCompassTransaction();
         try{
             def modelNamesToCheck=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","connection.Connection"];
             def modelClassesToCheck=loadClasses(modelNamesToCheck);
-            
+
             modelClassesToCheck.each{ modelClass ->
                 def modelAlias=fullExport.getModelAlias(modelClass.name);
                 def query="alias:*";
@@ -410,7 +410,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
                     assertNotNull(compassResultObj);
                     assertEquals(resultObj.name,compassResultObj.name);
                     assertEquals(resultObj.asMap(),compassResultObj.asMap());
-                    
+
                 }
 
 

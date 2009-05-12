@@ -20,13 +20,13 @@ import org.compass.core.CompassHits
 * Time: 8:44:22 AM
 * To change this template use File | Settings | File Templates.
 */
-class FullExportImport {
+class FullExportImportUtility {
 
     def logger;
     def compass;
     def compassSession;
 
-    def FullExportImport()
+    def FullExportImportUtility()
     {
         logger=RsApplication.getLogger();
     }
@@ -184,7 +184,7 @@ class FullExportImport {
         MODELS_TO_EXPORT.each{ modelName,modelEntry ->
              exportModel(modelName,modelEntry.relations);
         }
-        exportRelationsModel(session);
+        exportRelationsModel();
 
 
         logger.info("exporting successfuly done");
@@ -359,12 +359,12 @@ class FullExportImport {
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
         )
         def config = new CompassConfiguration()
-                
+
         String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
                 append(File.separator).
                 append(dataDir).
                 toString();
-                
+
         config.setConnection(compassConnection);
 
         def defaultSettings=DefaultCompassConfiguration.getDefaultSettings(ConfigurationHolder.getConfig());

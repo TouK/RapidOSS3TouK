@@ -35,7 +35,7 @@ class FullExportImportUtility {
         backup(backupDir);
         def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
-        def EXPORT_ALL_RELATIONS=EXPORT_CONFIG.EXPORT_ALL_RELATIONS;
+        def EXPORT_MARKED_RELATIONS=EXPORT_CONFIG.EXPORT_MARKED_RELATIONS;
 
         beginCompass(backupDir);
 
@@ -61,7 +61,7 @@ class FullExportImportUtility {
     private def generateModelsToExport(MODELS)
     {
         def MODELS_TO_EXPORT=[:];
-        def EXPORT_ALL_RELATIONS=false;
+        def EXPORT_MARKED_RELATIONS=false;
 
         logger.info("generating models to export");
         def tempModelList=[];
@@ -91,7 +91,7 @@ class FullExportImportUtility {
         {
 
             tempModelList.clear();
-            EXPORT_ALL_RELATIONS=true;
+            EXPORT_MARKED_RELATIONS=false;
 
             getAllModelNames().each{ modelName ->
                 tempModelList.add([model:modelName,childModels:false,relations:false])
@@ -101,7 +101,7 @@ class FullExportImportUtility {
         {
             //if allmode is false, we have selective models
             //relation model is exported but with only relation ids which are in RELATION_IDS_TO_EXPORT
-            EXPORT_ALL_RELATIONS=false;
+            EXPORT_MARKED_RELATIONS=true;
 
             //if conf mode conf models added to list
             if(confMode)
@@ -136,13 +136,10 @@ class FullExportImportUtility {
         {
             MODELS_TO_EXPORT["application.ObjectId"]=[relations:false];
         }
-
-        MODELS_TO_EXPORT.remove("relation.Relation");
-
-
+        
         logger.info("generated MODELS_TO_EXPORT : ${MODELS_TO_EXPORT}");
 
-        def EXPORT_CONFIG=[MODELS_TO_EXPORT:MODELS_TO_EXPORT,EXPORT_ALL_RELATIONS:EXPORT_ALL_RELATIONS];
+        def EXPORT_CONFIG=[MODELS_TO_EXPORT:MODELS_TO_EXPORT,EXPORT_MARKED_RELATIONS:EXPORT_MARKED_RELATIONS];
         return EXPORT_CONFIG;
     }
     private def getAllModelNames()
@@ -270,7 +267,7 @@ class FullExportImportUtility {
 
         logger.debug("MARKING RELATIONS with query ${query}");
     }
-    private def exportRelationsModel()
+    private def exportMarkedRelations()
     {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");

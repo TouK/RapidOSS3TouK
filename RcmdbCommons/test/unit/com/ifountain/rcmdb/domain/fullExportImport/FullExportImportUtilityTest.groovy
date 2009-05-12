@@ -99,7 +99,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
@@ -138,7 +138,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
@@ -177,7 +177,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
@@ -216,7 +216,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertTrue(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertFalse(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
@@ -273,7 +273,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
@@ -320,7 +320,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility();
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
-        assertFalse(EXPORT_CONFIG.EXPORT_ALL_RELATIONS);
+        assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 

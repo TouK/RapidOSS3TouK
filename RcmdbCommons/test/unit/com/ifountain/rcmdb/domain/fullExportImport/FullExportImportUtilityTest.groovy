@@ -378,7 +378,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
         def fullExport=new FullExportImportUtility();
-        println System.getProperty("index.dir");
+
 
         fullExport.beginCompass(System.getProperty("index.dir"));
         def tx=fullExport.beginCompassTransaction();
@@ -402,7 +402,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
                 }
 
 
-                def repoResults=modelClass.searchEvery("alias:\"(${modelAlias})\" ");
+                def repoResults=modelClass.searchEvery("alias:${modelAlias.exactQuery()}");
                 assertEquals(repoResults.size(),compassModelData.size());
                 repoResults.each{  resultObj ->
                     def compassResultObj=compassModelData[resultObj.id];
@@ -422,6 +422,83 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
     }
 
+    public void testExportModelWithoutRelations()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"RsTopologyObject${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        3.times{
+            def obj=modelClassMap.RsGroup.add(name:"RsGroup${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        2.times{
+            def obj=modelClassMap.RsCustomer.add(name:"RsCustomer${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        def fullExport=new FullExportImportUtility();
+
+        def exportDir=new File("../exportDir");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        try{
+            fullExport.exportModel(exportDir.getPath(),100,"RsTopologyObject",false);
+
+            def xmlFile=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
+            assertTrue(xmlFile.exists())
+
+            def resultXml = new XmlSlurper().parse(xmlFile);
+
+            def objects=resultXml.Object;
+            def xmlData=[:];
+
+            def xmlDataIds=[];
+            objects.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toString());
+            }
+            //check xml is sorted by id
+            xmlDataIds.size().times { index ->
+                if(index>0)
+                {
+                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+                }
+            }
+
+            //check xml properties are same as the object
+            def modelAlias="RsTopologyObject";
+
+            def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
+            assertEquals(repoResults.size(),xmlData.size())
+
+
+            repoResults.each{ repoObject ->
+                assertTrue(xmlData.containsKey(repoObject.id.toString()));
+                def xmlAttributes=xmlData[repoObject.id.toString()];
+                xmlAttributes.each{ propName,propVal ->
+                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
+                }
+            }
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
 
     public def getClassMapFromClassList(classList)
     {

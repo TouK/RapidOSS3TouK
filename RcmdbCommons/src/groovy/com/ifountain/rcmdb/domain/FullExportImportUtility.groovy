@@ -190,12 +190,12 @@ class FullExportImportUtility {
         logger.info("exporting successfuly done");
     }
 
-    private def exportModel(modelName,relations)
+    private def exportModel(exportDir,objectPerFile,modelName,relations)
     {
         logger.info("   exporting model ${modelName}");
 
 
-        def modelAlias=ALL_MODELS[modelName].simpleName;
+        def modelAlias=getModelAlias(modelName);
 
 
         def query="alias:*";
@@ -204,7 +204,7 @@ class FullExportImportUtility {
         queryObj.setAliases ([modelAlias] as String[]);
         CompassHits hits = queryObj.hits();
 
-        def objectPerFile=CONFIG.objectPerFile;
+
         def fileCount=Math.floor(hits.length()/objectPerFile).toInteger()+1;
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
@@ -232,7 +232,7 @@ class FullExportImportUtility {
                 }
             }
             def strXml = writer.toString();
-            exportXml(strXml,"${CONFIG.exportDir}/${modelName}_${fileCounter}.xml");
+            exportXml(strXml,"${exportDir}/${modelName}_${fileCounter}.xml");
 
             if(relations)
             {
@@ -289,10 +289,9 @@ class FullExportImportUtility {
         def fileCount=Math.floor(hits.length()/objectPerFile).toInteger()+1;
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
-        if(!EXPORT_ALL_RELATIONS)
-        {
-            logger.info("      ! some of the relations may be skipped");
-        }
+
+        logger.info("      ! some of the relations may be skipped");
+
 
         fileCount.times{ fileCounter ->
             logger.info("      exporting ${modelName} file ${fileCounter}");
@@ -309,19 +308,8 @@ class FullExportImportUtility {
                     if(dataIndex<hits.length)
                     {
                         def object=hits.data(dataIndex);
-                        def includeRelation=false;
-                        if(EXPORT_ALL_RELATIONS)
-                        {
-                            includeRelation=true;
-                        }
-                        else
-                        {
-                            if(RELATION_IDS_TO_EXPORT.containsKey(object.id))
-                            {
-                                includeRelation=true;
-                            }
-                        }
-                        if(includeRelation)
+
+                        if(RELATION_IDS_TO_EXPORT.containsKey(object.id))
                         {
                             relationCount++;
                             def props=object.asMap();

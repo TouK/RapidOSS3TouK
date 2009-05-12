@@ -7,6 +7,9 @@ import com.ifountain.rcmdb.domain.FullExportImport
 import application.RsApplication
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.compass.core.CompassQuery
+import org.compass.core.CompassHit
+import org.compass.core.CompassHits
 
 /**
 * Created by IntelliJ IDEA.
@@ -80,8 +83,7 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
 
     }
     public void testGenerateModelsToExportWithSelectedModelWithChildsAndRelations()
-    {
-        initialize([RsApplication],[]);
+    {           
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -120,7 +122,6 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithSelectedModelWithoutChildsAndWitoutRelations()
     {
-        initialize([RsApplication],[]);
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -160,7 +161,6 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithSelectedModelsOneWithChildsOtherWithoutChilds()
     {
-        initialize([RsApplication],[]);
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -201,7 +201,6 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     
     public void testGenerateModelsToExportWithAllModels()
     {
-        initialize([RsApplication],[]);
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -259,7 +258,6 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithConfModels()
     {
-        initialize([RsApplication],[]);
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -305,7 +303,6 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithConfModelsAndWithSelectedModels()
     {
-        initialize([RsApplication],[]);
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
@@ -347,7 +344,84 @@ class FullExportImportTest extends RapidCmdbWithCompassTestCase{
             }
         }
     }
+    public void testBeginCompassStartsSuccessfully()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
 
+        2.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"RsTopologyObject${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        3.times{
+            def obj=modelClassMap.RsGroup.add(name:"RsGroup${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        4.times{
+            def obj=modelClassMap.RsCustomer.add(name:"RsCustomer${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        5.times{
+            def obj=modelClassMap.RsEvent.add(name:"RsEvent${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        3.times{
+            def obj=connection.Connection.add(name:"Connection${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        def fullExport=new FullExportImport();
+        println System.getProperty("index.dir"); 
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        try{
+            def modelNamesToCheck=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","connection.Connection"];
+            def modelClassesToCheck=loadClasses(modelNamesToCheck);
+            
+            modelClassesToCheck.each{ modelClass ->
+                def modelAlias=fullExport.getModelAlias(modelClass.name);
+                def query="alias:*";
+                CompassQuery queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+                queryObj.addSort ("id")
+                queryObj.setAliases ([modelAlias] as String[]);
+                CompassHits hits = queryObj.hits();
+
+                def compassModelData=[:];
+
+                hits.length().times{ dataIndex->
+                    def obj=hits.data(dataIndex);
+                    compassModelData[obj.id]=obj;
+                }
+
+
+                def repoResults=modelClass.searchEvery("alias:\"(${modelAlias})\" ");
+                assertEquals(repoResults.size(),compassModelData.size());
+                repoResults.each{  resultObj ->
+                    def compassResultObj=compassModelData[resultObj.id];
+                    assertNotNull(compassResultObj);
+                    assertEquals(resultObj.name,compassResultObj.name);
+                    assertEquals(resultObj.asMap(),compassResultObj.asMap());
+                    
+                }
+
+
+
+            }
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+    }
     public def getClassMapFromClassList(classList)
     {
         def classMap=[:];

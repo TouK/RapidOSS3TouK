@@ -167,6 +167,10 @@ class FullExportImport {
         }
         return modelNames;
     }
+    private def getModelAlias(modelName)
+    {
+        ApplicationHolder.application.getDomainClass(modelName).clazz.simpleName;
+    }
 
     private def exportModels(backupDir,exportDir,MODELS_TO_EXPORT)
     {
@@ -355,8 +359,13 @@ class FullExportImport {
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
         )
         def config = new CompassConfiguration()
-
-        config.setConnection(new StringBuffer(System.getProperty("base.dir")).append(File.separator).append(dataDir).toString());
+                
+        String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
+                append(File.separator).
+                append(dataDir).
+                toString();
+                
+        config.setConnection(compassConnection);
 
         def defaultSettings=DefaultCompassConfiguration.getDefaultSettings(ConfigurationHolder.getConfig());
         defaultSettings.remove("compass.engine.store.indexDeletionPolicy.type");
@@ -380,8 +389,9 @@ class FullExportImport {
     }
     private def endCompassTransaction(tx)
     {
-        tx.close();
+        tx.commit();
     }
+
 
 
 }

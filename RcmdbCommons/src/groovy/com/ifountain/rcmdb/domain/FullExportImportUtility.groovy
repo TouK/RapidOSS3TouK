@@ -136,7 +136,10 @@ class FullExportImportUtility {
         {
             MODELS_TO_EXPORT["application.ObjectId"]=[relations:false];
         }
-        
+        if(EXPORT_MARKED_RELATIONS)
+        {
+            MODELS_TO_EXPORT.remove("relation.Relation");
+        }
         logger.info("generated MODELS_TO_EXPORT : ${MODELS_TO_EXPORT}");
 
         def EXPORT_CONFIG=[MODELS_TO_EXPORT:MODELS_TO_EXPORT,EXPORT_MARKED_RELATIONS:EXPORT_MARKED_RELATIONS];

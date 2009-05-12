@@ -220,8 +220,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
 
-        def expectedModelList=modelClassesNameList.clone();
-        expectedModelList.remove("relation.Relation");
+        def expectedModelList=modelClassesNameList.clone();        
 
         assertEquals(expectedModelList.size(),MODELS_TO_EXPORT.size());
         expectedModelList.each{ modelName ->
@@ -422,6 +421,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.endCompass();
         }
     }
+
+
     public def getClassMapFromClassList(classList)
     {
         def classMap=[:];

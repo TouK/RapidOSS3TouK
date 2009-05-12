@@ -31,7 +31,7 @@ class FullExportImportUtility {
     {
         logger=RsApplication.getLogger();
     }
-    def export(CONFIG)
+    def fullExport(CONFIG)
     {
         backup(backupDir);
         RELATION_IDS_TO_EXPORT.clear();

@@ -921,6 +921,52 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
+    public void testFullExportWithAllModels()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def parentObjects=[];
+        def childObjects=[];
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"childObject${it}");
+            assertFalse(obj.hasErrors());
+            childObjects.add(obj);
+        }
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"parentObject${it}",childObjects:[childObjects[it]]);
+            assertFalse(obj.hasErrors());
+            assertEquals(1,obj.childObjects.size());
+            parentObjects.add(obj);
+        }
+
+        def ticket1=modelClassMap.RsTicket.add(name:"ticket1");
+        assertFalse(ticket1.hasErrors());
+        def ticket2=modelClassMap.RsTicket.add(name:"ticket2",parentTicket:ticket1);
+        assertFalse(ticket2.hasErrors());
+        assertEquals(1,ticket1.subTickets.size());
+
+        def group1=modelClassMap.RsGroup.add(name:"group1",relatedTickets:[ticket1]);
+        assertFalse(group1.hasErrors())
+        assertEquals(1,group1.relatedTickets.size());
+
+        def group2=modelClassMap.RsGroup.add(name:"group2",relatedTickets:[ticket1,ticket2]);
+        assertFalse(group2.hasErrors())
+        assertEquals(2,group2.relatedTickets.size());
+
+        def con1=connection.Connection.add(name:"testcon1");
+        assertFalse(con1.hasErrors());
+
+
+
+
+    }
 
     public def getClassMapFromClassList(classList)
     {

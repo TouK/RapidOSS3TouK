@@ -11,6 +11,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -36,22 +37,22 @@ import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
  * Time: 2:06:19 PM
  * To change this template use File | Settings | File Templates.
  */
-class UpdateMethod extends AbstractRapidDomainWriteMethod{
+class UpdateMethod extends AbstractRapidDomainWriteMethod {
     public static final String UPDATED_PROPERTIES = "updatedProps"
     def relations;
     def fieldTypes = [:]
     IRapidValidator validator;
-    public UpdateMethod(MetaClass mcp, IRapidValidator  validator, Map allFields, Map relations) {
+    public UpdateMethod(MetaClass mcp, IRapidValidator validator, Map allFields, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
-        allFields.each{fieldName, field->
+        allFields.each {fieldName, field ->
             fieldTypes[fieldName] = field.type;
         }
         this.relations = relations;
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
-        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+        OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
         statistics.start();
         def props = arguments[0];
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
@@ -64,16 +65,16 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
         boolean willBeIndexed = false;
         boolean willRelationsBeIndexed = false;
-        props.each{propName,value->
-            if(!relations.containsKey(propName))
+        props.each {propName, value ->
+            if (!relations.containsKey(propName))
             {
                 def fieldType = fieldTypes[propName];
-                if(fieldType)
+                if (fieldType)
                 {
                     def propValueBeforeUpdate = domainObject.getProperty(propName);
                     updatedPropsOldValues[propName] = propValueBeforeUpdate;
                     MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
-                    if(domainObject.getProperty(propName) != propValueBeforeUpdate)
+                    if (domainObject.getProperty(propName) != propValueBeforeUpdate)
                     {
                         willBeIndexed = true;
                     }
@@ -83,11 +84,11 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
             {
                 def currentRelatedObjects = domainObject[propName];
                 updatedPropsOldValues[propName] = currentRelatedObjects;
-                if(currentRelatedObjects)
+                if (currentRelatedObjects)
                 {
                     relationToBeRemovedMap[propName] = currentRelatedObjects;
                 }
-                if(value)
+                if (value)
                 {
                     relationToBeAddedMap[propName] = value;
                 }
@@ -96,18 +97,18 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 willRelationsBeIndexed = true;
             }
         }
-        if(willBeIndexed || willRelationsBeIndexed)
+        if (willBeIndexed || willRelationsBeIndexed)
         {
             def triggeredEventParams = [:];
             triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
-            if(!errors.hasErrors())
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
+            if (!errors.hasErrors())
             {
-                validator.validate (new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
+                validator.validate(new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
             }
-            if(!errors.hasErrors())
+            if (!errors.hasErrors())
             {
-                if(willBeIndexed)
+                if (willBeIndexed)
                 {
                     domainObject.index(domainObject);
                 }
@@ -115,13 +116,13 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod{
                 domainObject.removeRelation(relationToBeRemovedMap);
                 domainObject.addRelation(relationToBeAddedMap);
                 statistics.start();
-                EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
-                EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.ONLOAD_EVENT);
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
+                EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
+                EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+                ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, updatedPropsOldValues)
+                OperationStatistics.getInstance().addStatisticResult(OperationStatistics.UPDATE_OPERATION_NAME, statistics);
             }
         }
         return domainObject;
     }
-
 
 }

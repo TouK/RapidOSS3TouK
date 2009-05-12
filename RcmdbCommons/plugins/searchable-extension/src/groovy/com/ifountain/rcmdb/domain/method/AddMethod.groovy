@@ -32,6 +32,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 class AddMethod extends AbstractRapidDomainWriteMethod
 {
@@ -139,6 +140,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             }
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.AFTER_INSERT_EVENT);
             EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
+            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_INSERT_EVENT, sampleBean);
             statistics.stop();
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, statistics);
         }

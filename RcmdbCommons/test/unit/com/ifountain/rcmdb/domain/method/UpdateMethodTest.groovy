@@ -31,6 +31,8 @@ import com.ifountain.rcmdb.converter.BooleanConverter
 import com.ifountain.rcmdb.converter.DateConverter
 import com.ifountain.rcmdb.converter.DoubleConverter
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
 
 /**
 * Created by IntelliJ IDEA.
@@ -39,12 +41,12 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 * Time: 4:01:27 PM
 * To change this template use File | Settings | File Templates.
 */
-class UpdateMethodTest extends RapidCmdbTestCase{
-     protected void setUp() {
+class UpdateMethodTest extends RapidCmdbTestCase {
+    protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        IdGenerator.initialize (new MockIdGeneratorStrategy());
+        IdGenerator.initialize(new MockIdGeneratorStrategy());
         AddMethodDomainObjectWithEvents.eventCalls = [];
-        AddMethodDomainObject1.searchResult =  [total:0, results:[]];
+        AddMethodDomainObject1.searchResult = [total: 0, results: []];
         AddMethodDomainObject1.query = null;
         AddMethodDomainObject1.indexList = [];
         AddMethodDomainObject1.metaClass.'static'.keySet = {
@@ -61,117 +63,119 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     }
 
     protected void tearDown() {
-        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         AddMethodDomainObjectWithEvents.eventCalls = [];
+        ObjectProcessor.getInstance().deleteObservers();
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+
     }
 
     public void testUpdateMethod()
     {
-        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id:100, prop1:"object2Prop1Value");
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id: 100, prop1: "object2Prop1Value");
 
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)];
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)];
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, relations, ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
 
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
         objectBeforeAdd.id = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:relatedObject, id:5000];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", rel1: relatedObject, id: 5000];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
-        assertTrue (update instanceof AbstractRapidDomainWriteMethod);
-        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
+        assertTrue(update instanceof AbstractRapidDomainWriteMethod);
+        AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         //id property will be ignored
-        assertEquals (objectBeforeAdd.id, updatedObject.id);
-        assertEquals ("newProp2Value", updatedObject.prop2);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals("newProp2Value", updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
         assertEquals(2, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty[0]);
         assertFalse(addedObject.isFlushedByProperty[1]);
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
-        assertEquals (1, AddMethodDomainObject1.indexList.size());
-        assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+        assertEquals(1, AddMethodDomainObject1.indexList.size());
+        assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
         def propName = "id"
-        props = ["$propName":5000];
-        updatedObject = update.invoke (addedObject, [props] as Object[]);
+        props = ["$propName": 5000];
+        updatedObject = update.invoke(addedObject, [props] as Object[]);
         //id property will be ignored
-        assertEquals (objectBeforeAdd.id, updatedObject.id);
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
     }
 
-    
+
     public void testUpdateMethodWillNotCallIndexIfNoPropertyHasChanged()
     {
-        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
         def relations = [:];
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
         objectBeforeAdd.id = addedObject.id;
 
         AddMethodDomainObjectWithEvents.eventCalls.clear();
         AddMethodDomainObjectWithEvents.indexList.clear();
-        props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2];
+        props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
-        AddMethodDomainObjectWithEvents updatedObject = update.invoke (addedObject, [props] as Object[]);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         //id property will be ignored
-        assertEquals (objectBeforeAdd.id, updatedObject.id);
-        assertEquals (objectBeforeAdd.prop2, updatedObject.prop2);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
-        assertEquals (0, AddMethodDomainObjectWithEvents.indexList.size());
-        assertSame (updatedObject, addedObject);
-        assertEquals (0, AddMethodDomainObjectWithEvents.eventCalls.size());
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
+        assertSame(updatedObject, addedObject);
+        assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
     }
 
     public void testUpdateMethodWillReturnErrorsIfErrorsOccurredWhileConvertingStringProperties()
     {
         def dateFormat = "yyyy-dd-MM HH:mm:ss";
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
-        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value", prop5:new Date());
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value", prop5: new Date());
         def relations = [:];
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3, prop5:objectBeforeAdd.prop5];
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3, prop5: objectBeforeAdd.prop5];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
         objectBeforeAdd.id = addedObject.id;
 
         AddMethodDomainObjectWithEvents.eventCalls.clear();
         AddMethodDomainObjectWithEvents.indexList.clear();
-        props = [prop1:objectBeforeAdd.prop1, prop5:"invalid date prop"];
+        props = [prop1: objectBeforeAdd.prop1, prop5: "invalid date prop"];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
-        AddMethodDomainObjectWithEvents updatedObject = update.invoke (addedObject, [props] as Object[]);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         //id property will be ignored
-        assertEquals (objectBeforeAdd.id, updatedObject.id);
-        assertEquals (objectBeforeAdd.prop5, updatedObject.prop5);
-        assertEquals (0, AddMethodDomainObjectWithEvents.indexList.size());
-        assertTrue (updatedObject.hasErrors());
-        assertSame (updatedObject, addedObject);
-        assertEquals (0, AddMethodDomainObjectWithEvents.eventCalls.size());
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(objectBeforeAdd.prop5, updatedObject.prop5);
+        assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
+        assertTrue(updatedObject.hasErrors());
+        assertSame(updatedObject, addedObject);
+        assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
     }
 
     public void testUpdateMethodWillNotCallIndexButWillCallAddRemoveRelationsIfNoPropertyHasChangedButRelationsIsSpecified()
     {
-        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethodDomainObjectWithEvents relatedObject = new AddMethodDomainObjectWithEvents(id:100, prop1:"object2Prop1Value");
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethodDomainObjectWithEvents relatedObject = new AddMethodDomainObjectWithEvents(id: 100, prop1: "object2Prop1Value");
 
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
         objectBeforeAdd.id = addedObject.id;
@@ -180,21 +184,21 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         AddMethodDomainObjectWithEvents.indexList.clear();
         def relsToBeRemoved = [new AddMethodDomainObjectWithEvents()];
         addedObject.rel1 = relsToBeRemoved;
-        props["rel1"] = new  AddMethodDomainObjectWithEvents();
+        props["rel1"] = new AddMethodDomainObjectWithEvents();
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
-        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
+        AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         //id property will be ignored
-        assertEquals (objectBeforeAdd.id, updatedObject.id);
-        assertEquals (objectBeforeAdd.prop1, updatedObject.prop1);
-        assertEquals (objectBeforeAdd.prop2, updatedObject.prop2);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(objectBeforeAdd.prop1, updatedObject.prop1);
+        assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
         assertEquals(1, updatedObject.relationsShouldBeAdded.size());
         assertEquals(1, updatedObject.relationsShouldBeRemoved.size());
         assertSame(relsToBeRemoved[0], updatedObject.relationsShouldBeRemoved.rel1[0]);
         assertSame(props.rel1, updatedObject.relationsShouldBeAdded.rel1);
-        assertEquals (0, AddMethodDomainObject1.indexList.size());
-        assertSame (updatedObject, addedObject);
+        assertEquals(0, AddMethodDomainObject1.indexList.size());
+        assertSame(updatedObject, addedObject);
 
         assertEquals("beforeUpdate", AddMethodDomainObjectWithEvents.eventCalls[0])
         assertEquals("removeRelation", AddMethodDomainObjectWithEvents.eventCalls[1])
@@ -203,42 +207,43 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     }
 
 
-    
+
 
 
     public void testUpdateMethodWithEvents()
     {
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
-        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObjectWithEvents.class, AddMethodDomainObjectWithEvents.class, RelationMetaData.ONE_TO_ONE)];
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
 
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3, rel1:new AddMethodDomainObjectWithEvents()];
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3, rel1: new AddMethodDomainObjectWithEvents()];
 
-        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        AddMethodDomainObjectWithEvents addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
 
         AddMethodDomainObject1.indexList.clear();
         AddMethodDomainObjectWithEvents.eventCalls = [];
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:new AddMethodDomainObjectWithEvents()];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", rel1: new AddMethodDomainObjectWithEvents()];
 
         def beforeUpdateParams = [];
         def afterUpdateParams = [];
-        addedObject.closureToBeInvokedBeforeUpdate = {params->
+        addedObject.closureToBeInvokedBeforeUpdate = {params ->
             beforeUpdateParams.add(params);
         }
 
-        addedObject.closureToBeInvokedAfterUpdate = {params->
+        addedObject.closureToBeInvokedAfterUpdate = {params ->
             afterUpdateParams.add(params);
         }
-
+        MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
+        ObjectProcessor.getInstance().addObserver(observer);
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
-        def updatedObject = update.invoke (addedObject, [props] as Object[]);
-        assertEquals (addedObject.id, updatedObject.id);
-        assertEquals ("newProp2Value", updatedObject.prop2);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
-        assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
-        assertEquals (["beforeUpdate", "index", "removeRelation", "addRelation","afterUpdate", "onLoad"], AddMethodDomainObjectWithEvents.eventCalls);
+        def updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertEquals(addedObject.id, updatedObject.id);
+        assertEquals("newProp2Value", updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
+        assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
+        assertEquals(["beforeUpdate", "index", "removeRelation", "addRelation", "afterUpdate", "onLoad"], AddMethodDomainObjectWithEvents.eventCalls);
 
 
         assertEquals(1, beforeUpdateParams.size());
@@ -254,71 +259,81 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
         assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
         assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
+
+        assertEquals(1, observer.repositoryChanges.size());
+        Map repositoryChange = observer.repositoryChanges[0];
+        assertEquals(3, repositoryChange.size());
+        assertEquals(EventTriggeringUtils.AFTER_UPDATE_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME])
+        assertSame(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
+        Map updatedProps = repositoryChange[ObjectProcessor.UPDATED_PROPERTIES]
+        assertEquals(3, updatedProps.size())
+        assertEquals(objectBeforeAdd.prop1, updatedProps.prop1);
+        assertEquals(objectBeforeAdd.prop2, updatedProps.prop2);
+        assertSame(objectBeforeAdd.rel1, updatedProps.rel1);
     }
 
     public void testBeforeUpdateWillBeCalledBeforeValidation()
     {
-         AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
 
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
 
-        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        AddMethodDomainObjectWithEvents addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
 
         AddMethodDomainObject1.indexList.clear();
-        
+
         def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
-        addedObject.closureToBeInvokedBeforeUpdate = {params->
+        addedObject.closureToBeInvokedBeforeUpdate = {params ->
             addedObject.setProperty("prop2", "updatedValueInBeforeUpdate", false);
         }
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
         MockValidator validator = new MockValidator();
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, validator, AddMethodDomainObject1.allFields, [:]);
-        def updatedObject = update.invoke (addedObject, [props] as Object[]);
+        def updatedObject = update.invoke(addedObject, [props] as Object[]);
 
-        assertEquals (propvalueToBeUpdatedInBeforeUpdate, validator.validatedObject.prop2);
-
+        assertEquals(propvalueToBeUpdatedInBeforeUpdate, validator.validatedObject.prop2);
 
     }
 
 
     public void testUpdateMethodWithSettingRelationToNull()
     {
-        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
-        AddMethodDomainObject1 relatedObject1 = new AddMethodDomainObject1(id:100);
-        AddMethodDomainObject1 relatedObject2 = new AddMethodDomainObject1(id:100);
-        AddMethodDomainObject1 relatedObject3 = new AddMethodDomainObject1(id:100);
-        AddMethodDomainObject1 relatedObject4 = new AddMethodDomainObject1(id:100);
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethodDomainObject1 relatedObject1 = new AddMethodDomainObject1(id: 100);
+        AddMethodDomainObject1 relatedObject2 = new AddMethodDomainObject1(id: 100);
+        AddMethodDomainObject1 relatedObject3 = new AddMethodDomainObject1(id: 100);
+        AddMethodDomainObject1 relatedObject4 = new AddMethodDomainObject1(id: 100);
 
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
-        "rel2":new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
-        "rel3":new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
-        "rel4":new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
-        "rel5":new RelationMetaData("rel5", "revRel5", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
-        "rel6":new RelationMetaData("rel6", "revRel6", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
+                "rel2": new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+                "rel3": new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
+                "rel4": new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+                "rel5": new RelationMetaData("rel5", "revRel5", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+                "rel6": new RelationMetaData("rel6", "revRel6", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
         ];
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, relations, ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
 
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
         addedObject.rel1 = relatedObject1;
         addedObject.rel2 = [];
         addedObject.rel2 += relatedObject2;
         addedObject.rel2 += relatedObject3;
         AddMethodDomainObject1.indexList.clear();
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null, rel2:relatedObject4, rel3:[], rel4:[relatedObject4], rel5:null, rel6:null];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", rel1: null, rel2: relatedObject4, rel3: [], rel4: [relatedObject4], rel5: null, rel6: null];
         def validator = new MockValidator();
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, validator, AddMethodDomainObject1.allFields, relations);
-        AddMethodDomainObject1 updatedObject = update.invoke (addedObject, [props] as Object[]);
-        assertEquals (addedObject.id, updatedObject.id);
-        assertEquals ("newProp2Value", updatedObject.prop2);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertEquals(addedObject.id, updatedObject.id);
+        assertEquals("newProp2Value", updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
 
         assertEquals(2, updatedObject.relationsShouldBeAdded.size());
         assertEquals(2, updatedObject.relationsShouldBeRemoved.size());
@@ -329,8 +344,8 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         assertEquals(2, updatedObject.relationsShouldBeRemoved.get("rel2").size());
         assertEquals(relatedObject2, updatedObject.relationsShouldBeRemoved.get("rel2")[0]);
         assertEquals(relatedObject3, updatedObject.relationsShouldBeRemoved.get("rel2")[1]);
-        assertEquals (1, AddMethodDomainObject1.indexList.size())
-        assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+        assertEquals(1, AddMethodDomainObject1.indexList.size())
+        assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
         assertNull(validator.validatedObject.rel1);
         assertNull(validator.validatedObject.rel6);
         assertNull(validator.validatedObject.rel3);
@@ -345,9 +360,9 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
         addedObject.rel1 = null;
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", rel1:null];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", rel1: null];
         update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
-        updatedObject = update.invoke (addedObject, [props] as Object[]);
+        updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         assertEquals(0, updatedObject.relationsShouldBeAdded.size());
         assertEquals(0, updatedObject.relationsShouldBeRemoved.size());
@@ -355,7 +370,7 @@ class UpdateMethodTest extends RapidCmdbTestCase{
         addedObject.rel1 = [];
 
         update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
-        updatedObject = update.invoke (addedObject, [props] as Object[]);
+        updatedObject = update.invoke(addedObject, [props] as Object[]);
 
         assertEquals(0, updatedObject.relationsShouldBeAdded.size());
         assertEquals(0, updatedObject.relationsShouldBeRemoved.size());
@@ -363,86 +378,85 @@ class UpdateMethodTest extends RapidCmdbTestCase{
 
     public void testUpdateWithChildClass()
     {
-        ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop6:"object1Prop6Value");
+        ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop6: "object1Prop6Value");
 
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, [:], ["prop1"]);
 
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop6:objectBeforeAdd.prop6];
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop6: objectBeforeAdd.prop6];
 
-        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
-        assertEquals (objectBeforeAdd, addedObject);
+        def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value", prop6:"newProp6Value"];
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", prop6: "newProp6Value"];
         UpdateMethod update = new UpdateMethod(ChildAddMethodDomainObject.metaClass, new MockValidator(), ChildAddMethodDomainObject.allFields, [:]);
-        def updatedObject = update.invoke (addedObject, [props] as Object[]);
-        assertEquals (addedObject.id, updatedObject.id);
-        assertEquals ("newProp2Value", updatedObject.prop2);
-        assertEquals ("newProp6Value", updatedObject.prop6);
-        assertEquals (objectBeforeAdd.prop3, updatedObject.prop3);
+        def updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertEquals(addedObject.id, updatedObject.id);
+        assertEquals("newProp2Value", updatedObject.prop2);
+        assertEquals("newProp6Value", updatedObject.prop6);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
     }
 
     public void testUpdateMethodWithStringProperties()
     {
-        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
-        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
-        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
+        def prevDateConf = RapidConvertUtils.getInstance().lookup(Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup(Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup(Double);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
-            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
-            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
-            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
-            RapidConvertUtils.getInstance().register (new BooleanConverter(), Boolean.class)
+            RapidConvertUtils.getInstance().register(new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+            RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
 
-            AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+            AddMethodDomainObject1 object = new AddMethodDomainObject1(id: 100, prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
             AddMethodDomainObject1.indexList.clear();
-            def props = [prop1:object.prop1, prop2:"newProp2Value",  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0", booleanProp:"FAlse"];
+            def props = [prop1: object.prop1, prop2: "newProp2Value", prop4: "100", prop5: "2000-01-01", doubleProp: "5.0", booleanProp: "FAlse"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
-            def updatedObject = update.invoke (object, [props] as Object[]);
-            assertEquals (100, updatedObject.id);
-            assertEquals ("newProp2Value", updatedObject.prop2);
-            assertEquals ("object1Prop3Value", updatedObject.prop3);
-            assertEquals (100, updatedObject.prop4);
-            assertEquals (new Double(5.0), updatedObject.doubleProp);
-            assertEquals (new Boolean(false), updatedObject.booleanProp);
-            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
-            assertEquals (formater.parse("2000-01-01"), updatedObject.prop5);
-            assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+            def updatedObject = update.invoke(object, [props] as Object[]);
+            assertEquals(100, updatedObject.id);
+            assertEquals("newProp2Value", updatedObject.prop2);
+            assertEquals("object1Prop3Value", updatedObject.prop3);
+            assertEquals(100, updatedObject.prop4);
+            assertEquals(new Double(5.0), updatedObject.doubleProp);
+            assertEquals(new Boolean(false), updatedObject.booleanProp);
+            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString);
+            assertEquals(formater.parse("2000-01-01"), updatedObject.prop5);
+            assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
             AddMethodDomainObject1.indexList.clear();
-            props = [prop1:object.prop1, prop2:"",  prop4:"", prop5:"", doubleProp:"", booleanProp:""];
+            props = [prop1: object.prop1, prop2: "", prop4: "", prop5: "", doubleProp: "", booleanProp: ""];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
-            updatedObject = update.invoke (object, [props] as Object[]);
+            updatedObject = update.invoke(object, [props] as Object[]);
 
-            assertEquals ("", updatedObject.prop2);
-            assertEquals ("object1Prop3Value", updatedObject.prop3);
-            assertEquals (null, updatedObject.prop4);
-            assertEquals (null, updatedObject.doubleProp);
-            assertEquals (null, updatedObject.prop5);
-            assertEquals (null, updatedObject.booleanProp);
+            assertEquals("", updatedObject.prop2);
+            assertEquals("object1Prop3Value", updatedObject.prop3);
+            assertEquals(null, updatedObject.prop4);
+            assertEquals(null, updatedObject.doubleProp);
+            assertEquals(null, updatedObject.prop5);
+            assertEquals(null, updatedObject.booleanProp);
             println updatedObject.booleanProp;
-            assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
+            assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
             AddMethodDomainObject1.indexList.clear();
-            props = [prop1:object.prop1, prop2:null,  prop4:null, prop5:null, doubleProp:null, booleanProp:null];
+            props = [prop1: object.prop1, prop2: null, prop4: null, prop5: null, doubleProp: null, booleanProp: null];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
-            updatedObject = update.invoke (object, [props] as Object[]);
+            updatedObject = update.invoke(object, [props] as Object[]);
 
-            assertEquals (null, updatedObject.prop2);
-            assertEquals ("object1Prop3Value", updatedObject.prop3);
-            assertEquals (null, updatedObject.prop4);
-            assertEquals (null, updatedObject.doubleProp);
-            assertEquals (null, updatedObject.prop5);
-            assertEquals (null, updatedObject.booleanProp);
-            assertSame (updatedObject, AddMethodDomainObject1.indexList[0]);
-            
+            assertEquals(null, updatedObject.prop2);
+            assertEquals("object1Prop3Value", updatedObject.prop3);
+            assertEquals(null, updatedObject.prop4);
+            assertEquals(null, updatedObject.doubleProp);
+            assertEquals(null, updatedObject.prop5);
+            assertEquals(null, updatedObject.booleanProp);
+            assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
         }
         finally
         {
-            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
-            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
-            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
+            RapidConvertUtils.getInstance().register(prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register(prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register(prevDoubleConf, Double.class)
         }
     }
 
@@ -450,38 +464,37 @@ class UpdateMethodTest extends RapidCmdbTestCase{
     public void testIfInvalidPropertyPassedReturnsError()
     {
 
-        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
-        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
-        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
+        def prevDateConf = RapidConvertUtils.getInstance().lookup(Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup(Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup(Double);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
-            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
-            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
-            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
+            RapidConvertUtils.getInstance().register(new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
 
-            AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+            AddMethodDomainObject1 object = new AddMethodDomainObject1(id: 100, prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
 
-            def props = [prop1:object.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
+            def props = [prop1: object.prop1, prop4: "invalidData", prop5: "invalidData", doubleProp: "invalidData"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
-            def updatedObject = update.invoke (object, [props] as Object[]);
-            assertEquals (null, updatedObject.prop4);
-            assertEquals (null, updatedObject.doubleProp);
-            assertEquals (null, updatedObject.prop5);
-            assertTrue (updatedObject.hasErrors());
+            def updatedObject = update.invoke(object, [props] as Object[]);
+            assertEquals(null, updatedObject.prop4);
+            assertEquals(null, updatedObject.doubleProp);
+            assertEquals(null, updatedObject.prop5);
+            assertTrue(updatedObject.hasErrors());
             assertTrue(updatedObject.errors.toString().indexOf("Field error in object") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("prop4") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("prop5") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("doubleProp") >= 0);
-            assertTrue (AddMethodDomainObject1.indexList.isEmpty());
-
+            assertTrue(AddMethodDomainObject1.indexList.isEmpty());
 
         }
         finally
         {
-            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
-            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
-            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
+            RapidConvertUtils.getInstance().register(prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register(prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register(prevDoubleConf, Double.class)
         }
     }
 

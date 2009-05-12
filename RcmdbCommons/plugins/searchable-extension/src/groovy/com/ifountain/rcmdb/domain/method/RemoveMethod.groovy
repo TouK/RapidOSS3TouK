@@ -4,6 +4,7 @@ import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.ValidationUtils
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -80,7 +81,8 @@ class RemoveMethod extends AbstractRapidDomainWriteMethod{
             }
 
             CompassMethodInvoker.unindex(mc, domainObject);
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);            
+            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
+            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_DELETE_EVENT, domainObject)
             statistics.stop();
             OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
             if(!relsToBeRemoved.isEmpty())

@@ -31,6 +31,8 @@ import org.springframework.validation.Validator
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import org.springframework.validation.ObjectError
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
+import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /**
 * Created by IntelliJ IDEA.
@@ -39,12 +41,12 @@ import com.ifountain.rcmdb.domain.validator.IRapidValidator
 * Time: 4:04:02 PM
 * To change this template use File | Settings | File Templates.
 */
-class AddMethodTest extends RapidCmdbTestCase{
+class AddMethodTest extends RapidCmdbTestCase {
     MockValidator validator;
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        IdGenerator.initialize (new MockIdGeneratorStrategy());
-        AddMethodDomainObject1.searchResult =  [total:0, results:[]];
+        IdGenerator.initialize(new MockIdGeneratorStrategy());
+        AddMethodDomainObject1.searchResult = [total: 0, results: []];
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
         AddMethodDomainObject1.query = null;
@@ -56,46 +58,47 @@ class AddMethodTest extends RapidCmdbTestCase{
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
+        ObjectProcessor.getInstance().deleteObservers();
     }
 
     public void testAddMethod()
     {
-        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        assertTrue (add instanceof AbstractRapidDomainWriteMethod);
+        assertTrue(add instanceof AbstractRapidDomainWriteMethod);
 
-        def props = [prop1:expectedDomainObject1.prop1, id:-5000];
-        AddMethodDomainObject1 addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals (expectedDomainObject1, addedObject);
-        assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
+        def props = [prop1: expectedDomainObject1.prop1, id: -5000];
+        AddMethodDomainObject1 addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(expectedDomainObject1, addedObject);
+        assertTrue(AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
-        assertEquals (2, addedObject.numberOfFlushCalls);
-        assertFalse (addedObject.isFlushedByProperty[0]);
-        assertFalse (addedObject.isFlushedByProperty[1]);
+        assertEquals(2, addedObject.numberOfFlushCalls);
+        assertFalse(addedObject.isFlushedByProperty[0]);
+        assertFalse(addedObject.isFlushedByProperty[1]);
         def prevId = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
-        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(prop1:"object2Prop1Value");
-        props = [prop1:expectedDomainObject2.prop1];
-        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals (expectedDomainObject2, addedObject);
-        assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject));
-        assertEquals (prevId+1, addedObject.id);
+        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(prop1: "object2Prop1Value");
+        props = [prop1: expectedDomainObject2.prop1];
+        addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(expectedDomainObject2, addedObject);
+        assertTrue(AddMethodDomainObject1.indexList[0].contains(addedObject));
+        assertEquals(prevId + 1, addedObject.id);
 
         AddMethodDomainObject1.indexList.clear();
-        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(prop1:"object3Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(prop1: "object3Prop1Value");
 
         //test ignores id property
-        props = [id:5, prop1:expectedDomainObject3.prop1];
-        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        props = [id: 5, prop1: expectedDomainObject3.prop1];
+        addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
 
         AddMethodDomainObject1.indexList.clear();
         AddMethodDomainObject1.query = null;
         //test ignores id property whose name is gstring
-        props = ["${"id"}":5, prop1:expectedDomainObject3.prop1];
-        addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        props = ["${"id"}": 5, prop1: expectedDomainObject3.prop1];
+        addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
 
     }
@@ -104,28 +107,28 @@ class AddMethodTest extends RapidCmdbTestCase{
 
     public void testGetLockName()
     {
-        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        String lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
-        assertEquals(AddMethodDomainObject1.name+"prop1Value", lockName);
+        String lockName = add.getLockName(AddMethodDomainObject1.class, [[prop1: "prop1Value", prop2: "prop2Value"]] as Object[]);
+        assertEquals(AddMethodDomainObject1.name + "prop1Value", lockName);
         add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1", "prop2"]);
-        lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
-        assertEquals(AddMethodDomainObject1.name+"prop1Value"+"prop2Value", lockName);
+        lockName = add.getLockName(AddMethodDomainObject1.class, [[prop1: "prop1Value", prop2: "prop2Value"]] as Object[]);
+        assertEquals(AddMethodDomainObject1.name + "prop1Value" + "prop2Value", lockName);
 
         add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], []);
-        lockName = add.getLockName (AddMethodDomainObject1.class, [[prop1:"prop1Value", prop2:"prop2Value"]] as Object[]);
+        lockName = add.getLockName(AddMethodDomainObject1.class, [[prop1: "prop1Value", prop2: "prop2Value"]] as Object[]);
         assertEquals(null, lockName);
     }
 
     public void testAddMethodForAChildClass()
     {
-        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
+        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop6: "object1Prop6Value");
         AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1, prop6:expectedDomainObject1.prop6];
-        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
-        assertEquals (expectedDomainObject1, addedObject);
-        assertEquals (expectedDomainObject1.prop6, addedObject.prop6);
-        assertTrue (ChildAddMethodDomainObject.indexList[0].contains(addedObject));
+        def props = [prop1: expectedDomainObject1.prop1, prop6: expectedDomainObject1.prop6];
+        def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
+        assertEquals(expectedDomainObject1, addedObject);
+        assertEquals(expectedDomainObject1.prop6, addedObject.prop6);
+        assertTrue(ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
 
@@ -133,17 +136,17 @@ class AddMethodTest extends RapidCmdbTestCase{
 
     public void testAddMethodForAChildGeneratesErrorIfKeysExistsForAnotherChildOfParentClass()
     {
-        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1:"object1Prop1Value", prop6:"object1Prop6Value");
+        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop6: "object1Prop6Value");
         AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
         AddMethod add2 = new AddMethod(ChildAddMethodDomainObject2.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject2.allFields, [:], ["prop1"]);
 
 
-        
-        def props = [prop1:expectedDomainObject1.prop1];
-        def addedObject = add.invoke (ChildAddMethodDomainObject.class, [props] as Object[]);
-        AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
 
-        def addedObject2 = add2.invoke (ChildAddMethodDomainObject2.class, [props] as Object[]);        
+        def props = [prop1: expectedDomainObject1.prop1];
+        def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
+        AddMethodDomainObjectWithEvents.searchResult = [total: 1, results: [expectedDomainObject1]];
+
+        def addedObject2 = add2.invoke(ChildAddMethodDomainObject2.class, [props] as Object[]);
         assertTrue(addedObject2.hasErrors())
 
         /*
@@ -154,122 +157,132 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals("prop1:\"object1Prop1Value\"", AddMethodDomainObject1.query);
         */
     }
-    
+
 
     public void testAddMethodWithEvents()
     {
-        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)]
+        MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
+        ObjectProcessor.getInstance().addObserver(observer);
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value");
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)]
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1, rel1: new AddMethodDomainObject1()];
-        AddMethodDomainObjectWithEvents addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (["beforeInsert", "index", "addRelation", "afterInsert","onLoad"], addedObject.eventCalls);
-        assertEquals (expectedDomainObject1, addedObject);
+        def props = [prop1: expectedDomainObject1.prop1, rel1: new AddMethodDomainObject1()];
+        AddMethodDomainObjectWithEvents addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(["beforeInsert", "index", "addRelation", "afterInsert", "onLoad"], addedObject.eventCalls);
+        assertEquals(expectedDomainObject1, addedObject);
+
+        assertEquals(1, observer.repositoryChanges.size());
+        Map repositoryChage = observer.repositoryChanges[0];
+        assertEquals(2, repositoryChage.size());
+        assertEquals(EventTriggeringUtils.AFTER_INSERT_EVENT, repositoryChage[ObjectProcessor.EVENT_NAME])
+        def domainObject = repositoryChage[ObjectProcessor.DOMAIN_OBJECT]
+        println domainObject
+        assertEquals(addedObject.prop1, domainObject.prop1);
 
 
-        assertTrue (AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
+        assertTrue(AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
         assertSame(props.rel1, addedObject.relationsShouldBeAdded.rel1)
         assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObjectWithEvents.query);
 
         //test add method with existing instance (It will update instance)
-        AddMethodDomainObjectWithEvents.searchResult = [total:1, results:[expectedDomainObject1]];
+        AddMethodDomainObjectWithEvents.searchResult = [total: 1, results: [expectedDomainObject1]];
         AddMethodDomainObjectWithEvents.eventCalls = [];
-        addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (0,  AddMethodDomainObjectWithEvents.eventCalls.size());
+        addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
     }
 
     public void testBeforeInsertShouldBeCalledBeforeValidation()
     {
         def propValueUpdatedInBeforeInsert = "prop2ValueSetInBeforeInsert";
-        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject->
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject ->
             domainObject.setProperty("prop2", propValueUpdatedInBeforeInsert, false);
         }
-        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1:"object1Prop1Value");
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1];
-        def addedObject = add.invoke (AddMethodDomainObjectWithEvents.class, [props] as Object[]);
-        assertEquals (propValueUpdatedInBeforeInsert, addedObject.prop2);
-        assertEquals (propValueUpdatedInBeforeInsert, validator.validatedObject.prop2);
+        def props = [prop1: expectedDomainObject1.prop1];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(propValueUpdatedInBeforeInsert, addedObject.prop2);
+        assertEquals(propValueUpdatedInBeforeInsert, validator.validatedObject.prop2);
 
     }
 
 
     public void testAddMethodWithStringProperties()
     {
-        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
-        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
-        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
+        def prevDateConf = RapidConvertUtils.getInstance().lookup(Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup(Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup(Double);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
-            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
-            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
-            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
-            RapidConvertUtils.getInstance().register (new BooleanConverter(), Boolean.class)
-            AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+            RapidConvertUtils.getInstance().register(new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+            RapidConvertUtils.getInstance().register(new BooleanConverter(), Boolean.class)
+            AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
             AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-            def props = [prop1:expectedDomainObject1.prop1,  prop4:"100", prop5:"2000-01-01", doubleProp:"5.0", booleanProp:"TrUe"];
-            def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-            assertEquals (100, addedObject.prop4);
-            assertEquals (new Double(5.0), addedObject.doubleProp);
-            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString)  ;
-            assertEquals (formater.parse("2000-01-01"), addedObject.prop5);
-            assertEquals (new Boolean(true), addedObject.booleanProp);
+            def props = [prop1: expectedDomainObject1.prop1, prop4: "100", prop5: "2000-01-01", doubleProp: "5.0", booleanProp: "TrUe"];
+            def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+            assertEquals(100, addedObject.prop4);
+            assertEquals(new Double(5.0), addedObject.doubleProp);
+            SimpleDateFormat formater = new SimpleDateFormat(dateFormatString);
+            assertEquals(formater.parse("2000-01-01"), addedObject.prop5);
+            assertEquals(new Boolean(true), addedObject.booleanProp);
 
-            props = [prop1:expectedDomainObject1.prop1,  prop4:"", prop5:"", doubleProp:""];
-            addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+            props = [prop1: expectedDomainObject1.prop1, prop4: "", prop5: "", doubleProp: ""];
+            addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
-            assertEquals (null, addedObject.prop4);
-            assertEquals (null, addedObject.doubleProp);
-            assertEquals (null, addedObject.prop5);
+            assertEquals(null, addedObject.prop4);
+            assertEquals(null, addedObject.doubleProp);
+            assertEquals(null, addedObject.prop5);
 
 
-            props = [prop1:expectedDomainObject1.prop1,  prop4:null, prop5:null, doubleProp:null];
-            addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+            props = [prop1: expectedDomainObject1.prop1, prop4: null, prop5: null, doubleProp: null];
+            addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
-            assertEquals (null, addedObject.prop4);
-            assertEquals (null, addedObject.doubleProp);
-            assertEquals (null, addedObject.prop5);
+            assertEquals(null, addedObject.prop4);
+            assertEquals(null, addedObject.doubleProp);
+            assertEquals(null, addedObject.prop5);
         }
         finally
         {
-            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
-            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
-            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
+            RapidConvertUtils.getInstance().register(prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register(prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register(prevDoubleConf, Double.class)
         }
     }
 
 
     public void testIfInvalidPropertyPassedReturnsError()
     {
-        def prevDateConf = RapidConvertUtils.getInstance().lookup (Date);
-        def prevLongConf = RapidConvertUtils.getInstance().lookup (Long);
-        def prevDoubleConf = RapidConvertUtils.getInstance().lookup (Double);
+        def prevDateConf = RapidConvertUtils.getInstance().lookup(Date);
+        def prevLongConf = RapidConvertUtils.getInstance().lookup(Long);
+        def prevDoubleConf = RapidConvertUtils.getInstance().lookup(Double);
         try
         {
             String dateFormatString = "yyyy-dd-MM";
-            RapidConvertUtils.getInstance().register (new DateConverter(dateFormatString), Date.class)
-            RapidConvertUtils.getInstance().register (new LongConverter(), Long.class)
-            RapidConvertUtils.getInstance().register (new DoubleConverter(), Double.class)
-            AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+            RapidConvertUtils.getInstance().register(new DateConverter(dateFormatString), Date.class)
+            RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
+            RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
+            AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
             AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-            def props = [prop1:expectedDomainObject1.prop1,  prop4:"invalidData", prop5:"invalidData", doubleProp:"invalidData"];
-            def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-            assertEquals (null, addedObject.prop4);
-            assertEquals (null, addedObject.doubleProp);
-            assertEquals (null, addedObject.prop5);
-            assertTrue (addedObject.hasErrors());
+            def props = [prop1: expectedDomainObject1.prop1, prop4: "invalidData", prop5: "invalidData", doubleProp: "invalidData"];
+            def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+            assertEquals(null, addedObject.prop4);
+            assertEquals(null, addedObject.doubleProp);
+            assertEquals(null, addedObject.prop5);
+            assertTrue(addedObject.hasErrors());
             assertTrue(addedObject.errors.toString().indexOf("Field error in object") >= 0);
             assertTrue(addedObject.errors.toString().indexOf("prop4") >= 0);
             assertTrue(addedObject.errors.toString().indexOf("prop5") >= 0);
             assertTrue(addedObject.errors.toString().indexOf("doubleProp") >= 0);
-            assertTrue (AddMethodDomainObject1.indexList.isEmpty());
+            assertTrue(AddMethodDomainObject1.indexList.isEmpty());
         }
         finally
         {
-            RapidConvertUtils.getInstance().register (prevDateConf, Date.class)
-            RapidConvertUtils.getInstance().register (prevLongConf, Long.class)
-            RapidConvertUtils.getInstance().register (prevDoubleConf, Double.class)
+            RapidConvertUtils.getInstance().register(prevDateConf, Date.class)
+            RapidConvertUtils.getInstance().register(prevLongConf, Long.class)
+            RapidConvertUtils.getInstance().register(prevDoubleConf, Double.class)
         }
     }
 
@@ -277,45 +290,45 @@ class AddMethodTest extends RapidCmdbTestCase{
     public void testAddMethodWithInvalidData()
     {
         validator.supports = true;
-        validator.error = new FieldError( AddMethodDomainObject1.class.name, "prop1","value1",false,[] as String[], [] as Object[], "");
-        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        
+        validator.error = new FieldError(AddMethodDomainObject1.class.name, "prop1", "value1", false, [] as String[], [] as Object[], "");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
+
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertTrue (addedObject.hasErrors());
-        assertSame (validator.error, addedObject.errors.getAllErrors()[0])
-        assertTrue (AddMethodDomainObject1.indexList.isEmpty());
+        def props = [prop1: expectedDomainObject1.prop1];
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertTrue(addedObject.hasErrors());
+        assertSame(validator.error, addedObject.errors.getAllErrors()[0])
+        assertTrue(AddMethodDomainObject1.indexList.isEmpty());
     }
 
     public void testAddMethodWithUndefinedProperties()
     {
-        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1, undefinedProperty:"undefinedProp"];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals (expectedDomainObject1, addedObject);
+        def props = [prop1: expectedDomainObject1.prop1, undefinedProperty: "undefinedProp"];
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(expectedDomainObject1, addedObject);
 
     }
 
     public void testAddMethodWithRelationProperties()
     {
-        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1:"object1Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(id:100, prop1:"object2Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(id:101, prop1:"object3Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject4 = new AddMethodDomainObject1(id:102, prop1:"object4Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject5 = new AddMethodDomainObject1(id:103, prop1:"object4Prop1Value");
-        AddMethodDomainObject1 expectedDomainObject6 = new AddMethodDomainObject1(id:104, prop1:"object4Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(id: 100, prop1: "object2Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(id: 101, prop1: "object3Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject4 = new AddMethodDomainObject1(id: 102, prop1: "object4Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject5 = new AddMethodDomainObject1(id: 103, prop1: "object4Prop1Value");
+        AddMethodDomainObject1 expectedDomainObject6 = new AddMethodDomainObject1(id: 104, prop1: "object4Prop1Value");
 
-        def relations = ["rel1":new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
-        "rel2":new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
-        "rel3":new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
-        "rel4":new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_MANY)];
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE),
+                "rel2": new RelationMetaData("rel2", "revRel2", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_MANY),
+                "rel3": new RelationMetaData("rel3", "revRel3", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_ONE),
+                "rel4": new RelationMetaData("rel4", "revRel4", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.MANY_TO_MANY)];
 
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, relations, ["prop1"]);
-        def props = [prop1:expectedDomainObject1.prop1, rel1:[expectedDomainObject2, expectedDomainObject3], rel2:expectedDomainObject4, rel3:expectedDomainObject5, rel4:[expectedDomainObject6]];
+        def props = [prop1: expectedDomainObject1.prop1, rel1: [expectedDomainObject2, expectedDomainObject3], rel2: expectedDomainObject4, rel3: expectedDomainObject5, rel4: [expectedDomainObject6]];
 
-        AddMethodDomainObject1 addedObject1 = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        AddMethodDomainObject1 addedObject1 = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
 
         assertEquals(expectedDomainObject1.prop1, addedObject1.prop1);
@@ -325,63 +338,62 @@ class AddMethodTest extends RapidCmdbTestCase{
         assertEquals(expectedDomainObject5, addedObject1.relationsShouldBeAdded.get("rel3"));
         assertTrue(addedObject1.relationsShouldBeAdded.get("rel4").contains(expectedDomainObject6));
 
-        assertEquals (1, AddMethodDomainObject1.indexList.size());
-        assertTrue (AddMethodDomainObject1.indexList[0].contains(addedObject1));
+        assertEquals(1, AddMethodDomainObject1.indexList.size());
+        assertTrue(AddMethodDomainObject1.indexList[0].contains(addedObject1));
 
-        assertEquals (expectedDomainObject2, validator.validatedObject.rel1);
-        assertEquals (1, validator.validatedObject.rel2.size());
-        assertTrue (validator.validatedObject.rel2.contains(expectedDomainObject4));
-        assertEquals (expectedDomainObject5, validator.validatedObject.rel3);
-        assertTrue (validator.validatedObject.rel4.contains(expectedDomainObject6));
-
+        assertEquals(expectedDomainObject2, validator.validatedObject.rel1);
+        assertEquals(1, validator.validatedObject.rel2.size());
+        assertTrue(validator.validatedObject.rel2.contains(expectedDomainObject4));
+        assertEquals(expectedDomainObject5, validator.validatedObject.rel3);
+        assertTrue(validator.validatedObject.rel4.contains(expectedDomainObject6));
 
     }
     public void testIfObjectAlreadyExistsUpdatesObjects()
     {
-        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
-        assertEquals (objectBeforeAdd, addedObject);
+        assertEquals(objectBeforeAdd, addedObject);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
 
-        AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
+        AddMethodDomainObject1.searchResult = [total: 1, results: [addedObject]];
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
-        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
+        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
-        assertEquals (props, addedObjectAfterAdd.propertiesToBeUpdated);
+        assertEquals(props, addedObjectAfterAdd.propertiesToBeUpdated);
     }
 
     public void testAddMethodWithReturnErrorIfExistMode()
     {
-        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1:"object1Prop1Value", prop2:"object1Prop2Value", prop3:"object1Prop3Value");
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
         AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
         add.willReturnErrorIfExist = true;
-        def props = [prop1:objectBeforeAdd.prop1, prop2:objectBeforeAdd.prop2, prop3:objectBeforeAdd.prop3];
-        def addedObject = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
-        assertEquals (objectBeforeAdd, addedObject);
+        assertEquals(objectBeforeAdd, addedObject);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
 
-        AddMethodDomainObject1.searchResult = [total:1, results:[addedObject]];
+        AddMethodDomainObject1.searchResult = [total: 1, results: [addedObject]];
 
-        props = [prop1:objectBeforeAdd.prop1, prop2:"newProp2Value"];
-        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke (AddMethodDomainObject1.class, [props] as Object[]);
-        assertTrue (addedObjectAfterAdd.hasErrors());
-        assertEquals (1, addedObjectAfterAdd.errors.allErrors.size());
-        assertEquals ("rapidcmdb.instance.already.exist", addedObjectAfterAdd.errors.allErrors[0].code);
-        assertEquals (objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[0]);
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
+        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertTrue(addedObjectAfterAdd.hasErrors());
+        assertEquals(1, addedObjectAfterAdd.errors.allErrors.size());
+        assertEquals("rapidcmdb.instance.already.exist", addedObjectAfterAdd.errors.allErrors[0].code);
+        assertEquals(objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[0]);
         assertNull(addedObjectAfterAdd.propertiesToBeUpdated);
     }
-    
+
 }
 
-class AddMethodDomainObject1  extends GroovyObjectSupport
+class AddMethodDomainObject1 extends GroovyObjectSupport
 {
-    def static allFields = ["rel1":[type:Object], "rel2":[type:Object], "rel3":[type:Object], "rel4":[type:Object], "prop1":[type:String], "prop2":[type:String], "prop3":[type:String], "prop4":[type:Long], "prop5":[type:Date], "doubleProp":[type:Double], "booleanProp":[type:Boolean], "id":[type:Long]];
-    def static searchResult = [total:0, results:[]];
+    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "rel3": [type: Object], "rel4": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
+    def static searchResult = [total: 0, results: []];
     def static query;
     def static indexList = [];
     static List eventCalls = []
@@ -442,22 +454,26 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
     }
 
     public boolean equals(Object obj) {
-        if(obj instanceof AddMethodDomainObject1)
+        if (obj instanceof AddMethodDomainObject1)
         {
             return obj.prop1 == prop1;
         }
         return false;
     }
 
+    def cloneObject() {
+         return this;
+    }
+
     public void setProperty(String propName, Object propValue)
     {
-        setProperty (propName, propValue, true);        
+        setProperty(propName, propValue, true);
     }
 
     public void setProperty(String propName, Object propValue, boolean flush)
     {
-        super.setProperty (propName, propValue);
-        if(propName == "prop1" || propName == "prop2" || propName == "prop3"
+        super.setProperty(propName, propValue);
+        if (propName == "prop1" || propName == "prop2" || propName == "prop3"
                 || propName == "prop4" || propName == "prop5" || propName == "prop6"
                 || propName == "rel1" || propName == "doubleProp" || propName == "id")
         {
@@ -470,9 +486,9 @@ class AddMethodDomainObject1  extends GroovyObjectSupport
 
 class ChildAddMethodDomainObject extends AddMethodDomainObject1
 {
-    def static searchResult = [total:0, results:[]];
+    def static searchResult = [total: 0, results: []];
     def static query;
-    def static allFields = ["rel1":[type:Object], "rel2":[type:Object], "prop1":[type:String], "prop2":[type:String], "prop3":[type:String], "prop4":[type:Long], "prop5":[type:Date], "prop6":[type:String], "doubleProp":[type:Double], "booleanProp":[type:Boolean], "id":[type:Long]];
+    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "prop6": [type: String], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
     def static searchWithoutTriggering(queryClosure)
     {
         ChildAddMethodDomainObject.query = queryClosure;
@@ -483,9 +499,9 @@ class ChildAddMethodDomainObject extends AddMethodDomainObject1
 
 class ChildAddMethodDomainObject2 extends AddMethodDomainObject1
 {
-    def static searchResult = [total:0, results:[]];
+    def static searchResult = [total: 0, results: []];
     def static query;
-    def static allFields = ["rel1":[type:Object], "rel2":[type:Object], "prop1":[type:String], "prop2":[type:String], "prop3":[type:String], "prop4":[type:Long], "prop5":[type:Date], "prop6":[type:String], "doubleProp":[type:Double], "booleanProp":[type:Boolean], "id":[type:Long]];
+    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "prop6": [type: String], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
     def static searchWithoutTriggering(queryClosure)
     {
         ChildAddMethodDomainObject.query = queryClosure;
@@ -499,45 +515,45 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     def static closureToBeInvokedBeforeInsert;
     def closureToBeInvokedBeforeUpdate;
     def closureToBeInvokedAfterUpdate;
-    def onLoad(){
+    def onLoad() {
         eventCalls.add("onLoad");
     }
 
 
-    def beforeInsert(params){
+    def beforeInsert(params) {
         eventCalls.add("beforeInsert");
-        if(closureToBeInvokedBeforeInsert)
+        if (closureToBeInvokedBeforeInsert)
         {
             closureToBeInvokedBeforeInsert(this);
         }
     }
-    def beforeUpdate(params){
+    def beforeUpdate(params) {
         eventCalls.add("beforeUpdate");
-        if(closureToBeInvokedBeforeUpdate)
+        if (closureToBeInvokedBeforeUpdate)
         {
             closureToBeInvokedBeforeUpdate(params);
         }
     }
-    def beforeDelete(){
+    def beforeDelete() {
         eventCalls.add("beforeDelete");
     }
 
-    def afterInsert(){
+    def afterInsert() {
         eventCalls.add("afterInsert");
     }
-    def afterUpdate(params){
+    def afterUpdate(params) {
         eventCalls.add("afterUpdate");
-        if(closureToBeInvokedAfterUpdate)
+        if (closureToBeInvokedAfterUpdate)
         {
             closureToBeInvokedAfterUpdate(params);
         }
     }
-    def afterDelete(){
+    def afterDelete() {
         eventCalls.add("afterDelete");
     }
 }
 
-class MockValidator implements IRapidValidator{
+class MockValidator implements IRapidValidator {
     boolean supports = false;
     FieldError error;
     def validatedObject;
@@ -547,9 +563,9 @@ class MockValidator implements IRapidValidator{
 
     public void validate(wrapper, Object o, Errors errors) {
         validatedObject = wrapper;
-        if(error)
+        if (error)
         {
-            (( BindingResult ) errors).addError( error );
+            ((BindingResult) errors).addError(error);
         }
     }
     public void validate(Object o, Errors errors) {

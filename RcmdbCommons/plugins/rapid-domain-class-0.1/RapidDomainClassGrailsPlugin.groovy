@@ -254,6 +254,20 @@ class RapidDomainClassGrailsPlugin {
         mc.asMap = {List requestedProperties->
             return asMapMethod.invoke(delegate, [requestedProperties] as Object[]);
         };
+        mc.cloneObject = {->
+            def cloned = dc.clazz.newInstance();
+            def domainObject = delegate;
+            domainObject.getPropertiesList().each{p ->
+                if(!p.isRelation && !p.isOperationProperty){
+                    cloned.setPropertyWithoutUpdate(p.name, domainObject[p.name])
+                }
+            }
+            def filteredProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+            filteredProps.each{propName ->
+                cloned.setPropertyWithoutUpdate(propName, domainObject[propName])
+            }
+            return cloned;
+        };
         mc.'static'.create = {Map props->
             def sampleBean = delegate.newInstance();
             props.each{key,value->

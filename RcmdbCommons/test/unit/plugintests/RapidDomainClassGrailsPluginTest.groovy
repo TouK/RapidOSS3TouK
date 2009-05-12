@@ -44,7 +44,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     def domainClassName = "DomainClass1"
     Class loadedDomainClass;
     public void setUp() {
-        super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public void tearDown() {
@@ -84,10 +84,39 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
 
         def instance = loadedDomainClass.newInstance();
         instance.prop1 = "prop1Value";
-        assertEquals ("prop1Value", instance.prop1);
+        assertEquals("prop1Value", instance.prop1);
         def interceptor = appCtx.getBean("domainPropertyInterceptor");
         assertEquals(1, interceptor.getPropertyList.size());
         assertEquals(1, interceptor.setPropertyList.size());
+    }
+
+    public void testCloneObject() {
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                Long id;
+                Long version;
+                String prop1;
+                Long prop2;
+                public Object methodMissing(String methodName, args)
+                {
+                    ${RapidDomainClassGrailsPluginTest.class.name}
+                }
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass];
+        def pluginsToLoad = [gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def instance = loadedDomainClass.newInstance();
+        instance.id = 1;
+        instance.version = 2;
+        instance.prop1 = "prop1Value"
+        instance.prop2 = 2;
+        def cloned = instance.cloneObject();
+        assertEquals(instance.id, cloned.id)
+        assertEquals(instance.version, cloned.version)
+        assertEquals(instance.prop1, cloned.prop1)
+        assertEquals(instance.prop2, cloned.prop2)
     }
 
     public void testPropertyInterceptingWithRelations()
@@ -122,18 +151,18 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         initialize(classesTobeLoaded, pluginsToLoad)
 
 
-        def domainClass2Instance1 = loadedDomainClass2.metaClass.invokeStaticMethod(loadedDomainClass2, "add", [[prop1:"obj1Prop1Value"]] as Object[]);
-        def domainClass1Instance1 = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "add", [[prop1:"prop1Value", rel1:domainClass2Instance1]] as Object[]);
-        assertEquals ("prop1Value", domainClass1Instance1.prop1);
-        assertEquals (domainClass2Instance1.id, domainClass1Instance1.rel1[0].id);
-        assertEquals (domainClass1Instance1.id, domainClass2Instance1.revRel1[0].id);
-        assertNotSame (domainClass1Instance1.rel1, domainClass1Instance1.rel1);
+        def domainClass2Instance1 = loadedDomainClass2.metaClass.invokeStaticMethod(loadedDomainClass2, "add", [[prop1: "obj1Prop1Value"]] as Object[]);
+        def domainClass1Instance1 = loadedDomainClass.metaClass.invokeStaticMethod(loadedDomainClass, "add", [[prop1: "prop1Value", rel1: domainClass2Instance1]] as Object[]);
+        assertEquals("prop1Value", domainClass1Instance1.prop1);
+        assertEquals(domainClass2Instance1.id, domainClass1Instance1.rel1[0].id);
+        assertEquals(domainClass1Instance1.id, domainClass2Instance1.revRel1[0].id);
+        assertNotSame(domainClass1Instance1.rel1, domainClass1Instance1.rel1);
 
         //When we need to hold relation data temporarily such as in ControllerUtils we will set
         //relation data to object and this data will be given to requester directly
         def realPropValue = ["nonemptyulist"];
         domainClass1Instance1.setProperty("rel1", realPropValue, false);
-        assertSame (realPropValue, domainClass1Instance1.getRealPropertyValue("rel1"));
+        assertSame(realPropValue, domainClass1Instance1.getRealPropertyValue("rel1"));
     }
 
     public void testInitializesDefaultPropertyManager()
@@ -155,7 +184,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        assertEquals (prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName, "prop1"));
+        assertEquals(prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName, "prop1"));
 
         destroy();
         gcl = new GroovyClassLoader(this.class.classLoader);
@@ -177,16 +206,15 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        assertEquals (prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName2, "prop1"));
+        assertEquals(prop1DefaultValue, DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName2, "prop1"));
         try
         {
             DomainClassDefaultPropertyValueHolder.getDefaultPropery(domainClassName, "prop1");
             fail("Should throw exception");
-        }catch(Exception e)
+        } catch (Exception e)
         {
-            assertEquals (DomainClassDefaultPropertyValueHolder.DOMAIN_NOT_FOUND_EXCEPTION_MESSAGE, e.getMessage());
+            assertEquals(DomainClassDefaultPropertyValueHolder.DOMAIN_NOT_FOUND_EXCEPTION_MESSAGE, e.getMessage());
         }
-
 
     }
 
@@ -194,7 +222,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     {
 
         def baseDir = "../testOutput"
-        FileUtils.deleteDirectory (new File(baseDir));
+        FileUtils.deleteDirectory(new File(baseDir));
         System.setProperty("base.dir", baseDir)
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
@@ -211,9 +239,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         """)
         def undefinedPropValue = "undefinedPropValue"
         def undefinedProp3ExceptionMessage = "Undefined property 3 exception"
-        def operationFile = new File(baseDir +"/operations/${domainClassName}${DomainOperationManager.OPERATION_SUFFIX}.groovy");
+        def operationFile = new File(baseDir + "/operations/${domainClassName}${DomainOperationManager.OPERATION_SUFFIX}.groovy");
         operationFile.parentFile.mkdirs();
-        operationFile.setText ("""
+        operationFile.setText("""
             class ${domainClassName}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}{
                 def undefinedProp = "${undefinedPropValue}";
                 def getUndefinedProperty()
@@ -262,18 +290,18 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
 
         def instance = loadedDomainClass.newInstance();
         def interceptor = appCtx.getBean("domainPropertyInterceptor");
-        assertEquals (undefinedPropValue, instance["undefinedProperty"]);
+        assertEquals(undefinedPropValue, instance["undefinedProperty"]);
         instance["undefinedProperty"] = "updatedPropValue";
-        assertEquals ("updatedPropValue", instance["undefinedProperty"]);
+        assertEquals("updatedPropValue", instance["undefinedProperty"]);
 
         try
         {
             instance["undefinedProperty2"]
             fail("Should throw exception since property not defined in operation and in domain class");
         }
-        catch(MissingPropertyException ex)
+        catch (MissingPropertyException ex)
         {
-            assertEquals ("undefinedProperty2", ex.getProperty());
+            assertEquals("undefinedProperty2", ex.getProperty());
         }
 
         try
@@ -281,9 +309,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty2"] = ""
             fail("Should throw exception since property not defined in operation and in domain class");
         }
-        catch(MissingPropertyException ex)
+        catch (MissingPropertyException ex)
         {
-            assertEquals ("undefinedProperty2", ex.getProperty());
+            assertEquals("undefinedProperty2", ex.getProperty());
         }
 
         try
@@ -291,9 +319,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty3"]
             fail("Should throw exception real exception since property found but an exception occurreed in it");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            assertEquals (undefinedProp3ExceptionMessage, ex.getMessage());
+            assertEquals(undefinedProp3ExceptionMessage, ex.getMessage());
         }
 
         try
@@ -301,9 +329,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty3"] = 5;
             fail("Should throw exception real exception since property found but an exception occurreed in it");
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
-            assertEquals (undefinedProp3ExceptionMessage, ex.getMessage());
+            assertEquals(undefinedProp3ExceptionMessage, ex.getMessage());
         }
 
         try
@@ -311,9 +339,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty4"]
             fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
         }
-        catch(MissingMethodException ex)
+        catch (MissingMethodException ex)
         {
-            assertEquals ("anotherMethod", ex.getMethod());
+            assertEquals("anotherMethod", ex.getMethod());
         }
 
         try
@@ -321,9 +349,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty4"] = 5;
             fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
         }
-        catch(MissingMethodException ex)
+        catch (MissingMethodException ex)
         {
-            assertEquals ("anotherMethod", ex.getMethod());
+            assertEquals("anotherMethod", ex.getMethod());
         }
 
         try
@@ -331,9 +359,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty5"]
             fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
         }
-        catch(MissingMethodException ex)
+        catch (MissingMethodException ex)
         {
-            assertEquals ("getUndefinedProperty5", ex.getMethod());
+            assertEquals("getUndefinedProperty5", ex.getMethod());
         }
 
         try
@@ -341,9 +369,9 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             instance["undefinedProperty5"] = 5;
             fail("Should throw exception real missingmethodexception exception since thios exception throwed from another method");
         }
-        catch(MissingMethodException ex)
+        catch (MissingMethodException ex)
         {
-            assertEquals ("setUndefinedProperty5", ex.getMethod());
+            assertEquals("setUndefinedProperty5", ex.getMethod());
         }
     }
 
@@ -370,41 +398,41 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        def instance = loadedDomainClass.add(prop1:"prop1Value", version:4)
+        def instance = loadedDomainClass.add(prop1: "prop1Value", version: 4)
         instance.prop1 = "updatedValue"
-        def reloadedInstance = loadedDomainClass.get(id:instance.id)
-        assertEquals ("updatedValue", reloadedInstance.prop1);
+        def reloadedInstance = loadedDomainClass.get(id: instance.id)
+        assertEquals("updatedValue", reloadedInstance.prop1);
 
         //check excluded properties will not be persisted
         def newIdAndVersion = 15555555;
         reloadedInstance.id = newIdAndVersion;
         reloadedInstance.version = newIdAndVersion;
         assertEquals(1, loadedDomainClass.list().size());
-        assertNull(loadedDomainClass.get(id:newIdAndVersion));
+        assertNull(loadedDomainClass.get(id: newIdAndVersion));
 
-        reloadedInstance = loadedDomainClass.get(id:instance.id)
-        assertEquals (instance.id, reloadedInstance.id);
-        assertEquals (instance.version, reloadedInstance.version);
+        reloadedInstance = loadedDomainClass.get(id: instance.id)
+        assertEquals(instance.id, reloadedInstance.id);
+        assertEquals(instance.version, reloadedInstance.version);
 
 
         def numberOfCalls = 0;
-        instance.metaClass.update = {Map props->
-            numberOfCalls ++;
+        instance.metaClass.update = {Map props ->
+            numberOfCalls++;
         }
         instance.prop2 = "transientPropvalueShouldNotUpdate"
-        assertEquals (0, numberOfCalls);
+        assertEquals(0, numberOfCalls);
 
         //test setPropertyWithoutUpdate
         instance.setPropertyWithoutUpdate("prop1", "prop1SetWithoutUpdate");
-        assertEquals (0, numberOfCalls);
+        assertEquals(0, numberOfCalls);
     }
 
     public void testOperation()
     {
 
         String baseDir = "../testoutput";
-        FileUtils.deleteDirectory (new File(baseDir));
-        System.setProperty ("base.dir", baseDir);
+        FileUtils.deleteDirectory(new File(baseDir));
+        System.setProperty("base.dir", baseDir);
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
                 def ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
@@ -418,7 +446,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 static transients = ["prop2", "${RapidCMDBConstants.OPERATION_PROPERTY_NAME}"]
             }
         """)
-        def operationFile = new File("${System.getProperty ("base.dir")}/operations/${domainClassName}Operations.groovy");
+        def operationFile = new File("${System.getProperty("base.dir")}/operations/${domainClassName}Operations.groovy");
         operationFile.parentFile.mkdirs();
         operationFile.setText("""
             class ${domainClassName}Operations extends ${AbstractDomainOperation.class.name}{
@@ -437,16 +465,16 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        def instance = loadedDomainClass.add(prop1:"prop1Value");
+        def instance = loadedDomainClass.add(prop1: "prop1Value");
 
         //test calling a non static operation
         def args = ["arg1", "arg2"]
         def res = instance.method1(args[0], args[1]);
-        assertEquals (args.join(""), res);
+        assertEquals(args.join(""), res);
         //test calling a static operation
         args = ["arg1", "arg2", "arg3"]
         res = loadedDomainClass.method2(args[0], args[1], args[2]);
-        assertEquals (args.join(""), res);
+        assertEquals(args.join(""), res);
 
         //We will reload operation and see operations
         operationFile.setText("""
@@ -465,24 +493,24 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         loadedDomainClass.reloadOperations();
 
         //We have to reload instance from repository to get new operation since old instance is cached in instance 
-        instance = loadedDomainClass.get(id:instance.id); 
+        instance = loadedDomainClass.get(id: instance.id);
         try
         {
             instance.method1(args[0], args[1]);
             fail("Should throw exception");
         }
-        catch(groovy.lang.MissingMethodException e)
+        catch (groovy.lang.MissingMethodException e)
         {
-            assertEquals ("method1", e.getMethod());
-            assertEquals (loadedDomainClass, e.getType());
+            assertEquals("method1", e.getMethod());
+            assertEquals(loadedDomainClass, e.getType());
         }
 
         args = ["arg1", "arg2"]
         res = instance.method3(args[0], args[1]);
-        assertEquals (args.join(""), res);
+        assertEquals(args.join(""), res);
         args = ["arg1", "arg2", "arg3"]
         res = loadedDomainClass.method4(args[0], args[1], args[2]);
-        assertEquals (args.join(""), res);
+        assertEquals(args.join(""), res);
     }
 
 }
@@ -492,13 +520,13 @@ class DomainPropertyInterceptorDomainClassGrailsPluginImpl extends DefaultDomain
     def setPropertyList = []
     def getPropertyList = []
     public void setDomainClassProperty(Object domainObject, String propertyName, Object value) {
-        super.setDomainClassProperty(domainObject, propertyName, value);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setDomainClassProperty(domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
         setPropertyList += propertyName
     }
 
     public Object getDomainClassProperty(Object domainObject, String propertyName) {
         getPropertyList += propertyName
-        return super.getDomainClassProperty(domainObject, propertyName);    //To change body of overridden methods use File | Settings | File Templates.
+        return super.getDomainClassProperty(domainObject, propertyName); //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

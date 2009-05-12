@@ -22,6 +22,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.springframework.validation.BeanPropertyBindingResult
 import relation.Relation
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
 
 /**
 * Created by IntelliJ IDEA.
@@ -48,6 +50,7 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
+        ObjectProcessor.getInstance().deleteObservers();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
@@ -67,7 +70,8 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
     public void testRemoveObjectWithEvents()
     {
         initialize([relation.Relation], []);
-        
+        MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
+        ObjectProcessor.getInstance().addObserver(observer);
 
         RemoveMethodDomainObject.existingInstanceCount = 1;
         def rel1Object=new Object();
@@ -84,6 +88,12 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
         def eventCallList=["beforeDelete","removeRelation","unindex","afterDelete"];
         assertEquals(eventCallList,RemoveMethodDomainObject.eventCallList);
+
+        assertEquals(1, observer.repositoryChanges.size());
+        Map repositoryChange = observer.repositoryChanges[0];
+        assertEquals(2, repositoryChange.size());
+        assertEquals(EventTriggeringUtils.AFTER_DELETE_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME]);
+        assertEquals(objectToBeRemoved.prop1, repositoryChange[ObjectProcessor.DOMAIN_OBJECT].prop1)
 
     }
 
@@ -156,7 +166,9 @@ class RemoveMethodDomainObject
     {
         return errors.hasErrors();        
     }
-
+    def cloneObject(){
+       return this; 
+    }
 
     def removeRelation(Map relations)
     {

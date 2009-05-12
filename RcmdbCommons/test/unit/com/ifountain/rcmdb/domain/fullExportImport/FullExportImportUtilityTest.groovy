@@ -422,7 +422,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
     }
 
-    public void testExportModelWithoutRelations()
+    public void testExportModelWithoutRelationsExportOnlyTheModelDataAndDoesNotMarkRelationsToExport()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
@@ -431,10 +431,18 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def modelClassMap=getClassMapFromClassList(modelClasses);
         initialize(modelClasses,[],true);
 
+        def addedObjects=[];
+
         5.times{
             def obj=modelClassMap.RsTopologyObject.add(name:"RsTopologyObject${it}");
             assertFalse(obj.hasErrors());
+            addedObjects.add(obj);
         }
+        addedObjects[0].addRelation(parentObjects:[addedObjects[1],addedObjects[2]])
+        addedObjects[1].addRelation(parentObjects:[addedObjects[3]])
+        addedObjects[2].addRelation(parentObjects:[addedObjects[4]])
+
+        assertEquals(4,relation.Relation.countHits("alias:*"));
 
         3.times{
             def obj=modelClassMap.RsGroup.add(name:"RsGroup${it}");
@@ -448,15 +456,20 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility();
 
-        def exportDir=new File("../exportDir");
+        File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
         fullExport.beginCompass(System.getProperty("index.dir"));
+        assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
+
         def tx=fullExport.beginCompassTransaction();
         try{
             fullExport.exportModel(exportDir.getPath(),100,"RsTopologyObject",false);
+            assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
 
+            assertEquals(1,exportDir.listFiles().size());
+            
             def xmlFile=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
             assertTrue(xmlFile.exists())
 
@@ -468,7 +481,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def xmlDataIds=[];
             objects.each{ objectRow ->
                 xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toString());
+                xmlDataIds.add(objectRow.@"id".toLong());
             }
             //check xml is sorted by id
             xmlDataIds.size().times { index ->
@@ -483,6 +496,415 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
             def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
             assertEquals(repoResults.size(),xmlData.size())
+
+
+            repoResults.each{ repoObject ->
+                assertTrue(xmlData.containsKey(repoObject.id.toString()));
+                def xmlAttributes=xmlData[repoObject.id.toString()];
+                xmlAttributes.each{ propName,propVal ->
+                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
+                }
+            }
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
+
+    public void testExportModelWithRelationsMarksRelationIdsToExportAndExcludesOtherRelations()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def parentObjects=[];
+        def childObjects=[];
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"childObject${it}");
+            assertFalse(obj.hasErrors());
+            childObjects.add(obj);
+        }
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"parentObject${it}",childObjects:[childObjects[it]]);
+            assertFalse(obj.hasErrors());
+            assertEquals(1,obj.childObjects.size());
+            parentObjects.add(obj);
+        }
+
+        def ticket1=modelClassMap.RsTicket.add(name:"ticket1");
+        assertFalse(ticket1.hasErrors());
+        def ticket2=modelClassMap.RsTicket.add(name:"ticket2",parentTicket:ticket1);
+        assertFalse(ticket2.hasErrors());
+        assertEquals(1,ticket1.subTickets.size());
+
+        def group1=modelClassMap.RsGroup.add(name:"group1",relatedTickets:[ticket1]);
+        assertFalse(group1.hasErrors())
+        assertEquals(1,group1.relatedTickets.size());
+
+        def group2=modelClassMap.RsGroup.add(name:"group2",relatedTickets:[ticket1,ticket2]);
+        assertFalse(group2.hasErrors())
+        assertEquals(2,group2.relatedTickets.size());
+
+        assertEquals(9,relation.Relation.countHits("alias:*"))
+
+        def fullExport=new FullExportImportUtility();
+
+        File exportDir=new File("../exportDir");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        def tx=fullExport.beginCompassTransaction();
+
+
+        try{
+            fullExport.exportModel(exportDir.getPath(),100,"RsTopologyObject",true);
+
+            assertEquals(1,exportDir.listFiles().size());
+
+            def xmlFile=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
+            assertTrue(xmlFile.exists())
+
+            def resultXml = new XmlSlurper().parse(xmlFile);
+
+            def objects=resultXml.Object;
+            def xmlData=[:];
+
+            def xmlDataIds=[];
+            objects.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+            //check xml is sorted by id
+            xmlDataIds.size().times { index ->
+                if(index>0)
+                {
+                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+                }
+            }
+
+            //check xml properties are same as the object
+            def modelAlias="RsTopologyObject";
+
+            def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
+            assertEquals(repoResults.size(),xmlData.size())
+
+            def expectedRelationsIds=[:];
+
+            repoResults.each{ repoObject ->
+                assertTrue(xmlData.containsKey(repoObject.id.toString()));
+                def xmlAttributes=xmlData[repoObject.id.toString()];
+                xmlAttributes.each{ propName,propVal ->
+                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
+                }
+                def relations=relation.Relation.searchEvery("objectId:${repoObject.id} OR reverseObjectId:${repoObject.id}");
+                relations.each{ relation ->
+                    assertTrue(fullExport.RELATION_IDS_TO_EXPORT.containsKey(relation.id));
+                    expectedRelationsIds[relation.id]=expectedRelationsIds[relation.id];
+                }
+            }
+            assertEquals(5,fullExport.RELATION_IDS_TO_EXPORT.size());
+            assertEquals(expectedRelationsIds.size(),fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
+
+    public void testExportModelPaginatesExportedXmlFiles()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        5.times{
+            def obj=modelClassMap.RsTopologyObject.add(name:"RsTopologyObject${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+
+
+        def fullExport=new FullExportImportUtility();
+
+        File exportDir=new File("../exportDir");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        try{
+            fullExport.exportModel(exportDir.getPath(),2,"RsTopologyObject",false);
+
+            assertEquals(3,exportDir.listFiles().size());
+            def xmlData=[:];
+            def xmlDataIds=[];
+
+            def xmlFile0=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
+            assertTrue(xmlFile0.exists())
+            def resultXml0 = new XmlSlurper().parse(xmlFile0);
+            def objects0=resultXml0.Object;
+            assertEquals(2,objects0.size());
+
+            objects0.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            def xmlFile1=new File(exportDir.getPath()+"/RsTopologyObject_1.xml");
+            assertTrue(xmlFile1.exists())
+            def resultXml1 = new XmlSlurper().parse(xmlFile1);
+            def objects1=resultXml1.Object;
+            assertEquals(2,objects1.size());
+
+            objects1.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            def xmlFile2=new File(exportDir.getPath()+"/RsTopologyObject_2.xml");
+            assertTrue(xmlFile2.exists())
+            def resultXml2 = new XmlSlurper().parse(xmlFile2);
+            def objects2=resultXml2.Object;
+            assertEquals(1,objects2.size());
+
+            objects2.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            //check xml is sorted by id
+            xmlDataIds.size().times { index ->
+                if(index>0)
+                {
+                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+                }
+            }
+
+
+            //check xml properties are same as the object
+            def modelAlias="RsTopologyObject";
+
+            def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
+            assertEquals(repoResults.size(),xmlData.size())
+
+
+            repoResults.each{ repoObject ->
+                assertTrue(xmlData.containsKey(repoObject.id.toString()));
+                def xmlAttributes=xmlData[repoObject.id.toString()];
+                xmlAttributes.each{ propName,propVal ->
+                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
+                }
+            }
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
+
+    public void testExportMarkedRelationsExportsOnlyMarkedRelations()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def addedRelations=[];
+        5.times{
+            def rel=relation.Relation.add("objectId":it,"reverseObjectId":it+1,"name":"n${it}","reverseName":"rn${it}","source":"");
+            assertFalse(rel.hasErrors());
+            addedRelations.add(rel);
+        }
+        def markedRelations=[:];
+        3.times{
+            markedRelations[addedRelations[it].id]=addedRelations[it];
+        }
+
+
+        assertEquals(5,relation.Relation.countHits("alias:*"));
+
+        def fullExport=new FullExportImportUtility();
+
+        File exportDir=new File("../exportDir");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        markedRelations.each{ relId,rel ->
+            fullExport.RELATION_IDS_TO_EXPORT[rel.id]=true;
+        }
+
+        assertEquals(3,fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        try{
+            fullExport.exportMarkedRelations(exportDir.getPath(),100);
+
+
+            assertEquals(1,exportDir.listFiles().size());
+
+            def xmlFile=new File(exportDir.getPath()+"/relation.Relation_0.xml");
+            assertTrue(xmlFile.exists())
+
+            def resultXml = new XmlSlurper().parse(xmlFile);
+
+            def objects=resultXml.Object;
+            def xmlData=[:];
+
+            def xmlDataIds=[];
+            objects.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+            //check xml is sorted by id
+            xmlDataIds.size().times { index ->
+                if(index>0)
+                {
+                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+                }
+            }
+
+            //check xml properties are same as the object
+
+            def repoResults=relation.Relation.searchEvery("alias:*")
+            assertEquals(markedRelations.size(),xmlData.size());
+            assertEquals(addedRelations.size(),repoResults.size());
+
+            repoResults.each{ repoObject ->
+                if(markedRelations.containsKey(repoObject.id))
+                {
+                    assertTrue(xmlData.containsKey(repoObject.id.toString()));
+                    def xmlAttributes=xmlData[repoObject.id.toString()];
+                    xmlAttributes.each{ propName,propVal ->
+                        assertEquals(repoObject.getProperty(propName).toString(),propVal);
+                    }
+                }
+                else
+                {
+                    assertFalse(xmlData.containsKey(repoObject.id.toString()));
+                }
+            }
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
+
+    public void testExportMarkedRelationsPaginatesExportedXmlFiles()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def addedRelations=[:];
+        5.times{
+            def rel=relation.Relation.add("objectId":it,"reverseObjectId":it+1,"name":"n${it}","reverseName":"rn${it}","source":"");
+            assertFalse(rel.hasErrors());
+            addedRelations[rel.id]=rel;
+        }
+
+
+        assertEquals(5,relation.Relation.countHits("alias:*"));
+
+        def fullExport=new FullExportImportUtility();
+
+        File exportDir=new File("../exportDir");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        addedRelations.each{ relId,rel ->
+            fullExport.RELATION_IDS_TO_EXPORT[rel.id]=true;
+        }
+
+        assertEquals(5,fullExport.RELATION_IDS_TO_EXPORT.size());
+
+        try{
+            fullExport.exportMarkedRelations(exportDir.getPath(),2);
+
+
+            assertEquals(3,exportDir.listFiles().size());
+
+
+            def xmlData=[:];
+            def xmlDataIds=[];
+
+            def xmlFile0=new File(exportDir.getPath()+"/relation.Relation_0.xml");
+            assertTrue(xmlFile0.exists())
+
+            def resultXml0 = new XmlSlurper().parse(xmlFile0);
+            def objects0=resultXml0.Object;
+            assertEquals(2,objects0.size());
+
+            objects0.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            def xmlFile1=new File(exportDir.getPath()+"/relation.Relation_1.xml");
+            assertTrue(xmlFile1.exists())
+
+            def resultXml1 = new XmlSlurper().parse(xmlFile1);
+            def objects1=resultXml1.Object;
+            assertEquals(2,objects1.size());
+
+            objects1.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            def xmlFile2=new File(exportDir.getPath()+"/relation.Relation_2.xml");
+            assertTrue(xmlFile1.exists())
+
+            def resultXml2 = new XmlSlurper().parse(xmlFile2);
+            def objects2=resultXml2.Object;
+            assertEquals(1,objects2.size());
+
+            objects2.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+
+            //check xml is sorted by id
+            xmlDataIds.size().times { index ->
+                if(index>0)
+                {
+                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+                }
+            }
+
+            //check xml properties are same as the object
+
+            def repoResults=relation.Relation.searchEvery("alias:*")
+            assertEquals(repoResults.size(),xmlData.size());
 
 
             repoResults.each{ repoObject ->

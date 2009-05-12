@@ -25,6 +25,7 @@ class FullExportImportUtility {
     def logger;
     def compass;
     def compassSession;
+    def RELATION_IDS_TO_EXPORT=[:];
 
     def FullExportImportUtility()
     {
@@ -33,6 +34,8 @@ class FullExportImportUtility {
     def export(CONFIG)
     {
         backup(backupDir);
+        RELATION_IDS_TO_EXPORT.clear();
+
         def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
         def EXPORT_MARKED_RELATIONS=EXPORT_CONFIG.EXPORT_MARKED_RELATIONS;
@@ -41,7 +44,11 @@ class FullExportImportUtility {
 
         def tx = beginCompassTransaction();
         try {
-            exportModels (CONFIG.backupDir,CONFIG.exportDir,MODELS_TO_EXPORT)
+            exportModels (CONFIG.exportDir,CONFIG.objectsPerFile,MODELS_TO_EXPORT)
+            if(EXPORT_MARKED_RELATIONS)
+            {
+                exportMarkedRelations (CONFIG.exportDir,CONFIG.objectsPerFile)
+            }
         }
         finally {
             endCompassTransaction (tx);
@@ -89,7 +96,6 @@ class FullExportImportUtility {
         //the relation model will also be exported
         if(allMode)
         {
-
             tempModelList.clear();
             EXPORT_MARKED_RELATIONS=false;
 
@@ -172,7 +178,7 @@ class FullExportImportUtility {
         ApplicationHolder.application.getDomainClass(modelName).clazz.simpleName;
     }
 
-    private def exportModels(backupDir,exportDir,MODELS_TO_EXPORT)
+    private def exportModels(exportDir,objectPerFile,MODELS_TO_EXPORT)
     {
         logger.info("exporting backup data to directory '${exportDir}'");
 
@@ -182,10 +188,8 @@ class FullExportImportUtility {
         ant.mkdir(dir:CONFIG.exportDir);
 
         MODELS_TO_EXPORT.each{ modelName,modelEntry ->
-             exportModel(modelName,modelEntry.relations);
+             exportModel(exportDir,objectPerFile,modelName,modelEntry.relations);
         }
-        exportRelationsModel();
-
 
         logger.info("exporting successfuly done");
     }
@@ -270,13 +274,13 @@ class FullExportImportUtility {
 
         logger.debug("MARKING RELATIONS with query ${query}");
     }
-    private def exportMarkedRelations()
+    private def exportMarkedRelations(exportDir,objectPerFile)
     {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");
 
 
-        def modelAlias=ALL_MODELS[modelName].simpleName;
+        def modelAlias=getModelAlias(modelName);
 
 
         def query="alias:*";
@@ -285,7 +289,7 @@ class FullExportImportUtility {
         queryObj.setAliases ([modelAlias] as String[]);
         CompassHits hits = queryObj.hits();
 
-        def objectPerFile=CONFIG.objectPerFile;
+
         def fileCount=Math.floor(hits.length()/objectPerFile).toInteger()+1;
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
@@ -323,7 +327,7 @@ class FullExportImportUtility {
                 }
             }
             def strXml = writer.toString();
-            exportXml(strXml,"${CONFIG.exportDir}/${modelName}_${fileCounter}.xml");
+            exportXml(strXml,"${exportDir}/${modelName}_${fileCounter}.xml");
 
 
             logger.info("      exported ${modelName} file ${fileCounter}");

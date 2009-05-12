@@ -38,7 +38,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
         assertEquals(5,RsApplication.getUtility("UtilForTest").x);
@@ -72,7 +72,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
         assertEquals(5,RsApplication.getUtility("UtilForTest").x);
@@ -83,7 +83,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(15,RsApplication.getUtility("UtilForTest").x);
 
         //reload and see that original variable come
-        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
         assertEquals(5,RsApplication.getUtility("UtilForTest").x);
 
         //change the utility see that before reload original remains
@@ -101,7 +101,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(5,RsApplication.getUtility("UtilForTest").x);
         assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
 
-        ApplicationHolder.application.classLoader.loadClass("RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
         assertEquals(45,RsApplication.getUtility("UtilForTest").x);
         assertEquals("newresult",RsApplication.getUtility("UtilForTest").method1());
 

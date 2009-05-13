@@ -71,6 +71,8 @@ class FullExportImportUtility {
 
     def fullImport(CONFIG)
     {
+        logger.info("*****************FULL IMPORT STARTING *************************")
+
         checkParameter("importDir",CONFIG.importDir,String);
         checkParameter("exportDir",CONFIG.exportDir,String);
 
@@ -86,6 +88,8 @@ class FullExportImportUtility {
         finally {
             endCompass();
         }
+
+        logger.info("*****************FULL IMPORT ENDED *************************")
     }
 
     protected def checkParameter(paramName,paramValue,Class paramClass)

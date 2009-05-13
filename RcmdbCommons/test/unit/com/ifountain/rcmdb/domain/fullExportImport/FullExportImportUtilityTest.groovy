@@ -8,7 +8,6 @@ import application.RsApplication
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.compass.core.CompassQuery
-import org.compass.core.CompassHit
 import org.compass.core.CompassHits
 import org.apache.log4j.Logger
 

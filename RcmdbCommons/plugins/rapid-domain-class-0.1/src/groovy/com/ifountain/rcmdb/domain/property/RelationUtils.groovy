@@ -25,6 +25,7 @@ import org.compass.core.CompassSession
 import relation.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.compass.core.CompassHits
+import org.apache.lucene.search.BooleanQuery
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +38,8 @@ class RelationUtils
 {
     public static final String NULL_RELATION_NAME = "-"
     public static final String DEFAULT_SOURCE_NAME = "¿_u_u_¿"
+    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE = (int)((BooleanQuery.getMaxClauseCount() - 20)/2);
+    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS = BooleanQuery.getMaxClauseCount() - 1;
 
     public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
@@ -92,60 +95,56 @@ class RelationUtils
         if(relatedObjects.isEmpty()) return;
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
-        StringBuffer bf = new StringBuffer("(objectId:").append(object.id).append(" AND ").append("name:\"").append(relationName).append("\" AND ");
-        bf.append("reverseName:\"").append(otherSideName).append("\"");
-        bf.append(" AND ").append("(")
-        relatedObjects.each{
-            bf.append("reverseObjectId:").append(it.id).append(" OR ")
-        }
-        bf.delete(bf.length()-3, bf.length());
-        bf.append(")) OR (")
-        bf.append("reverseObjectId:").append(object.id).append(" AND ").append("reverseName:\"").append(relationName).append("\" AND ");
-        bf.append("name:\"").append(otherSideName).append("\"");
-        bf.append(" AND ").append("(")
-        relatedObjects.each{
-            bf.append("objectId:").append(it.id).append(" OR ")
-        }
-        bf.delete(bf.length()-3, bf.length());
-        bf.append("))");
-        if(source == null)
-        {
-            Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
-                hits.iterator().each{CompassHit hit->
-                    session.delete (hit.getResource());
+        runClosureCreatingHugeQuery (new ArrayList(relatedObjects), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE){List relatedObjectToBeProcessed->
+            StringBuffer bf = new StringBuffer("(objectId:").append(object.id).append(" AND ").append("name:\"").append(relationName).append("\" AND ");
+            bf.append("reverseName:\"").append(otherSideName).append("\"");
+            bf.append(" AND ").append("(reverseObjectId:")
+            bf.append(relatedObjectToBeProcessed.id.join(" OR reverseObjectId:"));
+            bf.append(")) OR (")
+            bf.append("reverseObjectId:").append(object.id).append(" AND ").append("reverseName:\"").append(relationName).append("\" AND ");
+            bf.append("name:\"").append(otherSideName).append("\"");
+            bf.append(" AND ").append("(objectId:")
+            bf.append(relatedObjectToBeProcessed.id.join(" OR objectId:"))
+            bf.append("))");
+            if(source == null)
+            {
+                Relation.searchEvery(bf.toString(), [raw:{hits, CompassSession session->
+                    hits.iterator().each{CompassHit hit->
+                        session.delete (hit.getResource());
+                    }
+                }]);
+            }
+            else
+            {
+                def rels = Relation.searchEvery(bf.toString());
+                def relsToBeDeleted = [];
+                def relsToBeUpdated = [];
+                def sourceExpression = getSourceString(source)
+                rels.each{Relation rel->
+                    def relSource = rel.source;
+                    def containsSource = relSource.indexOf(sourceExpression) >= 0;
+                    if(containsSource)
+                    {
+                        relSource = relSource.replaceAll (sourceExpression, "");
+                        if(relSource == "" || relSource == DEFAULT_SOURCE_NAME)
+                        {
+                            relsToBeDeleted.add(rel);
+                        }
+                        else
+                        {
+                            rel.setProperty ("source", relSource, false);
+                            relsToBeUpdated.add(rel);
+                        }
+                    }
                 }
-            }]);
-        }
-        else
-        {
-            def rels = Relation.searchEvery(bf.toString());
-            def relsToBeDeleted = [];
-            def relsToBeUpdated = [];
-            def sourceExpression = getSourceString(source)
-            rels.each{Relation rel->
-                def relSource = rel.source;
-                def containsSource = relSource.indexOf(sourceExpression) >= 0;
-                if(containsSource)
+                if(!relsToBeDeleted.isEmpty())
                 {
-                    relSource = relSource.replaceAll (sourceExpression, "");
-                    if(relSource == "" || relSource == DEFAULT_SOURCE_NAME)
-                    {
-                        relsToBeDeleted.add(rel);
-                    }
-                    else
-                    {
-                        rel.setProperty ("source", relSource, false);
-                        relsToBeUpdated.add(rel);
-                    }
+                    Relation.unindex(relsToBeDeleted);
                 }
-            }
-            if(!relsToBeDeleted.isEmpty())
-            {
-                Relation.unindex(relsToBeDeleted);
-            }
-            if(!relsToBeUpdated.isEmpty())
-            {
-                Relation.index(relsToBeUpdated);
+                if(!relsToBeUpdated.isEmpty())
+                {
+                    Relation.index(relsToBeUpdated);
+                }
             }
         }
 
@@ -219,12 +218,26 @@ class RelationUtils
             }
             else
             {
-                StringBuffer query = new StringBuffer();
-                allRealtedObjectIds.each{id, numberOfIds->
-                    query.append("id:").append(id).append(" OR ")
+                def results = [];
+                runClosureCreatingHugeQuery(new ArrayList(allRealtedObjectIds.keySet()), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS)
+                {List objectToBeProcessed->
+                    StringBuffer query = new StringBuffer("id:");
+                    query.append(objectToBeProcessed.join (" OR id:"))
+                    results.addAll(CompassMethodInvoker.searchEvery(relationMetaData.otherSideCls.metaClass, query.toString()));
                 }
-                return CompassMethodInvoker.searchEvery(relationMetaData.otherSideCls.metaClass, query.substring(0, query.length()-4));
+                return results;
             }
+        }
+    }
+
+    private static void runClosureCreatingHugeQuery(List objectToBeProcessed, int numberOfobjectsToBeExecutedPerTerm, Closure c)
+    {
+        def listSize = objectToBeProcessed.size();
+        for(int i=0; i < listSize;)
+        {
+            def newI = Math.min(i + numberOfobjectsToBeExecutedPerTerm, listSize);
+            c(objectToBeProcessed.subList (i, newI));
+            i = newI;
         }
     }
 }

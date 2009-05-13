@@ -2,15 +2,14 @@ package com.ifountain.rcmdb.domain
 
 /**
 * Created by IntelliJ IDEA.
-* User: admin
+* User: Sezgin Kucukkaraaslan
 * Date: May 11, 2009
 * Time: 5:53:56 PM
-* To change this template use File | Settings | File Templates.
 */
 class ObjectProcessor extends Observable {
-    public static final String EVENT_NAME = "EventName";
-    public static final String DOMAIN_OBJECT = "DomainObject";
-    public static final String UPDATED_PROPERTIES = "UpdatedProps";
+    public static final String EVENT_NAME = "eventName";
+    public static final String DOMAIN_OBJECT = "domainObject";
+    public static final String UPDATED_PROPERTIES = "updatedProps";
 
     private static objectProcessor;
     private ObjectProcessor() {

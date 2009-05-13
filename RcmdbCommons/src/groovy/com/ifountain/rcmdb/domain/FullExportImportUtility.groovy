@@ -199,19 +199,23 @@ class FullExportImportUtility {
             return 0;
         return Math.ceil(instanceCount/objectPerFile).toInteger();
     }
+    protected CompassHits getModelHits(modelName,query)
+    {
+        def modelAlias=getModelAlias(modelName);
+
+        CompassQuery queryObj = getCompassSession().queryBuilder().queryString(query).toQuery();
+        queryObj.addSort ("id")
+        queryObj.setAliases ([modelAlias] as String[]);
+        CompassHits hits = queryObj.hits();
+
+        return hits;
+    }
     protected def exportModel(exportDir,objectPerFile,modelName,relations)
     {
         logger.info("   exporting model ${modelName}");
 
 
-        def modelAlias=getModelAlias(modelName);
-
-
-        def query="alias:*";
-        CompassQuery queryObj = getCompassSession().queryBuilder().queryString(query).toQuery();
-        queryObj.addSort ("id")
-        queryObj.setAliases ([modelAlias] as String[]);
-        CompassHits hits = queryObj.hits();
+        def hits=getModelHits(modelName,"alias:*");
 
 
         def fileCount=getFileCount(hits.length(),objectPerFile);
@@ -268,9 +272,7 @@ class FullExportImportUtility {
             buf.append(" OR objectId:${objectId} OR reverseObjectId:${objectId}");
         }
         def query=buf.toString();
-        CompassQuery queryObj = getCompassSession().queryBuilder().queryString(query).toQuery();
-        queryObj.addSort ("id")
-        CompassHits hits = queryObj.hits();
+        def hits=getModelHits("relation.Relation",query);
 
         hits.length().times{ dataIndex ->
             def object=hits.data(dataIndex);
@@ -284,16 +286,7 @@ class FullExportImportUtility {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");
 
-
-        def modelAlias=getModelAlias(modelName);
-
-
-        def query="alias:*";
-        CompassQuery queryObj = getCompassSession().queryBuilder().queryString(query).toQuery();
-        queryObj.addSort ("id")
-        queryObj.setAliases ([modelAlias] as String[]);
-        CompassHits hits = queryObj.hits();
-
+        def hits=getModelHits(modelName,"alias:*");
 
         def fileCount=getFileCount(hits.length(),objectPerFile);
 

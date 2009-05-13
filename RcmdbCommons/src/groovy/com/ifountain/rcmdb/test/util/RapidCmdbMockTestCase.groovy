@@ -47,6 +47,7 @@ import org.apache.commons.io.FileUtils
 import org.compass.core.Compass
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 
 /**
  * Created by IntelliJ IDEA.
@@ -199,6 +200,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         }
         ExpandoMetaClass.enableGlobally();
         this.loadedClasses = null;
+        WrapperIndexDeletionPolicy.clearPolicies();
 
     }
 

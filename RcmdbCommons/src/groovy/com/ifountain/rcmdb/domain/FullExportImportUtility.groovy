@@ -33,14 +33,14 @@ class FullExportImportUtility {
     }
     def fullExport(CONFIG)
     {
-        backup(backupDir);
+        backup(CONFIG.backupDir);
         RELATION_IDS_TO_EXPORT.clear();
 
         def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
         def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
         def EXPORT_MARKED_RELATIONS=EXPORT_CONFIG.EXPORT_MARKED_RELATIONS;
 
-        beginCompass(backupDir);
+        beginCompass(CONFIG.backupDir);
 
         def tx = beginCompassTransaction();
         try {
@@ -184,8 +184,8 @@ class FullExportImportUtility {
 
         logger.info("recreating directory '${exportDir}'");
         def ant=new AntBuilder();
-        ant.delete(dir:CONFIG.exportDir);
-        ant.mkdir(dir:CONFIG.exportDir);
+        ant.delete(dir:exportDir);
+        ant.mkdir(dir:exportDir);
 
         MODELS_TO_EXPORT.each{ modelName,modelEntry ->
              exportModel(exportDir,objectPerFile,modelName,modelEntry.relations);
@@ -352,11 +352,11 @@ class FullExportImportUtility {
         )
         def config = new CompassConfiguration()
 
-        String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
-                append(File.separator).
-                append(dataDir).
-                toString();
-
+//        String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
+//                append(File.separator).
+//                append(dataDir).
+//                toString();
+        String compassConnection=dataDir;                
         config.setConnection(compassConnection);
 
         def defaultSettings=DefaultCompassConfiguration.getDefaultSettings(ConfigurationHolder.getConfig());

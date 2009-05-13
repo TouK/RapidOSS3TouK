@@ -40,7 +40,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.enableGlobally();
     }
 
-    public void testBackup()
+     public void testBackup()
     {
         initialize([RsApplication],[]);
 
@@ -86,7 +86,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -120,11 +120,12 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             }
         }
     }
+
     public void testGenerateModelsToExportWithSelectedModelWithoutChildsAndWitoutRelations()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -163,7 +164,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -203,7 +204,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -259,7 +260,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -304,7 +305,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection","application.ObjectId"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
 
@@ -921,15 +922,18 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
+
     public void testFullExportWithAllModels()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","connection.Connection"];
+
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","application.ObjectId","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
         initialize(modelClasses,[],true);
-
+        println System.getProperty("index.dir")
+        
         def parentObjects=[];
         def childObjects=[];
 
@@ -964,7 +968,16 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertFalse(con1.hasErrors());
 
 
+        def fullExport=new FullExportImportUtility();
 
+        def CONFIG=[:];
+        CONFIG.backupDir="../testbackup";
+        CONFIG.exportDir="../testexport";
+        CONFIG.objectsPerFile=5;
+        CONFIG.MODELS=[];
+        CONFIG.MODELS.add([model:"all"]);
+
+        fullExport.fullExport(CONFIG);
 
     }
 

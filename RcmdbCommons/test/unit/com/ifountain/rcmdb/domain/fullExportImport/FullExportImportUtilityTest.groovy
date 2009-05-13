@@ -20,6 +20,7 @@ import org.apache.log4j.Logger
 */
 class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
+    def directoryPaths=[exportDir:"../testexport",importDir:"../testimport",backupDir:"..${File.separator}testbackup".toString()]
     public void setUp() {
         super.setUp();
         clearMetaClasses();
@@ -50,7 +51,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-        def backupPath="testbackup";
+        def backupPath=directoryPaths.backupDir;
 
         def backupDir=new File(backupPath);
         def fileList=generateDirectoryDeleteTestFiles(backupDir);
@@ -58,7 +59,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         fullExport.backup(backupPath);
 
-        assertEquals(callParams.directory,new File("${backupPath}/index").getPath());
+        assertEquals(callParams.directory,new File("${backupPath}${File.separator}index").getPath());
 
         checkDirectoryIsDeletedWithFiles(fileList);
 
@@ -514,7 +515,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        File exportDir=new File("../exportDir");
+        File exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -585,7 +586,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        File exportDir=new File("../exportDir");
+        File exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -645,7 +646,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        File exportDir=new File("../exportDir");
+        File exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -697,7 +698,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        File exportDir=new File("../exportDir");
+        File exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -765,7 +766,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        File exportDir=new File("../exportDir");
+        File exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -845,7 +846,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def con1=connection.Connection.add(name:"testcon1");
         assertFalse(con1.hasErrors());
 
-//      activate this line of code in order to try tests without xml parse problem for the relation model
+        //activate below lines of code in order to try tests without xml parse problem for the relation model
 //        relation.Relation.searchEvery("alias:*").each{ rel ->
 //            rel.update(source:"relsource");
 //            assertFalse(rel.hasErrors());
@@ -862,8 +863,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         def CONFIG=[:];
-        CONFIG.backupDir="../testbackup";
-        CONFIG.exportDir="../testexport";
+        CONFIG.backupDir=directoryPaths.backupDir;
+        CONFIG.exportDir=directoryPaths.exportDir;
         CONFIG.objectsPerFile=5;
         CONFIG.MODELS=[];
         CONFIG.MODELS.add([model:"all"]);
@@ -943,8 +944,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertEquals(2,fullExport.RELATION_IDS_TO_EXPORT.size())
 
         def CONFIG=[:];
-        CONFIG.backupDir="../testbackup";
-        CONFIG.exportDir="../testexport";
+        CONFIG.backupDir=directoryPaths.backupDir;
+        CONFIG.exportDir=directoryPaths.exportDir;
         CONFIG.objectsPerFile=5;
         CONFIG.MODELS=[];
         CONFIG.MODELS.add([model:"all"]);
@@ -986,7 +987,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //backupdir missing
         try{
             def CONFIG=[:];
-            CONFIG.exportDir="../testexport";
+            CONFIG.exportDir=directoryPaths.exportDir;
             CONFIG.objectsPerFile=5;
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
@@ -997,7 +998,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //exportDir missing
         try{
             def CONFIG=[:];
-            CONFIG.backupDir="../testbackup";
+            CONFIG.backupDir=directoryPaths.backupDir;
             CONFIG.objectsPerFile=5;
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
@@ -1008,8 +1009,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //objectsPerFile missing
         try{
             def CONFIG=[:];
-            CONFIG.backupDir="../testbackup";
-            CONFIG.exportDir="../testexport";
+            CONFIG.backupDir=directoryPaths.backupDir;
+            CONFIG.exportDir=directoryPaths.exportDir;
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
             fullExport.fullExport(CONFIG);
@@ -1019,8 +1020,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //MODELS missing
         try{
             def CONFIG=[:];
-            CONFIG.backupDir="../testbackup";
-            CONFIG.exportDir="../testexport";
+            CONFIG.backupDir=directoryPaths.backupDir;
+            CONFIG.exportDir=directoryPaths.exportDir;
             CONFIG.objectsPerFile=5;
             fullExport.fullExport(CONFIG);
         }
@@ -1029,8 +1030,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //MODELS empty
         try{
             def CONFIG=[:];
-            CONFIG.backupDir="../testbackup";
-            CONFIG.exportDir="../testexport";
+            CONFIG.backupDir=directoryPaths.backupDir;
+            CONFIG.exportDir=directoryPaths.exportDir;
             CONFIG.objectsPerFile=5;
             CONFIG.MODELS=[];
             fullExport.fullExport(CONFIG);
@@ -1044,7 +1045,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //importDir missing
         try{
             def CONFIG=[:];
-            CONFIG.exportDir="../testexport";
+            CONFIG.exportDir=directoryPaths.exportDir;
             fullExport.fullImport(CONFIG);
         }
         catch(e){assertTrue(e.getMessage().indexOf("importDir")>=0)}
@@ -1052,7 +1053,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         //exportDir missing
         try{
             def CONFIG=[:];
-            CONFIG.importDir="../testimport";
+            CONFIG.importDir=directoryPaths.importDir;
             fullExport.fullImport(CONFIG);
         }
         catch(e){assertTrue(e.getMessage().indexOf("exportDir")>=0)}
@@ -1126,7 +1127,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def MODELS_TO_EXPORT=[:];
         MODELS_TO_EXPORT["RsTopologyObject"]=[relations:true];
         MODELS_TO_EXPORT["RsGroup"]=[relations:false];
-        def expectedExportDir="../testexport";
+        def expectedExportDir=directoryPaths.exportDir;
         def expectedObjectsPerFile=5;
 
         def exportModelCallParams=[:];
@@ -1165,7 +1166,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        def exportDir=new File("../testexport");
+        def exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -1205,9 +1206,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
-        def importDir="../testimport";
+        def importDir=directoryPaths.importDir;
 
-        def exportDir=new File("../testexport");
+        def exportDir=new File(directoryPaths.exportDir);
         FileUtils.deleteDirectory (exportDir);
         assertTrue(exportDir.mkdirs());
 
@@ -1277,8 +1278,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         def EXPORT_CONFIG=[:];
-        EXPORT_CONFIG.backupDir="../testbackup";
-        EXPORT_CONFIG.exportDir="../testexport";
+        EXPORT_CONFIG.backupDir=directoryPaths.backupDir;
+        EXPORT_CONFIG.exportDir=directoryPaths.exportDir;
         EXPORT_CONFIG.objectsPerFile=5;
         EXPORT_CONFIG.MODELS=[];
         EXPORT_CONFIG.MODELS.add([model:"all"]);
@@ -1286,8 +1287,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         fullExport.fullExport(EXPORT_CONFIG);
         
         def IMPORT_CONFIG=[:];
-        IMPORT_CONFIG.importDir="../testimport";
-        IMPORT_CONFIG.exportDir="../testexport";
+        IMPORT_CONFIG.importDir=directoryPaths.importDir;
+        IMPORT_CONFIG.exportDir=directoryPaths.exportDir;
 
         fullExport.fullImport(IMPORT_CONFIG);
 

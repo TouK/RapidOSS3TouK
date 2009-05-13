@@ -2,7 +2,7 @@ import com.ifountain.rcmdb.domain.FullExportImportUtility
 
 CONFIG=[:];
 CONFIG.backupDir="backupData";
-CONFIG.exportDir="export";
+CONFIG.exportDir="exportFiles";
 CONFIG.objectsPerFile=1000;
 
 CONFIG.MODELS=[];

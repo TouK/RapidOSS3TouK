@@ -2,7 +2,7 @@ import com.ifountain.rcmdb.domain.FullExportImportUtility
 
 CONFIG=[:];
 CONFIG.importDir="importData";
-CONFIG.exportDir="export";
+CONFIG.exportDir="exportFiles";
 
 def fullExportUtility=new FullExportImportUtility(logger);
 try{

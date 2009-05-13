@@ -173,7 +173,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     }
 
     public Object _update(Observable o, Object arg) {
-        return null;
+        return arg;
     }
 
 
@@ -190,7 +190,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
                         trap = (Map) trapBuffer.remove(0);
                         logger.debug(getLogPrefix() + "Processing trap from " + trap.get(RSnmpConstants.AGENT));
                     }
-                    sendDataToObservers(trap);
+                    update(null,trap);
                 }
             }
             catch (InterruptedException e) {

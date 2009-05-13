@@ -34,9 +34,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsApplication)
         GroovySystem.metaClassRegistry.removeMetaClass(RsApplicationOperations)
-//        GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
-//        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
-//        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScriptOperations)
         ExpandoMetaClass.enableGlobally();
     }
 
@@ -422,7 +419,56 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.endCompass();
         }
     }
+    private def checkXmlFiles(File exportDir,filesToCheck)
+    {
+        def xmlData=[:];
+        def xmlDataIds=[];
 
+        assertEquals(filesToCheck.size(),exportDir.listFiles().size());
+
+        filesToCheck.each{ fileInfo ->
+            def xmlFile=new File(exportDir.getPath()+"/"+fileInfo.name);
+            assertTrue(xmlFile.exists());
+
+            def resultXml = new XmlSlurper().parse(xmlFile);
+            def objects=resultXml.Object;
+            assertEquals(fileInfo.objectCount,objects.size());
+
+            objects.each{ objectRow ->
+                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
+                xmlDataIds.add(objectRow.@"id".toLong());
+            }
+        }
+
+        //check xml is sorted by id
+        xmlDataIds.size().times { index ->
+            if(index>0)
+            {
+                assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
+            }
+        }
+
+        return xmlData;
+    }
+    public void testGetFileCount()
+    {
+       CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+       def fullExport=new FullExportImportUtility();
+
+       assertEquals(0,fullExport.getFileCount(0,0));
+       assertEquals(0,fullExport.getFileCount(0,5));
+
+       assertEquals(1,fullExport.getFileCount(1,5));
+       assertEquals(1,fullExport.getFileCount(2,5));
+       assertEquals(1,fullExport.getFileCount(5,5));
+
+       assertEquals(2,fullExport.getFileCount(6,5));
+       assertEquals(2,fullExport.getFileCount(8,5));
+       assertEquals(2,fullExport.getFileCount(10,5));
+
+       assertEquals(3,fullExport.getFileCount(11,5));
+
+    }
     public void testExportModelWithoutRelationsExportOnlyTheModelDataAndDoesNotMarkRelationsToExport()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
@@ -469,28 +515,10 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.exportModel(exportDir.getPath(),100,"RsTopologyObject",false);
             assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
 
-            assertEquals(1,exportDir.listFiles().size());
-            
-            def xmlFile=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
-            assertTrue(xmlFile.exists())
+            def filesToCheck=[];
+            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:5])
 
-            def resultXml = new XmlSlurper().parse(xmlFile);
-
-            def objects=resultXml.Object;
-            def xmlData=[:];
-
-            def xmlDataIds=[];
-            objects.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-            //check xml is sorted by id
-            xmlDataIds.size().times { index ->
-                if(index>0)
-                {
-                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
-                }
-            }
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
             //check xml properties are same as the object
             def modelAlias="RsTopologyObject";
@@ -570,28 +598,12 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         try{
             fullExport.exportModel(exportDir.getPath(),100,"RsTopologyObject",true);
 
-            assertEquals(1,exportDir.listFiles().size());
+            
 
-            def xmlFile=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
-            assertTrue(xmlFile.exists())
+            def filesToCheck=[];
+            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:10])
 
-            def resultXml = new XmlSlurper().parse(xmlFile);
-
-            def objects=resultXml.Object;
-            def xmlData=[:];
-
-            def xmlDataIds=[];
-            objects.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-            //check xml is sorted by id
-            xmlDataIds.size().times { index ->
-                if(index>0)
-                {
-                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
-                }
-            }
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
             //check xml properties are same as the object
             def modelAlias="RsTopologyObject";
@@ -651,51 +663,12 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         try{
             fullExport.exportModel(exportDir.getPath(),2,"RsTopologyObject",false);
 
-            assertEquals(3,exportDir.listFiles().size());
-            def xmlData=[:];
-            def xmlDataIds=[];
+            def filesToCheck=[];
+            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:2])
+            filesToCheck.add([name:"RsTopologyObject_1.xml",objectCount:2])
+            filesToCheck.add([name:"RsTopologyObject_2.xml",objectCount:1])
 
-            def xmlFile0=new File(exportDir.getPath()+"/RsTopologyObject_0.xml");
-            assertTrue(xmlFile0.exists())
-            def resultXml0 = new XmlSlurper().parse(xmlFile0);
-            def objects0=resultXml0.Object;
-            assertEquals(2,objects0.size());
-
-            objects0.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            def xmlFile1=new File(exportDir.getPath()+"/RsTopologyObject_1.xml");
-            assertTrue(xmlFile1.exists())
-            def resultXml1 = new XmlSlurper().parse(xmlFile1);
-            def objects1=resultXml1.Object;
-            assertEquals(2,objects1.size());
-
-            objects1.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            def xmlFile2=new File(exportDir.getPath()+"/RsTopologyObject_2.xml");
-            assertTrue(xmlFile2.exists())
-            def resultXml2 = new XmlSlurper().parse(xmlFile2);
-            def objects2=resultXml2.Object;
-            assertEquals(1,objects2.size());
-
-            objects2.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            //check xml is sorted by id
-            xmlDataIds.size().times { index ->
-                if(index>0)
-                {
-                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
-                }
-            }
-
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
             //check xml properties are same as the object
             def modelAlias="RsTopologyObject";
@@ -761,29 +734,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         try{
             fullExport.exportMarkedRelations(exportDir.getPath(),100);
 
-
-            assertEquals(1,exportDir.listFiles().size());
-
-            def xmlFile=new File(exportDir.getPath()+"/relation.Relation_0.xml");
-            assertTrue(xmlFile.exists())
-
-            def resultXml = new XmlSlurper().parse(xmlFile);
-
-            def objects=resultXml.Object;
-            def xmlData=[:];
-
-            def xmlDataIds=[];
-            objects.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-            //check xml is sorted by id
-            xmlDataIds.size().times { index ->
-                if(index>0)
-                {
-                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
-                }
-            }
+            def filesToCheck=[];
+            filesToCheck.add([name:"relation.Relation_0.xml",objectCount:3])
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
             //check xml properties are same as the object
 
@@ -851,56 +804,13 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         try{
             fullExport.exportMarkedRelations(exportDir.getPath(),2);
 
+            def filesToCheck=[];
+            filesToCheck.add([name:"relation.Relation_0.xml",objectCount:2])
+            filesToCheck.add([name:"relation.Relation_1.xml",objectCount:2])
+            filesToCheck.add([name:"relation.Relation_2.xml",objectCount:1])
 
-            assertEquals(3,exportDir.listFiles().size());
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
-
-            def xmlData=[:];
-            def xmlDataIds=[];
-
-            def xmlFile0=new File(exportDir.getPath()+"/relation.Relation_0.xml");
-            assertTrue(xmlFile0.exists())
-
-            def resultXml0 = new XmlSlurper().parse(xmlFile0);
-            def objects0=resultXml0.Object;
-            assertEquals(2,objects0.size());
-
-            objects0.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            def xmlFile1=new File(exportDir.getPath()+"/relation.Relation_1.xml");
-            assertTrue(xmlFile1.exists())
-
-            def resultXml1 = new XmlSlurper().parse(xmlFile1);
-            def objects1=resultXml1.Object;
-            assertEquals(2,objects1.size());
-
-            objects1.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            def xmlFile2=new File(exportDir.getPath()+"/relation.Relation_2.xml");
-            assertTrue(xmlFile1.exists())
-
-            def resultXml2 = new XmlSlurper().parse(xmlFile2);
-            def objects2=resultXml2.Object;
-            assertEquals(1,objects2.size());
-
-            objects2.each{ objectRow ->
-                xmlData[objectRow.@"id".toString()]=objectRow.attributes();
-                xmlDataIds.add(objectRow.@"id".toLong());
-            }
-
-            //check xml is sorted by id
-            xmlDataIds.size().times { index ->
-                if(index>0)
-                {
-                    assertTrue(xmlDataIds[index]>xmlDataIds[index-1]);
-                }
-            }
 
             //check xml properties are same as the object
 
@@ -979,8 +889,26 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         fullExport.fullExport(CONFIG);
 
-    }
 
+        File exportDir=new File(CONFIG.exportDir);
+        assertTrue(exportDir.exists());
+
+
+        def filesToCheck=[];
+        filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:5])
+        filesToCheck.add([name:"RsTopologyObject_1.xml",objectCount:5])
+        filesToCheck.add([name:"RsGroup_0.xml",objectCount:2])
+        filesToCheck.add([name:"RsTicket_0.xml",objectCount:2])
+        filesToCheck.add([name:"connection.Connection_0.xml",objectCount:1])
+        filesToCheck.add([name:"relation.Relation_0.xml",objectCount:5])
+        filesToCheck.add([name:"relation.Relation_1.xml",objectCount:4])
+
+        def xmlData=checkXmlFiles(exportDir,filesToCheck);
+
+
+
+    }
+    
     public def getClassMapFromClassList(classList)
     {
         def classMap=[:];

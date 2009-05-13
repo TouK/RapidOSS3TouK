@@ -56,7 +56,7 @@ class FullExportImportUtility {
         }
 
     }
-    private def backup(backupDir)
+    protected def backup(backupDir)
     {
         logger.info("backing up current data to directory '${backupDir}'");
         def ant=new AntBuilder();
@@ -65,7 +65,7 @@ class FullExportImportUtility {
         RsApplication.backup(backupDir+File.separator+"index");
         logger.info("backing up done");
     }
-    private def generateModelsToExport(MODELS)
+    protected def generateModelsToExport(MODELS)
     {
         def MODELS_TO_EXPORT=[:];
         def EXPORT_MARKED_RELATIONS=false;
@@ -151,7 +151,7 @@ class FullExportImportUtility {
         def EXPORT_CONFIG=[MODELS_TO_EXPORT:MODELS_TO_EXPORT,EXPORT_MARKED_RELATIONS:EXPORT_MARKED_RELATIONS];
         return EXPORT_CONFIG;
     }
-    private def getAllModelNames()
+    protected def getAllModelNames()
     {
         def modelNames=[];
         ApplicationHolder.application.getDomainClasses().each{ domainClass ->
@@ -161,7 +161,7 @@ class FullExportImportUtility {
         }
         return modelNames;
     }
-    private def getConfModelNames()
+    protected def getConfModelNames()
     {
         def modelNames=[];
         ApplicationHolder.application.getDomainClasses().each{ domainClass ->
@@ -173,12 +173,12 @@ class FullExportImportUtility {
         }
         return modelNames;
     }
-    private def getModelAlias(modelName)
+    protected def getModelAlias(modelName)
     {
         ApplicationHolder.application.getDomainClass(modelName).clazz.simpleName;
     }
 
-    private def exportModels(exportDir,objectPerFile,MODELS_TO_EXPORT)
+    protected def exportModels(exportDir,objectPerFile,MODELS_TO_EXPORT)
     {
         logger.info("exporting backup data to directory '${exportDir}'");
 
@@ -193,8 +193,13 @@ class FullExportImportUtility {
 
         logger.info("exporting successfuly done");
     }
-
-    private def exportModel(exportDir,objectPerFile,modelName,relations)
+    protected int getFileCount(instanceCount,objectPerFile)
+    {
+        if(objectPerFile == 0)
+            return 0;
+        return Math.ceil(instanceCount/objectPerFile).toInteger();
+    }
+    protected def exportModel(exportDir,objectPerFile,modelName,relations)
     {
         logger.info("   exporting model ${modelName}");
 
@@ -209,7 +214,7 @@ class FullExportImportUtility {
         CompassHits hits = queryObj.hits();
 
 
-        def fileCount=Math.floor(hits.length()/objectPerFile).toInteger()+1;
+        def fileCount=getFileCount(hits.length(),objectPerFile);
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
 
@@ -255,7 +260,7 @@ class FullExportImportUtility {
 
         logger.info("   exported model ${modelName}");
     }
-    def markRelationsOfObjectIds(objectIds)
+    protected def markRelationsOfObjectIds(objectIds)
     {
         StringBuffer buf=new StringBuffer();
         buf.append("alias:relation.Relation");
@@ -274,7 +279,7 @@ class FullExportImportUtility {
 
         logger.debug("MARKING RELATIONS with query ${query}");
     }
-    private def exportMarkedRelations(exportDir,objectPerFile)
+    protected def exportMarkedRelations(exportDir,objectPerFile)
     {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");
@@ -290,7 +295,7 @@ class FullExportImportUtility {
         CompassHits hits = queryObj.hits();
 
 
-        def fileCount=Math.floor(hits.length()/objectPerFile).toInteger()+1;
+        def fileCount=getFileCount(hits.length(),objectPerFile);
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
 
@@ -339,12 +344,12 @@ class FullExportImportUtility {
 
         logger.info("   exported model ${modelName}");
     }
-    private def exportXml(strXml, fileName){
+    protected def exportXml(strXml, fileName){
         def fw = new FileWriter(new File(fileName));
         fw.write(strXml);
         fw.close();
     }
-    private def beginCompass(dataDir)
+    protected def beginCompass(dataDir)
     {
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             ApplicationHolder.application,
@@ -370,16 +375,16 @@ class FullExportImportUtility {
         this.compass = config.buildCompass()
         this.compassSession=this.compass.openSession();
     }
-    private def endCompass()
+    protected def endCompass()
     {
         this.compassSession.close()
         this.compass.close()
     }
-    private def beginCompassTransaction()
+    protected def beginCompassTransaction()
     {
         return compassSession.beginTransaction()
     }
-    private def endCompassTransaction(tx)
+    protected def endCompassTransaction(tx)
     {
         tx.commit();
     }

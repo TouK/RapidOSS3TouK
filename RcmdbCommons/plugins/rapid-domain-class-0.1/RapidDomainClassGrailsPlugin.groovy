@@ -262,7 +262,7 @@ class RapidDomainClassGrailsPlugin {
                     cloned.setPropertyWithoutUpdate(p.name, domainObject[p.name])
                 }
             }
-            def filteredProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+            def filteredProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME];
             filteredProps.each{propName ->
                 cloned.setPropertyWithoutUpdate(propName, domainObject[propName])
             }

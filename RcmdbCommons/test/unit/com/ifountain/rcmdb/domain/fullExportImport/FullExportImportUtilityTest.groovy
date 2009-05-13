@@ -414,12 +414,14 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.endCompass();
         }
     }
-    private def checkXmlFiles(File exportDir,filesToCheck)
+    private def checkXmlFiles(File exportDir,filesToCheck,checkDirectoryFileSize=true)
     {
         def xmlData=[:];
         def xmlDataIds=[];
-
-        assertEquals(filesToCheck.size(),exportDir.listFiles().size());
+        if(checkDirectoryFileSize)
+        {
+            assertEquals(filesToCheck.size(),exportDir.listFiles().size());
+        }
 
         filesToCheck.each{ fileInfo ->
             def xmlFile=new File(exportDir.getPath()+"/"+fileInfo.name);
@@ -800,18 +802,17 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
-
-    public void testFullExportWithAllModels()
+    private def initializeFullExportModels()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","application.ObjectId","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
         initialize(modelClasses,[],true);
-        println System.getProperty("index.dir")
-        
+
+        return modelClassMap;
+    }
+    private void initializeFullExportInstances(modelClassMap)
+    {
         def parentObjects=[];
         def childObjects=[];
 
@@ -845,6 +846,19 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def con1=connection.Connection.add(name:"testcon1");
         assertFalse(con1.hasErrors());
 
+//      activate this line of code in order to try tests without xml parse problem for the relation model
+//        relation.Relation.searchEvery("alias:*").each{ rel ->
+//            rel.update(source:"relsource");
+//            assertFalse(rel.hasErrors());
+//        }
+    }
+
+    public void testFullExportWithAllModels()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassMap=initializeFullExportModels();
+        initializeFullExportInstances(modelClassMap)
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
@@ -871,8 +885,16 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         filesToCheck.add([name:"relation.Relation_0.xml",model:"relation.Relation",objectCount:5])
         filesToCheck.add([name:"relation.Relation_1.xml",model:"relation.Relation",objectCount:4])
 
+        assertEquals(filesToCheck.size(),exportDir.listFiles().size());
+        
+        def xmlData=[:];
 
-        def xmlData=checkXmlFiles(exportDir,filesToCheck);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[0],filesToCheck[1]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[2]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[3]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[4]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[5],filesToCheck[6]],false);
+
 
         def repoResults=[];
         def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","connection.Connection","relation.Relation"];
@@ -1245,7 +1267,97 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
-    
+    public void testFullImportSuccessfullyImportsXmlResultsOfFullExport()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        def modelClassMap=initializeFullExportModels();
+        initializeFullExportInstances(modelClassMap)
+
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def EXPORT_CONFIG=[:];
+        EXPORT_CONFIG.backupDir="../testbackup";
+        EXPORT_CONFIG.exportDir="../testexport";
+        EXPORT_CONFIG.objectsPerFile=5;
+        EXPORT_CONFIG.MODELS=[];
+        EXPORT_CONFIG.MODELS.add([model:"all"]);
+
+        fullExport.fullExport(EXPORT_CONFIG);
+        
+        def IMPORT_CONFIG=[:];
+        IMPORT_CONFIG.importDir="../testimport";
+        IMPORT_CONFIG.exportDir="../testexport";
+
+        fullExport.fullImport(IMPORT_CONFIG);
+
+        //we save current objects in repo
+        def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","connection.Connection","relation.Relation"];
+        def oldRepoResults=[:];
+        modelsToCheck.each{ modelName ->
+           def modelAlias=fullExport.getModelAlias(modelName);
+           oldRepoResults[modelName]=modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}",[sort:"id",order:"asc"]);
+        }
+        def oldInderDir=System.getProperty("index.dir");
+        assertTrue(System.getProperty("index.dir").compareTo(EXPORT_CONFIG.backupDir)!=0);
+        
+        //we remove all instances check that no instance exists
+
+        modelsToCheck.each{ modelName ->
+           modelClassMap[modelName].removeAll()
+           assertEquals(0,modelClassMap[modelName].countHits("alias:*"));
+        }
+
+        this.indexDir=EXPORT_CONFIG.backupDir;
+        initializeFullExportModels();
+        assertTrue(System.getProperty("index.dir").compareTo(EXPORT_CONFIG.backupDir)==0);
+
+        oldRepoResults.each{ modelName , oldObjects ->
+            def modelAlias=fullExport.getModelAlias(modelName);
+            def newObjects=modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}",[sort:"id",order:"asc"]);
+            assertEquals(oldObjects.size(),newObjects.size());
+            oldObjects.size().times{ index ->
+                def oldObject=oldObjects[0];
+                def newObject=newObjects[0];
+                assertNotSame(oldObject,newObject);
+                assertEquals(oldObject.id,newObject.id);
+                def oldMap=oldObject.asMap();
+                oldMap.each{ propName , propVal ->
+                    assertEquals(propVal,newObject.getProperty(propName))
+                }
+
+            }
+            
+        }
+        //relation model is imported like other models ( without calling addRelation() )
+        //check relations of models is accessible and correct
+        def parentObjects=modelClassMap.RsTopologyObject.searchEvery("name:parentObject*");
+        assertEquals(5,parentObjects.size());
+        parentObjects.each{ parentObject ->
+            def childObjects=parentObject.childObjects;
+            assertEquals(1,childObjects.size());
+            assertEquals(parentObject.name.replace("parent","child"),childObjects[0].name);
+            assertEquals(0,childObjects[0].childObjects.size());
+            assertEquals(1,childObjects[0].parentObjects.size());
+        }
+
+        def ticket1=modelClassMap.RsTicket.get(name:"ticket1");
+        def ticket2=modelClassMap.RsTicket.get(name:"ticket2");
+        assertEquals(null,ticket1.parentTicket);
+        assertEquals(ticket2.id,ticket1.subTickets[0].id);
+        assertEquals(ticket1.id,ticket2.parentTicket.id);
+
+        def group1=modelClassMap.RsGroup.get(name:"group1");
+        assertEquals(ticket1.id,group1.relatedTickets[0].id);
+
+        def group2=modelClassMap.RsGroup.get(name:"group2");
+        assertEquals(ticket1.id,group2.relatedTickets[0].id);
+        assertEquals(ticket2.id,group2.relatedTickets[1].id);
+
+    }
+
+
     public def getClassMapFromClassList(classList)
     {
         def classMap=[:];

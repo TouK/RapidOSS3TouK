@@ -27,9 +27,9 @@ class FullExportImportUtility {
     def compassSession;
     def RELATION_IDS_TO_EXPORT=[:];
 
-    def FullExportImportUtility()
+    def FullExportImportUtility(logger)
     {
-        logger=RsApplication.getLogger();
+        this.logger=logger;
     }
     def fullExport(CONFIG)
     {
@@ -178,7 +178,7 @@ class FullExportImportUtility {
         ApplicationHolder.application.getDomainClass(modelName).clazz.simpleName;
     }
 
-    protected def exportModels(exportDir,objectPerFile,MODELS_TO_EXPORT)
+    protected def exportModels(exportDir,objectsPerFile,MODELS_TO_EXPORT)
     {
         logger.info("exporting backup data to directory '${exportDir}'");
 
@@ -188,16 +188,16 @@ class FullExportImportUtility {
         ant.mkdir(dir:exportDir);
 
         MODELS_TO_EXPORT.each{ modelName,modelEntry ->
-             exportModel(exportDir,objectPerFile,modelName,modelEntry.relations);
+             exportModel(exportDir,objectsPerFile,modelName,modelEntry.relations);
         }
 
         logger.info("exporting successfuly done");
     }
-    protected int getFileCount(instanceCount,objectPerFile)
+    protected int getFileCount(instanceCount,objectsPerFile)
     {
-        if(objectPerFile == 0)
+        if(objectsPerFile == 0)
             return 0;
-        return Math.ceil(instanceCount/objectPerFile).toInteger();
+        return Math.ceil(instanceCount/objectsPerFile).toInteger();
     }
     protected CompassHits getModelHits(modelName,query)
     {
@@ -210,7 +210,7 @@ class FullExportImportUtility {
 
         return hits;
     }
-    protected def exportModel(exportDir,objectPerFile,modelName,relations)
+    protected def exportModel(exportDir,objectsPerFile,modelName,relations)
     {
         logger.info("   exporting model ${modelName}");
 
@@ -218,7 +218,7 @@ class FullExportImportUtility {
         def hits=getModelHits(modelName,"alias:*");
 
 
-        def fileCount=getFileCount(hits.length(),objectPerFile);
+        def fileCount=getFileCount(hits.length(),objectsPerFile);
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
 
@@ -230,8 +230,8 @@ class FullExportImportUtility {
 
             builder.Objects(model:modelName){
 
-                objectPerFile.times { objectCounter ->
-                    int dataIndex= ( fileCounter * objectPerFile ) + objectCounter
+                objectsPerFile.times { objectCounter ->
+                    int dataIndex= ( fileCounter * objectsPerFile ) + objectCounter
                     if(dataIndex<hits.length)
                     {
                         def object=hits.data(dataIndex);
@@ -281,14 +281,14 @@ class FullExportImportUtility {
 
         logger.debug("MARKING RELATIONS with query ${query}");
     }
-    protected def exportMarkedRelations(exportDir,objectPerFile)
+    protected def exportMarkedRelations(exportDir,objectsPerFile)
     {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");
 
         def hits=getModelHits(modelName,"alias:*");
 
-        def fileCount=getFileCount(hits.length(),objectPerFile);
+        def fileCount=getFileCount(hits.length(),objectsPerFile);
 
         logger.info("      ${modelName} have ${hits.length()} instances, will be exported to ${fileCount} files")
 
@@ -305,8 +305,8 @@ class FullExportImportUtility {
 
             builder.Objects(model:modelName){
 
-                objectPerFile.times { objectCounter ->
-                    int dataIndex= ( fileCounter * objectPerFile ) + objectCounter
+                objectsPerFile.times { objectCounter ->
+                    int dataIndex= ( fileCounter * objectsPerFile ) + objectCounter
                     if(dataIndex<hits.length)
                     {
                         def object=hits.data(dataIndex);

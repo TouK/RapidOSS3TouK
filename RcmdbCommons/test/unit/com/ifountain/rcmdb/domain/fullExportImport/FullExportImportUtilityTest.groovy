@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.compass.core.CompassQuery
 import org.compass.core.CompassHit
 import org.compass.core.CompassHits
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,13 +35,13 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsApplication)
         GroovySystem.metaClassRegistry.removeMetaClass(RsApplicationOperations)
+        GroovySystem.metaClassRegistry.removeMetaClass(FullExportImportUtility)
         ExpandoMetaClass.enableGlobally();
     }
 
-     public void testBackup()
+    public void testBackup()
     {
         initialize([RsApplication],[]);
-
 
         def callParams=[:];
         RsApplicationOperations.metaClass.static.backup = {String directory ->
@@ -50,39 +51,45 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
-
         def backupPath="testbackup";
 
         def backupDir=new File(backupPath);
-        FileUtils.deleteDirectory(backupDir);
-        assertTrue(backupDir.mkdir());
+        def fileList=generateDirectoryDeleteTestFiles(backupDir);
 
-        def indexDir=new File("${backupPath}/index");
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        fullExport.backup(backupPath);
+
+        assertEquals(callParams.directory,new File("${backupPath}/index").getPath());
+
+        checkDirectoryIsDeletedWithFiles(fileList);
+
+    }
+    private def generateDirectoryDeleteTestFiles(File baseDir)
+    {
+        FileUtils.deleteDirectory(baseDir);
+        assertTrue(baseDir.mkdir());
+
+        def indexDir=new File("${baseDir.getPath()}/index");
         assertTrue(indexDir.mkdir());
 
-
-        def file1=new File(backupDir.getPath()+"/f1.txt");
+        def file1=new File(baseDir.getPath()+"/f1.txt");
         file1.setText("file1");
-        assert(file1.exists());
+        assertTrue(file1.exists());
 
         def file2=new File(indexDir.getPath()+"/f2.txt");
         file2.setText("file2");
-        assert(file2.exists());
+        assertTrue(file2.exists());
 
-
-        def fullExport=new FullExportImportUtility();
-        fullExport.backup(backupPath);
-
-        assertEquals(callParams.directory,indexDir.getPath());
-
-        assertFalse(file1.exists());
-        assertFalse(file2.exists());
-
+        return [file1,file2];
+    }
+    private void checkDirectoryIsDeletedWithFiles(fileList)
+    {
+         fileList.each{ file ->
+            assertFalse(file.exists())
+         }
     }
     public void testGenerateModelsToExportWithSelectedModelWithChildsAndRelations()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -93,7 +100,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"RsTopologyObject"]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -120,8 +127,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testGenerateModelsToExportWithSelectedModelWithoutChildsAndWitoutRelations()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -133,7 +138,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject",childModels:false,relations:false]);
         MODELS.add([model:"RsGroup",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -159,8 +164,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithSelectedModelsOneWithChildsOtherWithoutChilds()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -172,7 +175,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject"]);
         MODELS.add([model:"RsEvent",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -199,8 +202,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testGenerateModelsToExportWithAllModels()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -211,7 +212,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"all"]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertFalse(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -255,8 +256,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithConfModels()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -267,7 +266,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def MODELS=[];
         MODELS.add([model:"conf"]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -300,8 +299,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testGenerateModelsToExportWithConfModelsAndWithSelectedModels()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsRiEvent","relation.Relation","application.ObjectId","auth.RsUser","auth.Group","connection.Connection","connection.DatabaseConnection","connection.HttpConnection"];
         def modelClasses=loadClasses(modelClassesNameList);
 
@@ -314,7 +311,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         MODELS.add([model:"RsTopologyObject"]);
         MODELS.add([model:"RsEvent",childModels:false,relations:false]);
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         def EXPORT_CONFIG=fullExport.generateModelsToExport(MODELS);
 
         assertTrue(EXPORT_CONFIG.EXPORT_MARKED_RELATIONS);
@@ -343,8 +340,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testBeginCompassStartsSuccessfully()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -375,7 +370,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertFalse(obj.hasErrors());
         }
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
 
         fullExport.beginCompass(System.getProperty("index.dir"));
@@ -431,6 +426,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertTrue(xmlFile.exists());
 
             def resultXml = new XmlSlurper().parse(xmlFile);
+            def xmlModelName=resultXml.@'model'.toString();
+            assertEquals(fileInfo.model,xmlModelName);
+
             def objects=resultXml.Object;
             assertEquals(fileInfo.objectCount,objects.size());
 
@@ -450,10 +448,24 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         return xmlData;
     }
+    def checkXmlData(xmlData,repoResults)
+    {
+       assertEquals(repoResults.size(),xmlData.size())
+
+        repoResults.each{ repoObject ->
+            assertTrue(xmlData.containsKey(repoObject.id.toString()));
+            def objectAttributes=repoObject.asMap();
+            def xmlAttributes=xmlData[repoObject.id.toString()];
+            
+            assertEquals(objectAttributes.size(),xmlAttributes.size())
+            objectAttributes.each{ propName,propVal ->
+                assertEquals(propVal.toString(),xmlAttributes[propName]);
+            }
+        }
+    }
     public void testGetFileCount()
     {
-       CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-       def fullExport=new FullExportImportUtility();
+       def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
        assertEquals(0,fullExport.getFileCount(0,0));
        assertEquals(0,fullExport.getFileCount(0,5));
@@ -471,8 +483,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testExportModelWithoutRelationsExportOnlyTheModelDataAndDoesNotMarkRelationsToExport()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -501,7 +511,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertFalse(obj.hasErrors());
         }
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
@@ -516,7 +526,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
 
             def filesToCheck=[];
-            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:5])
+            filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:5])
 
             def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
@@ -524,16 +534,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def modelAlias="RsTopologyObject";
 
             def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
-            assertEquals(repoResults.size(),xmlData.size())
-
-
-            repoResults.each{ repoObject ->
-                assertTrue(xmlData.containsKey(repoObject.id.toString()));
-                def xmlAttributes=xmlData[repoObject.id.toString()];
-                xmlAttributes.each{ propName,propVal ->
-                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
-                }
-            }
+            checkXmlData(xmlData,repoResults);
         }
         finally{
             fullExport.endCompassTransaction(tx);
@@ -544,8 +545,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testExportModelWithRelationsMarksRelationIdsToExportAndExcludesOtherRelations()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -583,7 +582,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(9,relation.Relation.countHits("alias:*"))
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
@@ -601,7 +600,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             
 
             def filesToCheck=[];
-            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:10])
+            filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:10])
 
             def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
@@ -609,16 +608,11 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def modelAlias="RsTopologyObject";
 
             def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
-            assertEquals(repoResults.size(),xmlData.size())
+            checkXmlData(xmlData,repoResults);
 
             def expectedRelationsIds=[:];
 
             repoResults.each{ repoObject ->
-                assertTrue(xmlData.containsKey(repoObject.id.toString()));
-                def xmlAttributes=xmlData[repoObject.id.toString()];
-                xmlAttributes.each{ propName,propVal ->
-                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
-                }
                 def relations=relation.Relation.searchEvery("objectId:${repoObject.id} OR reverseObjectId:${repoObject.id}");
                 relations.each{ relation ->
                     assertTrue(fullExport.RELATION_IDS_TO_EXPORT.containsKey(relation.id));
@@ -638,8 +632,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testExportModelPaginatesExportedXmlFiles()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -650,9 +642,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertFalse(obj.hasErrors());
         }
 
-
-
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
@@ -664,9 +654,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.exportModel(exportDir.getPath(),2,"RsTopologyObject",false);
 
             def filesToCheck=[];
-            filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:2])
-            filesToCheck.add([name:"RsTopologyObject_1.xml",objectCount:2])
-            filesToCheck.add([name:"RsTopologyObject_2.xml",objectCount:1])
+            filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:2])
+            filesToCheck.add([name:"RsTopologyObject_1.xml",model:"RsTopologyObject",objectCount:2])
+            filesToCheck.add([name:"RsTopologyObject_2.xml",model:"RsTopologyObject",objectCount:1])
 
             def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
@@ -674,16 +664,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def modelAlias="RsTopologyObject";
 
             def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
-            assertEquals(repoResults.size(),xmlData.size())
-
-
-            repoResults.each{ repoObject ->
-                assertTrue(xmlData.containsKey(repoObject.id.toString()));
-                def xmlAttributes=xmlData[repoObject.id.toString()];
-                xmlAttributes.each{ propName,propVal ->
-                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
-                }
-            }
+            checkXmlData(xmlData,repoResults);
         }
         finally{
             fullExport.endCompassTransaction(tx);
@@ -694,8 +675,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testExportMarkedRelationsExportsOnlyMarkedRelations()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -715,7 +694,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(5,relation.Relation.countHits("alias:*"));
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
@@ -735,7 +714,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.exportMarkedRelations(exportDir.getPath(),100);
 
             def filesToCheck=[];
-            filesToCheck.add([name:"relation.Relation_0.xml",objectCount:3])
+            filesToCheck.add([name:"relation.Relation_0.xml",model:"relation.Relation",objectCount:3])
             def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
             //check xml properties are same as the object
@@ -744,20 +723,20 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertEquals(markedRelations.size(),xmlData.size());
             assertEquals(addedRelations.size(),repoResults.size());
 
+            def expectedResults=[];
+
             repoResults.each{ repoObject ->
                 if(markedRelations.containsKey(repoObject.id))
                 {
-                    assertTrue(xmlData.containsKey(repoObject.id.toString()));
-                    def xmlAttributes=xmlData[repoObject.id.toString()];
-                    xmlAttributes.each{ propName,propVal ->
-                        assertEquals(repoObject.getProperty(propName).toString(),propVal);
-                    }
+                    expectedResults.add(repoObject);
                 }
                 else
                 {
                     assertFalse(xmlData.containsKey(repoObject.id.toString()));
                 }
             }
+
+            checkXmlData(xmlData,expectedResults);
         }
         finally{
             fullExport.endCompassTransaction(tx);
@@ -768,8 +747,6 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testExportMarkedRelationsPaginatesExportedXmlFiles()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
-
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","relation.Relation","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
@@ -785,7 +762,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(5,relation.Relation.countHits("alias:*"));
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         File exportDir=new File("../exportDir");
         FileUtils.deleteDirectory (exportDir);
@@ -805,9 +782,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.exportMarkedRelations(exportDir.getPath(),2);
 
             def filesToCheck=[];
-            filesToCheck.add([name:"relation.Relation_0.xml",objectCount:2])
-            filesToCheck.add([name:"relation.Relation_1.xml",objectCount:2])
-            filesToCheck.add([name:"relation.Relation_2.xml",objectCount:1])
+            filesToCheck.add([name:"relation.Relation_0.xml",model:"relation.Relation",objectCount:2])
+            filesToCheck.add([name:"relation.Relation_1.xml",model:"relation.Relation",objectCount:2])
+            filesToCheck.add([name:"relation.Relation_2.xml",model:"relation.Relation",objectCount:1])
 
             def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
@@ -815,16 +792,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             //check xml properties are same as the object
 
             def repoResults=relation.Relation.searchEvery("alias:*")
-            assertEquals(repoResults.size(),xmlData.size());
-
-
-            repoResults.each{ repoObject ->
-                assertTrue(xmlData.containsKey(repoObject.id.toString()));
-                def xmlAttributes=xmlData[repoObject.id.toString()];
-                xmlAttributes.each{ propName,propVal ->
-                    assertEquals(repoObject.getProperty(propName).toString(),propVal);
-                }
-            }
+            checkXmlData(xmlData,repoResults);
         }
         finally{
             fullExport.endCompassTransaction(tx);
@@ -878,7 +846,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertFalse(con1.hasErrors());
 
 
-        def fullExport=new FullExportImportUtility();
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
 
         def CONFIG=[:];
         CONFIG.backupDir="../testbackup";
@@ -895,19 +863,134 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
 
         def filesToCheck=[];
-        filesToCheck.add([name:"RsTopologyObject_0.xml",objectCount:5])
-        filesToCheck.add([name:"RsTopologyObject_1.xml",objectCount:5])
-        filesToCheck.add([name:"RsGroup_0.xml",objectCount:2])
-        filesToCheck.add([name:"RsTicket_0.xml",objectCount:2])
-        filesToCheck.add([name:"connection.Connection_0.xml",objectCount:1])
-        filesToCheck.add([name:"relation.Relation_0.xml",objectCount:5])
-        filesToCheck.add([name:"relation.Relation_1.xml",objectCount:4])
+        filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:5])
+        filesToCheck.add([name:"RsTopologyObject_1.xml",model:"RsTopologyObject",objectCount:5])
+        filesToCheck.add([name:"RsGroup_0.xml",model:"RsGroup",objectCount:2])
+        filesToCheck.add([name:"RsTicket_0.xml",model:"RsTicket",objectCount:2])
+        filesToCheck.add([name:"connection.Connection_0.xml",model:"connection.Connection",objectCount:1])
+        filesToCheck.add([name:"relation.Relation_0.xml",model:"relation.Relation",objectCount:5])
+        filesToCheck.add([name:"relation.Relation_1.xml",model:"relation.Relation",objectCount:4])
+
 
         def xmlData=checkXmlFiles(exportDir,filesToCheck);
 
+        def repoResults=[];
+        def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","connection.Connection","relation.Relation"];
+        modelsToCheck.each{ modelName ->
+           def modelAlias=fullExport.getModelAlias(modelName);
+           repoResults.addAll(modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}"))
+        }
 
+        checkXmlData(xmlData,repoResults);
+    }
+    public void testFullExportCallsExportModelsAndCallsExportMarkedRelationsIfExportMarkedRelationsTrue()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        initialize([],[]);
+
+        def EXPORT_CONFIG_TO_RETURN=[:];
+        EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT=[:];
+        EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT["RsTopologyObject"]=[relations:true];
+        EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT["RsGroup"]=[relations:false];
+        EXPORT_CONFIG_TO_RETURN.EXPORT_MARKED_RELATIONS=true;
+        
+        FullExportImportUtility.metaClass.generateModelsToExport={ MODELS ->
+            println "generateModelsToExport in test"
+            return EXPORT_CONFIG_TO_RETURN;
+
+        }
+
+        def exportModelsCallParams=[:];
+
+        FullExportImportUtility.metaClass.exportModels={ exportDir,objectsPerFile,MODELS_TO_EXPORT ->
+            println "exportModels in test"
+            exportModelsCallParams=[exportDir:exportDir,objectsPerFile:objectsPerFile,MODELS_TO_EXPORT:MODELS_TO_EXPORT]
+        }
+
+        def exportMarkedRelationsCallParams=[:];
+
+        FullExportImportUtility.metaClass.exportMarkedRelations={ exportDir,objectsPerFile ->
+            println "exportMarkedRelations in test"
+            exportMarkedRelationsCallParams=[exportDir:exportDir,objectsPerFile:objectsPerFile]
+        }
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        fullExport.RELATION_IDS_TO_EXPORT[1]=true;
+        fullExport.RELATION_IDS_TO_EXPORT[5]=true;
+
+        assertEquals(2,fullExport.RELATION_IDS_TO_EXPORT.size())
+
+        def CONFIG=[:];
+        CONFIG.backupDir="../testbackup";
+        CONFIG.exportDir="../testexport";
+        CONFIG.objectsPerFile=5;
+        CONFIG.MODELS=[];
+        CONFIG.MODELS.add([model:"all"]);
+
+        exportModelsCallParams.clear();
+        exportMarkedRelationsCallParams.clear();
+
+        fullExport.fullExport(CONFIG);
+
+        assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size())
+
+        assertEquals(CONFIG.exportDir,exportModelsCallParams.exportDir);
+        assertEquals(CONFIG.objectsPerFile,exportModelsCallParams.objectsPerFile);
+        assertSame(EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT,exportModelsCallParams.MODELS_TO_EXPORT);
+        assertEquals(EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT.size(),exportModelsCallParams.MODELS_TO_EXPORT.size());
+        assertTrue(EXPORT_CONFIG_TO_RETURN.EXPORT_MARKED_RELATIONS);
+        assertEquals(CONFIG.exportDir,exportMarkedRelationsCallParams.exportDir)
+        assertEquals(CONFIG.objectsPerFile,exportMarkedRelationsCallParams.objectsPerFile)
+
+        //when EXPORT_MARKED_RELATIONS false
+        EXPORT_CONFIG_TO_RETURN.EXPORT_MARKED_RELATIONS=false;
+        
+        exportModelsCallParams.clear();
+        exportMarkedRelationsCallParams.clear();
+        fullExport.fullExport(CONFIG);
+
+        assertEquals(CONFIG.exportDir,exportModelsCallParams.exportDir);
+        assertEquals(CONFIG.objectsPerFile,exportModelsCallParams.objectsPerFile);
+        assertSame(EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT,exportModelsCallParams.MODELS_TO_EXPORT);
+        assertEquals(EXPORT_CONFIG_TO_RETURN.MODELS_TO_EXPORT.size(),exportModelsCallParams.MODELS_TO_EXPORT.size());
+        assertFalse(EXPORT_CONFIG_TO_RETURN.EXPORT_MARKED_RELATIONS);
+        assertEquals(0,exportMarkedRelationsCallParams.size());
 
     }
+    public void testExportModelsCallsExportModelForEachModelAndDeletesExportDirectory()
+    {
+        def MODELS_TO_EXPORT=[:];
+        MODELS_TO_EXPORT["RsTopologyObject"]=[relations:true];
+        MODELS_TO_EXPORT["RsGroup"]=[relations:false];
+        def expectedExportDir="../testexport";
+        def expectedObjectsPerFile=5;
+
+        def exportModelCallParams=[:];
+
+        FullExportImportUtility.metaClass.exportModel={ exportDir,objectsPerFile,modelName,relations ->
+            println "exportModel in test"
+            exportModelCallParams[modelName]=[exportDir:exportDir,objectsPerFile:objectsPerFile,relations:relations]
+        }
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def exportDir=new File(expectedExportDir);
+        def fileList=generateDirectoryDeleteTestFiles(exportDir);
+
+        fullExport.exportModels(expectedExportDir,expectedObjectsPerFile,MODELS_TO_EXPORT);
+
+        checkDirectoryIsDeletedWithFiles (fileList);
+        
+        assertEquals(MODELS_TO_EXPORT.size(),exportModelCallParams.size());
+        MODELS_TO_EXPORT.each{ modelName , modelData ->
+            assertTrue(exportModelCallParams.containsKey(modelName));
+            assertEquals(expectedExportDir,exportModelCallParams[modelName].exportDir)
+            assertEquals(expectedObjectsPerFile,exportModelCallParams[modelName].objectsPerFile)
+            assertEquals(MODELS_TO_EXPORT[modelName].relations,exportModelCallParams[modelName].relations)
+        }
+    }
+
     
     public def getClassMapFromClassList(classList)
     {

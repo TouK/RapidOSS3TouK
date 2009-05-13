@@ -986,7 +986,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public def loadClass(className)
     {
-        return Class.forName(className);
+        return this.class.classLoader.loadClass(className);
     }
 
 }

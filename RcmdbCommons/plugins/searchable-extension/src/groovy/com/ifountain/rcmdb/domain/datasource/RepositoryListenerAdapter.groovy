@@ -90,7 +90,6 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
     }
     protected void _subscribe() {
         logger.debug(getLogPrefix() + "Subscribing.");
-        logger.debug(getLogPrefix() + "Starting change processor thread");
         createSubscriptionClassesMap();
         Closure runClosure = {
             try {
@@ -110,6 +109,7 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
                 logger.info(getLogPrefix() + "Change processor thread stopped.");
             }
         }
+        logger.debug(getLogPrefix() + "Starting change processor thread");
         changeProcessorThread = new ChangeProcessorThread(runClosure);
         changeProcessorThread.start();
         ObjectProcessor.getInstance().addObserver(this)

@@ -1,8 +1,9 @@
 import com.ifountain.rcmdb.domain.FullExportImportUtility
 
+CONFIG=[:];
 CONFIG.backupDir="backup";
 CONFIG.exportDir="export";
-CONFIG.objectPerFile=1000;
+CONFIG.objectsPerFile=1000;
 
 CONFIG.MODELS=[];
 CONFIG.MODELS.add([model:"all"]);
@@ -12,6 +13,13 @@ CONFIG.MODELS.add([model:"all"]);
 //CONFIG.MODELS.add([model:"auth.RsUser"]);
 
 def fullExportUtility=new FullExportImportUtility(logger);
-fullExportUtility.fullExpor(CONFIG);
+try{
+    fullExportUtility.fullExport(CONFIG);
+}
+catch(e)
+{
+    logger.warn("Error during fullExport, Reason : ${e}",e);
+    throw e;
+}
 
 return "success"

@@ -33,6 +33,14 @@ class FullExportImportUtility {
     }
     def fullExport(CONFIG)
     {
+        logger.info("*****************FULL EXPORT STARTING *************************")
+
+        checkParameter("backupDir",CONFIG.backupDir,String);
+        checkParameter("exportDir",CONFIG.exportDir,String);
+        checkParameter("objectsPerFile",CONFIG.objectsPerFile,Integer);
+        checkParameter("MODELS",CONFIG.MODELS,List);
+        checkListParemeterIsEmpty("MODELS",CONFIG.MODELS);
+
         backup(CONFIG.backupDir);
         RELATION_IDS_TO_EXPORT.clear();
 
@@ -55,7 +63,32 @@ class FullExportImportUtility {
             endCompass();
         }
 
+        logger.info("*****************FULL EXPORT ENDED *************************")
+        
     }
+    protected def checkParameter(paramName,paramValue,Class paramClass)
+    {
+        if(paramValue == null || paramValue == "")
+        {
+            throw new Exception("${paramName} parameter is missing, null or empty");
+        }
+        if(paramClass != null)
+        {
+           if(! paramClass.isAssignableFrom(paramValue.class))
+           {
+                throw new Exception("${paramName} parameter is not a ${paramClass.name}");
+           }
+        }
+    }
+    protected def checkListParemeterIsEmpty(paramName,paramValue)
+    {
+        if(paramValue.size()==0)
+        {
+             throw new Exception("${paramName} parameter is empty");
+        }
+    }
+   
+
     protected def backup(backupDir)
     {
         logger.info("backing up current data to directory '${backupDir}'");

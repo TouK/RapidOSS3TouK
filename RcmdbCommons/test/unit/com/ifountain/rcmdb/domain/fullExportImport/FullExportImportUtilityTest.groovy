@@ -958,6 +958,127 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertEquals(0,exportMarkedRelationsCallParams.size());
 
     }
+    public void testFullExportGeneratesExceptionWhenParametersAreWrong()
+    {
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        //backupdir missing
+        try{
+            def CONFIG=[:];
+            CONFIG.exportDir="../testexport";
+            CONFIG.objectsPerFile=5;
+            CONFIG.MODELS=[];
+            CONFIG.MODELS.add([model:"all"]);
+            fullExport.fullExport(CONFIG);
+        }
+        catch(e){assertTrue(e.getMessage().indexOf("backupDir")>=0)}
+
+        //exportDir missing
+        try{
+            def CONFIG=[:];
+            CONFIG.backupDir="../testbackup";
+            CONFIG.objectsPerFile=5;
+            CONFIG.MODELS=[];
+            CONFIG.MODELS.add([model:"all"]);
+            fullExport.fullExport(CONFIG);
+        }
+        catch(e){assertTrue(e.getMessage().indexOf("exportDir")>=0)}
+        
+        //objectsPerFile missing
+        try{
+            def CONFIG=[:];
+            CONFIG.backupDir="../testbackup";
+            CONFIG.exportDir="../testexport";
+            CONFIG.MODELS=[];
+            CONFIG.MODELS.add([model:"all"]);
+            fullExport.fullExport(CONFIG);
+        }
+        catch(e){assertTrue(e.getMessage().indexOf("objectsPerFile")>=0)}
+        
+        //MODELS missing
+        try{
+            def CONFIG=[:];
+            CONFIG.backupDir="../testbackup";
+            CONFIG.exportDir="../testexport";
+            CONFIG.objectsPerFile=5;
+            fullExport.fullExport(CONFIG);
+        }
+        catch(e){ assertTrue(e.getMessage().indexOf("MODELS")>=0)}
+        
+        //MODELS empty
+        try{
+            def CONFIG=[:];
+            CONFIG.backupDir="../testbackup";
+            CONFIG.exportDir="../testexport";
+            CONFIG.objectsPerFile=5;
+            CONFIG.MODELS=[];
+            fullExport.fullExport(CONFIG);
+        }
+        catch(e){ assertTrue(e.getMessage().indexOf("MODELS")>=0)}
+    }
+    public void testCheckParameterGeneratesException()
+    {
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def paramName="testParam";
+        def paramValue=null;
+        def paramClass=null;
+
+        try{
+            paramValue="asdad";
+            paramClass=null;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+        }
+        catch(e)
+        {
+            fail("should not throw exception");
+        }
+
+        try{
+            paramValue=null;
+            paramClass=null;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+            fail("should throw exception");
+        }
+        catch(e){}
+
+        try{
+            paramValue="";
+            paramClass=null;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+            fail("should throw exception");
+        }
+        catch(e){}
+
+        
+        try{
+            def tempMap=[:];
+            paramValue=tempMap.tempValue;
+            paramClass=Long;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+            fail("should throw exception");
+        }
+        catch(e){}
+
+        try{
+            paramValue=5;
+            paramClass=String;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+            fail("should throw exception");
+        }
+        catch(e){}
+
+        
+        try{
+            paramValue="5";
+            paramClass=Long;
+            fullExport.checkParameter(paramName,paramValue,paramClass);
+            fail("should throw exception");
+        }
+        catch(e){}
+
+    }
+
     public void testExportModelsCallsExportModelForEachModelAndDeletesExportDirectory()
     {
         def MODELS_TO_EXPORT=[:];

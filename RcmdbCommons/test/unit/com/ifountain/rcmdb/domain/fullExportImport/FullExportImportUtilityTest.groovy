@@ -1016,6 +1016,27 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
         catch(e){ assertTrue(e.getMessage().indexOf("MODELS")>=0)}
     }
+    public void testFullImportGeneratesExceptionWhenParametersAreWrong()
+    {
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        //importDir missing
+        try{
+            def CONFIG=[:];
+            CONFIG.exportDir="../testexport";
+            fullExport.fullImport(CONFIG);
+        }
+        catch(e){assertTrue(e.getMessage().indexOf("importDir")>=0)}
+
+        //exportDir missing
+        try{
+            def CONFIG=[:];
+            CONFIG.importDir="../testimport";
+            fullExport.fullImport(CONFIG);
+        }
+        catch(e){assertTrue(e.getMessage().indexOf("exportDir")>=0)}
+
+    }
     public void testCheckParameterGeneratesException()
     {
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
@@ -1112,6 +1133,118 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
     }
 
+    public void testImportModelFilesCallsImportModelFileForEachFileInExportDirectory()
+    {
+        def importModelFileCallParams=[:];
+
+        FullExportImportUtility.metaClass.importModelFile={ xmlFile->
+            println "importModelFile in test"
+            importModelFileCallParams[xmlFile.getPath()]=xmlFile;
+        }
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def exportDir=new File("../testexport");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        5.times{
+            File file=new File("${exportDir.getPath()}/f${it}.xml");
+            file.setText("dummyfile");
+            assertTrue(file.exists());
+        }
+        fullExport.importModelFiles(exportDir.getPath());
+
+        assertEquals(5,exportDir.listFiles().size());
+        assertEquals(5,importModelFileCallParams.size());
+        exportDir.listFiles().each{ file ->
+            assertTrue(importModelFileCallParams.containsKey(file.getPath()));
+            assertEquals(file.getCanonicalPath(),importModelFileCallParams[file.getPath()].getCanonicalPath());
+        }
+    }
+    public void testConvertPropertyGeneratesSameResultAsRapidConvertUtils()
+    {
+        initialize([],[]);
+        
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        assertEquals((Long)5,fullExport.convertProperty(Long,"5"));
+        assertEquals((Double)5,fullExport.convertProperty(Double,"5"));
+        assertEquals(true,fullExport.convertProperty(Boolean,"true"));
+        assertEquals(false,fullExport.convertProperty(Boolean,"false"));
+
+
+    }
+    public void testImportModelFileImportsAndConvertsDataInXmlFileSuccessfully()
+    {
+
+        def modelClassesNameList=["RsEvent"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def importDir="../testimport";
+
+        def exportDir=new File("../testexport");
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        File xmlFile=new File("${exportDir.getPath()}/RsEvent_0.xml");
+        xmlFile.setText("""
+            <Objects model='RsEvent'>
+              <Object acknowledged='false' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y1' id='2009' inMaintenance='false' name='ev1' owner='' rsDatasource='' severity='10' source='' state='0' willExpireAt='0' />
+              <Object acknowledged='true' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y2' id='2010' inMaintenance='false' name='ev2' owner='' rsDatasource='' severity='20' source='' state='0' willExpireAt='0' />
+              <Object acknowledged='true' changedAt='0' clearedAt='0' count='10' createdAt='0' elementDisplayName='' elementName='y3' id='2011' inMaintenance='false' name='ev3' owner='' rsDatasource='' severity='30' source='' state='0' willExpireAt='0' />
+            </Objects>
+        """);
+        assertTrue(xmlFile.exists());
+
+        fullExport.beginCompass(importDir)
+        try{
+            fullExport.importModelFile(xmlFile);
+
+            def tx=fullExport.beginCompassTransaction();
+
+            try{
+                def hits=fullExport.getModelHits("RsEvent","alias:*");
+                assertEquals(3,hits.length());
+
+                def object0=hits.data(0);
+                assertEquals((Long)2009,object0.id);
+                assertEquals("ev1",object0.name);
+                assertEquals("y1",object0.elementName);
+                assertEquals(false,object0.acknowledged);
+                assertEquals((Long)10,object0.severity);
+                assertEquals((Long)1,object0.count);
+
+                def object1=hits.data(1);
+                assertEquals((Long)2010,object1.id);
+                assertEquals("ev2",object1.name);
+                assertEquals("y2",object1.elementName);
+                assertEquals(true,object1.acknowledged);
+                assertEquals((Long)20,object1.severity);
+                assertEquals((Long)1,object1.count);
+                
+                def object2=hits.data(2);
+                assertEquals((Long)2011,object2.id);
+                assertEquals("ev3",object2.name);
+                assertEquals("y3",object2.elementName);
+                assertEquals(true,object2.acknowledged);
+                assertEquals((Long)30,object2.severity);
+                assertEquals((Long)10,object2.count);
+            }
+            finally
+            {
+                fullExport.endCompassTransaction(tx);
+            }
+
+        }
+        finally{
+            fullExport.endCompass();
+        }
+
+    }
     
     public def getClassMapFromClassList(classList)
     {

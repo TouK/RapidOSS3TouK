@@ -12,6 +12,8 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.compass.core.CompassQuery
 import groovy.xml.MarkupBuilder
 import org.compass.core.CompassHits
+import org.apache.commons.beanutils.ConversionException
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -66,6 +68,26 @@ class FullExportImportUtility {
         logger.info("*****************FULL EXPORT ENDED *************************")
         
     }
+
+    def fullImport(CONFIG)
+    {
+        checkParameter("importDir",CONFIG.importDir,String);
+        checkParameter("exportDir",CONFIG.exportDir,String);
+
+        logger.info("deleting directory ${CONFIG.importDir}");
+        
+        def ant=new AntBuilder();
+        ant.delete(dir:CONFIG.importDir);
+
+        beginCompass(CONFIG.importDir);
+        try {
+            importModelFiles(CONFIG.exportDir)
+        }
+        finally {
+            endCompass();
+        }
+    }
+
     protected def checkParameter(paramName,paramValue,Class paramClass)
     {
         if(paramValue == null || paramValue == "")
@@ -375,6 +397,71 @@ class FullExportImportUtility {
         fw.write(strXml);
         fw.close();
     }
+
+    protected def importModelFiles(exportDir)
+    {
+        logger.info("   importing files")
+
+        File dir=new File(exportDir);
+        dir.listFiles().each{ xmlFile ->
+            importModelFile(xmlFile)
+        }
+    }
+    protected def importModelFile(xmlFile)
+    {
+        logger.info("   importing file ${xmlFile.getPath()}");
+        def tx = beginCompassTransaction();
+        try{
+
+            def resultXml = new XmlSlurper().parse(xmlFile);
+            def modelName=resultXml.@'model'.toString();
+            def model=ApplicationHolder.application.getDomainClass(modelName).clazz;
+            def propTypes=[:];
+            def modelProperties=model.metaClass.getProperties();
+
+            modelProperties.each{ prop->
+                propTypes[prop.name] = prop.type;
+            }
+
+
+            def objects=resultXml.Object;
+            logger.info("      will import ${objects.size()} ${modelName} instances ")
+            objects.each{ objectRow ->
+                def newObj=model.newInstance();
+
+                objectRow.attributes().each{ propName,propVal ->
+                    try{
+                        def convertedVal=convertProperty(propTypes[propName],propVal);
+                        newObj.setProperty(propName,convertedVal,false)
+                    }
+                    catch(ConversionException exception)
+                    {
+                        logger.warn("cannot convert property ${modelName}.${propName} with val ${propVal}");
+                    }
+                    catch(Exception e)
+                    {
+                        logger.warn("can not set property ${modelName}.${propName} with val ${propVal}");
+                    }
+                }
+                this.compassSession.save(newObj);
+
+            }
+            logger.info("      imported ${objects.size()} ${modelName} instances ")
+        }
+        finally
+        {
+            endCompassTransaction (tx);
+        }
+
+        logger.info("   imported file ${xmlFile.getPath()}");
+    }
+    private def convertProperty(fieldType,value)
+    {
+        def converter = RapidConvertUtils.getInstance().lookup (fieldType);
+        return converter.convert(fieldType, value);
+    }
+
+
     protected def beginCompass(dataDir)
     {
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
@@ -383,10 +470,6 @@ class FullExportImportUtility {
         )
         def config = new CompassConfiguration()
 
-//        String compassConnection = System.getProperty("index.dir") != null?System.getProperty("index.dir"):new StringBuffer(System.getProperty("base.dir")).
-//                append(File.separator).
-//                append(dataDir).
-//                toString();
         String compassConnection=dataDir;                
         config.setConnection(compassConnection);
 

@@ -73,7 +73,7 @@ class ReloadOperationsMethod extends AbstractRapidDomainMethod{
             }
             else
             {
-                logger.debug(exception.getMessage(), exception);
+                logger.debug(exception.getMessage());
             }
             throw exception;
         }

@@ -1,16 +1,13 @@
-import com.ifountain.rcmdb.domain.FullExportImportUtility
-
 CONFIG=[:];
 CONFIG.importDir="importData";
 CONFIG.exportDir="exportFiles";
 
-def fullExportUtility=new FullExportImportUtility(logger);
 try{
-    fullExportUtility.fullImport(CONFIG);
+    application.RsApplication.fullImport(CONFIG);
 }
 catch(e)
 {
-    logger.warn("Error during fullExport, Reason : ${e}",e);
+    logger.warn("Error during fullImport, Reason : ${e}",e);
     throw e;
 }
 

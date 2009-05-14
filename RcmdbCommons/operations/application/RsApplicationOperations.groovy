@@ -32,6 +32,7 @@ import com.ifountain.rcmdb.domain.BackupAction
 import java.text.SimpleDateFormat
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+import com.ifountain.rcmdb.domain.FullExportImportUtility
 
 /**
  * Created by IntelliJ IDEA.
@@ -133,5 +134,16 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     public static def getUtility(utilityName)
     {
         return RsApplicationOperations.class.classLoader.loadClass (utilityName);
+    }
+
+    public static def fullExport(CONFIG)
+    {
+        def fullExportUtility=new FullExportImportUtility(getLogger());
+        fullExportUtility.fullExport(CONFIG);
+    }
+    public static def fullImport(CONFIG)
+    {
+        def fullExportUtility=new FullExportImportUtility(getLogger());
+        fullExportUtility.fullImport(CONFIG);
     }
 }

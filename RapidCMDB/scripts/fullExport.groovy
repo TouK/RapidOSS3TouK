@@ -1,5 +1,3 @@
-import com.ifountain.rcmdb.domain.FullExportImportUtility
-
 CONFIG=[:];
 CONFIG.backupDir="backupData";
 CONFIG.exportDir="exportFiles";
@@ -7,14 +5,17 @@ CONFIG.objectsPerFile=1000;
 
 CONFIG.MODELS=[];
 CONFIG.MODELS.add([model:"all"]);
-//CONFIG.MODELS.add([model:"conf"]);
-//CONFIG.MODELS.add([model:"RsTopologyObject"]);
-//CONFIG.MODELS.add([model:"RsGroup",childModels:false]);
-//CONFIG.MODELS.add([model:"auth.RsUser"]);
 
-def fullExportUtility=new FullExportImportUtility(logger);
+//conf models export
+//CONFIG.MODELS.add([model:"conf"]);
+
+//exporting selected models
+//CONFIG.MODELS.add([model:"RsTopologyObject"]);
+//CONFIG.MODELS.add([model:"RsEvent"]);
+
+
 try{
-    fullExportUtility.fullExport(CONFIG);
+    application.RsApplication.fullExport(CONFIG);
 }
 catch(e)
 {

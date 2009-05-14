@@ -63,12 +63,18 @@ class ReloadOperationsMethod extends AbstractRapidDomainMethod{
                 }
 
             }
-            logger.warn("Operation for class ${mc.theClass.name} loaded successfully.");
+            logger.info("Operation for class ${mc.theClass.name} loaded successfully.");
         }
         catch(DomainOperationLoadException exception)
         {
-            logger.warn(exception.getMessage());
-            logger.info("",exception);
+            if( !(exception.getCause() instanceof FileNotFoundException))
+            {
+                logger.warn(exception.getMessage(), exception);
+            }
+            else
+            {
+                logger.debug(exception.getMessage(), exception);
+            }
             throw exception;
         }
     }

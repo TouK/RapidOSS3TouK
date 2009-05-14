@@ -1,7 +1,7 @@
 CONFIG=[:];
-CONFIG.backupDir="backupData";
+CONFIG.backupDir="exportData";
 CONFIG.exportDir="exportFiles";
-CONFIG.objectsPerFile=1000;
+CONFIG.objectsPerFile=10000;
 
 CONFIG.MODELS=[];
 CONFIG.MODELS.add([model:"all"]);

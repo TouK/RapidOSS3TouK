@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.util.CollectionUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,20 +41,18 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
         Collection propList = arguments[1]
         Map options = arguments[2]
         RelationMetaData relationMetaData = relations[relName];
+        def results = [];
         if(relationMetaData != null)
         {
             Map relatedObjectIds = RelationUtils.getRelatedObjectsIds(domainObject, relationMetaData.name, relationMetaData.otherSideName);
-            if(relatedObjectIds.size() > 0)
-            {
-                StringBuffer query = new StringBuffer();
-                relatedObjectIds.each{id, value->
-                    query.append("id:").append(id).append(" OR ")
-                }
-                String completeQuery = query.substring(0, query.length()-3);
-                return relationMetaData.otherSideCls.'getPropertyValues'(completeQuery, propList, options);
+            def ids = new ArrayList(relatedObjectIds.keySet())
+            CollectionUtils.executeForEachBatch (ids, 200, ){List idsToBeProcessed->
+                StringBuffer query = new StringBuffer("id:");
+                query.append (idsToBeProcessed.join(" OR id:"));
+                results.addAll(relationMetaData.otherSideCls.'getPropertyValues'(query.toString(), propList, options));
             }
         }
-        return [];
+        return results;
     }
 
 }

@@ -26,20 +26,21 @@ import relation.Relation
 import com.ifountain.rcmdb.domain.IdGenerator
 import org.compass.core.CompassHits
 import org.apache.lucene.search.BooleanQuery
+import com.ifountain.rcmdb.util.CollectionUtils
 
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Sep 1, 2008
- * Time: 3:26:13 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Sep 1, 2008
+* Time: 3:26:13 PM
+* To change this template use File | Settings | File Templates.
+*/
 class RelationUtils
 {
     public static final String NULL_RELATION_NAME = "-"
     public static final String DEFAULT_SOURCE_NAME = "¿_u_u_¿"
-    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE = (int)((BooleanQuery.getMaxClauseCount() - 20)/2);
-    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS = BooleanQuery.getMaxClauseCount() - 1;
+    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE = 200;
+    private static final int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS = 200;
 
     public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
@@ -95,7 +96,7 @@ class RelationUtils
         if(relatedObjects.isEmpty()) return;
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
-        runClosureCreatingHugeQuery (new ArrayList(relatedObjects), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE){List relatedObjectToBeProcessed->
+        CollectionUtils.executeForEachBatch(new ArrayList(relatedObjects), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE){List relatedObjectToBeProcessed->
             StringBuffer bf = new StringBuffer("(objectId:").append(object.id).append(" AND ").append("name:\"").append(relationName).append("\" AND ");
             bf.append("reverseName:\"").append(otherSideName).append("\"");
             bf.append(" AND ").append("(reverseObjectId:")
@@ -219,8 +220,7 @@ class RelationUtils
             else
             {
                 def results = [];
-                runClosureCreatingHugeQuery(new ArrayList(allRealtedObjectIds.keySet()), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS)
-                {List objectToBeProcessed->
+                CollectionUtils.executeForEachBatch(new ArrayList(allRealtedObjectIds.keySet()), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS){List objectToBeProcessed->
                     StringBuffer query = new StringBuffer("id:");
                     query.append(objectToBeProcessed.join (" OR id:"))
                     results.addAll(CompassMethodInvoker.searchEvery(relationMetaData.otherSideCls.metaClass, query.toString()));
@@ -230,14 +230,5 @@ class RelationUtils
         }
     }
 
-    private static void runClosureCreatingHugeQuery(List objectToBeProcessed, int numberOfobjectsToBeExecutedPerTerm, Closure c)
-    {
-        def listSize = objectToBeProcessed.size();
-        for(int i=0; i < listSize;)
-        {
-            def newI = Math.min(i + numberOfobjectsToBeExecutedPerTerm, listSize);
-            c(objectToBeProcessed.subList (i, newI));
-            i = newI;
-        }
-    }
+    
 }

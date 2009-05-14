@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import org.apache.lucene.search.BooleanQuery
 
 /**
  * Created by IntelliJ IDEA.
@@ -95,6 +96,36 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         assertEquals(2, results[0].size())
         assertEquals(relatedModelClass.name, results[0].alias);
         assertEquals(relatedModelInstance3.id, results[0].id);
+    }
+
+    public void testGetRelatedObjectPropertiesWithHugeNumberOfObjects()
+    {
+        def defaultMaxCount = BooleanQuery.getMaxClauseCount();
+        try
+        {
+            def newMaxClause = 250;
+            BooleanQuery.setMaxClauseCount (newMaxClause);
+            createModelClasses();
+            initialize([modelClass, relatedModelClass], [])
+
+            def relatedModels = [];
+            def numberOfRelatedObjects = newMaxClause+100;
+            for(int i=0; i < numberOfRelatedObjects; i++)
+            {
+                def addedRelatedObject = relatedModelClass.'add'(keyProp: "relatedModel"+i, prop1: "instance1Prop1Value"+i, prop2: 5, prop3: "instance1Prop3Value");
+                assertFalse (addedRelatedObject.hasErrors());
+                relatedModels.add(addedRelatedObject);
+            }
+            def modelInstance1 = modelClass.'add'(keyProp: "model1", rel1: relatedModels);
+            assertFalse(modelInstance1.hasErrors());
+
+
+            List results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"]);
+            assertEquals (numberOfRelatedObjects, results.size());
+        }
+        finally{
+            BooleanQuery.setMaxClauseCount (defaultMaxCount);   
+        }
     }
 
     public void testGetRelatedObjectPropertiesWithQueryOptions() {

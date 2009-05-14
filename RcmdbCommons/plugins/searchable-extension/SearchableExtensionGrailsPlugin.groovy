@@ -31,6 +31,7 @@ import com.ifountain.rcmdb.domain.validator.RapidGrailsDomainClassValidator
 import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
 import com.ifountain.compass.transaction.CompassTransactionFactory
 import org.springframework.beans.factory.config.RuntimeBeanReference
+import org.apache.lucene.search.BooleanQuery
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,6 +47,7 @@ class SearchableExtensionGrailsPlugin {
     def loadAfter = ['searchable', 'hibernate']
     def domainClassMap;
     def doWithSpring = {
+        BooleanQuery.setMaxClauseCount (3000);
         for(dc in application.domainClasses) {
             "${dc.fullName}Validator"(RapidGrailsDomainClassValidator) {
                 messageSource = ref("messageSource")

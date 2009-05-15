@@ -1265,7 +1265,40 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
+    public void testFullExportDeletesExportDirWhenExceptionIsGenerated()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
 
+        initialize([loadClass("RsEvent")],[]);
+
+
+        def exceptionToThrow=new Exception("testException");
+
+        FullExportImportUtility.metaClass.exportModel={ exportDir,objectsPerFile,modelName,relations ->
+            throw exceptionToThrow;
+        }
+
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def CONFIG=[:];
+        CONFIG.backupDir=directoryPaths.backupDir;
+        CONFIG.exportDir=directoryPaths.exportDir;
+        CONFIG.objectsPerFile=5;
+        CONFIG.MODELS=[];
+        CONFIG.MODELS.add([model:"RsEvent"]);
+        try{
+            fullExport.fullExport(CONFIG);
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertSame(exceptionToThrow,e);
+        }
+
+        def exportDir=new File(CONFIG.exportDir);
+        assertFalse(exportDir.exists());
+    }
     public void testExportModelsCallsExportModelForEachModelAndDeletesExportDirectory()
     {
         def MODELS_TO_EXPORT=[:];

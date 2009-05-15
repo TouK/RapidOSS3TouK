@@ -45,28 +45,34 @@ class FullExportImportUtility {
         checkParameter("MODELS",CONFIG.MODELS,List);
         checkListParemeterIsEmpty("MODELS",CONFIG.MODELS);
 
-        backup(CONFIG.backupDir);
-        RELATION_IDS_TO_EXPORT.clear();
+        try{
+            backup(CONFIG.backupDir);
+            RELATION_IDS_TO_EXPORT.clear();
 
-        def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
-        def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
-        def EXPORT_MARKED_RELATIONS=EXPORT_CONFIG.EXPORT_MARKED_RELATIONS;
+            def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
+            def MODELS_TO_EXPORT=EXPORT_CONFIG.MODELS_TO_EXPORT;
+            def EXPORT_MARKED_RELATIONS=EXPORT_CONFIG.EXPORT_MARKED_RELATIONS;
 
-        beginCompass(CONFIG.backupDir);
+            beginCompass(CONFIG.backupDir);
 
-        def tx = beginCompassTransaction();
-        try {
-            exportModels (CONFIG.exportDir,CONFIG.objectsPerFile,MODELS_TO_EXPORT)
-            if(EXPORT_MARKED_RELATIONS)
-            {
-                exportMarkedRelations (CONFIG.exportDir,CONFIG.objectsPerFile)
+            def tx = beginCompassTransaction();
+            try {
+                exportModels (CONFIG.exportDir,CONFIG.objectsPerFile,MODELS_TO_EXPORT)
+                if(EXPORT_MARKED_RELATIONS)
+                {
+                    exportMarkedRelations (CONFIG.exportDir,CONFIG.objectsPerFile)
+                }
+            }
+            finally {
+                endCompassTransaction (tx);
+                endCompass();
             }
         }
-        finally {
-            endCompassTransaction (tx);
-            endCompass();
+        catch(e)
+        {
+            deleteDirectory(CONFIG.exportDir);
+            throw e;
         }
-
         logger.info("*****************FULL EXPORT ENDED *************************")
         
     }

@@ -79,9 +79,8 @@ class FullExportImportUtility {
         checkParameter("exportDir",CONFIG.exportDir,String);
 
         logger.info("deleting directory ${CONFIG.importDir}");
-        
-        def ant=new AntBuilder();
-        ant.delete(dir:CONFIG.importDir);
+
+        deleteDirectory(CONFIG.importDir);
 
         beginCompass(CONFIG.importDir);
         try {
@@ -115,13 +114,21 @@ class FullExportImportUtility {
              throw new Exception("${paramName} parameter is empty");
         }
     }
-   
+    def deleteDirectory(dirPath)
+    {
+       def ant=new AntBuilder();
+       ant.delete(dir:dirPath);
+    }
+    def makeDirectory(dirPath)
+    {
+       def ant=new AntBuilder();
+       ant.mkdir(dir:dirPath);
+    }
 
     protected def backup(backupDir)
     {
         logger.info("backing up current data to directory '${backupDir}'");
-        def ant=new AntBuilder();
-        ant.delete(dir:backupDir);
+        deleteDirectory(backupDir);
 
         RsApplication.backup(backupDir+File.separator+"index");
         logger.info("backing up done");
@@ -257,9 +264,8 @@ class FullExportImportUtility {
         logger.info("exporting backup data to directory '${exportDir}'");
 
         logger.info("recreating directory '${exportDir}'");
-        def ant=new AntBuilder();
-        ant.delete(dir:exportDir);
-        ant.mkdir(dir:exportDir);
+        deleteDirectory(exportDir);
+        makeDirectory(exportDir);
 
         MODELS_TO_EXPORT.each{ modelName,modelEntry ->
              exportModel(exportDir,objectsPerFile,modelName,modelEntry.relations);

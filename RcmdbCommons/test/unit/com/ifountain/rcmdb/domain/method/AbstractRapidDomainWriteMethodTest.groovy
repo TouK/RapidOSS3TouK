@@ -621,6 +621,9 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
                 thread1State = 3;
             }
         }
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            Assert.assertEquals(1, numberOfExecutionOfInvokeOfInstance1);
+        }, 100);
         int thread2State = 0;
         def t2 = Thread.start {
             thread2State = 1;
@@ -636,6 +639,9 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
                 thread2State = 3;
             }
         }
+        CommonTestUtils.waitFor (new ClosureWaitAction(){
+            Assert.assertEquals(1, numberOfExecutionOfInvokeOfInstance2);
+        }, 100);
         Thread.sleep(300);
         assertEquals(1, thread1State);
         assertEquals(1, thread2State);

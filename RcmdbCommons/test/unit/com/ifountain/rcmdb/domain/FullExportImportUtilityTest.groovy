@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.compass.core.CompassQuery
 import org.compass.core.CompassHits
 import org.apache.log4j.Logger
+import org.apache.lucene.search.BooleanQuery
 
 /**
 * Created by IntelliJ IDEA.
@@ -808,6 +809,47 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             fullExport.endCompassTransaction(tx);
             fullExport.endCompass();
         }
+
+    }
+    public void testMarkRelationsOfObjectIdsDoesNotGenerateQueryExceptionWithHugeNumberOfObjects()
+    {
+       def modelClassesNameList=["relation.Relation"];
+       def modelClasses=loadClasses(modelClassesNameList);
+       initialize(modelClasses,[],true);
+
+       def objectIds=[]
+       BooleanQuery.getMaxClauseCount().times{
+            objectIds.add(it);
+       }
+
+       def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+       fullExport.beginCompass(System.getProperty("index.dir"));
+       def tx=fullExport.beginCompassTransaction();
+        
+       try{
+             fullExport.markRelationsOfObjectIds(objectIds);
+       }
+       finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+       }
+
+       //now test exception is generated
+       fullExport.beginCompass(System.getProperty("index.dir"));
+       tx=fullExport.beginCompassTransaction();
+        
+       def oldValue=fullExport.MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS;
+       try{
+            fullExport.MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS=BooleanQuery.getMaxClauseCount();
+            fullExport.markRelationsOfObjectIds(objectIds);
+            fail("Should throw org.compass.core.engine.SearchEngineQueryParseException");
+       }
+       catch(org.compass.core.engine.SearchEngineQueryParseException e){}
+       finally{
+            fullExport.MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS=oldValue;
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+       }
 
     }
     private def initializeFullExportModels()

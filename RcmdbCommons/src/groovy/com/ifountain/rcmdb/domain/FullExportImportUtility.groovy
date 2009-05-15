@@ -14,6 +14,7 @@ import groovy.xml.MarkupBuilder
 import org.compass.core.CompassHits
 import org.apache.commons.beanutils.ConversionException
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.util.CollectionUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -28,6 +29,7 @@ class FullExportImportUtility {
     def compass;
     def compassSession;
     def RELATION_IDS_TO_EXPORT=[:];
+    private static int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS=100;
 
     def FullExportImportUtility(logger)
     {
@@ -325,20 +327,23 @@ class FullExportImportUtility {
     }
     protected def markRelationsOfObjectIds(objectIds)
     {
-        StringBuffer buf=new StringBuffer();
-        buf.append("alias:relation.Relation");
-        objectIds.each{ objectId ->
-            buf.append(" OR objectId:${objectId} OR reverseObjectId:${objectId}");
-        }
-        def query=buf.toString();
-        def hits=getModelHits("relation.Relation",query);
+        CollectionUtils.executeForEachBatch(objectIds, MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS){List objectIdsToBeProcessed->
+            StringBuffer buf=new StringBuffer();
+            buf.append("alias:relation.Relation");
+            objectIdsToBeProcessed.each{ objectId ->
+                buf.append(" OR objectId:${objectId} OR reverseObjectId:${objectId}");
+            }
+            def query=buf.toString();
+            
+            def hits=getModelHits("relation.Relation",query);
 
-        hits.length().times{ dataIndex ->
-            def object=hits.data(dataIndex);
-            RELATION_IDS_TO_EXPORT[object.id]=true;
-        }
+            hits.length().times{ dataIndex ->
+                def object=hits.data(dataIndex);
+                RELATION_IDS_TO_EXPORT[object.id]=true;
+            }
 
-        logger.debug("MARKING RELATIONS with query ${query}");
+            logger.debug("MARKING RELATIONS with query ${query}");
+        }
     }
     protected def exportMarkedRelations(exportDir,objectsPerFile)
     {

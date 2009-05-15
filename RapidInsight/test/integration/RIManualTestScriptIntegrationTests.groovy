@@ -40,10 +40,8 @@ class RIManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
         ant.copy(file: scriptPath, toDir: "scripts",overwrite:true);
 
     }
-    void copyOverridenOperation(folder,fileName)
+    void copyOverridenOperation(path)
     {
-        def path= "../../../RapidModules/RapidInsight/overridenOperations/${folder}/${fileName}.groovy";
-
         def ant=new AntBuilder();
 
         ant.copy(file: path, toDir: "operations",overwrite:true);
@@ -73,7 +71,8 @@ class RIManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
     public void testRsTicketOperations()
     {
-        copyOverridenOperation("jiraTicketing","RsTicketOperations");
+        def oprPath = "../../../RapidModules/RapidInsight/solutions/jiraTicketing/operations/RsTicketOperations.groovy"
+        copyOverridenOperation(oprPath);
         RsTicket.reloadOperations();
         datasource.JiraDatasource.reloadOperations();
 

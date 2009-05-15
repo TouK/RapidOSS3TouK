@@ -36,7 +36,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     private void clearDirectories()
     {
        directoryPaths.each{ dirName,dirPath ->
-            FileUtils.deleteDirectory (new File(dirPath));
+            if(dirName != "backupDir")
+                FileUtils.deleteDirectory (new File(dirPath));
        }
     }
     private void clearMetaClasses()
@@ -897,10 +898,10 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertFalse(con1.hasErrors());
 
         //activate below lines of code in order to try tests without xml parse problem for the relation model
-//        relation.Relation.searchEvery("alias:*").each{ rel ->
-//            rel.update(source:"relsource");
-//            assertFalse(rel.hasErrors());
-//        }
+        relation.Relation.searchEvery("alias:*").each{ rel ->
+            rel.update(source:"relsource");
+            assertFalse(rel.hasErrors());
+        }
     }
 
     public void testFullExportWithAllModels()

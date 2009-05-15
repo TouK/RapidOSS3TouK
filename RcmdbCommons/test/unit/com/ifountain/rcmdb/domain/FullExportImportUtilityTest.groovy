@@ -1042,6 +1042,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
             fullExport.fullExport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){assertTrue(e.getMessage().indexOf("backupDir")>=0)}
 
@@ -1053,6 +1054,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
             fullExport.fullExport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){assertTrue(e.getMessage().indexOf("exportDir")>=0)}
 
@@ -1064,6 +1066,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             CONFIG.MODELS=[];
             CONFIG.MODELS.add([model:"all"]);
             fullExport.fullExport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){assertTrue(e.getMessage().indexOf("objectsPerFile")>=0)}
 
@@ -1074,6 +1077,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             CONFIG.exportDir=directoryPaths.exportDir;
             CONFIG.objectsPerFile=5;
             fullExport.fullExport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){ assertTrue(e.getMessage().indexOf("MODELS")>=0)}
 
@@ -1085,6 +1089,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             CONFIG.objectsPerFile=5;
             CONFIG.MODELS=[];
             fullExport.fullExport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){ assertTrue(e.getMessage().indexOf("MODELS")>=0)}
     }
@@ -1097,6 +1102,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def CONFIG=[:];
             CONFIG.exportDir=directoryPaths.exportDir;
             fullExport.fullImport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){assertTrue(e.getMessage().indexOf("importDir")>=0)}
 
@@ -1105,6 +1111,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def CONFIG=[:];
             CONFIG.importDir=directoryPaths.importDir;
             fullExport.fullImport(CONFIG);
+            fail("Should throw exception");
         }
         catch(e){assertTrue(e.getMessage().indexOf("exportDir")>=0)}
 
@@ -1237,7 +1244,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     public void testConvertPropertyGeneratesSameResultAsRapidConvertUtils()
     {
         initialize([],[]);
-        def object=new relation.Relation();
+        def object=loadClass("RsEvent").newInstance();
 
         def fullExport=new FullExportImportUtility(Logger.getRootLogger());
         assertEquals((Long)5,fullExport.convertProperty(Long,"5"));
@@ -1245,6 +1252,46 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         assertEquals(true,fullExport.convertProperty(Boolean,"true"));
         assertEquals(false,fullExport.convertProperty(Boolean,"false"));
 
+
+    }
+    public void testConvertAndSetPropertyGeneratesExceptionWhenPropertyIsMissingOrConversionErrorOccurs()
+    {
+        initialize([loadClass("RsEvent")],[]);
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        def object=loadClass("RsEvent").newInstance();
+
+        //test successfull convert and set
+        fullExport.convertAndSetProperty(object,"name","testEvent",String);
+        assertEquals("testEvent",object.name);
+
+        fullExport.convertAndSetProperty(object,"severity","3",Long);
+        assertEquals((Long)3,object.severity);
+
+        //missing property
+        try{
+            fullExport.convertAndSetProperty(object,"name_name","testEvent2",String);
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent.name_name")>=0);
+            assertTrue(e.getMessage().indexOf("can not set property")>=0);
+
+        }
+        assertEquals("testEvent",object.name);
+
+        //conversion exception  , try to convert RsEvent to Long ( severity )
+        try{
+            fullExport.convertAndSetProperty(object,"severity",loadClass("RsEvent").newInstance(),Long);
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent.severity")>=0);
+            assertTrue(e.getMessage().indexOf("cannot convert property")>=0);
+        }
+        assertEquals("testEvent",object.name);
 
     }
     public void testImportModelFileImportsAndConvertsDataInXmlFileSuccessfully()

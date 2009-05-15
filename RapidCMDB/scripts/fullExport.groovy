@@ -1,5 +1,5 @@
 CONFIG=[:];
-CONFIG.backupDir="exportData";
+CONFIG.backupDir="exportTestData";
 CONFIG.exportDir="exportFiles";
 CONFIG.objectsPerFile=10000;
 

@@ -36,8 +36,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     private void clearDirectories()
     {
        directoryPaths.each{ dirName,dirPath ->
-            if(dirName != "backupDir")
-                FileUtils.deleteDirectory (new File(dirPath));
+            FileUtils.deleteDirectory (new File(dirPath));
        }
     }
     private void clearMetaClasses()
@@ -1400,6 +1399,8 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         fullExport.fullExport(EXPORT_CONFIG);
 
+
+
         def IMPORT_CONFIG=[:];
         IMPORT_CONFIG.importDir=directoryPaths.importDir;
         IMPORT_CONFIG.exportDir=directoryPaths.exportDir;
@@ -1423,10 +1424,17 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
            assertEquals(0,modelClassMap[modelName].countHits("alias:*"));
         }
 
-        this.indexDir=EXPORT_CONFIG.backupDir;
-        initializeFullExportModels();
-        assertTrue(System.getProperty("index.dir").compareTo(EXPORT_CONFIG.backupDir)==0);
+        def tempBackupDir="../tempbackupdir";
+        assertTrue(tempBackupDir.compareTo(EXPORT_CONFIG.backupDir)!=0)
+        def ant=new AntBuilder();
+        ant.copy(todir: tempBackupDir) {
+            ant.fileset(dir: EXPORT_CONFIG.backupDir)
+        }
 
+        this.indexDir=tempBackupDir;
+        initializeFullExportModels();
+        assertTrue(System.getProperty("index.dir").compareTo(tempBackupDir)==0);
+                
         oldRepoResults.each{ modelName , oldObjects ->
             def modelAlias=fullExport.getModelAlias(modelName);
             def newObjects=modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}",[sort:"id",order:"asc"]);

@@ -127,8 +127,7 @@ runTestBuildAndJavaTestsForRCMDB() {
 }
 
 runGrailsTests() {
-
-    cp $WORKSPACE/Distribution/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
+    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x *.sh
@@ -142,7 +141,7 @@ runGrailsTests() {
     mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
     sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
-    cp $WORKSPACE/Distribution/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
+    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     ./rsmodeler.sh -testIntegration
 
     sleep 5
@@ -158,7 +157,7 @@ runGrailsTests() {
     chmod +x rs.sh
 
     sed -i "s/-Xmx512m/-Xmx1024m/g" rs.sh
-    cp $WORKSPACE/Distribution/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
+    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     ./rs.sh -testUnit
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
@@ -166,7 +165,7 @@ runGrailsTests() {
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
     mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
-    cp $WORKSPACE/Distribution/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
+    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     ./rs.sh -testIntegration
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]

@@ -46,29 +46,6 @@ class RIManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         ant.copy(file: path, toDir: "operations",overwrite:true);
     }
-    public void testRemoveAllScriptTest()
-    {
-        copyScript("removeAll");
-        copyManualTestScript("defaultScriptTests","removeAllScriptTest");
-
-        def script=CmdbScript.addScript([name:"removeAllScriptTest",type: CmdbScript.ONDEMAND],true)
-        println script.errors
-        assertFalse(script.hasErrors());
-
-        def removeAllScript=CmdbScript.addScript([name:"removeAll",type: CmdbScript.ONDEMAND],true)
-        println removeAllScript.errors
-        assertFalse(removeAllScript.hasErrors());
-
-        try{
-            def result=CmdbScript.runScript(script,[:]);
-        }
-        catch(e)
-        {
-            e.printStackTrace();
-            fail("Error in script. Reason ${e}");
-
-        }
-    }
     public void testRsTicketOperations()
     {
         def oprPath = "../../../RapidModules/RapidInsight/solutions/jiraTicketing/operations/RsTicketOperations.groovy"

@@ -83,19 +83,24 @@ class FullExportImportUtility {
 
         checkParameter("importDir",CONFIG.importDir,String);
         checkParameter("exportDir",CONFIG.exportDir,String);
+        try{
+            logger.info("deleting directory ${CONFIG.importDir}");
 
-        logger.info("deleting directory ${CONFIG.importDir}");
+            deleteDirectory(CONFIG.importDir);
 
-        deleteDirectory(CONFIG.importDir);
-
-        beginCompass(CONFIG.importDir);
-        try {
-            importModelFiles(CONFIG.exportDir)
+            beginCompass(CONFIG.importDir);
+            try {
+                importModelFiles(CONFIG.exportDir)
+            }
+            finally {
+                endCompass();
+            }
         }
-        finally {
-            endCompass();
+        catch(e)
+        {
+            deleteDirectory(CONFIG.importDir);
+            throw e;
         }
-
         logger.info("*****************FULL IMPORT ENDED *************************")
     }
 

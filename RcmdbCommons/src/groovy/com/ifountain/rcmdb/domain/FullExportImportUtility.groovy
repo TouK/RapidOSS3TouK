@@ -192,7 +192,7 @@ class FullExportImportUtility {
             MODELS_TO_EXPORT[modelName]=[relations:modelEntry.relations];
             if(modelEntry.childModels)
             {
-                def domainClass=ApplicationHolder.application.getDomainClass(modelName);
+                def domainClass=getDomainClass(modelName);
                 domainClass.subClasses.each{ subClass ->
                     def subModelName=subClass.clazz.name
                     MODELS_TO_EXPORT[subModelName]=[relations:modelEntry.relations];
@@ -234,9 +234,22 @@ class FullExportImportUtility {
         }
         return modelNames;
     }
+    protected def getDomainClass(modelName)
+    {
+        def domainClass=ApplicationHolder.application.getDomainClass(modelName);
+        if(domainClass==null)
+        {
+            throw new Exception("model ${modelName} does not exist");
+        }
+        return domainClass;
+    }
+    protected def getModel(modelName)
+    {
+        return getDomainClass(modelName).clazz;
+    }
     protected def getModelAlias(modelName)
     {
-        ApplicationHolder.application.getDomainClass(modelName).clazz.simpleName;
+        return getDomainClass(modelName).clazz.simpleName;
     }
 
     protected def exportModels(exportDir,objectsPerFile,MODELS_TO_EXPORT)
@@ -424,7 +437,7 @@ class FullExportImportUtility {
 
             def resultXml = new XmlSlurper().parse(xmlFile);
             def modelName=resultXml.@'model'.toString();
-            def model=ApplicationHolder.application.getDomainClass(modelName).clazz;
+            def model=getModel(modelName);
             def propTypes=[:];
             def modelProperties=model.metaClass.getProperties();
 
@@ -439,18 +452,7 @@ class FullExportImportUtility {
                 def newObj=model.newInstance();
 
                 objectRow.attributes().each{ propName,propVal ->
-                    try{
-                        def convertedVal=convertProperty(propTypes[propName],propVal);
-                        newObj.setProperty(propName,convertedVal,false)
-                    }
-                    catch(ConversionException exception)
-                    {
-                        logger.warn("cannot convert property ${modelName}.${propName} with val ${propVal}");
-                    }
-                    catch(Exception e)
-                    {
-                        logger.warn("can not set property ${modelName}.${propName} with val ${propVal}");
-                    }
+                   convertAndSetProperty(newObj,propName,propVal,propTypes[propName])
                 }
                 this.compassSession.save(newObj);
 
@@ -464,11 +466,32 @@ class FullExportImportUtility {
 
         logger.info("   imported file ${xmlFile.getPath()}");
     }
-    private def convertProperty(fieldType,value)
+    private def convertAndSetProperty(object,propName,propVal,propType)
     {
-        def converter = RapidConvertUtils.getInstance().lookup (fieldType);
-        return converter.convert(fieldType, value);
+        def modelName=object.class.name;
+
+        try{
+            def convertedVal=convertProperty(propType, propVal);
+            object.setProperty(propName,convertedVal,false)
+        }
+        catch(ConversionException exception)
+        {
+            logger.warn("cannot convert property ${modelName}.${propName} with val ${propVal}");
+            throw new Exception("cannot convert property ${modelName}.${propName} with val ${propVal}",exception);
+        }
+        catch(Exception e)
+        {
+            logger.warn("can not set property: ${modelName}.${propName} is missing , value ${propVal}");
+            throw new Exception("can not set property: ${modelName}.${propName} is missing , value ${propVal}",e);
+
+        }
     }
+    private def convertProperty(propType,propVal)
+    {
+        def converter = RapidConvertUtils.getInstance().lookup (propType);
+        return converter.convert(propType, propVal);
+    }
+
 
 
     protected def beginCompass(dataDir)

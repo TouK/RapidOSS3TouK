@@ -1,0 +1,12 @@
+<Rsmodel>
+    <Models>
+		<Model Name="RsXinYCorrelation" StorageType="Memory">
+		     <Properties>
+		          <Property Name="eventId" Type="string"/>
+		          <Property Name="identifier" Type="string"/>
+		          <Property Name="willExpireAt" Type="number"/>
+		     </Properties>
+		</Model>
+	</Models>
+</Rsmodel>
+            

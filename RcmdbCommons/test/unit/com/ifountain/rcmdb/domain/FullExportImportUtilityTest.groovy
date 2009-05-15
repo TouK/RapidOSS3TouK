@@ -1178,6 +1178,93 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         catch(e){}
 
     }
+    public void testFullExportGeneratesExceptionWhenInvalidModelIsInMODELS()
+    {
+        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+
+        initialize([],[],true);
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        //importDir missing
+        try{
+            def CONFIG=[:];
+            CONFIG.backupDir=directoryPaths.backupDir;
+            CONFIG.exportDir=directoryPaths.exportDir;
+            CONFIG.objectsPerFile=5;
+            CONFIG.MODELS=[];
+            CONFIG.MODELS.add([model:"RsEvent_XX_YY"]);
+            fullExport.fullExport(CONFIG);
+            fail("should throw exception");
+        }
+        catch(e){
+            assertTrue(e.getMessage().indexOf("RsEvent_XX_YY")>=0)
+
+        }
+
+    }
+    public void testImportModelFileGeneratesExceptionWhenXmlDataHasUnExistingModelOrProperty()
+    {
+        def modelClassesNameList=["RsEvent"];
+        def modelClasses=loadClasses(modelClassesNameList);
+        def modelClassMap=getClassMapFromClassList(modelClasses);
+        initialize(modelClasses,[],true);
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        def importDir=directoryPaths.importDir;
+
+        def exportDir=new File(directoryPaths.exportDir);
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        File xmlFile=new File("${exportDir.getPath()}/RsEvent_0.xml");
+        xmlFile.setText("""
+            <Objects model='RsEvent_XX_YY'>
+              <Object acknowledged='false' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y1' id='2009' inMaintenance='false' name='ev1' owner='' rsDatasource='' severity='10' source='' state='0' willExpireAt='0' />
+              <Object acknowledged='true' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y2' id='2010' inMaintenance='false' name='ev2' owner='' rsDatasource='' severity='20' source='' state='0' willExpireAt='0' />
+              <Object acknowledged='true' changedAt='0' clearedAt='0' count='10' createdAt='0' elementDisplayName='' elementName='y3' id='2011' inMaintenance='false' name='ev3' owner='' rsDatasource='' severity='30' source='' state='0' willExpireAt='0' />
+            </Objects>
+        """);
+        assertTrue(xmlFile.exists());
+
+        fullExport.beginCompass(importDir)
+        try{
+            fullExport.importModelFile(xmlFile);
+            fail("should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent_XX_YY")>=0);
+        }
+        finally{
+            fullExport.endCompass();
+        }
+
+
+        xmlFile.setText("""
+            <Objects model='RsEvent'>
+              <Object acknowledged='false' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y1' id='2009' inMaintenance='false' name='ev1' owner='' rsDatasource='' severity='10' source='' state='0' willExpireAt='0' />
+              <Object acknowledged='true' changedAt='0' clearedAt='0' count='1' createdAt='0' elementDisplayName='' elementName='y2' id='2010' inMaintenance='false' name='ev2' owner='' rsDatasource='' severity='20' source='' state='0' willExpireAt='0' />
+              <Object acknowledged_XX_YY='true' changedAt='0' clearedAt='0' count='10' createdAt='0' elementDisplayName='' elementName='y3' id='2011' inMaintenance='false' name='ev3' owner='' rsDatasource='' severity='30' source='' state='0' willExpireAt='0' />
+            </Objects>
+        """);
+
+
+        fullExport.beginCompass(importDir)
+        try{
+            fullExport.importModelFile(xmlFile);
+            fail("should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent.acknowledged_XX_Y")>=0);
+        }
+        finally{
+            fullExport.endCompass();
+        }
+
+    }
 
     public void testExportModelsCallsExportModelForEachModelAndDeletesExportDirectory()
     {
@@ -1241,59 +1328,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertEquals(file.getCanonicalPath(),importModelFileCallParams[file.getPath()].getCanonicalPath());
         }
     }
-    public void testConvertPropertyGeneratesSameResultAsRapidConvertUtils()
-    {
-        initialize([],[]);
-        def object=loadClass("RsEvent").newInstance();
 
-        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
-        assertEquals((Long)5,fullExport.convertProperty(Long,"5"));
-        assertEquals((Double)5,fullExport.convertProperty(Double,"5"));
-        assertEquals(true,fullExport.convertProperty(Boolean,"true"));
-        assertEquals(false,fullExport.convertProperty(Boolean,"false"));
-
-
-    }
-    public void testConvertAndSetPropertyGeneratesExceptionWhenPropertyIsMissingOrConversionErrorOccurs()
-    {
-        initialize([loadClass("RsEvent")],[]);
-
-        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
-        def object=loadClass("RsEvent").newInstance();
-
-        //test successfull convert and set
-        fullExport.convertAndSetProperty(object,"name","testEvent",String);
-        assertEquals("testEvent",object.name);
-
-        fullExport.convertAndSetProperty(object,"severity","3",Long);
-        assertEquals((Long)3,object.severity);
-
-        //missing property
-        try{
-            fullExport.convertAndSetProperty(object,"name_name","testEvent2",String);
-            fail("should throw exception");
-        }
-        catch(e)
-        {
-            assertTrue(e.getMessage().indexOf("RsEvent.name_name")>=0);
-            assertTrue(e.getMessage().indexOf("can not set property")>=0);
-
-        }
-        assertEquals("testEvent",object.name);
-
-        //conversion exception  , try to convert RsEvent to Long ( severity )
-        try{
-            fullExport.convertAndSetProperty(object,"severity",loadClass("RsEvent").newInstance(),Long);
-            fail("should throw exception");
-        }
-        catch(e)
-        {
-            assertTrue(e.getMessage().indexOf("RsEvent.severity")>=0);
-            assertTrue(e.getMessage().indexOf("cannot convert property")>=0);
-        }
-        assertEquals("testEvent",object.name);
-
-    }
     public void testImportModelFileImportsAndConvertsDataInXmlFileSuccessfully()
     {
 
@@ -1427,6 +1462,60 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
     }
+    public void testConvertPropertyGeneratesSameResultAsRapidConvertUtils()
+    {
+        initialize([],[]);
+        def object=loadClass("RsEvent").newInstance();
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        assertEquals((Long)5,fullExport.convertProperty(Long,"5"));
+        assertEquals((Double)5,fullExport.convertProperty(Double,"5"));
+        assertEquals(true,fullExport.convertProperty(Boolean,"true"));
+        assertEquals(false,fullExport.convertProperty(Boolean,"false"));
+
+
+    }
+    public void testConvertAndSetPropertyGeneratesExceptionWhenPropertyIsMissingOrConversionErrorOccurs()
+    {
+        initialize([loadClass("RsEvent")],[]);
+
+        def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+        def object=loadClass("RsEvent").newInstance();
+
+        //test successfull convert and set
+        fullExport.convertAndSetProperty(object,"name","testEvent",String);
+        assertEquals("testEvent",object.name);
+
+        fullExport.convertAndSetProperty(object,"severity","3",Long);
+        assertEquals((Long)3,object.severity);
+
+        //missing property
+        try{
+            fullExport.convertAndSetProperty(object,"name_name","testEvent2",String);
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent.name_name")>=0);
+            assertTrue(e.getMessage().indexOf("can not set property")>=0);
+
+        }
+        assertEquals("testEvent",object.name);
+
+        //conversion exception  , try to convert RsEvent to Long ( severity )
+        try{
+            fullExport.convertAndSetProperty(object,"severity",loadClass("RsEvent").newInstance(),Long);
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertTrue(e.getMessage().indexOf("RsEvent.severity")>=0);
+            assertTrue(e.getMessage().indexOf("cannot convert property")>=0);
+        }
+        assertEquals("testEvent",object.name);
+
+    }
+    
     public void testFullImportSuccessfullyImportsXmlResultsOfFullExport()
     {
         CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);

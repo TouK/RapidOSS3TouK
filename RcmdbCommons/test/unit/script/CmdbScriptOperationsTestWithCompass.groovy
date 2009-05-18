@@ -1237,6 +1237,29 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
+    void testStopRunningScriptsCallsScriptManagerStopRunningScripts()
+    {
+
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        def managerParams = [:]
+        ScriptManager.metaClass.stopRunningScripts = {scriptName ->
+            managerParams.scriptName = scriptName;
+
+        }
+
+        initializeForCmdbScript();
+
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+
+        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, operationClass: "testclass");
+        assertFalse(script.hasErrors())
+
+        CmdbScript.stopRunningScripts(script);
+        assertEquals(script.name,managerParams.scriptName)
+
+    }
 
     def createSimpleScript(scriptName, scriptMessage)
     {

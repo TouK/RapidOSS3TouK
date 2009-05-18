@@ -193,18 +193,7 @@
         <div class="buttons">
 		    	<span class="button"><g:actionSubmit class="save" value="Update"/></span>
 		        <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-                <span class="button"><g:link action="reload" id="${cmdbScript?.name}" class="refresh" params="${[targetURI:'/script/edit/' + cmdbScript.id]}">Reload</g:link></span>
-                <g:if test="${cmdbScript.type == CmdbScript.LISTENING && cmdbScript.listeningDatasource}">
-                     <g:if test="${cmdbScript.listeningDatasource.isFree()}">
-                         <span class="button"><g:link action="start" id="${cmdbScript?.name}" class="start" params="${[targetURI:'/script/edit/' + cmdbScript.id]}">Start</g:link></span>
-                     </g:if>
-                    <g:else>
-                        <span class="button"><g:link action="stop" id="${cmdbScript?.name}" class="stop" params="${[targetURI:'/script/edit/' + cmdbScript.id]}">Stop</g:link></span>
-                    </g:else>
-                </g:if>
-                <g:else>
-                    <span class="button"><g:link action="run" id="${cmdbScript?.name}" class="start" params="${[targetURI:'/script/edit/' + cmdbScript.id]}">Run</g:link></span>
-                </g:else>
+                
         </div>
     </g:form>
 

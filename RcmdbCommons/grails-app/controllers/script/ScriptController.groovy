@@ -278,6 +278,26 @@ class ScriptController {
         }
     }
 
+    def stopRunningScripts = {
+        CmdbScript script = CmdbScript.findByName(params.id);
+        if (script)
+        {
+            CmdbScript.stopRunningScripts(script);
+            flash.message = "Running instances of script '${script.name}' has been marked as stopped."
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: show, id: script.id)
+            }
+        }
+        else
+        {
+            flash.message = SCRIPT_DOESNOT_EXIST
+            redirect(action: list, controller: 'script');
+        }
+    }
+
     def reloadOperations = {
         def modelClass = grailsApplication.getClassForName("script.CmdbScript")
         if (modelClass)

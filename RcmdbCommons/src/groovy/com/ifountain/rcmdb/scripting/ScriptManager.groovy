@@ -32,11 +32,16 @@ import org.apache.log4j.Logger
 public class ScriptManager {
     Logger logger = Logger.getLogger("scripting");
     public static final String SCRIPT_DIRECTORY = "scripts";
+    private static final String IS_STOPPED_PROPERTY="IS_STOPPED";
+    private static final String STATE_OBJECT_PROPERTY="STATE_OBJECT";
     private static ScriptManager manager;
     private def scripts;
     private def classLoader;
     private def baseDirectory;
     private Map defaultSupportedMethods;
+    private Map scriptStopStates;
+    
+    
     private ScriptManager() {
     }
 
@@ -53,7 +58,9 @@ public class ScriptManager {
         }
     }
     public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList, Map defaultSupportedMethods) {
-        scripts = [:];
+        scripts = [:];        
+        scriptStopStates=[:];
+
         this.defaultSupportedMethods = defaultSupportedMethods;
         classLoader = parentClassLoader;
         baseDirectory = baseDir;
@@ -92,8 +99,34 @@ public class ScriptManager {
     }
     private def _addScript(String scriptPath) throws ScriptingException
     {
+        createStopStateIfNotExists(getScriptPath(scriptPath));
         scriptPath = getScriptPath(scriptPath)
         scripts[scriptPath] = getScriptClass(scriptPath);
+
+    }
+    private def createStopStateIfNotExists(String scriptName)
+    {
+        if(!scriptStopStates.containsKey(scriptName))
+        {
+           createDefaultStopState(scriptName);
+        }
+    }
+    private def createDefaultStopState(String scriptName)
+    {
+        def stateMap=[:];
+        stateMap[IS_STOPPED_PROPERTY]=false;
+        scriptStopStates[scriptName]=stateMap;
+    }
+
+    private def getStopStateOfStateObject(stateMap)
+    {
+        return stateMap.get(IS_STOPPED_PROPERTY);
+    }
+    public def stopRunningScripts(scriptName)
+    {
+       def oldStateMap=scriptStopStates[scriptName];
+       oldStateMap[IS_STOPPED_PROPERTY]=true;
+       createDefaultStopState(scriptName);
     }
 
     def synchronized removeScript(String scriptPath)
@@ -123,6 +156,10 @@ public class ScriptManager {
 
             defaultSupportedMethods.each{String methodName, methodClosure->
                 cls.metaClass."${methodName}" = methodClosure;                
+            }
+            cls.metaClass.IS_STOPPED= { ->
+                def stateObject=delegate.getProperty(STATE_OBJECT_PROPERTY);
+                return getStopStateOfStateObject(stateObject);
             }
             
             cls.metaClass.operationInstance=null;
@@ -171,9 +208,9 @@ public class ScriptManager {
     {
         def scriptObject = getScriptObject(scriptPath,bindings,scriptLogger,operationClass);        
         def scriptClass = getScript(scriptPath);
+
         try
         {
-
             def result = scriptObject.run();
             return result;
         }
@@ -191,7 +228,6 @@ public class ScriptManager {
             }
             throw ScriptingException.runScriptException(scriptPath, lineNumber, exception);
         }
-        
 
     }
 
@@ -205,6 +241,8 @@ public class ScriptManager {
                 scriptObject.setProperty(propName, propValue);
             }
             scriptObject.setProperty("logger", scriptLogger);
+            scriptObject.setProperty(STATE_OBJECT_PROPERTY, scriptStopStates[scriptPath]);
+
             if(operationClass!=null && operationClass!="")
             {
                 if(operationClass instanceof String)

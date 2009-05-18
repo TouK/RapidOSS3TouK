@@ -30,6 +30,8 @@ import com.ifountain.rcmdb.execution.ExecutionContext
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.scripting.ScriptObjectWrapper
+import com.ifountain.comp.utils.SmartWait
+import com.ifountain.rcmdb.util.ClosureWaitAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -436,8 +438,7 @@ return name""");
     {
         def scriptName = "script1.groovy";
         def exceptionMessage = "error occurred"
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("throw new Exception(\"$exceptionMessage\");");
+        createScript(scriptName,"throw new Exception(\"$exceptionMessage\");");
         manager.addScript(scriptName)
 
         def bindings = [:]
@@ -451,8 +452,6 @@ return name""");
             assertTrue(e.getMessage().indexOf(exceptionMessage) >= 0);
         }
     }
-
-
 
     public void testInitialize()
     {
@@ -542,31 +541,219 @@ return name""");
         }
     }
 
+     public void testCreateDefaultStopState()
+    {
+        assertEquals(0,manager.scriptStopStates.size());
+
+        def scriptName1="script1";
+        def scriptName2="script2";
+
+
+        manager.createDefaultStopState(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        def oldStopMap=manager.scriptStopStates[scriptName1];
+
+        //create again will create again but with same result
+        manager.createDefaultStopState(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        assertNotSame(oldStopMap,manager.scriptStopStates[scriptName1]);
+
+        //create again will change the true since creates the default
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=true;
+
+        manager.createDefaultStopState(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+
+        //create another type of script
+        manager.createDefaultStopState(scriptName2);
+        assertEquals(2,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        assertEquals(false,manager.scriptStopStates[scriptName2][manager.IS_STOPPED_PROPERTY])
+
+    }
+    public void testCreateStopStateIfNotExists()
+    {
+        assertEquals(0,manager.scriptStopStates.size());
+
+        def scriptName1="script1";
+        def scriptName2="script2";
+
+
+        manager.createStopStateIfNotExists(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        def oldStopMap=manager.scriptStopStates[scriptName1];
+
+        //create again will do nothing
+        manager.createStopStateIfNotExists(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        assertSame(oldStopMap,manager.scriptStopStates[scriptName1])
+
+        //create again will not change the true state will not create
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=true;
+
+        manager.createStopStateIfNotExists(scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(true,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+
+        //create another type of script
+        manager.createStopStateIfNotExists(scriptName2);
+        assertEquals(2,manager.scriptStopStates.size());
+        assertEquals(true,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+        assertEquals(false,manager.scriptStopStates[scriptName2][manager.IS_STOPPED_PROPERTY])
+    }
+    public void testGetStopStateOfStateMap()
+    {
+        def scriptName1="script1";
+
+        manager.createDefaultStopState(scriptName1);
+        assertEquals(false,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]))
+
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=true;
+        assertEquals(true,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]))
+
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=false;
+        assertEquals(false,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]))
+
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=true;
+        assertEquals(true,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]))
+
+        manager.createDefaultStopState(scriptName1);
+        assertEquals(false,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]))
+    }
+    public void testStopRunningScripts()
+    {
+        def scriptName1="script1";
+        createScript(scriptName1+".groovy","return 1");
+
+        def scriptName2="script2";
+        createScript(scriptName2+".groovy","return 2");
+
+        manager.addScript(scriptName1);
+        manager.addScript(scriptName2);
+
+        def oldStateMap1=manager.scriptStopStates[scriptName1];
+        def oldStateMap2=manager.scriptStopStates[scriptName2];
+
+        assertEquals(false,manager.getStopStateOfStateObject(oldStateMap1));
+        assertEquals(false,manager.getStopStateOfStateObject(oldStateMap2));
+
+        manager.stopRunningScripts(scriptName1);
+        assertEquals(true,manager.getStopStateOfStateObject(oldStateMap1));
+        assertNotSame(oldStateMap1,manager.scriptStopStates[scriptName1]);
+        assertEquals(false,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName1]));
+        assertEquals(false,manager.getStopStateOfStateObject(oldStateMap2));
+
+        manager.stopRunningScripts(scriptName2);
+        assertEquals(true,manager.getStopStateOfStateObject(oldStateMap1));
+        assertEquals(true,manager.getStopStateOfStateObject(oldStateMap2));
+        assertNotSame(oldStateMap2,manager.scriptStopStates[scriptName2]);
+        assertEquals(false,manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName2]));
+
+    }
+    public void testAddScriptCallsCreateStopStateIfNotExistsAndReloadingDoesNotChangeTheStopState()
+    {
+        assertEquals(0,manager.scriptStopStates.size());
+
+        def scriptName1="script1";
+        createScript(scriptName1+".groovy","return 1");
+
+        manager._addScript(scriptName1);
+
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(false,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+
+        //add again will not change the true state will not create
+        manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY]=true;
+        manager._addScript(scriptName1);
+
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(true,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+
+        //reload will not change the state
+        manager.reloadScript (scriptName1);
+        assertEquals(1,manager.scriptStopStates.size());
+        assertEquals(true,manager.scriptStopStates[scriptName1][manager.IS_STOPPED_PROPERTY])
+    }
+    public void testScriptsHaveIS_STOPPEDMethod()
+    {
+        def scriptName1 = "script1";
+        createScript(scriptName1+".groovy","return IS_STOPPED()");
+        manager.addScript(scriptName1)
+
+        def scriptName2 = "script2";
+        createScript(scriptName2+".groovy","""
+            import com.ifountain.rcmdb.test.util.TestDatastore
+            iterationCount=0;
+            while(!IS_STOPPED())
+            {
+                println "itr :"+iterationCount
+                Thread.sleep(100);
+                iterationCount++;
+            }
+            println "stopped in script"
+            TestDatastore.put("script2_iterationCount",iterationCount);
+            TestDatastore.put("script2_IS_STOPPED",IS_STOPPED());
+        """);
+        manager.addScript(scriptName2)
+
+        def bindings=[:];
+
+        assertEquals(false,manager.runScript(scriptName1,bindings,testLogger));
+        
+        //doesnt effect the next run
+        manager.stopRunningScripts (scriptName1);
+        assertEquals(false,manager.runScript(scriptName1,bindings,testLogger));
+
+        //script2 should wait until stop is called
+        def runnerThread=Thread.start(){
+           manager.runScript(scriptName2,bindings,testLogger);
+        }
+        assertEquals(null,TestDatastore.get("script2_IS_STOPPED"))
+        assertEquals(null,TestDatastore.get("script2_iterationCount"))
+        
+        Thread.sleep(250);
+        manager.stopRunningScripts (scriptName2);        
+        runnerThread.join();
+        assertEquals(true,TestDatastore.get("script2_IS_STOPPED"))
+        assertTrue(TestDatastore.get("script2_iterationCount")>0)
+
+
+        
+    }
+      
     public static void addScriptMessage(String message)
     {
         TestDatastore.get(dsKey).add(message);
     }
     def createStartupScriptScript(scriptName)
     {
-
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.delete()
-        scriptFile.write(""" ${ScriptingManagerTests.class.name}.addScriptMessage("$expectedScriptMessage");
+        createScript(scriptName,""" ${ScriptingManagerTests.class.name}.addScriptMessage("$expectedScriptMessage");
         """);
     }
 
     def createSimpleScript(scriptName)
     {
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("""return "$expectedScriptMessage" """);
+        createScript(scriptName,"""return "$expectedScriptMessage" """);
     }
 
     def createErrornousScript(scriptName)
     {
-
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("return \"$expectedScriptMessage");
+        createScript(scriptName,"return \"$expectedScriptMessage");
     }
+
+    def createScript(scriptName,scriptContent)
+    {
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.delete()
+        scriptFile.setText(scriptContent);
+    }
+
+
 
 }
 

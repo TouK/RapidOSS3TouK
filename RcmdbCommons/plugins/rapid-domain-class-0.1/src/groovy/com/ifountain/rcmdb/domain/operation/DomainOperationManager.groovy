@@ -70,9 +70,11 @@ class DomainOperationManager {
         if(operationFile.exists())
         {
             def operationName = domainClass.name+OPERATION_SUFFIX;
-            def gcl = new GroovyClassLoader(parentClassLoader);
+            GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader);
             gcl.addClasspath (operationsDirectory);
             gcl.setShouldRecompile (true);
+            println ("ADDED CLASS PATH:"+operationsDirectory)
+            println ("CLASS LOADER CLASS PATH:"+gcl.classPath)
             Class cls = null;
             try
             {

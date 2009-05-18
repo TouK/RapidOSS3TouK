@@ -204,6 +204,45 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         }
     }
 
+
+
+    public void testLoadOperationThrowsExceptionIfOperationClassIsSmaeWithPrevious()
+    {
+        Class domainClass = createSimpleDomainClass();
+        def stringWillBeReturned = "method1"
+        def operationName = "${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX}".toString()
+        new File("$operationsDirectory/${operationName}.groovy").setText (
+                """
+                    class  ${domainClass.name}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                        def method1()
+                        {
+                            return "${stringWillBeReturned}";
+                        }
+                    }
+                """
+        )
+        def defaultMethods = [defaultMethod1:[method:{param1-> return param1}, isStatic:false], defaultMethod2:[method:{param1, param2-> return param1+param2}, isStatic:true]];
+        def parentClassLoader = new GroovyClassLoader(this.class.classLoader);
+        parentClassLoader.addClasspath (operationsDirectory);
+        Class classLoadedByParent = parentClassLoader.loadClass (operationName);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null, defaultMethods, parentClassLoader);
+        Class loadedOprClassForFirstTime = manager.loadOperation();
+        assertSame(classLoadedByParent, loadedOprClassForFirstTime);
+        try{
+            manager.loadOperation()
+            fail("Should throw exception since same operation class file is loaded.");
+        }
+        catch(DomainOperationLoadException ex)
+        {
+            assertEquals (DomainOperationLoadException.sameOperationClassIsLoaded().getMessage(), ex.getMessage());
+        }
+
+        assertSame (loadedOprClassForFirstTime, manager.getOperationClass());
+
+
+    }
+
     public void testLoadOperationThrowsExceptionIfOperationFileDoesnotExistButLoadsParentOperationFile()
     {
         Class domainClass = createSimpleDomainClass();

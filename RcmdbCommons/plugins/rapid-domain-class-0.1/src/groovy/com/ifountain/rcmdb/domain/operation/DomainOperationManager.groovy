@@ -77,6 +77,10 @@ class DomainOperationManager {
             try
             {
                 cls = gcl.loadClass (operationName);
+                if(cls == operationClass)
+                {
+                    throw DomainOperationLoadException.sameOperationClassIsLoaded();
+                }
                 defaultMethods.each{String methodName, Map methodConfig->
                     boolean isStatic = methodConfig.isStatic;
                     def method = methodConfig.method;
@@ -85,6 +89,10 @@ class DomainOperationManager {
                     else
                     cls.metaClass.'static'."${methodName}" = method;                    
                 }
+            }
+            catch(DomainOperationLoadException ex)
+            {
+                throw ex;                
             }
             catch(Throwable t)
             {

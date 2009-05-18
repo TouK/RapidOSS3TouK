@@ -44,4 +44,9 @@ class DomainOperationLoadException extends Exception{
     {
         return new DomainOperationLoadException("Operation could not loaded successfully. Reason:"+compileException.toString(), compileException);
     }
+
+    public static DomainOperationLoadException sameOperationClassIsLoaded()
+    {
+        return new DomainOperationLoadException("Operation could not loaded successfully. Same class is loaded. Remove operation directory from your classpath.", null);
+    }
 }

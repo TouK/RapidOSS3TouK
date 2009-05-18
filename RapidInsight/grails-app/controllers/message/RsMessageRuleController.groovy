@@ -22,11 +22,13 @@ package message
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod
-import groovy.xml.MarkupBuilder;
+import groovy.xml.MarkupBuilder
+import auth.ChannelUserInformation
+import org.jsecurity.SecurityUtils
+import auth.Role;
 
 
 class RsMessageRuleController {
-
 
     def index = {redirect(action: list, params: params)}
 
@@ -34,23 +36,23 @@ class RsMessageRuleController {
     def allowedMethods = [save: 'POST', update: 'POST']
 
     def list = {
-        def userId=auth.RsUser.get(username:session.username)?.id
-        def myRules= message.RsMessageRule.searchEvery("userId:${userId}",[sort:"id",order:"asc"])
-        def ruleGroups=[];
-        ruleGroups.add(["id":"enabledRules","name":"Enabled Rules",'nodeType':'group',"rules":[]]);
-        ruleGroups.add(["id":"disabledRules","name":"Disabled Rules",'nodeType':'group',"rules":[]]);
-        myRules.each{ rule ->
+        def userId = auth.RsUser.get(username: session.username)?.id
+        def myRules = message.RsMessageRule.searchEvery("userId:${userId}", [sort: "id", order: "asc"])
+        def ruleGroups = [];
+        ruleGroups.add(["id": "enabledRules", "name": "Enabled Rules", 'nodeType': 'group', "rules": []]);
+        ruleGroups.add(["id": "disabledRules", "name": "Disabled Rules", 'nodeType': 'group', "rules": []]);
+        myRules.each {rule ->
 
-            def searchQuery=search.SearchQuery.get(id:rule.searchQueryId);
-            def ruleProps=[:]
-            ruleProps.id=rule.id;
-            ruleProps.delay=rule.delay;
-            ruleProps.clearAction=rule.clearAction;
-            ruleProps.enabled=rule.enabled;
-            ruleProps.name=searchQuery?searchQuery.name:rule.searchQueryId;
-            ruleProps.nodeType='rule';
+            def searchQuery = search.SearchQuery.get(id: rule.searchQueryId);
+            def ruleProps = [:]
+            ruleProps.id = rule.id;
+            ruleProps.delay = rule.delay;
+            ruleProps.clearAction = rule.clearAction;
+            ruleProps.enabled = rule.enabled;
+            ruleProps.name = searchQuery ? searchQuery.name : rule.searchQueryId;
+            ruleProps.nodeType = 'rule';
 
-            if(rule.enabled)
+            if (rule.enabled)
             {
                 ruleGroups[0].rules.add(ruleProps);
             }
@@ -63,23 +65,22 @@ class RsMessageRuleController {
         def sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         builder.Rules() {
-            ruleGroups.each{ ruleGroup ->
-                def groupProps=ruleGroup.clone();
+            ruleGroups.each {ruleGroup ->
+                def groupProps = ruleGroup.clone();
                 groupProps.remove("rules");
-                builder.Rule(groupProps){
-                    ruleGroup.rules.each{ ruleProps->
+                builder.Rule(groupProps) {
+                    ruleGroup.rules.each {ruleProps ->
                         builder.Rule(ruleProps);
                     }
                 }
 
-            }            
+            }
         }
         render(contentType: "text/xml", text: sw.toString())
 
     }
-    def getRuleXml (rule)
+    def getRuleXml(rule)
     {
-
 
     }
 
@@ -103,9 +104,11 @@ class RsMessageRuleController {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {
             def user = auth.RsUser.get(username: session.username)
-            if (user.email == null || user.email == "")
+            def destination = getDestination(user, params.destinationType)
+            def isAdmin = SecurityUtils.subject.hasRole(Role.ADMINISTRATOR)
+            if (!isAdmin && (destination == null ||destination == ""))
             {
-                addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
+                addError("default.couldnot.create", [RsMessageRule, "Your destination for ${params.destinationType} is not defined"])
                 render(text: errorsToXml(this.errors), contentType: "text/xml")
                 return;
             }
@@ -120,16 +123,18 @@ class RsMessageRuleController {
         }
         else {
             addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
-            render(text: errorsToXml(this.errors), contentType: "text/xml")            
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
         }
     }
 
 
     def save = {
         def user = auth.RsUser.get(username: session.username)
-        if (user.email == null || user.email == "")
+        def destination = getDestination(user, params.destinationType)
+        def isAdmin = SecurityUtils.subject.hasRole(Role.ADMINISTRATOR)
+        if (!isAdmin && (destination == null ||destination == ""))
         {
-            addError("default.couldnot.create", [RsMessageRule, "Your email address is not entered"])
+            addError("default.couldnot.create", [RsMessageRule, "Your destination for ${params.destinationType} is not defined"])
             render(text: errorsToXml(this.errors), contentType: "text/xml")
             return;
         }
@@ -139,17 +144,24 @@ class RsMessageRuleController {
             params.userId = String.valueOf(params.userId)
         }
 
-        def rsMessageRule = RsMessageRule.add(ControllerUtils.getClassProperties(params, RsMessageRule))       
+        def rsMessageRule = RsMessageRule.add(ControllerUtils.getClassProperties(params, RsMessageRule))
         if (!rsMessageRule.hasErrors()) {
 
             render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
 
         }
-        else {                                                                                                                     
+        else {
             render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")
 
         }
+    }
 
+    def getDestination(user, destinationType) {
+        def userChannelInfoType = RsMessageRule.getDestinationConfig()[destinationType];
+        if (userChannelInfoType) {
+            return ChannelUserInformation.get(userId: user.id, type: userChannelInfoType)?.destination
+        }
+        return null;
     }
     def enableRule = {
         def rsMessageRule = RsMessageRule.get([id: params.id])

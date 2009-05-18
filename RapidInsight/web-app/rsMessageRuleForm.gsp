@@ -4,6 +4,7 @@
 <%@ page import="search.SearchQuery" %>
 
 <%
+    def destinationNames = RsMessageRule.getDestinationNames();
     def mode = params.mode;
     def componentId = params.componentId;
     def rsMessageRule=new RsMessageRule();
@@ -66,7 +67,7 @@
                 <tr>
                     <td ><label>Destination Type:</label></td>
                     <td >
-                        <g:select id="destinationType" name="destinationType" from="${rsMessageRule.constraints.destinationType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:rsMessageRule,field:'destinationType')}" ></g:select>
+                        <g:select id="destinationType" name="destinationType" from="${destinationNames}" value="${fieldValue(bean:rsMessageRule,field:'destinationType')}" ></g:select>
                     </td>
                 </tr>
                 <tr>

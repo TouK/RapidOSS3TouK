@@ -26,20 +26,27 @@ package auth
  */
 class RsUserInformation {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "userInformations"];
     };
-    
+    RsUser rsUser;
+    Long userId;
+    Long version;
+    Long id;
+    String type="";
+    String rsOwner = "p"
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
 
     static constraints = {
+        userId(key: ["type"], nullable: false)
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)
+        rsUser(nullable:true)
     };
-
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
-
-
+     static relations = [
+            rsUser:[isMany:false, reverseName:"userInformations", type:RsUser]
+    ]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "userInformations"];
 }

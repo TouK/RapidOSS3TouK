@@ -13,7 +13,7 @@
         <tr><td width="50%"><label>Old Password:</label></td><td width="50%"><input type="password" name="oldPassword" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>New Password:</label></td><td width="50%"><input type="password" name="password1" style="width:175px"/></td></tr>
         <tr><td width="50%"><label>Confirm Password:</label></td><td width="50%"><input type="password" name="password2" style="width:175px"/></td></tr>
-        <tr><td width="50%"><label>Email:</label></td><td width="50%"><input type="text" name="email" style="width:175px" value="${rsUser.email}"/></td></tr>
+        <tr><td width="50%"><label>Email:</label></td><td width="50%"><input type="text" name="email" style="width:175px" value="${rsUser.retrieveEmail()}"/></td></tr>
     </table>
     <input type="hidden" name="username" value="${rsUser.username}">
 </rui:formRemote>

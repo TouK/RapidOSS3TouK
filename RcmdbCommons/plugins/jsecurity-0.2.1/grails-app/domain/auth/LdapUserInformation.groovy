@@ -27,8 +27,6 @@ import connection.LdapConnection
  */
 class LdapUserInformation extends RsUserInformation{
     String userdn;
-
-
     LdapConnection ldapConnection;
     org.springframework.validation.Errors errors ;
 

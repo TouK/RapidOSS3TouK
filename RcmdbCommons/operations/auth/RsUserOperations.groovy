@@ -18,29 +18,29 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     public static String hashPassword(password)
     {
-        return  new Sha1Hash(password).toHex();
+        return new Sha1Hash(password).toHex();
     }
     public boolean isPasswordSame(passwordParam)
     {
-        return passwordHash==hashPassword(passwordParam);
+        return passwordHash == hashPassword(passwordParam);
     }
-    public static RsUser updateUser(user,params)
+    public static RsUser updateUser(user, params)
     {
-        if(params.password!=null)
+        if (params.password != null)
         {
             params.passwordHash = hashPassword(params.password);
         }
-        
-        if (params.groups != null )
+
+        if (params.groups != null)
         {
-            if(params.groups.isEmpty())
+            if (params.groups.isEmpty())
             {
                 throw new MessageSourceException("no.group.specified", [] as Object[]);
             }
         }
 
         user.update(params);
-    
+        user.addEmail(params.email);
 
         return user;
     }
@@ -48,7 +48,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         params.passwordHash = hashPassword(params.password);
 
-        def rsUser=null;
+        def rsUser = null;
 
         if (params.groups == null || params.groups.isEmpty())
         {
@@ -56,7 +56,9 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
 
         rsUser = RsUser.addUnique(params);
-
+        if (!rsUser.hasErrors()) {
+            rsUser.addEmail(params.email);
+        }
 
         return rsUser;
     }
@@ -72,14 +74,14 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     private static List getGroupsFromRepository(List groups)
     {
         def groupsToBeAssigned = [];
-        groups.each{groupObject->
+        groups.each {groupObject ->
             def groupName = groupObject;
-            if(groupObject instanceof Group)
+            if (groupObject instanceof Group)
             {
                 groupName = groupObject.name;
             }
-            Group group = Group.get(name:groupName);
-            if(group == null)
+            Group group = Group.get(name: groupName);
+            if (group == null)
             {
                 throw new Exception("Could not created user since Group ${groupName} does not exist.");
             }
@@ -91,23 +93,23 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     public void addToGroups(List groups)
     {
         List groupsToBeAssigned = getGroupsFromRepository(groups)
-        addRelation(groups:groupsToBeAssigned);
+        addRelation(groups: groupsToBeAssigned);
     }
 
     public void removeFromGroups(List groups)
     {
         List groupsToBeAssigned = getGroupsFromRepository(groups)
-        removeRelation(groups:groupsToBeAssigned);
+        removeRelation(groups: groupsToBeAssigned);
     }
 
 
     public static String getCurrentUserName()
     {
         ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
-        if(context != null)
+        if (context != null)
         {
             def currentuser = context[RapidCMDBConstants.USERNAME];
-            if(currentuser == null)
+            if (currentuser == null)
             {
                 currentuser = "system";
             }
@@ -117,5 +119,30 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             return "system";
         }
+    }
+
+    def retrieveLdapInformation() {
+        return LdapUserInformation.get(userId: id, type: "ldap");
+    }
+    def addLdapInformation(params) {
+        params.userId = id;
+        params.type = "ldap"
+        def ldapInformation = LdapUserInformation.add(params)
+        addRelation(userInformations: ldapInformation);
+        return ldapInformation;
+    }
+
+    def addEmail(email) {
+        def emailInformation = ChannelUserInformation.add(userId: id, type: "email", destination: email)
+        addRelation(userInformations: emailInformation);
+        return emailInformation;
+    }
+
+    def retrieveEmail() {
+        def emailInformation = ChannelUserInformation.get(userId: id, type: "email");
+        if (emailInformation != null) {
+            return emailInformation.destination;
+        }
+        return "";
     }
 }

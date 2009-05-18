@@ -17,72 +17,73 @@
 * USA.
 */
 package message
+
 import org.apache.log4j.Logger
 
 public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    public static void processDelayedEmails(Logger externalLogger)
+    public static void processDelayedMessages()
     {
-        def now=(new Date()).getTime();
-        def delayingMessages=RsMessage.searchEvery("state:${RsMessage.STATE_IN_DELAY} AND sendAfter:[0 TO ${now}] AND destinationType:${RsMessage.EMAIL.exactQuery()}")
-        delayingMessages.each{
-            it.update(state:RsMessage.STATE_READY)
-            externalLogger.info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
+        def now = (new Date()).getTime();
+        def delayingMessages = RsMessage.searchEvery("state:${RsMessage.STATE_IN_DELAY} AND sendAfter:[0 TO ${now}]")
+        delayingMessages.each {
+            it.update(state: RsMessage.STATE_READY)
+            getLogger().info("Updated delaying message with id ${it.id}, changed state to 1. Message : ${it.asMap()}");
         }
     }
-    public static RsMessage addEventCreateEmail(Logger externalLogger,Map event,String destination,Long delay)
+    public static RsMessage addEventCreateMessage(Map event, String destinationType, String destination, Long delay)
     {
-        def now=(new Date()).getTime();
-        def state=RsMessage.STATE_IN_DELAY
-        if(delay<1)
+        def now = (new Date()).getTime();
+        def state = RsMessage.STATE_IN_DELAY
+        if (delay < 1)
         {
-           state=RsMessage.STATE_READY;
+            state = RsMessage.STATE_READY;
         }
-        def message=RsMessage.add(eventId:event.id,destination:destination,insertedAt:now,sendAfter:now+(delay*1000),state:state,destinationType:RsMessage.EMAIL,action:RsMessage.ACTION_CREATE)
-        if(message.hasErrors())
+        def message = RsMessage.add(eventId: event.id, destination: destination, insertedAt: now, sendAfter: now + (delay * 1000), state: state, destinationType: destinationType, action: RsMessage.ACTION_CREATE)
+        if (message.hasErrors())
         {
-            externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")
+            getLogger().warn("Error occured while adding RsMessage. Reason : ${message.errors}")
         }
         else
         {
-            externalLogger.info("Added create message for event with id ${event.id}. Message: ${message.asMap()}");
+            getLogger().info("Added create message for event with id ${event.id}. Message: ${message.asMap()}");
         }
         return message
 
     }
-    public static RsMessage addEventClearEmail(Logger externalLogger,Map historicalEvent,String destination)
+    public static RsMessage addEventClearMessage(Map historicalEvent, String destinationType, String destination)
     {
-        def now=(new Date()).getTime();
-        def state=RsMessage.STATE_READY;
-        def message=null;
+        def now = (new Date()).getTime();
+        def state = RsMessage.STATE_READY;
+        def message = null;
 
-        def createMessage=RsMessage.get([eventId:historicalEvent.activeId,action:RsMessage.ACTION_CREATE,destination:destination,destinationType:RsMessage.EMAIL])
-        externalLogger.debug("Checking whether create event exists");
+        def createMessage = RsMessage.get([eventId: historicalEvent.activeId, action: RsMessage.ACTION_CREATE, destination: destination, destinationType: destinationType])
+        getLogger().debug("Checking whether create event exists");
         // if there is no create message then we will skip the clear message
-        if(createMessage != null ){
-          // if create message is still in delay we will skip clear message and update create Message, create message will also not be sent by this way
+        if (createMessage != null) {
+            // if create message is still in delay we will skip clear message and update create Message, create message will also not be sent by this way
 
-          if(createMessage.state==0)
-          {
-            createMessage.update(state:2)
-            externalLogger.debug("Skipped clear message, Updated create message state as 2, for event ${historicalEvent.activeId} since cleared happened before create delay exceeded. CreateMessage: ${createMessage.asMap()}");
-          }
-          else
-          {
-            message=RsMessage.add(eventId:historicalEvent.activeId,destination:destination,destinationType:RsMessage.EMAIL,insertedAt:now,state:state,action:RsMessage.ACTION_CLEAR)
-            if(message.hasErrors())
+            if (createMessage.state == RsMessage.STATE_IN_DELAY)
             {
-                externalLogger.warn("Error occured while adding RsMessage. Reason : ${message.errors}")
+                createMessage.update(state: RsMessage.STATE_ABORT)
+                getLogger().debug("Skipped clear message, Updated create message state as 2, for event ${historicalEvent.activeId} since cleared happened before create delay exceeded. CreateMessage: ${createMessage.asMap()}");
             }
             else
             {
-                externalLogger.info("Added clear message for event with id ${historicalEvent.activeId}. Message: ${message.asMap()}");
+                message = RsMessage.add(eventId: historicalEvent.activeId, destination: destination, destinationType: destinationType, insertedAt: now, state: state, action: RsMessage.ACTION_CLEAR)
+                if (message.hasErrors())
+                {
+                    getLogger().warn("Error occured while adding RsMessage. Reason : ${message.errors}")
+                }
+                else
+                {
+                    getLogger().info("Added clear message for event with id ${historicalEvent.activeId}. Message: ${message.asMap()}");
+                }
             }
-          }
 
         }
-        else{
-            externalLogger.debug("Skipped clear message for event with id ${historicalEvent.activeId} . No create message exists for event ")
+        else {
+            getLogger().debug("Skipped clear message for event with id ${historicalEvent.activeId} . No create message exists for event ")
         }
         return message
     }

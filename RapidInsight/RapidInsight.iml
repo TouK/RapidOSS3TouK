@@ -41,6 +41,7 @@
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="module" module-name="RapidUiPlugin" />
     <orderEntry type="library" name="compass" level="project" />
+    <orderEntry type="library" name="jsecurity" level="project" />
     <orderEntryProperties />
   </component>
 </module>

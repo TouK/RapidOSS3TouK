@@ -22,7 +22,7 @@ class RsUser {
     def static final String RSADMIN = "rsadmin";
     def static final String DEFAULT_PASSWORD = "changeme";
     static searchable = {
-        except:["groups", "permissionRelations"]
+        except:["groups", "permissionRelations", "userInformations"]
      };
     Long id; 
     Long version;
@@ -32,19 +32,18 @@ class RsUser {
     String email
     List groups = [];
     List permissionRelations = [];
-    RsUserInformation userInformation;
+    List userInformations = [];
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
-    static cascaded = ["permissionRelations":true]
+    static cascaded = ["permissionRelations":true, "userInformations":true]
     static relations = [
             groups:[type:Group, reverseName:"users", isMany:true],
             permissionRelations:[isMany:true, reverseName:"rsUser", type:UserPermissionRel],
-            userInformation:[type:RsUserInformation,isMany:false]
+            userInformations:[type:RsUserInformation,isMany:true, reverseName:"rsUser"]
     ]
     static constraints = {
         username(key: [], nullable: false, blank: false)
-        userInformation(nullable:true)
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)

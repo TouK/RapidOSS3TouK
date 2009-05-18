@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
 import auth.RsUser
 import org.jsecurity.authc.AccountException
 import org.jsecurity.authc.IncorrectCredentialsException
@@ -28,7 +29,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import javax.naming.NamingException
 
 class JsecDbRealm {
-    static authTokenClass =    org.jsecurity.authc.UsernamePasswordToken
+    static authTokenClass = org.jsecurity.authc.UsernamePasswordToken
 
     def credentialMatcher
 
@@ -50,41 +51,35 @@ class JsecDbRealm {
         if (!user) {
             throw new UnknownAccountException("No account found for user [${username}]")
         }
-        
+
         log.info "Found user '${user.username}' in DB"
 
         def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm")
         String authenticationType = ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
-        
 
-        if(authenticationType=="ldap" && username!="rsadmin" )
+
+        if (authenticationType == "ldap" && username != "rsadmin")
         {
-            if(user.userInformation != null )
-	        {
-                if(user.userInformation instanceof LdapUserInformation)
-                {
-                    def ldapUserInformation=(LdapUserInformation)user.userInformation
+            def ldapInformation = user.retrieveLdapInformation();
+            if (ldapInformation != null)
+            {
+                def ldapUserInformation = (LdapUserInformation) user.userInformation
 
-                    def ldapConnection=ldapUserInformation.ldapConnection
+                def ldapConnection = ldapUserInformation.ldapConnection
 
-                    log.info 'gonna try ldap auth from realm'
-                    if(!ldapConnection.checkAuthentication(ldapUserInformation.userdn,new String(authToken.password)))
-                    {
-                        log.info 'Invalid password (DB realm - LDAP)'
-                        throw new IncorrectCredentialsException("Invalid password for user '${username}'")
-                    }
-                }
-                else
+                log.info 'gonna try ldap auth from realm'
+                if (!ldapConnection.checkAuthentication(ldapUserInformation.userdn, new String(authToken.password)))
                 {
-                    throw new UnknownAccountException("Ldap Information could not be found for [${username}]")
+                    log.info 'Invalid password (DB realm - LDAP)'
+                    throw new IncorrectCredentialsException("Invalid password for user '${username}'")
                 }
-        	}
-        	else
+            }
+            else
             {
                 throw new UnknownAccountException("Ldap Information could not be found for [${username}]")
             }
         }
-        else  //do local authentication
+        else //do local authentication
         {
             // Now check the user's password against the hashed value stored
             // in the database.

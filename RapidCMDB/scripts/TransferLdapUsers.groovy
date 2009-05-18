@@ -16,6 +16,7 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
+
 import javax.naming.AuthenticationException
 import javax.naming.Context
 import javax.naming.NamingException
@@ -33,9 +34,9 @@ import auth.RsUserInformation
 
 
 
-def output=" "
+def output = " "
 
-try{
+try {
     // LDAP CONFIGURATION
     // Don't forget to create the group configured in localGroupName property
     //
@@ -53,34 +54,34 @@ try{
     //for ms ds
     //searchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
     //Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
-    def ldapConnectionName="ms active directory"
+    def ldapConnectionName = "ms active directory"
     def searchBase = "CN=Users,DC=molkay,DC=selfip,DC=net"
-    def searchFilter="objectClass=user"
-    def searchSubDirectories=true
-    def usernameAttribute="name"
-    def localGroupName="userGroup"
+    def searchFilter = "objectClass=user"
+    def searchSubDirectories = true
+    def usernameAttribute = "name"
+    def localGroupName = "userGroup"
 
     // BELOW IMPLEMENTATION IS TO TRANSFER USERS
 
-    def ldapConnection=LdapConnection.get(name:ldapConnectionName)
-	if(ldapConnection==null)
-	{
+    def ldapConnection = LdapConnection.get(name: ldapConnectionName)
+    if (ldapConnection == null)
+    {
         logger.warn("No connection found with id ${ldapConnectionName}");
-        
-        output+="No connection found with id ${ldapConnectionName}"
-		return output
-	}
+
+        output += "No connection found with id ${ldapConnectionName}"
+        return output
+    }
 
 
 
     try {
         ldapConnection.connect()
-        output+= "Connected to Ldap"
+        output += "Connected to Ldap"
     }
     catch (NamingException e) {
         logger.warn("Could not connect to LDAP: ${e}");
 
-        output+= "Could not connect to LDAP: ${e}"
+        output += "Could not connect to LDAP: ${e}"
         throw e
     }
 
@@ -92,56 +93,52 @@ try{
 
     def result
     try {
-        result=ldapConnection.query(searchBase,searchFilter,searchSubDirectories)
+        result = ldapConnection.query(searchBase, searchFilter, searchSubDirectories)
         while (result.hasMore()) {
-         	def searchResult = result.next()
-         	def resultAttributes=searchResult.attributes
+            def searchResult = result.next()
+            def resultAttributes = searchResult.attributes
 
-         	def username=resultAttributes.get(usernameAttribute).get()
-	    	def userdn=searchResult.nameInNamespace
+            def username = resultAttributes.get(usernameAttribute).get()
+            def userdn = searchResult.nameInNamespace
 
 
-	    	output+=" <br> Found userdn  : ${userdn} with username : ${username}"
+            output += " <br> Found userdn  : ${userdn} with username : ${username}"
 
-            if(username!="rsadmin")
+            if (username != "rsadmin")
             {
 
-                def oldUser=RsUser.get(username: username)
-                if(oldUser!=null)
+                def oldUser = RsUser.get(username: username)
+                if (oldUser != null)
                 {
-
-                    if(oldUser.userInformation != null )
+                    def oldLdapInformation = oldUser.retrieveLdapInformation();
+                    if (oldLdapInformation != null)
                     {
-                        if(oldUser.userInformation instanceof LdapUserInformation)
-                        {
-                            oldUser.userInformation.remove()
-                        }
+                        oldLdapInformation.remove()
                     }
 
                 }
 
 
-                def userInformation=LdapUserInformation.add(userdn:userdn,ldapConnection:ldapConnection)
                 try {
-                    
-                    def rsUser = RsUser.addUser([username: username, passwordHash:"",userInformation:userInformation],[localGroupName])
+                    def rsUser = RsUser.addUser([username: username, passwordHash: ""], [localGroupName])
                     if (!rsUser.hasErrors()) {
-                        output+= "<br>User ${rsUser.username} created"
-
+                        output += "<br>User ${rsUser.username} created"
+                        rsUser.addLdapInformation(userdn: userdn, ldapConnection: ldapConnection)
                     }
                     else
                     {
                         logger.warn("User ${username} can not be created. Reason : ${rsUser.errors}");
 
-                        output+= "<br> User ${username} can not be created. Reason : ${rsUser.errors}";
+                        output += "<br> User ${username} can not be created. Reason : ${rsUser.errors}";
 
                     }
+
                 }
-                catch(e)
+                catch (e)
                 {
                     logger.warn("User ${username} can not be created. Reason : ${e}");
 
-                    output+= "<br> User ${username} can not be created. Reason : ${e}";
+                    output += "<br> User ${username} can not be created. Reason : ${e}";
                 }
 
             }
@@ -151,10 +148,10 @@ try{
     catch (NamingException ex) {
         logger.warn("Exception occured while searching Ldap Server : ${ex}");
 
-        output+="<br> Exception occured while searching Ldap Server : ${ex}"
+        output += "<br> Exception occured while searching Ldap Server : ${ex}"
     }
 
-	/*
+    /*
     LdapUserInformation.list().each{
         output+="<br> ${it.userdn} ${it.ldapConnection}"
     }
@@ -162,16 +159,14 @@ try{
 
 
     ldapConnection.disconnect()
-    output+= "<br> Closed Ldap connection"
-
-
+    output += "<br> Closed Ldap connection"
 
 }
-catch(Exception e)
+catch (Exception e)
 {
     logger.warn("Got Exception ${e} ");
-    
-    output+="<br> Got Exception ${e} "
+
+    output += "<br> Got Exception ${e} "
 }
 
 

@@ -88,7 +88,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         //change the utility see that before reload original remains
         utilityContent="""
-            class ${utilityName} {
+            public class ${utilityName} {
                 static int x=45;
                 static String method1()
                 {

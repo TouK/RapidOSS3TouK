@@ -73,6 +73,7 @@ class DomainOperationManager {
             GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader);
             gcl.addClasspath (operationsDirectory);
             gcl.setShouldRecompile (true);
+            println ("ADDED CLASS PATH:${gcl.getParent().classPath } of parent classloader${gcl.getParent()}")
             println ("ADDED CLASS PATH:"+operationsDirectory)
             println ("CLASS LOADER CLASS PATH:"+gcl.classPath)
             Class cls = null;

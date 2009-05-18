@@ -73,9 +73,15 @@ public class ScriptObjectWrapper extends Script {
 
     public Object run() {
         def tmpScript = this.scriptObject;
-        return ExecutionContextManagerUtils.executeInContext([:]){
-            addLoggerToContext();
-            return tmpScript.run();
+        try{
+            return ExecutionContextManagerUtils.executeInContext([:]){
+                addLoggerToContext();
+                return tmpScript.run();
+            }
+        }
+        catch(com.ifountain.rcmdb.scripting.ScriptStoppedByUserException e)
+        {
+            return e.getMessage();    
         }
     }
 

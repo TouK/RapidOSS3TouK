@@ -110,4 +110,21 @@ class ScriptObjectWrapperTest extends RapidCmdbTestCase {
         Script scriptWrapper = new ScriptObjectWrapper(script);
         assertEquals (prop1Value, scriptWrapper.getProperty("prop1"))
     }
+
+    public void testRunReturnsStoppedByMessageWhenStoppedByUserExceptionOccurs()
+    {
+        def scriptClassLoader = new GroovyClassLoader();
+
+        Class scriptClass = scriptClassLoader.parseClass ("""
+            import com.ifountain.rcmdb.scripting.ScriptStoppedByUserException;
+            throw new ScriptStoppedByUserException("stopped in test");
+        """);
+        Script script = new ScriptObjectWrapper(scriptClass.newInstance());
+
+        def runResult=script.run();
+        assertTrue(runResult.indexOf("!Warning Script stopped by user.")>=0);
+        assertTrue(runResult.indexOf("stopped in test")>=0);
+
+
+    }
 }

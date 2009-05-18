@@ -28,7 +28,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
        def utilityName="UtilForTest";
        def utilityContent="""
-            class UtilForTest {
+            public class ${utilityName} {
                 static int x=5;
                 static String method1()
                 {
@@ -41,9 +41,9 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
-        assertSame(RsApplication.getUtility("UtilForTest"),RsApplication.getUtility("UtilForTest"));
+        assertEquals(5,RsApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
+        assertSame(RsApplication.getUtility(utilityName),RsApplication.getUtility(utilityName));
 
 
     }
@@ -62,7 +62,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
        def utilityName="UtilForTest";
        def utilityContent="""
-            class UtilForTest {
+            public class ${utilityName} {
                 static int x=5;
                 static String method1()
                 {
@@ -75,20 +75,20 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
+        assertEquals(5,RsApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
 
         //change the static variable
-        RsApplication.getUtility("UtilForTest").x=15;
-        assertEquals(15,RsApplication.getUtility("UtilForTest").x);
+        RsApplication.getUtility(utilityName).x=15;
+        assertEquals(15,RsApplication.getUtility(utilityName).x);
 
         //reload and see that original variable come
         ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
-        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
+        assertEquals(5,RsApplication.getUtility(utilityName).x);
 
         //change the utility see that before reload original remains
         utilityContent="""
-            class UtilForTest {
+            class ${utilityName} {
                 static int x=45;
                 static String method1()
                 {
@@ -98,12 +98,12 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility("UtilForTest").x);
-        assertEquals("method1result",RsApplication.getUtility("UtilForTest").method1());
+        assertEquals(5,RsApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
 
         ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
-        assertEquals(45,RsApplication.getUtility("UtilForTest").x);
-        assertEquals("newresult",RsApplication.getUtility("UtilForTest").method1());
+        assertEquals(45,RsApplication.getUtility(utilityName).x);
+        assertEquals("newresult",RsApplication.getUtility(utilityName).method1());
 
     }
 

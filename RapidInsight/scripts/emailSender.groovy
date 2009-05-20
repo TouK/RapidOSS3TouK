@@ -18,6 +18,8 @@ def date=new Date();
 def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.emailDatasource
 if(ds!=null)
 {
+
+    // Process RsMessage instances with destinationType email
     def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:${RsMessage.EMAIL.exactQuery()}", [sort: "id",order:"asc",max:100]).results;
 
     messages.each{ message ->
@@ -36,6 +38,9 @@ if(ds!=null)
         {
 
             def eventParams=event.asMap();
+
+            //////// EMAIL SENDING PART ////////////////////////////////////////////
+            ////// Modify the code below to execute your action /////////////////////
             logger.debug("Will send email about RsEvent : ${eventParams}");
 
             def templateParams=[eventParams:eventParams]
@@ -57,7 +62,8 @@ if(ds!=null)
             {
                 logger.warn("Error occured while sending email.Reason ${e}",e);
             }
-
+            ////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////
 
         }
         else

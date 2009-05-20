@@ -18,7 +18,7 @@ import com.ifountain.rcmdb.execution.ExecutionContextManager
 class RsUserTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
-        initialize([RsUser,Group], []);
+        initialize([RsUser,Group, ChannelUserInformation], []);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
     }

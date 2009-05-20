@@ -45,7 +45,6 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod{
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
         def props = arguments[0];
-        def flush = arguments[2] != false;
         def source = arguments[1];
 
         def relatedInstances = [:]

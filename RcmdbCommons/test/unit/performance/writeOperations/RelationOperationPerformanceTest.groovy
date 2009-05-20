@@ -21,6 +21,7 @@ package performance.writeOperations
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.domain.method.RelationMethodDomainObject1
 import com.ifountain.rcmdb.domain.method.RelationMethodDomainObject2
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +40,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
         String domainClassName2 = "DomainClass2"
         def loadedDomainClass1 = gcl.parseClass("""
             class ${domainClassName1}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
                 static searchable = {
                     except:["rel1"]
                 }
@@ -49,6 +51,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
                 static relations = [rel1:[type:${domainClassName2}, isMany:true, reverseName:"revRel1"]]
             }
             class ${domainClassName2}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
                 static searchable = {
                     except:["revRel1"]
                 }

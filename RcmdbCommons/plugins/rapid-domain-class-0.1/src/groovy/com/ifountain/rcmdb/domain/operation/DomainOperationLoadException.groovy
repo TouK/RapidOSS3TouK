@@ -17,13 +17,16 @@
 * USA.
 */
 package com.ifountain.rcmdb.domain.operation
+
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Aug 8, 2008
- * Time: 5:12:58 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Aug 8, 2008
+* Time: 5:12:58 PM
+* To change this template use File | Settings | File Templates.
+*/
 class DomainOperationLoadException extends Exception{
     public DomainOperationLoadException(String message, Throwable cause)
     {
@@ -48,5 +51,9 @@ class DomainOperationLoadException extends Exception{
     public static DomainOperationLoadException sameOperationClassIsLoaded()
     {
         return new DomainOperationLoadException("Operation could not loaded successfully. Same class is loaded. Remove operation directory from your classpath.", null);
+    }
+    public static DomainOperationLoadException operationPropertyIsNotDefined(String modelName)
+    {
+        return new DomainOperationLoadException("${RapidCMDBConstants.OPERATION_PROPERTY_NAME} property should be defined in model ${modelName}.", null);
     }
 }

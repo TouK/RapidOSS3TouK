@@ -48,7 +48,6 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
         statistics.start();
         def props = arguments[0];
         def source = arguments[1];
-        def flush = arguments[2] != false;
         long numberOfRemovedRelations = 0;
         boolean isChanged = false;
         props.each{key,value->

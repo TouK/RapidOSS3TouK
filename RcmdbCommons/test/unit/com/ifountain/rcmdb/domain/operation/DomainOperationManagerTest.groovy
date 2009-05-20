@@ -16,12 +16,12 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-package com.ifountain.rcmdb.domain
+package com.ifountain.rcmdb.domain.operation
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
-import com.ifountain.rcmdb.domain.operation.DomainOperationManager
-import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.commons.io.FileUtils
 
 /**
@@ -202,6 +202,14 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
             FileNotFoundException fex = ex.getCause();
             assertEquals(manager.getOperationFile().path, fex.getMessage());
         }
+        assertEquals ("if no operation class exist ${AbstractDomainOperation.name} should be returned", AbstractDomainOperation.class.name, manager.getOperationClass().name);
+
+        Map methods = manager.getOperationClassMethods();
+        def expectedMethods = ["add", "remove", "update", "addRelation", "removeRelation", "addUnique", "removeAll"]
+        expectedMethods.each{
+            assertTrue (methods.containsKey(it));    
+        }
+
     }
 
 

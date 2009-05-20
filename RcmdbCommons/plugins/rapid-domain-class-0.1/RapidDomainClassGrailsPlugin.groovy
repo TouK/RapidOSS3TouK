@@ -45,6 +45,7 @@ import com.ifountain.rcmdb.domain.method.GetOperationsMethod
 import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = [:]
@@ -212,8 +213,14 @@ class RapidDomainClassGrailsPlugin {
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods, application.classLoader);
             operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod reloadOperationsMethod = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
+            mc.invokeOperation =  {String name, args ->
+                return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
             mc.methodMissing =  {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
+            mc.'static'.invokeStaticOperation = {String methodName, args ->
+                return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'._methodMissing = {String methodName, args ->
                 return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
@@ -236,6 +243,10 @@ class RapidDomainClassGrailsPlugin {
                 //the errors is already logged by the reloadOperations method _invoke(), but invoke() exceptions are ignored                
                 //logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}. Reason :"+t.toString());
             }
+        }
+        else
+        {
+            throw DomainOperationLoadException.operationPropertyIsNotDefined(mc.theClass.name)
         }
 
     }

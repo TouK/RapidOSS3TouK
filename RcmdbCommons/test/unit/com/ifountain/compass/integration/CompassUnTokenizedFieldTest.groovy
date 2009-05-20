@@ -10,6 +10,7 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.compass.core.*
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -97,7 +98,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         TestCompassUtils.withCompassQueryBuilder(compass, {CompassQueryBuilder builder ->
             CompassQuery query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1}\"").toQuery();
             CompassHits hits = query.hits();
-            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "version"};
+            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "version" && it.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME&& it.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME};
             hits.iterator().each {CompassHit hit->
                 Resource res = hit.getResource();
                 propList.each{domainProp->

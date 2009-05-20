@@ -25,6 +25,12 @@ package com.ifountain.rcmdb.domain.operation
  * To change this template use File | Settings | File Templates.
  */
 class DomainOperationManager {
+    public static final ABSTRACT_DOMAIN_OPERATION_METHODS = [:]
+    static{
+        AbstractDomainOperation.metaClass.methods.each{MetaMethod method->
+            ABSTRACT_DOMAIN_OPERATION_METHODS[method.name] = method.name;
+        };
+    }
     public static final String OPERATION_SUFFIX = "Operations";
     Class domainClass;
     private ClassLoader parentClassLoader;
@@ -48,6 +54,10 @@ class DomainOperationManager {
         {
             return parentOperationManager.getOperationClass();
         }
+        else if(operationClass == null)
+        {
+            return AbstractDomainOperation;
+        }
         else
         {
             return operationClass;
@@ -58,6 +68,10 @@ class DomainOperationManager {
         if(operationClass == null && parentOperationManager != null)
         {
             return parentOperationManager.getOperationClassMethods();
+        }
+        else if(operationClass == null)
+        {
+            return ABSTRACT_DOMAIN_OPERATION_METHODS;
         }
         else
         {

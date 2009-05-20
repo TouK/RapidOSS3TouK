@@ -91,6 +91,8 @@ class CompassTestObject {
     Boolean prop55;
     Boolean prop56 = true;
     String prop57 = "";
+    org.springframework.validation.Errors errors;
+    org.springframework.validation.Errors __operation_class__;
 
     static constraints = {
         prop48(nullable:true);
@@ -98,6 +100,8 @@ class CompassTestObject {
         prop51(nullable:true);
         prop53(nullable:true);
         prop55(nullable:true);
+        errors(nullable:true);
+        __operation_class__(nullable:true);
     }
 
 

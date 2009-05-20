@@ -504,6 +504,11 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals("relations should be removed from repository completely since all sources removed", 0, returnedObjectsAfterBulkRemove[0].rel1.size());
     }
 
+    public void testOverwritingStaticPersistanceMethods()
+    {
+        
+    }
+
     private Map initializePluginAndClasses()
     {
         initializePluginAndClasses([:]);

@@ -31,6 +31,9 @@ import application.ObjectId
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder;
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.IdGenerator
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
+import org.springframework.validation.BindingResult
+import org.springframework.validation.BeanPropertyBindingResult
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,6 +70,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     {
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 Long id;
                 Long version;
                 String prop1;
@@ -93,6 +97,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     public void testCloneObject() {
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+                org.springframework.validation.Errors ${RapidCMDBConstants.ERRORS_PROPERTY_NAME};
                 Long id;
                 Long version;
                 String prop1;
@@ -112,11 +118,13 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         instance.version = 2;
         instance.prop1 = "prop1Value"
         instance.prop2 = 2;
+        instance.errors = new BeanPropertyBindingResult("obj1", "prop1");
         def cloned = instance.cloneObject();
         assertEquals(instance.id, cloned.id)
         assertEquals(instance.version, cloned.version)
         assertEquals(instance.prop1, cloned.prop1)
         assertEquals(instance.prop2, cloned.prop2)
+        assertSame(instance.errors, cloned.errors)
     }
 
     public void testPropertyInterceptingWithRelations()
@@ -124,6 +132,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         String domainClassName2 = "DomainClass2"
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 static searchable = {
                     except:["rel1"]
                 }
@@ -134,6 +143,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 static relations = [rel1:[type:${domainClassName2}, reverseName:"revRel1", isMany:true]]
             }
             class ${domainClassName2}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 static searchable = {
                     except:["revRel1"]
                 }
@@ -170,6 +180,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def prop1DefaultValue = "defaultValue"
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 static searchable = {
                     except:[]
                 }
@@ -192,6 +203,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         prop1DefaultValue = "defaultValue"
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName2}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 static searchable = {
                     except:[]
                 }
@@ -379,6 +391,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     {
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
                 static searchable = {
                     except = ["prop2"]
                 }
@@ -427,6 +440,29 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         assertEquals(0, numberOfCalls);
     }
 
+    public void testThrowsExceptioNifOperationPropertyIsNotDefinedInModel()
+    {
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                static searchable = {
+                    except:[]
+                }
+                Long id;
+                Long version;
+                static relations = [:]
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass, relation.Relation, application.ObjectId];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        try{
+            initialize(classesTobeLoaded, pluginsToLoad)
+            fail("Should throw exception since operation property is not defined in model");
+        }catch(com.ifountain.rcmdb.domain.operation.DomainOperationLoadException exception)
+        {
+            assertEquals (DomainOperationLoadException.operationPropertyIsNotDefined(domainClassName).getMessage(), exception.getMessage());
+        }
+    }
     public void testOperation()
     {
 

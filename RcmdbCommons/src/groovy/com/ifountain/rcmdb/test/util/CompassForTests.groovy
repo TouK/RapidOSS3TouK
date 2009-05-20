@@ -21,13 +21,15 @@ package com.ifountain.rcmdb.test.util
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+
 /**
- * Created by IntelliJ IDEA.
- * User: iFountain
- * Date: Oct 23, 2008
- * Time: 3:48:45 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: iFountain
+* Date: Oct 23, 2008
+* Time: 3:48:45 PM
+* To change this template use File | Settings | File Templates.
+*/
 class CompassForTests {
 //    static List classesToBeInitialized;
     static List injectedClasses = [];
@@ -55,8 +57,12 @@ class CompassForTests {
          addRelationOperationData.initialize(classesToBeInitialized);
          removeRelationOperationData.initialize(classesToBeInitialized);
         classesToBeInitialized.each{Class domainClass->
+            addOperationSupport(domainClass, AbstractDomainOperation);
             def dc=new DefaultGrailsDomainClass(domainClass)
             domainClass.metaClass.static.add = {Map props->
+                domainClass.add(domainClass, props);    
+            }
+            domainClass.metaClass.static._add = {Map props->
                 return addOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.static.get = {Map props->
@@ -65,7 +71,7 @@ class CompassForTests {
             domainClass.metaClass.static.get = {Long id->
                 return getOperationData.getReturnObject(domainClass, new HashMap(["id":id]));
             }
-            domainClass.metaClass.static.update = {Map props->
+            domainClass.metaClass.static._update = {Map props->
                def relations = DomainClassUtils.getRelations(dc);
                props.each{key,value->
                     def relation=relations[key];
@@ -100,10 +106,10 @@ class CompassForTests {
 
                 return updateOperationData.getReturnObject(domainClass, new HashMap(props));
             }
-            domainClass.metaClass.static.addRelation = {Map props->
+            domainClass.metaClass.static._addRelation = {Map props, String source->
                 return addRelationOperationData.getReturnObject(domainClass, new HashMap(props));
             }
-            domainClass.metaClass.static.removeRelation = {Map props->
+            domainClass.metaClass.static._removeRelation = {Map props, String source->
                 return removeRelationOperationData.getReturnObject(domainClass, new HashMap(props));
             }
             domainClass.metaClass.static.countHits = { String query ->

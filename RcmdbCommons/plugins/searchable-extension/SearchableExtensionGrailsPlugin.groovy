@@ -32,6 +32,7 @@ import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
 import com.ifountain.compass.transaction.CompassTransactionFactory
 import org.springframework.beans.factory.config.RuntimeBeanReference
 import org.apache.lucene.search.BooleanQuery
+import org.codehaus.groovy.runtime.InvokerHelper
 
 /**
 * Created by IntelliJ IDEA.
@@ -173,10 +174,10 @@ class SearchableExtensionGrailsPlugin {
         def bulkRemoveRelationMethod = new BulkRemoveRelationMethod(mc, relations);
 
         mc.update = {Map props->
-            return updateMethod.invoke(delegate,  [props] as Object[])
+            return delegate.invokeOperation("update", [props] as Object[])    
         }
-        mc.addRelation = {Map props->
-          return addRelationMethod.invoke(delegate,  [props, null, true] as Object[])
+        mc._update = {Map props->
+            return updateMethod.invoke(delegate,  [props] as Object[])
         }
         mc.'static'.bulkAddRelation = {Collection relationList->
           return bulkAddRelationMethod.invoke(delegate,  [relationList] as Object[])
@@ -184,28 +185,38 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.bulkRemoveRelation = {Collection relationList->
           return bulkRemoveRelationMethod.invoke(delegate,  [relationList] as Object[])
         }
+
         mc.addRelation = {Map props, String source->
-          return addRelationMethod.invoke(delegate,  [props, source,  true] as Object[])
+            return delegate.invokeOperation("addRelation", [props, source] as Object[])
         }
-        mc.addRelation = {Map props, boolean flush->
-          return addRelationMethod.invoke(delegate,  [props, null, flush] as Object[])
+
+        mc.addRelation = {Map props->
+            return delegate.invokeOperation("addRelation", [props] as Object[])
+        }
+        mc._addRelation = {Map props, String source->
+          return addRelationMethod.invoke(delegate,  [props, source] as Object[])
+        }
+        mc.removeRelation = {Map props, String source->
+            return delegate.invokeOperation("removeRelation", [props, source] as Object[])
         }
         mc.removeRelation = {Map props->
-            return removeRelationMethod.invoke(delegate,  [props, null, true] as Object[])
+            return delegate.invokeOperation("removeRelation", [props] as Object[])
         }
-
-        mc.removeRelation = {Map props, String source->
-            return removeRelationMethod.invoke(delegate,  [props, source, true] as Object[])
-        }
-
-        mc.removeRelation = {Map props, boolean flush->
-            return removeRelationMethod.invoke(delegate,  [props, null, flush] as Object[])
+        mc._removeRelation = {Map props, String source->
+            return removeRelationMethod.invoke(delegate,  [props, source] as Object[])
         }
         mc.remove = {->
+            return delegate.invokeOperation("remove", InvokerHelper.EMPTY_ARGS)
+        }
+        mc._remove = {->
             return removeMethod.invoke(delegate, null);
         }
+
         mc.'static'.removeAll = {->
-            removeAllMatchingMethod.invoke(mc.theClass, ["alias:*"] as Object[]);
+            return mc.theClass.invokeStaticOperation("removeAll", [mc.theClass] as Object[])
+        }
+        mc.'static'.removeAll = {String query->
+            return mc.theClass.invokeStaticOperation("removeAll", [mc.theClass, query] as Object[])
         }
 
         mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList->
@@ -224,16 +235,23 @@ class SearchableExtensionGrailsPlugin {
             getPropertyValuesMethod.invoke(mc.theClass, [query, propertyList, options] as Object[]);
         }
 
-        mc.'static'.removeAll = {query->
+        mc.'static'._removeAll = {query->
             removeAllMatchingMethod.invoke(mc.theClass, [query] as Object[]);
         }
+
         mc.'static'.add = {Map props->
+            return mc.theClass.invokeStaticOperation("add", [mc.theClass, props] as Object[])
+        }
+        mc.'static'.addUnique = {Map props->
+            return mc.theClass.invokeStaticOperation("addUnique", [mc.theClass, props] as Object[])
+        }
+        mc.'static'._add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);
         }
         mc.'static'.bulkAdd = {Collection objectProps->
             return addBulkMethod.invoke(mc.theClass, [objectProps] as Object[]);
         }
-        mc.'static'.addUnique = {Map props->
+        mc.'static'._addUnique = {Map props->
             return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);
         }
     }

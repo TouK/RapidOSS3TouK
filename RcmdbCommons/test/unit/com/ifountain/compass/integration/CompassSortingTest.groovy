@@ -107,8 +107,15 @@ class SortTestParentObject {
         storageType CompositeDirectoryWrapperProvider.RAM_DIR_TYPE
     }
     static relations = [:]
+    org.springframework.validation.Errors errors;
+    org.springframework.validation.Errors __operation_class__;
     Long id
     Long version
+
+    static constraints = {
+        errors(nullable:true);
+        __operation_class__(nullable:true);
+    }
 }
 
 class SortTestoLevel1Child1 extends SortTestParentObject {

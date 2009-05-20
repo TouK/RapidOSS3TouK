@@ -24,7 +24,7 @@ class Person {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors"];
+        except = ["errors", "__operation_class__"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
@@ -33,18 +33,20 @@ class Person {
     
     String name ="";
     org.springframework.validation.Errors errors ;
-    
+    Object __operation_class__ ;
+
     static relations  =[:]
     static constraints={
     bday(blank:true,nullable:true)
         
      name(blank:false,nullable:false,key:[])
      errors(nullable:true)   
-     
+     __operation_class__(nullable:true)   
+
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors"];
+    static transients = ["errors", "__operation_class__"];
     
     public String toString()
     {

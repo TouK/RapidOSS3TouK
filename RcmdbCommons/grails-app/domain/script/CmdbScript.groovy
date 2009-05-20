@@ -44,15 +44,15 @@ class CmdbScript {
     String scriptFile = "";
     String rsOwner = "p"
     String type = ONDEMAND;
-    boolean enabled = false;
-    boolean enabledForAllGroups = false;
+    Boolean enabled = false;
+    Boolean enabledForAllGroups = false;
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
     Long period = 1;
     String staticParam = "";
     String logFile="cmdbscript";
     String logLevel = Level.WARN.toString();
-    boolean logFileOwn=false;
+    Boolean logFileOwn=false;
     String operationClass ="";
     
     BaseListeningDatasource listeningDatasource;

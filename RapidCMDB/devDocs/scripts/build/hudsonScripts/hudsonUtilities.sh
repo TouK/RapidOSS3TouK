@@ -128,44 +128,10 @@ runTestBuildAndJavaTestsForRCMDB() {
 
 runGrailsTests() {
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
-    cd $WORKSPACE/Distribution/RapidServer/Modeler/
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-    chmod +x *.sh
-    ./rsmodeler.sh -testUnit
-    sleep 5
-    rm -r test/reports/TESTS-TestSuites.xml
-    if [ ! -d $WORKSPACE/TestResults/Modeler ]
-      then
-        mkdir $WORKSPACE/TestResults/Modeler
-    fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
-    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
+    cd RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
-    ./rsmodeler.sh -testIntegration
-
-    sleep 5
-    rm -r test/reports/TESTS-TestSuites.xml
-    if [ ! -d $WORKSPACE/TestResults/Modeler ]
-      then
-        mkdir $WORKSPACE/TestResults/Modeler
-    fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
-
-    cd ../RapidSuite
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
-    chmod +x rs.sh
-
-    sed -i "s/-Xmx512m/-Xmx1024m/g" rs.sh
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
-    ./rs.sh -testUnit
-    rm -r test/reports/TESTS-TestSuites.xml
-    if [ ! -d $WORKSPACE/TestResults/RapidSuite ]
-      then
-        mkdir $WORKSPACE/TestResults/RapidSuite
-    fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
+    rm -rf $WORKSPACE/Distribution/RapidServer/temp
     ./rs.sh -testIntegration
     rm -r test/reports/TESTS-TestSuites.xml
     if [ ! -d $WORKSPACE/TestResults/RapidSuite ]

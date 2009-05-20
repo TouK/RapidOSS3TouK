@@ -40,6 +40,7 @@ public class ScriptManager {
     private def baseDirectory;
     private Map defaultSupportedMethods;
     private Map scriptStopStates;
+    private Object stopStateLock;
     
     
     private ScriptManager() {
@@ -60,6 +61,7 @@ public class ScriptManager {
     public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList, Map defaultSupportedMethods) {
         scripts = [:];        
         scriptStopStates=[:];
+        stopStateLock=new Object();
 
         this.defaultSupportedMethods = defaultSupportedMethods;
         classLoader = parentClassLoader;
@@ -106,9 +108,12 @@ public class ScriptManager {
     }
     private def createStopStateIfNotExists(String scriptName)
     {
-        if(!scriptStopStates.containsKey(scriptName))
+        synchronized (stopStateLock)
         {
-           createDefaultStopState(scriptName);
+            if(!scriptStopStates.containsKey(scriptName))
+            {
+               createDefaultStopState(scriptName);
+            }
         }
     }
     private def createDefaultStopState(String scriptName)
@@ -120,13 +125,19 @@ public class ScriptManager {
 
     private def getStopStateOfStateObject(stateMap)
     {
-        return stateMap.get(IS_STOPPED_PROPERTY);
+        synchronized (stopStateLock)
+        {
+            return stateMap.get(IS_STOPPED_PROPERTY);
+        }
     }
     public def stopRunningScripts(scriptName)
     {
-       def oldStateMap=scriptStopStates[scriptName];
-       oldStateMap[IS_STOPPED_PROPERTY]=true;
-       createDefaultStopState(scriptName);
+       synchronized (stopStateLock)
+       {
+            def oldStateMap=scriptStopStates[scriptName];
+            oldStateMap[IS_STOPPED_PROPERTY]=true;
+            createDefaultStopState(scriptName);
+       }
     }
 
     def synchronized removeScript(String scriptPath)

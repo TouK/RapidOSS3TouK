@@ -725,6 +725,51 @@ return name""");
 
         
     }
+    public void testStopMechanismIsSynchronized()
+    {
+        def stateHistory=[];
+        def stopHistory=[];
+
+        10.times{ subCounter ->
+            def scriptName="script${subCounter}";
+            manager.createStopStateIfNotExists(scriptName);
+        }
+
+        Thread adderThread=Thread.start(){
+            50.times{
+                10.times{ subCounter ->
+                    def scriptName="script${subCounter}";
+                    synchronized (manager.stopStateLock)
+                    {
+                        stateHistory.add([stopped:manager.getStopStateOfStateObject(manager.scriptStopStates[scriptName]),time:System.currentTimeMillis()]);
+                    }
+                }
+            }
+        }
+        
+        while(adderThread.isAlive())
+        {
+            10.times{ subCounter ->
+                def scriptName="script${subCounter}";
+                manager.stopRunningScripts(scriptName);
+            }
+        }
+
+        def stopCount=0
+        stateHistory.each{ map ->
+            if(map.stopped)
+            {
+                stopCount++;
+            }
+        }
+
+        if(stopCount>0)
+            fail("There are ${stopCount} stop states found should be 0");
+
+
+
+
+    }
       
     public static void addScriptMessage(String message)
     {

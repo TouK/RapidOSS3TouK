@@ -197,7 +197,7 @@ System.addShutdownHook {
         proc.waitForOrKill(1000);
     }
 }
-
+ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf", toFile : "${rootDir.getAbsolutePath()}/conf/groovy-starter.conf", overwrite:"true");
 path = "${getTestExecutableFileName(rootDir)} run-app".toString();
 println "Running command ${path} to run application"
 proc = Runtime.getRuntime().exec(path, envVars as String[], new File(rootDir.getAbsolutePath() + "/RapidSuite"));

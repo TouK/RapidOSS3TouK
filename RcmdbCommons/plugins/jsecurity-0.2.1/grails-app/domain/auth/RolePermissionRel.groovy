@@ -19,7 +19,7 @@
 package auth;
 class RolePermissionRel {
    static searchable = {
-        except:["permission", "role", "errors"]
+        except:["permission", "role", "errors", "__operation_class__"]
      };
     Role role
     Permission permission
@@ -27,6 +27,7 @@ class RolePermissionRel {
     String rsOwner = "p"
     String actions
     org.springframework.validation.Errors errors ;
+    Object __operation_class__;
     static relations = [
             permission:[type:Permission, reverseName:"roleRelations", isMany:false],
             role:[isMany:false, reverseName:"permissionRelations", type:Role]
@@ -36,6 +37,7 @@ class RolePermissionRel {
         role(nullable: true, key:["permission"])
         permission(nullable: true)
         errors(nullable:true)
+        __operation_class__(nullable:true)
     }
-    static transients = ["errors"]
+    static transients = ["errors", "__operation_class__"]
 }

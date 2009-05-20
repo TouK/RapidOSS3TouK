@@ -22,7 +22,7 @@ class Role {
     def static final String USER = "User";
 
     static searchable = {
-        except:["permissionRelations", "groups", "errors"]
+        except:["permissionRelations", "groups", "errors", "__operation_class__"]
      };
     Long id; 
     Long version;
@@ -31,8 +31,9 @@ class Role {
     List permissionRelations = [];
     List groups = [];
     org.springframework.validation.Errors errors ;
+    Object __operation_class__;
     static cascaded = ["permissionRelations":true]
-    static transients = ["errors"]
+    static transients = ["errors", "__operation_class__"]
     static relations = [
             permissionRelations:[type:RolePermissionRel, reverseName:"role", isMany:true],
             groups:[type:Group, reverseName:"role", isMany:true]
@@ -40,6 +41,7 @@ class Role {
     static constraints = {
         name(nullable: false, blank: false, key: [])
         errors(nullable:true)
+        __operation_class__(nullable:true)
     }
     
     String toString(){

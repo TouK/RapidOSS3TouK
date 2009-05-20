@@ -21,12 +21,14 @@ package model
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 class ModelDatasourceKeyMapping {
     static searchable = {
-        except:["datasource", "property"]
+        except:["datasource", "property", "__operation_class__", "errors"]
     };
     ModelProperty property;
     String rsOwner = "p"
     ModelDatasource datasource;
     String nameInDatasource;
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__;
     static relations = [
             datasource:[type:ModelDatasource, reverseName:"keyMappings", isMany:false],
             property:[type:ModelProperty, reverseName:"mappedKeys", isMany:false]
@@ -38,8 +40,10 @@ class ModelDatasourceKeyMapping {
             }
         });
         nameInDatasource(nullable:true);
+        __operation_class__(nullable:true);
+        errors(nullable:true);
     }
-
+    static transients = ["errors", "__operation_class__"];
     String toString(){
         return getProperty("property").name;
     }

@@ -19,15 +19,20 @@
 package model;
 class DatasourceName {
      static searchable = {
-         except:["modelDatasources"]
+         except:["modelDatasources", "__operation_class__", "errors"]
      };
      static cascaded = [modelDatasources:true]
      static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]
      String name;
      String rsOwner = "p"
      List modelDatasources = [];
+     org.springframework.validation.Errors errors ;
+     Object __operation_class__;
+     static transients = ["errors", "__operation_class__"]
      static constraints = {
          name(blank:false, nullable:false, key:[]);
+         errors(nullable:true);
+         __operation_class__(nullable:true);
      };
 
      String toString(){

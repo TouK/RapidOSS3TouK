@@ -26,7 +26,7 @@ package application
  */
 class ObjectId {
     static searchable = {
-        except:["errors"]
+        except:["errors", "__operation_class__"]
     };
     Long id;
     String rsOwner = "p"
@@ -34,8 +34,10 @@ class ObjectId {
     String name;
     long nextId;
     org.springframework.validation.Errors errors ;
-    static transients = ["errors"]
+    Object __operation_class__;
+    static transients = ["errors", "__operation_class__"]
     static constraints = {
         errors(nullable:true)
+        __operation_class__(nullable:true)
     }
 }

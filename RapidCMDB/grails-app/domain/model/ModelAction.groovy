@@ -26,7 +26,7 @@ package model
  */
 class ModelAction {
     static searchable = {
-        except = ["errors"];
+        except = ["errors", "__operation_class__"];
     };
     public static final String DELETE_MODEL = "deletModel"
     public static final String DELETE_ALL_INSTANCES = "deleteall"
@@ -39,9 +39,11 @@ class ModelAction {
     String action;
     boolean willBeDeleted = false;
     org.springframework.validation.Errors errors ;
-    static transients = ["errors"]
+    Object __operation_class__;
+    static transients = ["errors", "__operation_class__"]
 
     static constraints={
-    errors(nullable:false)
+    errors(nullable:true)
+    __operation_class__(nullable:true)
     }
 }

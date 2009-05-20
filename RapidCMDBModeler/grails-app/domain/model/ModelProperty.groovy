@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelProperty {
     static searchable = {
-        except:["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource"]
+        except:["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource", "errors", "__operation_class__"]
     };
     def static final String stringType = "string";
     def static final String numberType = "number";
@@ -42,13 +42,15 @@ class ModelProperty {
     Model model;
     List mappedKeys = [];
     boolean lazy = true;
-
+    org.springframework.validation.Errors errors ;
+    Object __operation_class__;
     static relations = [
             propertySpecifyingDatasource:[type:ModelProperty,  isMany:false],
             propertyDatasource:[type:ModelDatasource, isMany:false],
             model:[type:Model, reverseName:"modelProperties", isMany:false],
             mappedKeys:[type:ModelDatasourceKeyMapping, reverseName:"property", isMany:true],
     ]
+    static transients = ["errors", "__operation_class__"]
     static constraints = {
         name(blank:false, key:['model'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
@@ -116,6 +118,8 @@ class ModelProperty {
             }
 
         });
+        errors(nullable:true)
+        __operation_class__(nullable:true)
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType, floatType, booleanType]);
         lazy(validator:{val, obj ->

@@ -26,7 +26,7 @@ package relation
  */
 class Relation {
     static searchable = {
-        except:["errors"]
+        except:["errors", "__operation_class__"]
     };
     Long id;
     Long version;
@@ -37,11 +37,13 @@ class Relation {
     String source;
     String reverseName = "";
     org.springframework.validation.Errors errors ;
-    static transients = ["errors"]
+    Object __operation_class__;
+    static transients = ["errors", "__operation_class__"]
     static relations = [:]
     static constraints = {
         objectId(key:["name", "reverseObjectId", "reverseName"]);
         errors(nullable:true)
+        __operation_class__(nullable:true)
     }
 
     public String toString() {

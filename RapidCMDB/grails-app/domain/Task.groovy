@@ -24,7 +24,7 @@ class Task {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["workedOnBy", "errors"];
+        except = ["workedOnBy", "errors", "__operation_class__"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
@@ -32,17 +32,18 @@ class Task {
     String name ="";
     List workedOnBy = [];
     org.springframework.validation.Errors errors ;
-
+    Object __operation_class__;
     static relations = [workedOnBy:[isMany:true, type:Developer, reverseName:"worksOn"]
     ]
     static constraints={
     name(blank:false,nullable:false,key:[])
     errors(nullable:true)   
-     
+    __operation_class__(nullable:true)   
+
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors"];
+    static transients = ["errors", "__operation_class__"];
     
     public String toString()
     {

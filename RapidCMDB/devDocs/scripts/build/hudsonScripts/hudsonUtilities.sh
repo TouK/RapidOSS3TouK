@@ -144,7 +144,7 @@ runGrailsTests() {
     sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     rm -rf $WORKSPACE/Distribution/RapidServer/temp
-    rm -rf $WORKSPACE/Distribution/RapidServer/RapidSuite/test/unit/*
+    rm -rf $WORKSPACE/Distribution/RapidServer/Modeler/test/unit/*
     ./rsmodeler.sh -testIntegration
 
     sleep 5

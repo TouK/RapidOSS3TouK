@@ -17,12 +17,9 @@
       <sourceFolder url="file://$MODULE_DIR$/devDocs/grailsOverriddenFiles/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/ModelOperations/RapidServer/RapidSuite/scripts" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/NotificationOperations/RapidServer/RapidSuite/scripts" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/NotificationThreadSearch/RapidServer/RapidSuite/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/default/RapidServer/RapidSuite/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/deployment" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/conf" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/grails-app/conf/hibernate" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />

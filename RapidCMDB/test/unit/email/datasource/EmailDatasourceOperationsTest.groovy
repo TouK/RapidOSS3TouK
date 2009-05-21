@@ -50,7 +50,7 @@ class EmailDatasourceOperationsTest extends RapidCoreTestCase{
     }
     public void testSendEmailCallsRenderTemplateAndGeneratesBodyParamIfTemplateParamIsSupplied(){
         def renderCallParams=[:];
-        EmailDatasourceOperations.metaClass.renderTemplate = { templatePath,parameters ->
+        EmailDatasourceOperations.metaClass.'static'.renderTemplate = { templatePath,parameters ->
             renderCallParams.templatePath=templatePath
             renderCallParams.parameters=parameters
             return "testrenderresult"

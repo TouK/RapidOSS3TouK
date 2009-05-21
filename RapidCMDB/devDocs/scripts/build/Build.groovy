@@ -303,6 +303,7 @@ class Build extends Parent {
             ant.pathelement(location: (String) classpath.getProperty("DdlUtils-1_0_jar"));
             ant.pathelement(location: (String) classpath.getProperty("commons-betwixt-0_8_jar"));
             ant.pathelement(location: (String) classpath.getProperty("SNMP4J_jar"));
+            ant.pathelement(location: (String) classpath.getProperty("STComm_jar"));
             ant.pathelement(location: (String) classpath.getProperty("compass_jar"));
             ant.pathelement(location: (String) classpath.getProperty("easymock_jar"));
             ant.pathelement(location: (String) classpath.getProperty("lucene-analyzers_jar"));

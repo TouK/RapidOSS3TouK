@@ -201,6 +201,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(expectedScriptMessage, scriptObject.run())
 
         //test the logger is configured
+        assertEquals(script.name,script.logFile);
         def logger = CmdbScript.getScriptLogger(script);
         assertEquals(logger.getLevel(), logLevel);
         assertTrue(logger.getAllAppenders().hasMoreElements());
@@ -311,7 +312,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         logParams["oldLogFileOwn"] = false;
 
         def updateParams = [name: "myscript333", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: logParams.logFileOwn]
-        updateParams.logFile = updateParams.name
+        
         def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.oldLogLevel, logFileOwn: logParams.oldLogFileOwn]
         assertEquals(CmdbScript.list().size(), 0)
 
@@ -336,6 +337,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(script.name, updateParams.name)
         assertEquals(unscheduleScriptName, params.name)
 
+        assertEquals(script.name,script.logFile);
         def logger = CmdbScript.getScriptLogger(script);
         assertEquals(logger.getLevel(), logLevel);
         assertTrue(logger.getAllAppenders().hasMoreElements());

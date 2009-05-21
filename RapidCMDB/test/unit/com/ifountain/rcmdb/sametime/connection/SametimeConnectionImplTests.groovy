@@ -9,6 +9,7 @@ import com.lotus.sametime.core.constants.STError
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.core.connection.exception.ConnectionException
 import junit.framework.TestSuite
+import com.ifountain.rcmdb.test.util.SametimeTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -33,7 +34,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testInit() throws Exception {
-        ConnectionParam connParam = getConnectionParam();
+        ConnectionParam connParam = SametimeTestUtils.getConnectionParam();
         try {
             connection.init(connParam);
         }
@@ -49,7 +50,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
         }
         catch (UndefinedConnectionParameterException e) {}
 
-        connParam = getConnectionParam();
+        connParam = SametimeTestUtils.getConnectionParam();
         connParam.getOtherParams().remove(SametimeConnectionImpl.USERNAME);
         try {
             connection.init(connParam);
@@ -57,7 +58,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
         }
         catch (UndefinedConnectionParameterException e) {}
 
-        connParam = getConnectionParam();
+        connParam = SametimeTestUtils.getConnectionParam();
         connParam.getOtherParams().remove(SametimeConnectionImpl.PASSWORD);
         try {
             connection.init(connParam);
@@ -66,7 +67,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
         catch (UndefinedConnectionParameterException e) {}
 
         //community is optional
-        connParam = getConnectionParam();
+        connParam = SametimeTestUtils.getConnectionParam();
         connParam.getOtherParams().remove(SametimeConnectionImpl.COMMUNITY);
         try {
             connection.init(connParam);
@@ -77,7 +78,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testConnect() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
         assertTrue(connection.checkConnection());
@@ -86,7 +87,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testServerIsInvalid() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         param.getOtherParams().put(SametimeConnectionImpl.HOST, "HostDoesNotExist")
         connection.init(param);
         try {
@@ -99,7 +100,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testUsernameIsInvalid() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         param.getOtherParams().put(SametimeConnectionImpl.USERNAME, "Invalid user")
         connection.init(param);
         try {
@@ -111,7 +112,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
         }
     }
     public void testPasswordIsInvalid() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         param.getOtherParams().put(SametimeConnectionImpl.PASSWORD, "InvalidPass")
         connection.init(param);
         try {
@@ -124,7 +125,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testResolveUser() {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
         connection.resolveUser(receiverUsername);
@@ -138,7 +139,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testDisconnect() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
         assertTrue(connection.checkConnection());
@@ -151,7 +152,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testSendMessage() throws Exception {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
 
@@ -180,7 +181,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testSendMessageThrowsExceptionIfNotConnected() {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         def messageText = "Hello World";
 
@@ -194,7 +195,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testCannotSendOfflineMessages() {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
 
@@ -209,7 +210,7 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testSendingMessageToANonexistingUser() {
-        ConnectionParam param = getConnectionParam();
+        ConnectionParam param = SametimeTestUtils.getConnectionParam();
         connection.init(param);
         connection._connect();
 
@@ -224,17 +225,4 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
         }
     }
 
-    def getConnectionParam() {
-        Map otherParams = new HashMap();
-        otherParams.put(SametimeConnectionImpl.HOST, CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_HOST))
-        otherParams.put(SametimeConnectionImpl.USERNAME, CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_USERNAME))
-        otherParams.put(SametimeConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_PASSWORD))
-        otherParams.put(SametimeConnectionImpl.COMMUNITY, CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_COMMUNITY))
-        ConnectionParam param = new ConnectionParam("SametimeConnection", SametimeTestConstants.SAMETIME_TEST_CONNECTION, SametimeConnectionImpl.class.getName(), otherParams);
-        param.setMinTimeout(30000);
-        param.setMaxTimeout(30000);
-        TestSuite
-        return param;
-
-    }
 }

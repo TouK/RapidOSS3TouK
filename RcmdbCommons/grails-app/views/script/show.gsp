@@ -157,7 +157,7 @@
             <%
                 }
             %>
-            <span class="button"><g:actionSubmit class="close" action="stopRunningScripts" value="Stop Running Scripts"/></span>
+            <span class="button"><g:actionSubmit class="close" action="stopRunningScripts" value="Mark For Stop"/></span>
         </g:form>
     </div>
 </div>

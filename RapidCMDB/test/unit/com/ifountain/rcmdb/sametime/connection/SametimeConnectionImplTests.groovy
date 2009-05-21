@@ -95,7 +95,10 @@ class SametimeConnectionImplTests extends RapidCoreTestCase {
             fail("should throw exception")
         }
         catch (e) {
-            assertEquals(connection.getErrorMessage(STError.ST_CONNECT_HOST_UNREACHABLE), e.getMessage())
+            if(!e.getMessage().equals(connection.getErrorMessage(STError.ST_CONNECT_HOST_UNREACHABLE))){
+                assertEquals("Login request to the host HostDoesNotExist timed out.", e.getMessage())
+            }
+
         }
     }
 

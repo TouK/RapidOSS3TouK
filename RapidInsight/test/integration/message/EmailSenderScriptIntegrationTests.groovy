@@ -200,7 +200,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.addEventCreateEmail(Logger.getRootLogger(),[id:event.id],destination,0)            
+            RsMessage.addEventCreateMessage([id:event.id],RsMessage.EMAIL, destination,0)            
         }
         assertEquals(classes.RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -225,7 +225,7 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(classes.RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
         classes.RsHistoricalEvent.list().each{ event ->
-            RsMessage.addEventClearEmail(Logger.getRootLogger(),[activeId:event.activeId],destination)            
+            RsMessage.addEventClearMessage([activeId:event.activeId],RsMessage.EMAIL, destination)            
         }
         assertEquals(RsMessage.countHits("alias:*"),8)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)

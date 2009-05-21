@@ -13,9 +13,9 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
     public void testGetOperations()
     {
         String operationClassName = "${GetOperationsMethodTest.simpleName}Operation1";
-        def methods = [[name:"method1", params:[String, Long, List], isStatic:true],
-        [name:"method2", params:[], returnType:String],
-        [name:"method3", params:[String], returnType:String]
+        def methods = [[name:"method1", params:[String, Long, List], isStatic:true, isPublic:true],
+        [name:"method2", params:[], returnType:String, isStatic:false, isPublic:true],
+        [name:"method3", params:[String], returnType:String, isStatic:false, isPublic:true]
         ]
         def methodText = "";
         methods.each{Map method->
@@ -71,6 +71,8 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
                 assertEquals(methodExpectedProps.params[j].name, operationList[i].parameters[j].name);
             }
             assertEquals (methodExpectedProps.returnType?methodExpectedProps.returnType:Object, operationList[i].returnType);
+            assertEquals (methodExpectedProps.isStatic, operationList[i].isStatic);
+            assertEquals (true, operationList[i].isPublic);
         }
         try
         {

@@ -5,6 +5,7 @@ import java.lang.reflect.Method
 import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.reflection.CachedMethod
 import com.ifountain.annotations.Description
+import java.lang.reflect.Modifier
 
 /**
 * Created by IntelliJ IDEA.
@@ -38,7 +39,7 @@ public class GetOperationsMethod {
                 if(!domainMethods.containsKey(method.name))
                 {
                     Description annotation = method.getAnnotation(Description);
-                    operationList.add(new OperationMethod(name:method.name, parameters:method.getParameterTypes(), returnType:method.getReturnType(), description:annotation?annotation.value():""));
+                    operationList.add(new OperationMethod(name:method.name, parameters:method.getParameterTypes(), isStatic:Modifier.isStatic(method.modifiers), isPublic:!Modifier.isPrivate(method.modifiers),returnType:method.getReturnType(), description:annotation?annotation.value():""));
                 }
             }
         }
@@ -58,6 +59,8 @@ class OperationMethod{
     List parameters;
     Class returnType;
     String description;
+    boolean isStatic;
+    boolean isPublic;
 
     public void setProperty(String s, Object o) {
     }

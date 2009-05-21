@@ -1,15 +1,5 @@
-
-
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.scripting.ScriptManager
-import script.CmdbScript
-import script.CmdbScriptOperations
-
-import connection.*
-import datasource.*
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
-
+import script.CmdbScript
 
 /**
 * Created by IntelliJ IDEA.

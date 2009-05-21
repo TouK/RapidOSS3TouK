@@ -25,6 +25,7 @@ package test;
  * To change this template use File | Settings | File Templates.
  */
 public class TestSuite {
+    Object __operation_class__ ;
     static hasMany = ["tests":Test];
     String name;
 }

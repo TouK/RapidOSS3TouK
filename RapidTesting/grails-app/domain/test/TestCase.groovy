@@ -25,6 +25,7 @@ package test;
  * To change this template use File | Settings | File Templates.
  */
 public class TestCase {
+    Object __operation_class__ ;
     String name;
     Test test;
 }

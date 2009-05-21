@@ -26,6 +26,7 @@ package test;
  */
 class Test
 {
+    Object __operation_class__ ;
     String name;
     TestSuite suite;
     Class testClass;

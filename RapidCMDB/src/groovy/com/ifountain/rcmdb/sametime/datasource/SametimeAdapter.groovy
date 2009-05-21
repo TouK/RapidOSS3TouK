@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.sametime.datasource
 
 import com.ifountain.core.datasource.BaseAdapter
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,7 +10,9 @@ import com.ifountain.core.datasource.BaseAdapter
 * Time: 1:21:59 PM
 */
 class SametimeAdapter extends BaseAdapter {
-
+    public SametimeAdapter(String connConfigName, long reconnectInterval, Logger logger) {
+        super(connConfigName, reconnectInterval, logger)
+    }
     public void sendMessage(String target, String message) throws Exception {
         SendMessageAction action = new SendMessageAction(target, message);
         executeAction(action);

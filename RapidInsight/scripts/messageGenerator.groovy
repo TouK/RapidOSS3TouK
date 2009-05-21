@@ -56,7 +56,7 @@ users.each {user ->
             logger.debug("Going to search RsMessageRule for userId:${userId}");
             if (isAdmin || (destination != null && destination != ""))
             {
-                if (isAdmin && (destination == null || destination != "")) {
+                if (isAdmin && (destination == null || destination == "")) {
                     destination = "admin_destination"
                 }
                 logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");

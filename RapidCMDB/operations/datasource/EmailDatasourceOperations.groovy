@@ -44,7 +44,7 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
         this.adapter=adapter;        
     }
 
-    public String renderTemplate(templatePath,parameters){
+    public static String renderTemplate(templatePath,parameters){
         def engine=new GroovyPagesTemplateEngine()
         def template= engine.createTemplate(new File(templatePath));
 

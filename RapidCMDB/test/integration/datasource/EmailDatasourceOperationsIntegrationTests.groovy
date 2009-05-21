@@ -1,12 +1,7 @@
 package datasource
 
 import com.ifountain.core.test.util.RapidCoreTestCase
-import com.ifountain.rcmdb.test.util.CompassForTests
-import datasource.EmailDatasourceOperations;
-import com.ifountain.comp.test.util.file.TestFile
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
-import org.springframework.mock.web.MockServletContext
-import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine;
+import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 
 /**
 * Created by IntelliJ IDEA.
@@ -33,11 +28,10 @@ class EmailDatasourceOperationsIntegrationTests extends RapidCoreTestCase{
         file.setText(gspContent);
 
 
-        def operations=new EmailDatasourceOperations();
         def templatePath=file.getPath();
         def parameters=["aList":[1,2,3]];
 
-        String result=operations.renderTemplate(templatePath,parameters);
+        String result=EmailDatasource.renderTemplate(templatePath,parameters);
         assertEquals("1,2,3,",result.trim())
     }
 }

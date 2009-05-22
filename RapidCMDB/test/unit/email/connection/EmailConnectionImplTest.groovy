@@ -53,7 +53,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
      {
         Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
          def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
-         conParams.setMinTimeout (15000);
+         conParams.setMinTimeout (44000);
 
          EmailConnectionImpl con=new EmailConnectionImpl()
          con.init(conParams)

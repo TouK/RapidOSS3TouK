@@ -180,7 +180,7 @@ class SearchOperationMemoryTest extends AbstractSearchableCompassTests {
         }
         try {
             def usedMemAfterSearchOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-            assertTrue("Memory increased ${usedMemAfterSearchOperations-usedMem} number of bytes", usedMemAfterSearchOperations <= usedMem + 100);
+            assertTrue("Memory increased ${usedMemAfterSearchOperations-usedMem} number of bytes", usedMemAfterSearchOperations <= usedMem + 600);
         } finally {
             if(willThreadWait)
             {

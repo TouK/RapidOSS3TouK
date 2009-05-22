@@ -1257,9 +1257,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, operationClass: "testclass");
         assertFalse(script.hasErrors())
+        assertFalse(script.scriptFile.compareTo(script.name)==0)
 
         CmdbScript.stopRunningScripts(script);
-        assertEquals(script.name,managerParams.scriptName)
+
+        assertEquals(script.scriptFile,managerParams.scriptName)
 
     }
 

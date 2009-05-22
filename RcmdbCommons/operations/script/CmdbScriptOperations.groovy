@@ -268,6 +268,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def stopRunningScripts(CmdbScript script)
     {
-        ScriptManager.getInstance().stopRunningScripts(script.name);
+        ScriptManager.getInstance().stopRunningScripts(script.scriptFile);
     }
 }

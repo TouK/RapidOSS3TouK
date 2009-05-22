@@ -669,15 +669,6 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
     }
 
-    public static TestSuite suite()
-    {
-        TestSuite s = new TestSuite();
-        for(int i=0; i < 100; i++)
-        {
-            s.addTestSuite (AbstractRapidDomainWriteMethodTest.class);
-        }
-        return s;
-    }
 
     public static List createModels()
     {

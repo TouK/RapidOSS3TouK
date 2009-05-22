@@ -658,6 +658,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         synchronized (waitLock2)
         {
             waitLock2.notifyAll();
+            waitLock2 = false;
         }
 
         CommonTestUtils.waitFor (new ClosureWaitAction(){
@@ -666,6 +667,16 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             Assert.assertEquals(2, thread2State);
         }, 100);
 
+    }
+
+    public static TestSuite suite()
+    {
+        TestSuite s = new TestSuite();
+        for(int i=0; i < 100; i++)
+        {
+            s.addTestSuite (AbstractRapidDomainWriteMethodTest.class);
+        }
+        return s;
     }
 
     public static List createModels()

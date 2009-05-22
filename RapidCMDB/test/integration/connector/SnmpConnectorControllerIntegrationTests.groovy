@@ -24,7 +24,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     static transactional = false;
     def connectorSaveParams = [:];
     def connectorUpdateParams = [:];
-
+    static int portNumber = 15555;
     public void setUp() {
         super.setUp();
         SnmpConnector.removeAll();
@@ -36,15 +36,16 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
 
         connectorSaveParams["host"] = "0.0.0.0";
-        connectorSaveParams["port"] = "15555";
+        connectorSaveParams["port"] = ""+portNumber;
         connectorSaveParams["logLevel"] = Level.DEBUG.toString();
         connectorSaveParams["scriptFile"] = "sampleSnmpScript"
 
 
         connectorUpdateParams["host"] = "192.168.1.1";
-        connectorUpdateParams["port"] = "15556";
+        connectorUpdateParams["port"] = ""+(portNumber+1);
         connectorUpdateParams["logLevel"] = Level.WARN.toString();
         connectorUpdateParams["scriptFile"] = "sampleSnmpScriptForUpdate"
+        portNumber = portNumber+2;
     }
 
     public void tearDown() {

@@ -18,7 +18,6 @@ SearchList is a UI component designed to represent tabular row data. It enables 
 <b>sortOrderAttribute</b> (Required): The attribute of the row which displays the sort position of the row according to the search query. ex: "sortOrder" for the sample data below<br/>
 <b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
 <b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.</p>
-
 <div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>All properties except rootTag, contentPath and keyAttribute are pre-populated when a new SearchList component is added to the layout, assuming you will be using SearchController provided with RapidInsight.</td></tr></table></div>
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
@@ -37,6 +36,7 @@ SearchList is a UI component designed to represent tabular row data. It enables 
 <b>defaultQuery</b> (Optional): The query appended to the all queries sent by SearchList.<br/>
 <b>lineSize</b> (Optional): How many lines a row consists of. Default is 3.<br/>
 <b>timeout</b> (Optional): The time interval in seconds to wait the server request completes successfully before aborting.</p>
+
 
 <h4><a name="SearchListComponent-AvailableActions"></a>Available Actions</h4>
 

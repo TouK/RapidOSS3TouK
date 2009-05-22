@@ -5,11 +5,86 @@
 <h4><a name="FunctionAction-AvailableProperties"></a>Available Properties</h4>
 <p><b>name</b>: Name your function action<br/>
 <b>component</b>: Select the component whose function will be invoked<br/>
-<b>function</b>: Select the function of the component. List will be populated with the available functions of the selected component.<br/>
-<b>condition</b>: Specify a condition if you want this action to be executed conditionally. </p>
+<b>function</b>: Select the function of the component. List will be populated with the available functions of the selected component.</p>
+
+<p>All components provide below functions:</p>
+<ul>
+	<li>poll</li>
+	<li>refresh</li>
+	<li>setTitle(argument list: title)</li>
+</ul>
+
+
+<p>SearchList component provides these additional functions:</p>
+<ul>
+	<li>setQuery(argument list: queryString, sortAttributes, sortOrder, searchIn, extraParams)</li>
+	<li>appendToQuery(argument list: query)</li>
+	<li>appendExceptQuery(argument list: property, value)</li>
+	<li>sort(argument list: sortAttribute, sortOrder)</li>
+</ul>
+
+
+<p>SearchGrid component provides these additional functions:</p>
+<ul>
+	<li>setQueryWithView(argument list: queryString, view, searchIn, title, extraParams)</li>
+	<li>appendToQuery(argument list: query)</li>
+	<li>appendExceptQuery(argument list: property, value)</li>
+	<li>sort(argument list: sortAttribute, sortOrder)</li>
+</ul>
+
+
+<p>Html component provides these additional functions:</p>
+<ul>
+	<li>show(argument list: url, title)</li>
+</ul>
+
+
+<p>"url" can be provided using the createURL utility method. </p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">ex:createURL('getEventDetails.gsp', {name:params.data.name})</pre>
+</div></div>
+
+<p>ObjectMap component provides two additional functions:</p>
+<ul>
+	<li>loadMap(argument list: response)</li>
+</ul>
+
+
+<p>This function loads the map from AJAX response. "response" is the AJAX response object which includes map structure, ie: mapPropertyList , mapProperties , nodePropertyList, layout.</p>
+
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">&lt;graph layout='0' mapProperties='sampleMap' mapPropertyList='mapType' nodePropertyList='id,name,rsClassName
+,expanded,x,y'&gt;
+&lt;node expanded='<span class="code-keyword">true</span>' expandable='<span class="code-keyword">true</span>' x='250' y='250' id='sampleNode' rsClassName='RsTopologyObject'
+ name='sampleNode' /&gt;
+  &lt;node expanded='<span class="code-keyword">false</span>' expandable='<span class="code-keyword">true</span>' x='' y='' id='ev0' rsClassName='RsEvent' name='ev0' /&gt;
+  &lt;node expanded='<span class="code-keyword">false</span>' expandable='<span class="code-keyword">true</span>' x='' y='' id='ev1' rsClassName='RsEvent' name='ev1' /&gt;
+  &lt;node expanded='<span class="code-keyword">false</span>' expandable='<span class="code-keyword">true</span>' x='' y='' id='ev2' rsClassName='RsEvent' name='ev2' /&gt;
+  &lt;edge source='sampleNode' target='ev0' /&gt;
+  &lt;edge source='sampleNode' target='ev1' /&gt;
+  &lt;edge source='sampleNode' target='ev2' /&gt;
+&lt;/graph&gt;</pre>
+</div></div>
+<ul>
+	<li>loadMapForNode (argument list: nodeParams, mapParams)<br/>
+This function loads the map for the given object name. <br/>
+<b>nodeParams</b> is the map of properties that will identify the root node of the map.
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">ex: {name:'sampleNode',rsClassName:'RsTopologyObject' }</pre>
+</div></div>
+<p><b>mapParams:</b> Map of properties that will identify the map.</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java">ex : { mapType:'sampleMap' }</pre>
+</div></div></li>
+</ul>
+
+
+<p>The properties specified in nodePropertyList and mapPropertyList properties of ObjectMap component will be searched from nodeParams and mapParams.</p>
+
+<p><b>condition</b>: Specify a condition if you want this action to be executed conditionally. </p>
 
 <div class='panelMacro'><table class='warningMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/forbidden.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td>First, define your triggers and then come back and edit the condition since you will need to know what data is made available by the fired event selected by the trigger.</td></tr></table></div> 
-<p>For example, you have defined a trigger for the SearchGrid component's propertyCliecked event. But the requirement is to execute the action only when the classname column is clicked. propertyCliecked event of SearchGrid makes the following data available:</p>
+<p>For example, you have defined a trigger for the SearchGrid component's propertyClicked event. But the requirement is to execute the action only when the classname column is clicked. propertyClicked event of SearchGrid makes the following data available:</p>
 <ul>
 	<li>params.data</li>
 	<li>params.key</li>

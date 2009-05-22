@@ -83,6 +83,9 @@ class NetcoolModuleBuild extends Build {
             }
         }
         ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
+            ant.fileset(file: "${env.rapid_insight}/solutions/**");
+        }
+        ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
             ant.fileset(file: "${env.rapid_netcool}/applications/solutions/**");
         }
 //        replaceJavascriptAndCss("${rapidSuiteDir}/grails-app/views/layouts/indexLayout.gsp", "/RapidSuite/indexLayout_${buildNo}.js", "/RapidSuite/indexLayout_${buildNo}.css")

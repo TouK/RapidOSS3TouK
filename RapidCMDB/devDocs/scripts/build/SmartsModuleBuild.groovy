@@ -79,6 +79,9 @@ class SmartsModuleBuild extends Build {
             }
         }
         ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
+            ant.fileset(file: "${env.rapid_insight}/solutions/**");
+        }
+        ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
             ant.fileset(file: "${env.rapid_smarts}/applications/solutions/**");
         }
         

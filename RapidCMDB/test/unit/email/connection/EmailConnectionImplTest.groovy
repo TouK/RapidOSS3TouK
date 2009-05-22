@@ -72,7 +72,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
          assertFalse(con.isConnected());
 
          conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
-         conParams.setMinTimeout (11000);
+         conParams.setMinTimeout (44000);
 
          con=new EmailConnectionImpl()
          con.init(conParams)

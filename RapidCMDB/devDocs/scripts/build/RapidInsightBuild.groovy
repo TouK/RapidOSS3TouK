@@ -123,6 +123,7 @@ class RapidInsightBuild extends Build {
 
     def buildUnix() {
         prepareRCMDB();
+        ant.delete(dir: env.dist_rapid_server+"/jre");
         // copy xml file for sample data to be imported
         ant.copy(file: "$env.rapid_insight/sampleRiData.xml", tofile: "$env.dist_rapid_suite/sampleRiData.xml",overwrite:true);
 

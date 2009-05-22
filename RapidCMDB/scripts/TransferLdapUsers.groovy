@@ -120,7 +120,7 @@ try {
 
 
                 try {
-                    def rsUser = RsUser.addUser([username: username, passwordHash: ""], [localGroupName])
+                    def rsUser = RsUser.addUser([username: username, password: ""], [localGroupName])
                     if (!rsUser.hasErrors()) {
                         output += "<br>User ${rsUser.username} created"
                         rsUser.addLdapInformation(userdn: userdn, ldapConnection: ldapConnection)

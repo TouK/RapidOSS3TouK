@@ -63,12 +63,11 @@ class JsecDbRealm {
             def ldapInformation = user.retrieveLdapInformation();
             if (ldapInformation != null)
             {
-                def ldapUserInformation = (LdapUserInformation) user.userInformation
 
-                def ldapConnection = ldapUserInformation.ldapConnection
+                def ldapConnection = ldapInformation.ldapConnection
 
                 log.info 'gonna try ldap auth from realm'
-                if (!ldapConnection.checkAuthentication(ldapUserInformation.userdn, new String(authToken.password)))
+                if (!ldapConnection.checkAuthentication(ldapInformation.userdn, new String(authToken.password)))
                 {
                     log.info 'Invalid password (DB realm - LDAP)'
                     throw new IncorrectCredentialsException("Invalid password for user '${username}'")

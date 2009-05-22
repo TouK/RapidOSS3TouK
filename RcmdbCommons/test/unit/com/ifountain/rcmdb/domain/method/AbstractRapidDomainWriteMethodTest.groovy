@@ -663,7 +663,10 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
         CommonTestUtils.waitFor (new ClosureWaitAction(){
             Assert.assertEquals(2, thread1State);
-            Assert.assertTrue("One of the threads should be selecetd a deadlock victim and should be executed twice", (numberOfExecutionOfInvokeOfInstance1 == 2 && numberOfExecutionOfInvokeOfInstance2 == 1) || (numberOfExecutionOfInvokeOfInstance1 == 1 && numberOfExecutionOfInvokeOfInstance2 == 2) );
+            Assert.assertTrue("""One of the threads should be selecetd a deadlock victim and should
+                be executed twice but thread1 execution times:${numberOfExecutionOfInvokeOfInstance1}
+                thread2 execution times:${numberOfExecutionOfInvokeOfInstance2}
+        """, (numberOfExecutionOfInvokeOfInstance1 == 2 && numberOfExecutionOfInvokeOfInstance2 == 1) || (numberOfExecutionOfInvokeOfInstance1 == 1 && numberOfExecutionOfInvokeOfInstance2 == 2) );
             Assert.assertEquals(2, thread2State);
         }, 100);
 

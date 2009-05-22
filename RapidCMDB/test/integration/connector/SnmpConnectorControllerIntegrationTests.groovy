@@ -36,13 +36,13 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
 
         connectorSaveParams["host"] = "0.0.0.0";
-        connectorSaveParams["port"] = "162";
+        connectorSaveParams["port"] = "15555";
         connectorSaveParams["logLevel"] = Level.DEBUG.toString();
         connectorSaveParams["scriptFile"] = "sampleSnmpScript"
 
 
         connectorUpdateParams["host"] = "192.168.1.1";
-        connectorUpdateParams["port"] = "50";
+        connectorUpdateParams["port"] = "15556";
         connectorUpdateParams["logLevel"] = Level.WARN.toString();
         connectorUpdateParams["scriptFile"] = "sampleSnmpScriptForUpdate"
     }
@@ -212,7 +212,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.params.clear();
         controller.params.id=snmpConnector.id;
         controller.delete();
-        
+
         assertEquals("/snmpConnector/list", controller.response.redirectedUrl);
 
         println  controller.response.redirectedUrl
@@ -285,7 +285,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1, SnmpConnection.list().size());
         assertEquals(1, SnmpDatasource.list().size());
         assertEquals(1, CmdbScript.list().size());
-        
+
         def ds = SnmpDatasource.list()[0];
         assertTrue(ds.isFree());
 
@@ -300,9 +300,9 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertTrue(ds.isFree());
         def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
-        
+
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
-        
+
         assertTrue(controller.flash.errors.hasErrors());
         assertEquals(0,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
     }
@@ -519,7 +519,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertNull(controller.modelAndView.model.datasource.id);
 
         existingConnection.remove();
-        
+
         assertEquals(0, SnmpConnector.list().size());
         assertEquals(0, SnmpConnection.list().size());
         assertEquals(0, SnmpDatasource.list().size());
@@ -578,6 +578,6 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(0, CmdbScript.list().size());
 
     }
-    
+
 
 }

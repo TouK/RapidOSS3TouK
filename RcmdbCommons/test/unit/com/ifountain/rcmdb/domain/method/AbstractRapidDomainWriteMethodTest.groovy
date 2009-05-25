@@ -579,6 +579,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
                 synchronized (waitLock1)
                 {
                     waitLock1.wait();
+                    willBlock1 = false;
                 }
             }
             println "REQUEST1 EXECUTING REQUEST2"
@@ -595,6 +596,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
                 synchronized (waitLock2)
                 {
                     waitLock2.wait();
+                    waitLock2 = false;
                 }
             }
             println "REQUEST2 EXECUTING REQUEST1"
@@ -648,7 +650,6 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         synchronized (waitLock1)
         {
             waitLock1.notifyAll();
-            willBlock1 = false;
         }
 
         Thread.sleep(300);
@@ -658,7 +659,6 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
         synchronized (waitLock2)
         {
             waitLock2.notifyAll();
-            waitLock2 = false;
         }
 
         CommonTestUtils.waitFor (new ClosureWaitAction(){

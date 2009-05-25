@@ -24,6 +24,7 @@ import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.scripting.ScriptingException
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.scripting.ScriptStateManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -197,6 +198,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         params.staticParam = script.staticParam;
         params.staticParamMap = CmdbScript.getStaticParamMap(script);
+        ScriptStateManager.getInstance().addStateParamToBindings(script.name,params);
         if (params["params"] == null) {
             params["params"] = [:]
         }
@@ -268,6 +270,6 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
     static def stopRunningScripts(CmdbScript script)
     {
-        ScriptManager.getInstance().stopRunningScripts(script.scriptFile);
+        ScriptStateManager.getInstance().stopRunningScripts(script.name);
     }
 }

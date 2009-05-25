@@ -9,6 +9,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import datasource.BaseListeningDatasource
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.Level
+import com.ifountain.rcmdb.scripting.ScriptStateManager
+import com.ifountain.rcmdb.test.util.TestDatastore
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,14 +36,15 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     private void clearMetaClasses()
     {
-
         ListeningAdapterManager.destroyInstance();
         ScriptScheduler.destroyInstance();
         ScriptManager.destroyInstance();
+        ScriptStateManager.destroyInstance();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
+        GroovySystem.metaClassRegistry.removeMetaClass(ScriptStateManager)
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScriptOperations)
         ExpandoMetaClass.enableGlobally();
@@ -663,7 +666,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
-        assertEquals(managerParams.bindings.size(), oldParams.size() + 3)
+        assertEquals(managerParams.bindings.size(), oldParams.size() + 4)
 
         oldParams.each {key, val ->
             assertEquals(val, managerParams.bindings[key])
@@ -739,7 +742,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
-        assertEquals(managerParams.bindings.size(), oldParams.size() + 3)
+        assertEquals(managerParams.bindings.size(), oldParams.size() + 4)
 
         oldParams.each {key, val ->
             assertEquals(val, managerParams.bindings[key])
@@ -1239,30 +1242,106 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
-    void testStopRunningScriptsCallsScriptManagerStopRunningScripts()
+    void testStopRunningScriptsCallsScriptStateManagerStopRunningScripts()
     {
 
         initialize([CmdbScript, Group], []);
         initializeForCmdbScript();
 
         def managerParams = [:]
-        ScriptManager.metaClass.stopRunningScripts = {scriptName ->
+        ScriptStateManager.metaClass.stopRunningScripts = {scriptName ->
             managerParams.scriptName = scriptName;
 
         }
 
-        initializeForCmdbScript();
+        
 
         ScriptManager.getInstance().addScript(simpleScriptFile);
 
-        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, operationClass: "testclass");
+        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
         assertFalse(script.hasErrors())
         assertFalse(script.scriptFile.compareTo(script.name)==0)
 
         CmdbScript.stopRunningScripts(script);
 
-        assertEquals(script.scriptFile,managerParams.scriptName)
+        assertEquals(script.name,managerParams.scriptName)
 
+    }
+
+    public void testRunScriptAndGetScriptObjectCallsScriptStateManagerAddStateParamToBindings()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        def managerParams = [:]
+        ScriptStateManager.metaClass.addStateParamToBindings = {String scriptName,bindings ->
+            managerParams.scriptName = scriptName;
+            managerParams.bindings = bindings;
+
+        }
+
+
+
+        ScriptManager.getInstance().addScript(simpleScriptFile);
+
+        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
+        assertFalse(script.hasErrors())
+        assertFalse(script.scriptFile.compareTo(script.name)==0)
+
+        def bindings=[:];
+        assertEquals(0,managerParams.size());
+
+        CmdbScript.runScript(script,bindings);
+
+        assertEquals(script.name,managerParams.scriptName)
+        assertSame(bindings,managerParams.bindings)
+
+
+        bindings.clear();
+        managerParams.clear();
+        assertEquals(0,managerParams.size());
+
+        CmdbScript.getScriptObject(script,bindings);
+
+        assertEquals(script.name,managerParams.scriptName)
+        assertSame(bindings,managerParams.bindings)
+    }
+    public void testStopMechanismWorksForScripts()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+
+        def scriptName = "script2";
+        createScript(scriptName+".groovy","""
+            import com.ifountain.rcmdb.test.util.TestDatastore
+            iterationCount=0;
+            while(!IS_STOPPED())
+            {
+                println "itr :"+iterationCount
+                Thread.sleep(100);
+                iterationCount++;
+            }
+            println "stopped in script"
+            TestDatastore.put("cmdb_script2_iterationCount",iterationCount);
+            TestDatastore.put("cmdb_script2_IS_STOPPED",IS_STOPPED());
+        """);
+        def script=CmdbScript.addScript(name:scriptName)
+        assertFalse(script.hasErrors());
+
+        //script2 should wait until stop is called
+
+        def runnerThread=Thread.start(){
+           CmdbScript.runScript(script,[:]);
+        }
+        assertEquals(null,TestDatastore.get("cmdb_script2_IS_STOPPED"))
+        assertEquals(null,TestDatastore.get("cmdb_script2_iterationCount"))
+
+        Thread.sleep(250);
+        CmdbScript.stopRunningScripts (script);
+        runnerThread.join();
+        assertEquals(true,TestDatastore.get("cmdb_script2_IS_STOPPED"))
+        assertTrue(TestDatastore.get("cmdb_script2_iterationCount")>0)
     }
 
     def createSimpleScript(scriptName, scriptMessage)

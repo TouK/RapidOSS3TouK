@@ -133,6 +133,7 @@
 
 .rcmdb-searchgrid .rcmdb-search-rowselected {
     background-color: #DDDDFF !important;
+    color: black !important;
 }
 
 .rcmdb-searchgrid .rcmdb-search-cell {

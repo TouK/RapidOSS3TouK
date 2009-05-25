@@ -1,8 +1,8 @@
-<%@ page import="script.CmdbScript" %>
+<%@ page import="datasource.RepositoryDatasource; script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="adminLayout" />
+    <meta name="layout" content="adminLayout"/>
     <title>Show Script</title>
 </head>
 <body>
@@ -47,7 +47,7 @@
 
                     <td valign="top" class="value">${cmdbScript.logFileOwn}</td>
                 </tr>
-                 <tr class="prop">
+                <tr class="prop">
                     <td valign="top" class="name">Static Parameter:</td>
 
                     <td valign="top" class="value">${cmdbScript.staticParam}</td>
@@ -110,18 +110,34 @@
                 <%
                     }
                     else if (cmdbScript.type == CmdbScript.LISTENING) {
+                        if (cmdbScript.listeningDatasource instanceof RepositoryDatasource) {
+                %>
+                <tr class="prop">
+                    <td valign="top" class="name">Listen To RapidInsight Repository:</td>
+                    <td valign="top" class="value">true</td>
+                </tr>
+
+                <%
+
+                    }
+                    else {
                 %>
                 <tr class="prop">
                     <td valign="top" class="name">Datasource:</td>
-
                     <td valign="top" class="value">${cmdbScript.listeningDatasource}</td>
+                </tr>
 
-                </tr>               
+                <%
+
+                        }
+                %>
+
+
                 <tr class="prop">
                     <td valign="top" class="name">Log File:</td>
 
                     <td valign="top" class="value">${cmdbScript.logFile}</td>
-                </tr>                          
+                </tr>
                 <%
                         }
                 %>
@@ -157,7 +173,9 @@
             <%
                 }
             %>
-            <span class="button"><g:actionSubmit class="close" action="stopRunningScripts" value="Mark For Stop"/></span>
+            <g:if test="${cmdbScript.type != CmdbScript.LISTENING}">
+                <span class="button"><g:actionSubmit class="close" action="stopRunningScripts" value="Mark For Stop"/></span>
+            </g:if>
         </g:form>
     </div>
 </div>

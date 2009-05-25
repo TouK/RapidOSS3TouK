@@ -28,6 +28,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
 import com.ifountain.rcmdb.methods.MethodFactory
+import datasource.RepositoryDatasource
+import connection.RepositoryConnection
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -128,10 +130,8 @@ class BootStrap {
 
     def registerDefaultDatasources()
     {
-        def rcmdbDatasource = RCMDBDatasource.findByName(RapidCMDBConstants.RCMDB);
-        if (rcmdbDatasource == null) {
-            RCMDBDatasource.add(name: RapidCMDBConstants.RCMDB);
-        }
+        RCMDBDatasource.add(name: RapidCMDBConstants.RCMDB);
+        RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
     }
 
     def registerDefaultUsers()

@@ -9,7 +9,8 @@ import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
 * Date: May 13, 2009
 * Time: 3:43:04 PM
 */
-class RepositoryConnection extends Connection{
+class RepositoryConnection extends Connection {
+    public static final String RCMDB_REPOSITORY = "RapidCmdbRepository";
     static searchable = {
         except = ["repositoryDatasources"];
     };

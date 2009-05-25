@@ -25,17 +25,18 @@ import com.ifountain.rcmdb.scripting.ScriptingException
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import com.ifountain.rcmdb.scripting.ScriptStateManager
+import datasource.RepositoryDatasource
+import connection.RepositoryConnection
 
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Sep 11, 2008
- * Time: 4:28:54 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Sep 11, 2008
+* Time: 4:28:54 PM
+* To change this template use File | Settings | File Templates.
+*/
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-
 
     def reload() throws ScriptingException
     {
@@ -52,15 +53,15 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
     }
     static def addUniqueScript(Map params) throws Exception {
-        addUniqueScript(params,false);
+        addUniqueScript(params, false);
     }
-    static def addUniqueScript(Map params, boolean fromController)  throws Exception {
-         _addScript(params,fromController,true);
+    static def addUniqueScript(Map params, boolean fromController) throws Exception {
+        _addScript(params, fromController, true);
     }
     static def addScript(Map params, boolean fromController) throws Exception {
-         _addScript(params,fromController,false);
+        _addScript(params, fromController, false);
     }
-    private static def _addScript(Map params, boolean fromController,boolean addUnique) throws Exception {
+    private static def _addScript(Map params, boolean fromController, boolean addUnique) throws Exception {
         if (!params.get("scriptFile") || params.get("scriptFile").trim() == "")
         {
             params["scriptFile"] = params.name;
@@ -68,17 +69,18 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         params["logFile"] = params.name;
 
         def script;
-        if(addUnique)
+        if (addUnique)
         {
-            script=CmdbScript.addUnique(params);
+            script = CmdbScript.addUnique(params);
         }
         else
         {
-            script=CmdbScript.add(params);
+            script = CmdbScript.add(params);
         }
 
         if (!script.hasErrors()) {
             ScriptManager.getInstance().addScript(script.scriptFile);
+            manageRepositoryDatasource(script, params["listenToRepository"] == true)
             scheduleScript(script);
             configureScriptLogger(script);
         }
@@ -105,6 +107,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 getLogger().info("Exception occurred while stopListening for ${script.name} script", e);
             }
         }
+        manageRepositoryDatasource(script, false)
         script.remove()
         if (CmdbScript.countHits("scriptFile:" + script.scriptFile) == 0)
         {
@@ -114,7 +117,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def deleteScript(String scriptName) throws Exception {
-        CmdbScript script = CmdbScript.get(name:scriptName)
+        CmdbScript script = CmdbScript.get(name: scriptName)
         if (script) {
             deleteScript(script)
         }
@@ -126,7 +129,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
         def scriptNameBeforeUpdate = script.name;
-        params["logFile"] = params.name ? params.name : script.name ;
+        params["logFile"] = params.name ? params.name : script.name;
 
         script.update(params);
 
@@ -140,6 +143,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 }
                 ScriptManager.getInstance().addScript(script.scriptFile);
             }
+            manageRepositoryDatasource(script, params["listenToRepository"] == true)
             ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
             scheduleScript(script)
             configureScriptLogger(script);
@@ -172,7 +176,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     }
 
     static def runScript(String scriptName, Map params) throws Exception {
-        CmdbScript script = CmdbScript.get(name:scriptName)
+        CmdbScript script = CmdbScript.get(name: scriptName)
         if (script) {
             return runScript(script, params);
         }
@@ -198,7 +202,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     {
         params.staticParam = script.staticParam;
         params.staticParamMap = CmdbScript.getStaticParamMap(script);
-        ScriptStateManager.getInstance().addStateParamToBindings(script.name,params);
+        ScriptStateManager.getInstance().addStateParamToBindings(script.name, params);
         if (params["params"] == null) {
             params["params"] = [:]
         }
@@ -271,5 +275,16 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def stopRunningScripts(CmdbScript script)
     {
         ScriptStateManager.getInstance().stopRunningScripts(script.name);
+    }
+
+    protected static def manageRepositoryDatasource(CmdbScript script, boolean willListen) {
+        if (!willListen || script.type != CmdbScript.LISTENING) {
+            if (script.listeningDatasource instanceof RepositoryDatasource) {
+                script.listeningDatasource.remove();
+            }
+        }
+        else if (script.type == CmdbScript.LISTENING) {
+            RepositoryDatasource.add(name: "AutoGeneratedRepositoryDatasource${script.id}", listeningScript: script, connection: RepositoryConnection.get(name: RepositoryConnection.RCMDB_REPOSITORY))
+        }
     }
 }

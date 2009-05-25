@@ -11,7 +11,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.log4j.Level
 import com.ifountain.rcmdb.scripting.ScriptStateManager
 import com.ifountain.rcmdb.test.util.TestDatastore
-
+import datasource.RepositoryDatasource
+import connection.RepositoryConnection
 /**
  * Created by IntelliJ IDEA.
  * User: admin
@@ -36,6 +37,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     private void clearMetaClasses()
     {
+
         ListeningAdapterManager.destroyInstance();
         ScriptScheduler.destroyInstance();
         ScriptManager.destroyInstance();
@@ -67,7 +69,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         createSimpleScript(simpleScriptFile, expectedScriptMessage);
     }
- 
+
     void testAddScriptGeneratesScriptFileParamWhenMissing()
     {
         initialize([CmdbScript], []);
@@ -315,7 +317,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         logParams["oldLogFileOwn"] = false;
 
         def updateParams = [name: "myscript333", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: logParams.logFileOwn]
-        
+
         def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.oldLogLevel, logFileOwn: logParams.oldLogFileOwn]
         assertEquals(CmdbScript.list().size(), 0)
 
@@ -1242,7 +1244,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
     }
-    void testStopRunningScriptsCallsScriptStateManagerStopRunningScripts()
+   void testStopRunningScriptsCallsScriptStateManagerStopRunningScripts()
     {
 
         initialize([CmdbScript, Group], []);
@@ -1254,7 +1256,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         }
 
-        
+
 
         ScriptManager.getInstance().addScript(simpleScriptFile);
 
@@ -1269,79 +1271,105 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
 
     public void testRunScriptAndGetScriptObjectCallsScriptStateManagerAddStateParamToBindings()
-    {
-        initialize([CmdbScript, Group], []);
+       {
+           initialize([CmdbScript, Group], []);
+           initializeForCmdbScript();
+
+           def managerParams = [:]
+           ScriptStateManager.metaClass.addStateParamToBindings = {String scriptName,bindings ->
+               managerParams.scriptName = scriptName;
+               managerParams.bindings = bindings;
+
+           }
+
+
+
+           ScriptManager.getInstance().addScript(simpleScriptFile);
+
+           def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
+           assertFalse(script.hasErrors())
+           assertFalse(script.scriptFile.compareTo(script.name)==0)
+
+           def bindings=[:];
+           assertEquals(0,managerParams.size());
+
+           CmdbScript.runScript(script,bindings);
+
+           assertEquals(script.name,managerParams.scriptName)
+           assertSame(bindings,managerParams.bindings)
+
+
+           bindings.clear();
+           managerParams.clear();
+           assertEquals(0,managerParams.size());
+
+           CmdbScript.getScriptObject(script,bindings);
+
+           assertEquals(script.name,managerParams.scriptName)
+           assertSame(bindings,managerParams.bindings)
+       }
+       public void testStopMechanismWorksForScripts()
+       {
+           initialize([CmdbScript, Group], []);
+           initializeForCmdbScript();
+
+
+           def scriptName = "script2";
+           createScript(scriptName+".groovy","""
+               import com.ifountain.rcmdb.test.util.TestDatastore
+               iterationCount=0;
+               while(!IS_STOPPED())
+               {
+                   println "itr :"+iterationCount
+                   Thread.sleep(100);
+                   iterationCount++;
+               }
+               println "stopped in script"
+               TestDatastore.put("cmdb_script2_iterationCount",iterationCount);
+               TestDatastore.put("cmdb_script2_IS_STOPPED",IS_STOPPED());
+           """);
+           def script=CmdbScript.addScript(name:scriptName)
+           assertFalse(script.hasErrors());
+
+           //script2 should wait until stop is called
+
+           def runnerThread=Thread.start(){
+              CmdbScript.runScript(script,[:]);
+           }
+           assertEquals(null,TestDatastore.get("cmdb_script2_IS_STOPPED"))
+           assertEquals(null,TestDatastore.get("cmdb_script2_iterationCount"))
+
+           Thread.sleep(250);
+           CmdbScript.stopRunningScripts (script);
+           runnerThread.join();
+           assertEquals(true,TestDatastore.get("cmdb_script2_IS_STOPPED"))
+           assertTrue(TestDatastore.get("cmdb_script2_iterationCount")>0)
+       }
+        void testManageRepositoryDatasourceAddsRepositoryDatasourceIfListenToParameterIsProvided() {
+        initialize([CmdbScript, Group, RepositoryDatasource, RepositoryConnection, BaseListeningDatasource], []);
         initializeForCmdbScript();
+        def repoConn = RepositoryConnection.add(name:RepositoryConnection.RCMDB_REPOSITORY)
+        def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.LISTENING, scriptFile: simpleScriptFile]
+        CmdbScript script = CmdbScript.addScript(params)
+        assertNull(script.listeningDatasource);
 
-        def managerParams = [:]
-        ScriptStateManager.metaClass.addStateParamToBindings = {String scriptName,bindings ->
-            managerParams.scriptName = scriptName;
-            managerParams.bindings = bindings;
-
-        }
-
-
-
-        ScriptManager.getInstance().addScript(simpleScriptFile);
-
-        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
-        assertFalse(script.hasErrors())
-        assertFalse(script.scriptFile.compareTo(script.name)==0)
-
-        def bindings=[:];
-        assertEquals(0,managerParams.size());
-
-        CmdbScript.runScript(script,bindings);
-
-        assertEquals(script.name,managerParams.scriptName)
-        assertSame(bindings,managerParams.bindings)
-
-
-        bindings.clear();
-        managerParams.clear();
-        assertEquals(0,managerParams.size());
-
-        CmdbScript.getScriptObject(script,bindings);
-
-        assertEquals(script.name,managerParams.scriptName)
-        assertSame(bindings,managerParams.bindings)
+        CmdbScript.manageRepositoryDatasource(script,true);
+        assertNotNull(script.listeningDatasource);
+        def ds = script.listeningDatasource;
+        assertEquals("AutoGeneratedRepositoryDatasource${script.id}", ds.name)
+        assertEquals(RepositoryConnection.RCMDB_REPOSITORY, ds.connection.name)
     }
-    public void testStopMechanismWorksForScripts()
-    {
-        initialize([CmdbScript, Group], []);
+
+    void testManageRepositoryDatasourceWillNotAddIfTheScriptIsNotListening() {
+        initialize([CmdbScript, Group, RepositoryDatasource, RepositoryConnection, BaseListeningDatasource], []);
         initializeForCmdbScript();
+        def repoConn = RepositoryConnection.add(name:RepositoryConnection.RCMDB_REPOSITORY)
+        def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        CmdbScript script = CmdbScript.addScript(params)
+        assertNull(script.listeningDatasource);
 
-
-        def scriptName = "script2";
-        createScript(scriptName+".groovy","""
-            import com.ifountain.rcmdb.test.util.TestDatastore
-            iterationCount=0;
-            while(!IS_STOPPED())
-            {
-                println "itr :"+iterationCount
-                Thread.sleep(100);
-                iterationCount++;
-            }
-            println "stopped in script"
-            TestDatastore.put("cmdb_script2_iterationCount",iterationCount);
-            TestDatastore.put("cmdb_script2_IS_STOPPED",IS_STOPPED());
-        """);
-        def script=CmdbScript.addScript(name:scriptName)
-        assertFalse(script.hasErrors());
-
-        //script2 should wait until stop is called
-
-        def runnerThread=Thread.start(){
-           CmdbScript.runScript(script,[:]);
-        }
-        assertEquals(null,TestDatastore.get("cmdb_script2_IS_STOPPED"))
-        assertEquals(null,TestDatastore.get("cmdb_script2_iterationCount"))
-
-        Thread.sleep(250);
-        CmdbScript.stopRunningScripts (script);
-        runnerThread.join();
-        assertEquals(true,TestDatastore.get("cmdb_script2_IS_STOPPED"))
-        assertTrue(TestDatastore.get("cmdb_script2_iterationCount")>0)
+        CmdbScript.manageRepositoryDatasource(script,true);
+        assertNull(script.listeningDatasource);
     }
 
     def createSimpleScript(scriptName, scriptMessage)

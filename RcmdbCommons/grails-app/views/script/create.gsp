@@ -1,4 +1,4 @@
-<%@ page import="datasource.BaseListeningDatasource; script.CmdbScript" %>
+<%@ page import="datasource.RepositoryDatasource; datasource.BaseListeningDatasource; script.CmdbScript" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -15,10 +15,12 @@
     var cronRow = document.getElementById('cronExpressionRow');
     var enabledRow = document.getElementById('enabledRow');
     var datasourceRow = document.getElementById('datasourceRow');
+    var listenToRepositoryRow = document.getElementById('listenToRepositoryRow');
     var staticParamRow = document.getElementById('staticParamRow');
     var typeSelect = document.getElementById("type");
     var scriptType = typeSelect.options[typeSelect.selectedIndex].value;
     datasourceRow.style.display = (scriptType == "Listening"? "":"none");
+    listenToRepositoryRow.style.display = (scriptType == "Listening"? "":"none");
     scheduleTypeRow.style.display = (scriptType == "Scheduled"? "":"none");
     startDelayRow.style.display = (scriptType == "Scheduled"? "":"none");
     periodRow.style.display = (scriptType == "Scheduled"? "":"none");
@@ -26,6 +28,7 @@
     enabledRow.style.display = (scriptType == "Scheduled"? "":"none");
 
     scheduleTypeChanged();
+    listenToRepositoryChanged();
     }
 
     function scheduleTypeChanged(){
@@ -45,6 +48,16 @@
     cronInput.value = "* * * * * ?";
     }
     }
+    }
+    function listenToRepositoryChanged(){
+       var datasourceInput = document.getElementById('listeningDatasource');
+       var listenToRepositoryInput = document.getElementById('listenToRepository');
+       if(listenToRepositoryInput.checked){
+        datasourceInput.disabled = true;
+       }
+       else{
+         datasourceInput.disabled = false;
+       }
     }
     </script>
 </head>
@@ -176,12 +189,24 @@
                             <g:checkBox name="enabled" value="${cmdbScript?.enabled}"></g:checkBox>
                         </td>
                     </tr>
+                    <tr class="prop" id="listenToRepositoryRow">
+                        <td valign="top" class="name">
+                            <label for="listenToRepository">Listen To RapidInsight Repository:</label>
+                        </td>
+                        <td valign="top">
+                            <g:checkBox id="listenToRepository" name="listenToRepository" value="${cmdbScript?.listeningDatasource instanceof RepositoryDatasource}" onclick="listenToRepositoryChanged()"></g:checkBox>
+                        </td>
+                    </tr>
+
                     <tr class="prop" id="datasourceRow">
                         <td valign="top" class="name">
                             <label for="listeningDatasource">Datasource:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'listeningDatasource', 'errors')}">
-                            <g:select optionKey="id" from="${BaseListeningDatasource.list()}" name="listeningDatasource.id" value="${cmdbScript?.listeningDatasource?.id}" noSelection="['null':'']"></g:select>
+                            <%
+                                def dsList = BaseListeningDatasource.list().findAll{!(it instanceof RepositoryDatasource)}
+                            %>
+                            <g:select id="listeningDatasource" optionKey="id" from="${dsList}" name="listeningDatasource.id" value="${cmdbScript?.listeningDatasource?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
 

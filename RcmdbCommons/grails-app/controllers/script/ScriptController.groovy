@@ -79,7 +79,9 @@ class ScriptController {
 
     def save = {
         params.logFile=params.name;
-        def script = CmdbScript.addScript(ControllerUtils.getClassProperties(params, CmdbScript), true)
+        def classProperties = ControllerUtils.getClassProperties(params, CmdbScript);
+        classProperties["listenToRepository"] = params["listenToRepository"] == "on"
+        def script = CmdbScript.addScript(classProperties, true)
         if (script.hasErrors()) {
             render(view: 'create', controller: 'script', model: [cmdbScript: script])
         }
@@ -122,7 +124,9 @@ class ScriptController {
         def script = CmdbScript.get([id: params.id])
         if (script) {
             params.logFile=params.name;
-            script = CmdbScript.updateScript(script, ControllerUtils.getClassProperties(params, CmdbScript), true);
+            def classProperties = ControllerUtils.getClassProperties(params, CmdbScript);
+            classProperties["listenToRepository"] = params["listenToRepository"] == "on"
+            script = CmdbScript.updateScript(script,classProperties, true);
             if (script.hasErrors()) {
                 render(view: 'edit', model: [cmdbScript: script])
             }

@@ -71,7 +71,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.autoComp.queryMatchCase = true;
         this.autoComp.useShadow = true;
         this.autoComp.animVert = this.animated;
-        this.autoComp.forceSelection = true;
+        //this.autoComp.forceSelection = true;
         this.autoComp.doBeforeExpandContainer = function(oTextbox, oContainer, sQuery, aResults) {
             var pos = YAHOO.util.Dom.getXY(oTextbox);
             pos[1] += YAHOO.util.Dom.get(oTextbox).offsetHeight + 2;

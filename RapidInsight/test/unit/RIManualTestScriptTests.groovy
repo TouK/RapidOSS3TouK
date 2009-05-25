@@ -58,7 +58,9 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         RsApplicationTestUtils.clearProcessors();
         RsApplicationTestUtils.clearUtilityPaths();
         ListeningAdapterManager.getInstance().destroyInstance();
-        ConnectionManager.destroy();
+        if(ConnectionManager.isInitialized()){
+            ConnectionManager.destroy();    
+        }
         super.tearDown();
 
     }
@@ -168,14 +170,13 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
-        def conn = RepositoryConnection.add(name: connectionName);
-        def repoDs = RepositoryDatasource.add(name: "repoDs", connection: conn);
-        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listeningDatasource: repoDs], true)
+        def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
+        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)
         def script = CmdbScript.addScript([name: "findMaxTest", type: CmdbScript.ONDEMAND], true)
 
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
-            assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(repoDs));
+            assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(listeningscript.listeningDatasource));
         }))
 
         try {
@@ -249,14 +250,13 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
-        def conn = RepositoryConnection.add(name: connectionName);
-        def repoDs = RepositoryDatasource.add(name: "repoDs", connection: conn);
-        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listeningDatasource: repoDs], true)
+        def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
+        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)
         def script = CmdbScript.addScript([name: "criticalPercentTest", type: CmdbScript.ONDEMAND], true)
 
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
-            assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(repoDs));
+            assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(listeningscript.listeningDatasource));
         }))
 
         try {

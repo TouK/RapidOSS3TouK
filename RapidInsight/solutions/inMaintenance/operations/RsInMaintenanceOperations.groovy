@@ -14,32 +14,39 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     //map should contain objectName and can optionally contain ending, source, and info
     public static RsInMaintenance putObjectInMaintenance(props)
     {
-        def maintObj=RsInMaintenance.add(props);
-        if(maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
-        eventsInMaintenance(true,props.objectName);
+        def maintObj = RsInMaintenance.add(props);
+        if (maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
+        eventsInMaintenance(true, props.objectName);
         return maintObj;
 
     }
 
-    public static void takeObjectOutOfMaintenance(objectName)
+    public static void takeObjectOutOfMaintenance(String objectName)
     {
-       def maintObj = RsInMaintenance.get(objectName:objectName)
-	   maintObj?.remove()
-       eventsInMaintenance(false,objectName);
+        def maintObj = RsInMaintenance.get(objectName: objectName)
+        if (maintObj) {
+            RsInMaintenance.takeObjectOutOfMaintenance(maintObj);
+        }
     }
 
-    public static void eventsInMaintenance(boolean maint,String objectName) {
-		def events = RsEvent.search("elementName:${objectName}")
-		events.results.each{
-			if (it.inMaintenance != maint)
-				it.inMaintenance = maint
-		}
-	}
+    public static void takeObjectOutOfMaintenance(RsInMaintenance maintObj)
+    {
+        maintObj.remove()
+        eventsInMaintenance(false, maintObj.objectName);
+    }
+
+    public static void eventsInMaintenance(boolean maint, String objectName) {
+        def events = RsEvent.search("elementName:${objectName}")
+        events.results.each {
+            if (it.inMaintenance != maint)
+                it.inMaintenance = maint
+        }
+    }
 
 
 
-    public static void removeExpiredItems(){
-    	def logger = getLogger()
+    public static void removeExpiredItems() {
+        def logger = getLogger()
         logger.debug("BEGIN removeExpiredItems")
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")
@@ -47,12 +54,11 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
         def activeItems = RsInMaintenance.searchEvery("alias:*")
         logger.debug("active item count: ${activeItems.size()}")
         def nullDate = new Date(0).getTime()
-        activeItems.each{
+        activeItems.each {
             logger.debug("ending.getTime(): ${it.ending.getTime()}")
-            if (it.ending.getTime()>nullDate && it.ending.getTime() <= currentTime){
+            if (it.ending.getTime() > nullDate && it.ending.getTime() <= currentTime) {
                 logger.debug("deactivating maintenance for: ${it.objectName}")
-                RsInMaintenance.eventsInMaintenance(false,it.objectName);
-                it.remove()
+                RsInMaintenance.takeObjectOutOfMaintenance(it);
             }
         }
     }

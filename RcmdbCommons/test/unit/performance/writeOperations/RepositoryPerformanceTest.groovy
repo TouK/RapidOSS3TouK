@@ -50,15 +50,6 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         _testAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 20);
     }
 
-    public void testBulkAddOperationPerformanceWithFileStorageType()
-    {
-        _testBulkAddOperationPerformance(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, 100, 60);
-    }
-
-    public void testBulkAddOperationPerformanceWithFileAndMemoryStorageType()
-    {
-        _testBulkAddOperationPerformance(CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE, 100, 70);
-    }
 
     private void _testAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {
@@ -75,23 +66,6 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         assertTrue ("Number of inserted objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
     }
 
-    private void _testBulkAddOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
-    {
-        Class modelClass = intializeCompassWithSimpleObjects(storageType);
-        def objectsToBeInserted = [];
-
-        for(int i=0; i < numberOfObjectsToBeInserted; i++)
-        {
-            objectsToBeInserted.add([keyProp:"keyPropValue"+i]);
-        }
-        long t = System.nanoTime();
-        modelClass.bulkAdd(objectsToBeInserted);
-        double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
-        assertEquals(numberOfObjectsToBeInserted, modelClass.'search'("alias:*").total);
-        def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;
-        println "Number of objects inserted per second:"+numberOfObjectsInsertedPerSecond
-        assertTrue ("Number of inserted objects ${numberOfObjectsInsertedPerSecond} should be greater than ${expectedNumberOfObjectsToBeInsertedPersecond}", numberOfObjectsInsertedPerSecond > expectedNumberOfObjectsToBeInsertedPersecond);
-    }
 
     private void _testUpdateOperationPerformance(storageType, numberOfObjectsToBeInserted, expectedNumberOfObjectsToBeInsertedPersecond)
     {

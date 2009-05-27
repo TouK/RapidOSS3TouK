@@ -160,7 +160,6 @@ class SearchableExtensionGrailsPlugin {
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
-        def addBulkMethod = new BulkAddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def addUniqueMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         addUniqueMethod.setWillReturnErrorIfExist (true);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
@@ -169,21 +168,13 @@ class SearchableExtensionGrailsPlugin {
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
-        def bulkAddRelationMethod = new BulkAddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
-        def bulkRemoveRelationMethod = new BulkRemoveRelationMethod(mc, relations);
 
         mc.update = {Map props->
             return delegate.invokeOperation("update", [props] as Object[])    
         }
         mc._update = {Map props->
             return updateMethod.invoke(delegate,  [props] as Object[])
-        }
-        mc.'static'.bulkAddRelation = {Collection relationList->
-          return bulkAddRelationMethod.invoke(delegate,  [relationList] as Object[])
-        }
-        mc.'static'.bulkRemoveRelation = {Collection relationList->
-          return bulkRemoveRelationMethod.invoke(delegate,  [relationList] as Object[])
         }
 
         mc.addRelation = {Map props, String source->
@@ -247,9 +238,6 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.'static'._add = {Map props->
             return addMethod.invoke(mc.theClass, [props] as Object[]);
-        }
-        mc.'static'.bulkAdd = {Collection objectProps->
-            return addBulkMethod.invoke(mc.theClass, [objectProps] as Object[]);
         }
         mc.'static'._addUnique = {Map props->
             return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);

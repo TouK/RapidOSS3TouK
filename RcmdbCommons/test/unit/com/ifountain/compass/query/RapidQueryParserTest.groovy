@@ -1,5 +1,6 @@
 package com.ifountain.compass.query
 
+import com.ifountain.compass.CompassConstants
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.converter.CompassStringConverter
 import com.ifountain.compass.query.RapidMultiQueryParser
@@ -10,12 +11,11 @@ import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.commons.lang.StringUtils
 import org.apache.lucene.analysis.SimpleAnalyzer
 import org.apache.lucene.analysis.WhitespaceAnalyzer
+import org.apache.lucene.queryParser.ParseException
 import org.apache.lucene.queryParser.QueryParser
 import org.apache.lucene.search.Query
-import org.compass.core.impl.DefaultCompass
-import com.ifountain.compass.CompassConstants
-import org.apache.lucene.queryParser.ParseException
 import org.compass.core.impl.RefreshableCompass
+
 
 /**
 * Created by IntelliJ IDEA.

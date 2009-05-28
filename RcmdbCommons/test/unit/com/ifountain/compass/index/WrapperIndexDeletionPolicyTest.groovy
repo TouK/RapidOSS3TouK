@@ -1,13 +1,12 @@
 package com.ifountain.compass.index
 
+import com.ifountain.compass.CompassTestObject
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
+import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.lucene.index.IndexCommitPoint
 import org.apache.lucene.store.Directory
-import com.ifountain.compass.CompassTestObject
-import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
-import org.compass.core.impl.DefaultCompass
-import com.ifountain.compass.CompositeDirectoryWrapperProvider
 import org.compass.core.impl.RefreshableCompass
+
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,15 +1,12 @@
 package com.ifountain.compass.query
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.compass.query.RapidLuceneQueryParser
 import com.ifountain.compass.query.RapidMultiQueryParser
 import com.ifountain.compass.query.RapidQueryParser
-import com.ifountain.compass.query.RapidLuceneQueryParser
-import org.compass.core.lucene.engine.LuceneSearchEngineFactory
-import org.compass.core.config.CompassSettings
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
-import org.compass.core.Compass
-import org.compass.core.impl.DefaultCompass
 import org.compass.core.impl.RefreshableCompass
+
 
 /**
 * Created by IntelliJ IDEA.

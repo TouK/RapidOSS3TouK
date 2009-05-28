@@ -1,13 +1,12 @@
 package com.ifountain.rcmdb.domain
 
 import com.ifountain.compass.index.IndexSnapshotAction
+import org.apache.log4j.Logger
 import org.apache.lucene.index.IndexCommitPoint
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.IndexInput
-import org.compass.core.impl.DefaultCompass
-import org.compass.core.lucene.engine.LuceneSearchEngineFactory
-import org.apache.log4j.Logger
 import org.compass.core.impl.RefreshableCompass
+import org.compass.core.lucene.engine.LuceneSearchEngineFactory
 
 /**
  * Created by IntelliJ IDEA.

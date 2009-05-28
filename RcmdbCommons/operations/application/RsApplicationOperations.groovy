@@ -18,21 +18,22 @@
 */
 package application
 
-import com.ifountain.rcmdb.domain.statistics.OperationStatistics
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.SuffixFileFilter
-import org.apache.commons.io.filefilter.FalseFileFilter
-import org.apache.commons.lang.StringUtils
 import com.ifountain.comp.utils.CaseInsensitiveMap
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
-import org.compass.core.impl.DefaultCompass
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
-import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import com.ifountain.rcmdb.domain.BackupAction
-import java.text.SimpleDateFormat
-import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
-import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import com.ifountain.rcmdb.domain.FullExportImportUtility
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import java.text.SimpleDateFormat
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.io.filefilter.SuffixFileFilter
+import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.compass.core.impl.RefreshableCompass
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -109,7 +110,7 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static void backup(String directory)
     {
-        DefaultCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
+        RefreshableCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
         BackupAction action = new BackupAction(c, directory);
         WrapperIndexDeletionPolicy.takeGlobalSnapshot(action); 
     }

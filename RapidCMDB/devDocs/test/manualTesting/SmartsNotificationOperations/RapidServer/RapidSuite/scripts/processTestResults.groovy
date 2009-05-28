@@ -22,7 +22,7 @@ processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,
 
 
 processor.generateResultsXml()
-processor.transferResultsToHudson()
+
 
 
 def statModels=[
@@ -35,3 +35,4 @@ def statModels=[
 def converter=new StatsConverter("SmartsNotificationOperations",null);
 converter.generateTabbedStats (statModels,["NumberOfOperations","AvarageDuration","AverageCount"]);
 
+processor.transferResultsToHudson()

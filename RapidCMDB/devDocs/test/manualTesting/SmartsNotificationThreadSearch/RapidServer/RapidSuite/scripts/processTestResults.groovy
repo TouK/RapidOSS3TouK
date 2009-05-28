@@ -26,7 +26,7 @@ memoryLimit+=RsEvent.countHits("alias:*")*0.004
 processor.checkValueLessThen("UsedMemory",processor.getUsedMemory(),memoryLimit,true)
 
 processor.generateResultsXml()
-processor.transferResultsToHudson()
+
 
 
 def statModels=[
@@ -38,3 +38,6 @@ def statModels=[
 
 def converter=new StatsConverter("SmartsNotificationThreadSearch",null);
 converter.generateTabbedStats (statModels,["NumberOfOperations","AvarageDuration","AverageCount"]);
+
+
+processor.transferResultsToHudson()

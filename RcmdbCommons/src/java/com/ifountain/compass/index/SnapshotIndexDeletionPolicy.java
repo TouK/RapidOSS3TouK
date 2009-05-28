@@ -1,17 +1,18 @@
 package com.ifountain.compass.index;
 
+import org.apache.lucene.index.IndexCommit;
 import org.apache.lucene.index.IndexDeletionPolicy;
-import org.apache.lucene.index.IndexCommitPoint;
+import org.apache.lucene.store.Directory;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
-import java.io.IOException;
 
 
 public class SnapshotIndexDeletionPolicy implements IndexDeletionPolicy {
 
-  private IndexCommitPoint lastCommit;
+  private IndexCommit lastCommit;
   private IndexDeletionPolicy primary;
   private String snapshot;
 
@@ -21,12 +22,12 @@ public class SnapshotIndexDeletionPolicy implements IndexDeletionPolicy {
 
   public synchronized void onInit(List commits) throws IOException {
     primary.onInit(wrapCommits(commits));
-    lastCommit = (IndexCommitPoint) commits.get(commits.size()-1);
+    lastCommit = (IndexCommit) commits.get(commits.size()-1);
   }
 
   public synchronized void onCommit(List commits) throws IOException {
     primary.onCommit(wrapCommits(commits));
-    lastCommit = (IndexCommitPoint) commits.get(commits.size()-1);
+    lastCommit = (IndexCommit) commits.get(commits.size()-1);
   }
 
   /** Take a snapshot of the most recent commit to the
@@ -38,7 +39,7 @@ public class SnapshotIndexDeletionPolicy implements IndexDeletionPolicy {
    *  you call optimize()) then in the worst case this could
    *  consume an extra 1X of your total index size, until
    *  you release the snapshot. */
-  public synchronized IndexCommitPoint snapshot() {
+  public synchronized IndexCommit snapshot() {
     if (snapshot == null)
       snapshot = lastCommit.getSegmentsFileName();
     else
@@ -54,12 +55,17 @@ public class SnapshotIndexDeletionPolicy implements IndexDeletionPolicy {
       throw new IllegalStateException("snapshot was not set; please call snapshot() first");
   }
 
-  private class MyCommitPoint implements IndexCommitPoint {
-    IndexCommitPoint cp;
-    MyCommitPoint(IndexCommitPoint cp) {
+  private class MyCommitPoint extends IndexCommit {
+    IndexCommit cp;
+    MyCommitPoint(IndexCommit cp) {
       this.cp = cp;
     }
-    public String getSegmentsFileName() {
+
+      public Directory getDirectory() {
+          return cp.getDirectory();  //To change body of implemented methods use File | Settings | File Templates.
+      }
+
+      public String getSegmentsFileName() {
       return cp.getSegmentsFileName();
     }
     public Collection getFileNames() throws IOException {
@@ -81,7 +87,7 @@ public class SnapshotIndexDeletionPolicy implements IndexDeletionPolicy {
     final int count = commits.size();
     List myCommits = new ArrayList(count);
     for(int i=0;i<count;i++)
-      myCommits.add(new MyCommitPoint((IndexCommitPoint) commits.get(i)));
+      myCommits.add(new MyCommitPoint((IndexCommit) commits.get(i)));
     return myCommits;
   }
 }

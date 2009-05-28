@@ -125,7 +125,9 @@ public class ScriptManager {
         {
             def scriptFile=new File(baseDirectory + "/${SCRIPT_DIRECTORY}/${scriptPath}.groovy");
             Class cls = scriptClassLoader.parseClass(scriptFile);
-
+            if(cls == null){
+                throw new Exception("Cannot load script class ${scriptPath}.")
+            }
             defaultSupportedMethods.each{String methodName, methodClosure->
                 cls.metaClass."${methodName}" = methodClosure;                
             }

@@ -109,6 +109,21 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
             fail("Should throw exception");
         } catch (groovy.lang.MissingMethodException e) {e.printStackTrace()}
     }
+
+    public void testAddScriptWithNoContent(){
+        ScriptManager.getInstance().destroy();
+        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
+        def scriptName = "script1";
+        createScript("${scriptName}.groovy", "");
+        try{
+            manager.addScript(scriptName);
+            fail("should throw exception")
+        }
+        catch(ScriptingException e){
+           assertEquals("Cannot load script class ${scriptName}.", e.getCause().getMessage())
+        }
+
+    }
     public void testManagerGeneratesExceptionIfScriptIsMissingInScriptsFolderEvenIfScriptClassIsInLoader()
     {
         ScriptManager.getInstance().destroy();

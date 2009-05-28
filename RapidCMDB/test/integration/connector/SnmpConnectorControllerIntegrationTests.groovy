@@ -45,7 +45,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         connectorUpdateParams["port"] = ""+(portNumber+1);
         connectorUpdateParams["logLevel"] = Level.WARN.toString();
         connectorUpdateParams["scriptFile"] = "sampleSnmpScriptForUpdate"
-        portNumber = portNumber+2;
+//        portNumber = portNumber+2;
     }
 
     public void tearDown() {

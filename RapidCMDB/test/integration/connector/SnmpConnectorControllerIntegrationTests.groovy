@@ -93,135 +93,135 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         return controller;
     }
 
-//    public void testSuccessfulSave()
-//    {
-//        String connectorName = "snmpTestConnector";
-//
-//        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.save();
-//
-//        List snmpConnectors = SnmpConnector.list();
-//        assertEquals(1, snmpConnectors.size());
-//        SnmpConnector snmpConnector = snmpConnectors[0]
-//        assertEquals(connectorName, snmpConnector.name);
-//
-//        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-//
-//
-//        List snmpConnections = SnmpConnection.list();
-//        assertEquals(1, snmpConnections.size());
-//        SnmpConnection snmpConnection = snmpConnections[0]
-//        assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
-//        assertEquals(connectorSaveParams.host, snmpConnection.host);
-//        assertEquals(connectorSaveParams.port.toInteger(), snmpConnection.port);
-//        assertEquals(snmpConnector.connection.id, snmpConnection.id);
-//
-//
-//        List snmpDatasources = SnmpDatasource.list();
-//        assertEquals(1, snmpDatasources.size());
-//        SnmpDatasource snmpDatasource = snmpDatasources[0]
-//        assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
-//        assertEquals(snmpConnection.id, snmpDatasource.connection.id);
-//        assertTrue(snmpDatasource.isFree());
-//
-//        def scripts = CmdbScript.list();
-//        assertEquals(1, scripts.size());
-//        CmdbScript script = scripts[0]
-//        assertEquals(connectorName, script.name);
-//        assertEquals(connectorSaveParams.scriptFile, script.scriptFile);
-//        assertEquals(connectorSaveParams.logLevel, script.logLevel);
-//        assertEquals(true, script.logFileOwn);
-//        assertEquals(CmdbScript.LISTENING, script.type);
-//        assertEquals("", script.staticParam);
-//        assertEquals(snmpConnector.script.id, script.id);
-//
-//    }
-//
-//    public void testSuccessfulUpdate()
-//    {
-//        String connectorName = "snmpTestConnector";
-//
-//        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.save();
-//
-//        List oldSnmpConnectors = SnmpConnector.list();
-//        assertEquals(1, oldSnmpConnectors.size());
-//        SnmpConnector oldSnmpConnector = oldSnmpConnectors[0]
-//        assertEquals(connectorName, oldSnmpConnector.name);
-//
-//        assertEquals("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
-//
-//
-//        IntegrationTestUtils.resetController(controller);
-//
-//        controller = getSnmpControllerForUpdate(oldSnmpConnector.id, connectorName, connectorUpdateParams);
-//        controller.update();
-//
-//        def snmpConnectors = SnmpConnector.list();
-//        assertEquals(1, snmpConnectors.size());
-//        def snmpConnector = snmpConnectors[0]
-//        assertEquals(connectorName, snmpConnector.name);
-//
-//        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-//
-//        List snmpConnections = SnmpConnection.list();
-//        assertEquals(1, snmpConnections.size());
-//        SnmpConnection snmpConnection = snmpConnections[0]
-//        assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
-//        assertEquals(connectorUpdateParams.host, snmpConnection.host);
-//        assertEquals(connectorUpdateParams.port.toInteger(), snmpConnection.port);
-//        assertEquals(snmpConnector.connection.id, snmpConnection.id);
-//
-//
-//        List snmpDatasources = SnmpDatasource.list();
-//        assertEquals(1, snmpDatasources.size());
-//        SnmpDatasource snmpDatasource = snmpDatasources[0]
-//        assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
-//        assertEquals(snmpConnection.id, snmpDatasource.connection.id);
-//        assertTrue(snmpDatasource.isFree());
-//
-//        def scripts = CmdbScript.list();
-//        assertEquals(1, scripts.size());
-//        CmdbScript script = scripts[0]
-//        assertEquals(connectorName, script.name);
-//        assertEquals(connectorUpdateParams.scriptFile, script.scriptFile);
-//        assertEquals(connectorUpdateParams.logLevel, script.logLevel);
-//        assertEquals(true, script.logFileOwn);
-//        assertEquals(CmdbScript.LISTENING, script.type);
-//        assertEquals("", script.staticParam);
-//        assertEquals(snmpConnector.script.id, script.id);
-//    }
-//    public void testSuccessfulDelete()
-//    {
-//        String connectorName = "snmpTestConnector";
-//
-//        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.save();
-//
-//        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
-//
-//        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-//
-//
-//        assertEquals(1, SnmpConnector.list().size());
-//        assertEquals(1, SnmpConnection.list().size());
-//        assertEquals(1, SnmpDatasource.list().size());
-//        assertEquals(1, CmdbScript.list().size());
-//
-//        IntegrationTestUtils.resetController(controller);
-//        controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.params.clear();
-//        controller.params.id=snmpConnector.id;
-//        controller.delete();
-//
-//        assertEquals("/snmpConnector/list", controller.response.redirectedUrl);
-//
-//        println  controller.response.redirectedUrl
-//        assertEquals(0, SnmpConnector.list().size());
-//        assertEquals(0, SnmpConnection.list().size());
-//        assertEquals(0, SnmpDatasource.list().size());
-//        assertEquals(0, CmdbScript.list().size());
-//    }
+    public void testSuccessfulSave()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        List snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        SnmpConnector snmpConnector = snmpConnectors[0]
+        assertEquals(connectorName, snmpConnector.name);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+
+        List snmpConnections = SnmpConnection.list();
+        assertEquals(1, snmpConnections.size());
+        SnmpConnection snmpConnection = snmpConnections[0]
+        assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
+        assertEquals(connectorSaveParams.host, snmpConnection.host);
+        assertEquals(connectorSaveParams.port.toInteger(), snmpConnection.port);
+        assertEquals(snmpConnector.connection.id, snmpConnection.id);
+
+
+        List snmpDatasources = SnmpDatasource.list();
+        assertEquals(1, snmpDatasources.size());
+        SnmpDatasource snmpDatasource = snmpDatasources[0]
+        assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
+        assertEquals(snmpConnection.id, snmpDatasource.connection.id);
+        assertTrue(snmpDatasource.isFree());
+
+        def scripts = CmdbScript.list();
+        assertEquals(1, scripts.size());
+        CmdbScript script = scripts[0]
+        assertEquals(connectorName, script.name);
+        assertEquals(connectorSaveParams.scriptFile, script.scriptFile);
+        assertEquals(connectorSaveParams.logLevel, script.logLevel);
+        assertEquals(true, script.logFileOwn);
+        assertEquals(CmdbScript.LISTENING, script.type);
+        assertEquals("", script.staticParam);
+        assertEquals(snmpConnector.script.id, script.id);
+
+    }
+
+    public void testSuccessfulUpdate()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        List oldSnmpConnectors = SnmpConnector.list();
+        assertEquals(1, oldSnmpConnectors.size());
+        SnmpConnector oldSnmpConnector = oldSnmpConnectors[0]
+        assertEquals(connectorName, oldSnmpConnector.name);
+
+        assertEquals("/snmpConnector/show/${oldSnmpConnector.id}", controller.response.redirectedUrl);
+
+
+        IntegrationTestUtils.resetController(controller);
+
+        controller = getSnmpControllerForUpdate(oldSnmpConnector.id, connectorName, connectorUpdateParams);
+        controller.update();
+
+        def snmpConnectors = SnmpConnector.list();
+        assertEquals(1, snmpConnectors.size());
+        def snmpConnector = snmpConnectors[0]
+        assertEquals(connectorName, snmpConnector.name);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+        List snmpConnections = SnmpConnection.list();
+        assertEquals(1, snmpConnections.size());
+        SnmpConnection snmpConnection = snmpConnections[0]
+        assertEquals(snmpConnector.getConnectionName(snmpConnector.name), snmpConnection.name);
+        assertEquals(connectorUpdateParams.host, snmpConnection.host);
+        assertEquals(connectorUpdateParams.port.toInteger(), snmpConnection.port);
+        assertEquals(snmpConnector.connection.id, snmpConnection.id);
+
+
+        List snmpDatasources = SnmpDatasource.list();
+        assertEquals(1, snmpDatasources.size());
+        SnmpDatasource snmpDatasource = snmpDatasources[0]
+        assertEquals(snmpConnector.getDatasourceName(snmpConnector.name), snmpDatasource.name);
+        assertEquals(snmpConnection.id, snmpDatasource.connection.id);
+        assertTrue(snmpDatasource.isFree());
+
+        def scripts = CmdbScript.list();
+        assertEquals(1, scripts.size());
+        CmdbScript script = scripts[0]
+        assertEquals(connectorName, script.name);
+        assertEquals(connectorUpdateParams.scriptFile, script.scriptFile);
+        assertEquals(connectorUpdateParams.logLevel, script.logLevel);
+        assertEquals(true, script.logFileOwn);
+        assertEquals(CmdbScript.LISTENING, script.type);
+        assertEquals("", script.staticParam);
+        assertEquals(snmpConnector.script.id, script.id);
+    }
+    public void testSuccessfulDelete()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+
+        assertEquals(1, SnmpConnector.list().size());
+        assertEquals(1, SnmpConnection.list().size());
+        assertEquals(1, SnmpDatasource.list().size());
+        assertEquals(1, CmdbScript.list().size());
+
+        IntegrationTestUtils.resetController(controller);
+        controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.params.clear();
+        controller.params.id=snmpConnector.id;
+        controller.delete();
+
+        assertEquals("/snmpConnector/list", controller.response.redirectedUrl);
+
+        println  controller.response.redirectedUrl
+        assertEquals(0, SnmpConnector.list().size());
+        assertEquals(0, SnmpConnection.list().size());
+        assertEquals(0, SnmpDatasource.list().size());
+        assertEquals(0, CmdbScript.list().size());
+    }
     public void testSuccessfullStartConnectorAndStopConnector()
     {
         String connectorName = "snmpTestConnector";

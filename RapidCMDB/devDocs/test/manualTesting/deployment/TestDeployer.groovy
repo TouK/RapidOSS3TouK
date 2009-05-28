@@ -7,10 +7,10 @@
  */
 import org.apache.commons.io.FileUtils;
 class TestDeployer {
-   def buildBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/Distribution/";
+   def buildBasePath="http://192.168.1.134:8080/job/ManualTestingBuild/ws/Distribution/";
    def deploymentBasePath="d:"+File.separator+"manualTestingSpace"+File.separator;
-   def smartsJarBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/LicencedJars/lib/smarts/";
-   def scpJarBasePath="http://192.168.1.130:8080/job/ManualTestingBuild/ws/ThirdParty/lib/antscp/";
+   def smartsJarBasePath="http://192.168.1.134:8080/job/ManualTestingBuild/ws/LicencedJars/lib/smarts/";
+   def scpJarBasePath="http://192.168.1.134:8080/job/ManualTestingBuild/ws/ThirdParty/lib/antscp/";
    def ant;
    def manualTestingTempPath;
    

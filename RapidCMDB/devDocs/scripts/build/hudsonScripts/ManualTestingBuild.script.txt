@@ -8,11 +8,29 @@ compileBuildFiles
 
 cd RapidModules/
 
-#### RI TARGETS
-#groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild buildUnix
-#groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild buildWindows
-groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild build
-groovy RapidCMDB/devDocs/scripts/build/ManualTestingBuild build
+optionsFile=build.properties
+rm -f $optionsFile
+
+echo RI_UNIX=false >> $optionsFile
+echo RI_WINDOWS=true >> $optionsFile
+echo RCMDB_UNIX=true >> $optionsFile
+echo RCMDB_WINDOWS=false >> $optionsFile
+echo SAMPLE1=false >> $optionsFile
+echo SAMPLE2=false >> $optionsFile
+echo ZIP=true>> $optionsFile
+echo APG=false>> $optionsFile
+echo OPENNMS=false >> $optionsFile
+echo HYPERIC=false >> $optionsFile
+echo NETCOOL=false >> $optionsFile
+echo SMARTS=true >> $optionsFile
+echo E_WINDOWS=false >> $optionsFile
+echo E_UNIX=false >> $optionsFile
+echo TEST=false >> $optionsFile
+echo JREDIR=/opt/jre1.6.0_04 >> $optionsFile
+
+groovy RapidCMDB/devDocs/scripts/build/RapidInsightBuild $optionsFile
+
+groovy RapidCMDB/devDocs/scripts/build/ManualTestingBuild
 
 cd ..
 cd Distribution/
@@ -21,14 +39,14 @@ FILE="RI_Windows_*.zip"
 
 if [ -f $FILE ];
 then
-   mv RI_Windows_*.zip RI_Windows.zip
+ mv RI_Windows_*.zip RI_Windows.zip
 fi
 
 FILE="SmartsPlugin_*.zip"
 
 if [ -f $FILE ];
 then
-   mv SmartsPlugin_*.zip SmartsPlugin.zip
+ mv SmartsPlugin_*.zip SmartsPlugin.zip
 fi
 
 

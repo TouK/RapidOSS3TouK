@@ -144,7 +144,7 @@ class TestResultsProcessor{
     def transferResultsToHudson()
     {
         def ant = new AntBuilder()
-        ant.scp(file:"${testName}-results.xml",todir:"root@192.168.1.130:/root/.hudson/jobs/RapidCMDBTests/workspace/ManualTestResults/",password:"molkay01",trust:"true")
+        ant.scp(file:"${testName}-results.xml",todir:"root@192.168.1.134:/root/.hudson/jobs/RapidCMDBTests/workspace/ManualTestResults/",password:"molkay01",trust:"true")
     }
     def checkValueLessThen(paramName,paramValue,checkValue,checkExistance)
     {

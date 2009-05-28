@@ -270,93 +270,93 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1,lastDsStateChangeTimeAfterStop.compareTo(lastDsStateChangeTimeAfterStart));
 
     }
-//    public void testStartConnectorWithStartException()
-//    {
-//        String connectorName = "snmpTestConnector";
-//
-//        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.save();
-//
-//        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
-//
-//        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-//
-//
-//        assertEquals(1, SnmpConnector.list().size());
-//        assertEquals(1, SnmpConnection.list().size());
-//        assertEquals(1, SnmpDatasource.list().size());
-//        assertEquals(1, CmdbScript.list().size());
-//
-//        def ds = SnmpDatasource.list()[0];
-//        assertTrue(ds.isFree());
-//
-//        def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-//
-//        IntegrationTestUtils.resetController(controller);
-//
-//        CmdbScript.removeAll();
-//        assertEquals(0, CmdbScript.list().size());
-//        controller.params.id=snmpConnector.id;
-//        controller.startConnector();
-//        assertTrue(ds.isFree());
-//        def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-//
-//
-//        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
-//
-//        assertTrue(controller.flash.errors.hasErrors());
-//        assertEquals(0,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
-//    }
-//    public void testStopConnectorWithStopException()
-//    {
-//        String connectorName = "snmpTestConnector";
-//
-//        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
-//        controller.save();
-//
-//        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
-//
-//        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
-//
-//
-//        assertEquals(1, SnmpConnector.list().size());
-//        assertEquals(1, SnmpConnection.list().size());
-//        assertEquals(1, SnmpDatasource.list().size());
-//        assertEquals(1, CmdbScript.list().size());
-//
-//        def ds = SnmpDatasource.list()[0];
-//        assertTrue(ds.isFree());
-//
-//        def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-//
-//        IntegrationTestUtils.resetController(controller);
-//
-//        controller.params.id=snmpConnector.id;
-//        controller.startConnector();
-//        CommonTestUtils.waitFor(new ClosureWaitAction({
-//            assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
-//        }))
-//
-//        assertFalse(ds.isFree());
-//        def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-//
-//        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
-//        assertTrue(controller.flash.message.indexOf("successfully started")>0)
-//        assertEquals(0,controller.flash.errors.size());
-//        assertEquals(1,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
-//
-//        IntegrationTestUtils.resetController(controller);
-//        CmdbScript.removeAll();
-//
-//        controller.params.id=snmpConnector.id;
-//        controller.stopConnector();
-//        assertFalse(ds.isFree());
-//        def lastDsStateChangeTimeAfterStop=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
-//
-//        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
-//        assertTrue(controller.flash.errors.hasErrors());
-//        assertEquals(0,lastDsStateChangeTimeAfterStop.compareTo(lastDsStateChangeTimeAfterStart));
-//    }
+    public void testStartConnectorWithStartException()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+
+        assertEquals(1, SnmpConnector.list().size());
+        assertEquals(1, SnmpConnection.list().size());
+        assertEquals(1, SnmpDatasource.list().size());
+        assertEquals(1, CmdbScript.list().size());
+
+        def ds = SnmpDatasource.list()[0];
+        assertTrue(ds.isFree());
+
+        def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+
+        IntegrationTestUtils.resetController(controller);
+
+        CmdbScript.removeAll();
+        assertEquals(0, CmdbScript.list().size());
+        controller.params.id=snmpConnector.id;
+        controller.startConnector();
+        assertTrue(ds.isFree());
+        def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+
+
+        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
+
+        assertTrue(controller.flash.errors.hasErrors());
+        assertEquals(0,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
+    }
+    public void testStopConnectorWithStopException()
+    {
+        String connectorName = "snmpTestConnector";
+
+        def controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
+        controller.save();
+
+        SnmpConnector snmpConnector = SnmpConnector.get(name:connectorName);
+
+        assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
+
+
+        assertEquals(1, SnmpConnector.list().size());
+        assertEquals(1, SnmpConnection.list().size());
+        assertEquals(1, SnmpDatasource.list().size());
+        assertEquals(1, CmdbScript.list().size());
+
+        def ds = SnmpDatasource.list()[0];
+        assertTrue(ds.isFree());
+
+        def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+
+        IntegrationTestUtils.resetController(controller);
+
+        controller.params.id=snmpConnector.id;
+        controller.startConnector();
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals (ListeningAdapterRunner.STARTED, ListeningAdapterManager.getInstance().getState(ds));
+        }))
+
+        assertFalse(ds.isFree());
+        def lastDsStateChangeTimeAfterStart=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+
+        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
+        assertTrue(controller.flash.message.indexOf("successfully started")>0)
+        assertEquals(0,controller.flash.errors.size());
+        assertEquals(1,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
+
+        IntegrationTestUtils.resetController(controller);
+        CmdbScript.removeAll();
+
+        controller.params.id=snmpConnector.id;
+        controller.stopConnector();
+        assertFalse(ds.isFree());
+        def lastDsStateChangeTimeAfterStop=ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
+
+        assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
+        assertTrue(controller.flash.errors.hasErrors());
+        assertEquals(0,lastDsStateChangeTimeAfterStop.compareTo(lastDsStateChangeTimeAfterStart));
+    }
 //    public void testUpdatingConnectorDoesNotChangeListeningStateOfUnstartedConnector()
 //    {
 //        try

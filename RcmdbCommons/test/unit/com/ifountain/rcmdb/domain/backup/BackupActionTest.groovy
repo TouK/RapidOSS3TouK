@@ -1,16 +1,12 @@
 package com.ifountain.rcmdb.domain.backup
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.compass.CompassTestObject
+import com.ifountain.compass.index.WrapperIndexDeletionPolicy
+import com.ifountain.rcmdb.domain.BackupAction
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
-import com.ifountain.compass.CompassTestObject
-import com.ifountain.rcmdb.domain.BackupAction
 import org.apache.commons.io.FileUtils
-import com.ifountain.compass.index.WrapperIndexDeletionPolicy
-import org.compass.core.impl.DefaultCompass
-import com.ifountain.compass.index.IndexSnapshotAction
-import org.apache.lucene.index.IndexCommitPoint
-import org.apache.lucene.store.Directory
+import org.compass.core.impl.RefreshableCompass
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +17,7 @@ import org.apache.lucene.store.Directory
  */
 class BackupActionTest extends AbstractSearchableCompassTests
 {
-    DefaultCompass compass;
+    RefreshableCompass compass;
 
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.

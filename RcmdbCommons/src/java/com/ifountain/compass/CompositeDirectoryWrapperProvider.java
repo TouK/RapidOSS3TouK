@@ -16,23 +16,22 @@
 
 package com.ifountain.compass;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.List;
-
-import org.compass.core.lucene.engine.store.wrapper.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.RAMDirectory;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DomainClassMappingHelper;
 import org.compass.core.CompassException;
 import org.compass.core.config.CompassConfigurable;
 import org.compass.core.config.CompassSettings;
 import org.compass.core.engine.SearchEngineException;
-import org.compass.core.util.concurrent.SingleThreadThreadFactory;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DomainClassMappingHelper;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping;
+import org.compass.core.lucene.engine.store.wrapper.DirectoryWrapperProvider;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Wraps a Lucene {@link Directory} with {@link MemoryMirrorDirectoryWrapper}.
@@ -108,6 +107,6 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
     }
 
     protected ExecutorService doCreateExecutorService() {
-        return Executors.newSingleThreadExecutor(new SingleThreadThreadFactory("AsyncMirror Directory Wrapper", false));
+        return Executors.newSingleThreadExecutor();
     }
 }

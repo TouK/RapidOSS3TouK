@@ -7,6 +7,7 @@ import com.ifountain.compass.CompassTestObject
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.impl.DefaultCompass
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import org.compass.core.impl.RefreshableCompass
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,7 +17,7 @@ import com.ifountain.compass.CompositeDirectoryWrapperProvider
  * To change this template use File | Settings | File Templates.
  */
 class WrapperIndexDeletionPolicyTest extends AbstractSearchableCompassTests{
-    DefaultCompass compass;
+    RefreshableCompass compass;
 
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.

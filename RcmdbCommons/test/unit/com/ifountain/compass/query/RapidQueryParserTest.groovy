@@ -15,6 +15,7 @@ import org.apache.lucene.search.Query
 import org.compass.core.impl.DefaultCompass
 import com.ifountain.compass.CompassConstants
 import org.apache.lucene.queryParser.ParseException
+import org.compass.core.impl.RefreshableCompass
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,7 +26,7 @@ import org.apache.lucene.queryParser.ParseException
 */
 class RapidQueryParserTest extends RapidCmdbTestCase
 {
-    DefaultCompass compass;
+    RefreshableCompass compass;
 
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.

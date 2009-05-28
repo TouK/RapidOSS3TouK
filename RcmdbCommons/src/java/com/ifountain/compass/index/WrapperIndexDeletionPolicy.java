@@ -1,21 +1,16 @@
 package com.ifountain.compass.index;
 
+import org.apache.lucene.index.IndexCommit;
 import org.apache.lucene.index.IndexDeletionPolicy;
 import org.apache.lucene.index.KeepOnlyLastCommitDeletionPolicy;
-import org.apache.lucene.index.SnapshotDeletionPolicy;
-import org.apache.lucene.index.IndexCommitPoint;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.IndexInput;
 import org.compass.core.lucene.engine.indexdeletionpolicy.DirectoryConfigurable;
-import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
-import org.compass.core.Compass;
-import org.compass.core.impl.DefaultCompass;
 
 import java.io.IOException;
-import java.io.FileOutputStream;
-import java.util.*;
-
-import groovy.lang.Closure;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -56,7 +51,7 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
                 for(int i=0; i < policies.size(); i++)
                 {
                     WrapperIndexDeletionPolicy policy = (WrapperIndexDeletionPolicy)policies.get(i);
-                    IndexCommitPoint commitPoint = policy.getWrappedPolicy().snapshot();
+                    IndexCommit commitPoint = policy.getWrappedPolicy().snapshot();
                     indexPointList.add(commitPoint);
                     snapShotPolicies.add(policy);
                 }
@@ -65,7 +60,7 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
             }
             for(int i=0; i < indexPointList.size(); i++)
             {
-                IndexCommitPoint commitPoint = (IndexCommitPoint)indexPointList.get(i);
+                IndexCommit commitPoint = (IndexCommit)indexPointList.get(i);
                 WrapperIndexDeletionPolicy policy = (WrapperIndexDeletionPolicy)snapShotPolicies.get(i);
                 snapshotAction.execute(commitPoint, policy.dir);
             }
@@ -114,7 +109,7 @@ public class WrapperIndexDeletionPolicy implements IndexDeletionPolicy, Director
     private void snapshot(IndexSnapshotAction snapshotAction) throws IOException {
         try {
 
-            IndexCommitPoint commit = policy.snapshot();
+            IndexCommit commit = policy.snapshot();
             snapshotAction.execute(commit, dir);
         } finally {
             policy.release();

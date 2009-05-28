@@ -24,7 +24,6 @@ import org.compass.core.CompassSession
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.commons.io.FileUtils
 import org.apache.lucene.store.FSDirectory
-import org.compass.core.util.concurrent.SingleThreadThreadFactory
 import java.util.concurrent.Executors
 import java.util.concurrent.ExecutorService
 import org.apache.lucene.store.IndexOutput
@@ -34,6 +33,7 @@ import org.apache.lucene.store.Directory
 import org.apache.lucene.store.IndexInput
 import org.apache.lucene.store.Lock
 import org.apache.lucene.store.LockFactory
+import org.compass.core.lucene.engine.transaction.async.AsyncTransactionProcessor
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,7 +85,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         MockFsDirectory dir = new MockFsDirectory(FSDirectory.getDirectory(TestCompassFactory.indexDirectory));
         long maxNumberOfBytes = 2;
         long minNumberOfBytes = 1;
-        ExecutorService serv = Executors.newSingleThreadExecutor(new SingleThreadThreadFactory("AsyncMirror Directory Wrapper", false));
+        ExecutorService serv = Executors.newSingleThreadExecutor();
 
         MemoryMirrorDirectoryWrapper wrapper = new MemoryMirrorDirectoryWrapper(dir, 10, maxNumberOfBytes, minNumberOfBytes, serv);
         IndexOutput output = wrapper.createOutput("1.cfs")
@@ -105,7 +105,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         dir.blockFileList.add("2.cfs");
         long maxNumberOfBytes = 6;
         long minNumberOfBytes = 4;
-        ExecutorService serv = Executors.newSingleThreadExecutor(new SingleThreadThreadFactory("AsyncMirror Directory Wrapper", false));
+        ExecutorService serv = Executors.newSingleThreadExecutor();
 
         MemoryMirrorDirectoryWrapper wrapper = new MemoryMirrorDirectoryWrapper(dir, 10, maxNumberOfBytes, minNumberOfBytes, serv);
         IndexOutput output = wrapper.createOutput("1.cfs")
@@ -179,7 +179,7 @@ class MemoryDirectoryWrapperTest  extends AbstractSearchableCompassTests{
         MockFsDirectory dir = new MockFsDirectory(FSDirectory.getDirectory(TestCompassFactory.indexDirectory));
         long maxNumberOfBytes = 600;
         long minNumberOfBytes = 4;
-        ExecutorService serv = Executors.newSingleThreadExecutor(new SingleThreadThreadFactory("AsyncMirror Directory Wrapper", false));
+        ExecutorService serv = Executors.newSingleThreadExecutor();
 
         List validFiles = ["1.cfs", "segments.gen", "1.del", "segments"];
         List files = ["1.fnm", "1.prx", "1.tis", "1.tii", "1.nrm", "1.fdx", "1.fdt","1.frq"];

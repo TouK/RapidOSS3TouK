@@ -71,6 +71,10 @@ abstract class AbstractCompassConverterWrapper  implements ResourcePropertyConve
         return ((ResourcePropertyConverter)getConverter()).toString (o, resourcePropertyMapping);
     }
 
+    public Boolean suggestOmitTf() {
+        return ((ResourcePropertyConverter)getConverter()).suggestOmitTf(); //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public boolean canNormalize() {
         return ((ResourcePropertyConverter)getConverter()).canNormalize ();
     }

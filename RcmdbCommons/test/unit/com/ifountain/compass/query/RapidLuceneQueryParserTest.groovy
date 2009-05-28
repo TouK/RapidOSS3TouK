@@ -9,6 +9,7 @@ import org.compass.core.config.CompassSettings
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.compass.core.Compass
 import org.compass.core.impl.DefaultCompass
+import org.compass.core.impl.RefreshableCompass
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,7 +22,7 @@ class RapidLuceneQueryParserTest extends RapidCmdbTestCase
 {
     public void testLuceneQueryParser()
     {
-        DefaultCompass compass = TestCompassFactory.getCompass ([],[],false)
+        RefreshableCompass compass = TestCompassFactory.getCompass ([],[],false)
         try{
             RapidLuceneQueryParser parser = new RapidLuceneQueryParser();
             parser.setSearchEngineFactory (compass.getSearchEngineFactory());

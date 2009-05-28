@@ -48,7 +48,7 @@ class CmdbScript {
     Boolean enabledForAllGroups = false;
     String scheduleType = PERIODIC;
     String cronExpression = "* * * * * ?";
-    Long period = 1;
+    Long period = 60;
     String staticParam = "";
     String logFile="cmdbscript";
     String logLevel = Level.WARN.toString();

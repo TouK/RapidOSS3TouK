@@ -14,7 +14,7 @@ import org.apache.lucene.analysis.WhitespaceAnalyzer
 import org.apache.lucene.queryParser.ParseException
 import org.apache.lucene.queryParser.QueryParser
 import org.apache.lucene.search.Query
-import org.compass.core.impl.RefreshableCompass
+import org.compass.core.spi.InternalCompass
 
 
 /**
@@ -26,7 +26,7 @@ import org.compass.core.impl.RefreshableCompass
 */
 class RapidQueryParserTest extends RapidCmdbTestCase
 {
-    RefreshableCompass compass;
+    InternalCompass compass;
 
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.

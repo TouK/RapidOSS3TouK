@@ -5,7 +5,7 @@ import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.lucene.index.IndexCommitPoint
 import org.apache.lucene.store.Directory
-import org.compass.core.impl.RefreshableCompass
+import org.compass.core.spi.InternalCompass
 
 
 /**
@@ -16,7 +16,7 @@ import org.compass.core.impl.RefreshableCompass
  * To change this template use File | Settings | File Templates.
  */
 class WrapperIndexDeletionPolicyTest extends AbstractSearchableCompassTests{
-    RefreshableCompass compass;
+    InternalCompass compass;
 
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.

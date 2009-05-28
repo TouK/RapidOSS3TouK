@@ -6,7 +6,8 @@ import com.ifountain.rcmdb.domain.BackupAction
 import com.ifountain.rcmdb.test.util.AbstractSearchableCompassTests
 import com.ifountain.rcmdb.test.util.compass.TestCompassFactory
 import org.apache.commons.io.FileUtils
-import org.compass.core.impl.RefreshableCompass
+import org.compass.core.spi.InternalCompass
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +18,7 @@ import org.compass.core.impl.RefreshableCompass
  */
 class BackupActionTest extends AbstractSearchableCompassTests
 {
-    RefreshableCompass compass;
+    InternalCompass compass;
 
     public void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.

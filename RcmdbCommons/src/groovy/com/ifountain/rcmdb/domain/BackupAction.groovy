@@ -5,8 +5,9 @@ import org.apache.log4j.Logger
 import org.apache.lucene.index.IndexCommitPoint
 import org.apache.lucene.store.Directory
 import org.apache.lucene.store.IndexInput
-import org.compass.core.impl.RefreshableCompass
 import org.compass.core.lucene.engine.LuceneSearchEngineFactory
+import org.compass.core.spi.InternalCompass
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,7 +21,7 @@ class BackupAction implements IndexSnapshotAction{
     Logger logger = Logger.getLogger(BackupAction.class) 
     private Map directoryToSubindexMap = [:]
     private String destinationDirectory;
-    public BackupAction(RefreshableCompass compass, String destinationDirectory)
+    public BackupAction(InternalCompass compass, String destinationDirectory)
     {
         logger.warn ("Initialized a backup action");
         this.destinationDirectory = new File(destinationDirectory).getCanonicalPath();

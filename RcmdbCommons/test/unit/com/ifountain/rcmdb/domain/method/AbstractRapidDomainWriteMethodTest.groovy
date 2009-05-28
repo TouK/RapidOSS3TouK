@@ -672,7 +672,6 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 
     }
 
-
     public static List createModels()
     {
         def modelName = "ParentModel";

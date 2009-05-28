@@ -1,8 +1,8 @@
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
 import com.ifountain.rcmdb.domain.DomainMethodExecutorAction
-import com.ifountain.rcmdb.domain.DomainLockManager
 
 /**
 * Created by IntelliJ IDEA.

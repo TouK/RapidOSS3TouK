@@ -1,18 +1,12 @@
 package plugintests
 
-import com.ifountain.rcmdb.test.util.RapidCmdbMockTestCase
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
-import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-import com.ifountain.rcmdb.util.DataStore
-import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.domain.method.UpdateMethod
-import com.ifountain.rcmdb.domain.method.AddMethod
-import com.ifountain.rcmdb.domain.DomainLockManager
-import org.apache.log4j.Logger
-import com.ifountain.comp.test.util.CommonTestUtils
-import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.util.DataStore
 
 /**
 * Created by IntelliJ IDEA.

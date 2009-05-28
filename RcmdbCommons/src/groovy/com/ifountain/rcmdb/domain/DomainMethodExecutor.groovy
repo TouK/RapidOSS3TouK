@@ -34,7 +34,7 @@ public class DomainMethodExecutor
             {
                 exception = ex;
             }
-            if(exception.getCode() != LockException.CODE_DEADLOCK_VICTIM || DomainLockManager.getLocks(owner).size() != 0 || numberOfRetries >= MAX_NUMBER_OF_RETRIES_AFTER_DEAD_LOCK)
+            if(exception.getCode() != LockException.CODE_DEADLOCK_VICTIM || DomainLockManager.hasLock(owner) || numberOfRetries >= MAX_NUMBER_OF_RETRIES_AFTER_DEAD_LOCK)
             {
                 throw exception;
             }
@@ -51,7 +51,7 @@ public class DomainMethodExecutor
     {
         if(!methodExecutorAction.willBeLocked()) return methodExecutorAction.action();
 
-        boolean hasLockPreviously = DomainLockManager.getLocks(owner).size()  != 0;
+        boolean hasLockPreviously = DomainLockManager.hasLock(owner, methodExecutorAction.getLockName());
         try
         {
             DomainLockManager.getLock(methodExecutorAction.lockLevel, owner, methodExecutorAction.getLockName())
@@ -60,7 +60,7 @@ public class DomainMethodExecutor
         finally
         {
             if (!hasLockPreviously) {
-                DomainLockManager.releaseAllLocks(owner)
+                DomainLockManager.releaseLock(owner, methodExecutorAction.getLockName())
             }
         }
     }

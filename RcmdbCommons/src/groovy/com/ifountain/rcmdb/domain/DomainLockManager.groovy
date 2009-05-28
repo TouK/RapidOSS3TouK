@@ -1,9 +1,7 @@
 package com.ifountain.rcmdb.domain
 
-import org.apache.commons.transaction.locking.GenericLockManager
-import org.apache.commons.transaction.locking.LockManager
-import org.apache.commons.transaction.util.PrintWriterLogger
 import org.apache.commons.transaction.locking.GenericLock
+import org.apache.commons.transaction.locking.GenericLockManager
 import org.apache.commons.transaction.util.Log4jLogger
 import org.apache.log4j.Logger
 
@@ -17,14 +15,45 @@ import org.apache.log4j.Logger
 
 public class DomainLockManager
 {
-    public static int WRITE_LOCK = 3;
-    public static int BULK_INDEX_LOCK = 4;
-    public static int BULK_INDEX_CHECK_LOCK = 5;
+    public static int WRITE_LOCK = 1;
     private static long lockTimeout = 10000;
     private static GenericLockManager lockManager;
+    private static Map lockAccessObjects;
+    private static final Object accessLockObject = new Object();
+    public static void setLockTimeout(long timeout)
+    {
+        lockTimeout = timeout;
+    }
     public static void getWriteLock(Object owner, String lockName)
     {
-        lockManager.lock(owner, lockName, WRITE_LOCK, GenericLock.COMPATIBILITY_REENTRANT, false, lockTimeout);
+        synchronized (accessLockObject)
+        {
+            if(!hasLock(owner, lockName))
+            {
+                def accessCount = getLockAccessCount (lockName);
+                accessCount.increase();
+            }
+        }
+        try{
+            lockManager.lock(owner, lockName, WRITE_LOCK, GenericLock.COMPATIBILITY_REENTRANT, false, lockTimeout);
+        }catch(Throwable t){
+            removeLock(owner, lockName);
+            throw t;
+        }
+    }
+
+    private static LockAccessCount getLockAccessCount(String lockName)
+    {
+        synchronized (accessLockObject)
+        {
+            LockAccessCount accessCount = lockAccessObjects[lockName];
+            if(accessCount == null)
+            {
+                accessCount = new LockAccessCount();
+                lockAccessObjects[lockName] = accessCount;
+            }
+            return accessCount;
+        }
     }
 
     public static void getLock(int type, Object owner, String lockName)
@@ -34,53 +63,76 @@ public class DomainLockManager
             case WRITE_LOCK:
                 getWriteLock(owner, lockName)
                 break;
-            case BULK_INDEX_LOCK:
-                getBulkIndexLock(owner, lockName)
-                break;
-            case BULK_INDEX_CHECK_LOCK:
-                getBulkIndexCheckLock(owner, lockName)
-                break;
             default:
                 throw new Exception("Invalid lock type "+ type);
         }
     }
-    public static void getBulkIndexCheckLock(Object owner, String lockName)
-    {
-        lockManager.lock(owner, lockName, BULK_INDEX_CHECK_LOCK, GenericLock.COMPATIBILITY_REENTRANT_AND_SUPPORT, false, lockTimeout);
-    }
-
-    public static void getBulkIndexLock(Object owner, String lockName)
-    {
-        lockManager.lock(owner, lockName, BULK_INDEX_LOCK, GenericLock.COMPATIBILITY_REENTRANT, true, lockTimeout);
-    }
-
-    public static void releaseAllLocks(Object owner)
-    {
-        lockManager.releaseAll (owner);
-    }
+    
     public static void releaseLock(Object owner, String lockName)
     {
-        lockManager.release(owner, lockName)
+        def hasLock = hasLock(owner, lockName);
+        if(hasLock)
+        {
+            lockManager.release(owner, lockName)
+            removeLock(owner, lockName);
+        }
     }
 
-    public static Set getLocks(Object owner)
+    private static void removeLock(Object owner, String lockName)
     {
-        return lockManager.getAll(owner)
+        if(lockManager.getAll(owner).isEmpty())
+        {
+            lockManager.removeOwner (owner);
+        }
+        synchronized (accessLockObject)
+        {
+            def accessCount = getLockAccessCount (lockName);
+            accessCount.decrease();
+            if(accessCount.getAccessCount() == 0)
+            {
+                lockManager.removeLock (lockName);
+                lockAccessObjects.remove (lockName);
+            }
+        }
     }
 
-    public static boolean hasLock(Object owner, String lockName, int lockLevel)
+    public static boolean hasLock(Object owner, String lockName)
     {
-        return lockManager.hasLock(owner, lockName, lockLevel);
+        return lockManager.getOwner(lockName) == owner;
+    }
+
+    public static boolean hasLock(Object owner)
+    {
+        return !lockManager.getAll(owner).isEmpty();
     }
 
     public static void initialize(long lockTimeout, Logger logger)
     {
         DomainLockManager.lockTimeout = lockTimeout;
-        lockManager = new GenericLockManager(BULK_INDEX_CHECK_LOCK, new Log4jLogger(logger));
+        lockAccessObjects = Collections.synchronizedMap([:]);
+        lockManager = new GenericLockManager(WRITE_LOCK, new Log4jLogger(logger));
     }
 
     public static void destroy()
     {
     }
 
+}
+
+class LockAccessCount{
+    int accessCount = 0;
+    public synchronized void increase()
+    {
+        accessCount++;
+    }
+
+    public synchronized void decrease()
+    {
+        accessCount--;
+    }
+
+    public synchronized int getAccessCount()
+    {
+        return accessCount;
+    }
 }

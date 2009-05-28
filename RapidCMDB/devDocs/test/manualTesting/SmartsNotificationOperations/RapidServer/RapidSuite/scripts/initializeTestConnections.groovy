@@ -63,11 +63,13 @@ smartsDatasourceParams.reconnectInterval=3
 def httpConnectionParams=[:]
 httpConnectionParams.name="localhttpcon"
 httpConnectionParams.baseUrl="http://localhost:12222/RapidSuite/"
+httpConnectionParams.minTimeout=10
+
 
 def httpDatasourceParams=[:]
 httpDatasourceParams.name="localhttpds"
 
-def logLevel=org.apache.log4j.Level.DEBUG.toString();
+def logLevel=org.apache.log4j.Level.INFO.toString();
 def testScriptParamsList=[]
 testScriptParamsList.add([name:"notificationAdder",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
 testScriptParamsList.add([name:"notificationDeleter",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);

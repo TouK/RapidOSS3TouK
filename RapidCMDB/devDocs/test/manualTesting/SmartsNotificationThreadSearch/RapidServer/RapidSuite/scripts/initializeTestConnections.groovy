@@ -63,6 +63,7 @@ smartsDatasourceParams.reconnectInterval=3
 def httpConnectionParams=[:]
 httpConnectionParams.name="localhttpcon"
 httpConnectionParams.baseUrl="http://localhost:12222/RapidSuite/"
+httpConnectionParams.minTimeout=10
 
 def httpDatasourceParams=[:]
 httpDatasourceParams.name="localhttpds"
@@ -73,7 +74,7 @@ searcherScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
 searcherScriptParams.logFileOwn=true
 
 //scheduled script configuration for tests
-def logLevel=org.apache.log4j.Level.DEBUG.toString();
+def logLevel=org.apache.log4j.Level.INFO.toString();
 def testScriptParamsList=[]
 testScriptParamsList.add([name:"stopTestScripts",cronExpression:"0 0 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);
 testScriptParamsList.add([name:"garbageCollector",cronExpression:"0 0/3 7 * * ?",startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.CRON]);

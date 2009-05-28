@@ -245,7 +245,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         def lastDsStateChangeTime = ListeningAdapterManager.getInstance().getLastStateChangeTime(ds);
 
         IntegrationTestUtils.resetController(controller);
-
+        println "starting connector"
         controller.params.id=snmpConnector.id;
         controller.startConnector();
         assertFalse(ds.isFree());
@@ -257,7 +257,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals(1,lastDsStateChangeTimeAfterStart.compareTo(lastDsStateChangeTime));
 
         IntegrationTestUtils.resetController(controller);
-
+        println "stopping connector"
         controller.params.id=snmpConnector.id;
         controller.stopConnector();
         assertTrue(ds.isFree());
@@ -265,7 +265,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         assertEquals ("/snmpConnector/list", controller.response.redirectedUrl);
         assertTrue("Expected successfully stopped but was ${controller.flash.message}".toString(), controller.flash.message.indexOf("successfully stopped")>0)
-        println controller.flash.errors.class
+        println "succesfully stopped"
         assertEquals(0,controller.flash.errors.size());
         assertEquals(1,lastDsStateChangeTimeAfterStop.compareTo(lastDsStateChangeTimeAfterStart));
 

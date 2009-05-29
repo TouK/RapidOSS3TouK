@@ -82,11 +82,11 @@ class TestDeployer {
 
         ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
         
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}default") {
             }
         }
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}ModelOperations") {
             }
         }
@@ -120,11 +120,11 @@ class TestDeployer {
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
 
         ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}default") {
             }
         }
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}SmartsNotificationOperations") {
             }
         }
@@ -159,11 +159,11 @@ class TestDeployer {
         FileUtils.copyURLToFile(new java.net.URL("${buildBasePath}ManualTesting.zip"),manualTestingTarget);
 
         ant.unzip(src:manualTestingTarget.getPath(), dest:manualTestingTempPath);
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}default") {
             }
         }
-        ant.copy(todir: deploymentBasePath) {
+        ant.copy(todir: deploymentBasePath, overwrite: "true") {
             ant.fileset(dir: "${manualTestingTempPath}SmartsNotificationThreadSearch") {
             }
         }

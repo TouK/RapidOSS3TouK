@@ -85,8 +85,7 @@ class DomainOperationManager {
         {
             def operationName = domainClass.name+OPERATION_SUFFIX;
             GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader);
-            gcl.addClasspath (operationsDirectory);
-            gcl.setShouldRecompile (true);
+            gcl.addClasspath (operationsDirectory);           
             Class cls = null;
             try
             {

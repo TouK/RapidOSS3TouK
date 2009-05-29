@@ -44,10 +44,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
                  '<div>' +
                  '<input class="r-autocomplete-input" type="text"></input>' +
                  '<div class="r-autocomplete-swrp"></div>' +
-                 '<div class="r-autocomplete-suggestion"></div>' +
                  '</div></form></div>'});
         this.searchInput = this.body.getElementsByTagName('input')[0];
-        this.suggestion = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-suggestion', 'div', this.body)[0]
+        this.suggestion = dh.append(document.body,{tag:'div', cls:'r-autocomplete-suggestion'});
         var buttonWrp = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-swrp', 'div', this.body)[0];
         this.submitButton = new YAHOO.widget.Button(buttonWrp, {label:'Search', type:'submit'});
 

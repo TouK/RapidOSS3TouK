@@ -4,14 +4,21 @@
 
 .r-autocomplete-bwrp {
     padding-bottom: 2em;
-    width: 15em;
+    width: 16em;
 }
 .r-autocomplete-input{
     height:20px;
     margin-top:1px;
 }
 .r-autocomplete-body .yui-button {
-    left: 15em;
+    left: 16em;
     margin-left: 1em;
     position: absolute;
+}
+
+.yui-skin-sam .yui-ac-input {
+	width:170px;
+}
+.yui-skin-sam .yui-ac-container {
+width:170px;
 }

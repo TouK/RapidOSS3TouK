@@ -7,7 +7,7 @@ package com.ifountain.rcmdb.domain.cache
  * To change this template use File | Settings | File Templates.
  */
 public class IdCacheEntry {
-    String alias;
+    Class alias;
     boolean exist;
     long id = -1;
 
@@ -18,10 +18,14 @@ public class IdCacheEntry {
         exist = false;
     }
 
-    public void setProperties(String alias, long id)
+    public void setProperties(Class alias, long id)
     {
         this.id = id;
         this.alias = alias;
         exist = true;
     }
+
+    public void setAlias(Class alias){}
+    public void setId(int id){}
+    public void setExist(boolean exist){}
 }

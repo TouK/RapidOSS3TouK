@@ -31,9 +31,9 @@ public class IdCache {
         idCacheMap.clear();
     }
 
-    public static synchronized IdCacheEntry markAsDeleted(Class domainClass, Map params)
+    public static synchronized IdCacheEntry markAsDeleted(Class domainClass, object)
     {
-        def keyMap = getKeyMap(domainClass, params);
+        def keyMap = getKeyMap(domainClass, object);
         def cacheKeyString =  getCacheString(domainClass, keyMap);
         def entry = idCacheMap[cacheKeyString];
         if(entry != null)
@@ -42,11 +42,15 @@ public class IdCache {
         }
     }
 
-    private static Map getKeyMap(Class domainClass, Map params)
+    private static Map getKeyMap(Class domainClass, object)
     {
         def keyMap = [:]
         domainClass.keySet().each{
-            keyMap[it.name] = params[it.name]
+            keyMap[it.name] = object[it.name]
+        }
+        if(keyMap.isEmpty())
+        {
+            keyMap["id"] = object.id;
         }
         return keyMap;
     }
@@ -70,9 +74,9 @@ public class IdCache {
             }
         }
     }
-    public static synchronized IdCacheEntry get(Class domainClass, Map params)
+    public static synchronized IdCacheEntry get(Class domainClass, object)
     {
-        def keyMap = getKeyMap(domainClass, params);
+        def keyMap = getKeyMap(domainClass, object);
         def cacheKeyString =  getCacheString(domainClass, keyMap);
         def entry = idCacheMap[cacheKeyString];
         if(entry == null)
@@ -82,7 +86,7 @@ public class IdCache {
             def instanceFromCompass = domainClass.getFromHierarchy(keyMap)
             if(instanceFromCompass != null)
             {
-                entry.setProperties(instanceFromCompass.class.name, instanceFromCompass.id);
+                entry.setProperties(instanceFromCompass.class, instanceFromCompass.id);
             }
             idCacheMap[cacheKeyString] = entry;
         }

@@ -142,19 +142,10 @@ class SearchableExtensionGrailsPlugin {
         }
     }
 
-    def getParentDomainClass(GrailsDomainClass dc, GrailsApplication application)
-    {
-        def parentDomainClass = dc.clazz;
-        while(application.getDomainClass(parentDomainClass.superclass.name) != null)
-        {
-            parentDomainClass = parentDomainClass.superclass;
-        }
-        return parentDomainClass;
-    }
     def addBasicPersistenceMethods(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.metaClass;
-        def parentDomainClass = getParentDomainClass(dc, application)
+        def parentDomainClass = DomainClassUtils.getParentDomainClass(dc, application.getDomainClasses())
         def relations = DomainClassUtils.getRelations(dc);
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
@@ -249,7 +240,7 @@ class SearchableExtensionGrailsPlugin {
         def mc = dc.metaClass;
         def keys = DomainClassUtils.getKeys(dc);
         def propSummaryMethod = new PropertySummaryMethod(mc);
-        def parentDomainClass = getParentDomainClass(dc, application)
+        def parentDomainClass = DomainClassUtils.getParentDomainClass(dc,  application.getDomainClasses())
         def relations = DomainClassUtils.getRelations(dc);
         def getMethod = new GetMethod(mc, keys, relations);
         mc.'static'.getFromHierarchy = {Map searchParams->

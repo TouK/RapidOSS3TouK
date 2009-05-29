@@ -66,6 +66,27 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         assertTrue(ConstrainedProperty.hasRegisteredConstraint(KeyConstraint.KEY_CONSTRAINT));
     }
 
+    public void testGetrootClass()
+    {
+        loadedDomainClass = gcl.parseClass("""
+            class ${domainClassName}{
+                Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+                Long id;
+                Long version;
+                String prop1;
+                Long prop2;
+                public Object methodMissing(String methodName, args)
+                {
+                    ${RapidDomainClassGrailsPluginTest.class.name}
+                }
+            }
+        """)
+        def classesTobeLoaded = [loadedDomainClass];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+        assertEquals (loadedDomainClass, loadedDomainClass.getRootClass());
+    }
     public void testPropertyIntercepting()
     {
         loadedDomainClass = gcl.parseClass("""

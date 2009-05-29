@@ -42,6 +42,20 @@ class DomainClassUtils
         }
     }
 
+    def static getParentDomainClass(GrailsDomainClass dc, grailsDomainClasses)
+    {
+        def domainClassesMap = [:]
+        grailsDomainClasses.each{
+            domainClassesMap[it.name] = it;
+        }
+        def parentDomainClass = dc.clazz;
+        while(domainClassesMap[parentDomainClass.superclass.name] != null)
+        {
+            parentDomainClass = parentDomainClass.superclass;
+        }
+        return parentDomainClass;
+    }
+
     def static getSubClasses(GrailsDomainClass dc)
     {
         def classes = [];

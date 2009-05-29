@@ -46,6 +46,7 @@ import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
+import com.ifountain.rcmdb.domain.method.GetRootClassMethod
 
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = [:]
@@ -195,8 +196,12 @@ class RapidDomainClassGrailsPlugin {
         GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
 
         KeySetMethod keySetMethod = new KeySetMethod(dc);
+        GetRootClassMethod getRootClassMethod = new GetRootClassMethod(dc, application.getDomainClasses());
         MetaClass mc = dc.metaClass;
         GetOperationsMethod getOperationsMethod = new GetOperationsMethod(mc);
+        mc.static.getRootClass = {->
+            return getRootClassMethod.rootClass;
+        }
         mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
         }

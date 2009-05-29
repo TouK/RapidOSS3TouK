@@ -135,7 +135,8 @@ class ComponentConfigController {
 
     def get = {
         def configName = params.name;
-        def componentConfig = ComponentConfig.get(name: configName, username: session.username);
+        def url = params.url;
+        def componentConfig = ComponentConfig.get(name: configName, username: session.username, url:url);
         if (componentConfig) {
             render(contentType: "text/xml") {
                 ComponentConfig(name: componentConfig.name, pollingInterval: componentConfig.pollingInterval)

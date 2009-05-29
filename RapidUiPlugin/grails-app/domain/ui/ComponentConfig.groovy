@@ -30,6 +30,7 @@ class ComponentConfig {
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     String name = "";
     String username = "";
+    String url = ""
     Long pollingInterval = 0;
 
     org.springframework.validation.Errors errors ;
@@ -37,7 +38,7 @@ class ComponentConfig {
     Object __is_federated_properties_loaded__ ;
 
     static constraints = {
-        name(blank: false, nullable: false, key: ["username"])
+        name(blank: false, nullable: false, key: ["username", "url"])
         username(blank:false, nullable: false)
         pollingInterval(nullable: true)
         __operation_class__(nullable:true)

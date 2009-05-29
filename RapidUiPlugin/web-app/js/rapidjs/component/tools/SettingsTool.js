@@ -35,7 +35,7 @@ YAHOO.rapidjs.component.tool.SettingsTool = function(container, component, confi
         scope:this,
         timeout:30000
     }
-    var url = getUrlPrefix() + 'componentConfig/get?format=xml&name=' + this.component.id;
+    var url = getUrlPrefix() + 'componentConfig/get?format=xml&name=' + this.component.id + '&url=' + encodeURIComponent(window.location.pathname);
     YAHOO.util.Connect.asyncRequest('GET', url, callback);
 
 };
@@ -49,12 +49,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.compo
                     '<tr><td width="50%"><label>Set polling interval:</label></td>' +
                     '<td width="50%"><input type="textbox" name="pollingInterval" style="width:100px"/></td></tr>' +
                     '</tbody></table><input type="hidden" name="name"></input>' +
+                    '</tbody></table><input type="hidden" name="url"></input>' +
                     '</form></div>'
         });
         this.form = new YAHOO.rapidjs.component.Form(container, {id:this.component.id + "_settingsTool", saveUrl:getUrlPrefix() + "componentConfig/save?format=xml", width:this.width + "px", submitAction:"POST"});
     },
     performAction : function() {
-        this.form.show(YAHOO.rapidjs.component.Form.CREATE_MODE, {}, {name:this.component.id, pollingInterval:this.component.getPollingInterval()})
+        this.form.show(YAHOO.rapidjs.component.Form.CREATE_MODE, {}, {name:this.component.id, pollingInterval:this.component.getPollingInterval(), url:window.location.pathname})
     },
     handleSubmit: function() {
         var pollIntervalInput = this.form.dialog.form.pollingInterval;

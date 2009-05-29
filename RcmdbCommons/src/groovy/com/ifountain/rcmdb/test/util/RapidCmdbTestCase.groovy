@@ -22,6 +22,7 @@ import com.ifountain.comp.test.util.testcase.RapidTestCase
 import com.ifountain.rcmdb.domain.DomainLockManager
 import org.apache.log4j.Logger
 import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /**
 * Created by IntelliJ IDEA.
@@ -41,7 +42,8 @@ public class RapidCmdbTestCase extends RapidTestCase{
             Locale.setDefault(Locale.ENGLISH);
         }
         defaultBaseDir = System.getProperty("base.dir", ".");
-        DomainLockManager.initialize(10000, Logger.getRootLogger()); 
+        DomainLockManager.initialize(10000, Logger.getRootLogger());
+        IdCache.initialize (10000);
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
 

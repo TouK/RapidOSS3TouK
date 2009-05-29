@@ -49,7 +49,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.compo
                     '<tr><td width="50%"><label>Set polling interval:</label></td>' +
                     '<td width="50%"><input type="textbox" name="pollingInterval" style="width:100px"/></td></tr>' +
                     '</tbody></table><input type="hidden" name="name"></input>' +
-                    '</tbody></table><input type="hidden" name="url"></input>' +
+                    '<input type="hidden" name="url"></input>' +
                     '</form></div>'
         });
         this.form = new YAHOO.rapidjs.component.Form(container, {id:this.component.id + "_settingsTool", saveUrl:getUrlPrefix() + "componentConfig/save?format=xml", width:this.width + "px", submitAction:"POST"});

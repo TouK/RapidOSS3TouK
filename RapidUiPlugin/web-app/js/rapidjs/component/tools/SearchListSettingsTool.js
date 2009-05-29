@@ -35,6 +35,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SearchListSettingsTool, YAHOO.rap
                     '<option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>' +
                     '<option value="7">7</option><option value="8">8</option></select></td></tr>' +
                     '</tbody></table><input type="hidden" name="name"></input>' +
+                     '<input type="hidden" name="url"></input>' +
                     '</form></div>'
         });
         this.form = new YAHOO.rapidjs.component.Form(container, {id:this.component.id + "_settingsTool", saveUrl:getUrlPrefix() +"componentConfig/save?format=xml", width:this.width + "px", submitAction:"POST"});

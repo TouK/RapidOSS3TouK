@@ -70,7 +70,7 @@ httpDatasourceParams.name="localhttpds"
 
 def searcherScriptParams=[:]
 searcherScriptParams.name="startRequesters"
-searcherScriptParams.logLevel=org.apache.log4j.Level.DEBUG.toString()
+searcherScriptParams.logLevel=org.apache.log4j.Level.INFO.toString()
 searcherScriptParams.logFileOwn=true
 
 //scheduled script configuration for tests

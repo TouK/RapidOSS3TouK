@@ -26,7 +26,7 @@
 import script.CmdbScript;
 
 
-def logLevel=org.apache.log4j.Level.DEBUG.toString();
+def logLevel=org.apache.log4j.Level.INFO.toString();
 def testScriptParamsList=[]
 testScriptParamsList.add([name:"addInstances",period:60,startDelay:0,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);
 testScriptParamsList.add([name:"addRelations",period:60,startDelay:15,logLevel:logLevel,logFileOwn:true,scheduleType:CmdbScript.PERIODIC]);

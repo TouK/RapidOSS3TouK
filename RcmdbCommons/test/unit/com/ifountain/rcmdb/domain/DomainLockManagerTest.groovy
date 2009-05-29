@@ -119,6 +119,7 @@ class DomainLockManagerTest extends RapidCmdbTestCase{
         }, 300)
         synchronized (threadStartFlag)
         {
+            usedMemoryBeforeLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             threadStartFlag.notifyAll();
         }
         CommonTestUtils.waitFor (new ClosureWaitAction(){

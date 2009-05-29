@@ -33,6 +33,7 @@ import com.ifountain.compass.transaction.CompassTransactionFactory
 import org.springframework.beans.factory.config.RuntimeBeanReference
 import org.apache.lucene.search.BooleanQuery
 import org.codehaus.groovy.runtime.InvokerHelper
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /**
 * Created by IntelliJ IDEA.
@@ -245,6 +246,9 @@ class SearchableExtensionGrailsPlugin {
         def getMethod = new GetMethod(mc, keys, relations);
         mc.'static'.getFromHierarchy = {Map searchParams->
             return getMethod.invoke(parentDomainClass, [searchParams] as Object[])
+        }
+        mc.'static'.getCacheEntry = {Map searchParams->
+            return IdCache.get(mc.theClass, searchParams);
         }
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])

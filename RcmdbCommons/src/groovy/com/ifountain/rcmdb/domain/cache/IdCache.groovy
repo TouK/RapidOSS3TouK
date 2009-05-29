@@ -66,6 +66,10 @@ public class IdCache {
         if(size() == maxSize)
         {
             def halfSize = maxSize/2;
+            if(logger.isDebugEnabled())
+            {
+                logger.debug ("Max size for idcache reached. Will delete ${halfSize} number of records from cache");
+            }
             def keys = new ArrayList(idCacheMap.keySet());
             for(int i=0; i < halfSize; i++)
             {

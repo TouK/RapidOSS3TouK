@@ -22,6 +22,7 @@ import org.codehaus.groovy.grails.validation.AbstractConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.Errors
 import org.codehaus.groovy.runtime.GStringImpl
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /**
 * Created by IntelliJ IDEA.
@@ -55,8 +56,8 @@ class KeyConstraint extends AbstractConstraint{
                 keyMap[key] = target.getProperty(key);
             }
         }
-        Object res = constraintOwningClass.'getFromHierarchy'(keyMap);
-        if(res != null && target.id != res.id)
+        IdCacheEntry res = constraintOwningClass.'getCacheEntry'(keyMap);
+        if(res.exist && target.id != res.id)
         {
             List args = [constraintPropertyName, constraintOwningClass, propertyValue ];
             super.rejectValue(target, errors, DEFAULT_NOT_UNIQUE_MESSAGE_CODE, args as Object[], getDefaultMessage(DEFAULT_NOT_UNIQUE_MESSAGE_CODE));

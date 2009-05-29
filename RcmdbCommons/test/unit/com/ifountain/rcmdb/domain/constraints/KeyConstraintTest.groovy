@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,8 +35,8 @@ public class KeyConstraintTest extends RapidCmdbTestCase{
 
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        KeyConstraintDomainObjectForTest.existingInstance = null;
-        KeyConstraintDomainObjectForTest.searchParams = null;
+        KeyConstraintDomainObjectForTest.cacheEntry = new IdCacheEntry();
+        KeyConstraintDomainObjectForTest.keyParams = null;
     }
 
     protected void tearDown() {
@@ -95,15 +96,16 @@ public class KeyConstraintTest extends RapidCmdbTestCase{
         constraint.validate (obj1, obj1.key1, errors);
         assertFalse (errors.hasErrors());
         
-        KeyConstraintDomainObjectForTest.existingInstance = new KeyConstraintDomainObjectForTest();
+        KeyConstraintDomainObjectForTest.cacheEntry = new IdCacheEntry();
+        KeyConstraintDomainObjectForTest.cacheEntry.setProperties (KeyConstraintDomainObjectForTest, obj1.id+1);
         constraint.validate (obj1, obj1.key1, errors);
         assertTrue (errors.hasErrors());
         assertEquals(ConstrainedProperty.DEFAULT_MESSAGES.get(KeyConstraint.DEFAULT_NOT_UNIQUE_MESSAGE_CODE), errors.getFieldError().getDefaultMessage())
         assertEquals(KeyConstraint.DEFAULT_NOT_UNIQUE_MESSAGE_CODE, errors.getFieldError().code)
-        assertEquals (3, KeyConstraintDomainObjectForTest.searchParams.size());
-        assertEquals ("key1val", KeyConstraintDomainObjectForTest.searchParams["key1"]);
-        assertEquals ("key2val", KeyConstraintDomainObjectForTest.searchParams["key2"]);
-        assertEquals ("key3val", KeyConstraintDomainObjectForTest.searchParams["key3"]);
+        assertEquals (3, KeyConstraintDomainObjectForTest.keyParams.size());
+        assertEquals ("key1val", KeyConstraintDomainObjectForTest.keyParams["key1"]);
+        assertEquals ("key2val", KeyConstraintDomainObjectForTest.keyParams["key2"]);
+        assertEquals ("key3val", KeyConstraintDomainObjectForTest.keyParams["key3"]);
     }
 
     public void testProcessValidateDoesnotReturnsErrorIfObjectExistsAndItHasAnIdFieldDifferentThanCurrentId()
@@ -114,11 +116,11 @@ public class KeyConstraintTest extends RapidCmdbTestCase{
         constraint.setParameter (compositeKeys);
         constraint.setOwningClass (KeyConstraintDomainObjectForTest.class);
 
-        KeyConstraintDomainObjectForTest existingInstance = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
         KeyConstraintDomainObjectForTest obj1 = new KeyConstraintDomainObjectForTest(id:1, key1:"key1val", key2:"key2val", key3:"key3val");
         Errors errors = new BeanPropertyBindingResult(obj1, obj1.getClass().getName());
          
-        KeyConstraintDomainObjectForTest.existingInstance = existingInstance;
+        KeyConstraintDomainObjectForTest.cacheEntry = new IdCacheEntry();
+        KeyConstraintDomainObjectForTest.cacheEntry.setProperties (KeyConstraintDomainObjectForTest, obj1.id);
         constraint.validate (obj1, obj1.key1, errors);
         assertFalse (errors.hasErrors());
 
@@ -162,17 +164,17 @@ public class KeyConstraintTest extends RapidCmdbTestCase{
 
 class KeyConstraintDomainObjectForTest
 {
-    static Object existingInstance;
-    static Map searchParams;
+    static IdCacheEntry cacheEntry;
+    static Map keyParams;
     public static searchable = {};
     Long id;
     String key1;
     String key2;
     String key3;
-    public static Object getFromHierarchy(Map params)
+    public static IdCacheEntry getCacheEntry(Map params)
     {
-        searchParams = params;
-        return existingInstance;
+        keyParams = params;
+        return cacheEntry;
     }
 
 }

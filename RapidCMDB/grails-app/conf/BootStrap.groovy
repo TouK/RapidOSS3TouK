@@ -82,7 +82,7 @@ class BootStrap {
     }
     def initializeCaches()
     {
-        IdCache.initialize(100000);
+        IdCache.initialize(1000000);
     }
     def initializeModelGenerator()
     {

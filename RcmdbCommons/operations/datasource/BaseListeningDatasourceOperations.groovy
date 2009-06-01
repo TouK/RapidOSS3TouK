@@ -56,8 +56,12 @@ class BaseListeningDatasourceOperations extends BaseDatasourceOperations
     def startListening() throws Exception{
          ListeningAdapterManager.getInstance().startAdapter(this.domainObject);
          this.update(isSubscribed:true);
+         getAdapters().each{ adapter ->
+            adapter.setLogger(CmdbScript.getScriptLogger(listeningScript));
+         }
 
     }
+
     def stopListening() throws Exception{
         ListeningAdapterManager.getInstance().stopAdapter(this.domainObject);
         this.update(isSubscribed:false);     

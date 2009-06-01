@@ -20,6 +20,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.Level
+import com.ifountain.core.datasource.BaseAdapter
+import org.apache.log4j.Logger
 
 
 class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
@@ -130,6 +132,36 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         }
      }
 
+     public void testStartListeningChangesTheLoggerOfTheAdaptersToScriptLogger()
+     {
+         initialize();
+         CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperationsLoggerMock);
+         
+         ListeningAdapterManager.metaClass.startAdapter={ BaseListeningDatasource listeningDatasource ->
+            println "in test startAdapter";
+         }
+         
+         def scriptFile="baselistening_test.groovy";
+         createScript(scriptFile,"return 1");
+
+         CmdbScript script=CmdbScript.add(name:"testscript",type:CmdbScript.LISTENING,scriptFile:scriptFile)
+         assertFalse(script.hasErrors())
+
+         def ds=BaseListeningDatasource.add(name:"testds",listeningScript:script);
+         assertFalse(ds.hasErrors())
+
+         def testDs=BaseListeningDatasource.get(name:"testds");
+         assertSame(testDs.getLogger(),testDs.adapter.logger);
+
+         def scriptLogger=CmdbScript.getScriptLogger(script);
+         assertNotSame(scriptLogger,testDs.adapter.logger);
+         
+         testDs.startListening();
+
+         assertSame(scriptLogger,testDs.adapter.logger);
+
+
+     }
 
     void testStartListeningCallsListeningAdapterManagerAndThrowsException()
     {
@@ -265,4 +297,33 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
         def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
         scriptFile.write (scriptContent);
     }
+}
+
+class BaseListeningDatasourceOperationsLoggerMock extends BaseListeningDatasourceOperations{
+    BaseAdapterMock adapter;
+    def onLoad(){
+        this.adapter = new BaseAdapterMock("testds", 0, getLogger());
+    }
+
+    def getAdapters()
+    {
+        return [adapter];
+    }
+}
+
+class BaseAdapterMock extends BaseAdapter
+{
+    public BaseAdapterMock(){
+		super();
+	}
+
+	public BaseAdapterMock(String datasourceName, long reconnectInterval, Logger logger) {
+        super(datasourceName, reconnectInterval, logger);
+    }
+
+    public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception
+    {
+        return null;
+    }
+
 }

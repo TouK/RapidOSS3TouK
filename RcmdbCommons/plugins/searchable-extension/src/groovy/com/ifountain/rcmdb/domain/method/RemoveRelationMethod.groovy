@@ -10,6 +10,7 @@ import com.ifountain.rcmdb.domain.util.ValidationUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -48,6 +49,12 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
         statistics.start();
         def props = arguments[0];
         def source = arguments[1];
+        IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject);
+        if(!existingInstanceEntry.exist())
+        {
+            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);
+            return domainObject;
+        }
         long numberOfRemovedRelations = 0;
         boolean isChanged = false;
         props.each{key,value->

@@ -12,6 +12,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
 import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -57,12 +58,18 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         def props = arguments[0];
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
+        domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
+        IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject);//
+        if(!existingInstanceEntry.exist)
+        {
+            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);
+            return domainObject;
+        }
         def relationToBeAddedMap = [:]
         def updatedPropsOldValues = [:];
         def updatedRelations = [:];
         def relationToBeRemovedMap = [:]
-        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
-        domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
         boolean willBeIndexed = false;
         boolean willRelationsBeIndexed = false;
         props.each {propName, value ->
@@ -110,7 +117,10 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
             {
                 if (willBeIndexed)
                 {
+                    existingInstanceEntry.clear();
                     domainObject.index(domainObject);
+                    domainObject.updateCacheEntry(domainObject, true);
+
                 }
                 statistics.stop();
                 domainObject.removeRelation(relationToBeRemovedMap);

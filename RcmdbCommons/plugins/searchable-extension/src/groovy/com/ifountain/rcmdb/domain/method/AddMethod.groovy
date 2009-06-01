@@ -33,6 +33,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 class AddMethod extends AbstractRapidDomainWriteMethod
 {
@@ -73,12 +74,13 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         def props = arguments[0];
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
-        def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[])
+        IdCacheEntry existingInstanceEntry = clazz.getCacheEntry(props);//
         def instanceOfError = false;
-        if(!willReturnErrorIfExist && existingInstance != null)
+        if(!willReturnErrorIfExist && existingInstanceEntry.exist)
         {
-            if(clazz.isInstance(existingInstance) )
+            if(clazz.isAssignableFrom(existingInstanceEntry.alias) )
             {
+                def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[]);
                 return existingInstance.update(props);
             }
             else
@@ -108,13 +110,13 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 addedprops[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
             }
         }
-        if(willReturnErrorIfExist && existingInstance != null)
+        if(willReturnErrorIfExist && existingInstanceEntry.exist)
         {
-            ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstance.id]);
+            ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstanceEntry.id]);
         }
         else if(instanceOfError)
         {
-            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name,existingInstance.class.name]);
+            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name,existingInstanceEntry.class.name]);
         }
 
         if(errors.hasErrors()){
@@ -132,6 +134,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         {
             sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
             CompassMethodInvoker.index (mc, sampleBean);
+            sampleBean.updateCacheEntry(sampleBean, true);
             if(!relatedInstances.isEmpty())
             {
                 statistics.stop();

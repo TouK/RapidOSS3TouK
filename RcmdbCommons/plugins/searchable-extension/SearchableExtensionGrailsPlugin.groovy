@@ -247,8 +247,12 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.getFromHierarchy = {Map searchParams->
             return getMethod.invoke(parentDomainClass, [searchParams] as Object[])
         }
-        mc.'static'.getCacheEntry = {Map searchParams->
-            return IdCache.get(mc.theClass, searchParams);
+        mc.'static'.getCacheEntry = {object->
+            return IdCache.get(mc.theClass, object);
+        }
+
+        mc.'static'.updateCacheEntry = {object, boolean exist->
+            return IdCache.update(object, exist);
         }
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])

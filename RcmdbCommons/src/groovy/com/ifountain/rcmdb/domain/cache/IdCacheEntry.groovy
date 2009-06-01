@@ -25,6 +25,11 @@ public class IdCacheEntry {
         exist = true;
     }
 
+    public boolean exist()
+    {
+        return (id != -1 && alias != null && exist == true);
+    }
+
     public void setAlias(Class alias){}
     public void setId(int id){}
     public void setExist(boolean exist){}

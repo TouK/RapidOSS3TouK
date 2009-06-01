@@ -9,6 +9,7 @@ import com.ifountain.rcmdb.domain.util.ValidationUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -46,7 +47,14 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod{
         statistics.start();
         def props = arguments[0];
         def source = arguments[1];
-
+        BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
+        domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
+        IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject);
+        if(!existingInstanceEntry.exist())
+        {
+            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);
+            return domainObject;
+        }
         def relatedInstances = [:]
         props.each{key,value->
             if(value)
@@ -75,7 +83,6 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod{
                     }
                     value = newRelations;                    
                     def validValues = [];
-                    Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
                     value.each{relatedObject->
                         if(!relation.otherSideCls.isInstance(relatedObject))
                         {
@@ -91,10 +98,6 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod{
                         }
                     }
                     value = validValues;
-                    if(errors.hasErrors())
-                    {
-                        domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
-                    }
                     if(value.size() >0){
                         if(relation.type == RelationMetaData.ONE_TO_ONE || relation.type == RelationMetaData.MANY_TO_ONE)
                         {

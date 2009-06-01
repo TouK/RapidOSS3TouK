@@ -42,6 +42,17 @@ class AddRelationMethodTest extends RapidCmdbWithCompassTestCase{
     }
 
 
+    public void testAddReturnsErrosIfObjectDoesnotExist()
+    {
+        initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);
+        RelationMethodDomainObject1 expectedDomainObject1 = RelationMethodDomainObject1.add([:]);
+        expectedDomainObject1.remove();
+        RelationMethodDomainObject2 expectedDomainObject2 = RelationMethodDomainObject2.add([:]);
+
+        expectedDomainObject1.addRelation(rel1:expectedDomainObject2);
+        assertTrue (expectedDomainObject1.hasErrors());
+        assertEquals ("default.not.exist.message", expectedDomainObject1.errors.allErrors[0].code);
+    }
     public void testAddMethodWithOneToOneRelations()
     {
         initialize([RelationMethodDomainObject1, RelationMethodDomainObject2], []);

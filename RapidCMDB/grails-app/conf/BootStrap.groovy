@@ -30,6 +30,7 @@ import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
 import com.ifountain.rcmdb.methods.MethodFactory
 import datasource.RepositoryDatasource
 import connection.RepositoryConnection
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -52,6 +53,7 @@ import connection.RepositoryConnection
 class BootStrap {
     
     def init = {servletContext ->
+        initializeCaches();
         registerDatasourceConverters();
         initializeSessionManager();
         initializeLockManager();
@@ -77,6 +79,10 @@ class BootStrap {
     {
         DomainLockManager.initialize(30000, Logger.getLogger(DomainLockManager.class));
         DomainMethodExecutor.setMaxNumberOfRetries(20); 
+    }
+    def initializeCaches()
+    {
+        IdCache.initialize(100000);
     }
     def initializeModelGenerator()
     {

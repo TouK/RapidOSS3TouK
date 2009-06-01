@@ -21,18 +21,17 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.converter.*
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
+import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
+import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.util.RapidStringUtilities
 import java.text.SimpleDateFormat
 import org.springframework.validation.BindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
-import org.springframework.validation.Validator
-import com.ifountain.rcmdb.util.RapidStringUtilities
-import org.springframework.validation.ObjectError
-import com.ifountain.rcmdb.domain.validator.IRapidValidator
-import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
-import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /**
 * Created by IntelliJ IDEA.
@@ -50,6 +49,9 @@ class AddMethodTest extends RapidCmdbTestCase {
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
         AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.updateCacheCallParams.clear();
+        AddMethodDomainObject1.idCache = [:];
+        AddMethodDomainObject1.cacheEntryParams = [];
         AddMethodDomainObject1.indexList = [];
         validator = new MockValidator();
     }
@@ -72,13 +74,22 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(expectedDomainObject1, addedObject);
         assertTrue(AddMethodDomainObject1.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+        assertEquals(1, AddMethodDomainObject1.updateCacheCallParams.size());
+        def cacheEntry = AddMethodDomainObject1.idCache[expectedDomainObject1.prop1];
+        assertTrue (cacheEntry.exist);
+        assertEquals(AddMethodDomainObject1, cacheEntry.alias);
+        assertEquals(addedObject.id, cacheEntry.id);
+
         assertEquals(2, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty[0]);
         assertFalse(addedObject.isFlushedByProperty[1]);
         def prevId = addedObject.id;
 
         AddMethodDomainObject1.indexList.clear();
+        AddMethodDomainObject1.idCache.clear();
+        AddMethodDomainObject1.updateCacheCallParams.clear();
         AddMethodDomainObject1 expectedDomainObject2 = new AddMethodDomainObject1(prop1: "object2Prop1Value");
         props = [prop1: expectedDomainObject2.prop1];
         addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
@@ -87,19 +98,31 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(prevId + 1, addedObject.id);
 
         AddMethodDomainObject1.indexList.clear();
+        AddMethodDomainObject1.idCache.clear();
+        AddMethodDomainObject1.updateCacheCallParams.clear();
         AddMethodDomainObject1 expectedDomainObject3 = new AddMethodDomainObject1(prop1: "object3Prop1Value");
 
         //test ignores id property
+        AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
         props = [id: 5, prop1: expectedDomainObject3.prop1];
         addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
-
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertNull (AddMethodDomainObject1.cacheEntryParams[0].id);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+//
         AddMethodDomainObject1.indexList.clear();
+        AddMethodDomainObject1.idCache.clear();
+        AddMethodDomainObject1.updateCacheCallParams.clear();
         AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
         //test ignores id property whose name is gstring
         props = ["${"id"}": 5, prop1: expectedDomainObject3.prop1];
         addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject3.prop1)}", AddMethodDomainObject1.query);
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertNull (AddMethodDomainObject1.cacheEntryParams[0].id);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+
 
     }
 
@@ -130,7 +153,8 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(expectedDomainObject1.prop6, addedObject.prop6);
         assertTrue(ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObject1.query);
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
 
     }
 
@@ -146,8 +170,12 @@ class AddMethodTest extends RapidCmdbTestCase {
         def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
         AddMethodDomainObjectWithEvents.searchResult = [total: 1, results: [expectedDomainObject1]];
 
+
         def addedObject2 = add2.invoke(ChildAddMethodDomainObject2.class, [props] as Object[]);
         assertTrue(addedObject2.hasErrors())
+        assertEquals ("rapidcmdb.invalid.instanceof.existing", addedObject2.errors.allErrors[0].code);
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
 
         /*
         assertEquals (expectedDomainObject1, addedObject);
@@ -182,13 +210,17 @@ class AddMethodTest extends RapidCmdbTestCase {
 
         assertTrue(AddMethodDomainObjectWithEvents.indexList[0].contains(addedObject));
         assertSame(props.rel1, addedObject.relationsShouldBeAdded.rel1)
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObjectWithEvents.query);
+
+        assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
 
         //test add method with existing instance (It will update instance)
         AddMethodDomainObjectWithEvents.searchResult = [total: 1, results: [expectedDomainObject1]];
         AddMethodDomainObjectWithEvents.eventCalls = [];
         addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
         assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(expectedDomainObject1.prop1)}", AddMethodDomainObjectWithEvents.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
     }
 
     public void testBeforeInsertShouldBeCalledBeforeValidation()
@@ -229,6 +261,8 @@ class AddMethodTest extends RapidCmdbTestCase {
             assertEquals(formater.parse("2000-01-01"), addedObject.prop5);
             assertEquals(new Boolean(true), addedObject.booleanProp);
 
+            AddMethodDomainObject1.idCache.clear();
+            AddMethodDomainObject1.updateCacheCallParams.clear();
             props = [prop1: expectedDomainObject1.prop1, prop4: "", prop5: "", doubleProp: ""];
             addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
@@ -236,7 +270,8 @@ class AddMethodTest extends RapidCmdbTestCase {
             assertEquals(null, addedObject.doubleProp);
             assertEquals(null, addedObject.prop5);
 
-
+            AddMethodDomainObject1.idCache.clear();
+            AddMethodDomainObject1.updateCacheCallParams.clear();
             props = [prop1: expectedDomainObject1.prop1, prop4: null, prop5: null, doubleProp: null];
             addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
@@ -356,14 +391,19 @@ class AddMethodTest extends RapidCmdbTestCase {
         def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
         assertEquals(objectBeforeAdd, addedObject);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
+        assertNull(AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
 
+        AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
         AddMethodDomainObject1.searchResult = [total: 1, results: [addedObject]];
 
         props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
         AddMethodDomainObject1 addedObjectAfterAdd = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
         assertEquals(props, addedObjectAfterAdd.propertiesToBeUpdated);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(props.prop1)}", AddMethodDomainObjectWithEvents.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
     }
 
     public void testAddMethodWithReturnErrorIfExistMode()
@@ -375,8 +415,11 @@ class AddMethodTest extends RapidCmdbTestCase {
         def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         def objectId = addedObject.id;
         assertEquals(objectBeforeAdd, addedObject);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(objectBeforeAdd.prop1)}".toString(), AddMethodDomainObject1.query);
+        assertNull(AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
 
+        AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
         AddMethodDomainObject1.searchResult = [total: 1, results: [addedObject]];
 
         props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
@@ -386,6 +429,8 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals("rapidcmdb.instance.already.exist", addedObjectAfterAdd.errors.allErrors[0].code);
         assertEquals(objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[0]);
         assertNull(addedObjectAfterAdd.propertiesToBeUpdated);
+        assertNull(AddMethodDomainObjectWithEvents.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
     }
 
 }
@@ -395,7 +440,10 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "rel3": [type: Object], "rel4": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
     def static searchResult = [total: 0, results: []];
     def static query;
+    def static cacheEntryParams = [];
+    def static idCache = [:];
     def static indexList = [];
+    def static updateCacheCallParams = [];
     static List eventCalls = []
     def relationsShouldBeAdded;
     def relationsShouldBeRemoved;
@@ -421,6 +469,31 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     {
         AddMethodDomainObject1.query = queryClosure;
         return searchResult
+    }
+
+    def static updateCacheEntry(object, boolean exist)
+    {
+        updateCacheCallParams.add([object.cloneObject(), exist]);
+        if(!exist)
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+        }
+        else
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+            idCache[object.prop1].setProperties(object.class, object.id);
+        }
+    }
+    def static getCacheEntry(params)
+    {
+        cacheEntryParams.add(params);
+        IdCacheEntry entry = idCache[params.prop1];
+        if(entry == null)
+        {
+            entry = new IdCacheEntry();
+            idCache[params.prop1] = entry;
+        }
+        return entry;
     }
 
     def static index(objectList)
@@ -462,7 +535,15 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     }
 
     def cloneObject() {
-         return this;
+        def newInstance = this.class.newInstance();
+        this.properties.each{key,value->
+            try{
+                newInstance.setProperty(key, value);
+            }catch(Throwable t)
+            {
+            }
+        }
+         return newInstance;
     }
 
     public void setProperty(String propName, Object propValue)

@@ -24,6 +24,7 @@ import relation.Relation
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /**
 * Created by IntelliJ IDEA.
@@ -38,8 +39,9 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         RemoveMethodDomainObject.unIndexList = [];
         RemoveMethodDomainObject.eventCallList = [];
-        RemoveMethodDomainObject.existingInstanceCount = 0;
-        RemoveMethodDomainObject.countQuery = null;
+        RemoveMethodDomainObject.updateCacheCallParams.clear();
+        RemoveMethodDomainObject.cacheEntryParams.clear();
+        RemoveMethodDomainObject.idCache.clear();
         RemoveMethodDomainObject.relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:]
         RemoveMethodDomainObject.metaClass.'static'.keySet = {
             return []
@@ -56,15 +58,19 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
     public void testRemoveObject()
     {
-        RemoveMethodDomainObject.existingInstanceCount = 1;
         RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject(id:1, prop1:"prop1Value1");
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1] =  new IdCacheEntry();
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1].setProperties(RemoveMethodDomainObject.class, objectToBeRemoved.id);
         RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
         assertTrue (removeMethod  instanceof AbstractRapidDomainWriteMethod);
         removeMethod.invoke (objectToBeRemoved, null);
         assertSame(objectToBeRemoved, RemoveMethodDomainObject.unIndexList[0][0]);
         assertNull (objectToBeRemoved.relationsToBeRemoved);
         assertFalse (objectToBeRemoved.hasErrors());
-        assertEquals (RemoveMethodDomainObject.countQuery, "id:\"${objectToBeRemoved.id}\"");
+        assertSame (objectToBeRemoved, RemoveMethodDomainObject.cacheEntryParams[0]);
+        assertFalse (RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1].exist())
+        assertSame(objectToBeRemoved, RemoveMethodDomainObject.updateCacheCallParams[0][0])
+        assertSame(false, RemoveMethodDomainObject.updateCacheCallParams[0][1])
     }
 
     public void testRemoveObjectWithEvents()
@@ -73,9 +79,10 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
         ObjectProcessor.getInstance().addObserver(observer);
 
-        RemoveMethodDomainObject.existingInstanceCount = 1;
         def rel1Object=new Object();
         RemoveMethodDomainObjectWithEvents objectToBeRemoved = new RemoveMethodDomainObjectWithEvents(id:1, prop1:"prop1Value1",rel1:rel1Object);
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1] =  new IdCacheEntry();
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1].setProperties(RemoveMethodDomainObject.class, objectToBeRemoved.id);
         def relations=[rel1:new RelationMetaData("rel1","otherrel1",RemoveMethodDomainObject,RemoveMethodDomainObject,RelationMetaData.ONE_TO_ONE)];
 
 
@@ -99,11 +106,11 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
     public void testRemoveObjectReturnsErrorIfObjectDoesnotExist()
     {
-        RemoveMethodDomainObject.existingInstanceCount = 0;
         RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject(id:1, prop1:"prop1Value1");
         RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
         removeMethod.invoke (objectToBeRemoved, null);
         assertTrue (objectToBeRemoved.hasErrors());
+        assertEquals(0, RemoveMethodDomainObject.updateCacheCallParams.size())
     }
 
     public void testRemoveObjectWithRelations()
@@ -143,23 +150,44 @@ class RemoveMethodDomainObject
     def rel3;
     List rel2 = [];
     def static unIndexList = [];
-    def static countQuery;
-    def static existingInstanceCount;
     def static eventCallList=[];
+    def static cacheEntryParams = [];
+    def static idCache = [:];
+    def static updateCacheCallParams = [];
     
     def errors =  new BeanPropertyBindingResult(this, this.class.getName());
     def relationsToBeRemoved;
+
+    def static updateCacheEntry(object, boolean exist)
+    {
+        updateCacheCallParams.add([object, exist]);
+        if(!exist)
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+        }
+        else
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+            idCache[object.prop1].setProperties(object.class, object.id);
+        }
+    }
+    def static getCacheEntry(params)
+    {
+        cacheEntryParams.add(params);
+        IdCacheEntry entry = idCache[params.prop1];
+        if(entry == null)
+        {
+            entry = new IdCacheEntry();
+            idCache[params.prop1] = entry;
+        }
+        return entry;
+    }
     
 
     def static unindex(objectList)
     {
         unIndexList.add(objectList);
         eventCallList.add("unindex");
-    }
-    def static countHits(String query)
-    {
-        countQuery = query;
-        return existingInstanceCount;
     }
 
     public boolean hasErrors()

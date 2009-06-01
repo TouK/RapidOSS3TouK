@@ -18,21 +18,15 @@
 */
 package com.ifountain.rcmdb.domain.method
 
+import com.ifountain.rcmdb.converter.*
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.MockIdGeneratorStrategy
-import com.ifountain.rcmdb.converter.DateConverter
-import com.ifountain.rcmdb.converter.DoubleConverter
-import com.ifountain.rcmdb.converter.LongConverter
-import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
+import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.text.SimpleDateFormat
-import com.ifountain.rcmdb.converter.BooleanConverter
-import com.ifountain.rcmdb.converter.DateConverter
-import com.ifountain.rcmdb.converter.DoubleConverter
-import com.ifountain.rcmdb.converter.RapidConvertUtils
-import com.ifountain.rcmdb.domain.ObjectProcessor
-import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
+import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 
 /**
 * Created by IntelliJ IDEA.
@@ -45,9 +39,12 @@ class UpdateMethodTest extends RapidCmdbTestCase {
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         IdGenerator.initialize(new MockIdGeneratorStrategy());
+        AddMethodDomainObject1.idCache = [:];
+        AddMethodDomainObject1.cacheEntryParams = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
         AddMethodDomainObject1.searchResult = [total: 0, results: []];
         AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
         AddMethodDomainObject1.indexList = [];
         AddMethodDomainObject1.metaClass.'static'.keySet = {
             return []
@@ -90,6 +87,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
         assertTrue(update instanceof AbstractRapidDomainWriteMethod);
         AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertFalse (updatedObject.hasErrors());
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
@@ -109,6 +107,53 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals(objectBeforeAdd.id, updatedObject.id);
     }
 
+    public void testUpdateMethodWithKeyProperties()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id: 100, prop1: "object2Prop1Value");
+
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)];
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, relations, ["prop1"]);
+
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObject1.indexList.clear();
+        props = [prop1: "newKeyValue"];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
+        assertTrue(update instanceof AbstractRapidDomainWriteMethod);
+        AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertFalse (updatedObject.hasErrors());
+
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(props.prop1, updatedObject.prop1);
+        assertEquals(2, AddMethodDomainObject1.idCache.size());
+        assertFalse(AddMethodDomainObject1.idCache[objectBeforeAdd.prop1].exist());
+        assertTrue(AddMethodDomainObject1.idCache[updatedObject.prop1].exist());
+        assertEquals(updatedObject.id, AddMethodDomainObject1.idCache[updatedObject.prop1].id);
+        assertEquals(updatedObject.class, AddMethodDomainObject1.idCache[updatedObject.prop1].alias);
+        assertSame (updatedObject, AddMethodDomainObject1.cacheEntryParams[1]);
+    }
+
+    public void testUpdateMethodReturnsErrorIfObjectDoesnotExist()
+    {
+        AddMethodDomainObject1 object = new AddMethodDomainObject1(id:100, prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        def props = [prop1: object.prop1, prop2: "newProp2Value"];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
+        assertTrue(update instanceof AbstractRapidDomainWriteMethod);
+        AddMethodDomainObject1 updatedObject = update.invoke(object, [[prop2:"newprop2value"]] as Object[]);
+        assertTrue (updatedObject.hasErrors());
+        assertSame (object, AddMethodDomainObject1.cacheEntryParams[0]);
+        assertEquals ("default.not.exist.message", updatedObject.errors.allErrors[0].code);
+    }
+
+
+
 
     public void testUpdateMethodWillNotCallIndexIfNoPropertyHasChanged()
     {
@@ -124,9 +169,12 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         AddMethodDomainObjectWithEvents.eventCalls.clear();
         AddMethodDomainObjectWithEvents.indexList.clear();
+        IdCacheEntry entry = AddMethodDomainObjectWithEvents.idCache[addedObject.prop1];
+        def numberOfUpdateCacheCall = AddMethodDomainObject1.updateCacheCallParams.size();
         props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2];
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
         AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
+
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
@@ -135,6 +183,12 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
         assertSame(updatedObject, addedObject);
         assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
+        IdCacheEntry entryAfterUpdate = AddMethodDomainObjectWithEvents.idCache[updatedObject.prop1];
+        assertSame (entry, entryAfterUpdate)
+        assertTrue (entryAfterUpdate.exist());
+        assertEquals (AddMethodDomainObjectWithEvents.class, entryAfterUpdate.alias);
+        assertEquals (updatedObject.id, entryAfterUpdate.id);
+        assertEquals("cache should not be updated since no property changed", numberOfUpdateCacheCall, AddMethodDomainObject1.updateCacheCallParams.size());
     }
 
     public void testUpdateMethodWillReturnErrorsIfErrorsOccurredWhileConvertingStringProperties()
@@ -264,7 +318,8 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         Map repositoryChange = observer.repositoryChanges[0];
         assertEquals(3, repositoryChange.size());
         assertEquals(EventTriggeringUtils.AFTER_UPDATE_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME])
-        assertSame(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
+        assertEquals(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
+        assertNotSame(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
         Map updatedProps = repositoryChange[ObjectProcessor.UPDATED_PROPERTIES]
         assertEquals(3, updatedProps.size())
         assertEquals(objectBeforeAdd.prop1, updatedProps.prop1);
@@ -411,6 +466,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id: 100, prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
             AddMethodDomainObject1.indexList.clear();
+            AddMethodDomainObject1.getCacheEntry(object).setProperties (AddMethodDomainObject1.class, object.id);
             def props = [prop1: object.prop1, prop2: "newProp2Value", prop4: "100", prop5: "2000-01-01", doubleProp: "5.0", booleanProp: "FAlse"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
             def updatedObject = update.invoke(object, [props] as Object[]);
@@ -425,6 +481,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
             assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
             AddMethodDomainObject1.indexList.clear();
+            AddMethodDomainObject1.getCacheEntry(object).setProperties (AddMethodDomainObject1.class, object.id);
             props = [prop1: object.prop1, prop2: "", prop4: "", prop5: "", doubleProp: "", booleanProp: ""];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
             updatedObject = update.invoke(object, [props] as Object[]);
@@ -439,6 +496,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
             assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
 
             AddMethodDomainObject1.indexList.clear();
+            AddMethodDomainObject1.getCacheEntry(object).setProperties (AddMethodDomainObject1.class, object.id);
             props = [prop1: object.prop1, prop2: null, prop4: null, prop5: null, doubleProp: null, booleanProp: null];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
             updatedObject = update.invoke(object, [props] as Object[]);
@@ -475,7 +533,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
             RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)
 
             AddMethodDomainObject1 object = new AddMethodDomainObject1(id: 100, prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
-
+            AddMethodDomainObject1.getCacheEntry(object).setProperties (AddMethodDomainObject1.class, object.id);
             def props = [prop1: object.prop1, prop4: "invalidData", prop5: "invalidData", doubleProp: "invalidData"];
             UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
             def updatedObject = update.invoke(object, [props] as Object[]);

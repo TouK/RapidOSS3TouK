@@ -78,6 +78,27 @@ public class IdCache {
             }
         }
     }
+    public static synchronized IdCacheEntry update(Object domainObject, boolean exist)
+    {
+        def keyMap = getKeyMap(domainObject.class, domainObject);
+        def cacheKeyString =  getCacheString(domainObject.class, keyMap);
+        def entry = idCacheMap[cacheKeyString];
+        if(entry == null)
+        {
+            checkSize();
+            entry = new IdCacheEntry();
+            idCacheMap[cacheKeyString] = entry;
+        }
+        if(exist)
+        {
+            entry.setProperties (domainObject.class, domainObject.id);
+        }
+        else
+        {
+            entry.clear();
+        }
+        return entry;
+    }
     public static synchronized IdCacheEntry get(Class domainClass, object)
     {
         def keyMap = getKeyMap(domainClass, object);

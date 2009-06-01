@@ -70,6 +70,44 @@ public class IdCacheTest extends RapidCmdbWithCompassTestCase{
         assertEquals(addedInstance.id, entryWithRealObject.id);
     }
 
+    public void testUpdate()
+    {
+        IdCache.initialize(10000);
+        Map classes = initializeCompass();
+        Class modelWithoutInheritance = classes["modelWithoutInheritance"]
+
+
+        def params1 = [prop1:"prop1value1", prop2:"prop2value1"]
+        def addedInstance = modelWithoutInheritance.add(params1)
+
+        IdCacheEntry entry = IdCache.update (addedInstance, false);
+        assertFalse (entry.exist);
+        assertEquals(-1, entry.id);
+        assertNull(entry.alias);
+
+
+        entry = IdCache.update (addedInstance, true);
+        assertTrue (entry.exist);
+        assertEquals(addedInstance.id, entry.id);
+        assertEquals(addedInstance.class, entry.alias);
+
+        IdCache.clearCache();
+
+        entry = IdCache.update (addedInstance, true);
+        assertTrue (entry.exist);
+        assertEquals(addedInstance.id, entry.id);
+        assertEquals(addedInstance.class, entry.alias);
+
+        IdCache.clearCache();
+
+        entry = IdCache.update (addedInstance, false);
+        assertFalse (entry.exist);
+        assertEquals(-1, entry.id);
+        assertNull(entry.alias);
+
+        
+    }
+
     public void testGetWithExistingHierarchyInstances()
     {
         IdCache.initialize(10000);

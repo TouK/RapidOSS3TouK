@@ -40,9 +40,8 @@ class RemoveMethod extends AbstractRapidDomainWriteMethod{
     protected Object _invoke(Object domainObject, Object[] arguments) {
         OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
         statistics.start();
-        def keyMap = [id:domainObject.id];
-        def numberOfExistingObjects = CompassMethodInvoker.countHits(mc, keyMap);
-        if(numberOfExistingObjects == 0)
+        def cacheEntry = domainObject.getCacheEntry(domainObject);
+        if(!cacheEntry.exist())
         {
             ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);            
         }
@@ -81,6 +80,7 @@ class RemoveMethod extends AbstractRapidDomainWriteMethod{
             }
 
             CompassMethodInvoker.unindex(mc, domainObject);
+            domainObject.updateCacheEntry(domainObject, false);
             EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
             ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_DELETE_EVENT, domainObject)
             statistics.stop();

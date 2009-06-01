@@ -24,6 +24,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
 import com.ifountain.rcmdb.methods.MethodFactory
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -45,6 +46,7 @@ import com.ifountain.rcmdb.methods.MethodFactory
 */
 class BootStrap {
     def init = {servletContext ->
+        initializeCaches();
         registerDatasourceConverters();
         initializeSessionManager();
         initializeLockManager();
@@ -54,6 +56,11 @@ class BootStrap {
         registerDefaultUsers();
         registerDefaultDatasourceNames();
         initializeScripting();
+    }
+
+    def initializeCaches()
+    {
+        IdCache.initialize(100000);
     }
     def initializeSessionManager()
     {

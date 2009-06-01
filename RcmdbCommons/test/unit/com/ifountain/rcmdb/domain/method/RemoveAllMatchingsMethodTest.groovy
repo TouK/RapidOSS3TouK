@@ -24,6 +24,7 @@ import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,6 +77,12 @@ class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
         assertEquals (relatedObject1.id, modelInstance1.rel1[0].id);
         assertEquals (relatedObject2.id, modelInstance2.rel1[0].id);
         assertEquals (relatedObject1.id, modelInstance3.rel1[0].id);
+        assertTrue (IdCache.get(modelInstance1.class, modelInstance1).exist());
+        assertTrue (IdCache.get(modelInstance2.class, modelInstance2).exist());
+        assertTrue (IdCache.get(modelInstance3.class, modelInstance3).exist());
+        assertTrue (IdCache.get(modelInstance1.id).exist());
+        assertTrue (IdCache.get(modelInstance2.id).exist());
+        assertTrue (IdCache.get(modelInstance3.id).exist());
 
         modelClass.'removeAll'("prop1:group1");
         assertNull (modelClass.'get'(keyProp:modelInstance1.keyProp));
@@ -85,6 +92,14 @@ class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
         def objectIdsForInstance2 = RelationUtils.getRelatedObjectsIdsByObjectId(modelInstance2.id, "rel1", "revrel1");
         assertTrue (objectIdsForInstance1.isEmpty());
         assertTrue (objectIdsForInstance2.isEmpty());
+
+        assertFalse(IdCache.get(modelInstance1.class, modelInstance1).exist());
+        assertFalse (IdCache.get(modelInstance2.class, modelInstance2).exist());
+        assertTrue (IdCache.get(modelInstance3.class, modelInstance3).exist());
+        assertFalse (IdCache.get(modelInstance1.id).exist());
+        assertFalse (IdCache.get(modelInstance2.id).exist());
+        assertTrue (IdCache.get(modelInstance3.id).exist());
+
     }
     public void testRemoveAllMatchingsWithCascade()
     {

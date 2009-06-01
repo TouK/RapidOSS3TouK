@@ -12,14 +12,21 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 class IdCacheEntryTest extends RapidCmdbWithCompassTestCase{
     public void testSetProperties()
     {
+        IdCache.initialize (10000);
+        def id = 1;
+        assertFalse (IdCache.get(id).exist());
         IdCacheEntry entry = new IdCacheEntry();
         entry.setProperties (IdCacheEntryTest, 1);
+        assertTrue (IdCache.get(id).exist());
+        assertSame(entry, IdCache.get(id));
         assertTrue (entry.exist);
         assertEquals (IdCacheEntryTest, entry.alias);
         assertEquals (1, entry.getId());
         assertTrue (entry.exist());
 
         entry.clear();
+        assertFalse (IdCache.get(id).exist());
+        assertNotSame(entry, IdCache.get(id));
         assertFalse(entry.exist);
         assertEquals (null, entry.alias);
         assertEquals (-1, entry.getId());
@@ -28,6 +35,7 @@ class IdCacheEntryTest extends RapidCmdbWithCompassTestCase{
 
     public void testSetPropertyMethodWillNotAssignPropValues()
     {
+        IdCache.initialize (10000);
         IdCacheEntry entry = new IdCacheEntry();
         entry.exist = true;
         entry.id = 1000;

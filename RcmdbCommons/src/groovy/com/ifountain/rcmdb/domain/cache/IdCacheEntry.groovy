@@ -10,12 +10,13 @@ public class IdCacheEntry {
     Class alias;
     boolean exist;
     long id = -1;
-
     public void clear()
     {
+        IdCache.remove(this.id);
         id = -1;
         alias = null;
         exist = false;
+
     }
 
     public void setProperties(Class alias, long id)
@@ -23,6 +24,7 @@ public class IdCacheEntry {
         this.id = id;
         this.alias = alias;
         exist = true;
+        IdCache.add(id, this);
     }
 
     public boolean exist()

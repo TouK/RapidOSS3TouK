@@ -36,6 +36,44 @@ public class IdCacheTest extends RapidCmdbWithCompassTestCase{
         assertNotSame ("For same instances of different class different entries should be returned", thirdRequestEntry, fourthRequestEntry);
     }
 
+    public void testGetWithNonExistingInstancesWithIdMethod()
+    {
+        IdCache.initialize(10000);
+        Map classes = initializeCompass();
+        Class childModel = classes["child1"]
+        Class modelWithoutInheritance = classes["modelWithoutInheritance"]
+        IdCacheEntry entry = IdCache.get(1)
+        assertFalse(entry.exist());
+        IdCacheEntry entryAfterSecodRequest = IdCache.get(1)
+        assertSame (entry, entryAfterSecodRequest);
+
+        IdCacheEntry entryForAnotherId = IdCache.get(2)
+        assertSame (entry, entryForAnotherId);
+    }
+
+
+
+    public void testGetWithExistingInstancesWithIdMethod()
+    {
+        IdCache.initialize(10000);
+        Map classes = initializeCompass();
+        Class modelWithoutInheritance = classes["modelWithoutInheritance"]
+
+        def params1 = [prop1:"prop1value1", prop2:"prop2value1"]
+        def addedInstance = modelWithoutInheritance.add(params1)
+
+        IdCache.clearCache();
+
+        IdCacheEntry entry = IdCache.get(modelWithoutInheritance, params1)
+        IdCacheEntry entryFromIdMethod = IdCache.get(addedInstance.id);
+        assertSame (entry, entryFromIdMethod);
+
+        entryFromIdMethod.clear();
+        IdCacheEntry entryFromIdMethodAfterClear = IdCache.get(addedInstance.id);
+        assertNotSame (entry, entryFromIdMethodAfterClear);
+        
+    }
+
     public void testGetWithExistingInstances()
     {
         IdCache.initialize(10000);

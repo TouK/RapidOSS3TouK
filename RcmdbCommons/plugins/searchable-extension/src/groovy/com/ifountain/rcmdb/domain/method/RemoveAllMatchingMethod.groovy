@@ -19,7 +19,8 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.property.RelationUtils
-import com.ifountain.rcmdb.domain.util.RelationMetaData;
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.cache.IdCache;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -54,6 +55,7 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod{
                 def resource = hit.getResource();
                 def id = resource.getObject("id");
                 session.delete(resource);
+                IdCache.get (id).clear();
                 cascadedRelations.each{RelationMetaData metaData->
                     def cascadedObjectsIds = RelationUtils.getRelatedObjectsIdsByObjectId(id, metaData.getName(), metaData.getOtherSideName());
                     cascadedObjectsIds.each{cascadedObjectId, cascadedNumberOfObjects->

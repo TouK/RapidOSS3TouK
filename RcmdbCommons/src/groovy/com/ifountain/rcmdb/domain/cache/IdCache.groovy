@@ -14,12 +14,15 @@ import java.util.Map.Entry
 public class IdCache {
     private static Logger logger = Logger.getLogger(IdCache);
     private static int maxSize;
+    private static final IdCacheEntry DEFAULT_CACHE_ENTRY = new IdCacheEntry();
     private static Map idCacheMap;
+    private static Map idCacheMapWithIdKey;
     public static synchronized void initialize(int size)
     {
         logger.info ("IdCache is initialized with size ${size}");
         maxSize = size;
         idCacheMap = Collections.synchronizedMap(new CaseInsensitiveMap());
+        idCacheMapWithIdKey = Collections.synchronizedMap([:]);
     }
 
     public static synchronized int size()
@@ -98,6 +101,25 @@ public class IdCache {
             entry.clear();
         }
         return entry;
+    }
+    public static synchronized IdCacheEntry get(long id)
+    {
+        IdCacheEntry entry = idCacheMapWithIdKey[id];
+        if(entry == null)
+        {
+            entry = DEFAULT_CACHE_ENTRY;
+        }
+        return entry;
+    }
+
+    protected static synchronized void remove(long id)
+    {
+        idCacheMapWithIdKey.remove (id);
+    }
+
+    protected static synchronized void add(long id, IdCacheEntry entry)
+    {
+        idCacheMapWithIdKey.put(id, entry);
     }
     public static synchronized IdCacheEntry get(Class domainClass, object)
     {

@@ -1,17 +1,9 @@
 package com.ifountain.compass
 
-import com.ifountain.compass.converter.CompassDateConverter
-import com.ifountain.compass.converter.CompassLongConverter
-import com.ifountain.compass.converter.CompassStringConverter
-import com.ifountain.compass.converter.CompassBooleanConverter
-import com.ifountain.compass.converter.CompassDoubleConverter
 import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
+import com.ifountain.compass.converter.*
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.compass.query.RapidLuceneQueryParser
-import org.compass.core.lucene.LuceneEnvironment
-import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessor
-import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessorFactory
 
 /**
 * Created by IntelliJ IDEA.

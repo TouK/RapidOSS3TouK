@@ -17,11 +17,13 @@ class IdCacheEntryTest extends RapidCmdbWithCompassTestCase{
         assertTrue (entry.exist);
         assertEquals (IdCacheEntryTest, entry.alias);
         assertEquals (1, entry.getId());
+        assertTrue (entry.exist());
 
         entry.clear();
         assertFalse(entry.exist);
         assertEquals (null, entry.alias);
         assertEquals (-1, entry.getId());
+        assertFalse (entry.exist());
     }
 
     public void testSetPropertyMethodWillNotAssignPropValues()

@@ -9,6 +9,9 @@ import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import com.ifountain.compass.query.RapidLuceneQueryParser
+import org.compass.core.lucene.LuceneEnvironment
+import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessor
+import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessorFactory
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +26,7 @@ public class DefaultCompassConfiguration {
         def defaultDateFormat = configObject?.toProperties()?.get("rapidcmdb.date.format");
         def dateFormat = "yyyy-dd-MM||yyyy-dd-MM HH||yyyy-dd-MM HH:mm||yyyy-dd-MM HH:mm:ss||yyyy-dd-MM HH:mm:ss.SSS||MM-dd-yyyy||MM-dd-yyyy HH||MM-dd-yyyy HH:mm||MM-dd-yyyy HH:mm:ss||MM-dd-yyyy HH:mm:ss.SSS".toString();
         dateFormat = defaultDateFormat?"${defaultDateFormat}||${dateFormat}".toString():dateFormat;
-        return ["compass.converter.date.type": CompassDateConverter.class.name,
+        def defSt = ["compass.converter.date.type": CompassDateConverter.class.name,
                 "compass.converter.date.format": dateFormat,
                 "compass.converter.long.type": CompassLongConverter.class.name,
                 "compass.converter.string.type": CompassStringConverter.class.name,
@@ -37,7 +40,13 @@ public class DefaultCompassConfiguration {
                 "compass.cache.first": "org.compass.core.cache.first.NullFirstLevelCache",
                 "compass.transaction.lockTimeout": "3600",
                 "compass.engine.store.indexDeletionPolicy.type": WrapperIndexDeletionPolicy.name,
-                "compass.engine.queryParser.default.type": RapidLuceneQueryParser.class.name
+                "compass.engine.queryParser.default.type": RapidLuceneQueryParser.class.name ,
+                "compass.engine.maxBufferedDocs":"1000",
+                "compass.engine.ramBufferSize":"60"
+        
         ]
+//        defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);
+//        defSt.put(LuceneEnvironment.Transaction.Processor.TYPE, SingleCompassSessionTransactionProcessor.NAME);
+        return defSt;
     }
 }

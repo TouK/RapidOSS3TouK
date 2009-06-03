@@ -32,7 +32,7 @@ class SametimeConnection extends Connection {
         userPassword(blank: true, nullable: true)
         community(blank: true, nullable: true)
         username(blank: false)
-        host(blank: true, nullable: true)
+        host(blank: false, nullable: false)
     }
 
     static transients = [];

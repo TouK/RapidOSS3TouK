@@ -89,11 +89,21 @@ class OperationStatistics {
                 builder.Report(result.getGeneralReport ())
                 {
                     def classBasedStatistics = modelStatistics[operationName];
+                    def sortedClassBasedEntries=modelStatistics[operationName].entrySet().sort {it.key}
+                    sortedClassBasedEntries.each { entry ->
+                        String modelName=entry.key;
+                        GlobalOperationStatisticResult modelResult=entry.value;
+                        def modelReport = modelResult.getGeneralReport();
+                        modelReport["ModelName"] = modelName;
+                        builder.ModelReport(modelReport);
+                    }
+                    /*
                     classBasedStatistics.each{String modelName, GlobalOperationStatisticResult modelResult->
                         def modelReport = modelResult.getGeneralReport();
                         modelReport["ModelName"] = modelName;
                         builder.ModelReport(modelReport);
                     }
+                    */
                 }
             }
         }

@@ -92,6 +92,46 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult (addOperationXmlNode, []);
     }
+    public void testGetGlobalStatisticsSortsClassBasedStatisticsWithModelName()
+    {
+
+        String statisticsXml = OperationStatistics.getInstance().getGlobalStatistics();
+        def slurp = new XmlSlurper();
+        def xmlObj = slurp.parseText(statisticsXml);
+        def reports = xmlObj.Report;
+
+        assertEquals (8, reports.size());
+        def addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
+
+
+        //adding unsorted
+
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model2_10", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model2_0", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model2", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model2_1", operationDuration:1000))
+
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model1_10", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model1_0", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model1", operationDuration:1000))
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, new OperationStatisticResult(model:"Model1_1", operationDuration:1000))
+
+
+
+        statisticsXml = OperationStatistics.getInstance().getGlobalStatistics();
+        slurp = new XmlSlurper();
+        xmlObj = slurp.parseText(statisticsXml);
+        reports = xmlObj.Report;
+
+        assertEquals (8, reports.size());
+        addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
+        def modelReportList=[];
+        addOperationXmlNode.ModelReport.each { modelReport ->
+            modelReportList.add(modelReport.@ModelName.text());
+        }
+        assertEquals(["Model1","Model1_0","Model1_1","Model1_10","Model2","Model2_0","Model2_1","Model2_10"],modelReportList)
+
+    }
     public void testGetCloneWithObjectCountCreatesANewStatisticResultWithModelNameChanged()
     {
           OperationStatisticResult res = new OperationStatisticResult(model:"Model1", operationDuration:1000,startingTime:50);

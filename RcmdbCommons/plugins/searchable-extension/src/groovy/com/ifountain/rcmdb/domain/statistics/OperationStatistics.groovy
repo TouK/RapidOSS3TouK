@@ -157,6 +157,8 @@ class OperationStatisticResult
     long operationDuration = 0;
     long numberOfOperations =1;
     long startingTime = -1;
+    static private double LN_10=Math.log(10);
+    
     public void start()
     {
         startingTime = System.nanoTime()   
@@ -169,5 +171,15 @@ class OperationStatisticResult
             operationDuration += System.nanoTime()-startingTime;
         }
         startingTime = -1;
+    }
+    public OperationStatisticResult getCloneWithObjectCount(count)
+    {
+        int countSuffix=0;
+        if(count >0 && count != null)
+        {
+            countSuffix=Math.pow(10,Math.floor(Math.log(count)/LN_10).toInteger());
+        }
+        
+        return new OperationStatisticResult(model:this.model+"_"+countSuffix,operationDuration:this.operationDuration,startingTime:this.startingTime);
     }
 }

@@ -92,6 +92,43 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult (addOperationXmlNode, []);
     }
+    public void testGetCloneWithObjectCountCreatesANewStatisticResultWithModelNameChanged()
+    {
+          OperationStatisticResult res = new OperationStatisticResult(model:"Model1", operationDuration:1000,startingTime:50);
+          OperationStatisticResult resWithItemCount=res.getCloneWithObjectCount(1);
+
+          assertNotSame(res,resWithItemCount);
+          assertEquals(res.operationDuration,resWithItemCount.operationDuration);
+          assertEquals(res.startingTime,resWithItemCount.startingTime);
+          assertEquals("Model1_1",resWithItemCount.model);
+
+
+          OperationStatisticResult resWithItemCount2=res.getCloneWithObjectCount(5);
+
+          assertNotSame(res,resWithItemCount2);
+          assertEquals(res.operationDuration,resWithItemCount2.operationDuration);
+          assertEquals(res.startingTime,resWithItemCount.startingTime);
+          assertEquals("Model1_1",resWithItemCount2.model);
+
+          assertEquals("Model1_10",res.getCloneWithObjectCount(10).model);
+          assertEquals("Model1_10",res.getCloneWithObjectCount(20).model);
+          assertEquals("Model1_100",res.getCloneWithObjectCount(100).model);
+
+          assertEquals("Model1_0",res.getCloneWithObjectCount(0).model);
+          assertEquals("Model1_0",res.getCloneWithObjectCount(null).model);
+
+
+//          1000.times{
+//              int count=Math.random()*100000;
+//              def start=System.nanoTime();
+//              res.getStatisticResultWithObjectCount(count)
+//              def end=System.nanoTime();
+//              println "count ${count} time ${end-start}"
+//
+//          }
+
+
+    }
 
     private void checkModelStatisticsResult(xmlNode, String expectedModelName, operationResults)
     {

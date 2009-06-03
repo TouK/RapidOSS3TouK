@@ -29,7 +29,7 @@ def deletecount=0;
 
 def random=new Random(System.currentTimeMillis());
 
-SmartsNotification.search("alias:*",[max:2500]).results.each{	
+SmartsNotification.search("alias:*",[max:1000]).results.each{	
 	if(random.nextInt(10)==0 && deletecount<deletelimit)
 	{
 		output+=" Gonna clear ${it} <br>";

@@ -96,14 +96,7 @@ class OperationStatistics {
                         def modelReport = modelResult.getGeneralReport();
                         modelReport["ModelName"] = modelName;
                         builder.ModelReport(modelReport);
-                    }
-                    /*
-                    classBasedStatistics.each{String modelName, GlobalOperationStatisticResult modelResult->
-                        def modelReport = modelResult.getGeneralReport();
-                        modelReport["ModelName"] = modelName;
-                        builder.ModelReport(modelReport);
-                    }
-                    */
+                    }                          
                 }
             }
         }

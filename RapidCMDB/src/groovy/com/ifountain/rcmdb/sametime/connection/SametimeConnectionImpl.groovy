@@ -80,7 +80,7 @@ class SametimeConnectionImpl extends BaseConnection implements LoginListener, Re
 
     private void login() throws InterruptedException {
         commservice = (CommunityService) stsession.getCompApi(CommunityService.COMP_NAME);
-        commservice.enableAutomaticReconnect(Integer.MAX_VALUE, 5000);
+//        commservice.enableAutomaticReconnect(Integer.MAX_VALUE, 5000);
         commservice.addLoginListener(this);
         loginResult = NOT_RECEIVED;
         logger.debug(getLogPrefix() + "Trying to login to server: " + host + " with user: " + username);

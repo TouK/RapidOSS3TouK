@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="" />
-<title>Create an on-demandscript_by_name</title>
+<title>create_an_on_demand_script_by_script_file_name</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Create an on-demandscript_by_name</td></tr>
+<tr><td rowspan="1" colspan="3">create_an_on_demand_script_by_script_file_name</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -33,17 +33,17 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//em</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
 	<td>link=New Script</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>name</td>
+	<td>ondemand2</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>scriptFile</td>
 	<td>aScript</td>
 </tr>
 <tr>
@@ -59,7 +59,7 @@
 <tr>
 	<td>verifyText</td>
 	<td>name</td>
-	<td>aScript</td>
+	<td>ondemand2</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -73,13 +73,8 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>logFileOwn</td>
+	<td>identifier=logFileOwn</td>
 	<td>false</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>identifier=staticParam</td>
-	<td></td>
 </tr>
 <tr>
 	<td>verifyText</td>

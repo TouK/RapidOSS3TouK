@@ -44,9 +44,12 @@ class TestCompassFactory {
         return grailsApplication
     }
 
-    static getCompass(Collection classes, Collection instances = null, boolean willPersist = false) {
+    static getCompass(Collection classes, Collection instances = null, boolean willPersist = false, Map additionalSettings = null) {
         def grailsApplication = getGrailsApplication(classes)
-        return getCompass(grailsApplication, instances, willPersist, null)
+        return getCompass(grailsApplication, instances, willPersist, additionalSettings)
+    }
+    static getCompass(Collection classes, Collection instances = null, boolean willPersist = false) {
+        return getCompass(classes, instances, willPersist, null)
     }
 
     static getPersistedCompass(Collection classes, Collection instances = null) {

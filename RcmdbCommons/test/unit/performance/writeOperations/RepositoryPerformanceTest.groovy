@@ -80,7 +80,7 @@ class RepositoryPerformanceTest extends RapidCmdbWithCompassTestCase{
         long t = System.nanoTime();
         for(int i=0; i < numberOfObjectsToBeInserted; i++)
         {
-            modelClass.'add'(keyProp:"keyPropValue"+i);
+            modelClass.'add'(keyProp:"keyPropValue1"+i);
         }
         double totalTime = (System.nanoTime() - t)/Math.pow(10,9);
         def numberOfObjectsInsertedPerSecond = numberOfObjectsToBeInserted/totalTime;

@@ -4,6 +4,9 @@ import com.ifountain.compass.analyzer.WhiteSpaceLowerCaseAnalyzer
 import com.ifountain.compass.converter.*
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import com.ifountain.compass.query.RapidLuceneQueryParser
+import org.compass.core.lucene.LuceneEnvironment
+import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessor
+import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessorFactory
 
 /**
 * Created by IntelliJ IDEA.
@@ -37,8 +40,8 @@ public class DefaultCompassConfiguration {
                 "compass.engine.ramBufferSize":"60"
         
         ]
-//        defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);
-//        defSt.put(LuceneEnvironment.Transaction.Processor.TYPE, SingleCompassSessionTransactionProcessor.NAME);
+        defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);
+        defSt.put(LuceneEnvironment.Transaction.Processor.TYPE, SingleCompassSessionTransactionProcessor.NAME);
         return defSt;
     }
 }

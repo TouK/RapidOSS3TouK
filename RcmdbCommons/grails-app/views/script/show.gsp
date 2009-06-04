@@ -18,61 +18,61 @@
             <tbody>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Id:</td>
+                    <td valign="top" class="name" id="idLabel">Id:</td>
 
-                    <td valign="top" class="value">${cmdbScript.id}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">Name:</td>
-
-                    <td valign="top" class="value">${cmdbScript.name}</td>
+                    <td valign="top" class="value" id="id">${cmdbScript.id}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Script File:</td>
+                    <td valign="top" class="name" id="nameLabel">Name:</td>
 
-                    <td valign="top" class="value">${cmdbScript.scriptFile}</td>
+                    <td valign="top" class="value" id="name">${cmdbScript.name}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name" id="scriptFileLabel">Script File:</td>
+
+                    <td valign="top" class="value" id="scriptFile">${cmdbScript.scriptFile}</td>
 
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Log Level:</td>
+                    <td valign="top" class="name" id="logLevelLabel">Log Level:</td>
 
-                    <td valign="top" class="value">${cmdbScript.logLevel}</td>
+                    <td valign="top" class="value" id="logLevel">${cmdbScript.logLevel}</td>
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Use Own Log File:</td>
+                    <td valign="top" class="name" id="logFileOwnLabel">Use Own Log File:</td>
 
-                    <td valign="top" class="value">${cmdbScript.logFileOwn}</td>
+                    <td valign="top" class="value" id="logFileOwn">${cmdbScript.logFileOwn}</td>
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Static Parameter:</td>
+                    <td valign="top" class="name" id="staticParamLabel">Static Parameter:</td>
 
-                    <td valign="top" class="value">${cmdbScript.staticParam}</td>
+                    <td valign="top" class="value" id="staticParam">${cmdbScript.staticParam}</td>
 
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Type:</td>
+                    <td valign="top" class="name" id="typeLabel">Type:</td>
 
-                    <td valign="top" class="value">${cmdbScript.type}</td>
+                    <td valign="top" class="value" id="type">${cmdbScript.type}</td>
 
                 </tr>
                 <%
                     if (cmdbScript.type == CmdbScript.SCHEDULED) {
                 %>
                 <tr class="prop">
-                    <td valign="top" class="name">Schedule Type:</td>
+                    <td valign="top" class="name" id="scheduleTypeLabel">Schedule Type:</td>
 
-                    <td valign="top" class="value">${cmdbScript.scheduleType}</td>
+                    <td valign="top" class="value" id="scheduleType">${cmdbScript.scheduleType}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Start Delay:</td>
+                    <td valign="top" class="name" id="startDelayLabel">Start Delay:</td>
 
-                    <td valign="top" class="value">${cmdbScript.startDelay}</td>
+                    <td valign="top" class="value" id="startDelay">${cmdbScript.startDelay}</td>
 
                 </tr>
 
@@ -81,9 +81,9 @@
 
                 %>
                 <tr class="prop">
-                    <td valign="top" class="name">Period:</td>
+                    <td valign="top" class="name" id="periodLabel">Period:</td>
 
-                    <td valign="top" class="value">${cmdbScript.period}</td>
+                    <td valign="top" class="value" id="period">${cmdbScript.period}</td>
 
                 </tr>
                 <%
@@ -91,9 +91,9 @@
                     else {
                 %>
                 <tr class="prop">
-                    <td valign="top" class="name">Cron Expression:</td>
+                    <td valign="top" class="name" id="cronExpressionLabel">Cron Expression:</td>
 
-                    <td valign="top" class="value">${cmdbScript.cronExpression}</td>
+                    <td valign="top" class="value" id="cronExpression">${cmdbScript.cronExpression}</td>
 
                 </tr>
                 <%
@@ -101,9 +101,9 @@
                 %>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Enabled:</td>
+                    <td valign="top" class="name" id="enabledLabel">Enabled:</td>
 
-                    <td valign="top" class="value">${cmdbScript.enabled}</td>
+                    <td valign="top" class="value" id="enabled">${cmdbScript.enabled}</td>
 
                 </tr>
 
@@ -123,8 +123,8 @@
                     else {
                 %>
                 <tr class="prop">
-                    <td valign="top" class="name">Datasource:</td>
-                    <td valign="top" class="value">${cmdbScript.listeningDatasource}</td>
+                    <td valign="top" class="name" id="listeningDatasourceLabel">Datasource:</td>
+                    <td valign="top" class="value" id="listeningDatasource">${cmdbScript.listeningDatasource}</td>
                 </tr>
 
                 <%
@@ -134,9 +134,9 @@
 
 
                 <tr class="prop">
-                    <td valign="top" class="name">Log File:</td>
+                    <td valign="top" class="name" id="logFileLabel">Log File:</td>
 
-                    <td valign="top" class="value">${cmdbScript.logFile}</td>
+                    <td valign="top" class="value" id="logFile">${cmdbScript.logFile}</td>
                 </tr>
                 <%
                         }

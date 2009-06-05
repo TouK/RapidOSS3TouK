@@ -80,7 +80,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         {
             if(clazz.isAssignableFrom(existingInstanceEntry.alias) )
             {
-                def existingInstance = getMethod.invoke(rootDomainClass, [props, false] as Object[]);
+                def existingInstance = getMethod.invoke(clazz, [props, false] as Object[]);
                 return existingInstance.update(props);
             }
             else

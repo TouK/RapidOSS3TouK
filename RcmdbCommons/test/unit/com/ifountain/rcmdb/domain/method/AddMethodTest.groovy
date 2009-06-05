@@ -53,6 +53,12 @@ class AddMethodTest extends RapidCmdbTestCase {
         AddMethodDomainObject1.idCache = [:];
         AddMethodDomainObject1.cacheEntryParams = [];
         AddMethodDomainObject1.indexList = [];
+
+        ChildAddMethodDomainObject.query = null;
+        ChildAddMethodDomainObject.searchResult = [total: 0, results: []];
+        ChildAddMethodDomainObject.updateCacheCallParams.clear();
+        ChildAddMethodDomainObject.idCache = [:];
+        ChildAddMethodDomainObject.cacheEntryParams = [];
         validator = new MockValidator();
     }
 
@@ -154,21 +160,21 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertTrue(ChildAddMethodDomainObject.indexList[0].contains(addedObject));
         assertNull(addedObject.relationsShouldBeAdded)
         assertNull("No search should be performed if cache entry returns does not exist", AddMethodDomainObject1.query);
-        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+        assertEquals(0, AddMethodDomainObject1.cacheEntryParams.size());
+        assertEquals(props, ChildAddMethodDomainObject.cacheEntryParams[0]);
 
     }
 
     public void testAddMethodForAChildGeneratesErrorIfKeysExistsForAnotherChildOfParentClass()
     {
-        ChildAddMethodDomainObject expectedDomainObject1 = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop6: "object1Prop6Value");
-        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
+        ChildAddMethodDomainObject3 expectedDomainObject1 = new ChildAddMethodDomainObject3(prop1: "object1Prop1Value", prop6: "object1Prop6Value");
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject3.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject3.allFields, [:], ["prop1"]);
         AddMethod add2 = new AddMethod(ChildAddMethodDomainObject2.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject2.allFields, [:], ["prop1"]);
 
 
 
         def props = [prop1: expectedDomainObject1.prop1];
-        def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
-        AddMethodDomainObjectWithEvents.searchResult = [total: 1, results: [expectedDomainObject1]];
+        def addedObject = add.invoke(ChildAddMethodDomainObject3.class, [props] as Object[]);
 
 
         def addedObject2 = add2.invoke(ChildAddMethodDomainObject2.class, [props] as Object[]);
@@ -402,8 +408,36 @@ class AddMethodTest extends RapidCmdbTestCase {
         AddMethodDomainObject1 addedObjectAfterAdd = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
 
         assertEquals(props, addedObjectAfterAdd.propertiesToBeUpdated);
-        assertEquals("prop1:${RapidStringUtilities.exactQuery(props.prop1)}", AddMethodDomainObjectWithEvents.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(props.prop1)}", AddMethodDomainObject1.query);
         assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+    }
+
+    public void testIfObjectAlreadyExistsUpdatesObjectsWithChildObject()
+    {
+        ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethod add = new AddMethod(ChildAddMethodDomainObject.metaClass, AddMethodDomainObject1.class, validator, ChildAddMethodDomainObject.allFields, [:], ["prop1"]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
+        def objectId = addedObject.id;
+        assertEquals(objectBeforeAdd, addedObject);
+        assertNull(ChildAddMethodDomainObject.query);
+        assertEquals(props, ChildAddMethodDomainObject.cacheEntryParams[0]);
+
+        ChildAddMethodDomainObject.query = null;
+        AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
+        ChildAddMethodDomainObject.cacheEntryParams = [];
+        ChildAddMethodDomainObject.searchResult = [total: 1, results: [addedObject]];
+
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
+        ChildAddMethodDomainObject addedObjectAfterAdd = add.invoke(ChildAddMethodDomainObject.class, [props] as Object[]);
+
+        assertEquals(props, addedObjectAfterAdd.propertiesToBeUpdated);
+        assertEquals(null, AddMethodDomainObject1.query);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(props.prop1)}", ChildAddMethodDomainObject.query);
+        assertEquals(0, AddMethodDomainObject1.cacheEntryParams.size());
+        assertEquals(props, ChildAddMethodDomainObject.cacheEntryParams[0]);
+
     }
 
     public void testAddMethodWithReturnErrorIfExistMode()
@@ -569,6 +603,47 @@ class ChildAddMethodDomainObject extends AddMethodDomainObject1
 {
     def static searchResult = [total: 0, results: []];
     def static query;
+     def static cacheEntryParams = [];
+    def static idCache = [:];
+    def static updateCacheCallParams = [];
+    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "prop6": [type: String], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
+    def static searchWithoutTriggering(queryClosure)
+    {
+        ChildAddMethodDomainObject.query = queryClosure;
+        return searchResult
+    }
+
+    def static updateCacheEntry(object, boolean exist)
+    {
+        updateCacheCallParams.add([object.cloneObject(), exist]);
+        if(!exist)
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+        }
+        else
+        {
+            idCache[object.prop1] = new IdCacheEntry();
+            idCache[object.prop1].setProperties(object.class, object.id);
+        }
+    }
+    def static getCacheEntry(params)
+    {
+        cacheEntryParams.add(params);
+        IdCacheEntry entry = idCache[params.prop1];
+        if(entry == null)
+        {
+            entry = new IdCacheEntry();
+            idCache[params.prop1] = entry;
+        }
+        return entry;
+    }
+    String prop6;
+}
+
+class ChildAddMethodDomainObject2 extends AddMethodDomainObject1
+{
+    def static searchResult = [total: 0, results: []];
+    def static query;
     def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "prop6": [type: String], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
     def static searchWithoutTriggering(queryClosure)
     {
@@ -578,7 +653,7 @@ class ChildAddMethodDomainObject extends AddMethodDomainObject1
     String prop6;
 }
 
-class ChildAddMethodDomainObject2 extends AddMethodDomainObject1
+class ChildAddMethodDomainObject3 extends AddMethodDomainObject1
 {
     def static searchResult = [total: 0, results: []];
     def static query;

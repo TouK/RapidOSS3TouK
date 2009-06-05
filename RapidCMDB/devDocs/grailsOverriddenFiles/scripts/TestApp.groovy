@@ -323,6 +323,13 @@ def runTests = {suite, TestResult result, Closure callback ->
                     xmlOutput.setSystemOutput(outString)
                     xmlOutput.setSystemError(errString)
                     xmlOutput.endTestSuite(junitTest)
+
+                    def testCountInClass=test.testClass.metaClass.methods.findAll{ it.name.indexOf("test")==0}.size();
+                    if(testCountInClass != runCount )
+                    {
+                        throw new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
+                    }
+
                 } finally {
                     System.out = savedOut
                     System.err = savedErr

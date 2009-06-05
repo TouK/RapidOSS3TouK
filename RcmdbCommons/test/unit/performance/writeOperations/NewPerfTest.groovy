@@ -52,10 +52,10 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
 
     public void testSearchOperationPerformanceWithSingleModelsWhileAddOperationContinueWithMax1()
     {
-        def numberOfSearchoperations = 400;
+        def numberOfSearchoperations = 200;
         def numberOfAddThreads = 10;
         def numberOfSearchThreads = 40;
-        def numberOfInitialObjects = 800;
+        def numberOfInitialObjects = 80;
          def maxCount = 1;
          def expectedNumberOfSearchOperation = 500;
          def addOperationSleepTime = 0;
@@ -65,10 +65,10 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
 
     public void testSearchOperationPerformanceWithSingleModelsWhileSlowlyAddingWithMax1()
     {
-        def numberOfSearchoperations = 400;
+        def numberOfSearchoperations = 200;
         def numberOfAddThreads = 1;
         def numberOfSearchThreads = 40;
-        def numberOfInitialObjects = 800;
+        def numberOfInitialObjects = 80;
         def maxCount = 1;
         def expectedNumberOfSearchOperation = 700;
         def addOperationSleepTime = 15;
@@ -77,10 +77,10 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
 
     public void testSearchOperationPerformanceWithSingleModelsWhileFastAddingWithMax10()
     {
-        def numberOfSearchoperations = 400;
+        def numberOfSearchoperations = 200;
         def numberOfAddThreads = 5;
         def numberOfSearchThreads = 40;
-        def numberOfInitialObjects = 800;
+        def numberOfInitialObjects = 80;
         def maxCount = 10;
         def expectedNumberOfSearchOperation = 150;
         def addOperationSleepTime = 0;
@@ -89,10 +89,10 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
 
     public void testSearchOperationPerformanceWithSingleModelsWhileSlowlyAddingWithMax10()
     {
-        def numberOfSearchoperations = 400;
+        def numberOfSearchoperations = 200;
         def numberOfAddThreads = 1;
         def numberOfSearchThreads = 40;
-        def numberOfInitialObjects = 800;
+        def numberOfInitialObjects = 80;
         def maxCount = 10;
         def expectedNumberOfSearchOperation = 150;
         def addOperationSleepTime = 15;
@@ -101,10 +101,10 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
 
     public void testSearchOperationPerformanceWitSingleModelsWithMax1AndNoAdd()
     {
-        def numberOfSearchoperations = 400;
+        def numberOfSearchoperations = 200;
         def numberOfAddThreads = 0;
         def numberOfSearchThreads = 40;
-        def numberOfInitialObjects = 800;
+        def numberOfInitialObjects = 100;
          def maxCount = 1;
          def expectedNumberOfSearchOperation = 900;
          def addOperationSleepTime = 0;
@@ -289,7 +289,7 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
             addThreadStates.each {
                 assertTrue("Expected 1 but was ${0}", it == 1);
             }
-        }, 600);
+        }, 800);
         return [threads:addThreads, threadStates:addThreadStates];
     }
     def intializeCompassWithSimpleObjects(String storageType)

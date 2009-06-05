@@ -38,7 +38,7 @@ public class DefaultCompassConfiguration {
                 "compass.engine.queryParser.default.type": RapidLuceneQueryParser.class.name ,
                 "compass.engine.maxBufferedDocs":"1000",
                 "compass.engine.ramBufferSize":"60",
-                "compass.engine.cacheIntervalInvalidation":-1
+                "compass.engine.cacheIntervalInvalidation":"-1"
         
         ]
         defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);

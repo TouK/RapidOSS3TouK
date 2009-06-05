@@ -53,7 +53,10 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.URL, connectionParams.getUrl());
         otherParams.put(DatabaseConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
-        return new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
+
+        ConnectionParam connectionParam=new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
+        connectionParam.setMinTimeout(5000);
+        return connectionParam;
     }
     public static ConnectionParam getConnectionParam() {
         return getConnectionParam(DatabaseTestConstants.MYSQL);

@@ -46,19 +46,21 @@ public class DatabaseConnectionImpl extends BaseConnection{
         Properties info = new Properties();
         info.put("user", username);
 	    info.put("password", password);
+	    String timeoutStringValue=((int)getTimeout()).toString();
+
 	    if(this.driver.indexOf("mysql")>=0)
         {
-            info.put("connectTimeout",((int)getTimeout()).toString());
-            info.put("socketTimeout",((int)getTimeout()).toString());
+            info.put("connectTimeout",timeoutStringValue);
+            info.put("socketTimeout",timeoutStringValue);
         }
         else if(this.driver.indexOf("sybase")>=0)
         {
-            info.put("SESSION_TIMEOUT",((int)getTimeout()).toString());
+            info.put("SESSION_TIMEOUT",timeoutStringValue);
         }
         else if(this.driver.indexOf("oracle")>=0)
         {
-             info.put("oracle.net.CONNECT_TIMEOUT",((int)getTimeout()).toString());
-             info.put("oracle.jdbc.ReadTimeout",((int)getTimeout()).toString());
+             info.put("oracle.net.CONNECT_TIMEOUT",timeoutStringValue);
+             info.put("oracle.jdbc.ReadTimeout",timeoutStringValue);
         }
         return info;
     }

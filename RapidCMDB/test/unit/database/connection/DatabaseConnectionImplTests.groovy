@@ -27,7 +27,10 @@ import com.ifountain.core.connection.exception.UndefinedConnectionParameterExcep
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
 import com.ifountain.rcmdb.test.util.DatabaseConnectionParams
-import connection.DatabaseConnectionImpl;
+import connection.DatabaseConnectionImpl
+import com.ifountain.rcmdb.test.util.DatabaseTestConstants
+import java.sql.DriverManager;
+
 
 public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     DatabaseConnectionImpl conn;
@@ -118,16 +121,23 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
     
     public void testConnect() throws Exception {
+        def minTimeout=3000;
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
+        param.setMinTimeout(minTimeout);
+
         conn.init(param);
         conn.connect();
         assertTrue(conn.checkConnection());
         assertFalse(conn.getConnection().isClosed());
+        
+        assertEquals((int)(minTimeout/1000),DriverManager.getLoginTimeout());
     }
     
     public void testDisconnect() throws Exception {
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         conn.init(param);
+        println param.getOtherParams()[DatabaseConnectionImpl.DRIVER]
+        
         conn.connect();
         assertTrue(conn.checkConnection());
         assertFalse(conn.getConnection().isClosed());
@@ -135,4 +145,203 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         assertFalse(conn.checkConnection());
         assertTrue(conn.getConnection().isClosed());
     }
+
+
+
+    public void testConnectTimeoutWithMysql() throws Exception {
+        // info.put("connectTimeout",timeout); handles   
+        def minTimeout=3000;
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
+        param.setMinTimeout(minTimeout);
+
+        param.getOtherParams()[DatabaseConnectionImpl.URL]="jdbc:mysql://192.168.55.150:3306/students";
+        println "url is"+param.getOtherParams()[DatabaseConnectionImpl.URL]
+
+        conn.init(param);
+
+
+        def startTime=0;
+        def elapsedTime=0;
+        try{
+            startTime=System.currentTimeMillis();
+            conn.connect();
+            fail("should throw exception");
+        }
+        catch(com.mysql.jdbc.CommunicationsException e)
+        {
+            elapsedTime=System.currentTimeMillis()-startTime;
+            println "elapsedTime ${elapsedTime} minTimeout ${minTimeout}"
+            e.printStackTrace();
+        }
+
+        assertTrue(elapsedTime>=minTimeout)
+        assertTrue(elapsedTime-minTimeout<1000);
+
+
+    }
+
+    public void testQueryTimeoutWithMysql() throws Exception {
+        // info.put("socketTimeout",timeout); handles
+        def minTimeout=3000;
+
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
+        param.setMinTimeout(minTimeout);
+
+        conn.init(param);
+        conn.connect();
+
+
+        java.sql.Connection dbcon=conn.getConnection();
+        java.sql.Statement stmt=dbcon.createStatement();
+        
+        def startTime=0;
+        def elapsedTime=0;
+        try{
+            startTime=System.currentTimeMillis();
+            stmt.executeQuery ("SELECT SLEEP(10) ")
+            fail("should throw exception");
+        }
+        catch(com.mysql.jdbc.CommunicationsException e)
+        {
+            elapsedTime=System.currentTimeMillis()-startTime;
+            println "elapsedTime ${elapsedTime} minTimeout ${minTimeout}"
+            e.printStackTrace();
+        }
+
+        assertTrue(elapsedTime>=minTimeout)
+        assertTrue(elapsedTime-minTimeout<1000);
+
+
+    }
+
+    public void testConnectTimeoutWithOracle() throws Exception {
+        //setLoginTimeout handles
+        //also setting oracle.net.CONNECT_TIMEOUT handles
+
+        def minTimeout=3000;
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
+        param.setMinTimeout(minTimeout);
+
+        param.getOtherParams()[DatabaseConnectionImpl.URL]="jdbc:oracle:thin:@192.168.1.150:1521:xe";
+        println "url is"+param.getOtherParams()[DatabaseConnectionImpl.URL]
+
+        conn.init(param);
+
+
+        def startTime=0;
+        def elapsedTime=0;
+        try{
+            startTime=System.currentTimeMillis();
+            conn.connect();
+            fail("should throw exception");
+        }
+        catch(java.sql.SQLException e)
+        {
+            elapsedTime=System.currentTimeMillis()-startTime;
+            println "elapsedTime ${elapsedTime} minTimeout ${minTimeout}"
+            e.printStackTrace();
+        }
+        
+        assertTrue(elapsedTime>=minTimeout)
+        assertTrue(elapsedTime-minTimeout<1000);
+
+    }
+
+     public void testQueryTimeoutWithOracle() throws Exception {
+        def minTimeout=3000;
+
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
+        param.setMinTimeout(minTimeout);
+
+         conn.init(param);
+
+//        DriverManager.getDriver("jdbc:oracle:thin:@192.168.1.127:1521:xe").getPropertyInfo("jdbc:oracle:thin:@192.168.1.127:1521:xe",new Properties()).each { propInfo ->
+//           println " ${propInfo.name}:${propInfo.value} "
+//        }
+
+        conn.connect();
+
+
+        java.sql.Connection dbcon=conn.getConnection();
+        java.sql.Statement stmt=dbcon.createStatement();
+
+        def startTime=0;
+        def elapsedTime=0;
+        try{
+            startTime=System.currentTimeMillis();
+            stmt.executeQuery ("""BEGIN
+            dbms_lock.sleep(10);
+            END ; """)
+            fail("should throw exception");
+        }
+        catch(java.sql.SQLRecoverableException e)
+        {
+            println "exception occured ${e}"
+            elapsedTime=System.currentTimeMillis()-startTime;
+            e.printStackTrace()
+
+        }
+
+
+        println "elapsedTime ${elapsedTime} minTimeout ${minTimeout}"
+        assertTrue(elapsedTime>=minTimeout)
+        assertTrue(elapsedTime-minTimeout<1000);
+    }
+
+    public void testCreateConnectionPropertiesGeneratesTimeoutsForMysql()
+    {
+        def minTimeout=3000;
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.MYSQL);
+        param.setMinTimeout(minTimeout);
+
+        conn.init(param);
+        
+        Properties info=conn.createConnectionProperties();
+        assertEquals(4,info.size());
+
+        assertEquals(conn.username,info.get("user"))
+        assertEquals(conn.password,info.get("password"))
+        
+        assertEquals(minTimeout.toString(),info.get("connectTimeout"))
+        assertEquals(minTimeout.toString(),info.get("socketTimeout"))
+
+    }
+
+    public void testCreateConnectionPropertiesGeneratesTimeoutsForOracle()
+    {
+        def minTimeout=3000;
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
+        param.setMinTimeout(minTimeout);
+
+        conn.init(param);
+
+        Properties info=conn.createConnectionProperties();
+        assertEquals(4,info.size())
+        assertEquals(conn.username,info.get("user"))
+        assertEquals(conn.password,info.get("password"))
+
+        assertEquals(minTimeout.toString(),info.get("oracle.net.CONNECT_TIMEOUT"))
+        assertEquals(minTimeout.toString(),info.get("oracle.jdbc.ReadTimeout"))
+
+    }
+
+    public void testCreateConnectionPropertiesGeneratesTimeoutsForSybase()
+    {
+        def minTimeout=3000;
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.SYBASE);
+        param.setMinTimeout(minTimeout);
+
+        conn.init(param);
+
+        Properties info=conn.createConnectionProperties();
+
+        assertEquals(3,info.size())
+        assertEquals(conn.username,info.get("user"))
+        assertEquals(conn.password,info.get("password"))
+
+        assertEquals(minTimeout.toString(),info.get("SESSION_TIMEOUT"))
+
+
+    }
+
 }

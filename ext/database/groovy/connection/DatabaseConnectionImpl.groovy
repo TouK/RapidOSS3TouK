@@ -39,9 +39,29 @@ public class DatabaseConnectionImpl extends BaseConnection{
 
     protected void connect() throws Exception {
         DriverManager.setLoginTimeout ((int)(getTimeout()/1000));
-        connection = DriverManager.getConnection(url,username,password);
+        connection = DriverManager.getConnection(url,createConnectionProperties());
     }
-
+    protected Properties createConnectionProperties()
+    {
+        Properties info = new Properties();
+        info.put("user", username);
+	    info.put("password", password);
+	    if(this.driver.indexOf("mysql")>=0)
+        {
+            info.put("connectTimeout",((int)getTimeout()).toString());
+            info.put("socketTimeout",((int)getTimeout()).toString());
+        }
+        else if(this.driver.indexOf("sybase")>=0)
+        {
+            info.put("SESSION_TIMEOUT",((int)getTimeout()).toString());
+        }
+        else if(this.driver.indexOf("oracle")>=0)
+        {
+             info.put("oracle.net.CONNECT_TIMEOUT",((int)getTimeout()).toString());
+             info.put("oracle.jdbc.ReadTimeout",((int)getTimeout()).toString());
+        }
+        return info;
+    }
     protected void disconnect() {
         if(connection == null) return;
         try {

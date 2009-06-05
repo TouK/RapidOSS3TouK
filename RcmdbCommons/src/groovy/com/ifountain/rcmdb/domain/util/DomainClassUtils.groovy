@@ -46,7 +46,7 @@ class DomainClassUtils
     {
         def domainClassesMap = [:]
         grailsDomainClasses.each{
-            domainClassesMap[it.name] = it;
+            domainClassesMap[it.clazz.name] = it;
         }
         def parentDomainClass = dc.clazz;
         while(domainClassesMap[parentDomainClass.superclass.name] != null)

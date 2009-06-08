@@ -11,6 +11,7 @@
 <thead>
 <tr><td rowspan="1" colspan="3">test_a_scheduled_cron_script_files</td></tr>
 </thead><tbody>
+<!--test a scheduled cron script-->
 <tr>
 	<td>open</td>
 	<td>/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&amp;format=html</td>
@@ -46,6 +47,7 @@
 	<td>link=New Script</td>
 	<td></td>
 </tr>
+<!--looks RapidServer.log file for "Hello from cron" entries-->
 <tr>
 	<td>type</td>
 	<td>name</td>
@@ -61,6 +63,7 @@
 	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
 	<td></td>
 </tr>
+<!--the Hello from cron entry number will be stored in stored-->
 <tr>
 	<td>storeText</td>
 	<td>//body</td>
@@ -81,6 +84,7 @@
 	<td>link=New Script</td>
 	<td></td>
 </tr>
+<!--Creates a scheduled script with attributes-->
 <tr>
 	<td>type</td>
 	<td>name</td>
@@ -121,15 +125,11 @@
 	<td>//input[@value='Create']</td>
 	<td></td>
 </tr>
+<!--scheduled script attributes will be cheched if it has the right attributes-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Script created</td>
 	<td></td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>document.getElementById('id')</td>
-	<td>idValue</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -181,6 +181,13 @@
 	<td>enabled</td>
 	<td>true</td>
 </tr>
+<!--the script id will be stored -->
+<tr>
+	<td>storeText</td>
+	<td>document.getElementById('id')</td>
+	<td>idValue</td>
+</tr>
+<!--RapidServer.log file be looked if there is new "Hello from cron" entries-->
 <tr>
 	<td>open</td>
 	<td>http://localhost:12222/RapidSuite/script/list</td>
@@ -211,11 +218,13 @@
 	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
 	<td></td>
 </tr>
+<!--if the "Hello from cron" number has changed means not equal to the value in 'stored', test will pass-->
 <tr>
 	<td>assertTextNotPresent</td>
 	<td>${stored}</td>
 	<td></td>
 </tr>
+<!--the script will be updated-->
 <tr>
 	<td>open</td>
 	<td>http://localhost:12222/RapidSuite/script/show/${idValue}</td>
@@ -241,6 +250,7 @@
 	<td>Script ${idValue} updated</td>
 	<td></td>
 </tr>
+<!--after update the use own log will be checked if it is true test will pass-->
 <tr>
 	<td>verifyText</td>
 	<td>logFileOwn</td>
@@ -261,6 +271,7 @@
 	<td>link=New Script</td>
 	<td></td>
 </tr>
+<!--file scheduled2.log  will be looked if it has "Hello from cron" entries-->
 <tr>
 	<td>type</td>
 	<td>name</td>
@@ -276,6 +287,7 @@
 	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/scheduled2.log</td>
 	<td></td>
 </tr>
+<!--file scheduled2.log must have some entries-->
 <tr>
 	<td>assertTextNotPresent</td>
 	<td>0</td>
@@ -291,6 +303,7 @@
 	<td>link=Scripts</td>
 	<td></td>
 </tr>
+<!--RapidServer.log file w'll be looked for "Hello from cron" entries-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=New Script</td>
@@ -311,6 +324,7 @@
 	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
 	<td></td>
 </tr>
+<!--the "Hello from cron" entry number will be stored-->
 <tr>
 	<td>storeText</td>
 	<td>//body</td>
@@ -321,6 +335,7 @@
 	<td>http://localhost:12222/RapidSuite/script/show/${idValue}</td>
 	<td></td>
 </tr>
+<!--the script will be updated again-->
 <tr>
 	<td>clickAndWait</td>
 	<td>_action_Edit</td>
@@ -341,6 +356,7 @@
 	<td>Script ${idValue} updated</td>
 	<td></td>
 </tr>
+<!--after update the enable attribute will be checked if it is false test will pass-->
 <tr>
 	<td>verifyText</td>
 	<td>enabled</td>
@@ -361,6 +377,7 @@
 	<td>link=Scripts</td>
 	<td></td>
 </tr>
+<!--file RapidServer.log must have some entries-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=New Script</td>
@@ -381,6 +398,7 @@
 	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
 	<td></td>
 </tr>
+<!--if RapidServer.log has no new entries test will pass-->
 <tr>
 	<td>assertTextPresent</td>
 	<td>${stored}</td>

@@ -2,10 +2,10 @@ package com.ifountain.rcmdb.sametime.datasource
 
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.sametime.connection.SametimeConnectionImpl
-import com.ifountain.rcmdb.test.util.SametimeTestUtils
+import com.ifountain.rcmdb.test.util.ConnectionTestUtils
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.comp.test.util.CommonTestUtils
-import com.ifountain.rcmdb.test.util.SametimeTestConstants
+import com.ifountain.rcmdb.test.util.ConnectionTestConstants
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
@@ -19,9 +19,9 @@ class SendMessageActionTest extends RapidCoreTestCase {
     String receiverUsername;
     protected void setUp() {
         super.setUp();
-        receiverUsername = CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_SECONDARY_USERNAME)
+        receiverUsername = CommonTestUtils.getTestProperty(ConnectionTestConstants.SAMETIME_SECONDARY_USERNAME)
         connection = new SametimeConnectionImpl();
-        connection.init(SametimeTestUtils.getConnectionParam());
+        connection.init(ConnectionTestUtils.getSametimeConnectionParam());
         connection._connect();
     }
 
@@ -37,9 +37,9 @@ class SendMessageActionTest extends RapidCoreTestCase {
         SendMessageAction action = new SendMessageAction(receiverUsername, messageText);
 
         SametimeConnectionImpl receiverConnection = new SametimeConnectionImpl();
-        ConnectionParam param = SametimeTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getSametimeConnectionParam();
         param.getOtherParams().put(SametimeConnectionImpl.USERNAME, receiverUsername)
-        param.getOtherParams().put(SametimeConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(SametimeTestConstants.SAMETIME_SECONDARY_PASSWORD))
+        param.getOtherParams().put(SametimeConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.SAMETIME_SECONDARY_PASSWORD))
         receiverConnection.init(param);
         receiverConnection._connect();
         try {

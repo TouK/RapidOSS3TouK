@@ -2,8 +2,8 @@ package com.ifountain.rcmdb.jabber.datasource
 
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.jabber.connection.JabberConnectionImpl
-import com.ifountain.rcmdb.test.util.JabberTestConstants
-import com.ifountain.rcmdb.test.util.JabberTestUtils
+import com.ifountain.rcmdb.test.util.ConnectionTestConstants
+import com.ifountain.rcmdb.test.util.ConnectionTestUtils
 import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.comp.test.util.CommonTestUtils
@@ -19,9 +19,9 @@ class SendMessageActionTests extends RapidCoreTestCase {
     String receiverUsername;
     protected void setUp() {
         super.setUp();
-        receiverUsername = CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SECONDARY_USERNAME)
+        receiverUsername = CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SECONDARY_USERNAME)
         connection = new JabberConnectionImpl();
-        connection.init(JabberTestUtils.getConnectionParam());
+        connection.init(ConnectionTestUtils.getJabberConnectionParam());
         connection._connect();
     }
 
@@ -34,13 +34,13 @@ class SendMessageActionTests extends RapidCoreTestCase {
 
     public void testExecute() {
         def messageText = "Hello World";
-        def serviceName = CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SERVICENAME);
+        def serviceName = CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SERVICENAME);
         def userTarget = "${receiverUsername}@${serviceName}"
         SendMessageAction action = new SendMessageAction(userTarget, messageText);
         JabberConnectionImpl receiverConnection = new JabberConnectionImpl();
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         param.getOtherParams().put(JabberConnectionImpl.USERNAME, receiverUsername)
-        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SECONDARY_PASSWORD))
+        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SECONDARY_PASSWORD))
         receiverConnection.init(param);
         receiverConnection._connect();
         try {

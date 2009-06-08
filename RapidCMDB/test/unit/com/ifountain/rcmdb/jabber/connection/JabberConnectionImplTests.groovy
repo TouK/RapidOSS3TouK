@@ -6,8 +6,8 @@ import com.ifountain.core.connection.exception.ConnectionException
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
-import com.ifountain.rcmdb.test.util.JabberTestConstants
-import com.ifountain.rcmdb.test.util.JabberTestUtils
+import com.ifountain.rcmdb.test.util.ConnectionTestConstants
+import com.ifountain.rcmdb.test.util.ConnectionTestUtils
 import org.jivesoftware.smack.XMPPException
 
 /**
@@ -22,7 +22,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     protected void setUp() {
         super.setUp();
         connection = new JabberConnectionImpl();
-        receiverUsername = CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SECONDARY_USERNAME);
+        receiverUsername = CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SECONDARY_USERNAME);
     }
 
     protected void tearDown() {
@@ -33,7 +33,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testInit() throws Exception {
-        ConnectionParam connParam = JabberTestUtils.getConnectionParam();
+        ConnectionParam connParam = ConnectionTestUtils.getJabberConnectionParam();
         try {
             connection.init(connParam);
         }
@@ -49,7 +49,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         }
         catch (UndefinedConnectionParameterException e) {}
 
-        connParam = JabberTestUtils.getConnectionParam();
+        connParam = ConnectionTestUtils.getJabberConnectionParam();
         connParam.getOtherParams().remove(JabberConnectionImpl.PORT);
         try {
             connection.init(connParam);
@@ -58,7 +58,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         catch (e) {
         }
 
-        connParam = JabberTestUtils.getConnectionParam();
+        connParam = ConnectionTestUtils.getJabberConnectionParam();
         connParam.getOtherParams().remove(JabberConnectionImpl.USERNAME);
         try {
             connection.init(connParam);
@@ -66,7 +66,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         }
         catch (UndefinedConnectionParameterException e) {}
 
-        connParam = JabberTestUtils.getConnectionParam();
+        connParam = ConnectionTestUtils.getJabberConnectionParam();
         connParam.getOtherParams().remove(JabberConnectionImpl.PASSWORD);
         try {
             connection.init(connParam);
@@ -74,7 +74,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         }
         catch (UndefinedConnectionParameterException e) {}
 
-        connParam = JabberTestUtils.getConnectionParam();
+        connParam = ConnectionTestUtils.getJabberConnectionParam();
         connParam.getOtherParams().remove(JabberConnectionImpl.SERVICENAME);
         try {
             connection.init(connParam);
@@ -85,7 +85,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testConnect() throws Exception {
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         connection.init(param);
         connection._connect();
         assertTrue(connection.checkConnection());
@@ -95,7 +95,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
 
     public void testThrowsExceptionfTheServerIsNotAvailable() throws Exception {
         String nonExistingServer = "NON_EXISTING_JABBER_SERVER";
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         param.getOtherParams().put(JabberConnectionImpl.HOST, nonExistingServer)
         connection.init(param);
         try
@@ -108,7 +108,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testThrowsExceptionIfTheGivenUsernamePasswordIsNotAuthenticated() throws Exception {
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         param.getOtherParams().put(JabberConnectionImpl.PASSWORD, "invalid password")
         connection.init(param);
         try
@@ -121,7 +121,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testDisconnect() throws Exception {
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         connection.init(param);
         connection._connect();
         assertTrue(connection.checkConnection());
@@ -133,12 +133,12 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
 
 
     public void testSendMessage() throws Exception {
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         connection.init(param);
         connection._connect();
         JabberConnectionImpl receiverConnection = new JabberConnectionImpl();
         param.getOtherParams().put(JabberConnectionImpl.USERNAME, receiverUsername);
-        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SECONDARY_PASSWORD));
+        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SECONDARY_PASSWORD));
         receiverConnection.init(param);
         receiverConnection._connect();
         try {
@@ -148,7 +148,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
             }
             receiverConnection.setTextReceivedCallback(textReceived)
             def messageText = "Hello World";
-            def userAddress = "${receiverUsername}@${CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SERVICENAME)}"
+            def userAddress = "${receiverUsername}@${CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SERVICENAME)}"
             connection.sendImMessage(userAddress, messageText);
 
             CommonTestUtils.waitFor(new ClosureWaitAction({
@@ -162,7 +162,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testSendMessageThrowsExceptionIfNotConnected() {
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         connection.init(param);
         def messageText = "Hello World";
 
@@ -176,8 +176,8 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
     }
 
     public void testOfflineMessaging() throws Exception {
-        def serviceName = CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SERVICENAME)
-        ConnectionParam param = JabberTestUtils.getConnectionParam();
+        def serviceName = CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SERVICENAME)
+        ConnectionParam param = ConnectionTestUtils.getJabberConnectionParam();
         connection.init(param);
         connection._connect();
 
@@ -186,7 +186,7 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         
         JabberConnectionImpl receiverConnection = new JabberConnectionImpl();
         param.getOtherParams().put(JabberConnectionImpl.USERNAME, receiverUsername);
-        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(JabberTestConstants.JABBER_SECONDARY_PASSWORD));
+        param.getOtherParams().put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SECONDARY_PASSWORD));
         receiverConnection.init(param);
         def receivedMessages = [];
         def textReceived = {from, message ->

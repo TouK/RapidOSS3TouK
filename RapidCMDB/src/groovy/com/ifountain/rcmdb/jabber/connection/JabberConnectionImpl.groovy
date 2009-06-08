@@ -62,7 +62,7 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
     }
 
     protected void connect() {
-        ConnectionConfiguration conf = new ConnectionConfiguration(host, port.toInteger().intValue(), serviceName);
+        ConnectionConfiguration conf = new ConnectionConfiguration(host, port.intValue(), serviceName);
         conf.setReconnectionAllowed(false);
         connection = new XMPPConnection(conf);
         synchronized (connectionLock) {

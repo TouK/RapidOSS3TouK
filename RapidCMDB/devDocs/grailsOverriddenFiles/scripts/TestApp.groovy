@@ -600,7 +600,7 @@ class TestCountTestUnit implements junit.framework.Test {
         return 1;
     }
     public void run(TestResult arg0) {
-        throw new Exception(" Test ${name} have ${testCountInClass} tests but ${runCount} tests runned");
+        throw new Exception(" Test ${name} have ${testCount} tests but ${runCount} tests runned");
     }
 
     public String getName() {

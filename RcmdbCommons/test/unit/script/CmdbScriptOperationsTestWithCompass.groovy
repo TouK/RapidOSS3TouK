@@ -70,7 +70,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         createSimpleScript(simpleScriptFile, expectedScriptMessage);
     }
 
-    def testAddScriptGeneratesScriptFileParamWhenMissing()
+    void testAddScriptGeneratesScriptFileParamWhenMissing()
     {
         initialize([CmdbScript], []);
         initializeForCmdbScript();

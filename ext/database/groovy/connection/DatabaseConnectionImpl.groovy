@@ -62,6 +62,8 @@ public class DatabaseConnectionImpl extends BaseConnection{
              info.put("oracle.net.CONNECT_TIMEOUT",timeoutStringValue);
              info.put("oracle.jdbc.ReadTimeout",timeoutStringValue);
         }
+        println "login timeout ${DriverManager.getLoginTimeout()}"
+        println "database connection properties ${info}"
         return info;
     }
     protected void disconnect() {

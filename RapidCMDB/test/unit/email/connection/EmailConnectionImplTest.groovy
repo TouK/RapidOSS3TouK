@@ -87,7 +87,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
         params.Password="xxxxxxxxxxx55555555yyyyyyyyyyyyyyyy"
 
         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
-        conParams.setMinTimeout (15000);
+        conParams.setMinTimeout (20000);
         def con=new EmailConnectionImpl()
         con.init(conParams)
 

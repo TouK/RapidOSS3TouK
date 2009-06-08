@@ -55,7 +55,7 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
 
         ConnectionParam connectionParam=new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
-        connectionParam.setMinTimeout(5000);
+        connectionParam.setMinTimeout(10000);
         return connectionParam;
     }
     public static ConnectionParam getConnectionParam() {

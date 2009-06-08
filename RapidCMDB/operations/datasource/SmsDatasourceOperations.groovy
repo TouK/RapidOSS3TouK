@@ -13,8 +13,7 @@ class SmsDatasourceOperations extends BaseDatasourceOperations {
     def onLoad() {
         this.adapter = new SmsAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
     }
-
-//    def sendMessage(target, message) {
-//        this.adapter.sendMessage(target, message);
-//    }
+    def sendMessage(target, message) {
+        this.adapter.sendMessage(target, message);
+    }
 }

@@ -8,10 +8,15 @@ import com.ifountain.core.datasource.BaseAdapter
 * Date: Jun 5, 2009
 * Time: 2:24:25 PM
 */
-class SmsAdapter extends BaseAdapter{
+class SmsAdapter extends BaseAdapter {
 
     public Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) {
-        return null; 
+        return null;
+    }
+
+    public void sendMessage(String smsNumber, String message) {
+        SendMessageAction action = new SendMessageAction(smsNumber, message)
+        action.execute();
     }
 
 }

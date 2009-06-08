@@ -135,7 +135,7 @@ class SmsConnectionImplTests extends RapidCoreTestCase {
         def messageText = "messageText"
         connection.sendMessage(smsNumber, messageText + 1);
         CommonTestUtils.waitFor(new ClosureWaitAction({
-            assertEquals(1, receivedMessages.size())    
+            assertEquals(1, receivedMessages.size())
         }))
         assertEquals(messageText + 1, receivedMessages[0])
 
@@ -146,4 +146,18 @@ class SmsConnectionImplTests extends RapidCoreTestCase {
         assertEquals(messageText + 2, receivedMessages[1])
     }
 
+    public void testSendMessageThrowsExceptionIfNotConnected() {
+        ConnectionParam param = ConnectionTestUtils.getSmsConnectionParam();
+        connection.init(param);
+        def smsNumber = "212333"
+        def messageText = "messageText"
+        try {
+            connection.sendMessage(smsNumber, messageText);
+            fail("should throw exception")
+        }
+        catch (ConnectionException e) {
+            assertEquals("Sending message to ${smsNumber} is failed, because there is no established connection.", e.getMessage())
+        }
+    }
+    
 }

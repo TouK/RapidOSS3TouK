@@ -153,7 +153,9 @@ class SmsConnectionImpl extends BaseConnection implements ConnectionObserver {
             case SMPPPacket.DELIVER_SM:
                 String sourceAddress = smppPacket.getSource().getAddress();
                 String messageText = smppPacket.getMessageText();
-                textReceivedCallback(sourceAddress, messageText);
+                if(textReceivedCallback){
+                    textReceivedCallback(sourceAddress, messageText);    
+                }
                 break;
             case SMPPPacket.SUBMIT_SM_RESP:
                 if (smppPacket.getCommandStatus() != 0) {

@@ -132,29 +132,7 @@ runGrailsTests() {
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x *.sh
     rm -rf $WORKSPACE/Distribution/RapidServer/temp
-    ./rsmodeler.sh -testUnit
-    sleep 5
-    rm -r test/reports/TESTS-TestSuites.xml
-    if [ ! -d $WORKSPACE/TestResults/Modeler ]
-      then
-        mkdir $WORKSPACE/TestResults/Modeler
-    fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
-
-    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
-    rm -rf $WORKSPACE/Distribution/RapidServer/temp
-    rm -rf $WORKSPACE/Distribution/RapidServer/Modeler/test/unit/*
-    ./rsmodeler.sh -testIntegration
-
-    sleep 5
-    rm -r test/reports/TESTS-TestSuites.xml
-    if [ ! -d $WORKSPACE/TestResults/Modeler ]
-      then
-        mkdir $WORKSPACE/TestResults/Modeler
-    fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
-
+    
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh

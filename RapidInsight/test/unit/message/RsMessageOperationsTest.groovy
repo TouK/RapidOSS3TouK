@@ -24,7 +24,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         super.tearDown();    
     }
 
-    public void testProcessDelayedEmails()
+    def testProcessDelayedEmails()
     {
         initialize([RsMessage], []);
         CompassForTests.addOperationSupport(RsMessage,RsMessageOperations)

@@ -310,6 +310,17 @@ def runTests = {suite, TestResult result, Closure callback ->
                             System.out.println "--Ignored ${t.name} since it is in excluded list--"
                         }
                     }
+                    def testCountInClass=test.testClass.metaClass.methods.findAll{ it.name.indexOf("test")==0}.size();
+                    if(testCountInClass != runCount )
+                    {
+                        runCount++;
+                        failureCount++;
+                        def testCountTest=new TestCountTestUnit();
+                        def testCountException=new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
+                        result.addError(testCountTest, testCountException);
+                        //throw new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
+                    }
+
                     junitTest.setCounts(runCount, failureCount, errorCount);
                     junitTest.setRunTime(System.currentTimeMillis() - start)
 
@@ -324,11 +335,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     xmlOutput.setSystemError(errString)
                     xmlOutput.endTestSuite(junitTest)
 
-                    def testCountInClass=test.testClass.metaClass.methods.findAll{ it.name.indexOf("test")==0}.size();
-                    if(testCountInClass != runCount )
-                    {
-                        throw new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
-                    }
+
 
                 } finally {
                     System.out = savedOut
@@ -552,3 +559,26 @@ def getTestNames(testNamesString) {
 
     return testNamesString
 }
+
+
+class TestCountTestUnit implements junit.framework.Test {
+    def name;
+
+    public TestCountTestUnit(String name) {
+        this.name = name;
+    }
+
+    public int countTestCases() {
+        return 1;
+    }
+    public void run(TestResult arg0) {
+    }
+
+    public String getName() {
+        return name;
+    }
+    public String name() {
+        return name;
+    }
+}
+

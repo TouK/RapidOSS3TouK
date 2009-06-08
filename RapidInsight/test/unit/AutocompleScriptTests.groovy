@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,7 +16,8 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 */
 class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
-
+    def static script_base_directory = "../testoutput/";
+    
     public void setUp() {
         super.setUp();
         initialize([CmdbScript,RsComputerSystem,RsTopologyObject], []);
@@ -29,7 +31,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     void initializeScriptManager()
     {
-          //to run in Hudson
+         //to run in Hudson
         def base_directory = "../RapidSuite";
         //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
         def canonicalPath=new File(".").getCanonicalPath();
@@ -40,9 +42,17 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         }
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
+        if (new File(script_base_directory).exists())
+        {
+            FileUtils.deleteDirectory(new File(script_base_directory));
+        }
+        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+
         ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
-        //new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
+
+        def ant=new AntBuilder();
+        ant.copy(file: "${base_directory}/scripts/autocomplete.groovy", toDir: "$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY",overwrite:true);
 
     }
     public void testAutoCompleteReturnsRsComputerSystemWithMaxAndSort()

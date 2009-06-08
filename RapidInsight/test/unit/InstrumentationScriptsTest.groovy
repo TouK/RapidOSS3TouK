@@ -3,6 +3,7 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,12 +13,15 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * To change this template use File | Settings | File Templates.
 */
 class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
-
+     def static script_base_directory = "../testoutput/";
+     def managerInitialized=false;
+     
      public void setUp() {
         super.setUp();
         initialize([CmdbScript,Statistics,InstrumentationParameters], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         CompassForTests.addOperationSupport (Statistics,StatisticsOperations);
+        
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"enableInstrumentation",type: CmdbScript.ONDEMAND])
         assertFalse(script.hasErrors());
@@ -32,11 +36,11 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
         super.tearDown();
     }
-    void initializeScriptManager()
+     void initializeScriptManager()
     {
-          //to run in Hudson
+         //to run in Hudson
         def base_directory = "../RapidSuite";
-
+        //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
         def canonicalPath=new File(".").getCanonicalPath();
         //to run in developer pc
         if(canonicalPath.endsWith("RapidModules"))
@@ -45,8 +49,20 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
         }
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
+        if (new File(script_base_directory).exists())
+        {
+            FileUtils.deleteDirectory(new File(script_base_directory));
+        }
+        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
+
         ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
+
+        def ant=new AntBuilder();
+        ant.copy(file: "${base_directory}/scripts/enableInstrumentation.groovy", toDir: "$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY",overwrite:true);
+        ant.copy(file: "${base_directory}/scripts/disableInstrumentation.groovy", toDir: "$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY",overwrite:true);
+        ant.copy(file: "${base_directory}/scripts/createInstrumentationParameters.groovy", toDir: "$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY",overwrite:true);
+
     }
 
     public void testEnableDisableInstrumentationScripts()

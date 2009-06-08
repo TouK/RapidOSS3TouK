@@ -57,8 +57,9 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         ScriptManager manager = ScriptManager.getInstance();
         manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
 
-        def ant=new AntBuilder();
-        ant.copy(file: "${base_directory}/scripts/getMapData.groovy", toDir: "$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY",overwrite:true);
+
+        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/getMapData.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+
 
     }
     public void testGetMapDataWith1Node()

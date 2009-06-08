@@ -315,7 +315,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     if(testCountInClass != runCount )
                     {
 
-                        def testCountTest=new TestCountTestUnit("${test.name}_TestCount");
+                        def testCountTest=new TestCountTestUnit("testTestCount");
 
                         def thisTest = new TestResult()
 

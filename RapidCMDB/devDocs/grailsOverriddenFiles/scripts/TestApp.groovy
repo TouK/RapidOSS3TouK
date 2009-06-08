@@ -315,8 +315,13 @@ def runTests = {suite, TestResult result, Closure callback ->
                     if(testCountInClass != runCount )
                     {
 
-                       println "Error: Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned"
-                       println "Tests aborted"
+                       savedOut.println "Error: Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned"
+                       savedOut.println "Tests aborted"
+
+                       System.out.println "Error: Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned"
+                       System.out.println "Tests aborted"
+
+
                        exit(1)
                     }
 

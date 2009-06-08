@@ -310,13 +310,34 @@ def runTests = {suite, TestResult result, Closure callback ->
                             System.out.println "--Ignored ${t.name} since it is in excluded list--"
                         }
                     }
+
                     def testCountInClass=test.testClass.metaClass.methods.findAll{ it.name.indexOf("test")==0}.size();
                     if(testCountInClass != runCount )
                     {
+
+                        def testCountTest=new TestCountTestUnit("${test.name}_TestCount");
+
+                        def thisTest = new TestResult()
+
+                        thisTest.addListener(xmlOutput)
+                        thisTest.addListener(plainOutput)
+
+                        System.out.println "--Output from ${testCountTest.name}--"
+                        System.err.println "--Output from ${testCountTest.name}--"
+
+                        callback(test, {
+                            savedOut.print "                    ${testCountTest.name}..."
+                            event("TestStart", [test, testCountTest, thisTest])
+                            test.runTest(testCountTest, thisTest)
+                            event("TestEnd", [test, testCountTest, thisTest])
+                            thisTest
+                        })
+
                         runCount++;
                         failureCount++;
-                        def testCountTest=new TestCountTestUnit();
-                        def testCountException=new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
+
+                        def testCountException=new Exception("Test ${testCountTest.name} have ${testCountInClass} tests but ${runCount} tests runned");
+                        println   testCountException.printStackTrace();                      
                         result.addError(testCountTest, testCountException);
                         //throw new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
                     }

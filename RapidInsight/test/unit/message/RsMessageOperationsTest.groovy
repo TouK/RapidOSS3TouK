@@ -61,7 +61,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         
     }
 
-    public void testAddCreateMessage()
+    def testAddCreateMessage()
     {
         initialize([RsMessage], []);
         CompassForTests.addOperationSupport(RsMessage,RsMessageOperations)

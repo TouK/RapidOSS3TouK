@@ -315,7 +315,7 @@ def runTests = {suite, TestResult result, Closure callback ->
                     if(testCountInClass != runCount )
                     {
 
-                        def testCountTest=new TestCountTestUnit("testTestCount");
+                        def testCountTest=new TestCountTestUnit("testTestCount",testCountInClass,runCount);
 
                         def thisTest = new TestResult()
 
@@ -333,13 +333,16 @@ def runTests = {suite, TestResult result, Closure callback ->
                             thisTest
                         })
 
-                        runCount++;
-                        failureCount++;
+                        runCount += thisTest.runCount()
+                        failureCount += thisTest.failureCount()
+                        errorCount += thisTest.errorCount()
 
-                        def testCountException=new Exception("Test ${testCountTest.name} have ${testCountInClass} tests but ${runCount} tests runned");
-                        println   testCountException.printStackTrace();                      
-                        result.addError(testCountTest, testCountException);
-                        //throw new Exception("Test ${test.name} have ${testCountInClass} tests but ${runCount} tests runned");
+                        if (thisTest.errorCount() > 0 || thisTest.failureCount() > 0) {
+                            savedOut.println "FAILURE"
+                            thisTest.errors().each {result.addError(t, it.thrownException())}
+                            thisTest.failures().each {result.addFailure(t, it.thrownException())}
+                        }
+
                     }
 
                     junitTest.setCounts(runCount, failureCount, errorCount);
@@ -584,15 +587,20 @@ def getTestNames(testNamesString) {
 
 class TestCountTestUnit implements junit.framework.Test {
     def name;
+    def testCount;
+    def runCount;
 
-    public TestCountTestUnit(String name) {
+    public TestCountTestUnit(String name,testCount,runCount) {
         this.name = name;
+        this.testCount = testCount;
+        this.runCount = runCount;
     }
 
     public int countTestCases() {
         return 1;
     }
     public void run(TestResult arg0) {
+        throw new Exception(" Test ${name} have ${testCountInClass} tests but ${runCount} tests runned");
     }
 
     public String getName() {

@@ -121,7 +121,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
     
     public void testConnect() throws Exception {
-        def minTimeout=15000;
+        def minTimeout=10000;
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         param.setMinTimeout(minTimeout);
 
@@ -150,7 +150,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
 
     public void testConnectTimeoutWithMysql() throws Exception {
         // info.put("connectTimeout",timeout); handles   
-        def minTimeout=5000;
+        def minTimeout=2000;
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         param.setMinTimeout(minTimeout);
 
@@ -182,7 +182,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
 
     public void testQueryTimeoutWithMysql() throws Exception {
         // info.put("socketTimeout",timeout); handles
-        def minTimeout=15000;
+        def minTimeout=5000;
 
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
         param.setMinTimeout(minTimeout);
@@ -218,7 +218,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         //setLoginTimeout handles
         //also setting oracle.net.CONNECT_TIMEOUT handles
 
-        def minTimeout=5000;
+        def minTimeout=2000;
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
         param.setMinTimeout(minTimeout);
 
@@ -248,7 +248,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
 
      public void testQueryTimeoutWithOracle() throws Exception {
-        def minTimeout=15000;
+        def minTimeout=5000;
 
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
         param.setMinTimeout(minTimeout);

@@ -623,6 +623,7 @@
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/commons-pool-1.4.jar!/" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/im" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/sms" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/selenium" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -636,6 +637,7 @@
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/im" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/selenium" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/sms" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/testing" recursive="false" />

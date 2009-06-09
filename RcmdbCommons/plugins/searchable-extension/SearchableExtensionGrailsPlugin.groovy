@@ -162,46 +162,42 @@ class SearchableExtensionGrailsPlugin {
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
 
+
         mc.update = {Map props->
-            return delegate.invokeOperation("update", [props] as Object[])    
-        }
-        mc._update = {Map props->
             return updateMethod.invoke(delegate,  [props] as Object[])
         }
 
-        mc.addRelation = {Map props, String source->
-            return delegate.invokeOperation("addRelation", [props, source] as Object[])
-        }
-
         mc.addRelation = {Map props->
-            return delegate.invokeOperation("addRelation", [props] as Object[])
+            return addRelationMethod.invoke(delegate,  [props, null] as Object[])
         }
-        mc._addRelation = {Map props, String source->
+        mc.addRelation = {Map props, String source->
           return addRelationMethod.invoke(delegate,  [props, source] as Object[])
         }
         mc.removeRelation = {Map props, String source->
-            return delegate.invokeOperation("removeRelation", [props, source] as Object[])
-        }
-        mc.removeRelation = {Map props->
-            return delegate.invokeOperation("removeRelation", [props] as Object[])
-        }
-        mc._removeRelation = {Map props, String source->
             return removeRelationMethod.invoke(delegate,  [props, source] as Object[])
         }
-        mc.remove = {->
-            return delegate.invokeOperation("remove", InvokerHelper.EMPTY_ARGS)
+        mc.removeRelation = {Map props->
+            return removeRelationMethod.invoke(delegate,  [props, null] as Object[])
         }
-        mc._remove = {->
+        
+        mc.remove = {->
             return removeMethod.invoke(delegate, null);
         }
 
         mc.'static'.removeAll = {->
-            return mc.theClass.invokeStaticOperation("removeAll", [mc.theClass] as Object[])
+            removeAllMatchingMethod.invoke(mc.theClass, ["alias:*"] as Object[]);
         }
         mc.'static'.removeAll = {String query->
-            return mc.theClass.invokeStaticOperation("removeAll", [mc.theClass, query] as Object[])
+            removeAllMatchingMethod.invoke(mc.theClass, [query] as Object[]);
         }
-
+        
+        mc.'static'.add = {Map props->
+            return addMethod.invoke(mc.theClass, [props] as Object[]);
+        }
+        mc.'static'.addUnique = {Map props->
+            return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);
+        }
+        
         mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList->
             getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, [:]] as Object[])
         }
@@ -217,23 +213,7 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.getPropertyValues = {String query, Collection propertyList, Map options->
             getPropertyValuesMethod.invoke(mc.theClass, [query, propertyList, options] as Object[]);
         }
-
-        mc.'static'._removeAll = {query->
-            removeAllMatchingMethod.invoke(mc.theClass, [query] as Object[]);
-        }
-
-        mc.'static'.add = {Map props->
-            return mc.theClass.invokeStaticOperation("add", [mc.theClass, props] as Object[])
-        }
-        mc.'static'.addUnique = {Map props->
-            return mc.theClass.invokeStaticOperation("addUnique", [mc.theClass, props] as Object[])
-        }
-        mc.'static'._add = {Map props->
-            return addMethod.invoke(mc.theClass, [props] as Object[]);
-        }
-        mc.'static'._addUnique = {Map props->
-            return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);
-        }
+        
     }
 
     def addQueryMethods(dc, application, ctx)

@@ -48,49 +48,6 @@ public class AbstractDomainOperation {
         }
     }
 
-    public static Object removeAll(Class domainClass)
-    {
-        return removeAll(domainClass, "alias:*");
-    }
-
-    public static Object removeAll(Class domainClass, String query)
-    {
-        return domainClass._removeAll(query);
-    }
-    public static Object addUnique(Class domainClass, Map props)
-    {
-        return domainClass._addUnique(props);
-    }
-
-    public static Object add(Class domainClass, Map props)
-    {
-        return domainClass._add(props);
-    }
-    public Object update(Map props)
-    {
-        return domainObject._update(props);
-    }
-    public Object remove()
-    {
-        return domainObject._remove();
-    }
-    public Object addRelation(Map relations)
-    {
-        return addRelation(relations, null);
-    }
-    public Object addRelation(Map relations, String source)
-    {
-        return domainObject._addRelation(relations, source);
-    }
-    public Object removeRelation(Map relations)
-    {
-        return removeRelation(relations, null);
-    }
-    public Object removeRelation(Map relations, String source)
-    {
-        return domainObject._removeRelation(relations, source);
-    }
-
     public static Logger getLogger()
     {
         ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();

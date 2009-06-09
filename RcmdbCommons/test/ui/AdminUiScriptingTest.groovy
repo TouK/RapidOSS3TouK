@@ -1,0 +1,180 @@
+import junit.framework.TestCase
+import com.thoughtworks.selenium.SeleneseTestCase
+import com.thoughtworks.selenium.GroovySeleneseTestCase
+import org.apache.commons.io.FileUtils
+import org.openqa.selenium.server.SeleniumServer
+
+
+/**
+* Created by IntelliJ IDEA.
+* User: fadime
+* Date: Jun 8, 2009
+* Time: 2:24:02 AM
+* To change this template use File | Settings | File Templates.
+*/
+class AdminUiScriptingTest extends SeleneseTestCase
+{
+    void setUp() throws Exception {
+        super.setUp('http://localhost:12222', '*firefox')
+    }
+
+
+    private void login()
+    {
+        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
+        selenium.type("login", "rsadmin");
+        selenium.type("password", "changeme");
+        selenium.click("//input[@value='Sign in']");
+        selenium.waitForPageToLoad("30000");
+    }
+
+    private String newLogValidatorScript()
+    {
+        newScript();
+        String str = "RapidServer.log";
+        selenium.type("name", "logValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+        // the Hello from cron entry number will be stored in stored
+        return selenium.getText("//body");
+    }
+
+    private void newScript()
+    {
+        selenium.open("/RapidSuite/script/list");
+        selenium.click("link=Scripts");
+        selenium.waitForPageToLoad("30000");
+        selenium.click("link=New Script");
+        selenium.waitForPageToLoad("30000");
+    }
+
+    public void testCreateAnOnDemandScriptByScriptFileName()
+    {
+        login();
+        newScript();
+        selenium.type("name", "ondemand2");
+        selenium.type("scriptFile", "aScript");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        verifyTrue(selenium.isTextPresent("Script created"));
+        verifyEquals("ondemand2", selenium.getText("name"));
+        verifyEquals("aScript", selenium.getText("scriptFile"));
+        verifyEquals("WARN", selenium.getText("logLevel"));
+        verifyEquals("false", selenium.getText("identifier=logFileOwn"));
+        verifyEquals("OnDemand", selenium.getText("identifier=type"));
+    }
+
+    public void testCreateAnOnDemandscriptByName()
+    {
+        login();
+        newScript();
+        selenium.type("name", "aScript");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        verifyTrue(selenium.isTextPresent("Script created"));
+        verifyEquals("aScript", selenium.getText("name"));
+        verifyEquals("aScript", selenium.getText("scriptFile"));
+        verifyEquals("WARN", selenium.getText("logLevel"));
+        verifyEquals("false", selenium.getText("logFileOwn"));
+        verifyEquals("", selenium.getText("identifier=staticParam"));
+        verifyEquals("OnDemand", selenium.getText("identifier=type"));
+    }
+
+
+    public void testTestAScheduledCronScriptFilesSelTest()
+    {
+        // test a scheduled cron script
+        login();
+        // looks RapidServer.log file for "Hello from cron" entries
+        String stored = newLogValidatorScript();
+        newScript();
+        // Creates a scheduled script with attributes
+
+        selenium.type("name", "scheduled2");
+        selenium.type("scriptFile", "cron");
+        selenium.select("type", "label=Scheduled");
+        selenium.select("scheduleType", "label=Cron");
+        selenium.type("cronExpression", "* * * * * ?");
+        selenium.click("enabled");
+        selenium.type("staticParam", "Hello from cron");
+
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+
+        // scheduled script attributes will be cheched if it has the right attributes
+        verifyTrue(selenium.isTextPresent("Script created"));
+        verifyEquals("scheduled2", selenium.getText("name"));
+        verifyEquals("cron", selenium.getText("scriptFile"));
+        verifyEquals("WARN", selenium.getText("logLevel"));
+        verifyEquals("false", selenium.getText("logFileOwn"));
+        verifyEquals("Hello from cron", selenium.getText("staticParam"));
+        verifyEquals("Scheduled", selenium.getText("type"));
+        verifyEquals("Cron", selenium.getText("scheduleType"));
+        verifyEquals("0", selenium.getText("startDelay"));
+        selenium.type("cronExpression", "* * * * * ?");
+        assertEquals("* * * * * ?", selenium.getText("cronExpression"));
+        verifyEquals("true", selenium.getText("enabled"));
+
+        // the script id will be stored
+        String idValue = selenium.getText("document.getElementById('id')");
+
+        // RapidServer.log file be looked if there is new "Hello from cron" entries
+        newScript();
+        stored = newLogValidatorScript();
+
+        // if the "Hello from cron" number has changed means not equal to the value in 'stored', test will pass
+        assertNotEquals(stored, selenium.isTextPresent(stored));
+        // the script will be updated
+        selenium.open("/RapidSuite/script/show/" + idValue);
+        selenium.click("_action_Edit");
+        selenium.waitForPageToLoad("30000");
+        selenium.click("logFileOwn");
+        selenium.click("_action_Update");
+        selenium.waitForPageToLoad("30000");
+
+        assertEquals("Script " + idValue + " updated", selenium.getText("pageMessage"))
+        // after update the use own log will be checked if it is true test will pass
+        verifyEquals("true", selenium.getText("logFileOwn"));
+
+
+        newScript();
+        // file scheduled2.log  will be looked if it has "Hello from cron" entries
+        selenium.type("name", "logValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        selenium.open("/RapidSuite/script/run/logValidator?file=logs/scheduled2.log");
+
+        // file scheduled2.log must have some entries
+        assertNotEquals("0", selenium.getText("//body"));
+        // the "Hello from cron" entry number will be stored
+        stored = newLogValidatorScript();
+
+        selenium.open("/RapidSuite/script/show/" + idValue);
+        // the script will be updated again
+        selenium.click("_action_Edit");
+        selenium.waitForPageToLoad("30000");
+        selenium.click("enabled");
+        selenium.click("_action_Update");
+        selenium.waitForPageToLoad("30000");
+
+        verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
+        // after update the enable attribute will be checked if it is false test will pass
+        verifyEquals("false", selenium.getText("enabled"));
+
+        Thread.sleep(3000);
+        // file RapidServer.log must have some entries
+
+        newScript();
+        selenium.type("name", "logValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+        // if RapidServer.log has no new entries test will pass
+        assertTrue(selenium.isTextPresent(stored));
+
+    }
+}
+
+
+

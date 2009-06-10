@@ -40,9 +40,9 @@ class RapidInsightUiTestBuild extends Build {
 
     def build()
     {
-//        buildDependentProjects()
-//        clean()
-//        setupRi();
+        buildDependentProjects()
+        clean()
+        setupRi();
         compileUiTestClasses();
         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")

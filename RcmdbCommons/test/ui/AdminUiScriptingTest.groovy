@@ -1,9 +1,4 @@
-import junit.framework.TestCase
-import com.thoughtworks.selenium.SeleneseTestCase
-import com.thoughtworks.selenium.GroovySeleneseTestCase
-import org.apache.commons.io.FileUtils
-import org.openqa.selenium.server.SeleniumServer
-
+import com.ifountain.rcmdb.test.util.SeleniumTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,13 +7,24 @@ import org.openqa.selenium.server.SeleniumServer
 * Time: 2:24:02 AM
 * To change this template use File | Settings | File Templates.
 */
-class AdminUiScriptingTest extends SeleneseTestCase
+class AdminUiScriptingTest extends SeleniumTestCase
 {
-    void setUp() throws Exception {
-        super.setUp('http://localhost:12222', '*firefox')
+
+    void setUp() throws Exception
+    {
+        super.setUp("http://localhost:12222/RapidSuite", "*firefox");
+    }
+
+    public void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        logout();
     }
 
 
+    private void logout()
+    {
+         selenium.click("link=Logout");
+    }
     private void login()
     {
         selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
@@ -63,6 +69,8 @@ class AdminUiScriptingTest extends SeleneseTestCase
         verifyEquals("WARN", selenium.getText("logLevel"));
         verifyEquals("false", selenium.getText("identifier=logFileOwn"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
+
+
     }
 
     public void testCreateAnOnDemandscriptByName()
@@ -79,6 +87,7 @@ class AdminUiScriptingTest extends SeleneseTestCase
         verifyEquals("false", selenium.getText("logFileOwn"));
         verifyEquals("", selenium.getText("identifier=staticParam"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
+        selenium.click("link=Logout");
     }
 
 

@@ -48,6 +48,7 @@ class RapidInsightBuild extends Build {
 
     def setOptions(options) {
         if (options != null) {
+            buildOptions = options;
             RI_UNIX_OPT = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
             RI_WINDOWS_OPT = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
             OPENNMS_OPT = Boolean.parseBoolean(options.get("OPENNMS", "false"));

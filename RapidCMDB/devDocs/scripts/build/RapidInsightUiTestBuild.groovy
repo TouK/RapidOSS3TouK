@@ -68,7 +68,7 @@ class RapidInsightUiTestBuild extends Build {
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui"){
             ant.classpath{
                 ant.path(refid:"classpath")
-                ant.path(location:"${env.distribution}/uiTestClasses")
+                ant.path(location:"${env.distribution}/uiTestClasses/testUtils")
             }
         }
         ant.delete(dir:"${env.distribution}/case")

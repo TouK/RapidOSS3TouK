@@ -27,8 +27,8 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
 
         initializeScriptManager();
-        def script=CmdbScript.addScript([name:"getMapData",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
+        def script=CmdbScript.addScript([name:"getMapData",type: CmdbScript.ONDEMAND],true)
+        assertFalse(script.errors.toString(),script.hasErrors());
     }
 
     public void tearDown() {

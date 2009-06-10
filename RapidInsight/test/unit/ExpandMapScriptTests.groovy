@@ -20,8 +20,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         initializeScriptManager();
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
+        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND],true)
+        assertFalse(script.errors.toString(),script.hasErrors());
     }
 
     public void tearDown() {

@@ -138,10 +138,13 @@ public class DatabaseConnectionImpl extends BaseConnection{
         try
         {
             parameterMetaData = stmt.getParameterMetaData();
+            parameterMetaData.getParameterType(1);
         }
         catch(Throwable ignored)
-        {}
-        
+        {
+            parameterMetaData=null;
+        }
+
         for(int i = 0; i < queryParams.length; i++)
         {
             if(parameterMetaData != null)
@@ -166,7 +169,7 @@ public class DatabaseConnectionImpl extends BaseConnection{
             {
                 stmt.setObject( i + 1, queryParams[ i ]);
             }
-            
         }
+
     }
 }

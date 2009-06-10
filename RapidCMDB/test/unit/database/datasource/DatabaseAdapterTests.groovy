@@ -14,16 +14,13 @@ import datasource.DatabaseAdapter
 * To change this template use File | Settings | File Templates.
 */
 class DatabaseAdapterTests extends RapidCoreTestCase {
-    public DatabaseAdapterTests() {
+    protected void setUp() throws Exception {
+        super.setUp();
+        DatasourceTestUtils.getParamSupplier().setParam(DatabaseConnectionImplTestUtils.getConnectionParam());
         try {
             DatabaseConnectionImplTestUtils.createTableConnectionTrials();
         } catch (ClassNotFoundException e) {
         }
-    }
-
-    protected void setUp() throws Exception {
-        super.setUp();
-        DatasourceTestUtils.getParamSupplier().setParam(DatabaseConnectionImplTestUtils.getConnectionParam());
     }
 
     protected void tearDown() throws Exception {
@@ -41,8 +38,8 @@ class DatabaseAdapterTests extends RapidCoreTestCase {
         DatabaseConnectionImplTestUtils.addRecordIntoConnectionTrialsTable(1,"Switch","eraaswiad");
         results = adapter.executeQuery(sqlQuery, queryParams);
         assertEquals(1, results.size());
-        assertEquals(1, results[0]["id"])
-        assertEquals(1, results[0]["ID"])
+        assertEquals(new BigDecimal(1), results[0]["id"])
+        assertEquals(new BigDecimal(1), results[0]["ID"])
         assertEquals("Switch", results[0]["CLASSNAME"])
         assertEquals("Switch", results[0]["classname"])
         assertEquals("eraaswiad", results[0]["instancename"])
@@ -60,7 +57,8 @@ class DatabaseAdapterTests extends RapidCoreTestCase {
        DatabaseAdapter adapter = new DatabaseAdapter(DatabaseConnectionImplTestUtils.DATABASE_CONN_NAME, 0, TestLogUtils.log)
        adapter.executeQuery("select * from connectiontrials", new Object[0], 2){Map record ->
            assertEquals(3, record.size())
-           assertEquals(++iterCount, record["ID"])
+           iterCount++;
+           assertEquals(new BigDecimal(iterCount), record["ID"])           
            assertEquals("eraaswiad${iterCount}", record["INSTANCENAME"])
            assertEquals("Switch", record["CLASSNAME"])
        }

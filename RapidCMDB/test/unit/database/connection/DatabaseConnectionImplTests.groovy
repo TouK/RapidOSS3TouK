@@ -151,7 +151,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     public void testConnectTimeoutWithMysql() throws Exception {
         // info.put("connectTimeout",timeout); handles   
         def minTimeout=2000;
-        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.MYSQL);
         param.setMinTimeout(minTimeout);
 
         param.getOtherParams()[DatabaseConnectionImpl.URL]="jdbc:mysql://192.168.55.150:3306/students";
@@ -184,7 +184,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         // info.put("socketTimeout",timeout); handles
         def minTimeout=5000;
 
-        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam();
+        ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.MYSQL);
         param.setMinTimeout(minTimeout);
 
         conn.init(param);

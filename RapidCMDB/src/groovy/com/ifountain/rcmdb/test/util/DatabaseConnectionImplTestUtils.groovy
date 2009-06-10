@@ -43,7 +43,7 @@ public class DatabaseConnectionImplTestUtils {
         return null;
     }
     public static DatabaseConnectionParams getConnectionParams() {
-        return getConnectionParams(DatabaseTestConstants.MYSQL);
+        return getConnectionParams(DatabaseTestConstants.ORACLE);
     }
 
     public static ConnectionParam getConnectionParam(String type) {
@@ -55,12 +55,11 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
 
         ConnectionParam connectionParam=new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
-        connectionParam.setMinTimeout(20000);
-        connectionParam.setMaxTimeout(20000);
+        connectionParam.setMinTimeout(10000);
         return connectionParam;
     }
     public static ConnectionParam getConnectionParam() {
-        return getConnectionParam(DatabaseTestConstants.MYSQL);
+        return getConnectionParam(DatabaseTestConstants.ORACLE);
     }
 
     public static void createTableConnectionTrials() throws ClassNotFoundException {

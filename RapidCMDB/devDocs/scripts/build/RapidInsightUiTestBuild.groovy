@@ -56,15 +56,24 @@ class RapidInsightUiTestBuild extends Build {
         ant.mkdir(dir:destDir);
         ant.mkdir(dir:"${destDir}/testUtils");
         ant.mkdir(dir:"${destDir}/tests");
+
+       ant.copy(file:"${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestCase.groovy",
+               todir:"${env.distribution}/case")
+
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
-                classpathref: "classpath",
-                srcdir:"${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util");
+              classpathref: "classpath",
+                 srcdir:"${env.distribution}/case");
+
+
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui"){
             ant.classpath{
                 ant.path(refid:"classpath")
                 ant.path(location:"${env.distribution}/uiTestClasses")
             }
         }
+        ant.delete(dir:"${env.distribution}/case")
+
+
     }
 
     def setupRi()

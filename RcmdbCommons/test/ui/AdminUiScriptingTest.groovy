@@ -25,6 +25,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     {
          selenium.click("link=Logout");
     }
+
     private void login()
     {
         selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");

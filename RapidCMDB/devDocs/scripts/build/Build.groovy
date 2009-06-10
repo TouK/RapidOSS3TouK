@@ -315,6 +315,8 @@ class Build extends Parent {
 
             //Required for compiling test classes
             ant.pathelement(location: (String) classpath.getProperty("junit_jar"));
+            ant.pathelement(location: (String) classpath.getProperty("selenium-server_jar"));
+            ant.pathelement(location: (String) classpath.getProperty("selenium-java-client-driver_jar"));
             ant.pathelement(location: (String) classpath.getProperty("httpunit_jar"));
             ant.pathelement(location: (String) classpath.getProperty("jrequire_eclipse_jar"));
             ant.pathelement(location: (String) classpath.getProperty("mysql-connector-java-3_1_8-bin_jar"));

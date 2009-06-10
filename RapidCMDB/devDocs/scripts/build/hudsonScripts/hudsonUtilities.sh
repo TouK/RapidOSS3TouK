@@ -278,5 +278,6 @@ compileBuildFiles() {
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CoreModuleTest.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/CompModuleTest.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidBrowserBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RapidInsightUiTestBuild.groovy
 
 }

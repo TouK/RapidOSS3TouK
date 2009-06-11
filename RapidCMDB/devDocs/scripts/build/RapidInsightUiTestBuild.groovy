@@ -41,9 +41,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
          buildDependentProjects()
+                  startRI()
          clean()
          setupRi();
-         startRI()
          compileUiTestClasses();
          def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
          runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
@@ -52,11 +52,13 @@ class RapidInsightUiTestBuild extends Build {
 
      def startRI()
      {
+         chmod +x "${env.distribution}/RapidServer/RapidSuite/rs.sh -start"
         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
      }
 
      def stopRI()
      {
+         chmod +x "${env.distribution}/RapidServer/RapidSuite/rs.sh -start"
          Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
      }
 

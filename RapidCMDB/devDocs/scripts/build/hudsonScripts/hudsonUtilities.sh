@@ -10,13 +10,13 @@ tagSvn() {
 
     svn mkdir -m "Creating tag $tagname" http://dev.ifountain.org/repos/os/tags/$tagname
     svn copy http://dev.ifountain.org/repos/os/ThirdParty http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging ThirdParty"
-    svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging RapidModules"    
-    svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"    
-    svn copy http://dev.ifountain.org/repos/os/Netcool http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Netcool"    
-    svn copy http://dev.ifountain.org/repos/os/Smarts http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Smarts"    
-    svn copy http://dev.ifountain.org/repos/os/Hyperic http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Hyperic"    
-    svn copy http://dev.ifountain.org/repos/os/Apg http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Apg"    
-    svn copy http://dev.ifountain.org/repos/os/OpenNms http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging OpenNms"    
+    svn copy http://dev.ifountain.org/repos/os/RapidModules http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging RapidModules"
+    svn copy http://dev.ifountain.org/repos/os/LicencedJars http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging LicencedJars"
+    svn copy http://dev.ifountain.org/repos/os/Netcool http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Netcool"
+    svn copy http://dev.ifountain.org/repos/os/Smarts http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Smarts"
+    svn copy http://dev.ifountain.org/repos/os/Hyperic http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Hyperic"
+    svn copy http://dev.ifountain.org/repos/os/Apg http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Apg"
+    svn copy http://dev.ifountain.org/repos/os/OpenNms http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging OpenNms"
 }
 
 tagSvnForRapidBrowser() {
@@ -77,7 +77,7 @@ runTestBuild() {
        echo "Copying ManualTestResults to TestResults"
        cp -rf ManualTestResults/ TestResults/
     fi
-    
+
     cd RapidModules/
     optionsFile=test.options
     rm -f $optionsFile
@@ -125,7 +125,7 @@ runTestBuildAndJavaTestsForRCMDB() {
     groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
     cd $WORKSPACE
 }
-           
+
 runGrailsTests() {
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     cd $WORKSPACE/Distribution/RapidServer/Modeler/
@@ -139,12 +139,7 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/Modeler
     fi
-
-    if [ -f test/reports/*.xml ]
-      then
-        mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
-    fi
-
+    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
     sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
@@ -158,11 +153,7 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/Modeler
     fi
-
-    if [ -f test/reports/*.xml ]
-      then
-        mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
-    fi
+    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
@@ -177,13 +168,7 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-
-    if [ -f test/reports/*.xml ]
-      then
-        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
-    fi
-
-
+    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     rm -rf $WORKSPACE/Distribution/RapidServer/temp
     rm -rf $WORKSPACE/Distribution/RapidServer/RapidSuite/test/unit/*
@@ -193,12 +178,7 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-
-    if [ -f test/reports/*.xml ]
-      then
-        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
-    fi
-
+    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     cd $WORKSPACE
 }
 

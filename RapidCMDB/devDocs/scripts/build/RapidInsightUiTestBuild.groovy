@@ -52,13 +52,13 @@ class RapidInsightUiTestBuild extends Build {
 
      def startRI()
      {
-         chmod +x "${env.distribution}/RapidServer/RapidSuite/rs.sh -start"
+       Runtime.getRuntime().exec("chmod +x " + "${env.distribution}/RapidServer/RapidSuite/rs.sh").waitFor();    
         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
      }
 
      def stopRI()
      {
-         chmod +x "${env.distribution}/RapidServer/RapidSuite/rs.sh -start"
+         Runtime.getRuntime().exec("chmod +x " + "${env.distribution}/RapidServer/RapidSuite/rs.sh").waitFor();
          Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
      }
 

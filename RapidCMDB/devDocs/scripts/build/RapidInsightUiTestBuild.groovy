@@ -15,9 +15,9 @@ class RapidInsightUiTestBuild extends Build {
     static def getTestOptions(){
 	   Properties options = new Properties();
 	   options.put("RI_UNIX", "true")
-	   options.put("RI_WINDOWS", "true")
+	   options.put("RI_WINDOWS", "false")
 	   options.put("RCMDB_UNIX", "true")
-	   options.put("RCMDB_WINDOWS", "true")
+	   options.put("RCMDB_WINDOWS", "false")
 	   options.put("MODELER", "false")
 	   options.put("OPENNMS", "false")
 	   options.put("JIRA", "false")
@@ -40,13 +40,25 @@ class RapidInsightUiTestBuild extends Build {
 
     def build()
     {
-        buildDependentProjects()
-        clean()
-        setupRi();
-        compileUiTestClasses();
-        def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-        runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+         buildDependentProjects()
+         clean()
+         setupRi();
+         startRI()
+         compileUiTestClasses();
+         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+         stopRI()
     }
+
+     def startRI()
+     {
+        Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
+     }
+
+     def stopRI()
+     {
+         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
+     }
 
     def compileUiTestClasses()
     {

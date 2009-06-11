@@ -41,25 +41,32 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
          buildDependentProjects()
-                  startRI()
+        // startRI()
          clean()
          setupRi();
          compileUiTestClasses();
          def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
          runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
-         stopRI()
+        // stopRI()
     }
 
      def startRI()
      {
-       Runtime.getRuntime().exec("chmod +x " + "${env.distribution}/RapidServer/RapidSuite/rs.sh").waitFor();    
-        Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
+        Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".exec();
+        p.consumeProcessOutput();
+        p.consumeProcessErrorStream(System.out);
+        p.waitFor();
+        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".exec();
+        p.consumeProcessOutput();
+        p.consumeProcessErrorStream(System.out);
+        p.waitFor();
+
      }
 
      def stopRI()
      {
          Runtime.getRuntime().exec("chmod +x " + "${env.distribution}/RapidServer/RapidSuite/rs.sh").waitFor();
-         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -start");
+         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -stop").waitFor();
      }
 
     def compileUiTestClasses()

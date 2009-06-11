@@ -52,11 +52,11 @@ class RapidInsightUiTestBuild extends Build {
 
      def startRI()
      {
-        Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".exec();
+        Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
         p.waitFor();
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".exec();
+        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
         p.waitFor();
@@ -65,8 +65,14 @@ class RapidInsightUiTestBuild extends Build {
 
      def stopRI()
      {
-         Runtime.getRuntime().exec("chmod +x " + "${env.distribution}/RapidServer/RapidSuite/rs.sh").waitFor();
-         Runtime.getRuntime().exec("${env.distribution}/RapidServer/RapidSuite/rs.sh -stop").waitFor();
+       Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
+        p.consumeProcessOutput();
+        p.consumeProcessErrorStream(System.out);
+        p.waitFor();
+        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -stop".execute();
+        p.consumeProcessOutput();
+        p.consumeProcessErrorStream(System.out);
+        p.waitFor();
      }
 
     def compileUiTestClasses()

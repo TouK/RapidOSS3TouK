@@ -17,7 +17,6 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static void suiteSetUp(browserString, url) {
         selenium = new DefaultSelenium("localhost", 4444, browserString, url);
-        selenium.wait(180000000)
         selenium.start();
         selenium.setTimeout("30000");
         System.addShutdownHook {

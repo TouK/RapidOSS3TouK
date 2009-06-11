@@ -51,6 +51,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
 
         FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/expandMap.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/mapConfiguration.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
 
     }
     public void testExpandMapWith1Node()

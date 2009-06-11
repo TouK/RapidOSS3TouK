@@ -59,6 +59,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
         FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/getMapData.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/mapConfiguration.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
 
 
     }

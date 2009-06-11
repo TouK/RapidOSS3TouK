@@ -56,6 +56,28 @@ public class ExecuteUpdateActionTests extends RapidCoreTestCase {
         }
         super.tearDown();
     }
+//    public void testCanInsertNullValuesToOracle() throws Exception {
+//        DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();
+//        String sqlQuery = "insert into connectiontrials (id,classname,instancename,dummy) values (?,?,?,?)";
+//        Object [] queryParams = new Object[4];
+//        queryParams[0] = new Integer(1);
+//        queryParams[1] = "a";
+//        queryParams[2] = "b";
+//        queryParams[3] = "";
+//        ExecuteUpdateAction action = new ExecuteUpdateAction(TestLogUtils.log, sqlQuery, queryParams);
+//        action.execute(datasource);
+//    }
+//     public void testCanInsertNullValuesToMysql() throws Exception {
+//        DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();
+//        String sqlQuery = "insert into connectiontrials (id,classname,instancename,dummy) values (?,?,?,?)";
+//        Object [] queryParams = new Object[4];
+//        queryParams[0] = new Integer(1);
+//        queryParams[1] = "a";
+//        queryParams[2] = "b";
+//        queryParams[3] = "";
+//        ExecuteUpdateAction action = new ExecuteUpdateAction(TestLogUtils.log, sqlQuery, queryParams);
+//        action.execute(datasource);
+//    }
 
     public void testExecute() throws Exception {
     	DatabaseConnectionImplTestUtils.clearConnectionTrialsTable();

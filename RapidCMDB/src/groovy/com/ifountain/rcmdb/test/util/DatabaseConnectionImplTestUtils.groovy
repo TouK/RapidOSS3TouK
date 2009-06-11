@@ -63,7 +63,7 @@ public class DatabaseConnectionImplTestUtils {
     }
 
     public static void createTableConnectionTrials() throws ClassNotFoundException {
-        createTable("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL)");
+        createTable("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL,severity int)");
     }
 
     public static void createTable(String sql) throws ClassNotFoundException {

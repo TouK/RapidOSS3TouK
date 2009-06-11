@@ -182,7 +182,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
 
     public void testQueryTimeoutWithMysql() throws Exception {
         // info.put("socketTimeout",timeout); handles
-        def minTimeout=5000;
+        def minTimeout=20000;
 
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.MYSQL);
         param.setMinTimeout(minTimeout);
@@ -198,7 +198,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
         def elapsedTime=0;
         try{
             startTime=System.currentTimeMillis();
-            stmt.executeQuery ("SELECT SLEEP(20) ")
+            stmt.executeQuery ("SELECT SLEEP(30) ")
             fail("should throw exception");
         }
         catch(com.mysql.jdbc.CommunicationsException e)
@@ -248,7 +248,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
     }
 
      public void testQueryTimeoutWithOracle() throws Exception {
-        def minTimeout=5000;
+        def minTimeout=3000;
 
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.ORACLE);
         param.setMinTimeout(minTimeout);

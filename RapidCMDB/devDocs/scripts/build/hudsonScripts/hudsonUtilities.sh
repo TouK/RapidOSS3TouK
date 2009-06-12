@@ -139,7 +139,12 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/Modeler
     fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+
+    if [ -f test/reports/*.xml ]
+      then
+        mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+    fi
+
 
     sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
@@ -153,7 +158,11 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/Modeler
     fi
-    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+
+    if [ -f test/reports/*.xml ]
+      then
+        mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
+    fi
 
     cd ../RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
@@ -168,7 +177,13 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+
+    if [ -f test/reports/*.xml ]
+      then
+        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    fi
+
+
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     rm -rf $WORKSPACE/Distribution/RapidServer/temp
     rm -rf $WORKSPACE/Distribution/RapidServer/RapidSuite/test/unit/*
@@ -178,7 +193,12 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+
+    if [ -f test/reports/*.xml ]
+      then
+        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    fi
+
     cd $WORKSPACE
 }
 

@@ -42,15 +42,15 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
           buildDependentProjects()
-          //startRI()
+         startRI()
         startSeleniumServer()
-         startt()
+         //startt()
           clean()
          setupRi();
          compileUiTestClasses();
         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
-       //  stopRI()
+         stopRI()
         startSeleniumServer()
     }
 

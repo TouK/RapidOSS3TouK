@@ -56,7 +56,8 @@ class RapidInsightUiTestBuild extends Build {
 
      def startSeleniumServer()
      {
-           ant.java(jar:"${env.third_party}/lib/selenium/selenium-server.jar", fork:"true", spawn:"true")
+           ant.java(jar:"${env.third_party}/lib/selenium/selenium-server.jar", fork:"true",
+                   spawn:"true",jvm:"/usr/java/jdk1.6.0_04/jre/bin/java")
      }
 
       def stopSeleniumServer()

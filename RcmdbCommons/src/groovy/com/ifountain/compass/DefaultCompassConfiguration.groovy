@@ -41,8 +41,8 @@ public class DefaultCompassConfiguration {
                 "compass.engine.cacheIntervalInvalidation":"-1"
         
         ]
-        defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);
-        defSt.put(LuceneEnvironment.Transaction.Processor.TYPE, SingleCompassSessionTransactionProcessor.NAME);
+//        defSt.put(LuceneEnvironment.Transaction.Processor.PREFIX+SingleCompassSessionTransactionProcessor.NAME+"."+LuceneEnvironment.Transaction.Processor.CONFIG_TYPE, SingleCompassSessionTransactionProcessorFactory.class.name);
+//        defSt.put(LuceneEnvironment.Transaction.Processor.TYPE, SingleCompassSessionTransactionProcessor.NAME);
         return defSt;
     }
 }

@@ -51,6 +51,8 @@ class RapidInsightUiTestBuild extends Build {
 
          startRI();
          startSeleniumServer();
+         //wait for selenium server start
+         Thread.sleep(10);
 
 
          def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
@@ -86,8 +88,6 @@ class RapidInsightUiTestBuild extends Build {
 
      def startRI()
      {
-
-
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
@@ -96,9 +96,6 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
         p.waitFor();
-
-
-
      }
 
      def stopRI()

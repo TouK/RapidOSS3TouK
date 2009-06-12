@@ -171,7 +171,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
         // after update the enable attribute will be checked if it is false test will pass
         verifyEquals("false", selenium.getText("enabled"));
-
+                                                                       
         Thread.sleep(3000);
         // file RapidServer.log must have some entries
 
@@ -182,6 +182,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
         // if RapidServer.log has no new entries test will pass
         assertTrue(selenium.isTextPresent(stored));
+        selenium.open("/RapidSuite/script/show/" + idValue);
+        selenium.waitForPageToLoad("30000");
 
     }
 }

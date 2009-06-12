@@ -32,7 +32,7 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
 
         def loginResponse=getUrlResponseWithCredentials(con,'auth/signIn',[:]);
         assertFalse(loginResponse.indexOf('auth/signIn')>0);
-        assertFalse(nonLoginResponse.indexOf('Exception')>0);
+        assertFalse(loginResponse.indexOf('Exception')>0);
 
         //since we are logged in we no longer get request with credentials
         def urlsToCheck=[:];

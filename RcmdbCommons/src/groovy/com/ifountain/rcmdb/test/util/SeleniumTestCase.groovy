@@ -52,7 +52,7 @@ class SeleniumTestCase extends SeleneseTestCase {
             start = false;
             suiteSetUp(browserString, url);
         }
-        for(int i=0; i < 12; i++)
+        for(int i=0; i < 10; i++)
         {
             try{
                 selenium.open(url);
@@ -61,7 +61,7 @@ class SeleniumTestCase extends SeleneseTestCase {
             }
             catch(SeleniumException e)
             {
-                if(i == 11)
+                if(i == 9)
                 {
                     throw e;
                 }

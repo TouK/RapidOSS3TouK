@@ -15,6 +15,13 @@ import org.compass.core.lucene.engine.transaction.TransactionProcessor
 import org.compass.core.lucene.engine.transaction.TransactionProcessorFactory
 import org.compass.core.lucene.engine.transaction.readcommitted.ReadCommittedTransactionProcessor
 import org.compass.core.spi.InternalCompass
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import org.apache.commons.io.FileUtils
+import org.compass.core.CompassQueryBuilder.CompassQueryStringBuilder
+import org.compass.core.CompassQuery
+import org.compass.core.lucene.engine.transaction.mt.MTTransactionProcessorFactory
 
 /**
 * Created by IntelliJ IDEA.
@@ -26,14 +33,23 @@ import org.compass.core.spi.InternalCompass
 class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearchableCompassTests {
     InternalCompass compass;
     SingleCompassSessionTransactionProcessorFactory factory;
+    Class parentObject;
+    Class level1ChildObject;
+    Class childObject1;
+    Class childObject2;
+    Class singleObject;
     Map additionalCompassSettings;
+    GroovyClassLoader gcl;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        gcl = new GroovyClassLoader(this.class.classLoader);
         additionalCompassSettings = [:]
+        FileUtils.deleteDirectory(new File(TestCompassFactory.indexDirectory));
     }
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        compass.close();
     }
 
     public void testTransactionProcessorFactoryConfigurationMethods()
@@ -87,14 +103,31 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
         assertTrue("Expected 0 but was ${commitIntervals.size()}", commitIntervals.size() == 0);
     }
 
+
+    public void testClosingFactoryWillCallCommit()
+    {
+        addCommitIntervalSetting(2500000);
+        initializeWithMockFactory();
+        def commitIntervals = [];
+        RadCommittedTransactionProcessorWrapper wrapper = TransactionProcessorFactoryMock.wrapperToBeReturned;
+        wrapper.closureMap.commit = {boolean onePhase ->
+            commitIntervals.add(System.nanoTime());
+        }
+        Thread.sleep(1000);
+        assertEquals(0, commitIntervals.size());
+        compass.close();
+        assertEquals("Should call commit in close method", 1, commitIntervals.size());
+
+    }
+
     public void testSearchOperationAfterCommitWillNotCauseAnyProblem()
     {
         addCommitIntervalSetting(250)
         initialize();
 
         RadCommittedTransactionProcessorWrapper wrapper = TransactionProcessorFactoryMock.wrapperToBeReturned;
-        CompassTestObject objToBeSaved1 = new CompassTestObject(id: 1);
-        CompassTestObject objToBeSaved2 = new CompassTestObject(id: 2);
+        def objToBeSaved1 = singleObject.newInstance(id: 1);
+        def objToBeSaved2 = singleObject.newInstance(id: 2);
         withCompassQueryBuilder() {CompassQueryBuilder builder ->
             withCompassSession() {session ->
                 session.save(objToBeSaved1);
@@ -120,7 +153,7 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
             withCompassSession() {session ->
                 for (int i = 0; i < 100; i++)
                 {
-                    savedObjects.add(new CompassTestObject(id: i))
+                    savedObjects.add(singleObject.newInstance(id: i))
                     session.save(savedObjects[savedObjects.size() - 1]);
                 }
             }
@@ -143,11 +176,11 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
             withCompassSession() {CompassSession session ->
                 for (int i = 0; i < 100; i++)
                 {
-                    def objectToBeDeleted = new CompassTestObject(id: i);
+                    def objectToBeDeleted = singleObject.newInstance(id: i);
                     session.save(objectToBeDeleted);
                     session.delete(objectToBeDeleted);
                 }
-                def object = new CompassTestObject(id: 1);
+                def object = singleObject.newInstance(id: 1);
                 session.save(object);
                 savedObjects.add(object)
             }
@@ -171,7 +204,7 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
             withCompassSession() {CompassSession session ->
                 for (int i = 0; i < 100; i++)
                 {
-                    def objectToBeDeleted = new CompassTestObject(id: i);
+                    def objectToBeDeleted = singleObject.newInstance(id: i);
                     session.save(objectToBeDeleted);
                     objectToBeDeleted.prop1 = updatedPropValue
                     session.save(objectToBeDeleted);
@@ -191,14 +224,15 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
 
     public void testSearchWhileUpdating()
     {
+        MTTransactionProcessorFactory
         addCommitIntervalSetting(300)
         initialize();
         def updatedPropValue = "updatedPropValue"
-        def numberOfObjects = 100;
+        def numberOfObjects = 200;
         withCompassSession() {CompassSession session ->
             for (int i = 0; i < numberOfObjects; i++)
             {
-                def objectToBeDeleted = new CompassTestObject(id: i);
+                def objectToBeDeleted = singleObject.newInstance(id: i);
                 session.save(objectToBeDeleted);
             }
         }
@@ -206,34 +240,94 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
             CompassHits hits = builder.queryString("alias:*").toQuery().hits();
             assertEquals(numberOfObjects, hits.length());
         }
-
+        println "inserted"
         def willStopThread = false;
         Thread t = Thread.start {
             while (!willStopThread)
             {
                 withCompassSession() {CompassSession session ->
-
                     for (int i = 0; i < numberOfObjects; i++)
                     {
-                        def objectToBeUpdated = new CompassTestObject(id: i);
+                        def objectToBeUpdated = singleObject.newInstance(id: i);
                         objectToBeUpdated.prop1 = updatedPropValue;
                         session.save(objectToBeUpdated);
                     }
-
                 }
             }
         }
-        Thread.sleep (3000);
+        Thread.sleep(3000);
         try {
-            for(int i=0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
             {
-                withCompassQueryBuilder (){CompassQueryBuilder builder->
-                    CompassHits hits = builder.queryString ("alias:*").toQuery().hits();
-                    assertEquals (numberOfObjects, hits.length());
+                withCompassQueryBuilder() {CompassQueryBuilder builder ->
+                    CompassHits hits = builder.queryString("alias:*").toQuery().hits();
+                    assertEquals(numberOfObjects, hits.length());
+                }
+            }
+            println "FINISHED"
+        }
+        finally {
+            willStopThread = true;
+            t.join();
+        }
+
+    }
+
+
+    public void testSearchWhileUpdatingWithObjectHierarchy()
+    {
+        addCommitIntervalSetting(300)
+        initialize();
+        def updatedPropValue = "updatedPropValue"
+        def numberOfObjectsForParent = 20;
+        def numberOfObjectsForChild = 200;
+        withCompassSession() {CompassSession session ->
+            def id = 0;
+            numberOfObjectsForParent.times{
+                def objectToBeAdded = parentObject.newInstance(id: id++);
+                session.save(objectToBeAdded);
+            }
+            numberOfObjectsForChild.times{
+                def childToBeAdded = childObject1.newInstance(id: id++);
+                session.save(childToBeAdded);
+                childToBeAdded = childObject2.newInstance(id: id++);
+                session.save(childToBeAdded);
+            }
+        }                                         
+        withCompassQueryBuilder() {CompassQueryBuilder builder ->
+            CompassHits hits = builder.queryString("alias:*").toQuery().hits();
+            assertEquals(numberOfObjectsForParent+2*numberOfObjectsForChild, hits.length());
+        }
+        println "inserted"
+        def isStopped = false;
+        Thread t = Thread.start {
+            withCompassSession() {CompassSession session ->
+
+                def id = 0;
+                numberOfObjectsForParent.times{
+                    def objectToBeAdded = parentObject.newInstance(id: id++);
+                    session.save(objectToBeAdded);
+                }
+                numberOfObjectsForChild.times{
+                    def childToBeAdded = childObject1.newInstance(id: id++);
+                    session.save(childToBeAdded);
+                    childToBeAdded = childObject2.newInstance(id: id++);
+                    session.save(childToBeAdded);
+                }
+            }
+            isStopped = true;
+        }
+        try {
+            while(!isStopped)
+            {
+                withCompassQueryBuilder() {CompassQueryBuilder builder ->
+                    CompassQueryStringBuilder strBuilder = builder.queryString("alias:*")
+                    CompassQuery query = strBuilder.toQuery();
+                    CompassHits hits = query.hits();
+                    assertEquals(numberOfObjectsForParent+2*numberOfObjectsForChild, hits.length());
                 }
             }
         } finally {
-            willStopThread = true;
             t.join();
         }
 
@@ -242,6 +336,10 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
     private void addCommitIntervalSetting(long commitInterval)
     {
         additionalCompassSettings.put(SingleCompassSessionTransactionProcessorFactory.COMMIT_INTERVAL_SETTING_KEY, "" + commitInterval);
+        additionalCompassSettings.put("compass.engine.maxBufferedDocs", "1000");
+        //        additionalCompassSettings.put("compass.engine.maxBufferedDeletedTerms", "100");
+        additionalCompassSettings.put("compass.engine.ramBufferSize", "60");
+        additionalCompassSettings.put("compass.engine.cacheIntervalInvalidation", "-1");
     }
 
     private void addSingleSessionFactory()
@@ -252,16 +350,20 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
 
     private initialize()
     {
+        createModels(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE);
         addSingleSessionFactory();
-        compass = TestCompassFactory.getCompass([CompassTestObject], [], false, additionalCompassSettings);
+        def app = TestCompassFactory.getGrailsApplication([this.parentObject, this.childObject1, this.childObject2, this.level1ChildObject, this.singleObject], gcl);
+        compass = TestCompassFactory.getCompass(app, [], true, additionalCompassSettings);
         factory = ((LuceneSearchEngineFactory) compass.getSearchEngineFactory()).getTransactionProcessorManager().getProcessorFactory(SingleCompassSessionTransactionProcessor.NAME);
     }
 
 
     private initializeWithMockFactory()
     {
+        createModels(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE);
         addSingleSessionFactory();
-        compass = TestCompassFactory.getCompass([CompassTestObject], [], false, additionalCompassSettings);
+        def app = TestCompassFactory.getGrailsApplication([this.parentObject, this.childObject1, this.childObject2, this.level1ChildObject, this.singleObject], gcl);
+        compass = TestCompassFactory.getCompass(app, [], false, additionalCompassSettings);
         factory = ((LuceneSearchEngineFactory) compass.getSearchEngineFactory()).getTransactionProcessorManager().getProcessorFactory(SingleCompassSessionTransactionProcessor.NAME);
         TransactionProcessorFactoryMock mockFactory = new TransactionProcessorFactoryMock();
         factory.setWrappedTransactionProcessorFactory(mockFactory);
@@ -271,6 +373,36 @@ class SingleCompassSessionTransactionProcessorFactoryTest extends AbstractSearch
         CommonTestUtils.waitFor(new ClosureWaitAction() {
             assertNotNull(TransactionProcessorFactoryMock.wrapperToBeReturned);
         })
+    }
+
+    private createModels(storageType)
+    {
+        def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
+        String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
+        def model1MetaProps = [name: "FactoryParentObject", storageType: storageType]
+        def level1ChildMetaProps = [name: "Level1FactoryChildObject1", storageType: storageType, parentModel: model1MetaProps.name]
+        def child1MetaProps = [name: "FactoryChildObject1", storageType: storageType, parentModel: level1ChildMetaProps.name]
+        def child2MetaProps = [name: "FactoryChildObject2", storageType: storageType, parentModel: level1ChildMetaProps.name]
+        def model3MetaProps = [name: "FactorySingleObject", storageType: storageType]
+        def modelProps = [keyProp];
+        for (int i = 0; i < 50; i++)
+        {
+            def prop = [name: "prop" + i, type: ModelGenerator.STRING_TYPE, blank: false, defaultValue: propValue]
+            modelProps.add(prop);
+
+        }
+        def keyPropList = [keyProp];
+        String model1String = ModelGenerationTestUtils.getModelText(model1MetaProps, modelProps, keyPropList, [])
+        String child1ModelString = ModelGenerationTestUtils.getModelText(child1MetaProps, modelProps, keyPropList, [])
+        String child2ModelString = ModelGenerationTestUtils.getModelText(child2MetaProps, modelProps, keyPropList, [])
+        String level1ChildModelString = ModelGenerationTestUtils.getModelText(level1ChildMetaProps, modelProps, keyPropList, [])
+        String model3String = ModelGenerationTestUtils.getModelText(model3MetaProps, modelProps, keyPropList, [])
+        gcl.parseClass(model1String + level1ChildModelString+child1ModelString+child2ModelString + model3String);
+        this.parentObject = gcl.loadClass(model1MetaProps.name)
+        this.level1ChildObject = gcl.loadClass(level1ChildMetaProps.name)
+        this.childObject1 = gcl.loadClass(child1MetaProps.name)
+        this.childObject2 = gcl.loadClass(child1MetaProps.name)
+        this.singleObject = gcl.loadClass(model3MetaProps.name)
     }
 
 }

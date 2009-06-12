@@ -74,6 +74,7 @@ class TestCompassFactory {
             config.setConnection("ram://testindex")
         }
 //        config.getSettings().setSetting ("compass.transaction.isolation", "batch_insert");
+        config.setClassLoader (grailsApplication.getClassLoader());
         config.getSettings().setSetting ("compass.transaction.disableThreadBoundLocalTransaction", "true");
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
@@ -82,7 +83,14 @@ class TestCompassFactory {
         if(additionalSettings)
         {
             additionalSettings.each{settingKey, settingValue->
-                config.getSettings().setSetting (settingKey, settingValue);    
+                if(settingValue instanceof Integer)
+                {
+                    config.getSettings().setIntSetting(settingKey, settingValue);                    
+                }
+                else
+                {
+                    config.getSettings().setSetting (settingKey, settingValue);
+                }
             }
         }
         configurator.configure(config, [:])

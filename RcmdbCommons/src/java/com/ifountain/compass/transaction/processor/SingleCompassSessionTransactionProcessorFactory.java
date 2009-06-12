@@ -1,26 +1,19 @@
 package com.ifountain.compass.transaction.processor;
 
-import org.compass.core.lucene.engine.transaction.TransactionProcessorFactory;
-import org.compass.core.lucene.engine.transaction.TransactionProcessor;
-import org.compass.core.lucene.engine.LuceneSearchEngine;
-import org.compass.core.spi.InternalResource;
-import org.compass.core.spi.ResourceKey;
-import org.compass.core.lucene.engine.LuceneSearchEngineQuery;
-import org.compass.core.lucene.engine.LuceneSearchEngineHits;
 import org.compass.core.Resource;
-import org.compass.core.lucene.engine.LuceneSearchEngineInternalSearch;
-import org.compass.core.lucene.engine.transaction.readcommitted.ReadCommittedTransactionProcessor;
-import org.compass.core.lucene.engine.transaction.readcommitted.ReadCommittedTransactionProcessorFactory;
-import org.compass.core.config.SearchEngineFactoryAware;
-import org.compass.core.engine.SearchEngineFactory;
-import org.compass.core.lucene.engine.LuceneSearchEngineFactory;
-import org.compass.core.lucene.engine.manager.LuceneSearchEngineIndexManager;
 import org.compass.core.config.CompassConfigurable;
 import org.compass.core.config.CompassSettings;
 import org.compass.core.config.RuntimeCompassSettings;
+import org.compass.core.config.SearchEngineFactoryAware;
+import org.compass.core.engine.SearchEngineFactory;
 import org.compass.core.lucene.LuceneEnvironment;
-
-import java.util.concurrent.TimeUnit;
+import org.compass.core.lucene.engine.*;
+import org.compass.core.lucene.engine.manager.LuceneSearchEngineIndexManager;
+import org.compass.core.lucene.engine.transaction.TransactionProcessor;
+import org.compass.core.lucene.engine.transaction.TransactionProcessorFactory;
+import org.compass.core.lucene.engine.transaction.readcommitted.ReadCommittedTransactionProcessorFactory;
+import org.compass.core.spi.InternalResource;
+import org.compass.core.spi.ResourceKey;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,6 +63,7 @@ public class SingleCompassSessionTransactionProcessorFactory implements Transact
 
     public void close() {
         commiter.stop();
+        commit(true);
         factory.close();
     }
 

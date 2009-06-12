@@ -12,6 +12,7 @@ class RapidInsightUiTestBuild extends Build {
     def riZipFileName;
 
 
+
     static def getTestOptions(){
 	   Properties options = new Properties();
 	   options.put("RI_UNIX", "true")
@@ -40,13 +41,13 @@ class RapidInsightUiTestBuild extends Build {
 
     def build()
     {
-       //  buildDependentProjects()
-        // startRI()
+          buildDependentProjects()
+          //startRI()
         startSeleniumServer()
          startt()
-       //  clean()
-        // setupRi();
-        // compileUiTestClasses();
+          clean()
+         setupRi();
+         compileUiTestClasses();
         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
        //  stopRI()
@@ -67,6 +68,7 @@ class RapidInsightUiTestBuild extends Build {
           }
      }
 
+
     def startt()
     {
         Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
@@ -75,6 +77,8 @@ class RapidInsightUiTestBuild extends Build {
 
      def startRI()
      {
+
+
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
@@ -138,6 +142,8 @@ class RapidInsightUiTestBuild extends Build {
         rapidInsightBuilder.build();
         riZipFileName = "RI_Unix${rapidInsightBuilder.getVersionWithDate()}.zip"
     }
+
+
 
     def clean()
     {

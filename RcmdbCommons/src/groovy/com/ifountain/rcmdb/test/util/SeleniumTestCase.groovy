@@ -16,7 +16,6 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static DefaultSelenium selenium;
     private static boolean start = true;
-   // private static SeleniumServer seleniumServer
 
     public static void suiteSetUp(browserString, url) {
 
@@ -24,10 +23,6 @@ class SeleniumTestCase extends SeleneseTestCase {
         selenium.start();
         selenium.setTimeout("30000");
 
-       // seleniumServer = new SeleniumServer()
-      //   seleniumServer.start();
-
-      
         System.addShutdownHook {
             selenium.stop();
         }

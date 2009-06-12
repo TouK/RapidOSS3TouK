@@ -17,13 +17,12 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        logout();
+        logout()
     }
-
 
     private void logout()
     {
-         selenium.click("link=Logout");
+        selenium.click("link=Logout");
     }
 
     private void login()
@@ -70,8 +69,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("WARN", selenium.getText("logLevel"));
         verifyEquals("false", selenium.getText("identifier=logFileOwn"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
-
-
     }
 
     public void testCreateAnOnDemandscriptByName()
@@ -88,7 +85,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("false", selenium.getText("logFileOwn"));
         verifyEquals("", selenium.getText("identifier=staticParam"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
-        selenium.click("link=Logout");
     }
 
 
@@ -99,8 +95,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
         // looks RapidServer.log file for "Hello from cron" entries
         String stored = newLogValidatorScript();
         newScript();
-        // Creates a scheduled script with attributes
 
+        // Creates a scheduled script with attributes
         selenium.type("name", "scheduled2");
         selenium.type("scriptFile", "cron");
         selenium.select("type", "label=Scheduled");

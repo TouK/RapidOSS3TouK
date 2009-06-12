@@ -37,6 +37,11 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
         _testAddPerformance (numberOfAddThreads, numberOfObjsPerThread, numberOfInitialObjects, expectedNumberOfAdds, modelName, willAddSameObjects);
     }
 
+    public void testUpdate()
+    {
+        def classesMap = intializeCompassWithSimpleObjects(CompositeDirectoryWrapperProvider.FILE_DIR_TYPE);
+    }
+
     public void testMultiThreadsWithAllAddingSameObjects()
     {
         def numberOfAddThreads = 20;
@@ -165,7 +170,7 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
         }
         else
         {
-            assertEquals(numberOfObjsPerThread*numberOfThreads, classesMap.model1.count() + classesMap.model3.count() + classesMap.model2.count());
+//            assertEquals(numberOfObjsPerThread*numberOfThreads, classesMap.model1.count() + classesMap.model3.count() + classesMap.model2.count());
         }
         def totalTimePerAdd = totalTime/(numberOfThreads * numberOfObjsPerThread)
         def numberOfInsertedObjectPerSec = 1/totalTimePerAdd;

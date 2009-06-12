@@ -41,17 +41,25 @@ class RapidInsightUiTestBuild extends Build {
 
     def build()
     {
-          buildDependentProjects()
-         startRI()
-        startSeleniumServer()
-         //startt()
-          clean()
+        try {
+         buildDependentProjects()
+         clean();
          setupRi();
          compileUiTestClasses();
-        def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-        runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
-         stopRI()
-        startSeleniumServer()
+
+         //stopSeleniumServer();
+
+         startRI();
+         startSeleniumServer();
+
+
+         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+        }
+        finally{
+            stopRI()
+            stopSeleniumServer()
+        }
     }
 
      def startSeleniumServer()
@@ -87,11 +95,15 @@ class RapidInsightUiTestBuild extends Build {
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
+        p.waitFor();
+
+
+
      }
 
      def stopRI()
      {
-       Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
+        Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
         p.waitFor();

@@ -3,10 +3,7 @@ package com.ifountain.rcmdb.test.util
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
 import com.thoughtworks.selenium.SeleniumException
-import org.openqa.selenium.server.RemoteControlConfiguration;
 import org.openqa.selenium.server.SeleniumServer;
-
-
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,6 +16,7 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static DefaultSelenium selenium;
     private static boolean start = true;
+   // private static SeleniumServer seleniumServer
 
     public static void suiteSetUp(browserString, url) {
 
@@ -26,25 +24,15 @@ class SeleniumTestCase extends SeleneseTestCase {
         selenium.start();
         selenium.setTimeout("30000");
 
+       // seleniumServer = new SeleniumServer()
+      //   seleniumServer.start();
+
+      
         System.addShutdownHook {
             selenium.stop();
         }
     }
 
-       public void timerThreadsWontBeTerminated() throws Exception {
-
-             RemoteControlConfiguration conf = new RemoteControlConfiguration();
-             conf.setPort( 4444 );
-             conf.setRetryTimeoutInSeconds(5);
-             conf.setReuseBrowserSessions( false );
-             conf.setTrustAllSSLCertificates( true );
-             conf.setTimeoutInSeconds( 20 );
-             
-                server = new SeleniumServer( conf );
-                server.start();
-
-
-     }
 
      void setUp(String url, String browserString) throws Exception {
 
@@ -52,7 +40,7 @@ class SeleniumTestCase extends SeleneseTestCase {
             start = false;
             suiteSetUp(browserString, url);
         }
-        for(int i=0; i < 10; i++)
+        for(int i=0; i < 12; i++)
         {
             try{
                 selenium.open(url);
@@ -61,7 +49,7 @@ class SeleniumTestCase extends SeleneseTestCase {
             }
             catch(SeleniumException e)
             {
-                if(i == 9)
+                if(i == 11)
                 {
                     throw e;
                 }

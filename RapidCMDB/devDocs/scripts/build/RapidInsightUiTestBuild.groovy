@@ -40,15 +40,38 @@ class RapidInsightUiTestBuild extends Build {
 
     def build()
     {
-         buildDependentProjects()
-         startRI()
-         clean()
-         setupRi();
-         compileUiTestClasses();
-         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
-         stopRI()
+       //  buildDependentProjects()
+        // startRI()
+        startSeleniumServer()
+         startt()
+       //  clean()
+        // setupRi();
+        // compileUiTestClasses();
+        def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+        runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+       //  stopRI()
+        startSeleniumServer()
     }
+
+     def startSeleniumServer()
+     {
+           ant.java(jar:"${env.third_party}/lib/selenium/selenium-server.jar", fork:"true", spawn:"true")
+     }
+
+      def stopSeleniumServer()
+      {
+          ant.target( name:"stop-server") {
+              ant.get(taskname:"selenium-shutdown", src:"http://localhost:4444/selenium-server/driver/?cmd=shutDown",
+                      dest:"result.txt", ignoreerrors:"true")
+              ant.echo(taskname:"selenium-shutdown", message:"DGF Errors during shutdown are expected")
+          }
+     }
+
+    def startt()
+    {
+        Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
+    }
+      
 
      def startRI()
      {
@@ -59,8 +82,6 @@ class RapidInsightUiTestBuild extends Build {
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
-        p.waitFor();
-
      }
 
      def stopRI()
@@ -125,7 +146,7 @@ class RapidInsightUiTestBuild extends Build {
 
     def runTest(String testClassDir, List classPaths, String outputXmlDir, String outputXmlFile) {
         //ant.echo(message: "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
-        ant.delete(dir: outputXmlDir);
+       // ant.delete(dir: outputXmlDir);
         ant.mkdir(dir: outputXmlDir);
         ant.junit(printsummary: "yes", haltonfailure: "no", fork: "false", showoutput: "true") {
             ant.classpath

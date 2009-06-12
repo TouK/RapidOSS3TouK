@@ -203,13 +203,6 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
             assertEquals(manager.getOperationFile().path, fex.getMessage());
         }
         assertEquals ("if no operation class exist ${AbstractDomainOperation.name} should be returned", AbstractDomainOperation.class.name, manager.getOperationClass().name);
-
-        Map methods = manager.getOperationClassMethods();
-        def expectedMethods = ["add", "remove", "update", "addRelation", "removeRelation", "addUnique", "removeAll"]
-        expectedMethods.each{
-            assertTrue (methods.containsKey(it));    
-        }
-
     }
 
 

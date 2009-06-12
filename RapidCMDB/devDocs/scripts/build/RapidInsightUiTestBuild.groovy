@@ -42,6 +42,8 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
+         startSeleniumServer();
+
          buildDependentProjects()
          clean();
          setupRi();
@@ -50,11 +52,8 @@ class RapidInsightUiTestBuild extends Build {
          //stopSeleniumServer();
 
          startRI();
-         startSeleniumServer();
-         //wait for selenium server start
-         Thread.sleep(10);
 
-
+         
          def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
          runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }

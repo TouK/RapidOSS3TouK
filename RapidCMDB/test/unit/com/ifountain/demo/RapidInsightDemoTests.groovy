@@ -27,12 +27,12 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
         def con=getConnection();
 
         def nonLoginResponse=getUrlResponse(con,'',[:]);
-        assertTrue(nonLoginResponse.indexOf('auth/signIn')>0);
-        assertFalse(nonLoginResponse.indexOf('Exception')>0);
+        assertTrue("already signed in",nonLoginResponse.indexOf('auth/signIn')>0);
+        assertFalse("base url have exception",nonLoginResponse.indexOf('Exception')>0);
 
         def loginResponse=getUrlResponseWithCredentials(con,'auth/signIn',[:]);
-        assertFalse(loginResponse.indexOf('auth/signIn')>0);
-        assertFalse(loginResponse.indexOf('Exception')>0);
+        assertFalse("not signed in",loginResponse.indexOf('auth/signIn')>0);
+        assertFalse("singin url have exception",loginResponse.indexOf('Exception')>0);
 
         //since we are logged in we no longer get request with credentials
         def urlsToCheck=[:];
@@ -50,10 +50,10 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
         urlsToCheck.each{ url , keyToCheck ->
               def urlResponse=getUrlResponse(con,url,[:]);
               //println urlResponse
-              
-              assertFalse(urlResponse.indexOf('auth/signIn')>0);
-              assertFalse(urlResponse.indexOf('Exception')>0);
-              assertTrue(urlResponse.indexOf(keyToCheck)>=0);
+
+              assertFalse("${url} not signed in",urlResponse.indexOf('auth/signIn')>0);
+              assertFalse("${url} have exception",urlResponse.indexOf('Exception')>0);
+              assertTrue("${url} does not contain ${keyToCheck}",urlResponse.indexOf(keyToCheck)>=0);
         }
 
     }

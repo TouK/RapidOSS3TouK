@@ -44,9 +44,9 @@ class RapidInsightUiTestBuild extends Build {
         try {
 
           //startSeleniumServer();
-           buildDependentProjects()
-           clean();
-           setupRi();
+          // buildDependentProjects()
+         //  clean();
+         // setupRi();
            compileUiTestClasses();
 
          //stopSeleniumServer();
@@ -85,7 +85,7 @@ class RapidInsightUiTestBuild extends Build {
        Process  p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute();
         p.waitFor()
 
-        for(int i=0; i <10; i++)
+        for(int i=0; i <6; i++)
         {
             println("u")
             try{
@@ -96,26 +96,23 @@ class RapidInsightUiTestBuild extends Build {
              }
             catch(ConnectException e)
             {
-                if(i == 9)
+                if(i == 5)
                 {
                     throw e;
                 }
             }
         }
 
-         println(content)
     }
       
 
      def startRI()
      {
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
-        p.consumeProcessOutput();
-        p.consumeProcessErrorStream(System.out);
+        p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
-        p.consumeProcessOutput();
-        p.consumeProcessErrorStream(System.out);
+        p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
         for(int i=0; i <10; i++)

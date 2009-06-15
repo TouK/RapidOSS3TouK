@@ -70,18 +70,18 @@ class RapidInsightUiTestBuild extends Build {
             if(RI_WINDOWS_OS)
                 startRIWindows();
 
-            startSeleniumServer();
+           // startSeleniumServer();
 
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally {
-            if(RI_UNIX_OS)
-                stopRIUnix();
-            if(RI_WINDOWS_OS)
-                stopRIWindows();
+           // if(RI_UNIX_OS)
+           //     stopRIUnix();
+           // if(RI_WINDOWS_OS)
+                //stopRIWindows();
 
-            stopSeleniumServer()
+          //  stopSeleniumServer()
         }
     }
 

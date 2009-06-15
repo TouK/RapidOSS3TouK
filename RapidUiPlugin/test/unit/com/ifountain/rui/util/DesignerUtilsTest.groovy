@@ -255,7 +255,8 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
         def keyPropList = [prop1];
         String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, modelProps, keyPropList, [])
         def modelClass = gcl.parseClass (modelString);
-        SimpleDateFormat df = new SimpleDateFormat("yyyy MM")
+        def dateFormatStr = "yyyy-MM-dd HH:mm:ss.SSS";
+        SimpleDateFormat df = new SimpleDateFormat(dateFormatStr)
         modelClass.metaClass.'static'.metaData = {
             return [
                 designerType: "model1",
@@ -267,7 +268,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
                 ]
             ];
         };
-        RapidConvertUtils.getInstance().register(new DateConverter("yyyy MM"), Date.class)
+        RapidConvertUtils.getInstance().register(new DateConverter(dateFormatStr), Date.class)
         initialize ([modelClass], [], false);
         def model1Instance = modelClass.'add'(prop1:new Date(), prop2:"prop2Value", prop3:0, prop4:0);
 

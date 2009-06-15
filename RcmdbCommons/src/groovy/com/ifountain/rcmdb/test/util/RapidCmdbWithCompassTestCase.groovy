@@ -53,7 +53,7 @@ public class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
 
     def registerDefaultConverters()
     {
-        def dateFormat = "yyyy-dd-MM HH:mm:ss";
+        def dateFormat = "yyyy-dd-MM HH:mm:ss.SSS";
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)

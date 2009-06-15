@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.domain.cache
 import org.apache.log4j.Logger
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import java.util.Map.Entry
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -60,8 +61,22 @@ public class IdCache {
 
     private static String getCacheString(Class domainClass, Map keyMap)
     {
+        def keyValues = [];
+        keyMap.values().each{
+            if(Date.isInstance(it))
+            {
+                def conv = RapidConvertUtils.getInstance().lookup(Date)
+                if(conv == null) throw new RuntimeException("No converter defined for date");
+                def value = conv.convert(String, it)
+                keyValues.add(value);
+            }
+            else
+            {
+                keyValues.add(it);                
+            }
+        }
         def rootClass = domainClass.getRootClass();
-        return rootClass.name+keyMap.values().join("_");
+        return rootClass.name+keyValues.join("_");
     }
 
     private static void checkSize()

@@ -51,6 +51,35 @@ class DateConverterTest extends RapidCmdbTestCase{
         assertEquals (formatString, converter.format);
     }
 
+    public void testConvertToString()
+    {
+        String formatString = "yyyy-dd-MM";
+        DateConverter converter = new DateConverter(formatString);
+        def df = new SimpleDateFormat(formatString)
+        def date = new Date(System.currentTimeMillis()+10000);
+        def returnedStringDate = converter.convert(String.class, date)
+        assertEquals (df.format(date), returnedStringDate);
+    }
+
+    public void testConvertToStringThrowsExceptionIfValueIsNotADateObject()
+    {
+        String formatString = "yyyy-dd-MM";
+        DateConverter converter = new DateConverter(formatString);
+        try{
+            converter.convert(String.class, "invalid date")
+            fail("Should throw exception since value is noty a date object");
+        }
+        catch(org.apache.commons.beanutils.ConversionException ex)
+        {
+        }
+    }
+
+    public void testConvertToStringWithNullObject()
+    {
+        String formatString = "yyyy-dd-MM";
+        DateConverter converter = new DateConverter(formatString);
+        assertNull (converter.convert(String.class, null));
+    }
     public void testConvertWithNull()
     {
         String formatString = "yyyy-dd-MM";

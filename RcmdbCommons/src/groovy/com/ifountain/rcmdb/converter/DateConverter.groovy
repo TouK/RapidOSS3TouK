@@ -39,15 +39,23 @@ class DateConverter implements Converter{
     }
     public Object convert(Class aClass, Object o) {
         if(o == null) return null;
-        if(o instanceof Date) return o;
-        if(String.valueOf(o) == "") return null;
-        try
+        if(aClass == String)
         {
-            return formater.parse(o); //To change body of implemented methods use File | Settings | File Templates.
+            if(o instanceof Date) return formater.format(o);
+            throw new ConversionException ("Value is not a date object") ;
         }
-        catch(java.text.ParseException e)
+        else
         {
-            throw new ConversionException (e.getMessage()) ;          
+            if(o instanceof Date) return o;
+            if(String.valueOf(o) == "") return null;
+            try
+            {
+                return formater.parse(o); //To change body of implemented methods use File | Settings | File Templates.
+            }
+            catch(java.text.ParseException e)
+            {
+                throw new ConversionException (e.getMessage()) ;
+            }
         }
     }
 

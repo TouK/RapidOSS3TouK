@@ -28,6 +28,21 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
     }
 
 
+    public void testAddMethodWithDateKeyProperty()
+    {
+        Map classes = initializePluginAndClasses([:], true);
+        def datePropValue = new Date();
+        def addedObjectProps = [dateProp:datePropValue]
+        def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+        def objectInRepo = classes.modelWithDateKeyProp.search("id:${addedObject.id}").results[0];
+        assertNotNull (objectInRepo);
+        
+        addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+    }
+
+
     public void testAddMethods()
     {
         Map classes = initializePluginAndClasses();
@@ -269,11 +284,14 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def childModelName = "ChildModel";
         def childModel2Name = "ChildModel2";
         def relatedModelName = "RelatedModel";
+        def modelWithDateKeyPropName = "ModelWithDateKey"
         def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
+        def dateProp = [name: "dateProp", type: ModelGenerator.DATE_TYPE];
         def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE, blank: false];
         def rel1 = [name: "rel1", reverseName: "revrel1", toModel: relatedModelName, cardinality: ModelGenerator.RELATION_TYPE_MANY, reverseCardinality: ModelGenerator.RELATION_TYPE_MANY, isOwner: true];
         def revrel1 = [name: "revrel1", reverseName: "rel1", toModel: childModelName, cardinality: ModelGenerator.RELATION_TYPE_MANY, reverseCardinality: ModelGenerator.RELATION_TYPE_MANY, isOwner: false];
 
+        def modelWithDateKeyPropMetaData = [name: modelWithDateKeyPropName]
         def parentModelMetaProps = [name: parentModelName]
         def childModelMetaProps = [name: childModelName, parentModel: parentModelName]
         def childModel2MetaProps = [name: childModel2Name, parentModel: parentModelName]
@@ -284,13 +302,15 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1], additionalParts["child"])
         String childModel2String = ModelGenerationTestUtils.getModelText(childModel2MetaProps, [], [], [rel1], additionalParts["child2"])
         String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1], additionalParts["related"])
-        this.gcl.parseClass(parentModelString + childModelString + relatedModelString + childModel2String);
+        String modelWithDateKeyPropString = ModelGenerationTestUtils.getModelText(modelWithDateKeyPropMetaData, [dateProp], [dateProp], [])
+        this.gcl.parseClass(parentModelString + childModelString + relatedModelString + childModel2String+modelWithDateKeyPropString);
         Class parentModelClass = this.gcl.loadClass(parentModelName);
         Class childModelClass = this.gcl.loadClass(childModelName);
         Class childModel2Class = this.gcl.loadClass(childModel2Name);
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
-        initialize([parentModelClass, childModelClass, relatedModelClass, childModel2Class], [], isPersisted)
-        return [parent: parentModelClass, child: childModelClass, related: relatedModelClass, child2: childModel2Class];
+        Class modelWithDateKeyPropClass = this.gcl.loadClass(modelWithDateKeyPropName);
+        initialize([parentModelClass, childModelClass, relatedModelClass, childModel2Class, modelWithDateKeyPropClass], [], isPersisted)
+        return [parent: parentModelClass, child: childModelClass, related: relatedModelClass, child2: childModel2Class, modelWithDateKeyProp:modelWithDateKeyPropClass];
     }
 
 }

@@ -114,9 +114,8 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        List list = [];
-        list.add("./${env.distribution}/RapidServer".toString());
-        File dir = new File("RapidSuite")
+        def list = ["./${env.distribution}/RapidServer"]
+        File dir = new File("${env.distribution}/RapidServer/RapidSuite")
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute(list, dir);
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();

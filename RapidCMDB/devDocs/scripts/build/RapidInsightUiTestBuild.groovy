@@ -13,7 +13,7 @@ class RapidInsightUiTestBuild extends Build {
     static def buildOption;
     boolean RI_UNIX_OS, RI_WINDOWS_OS
 
-    def setOption(options){
+    def setOption(options) {
         if (options != null) {
             buildOption = options;
             RI_UNIX_OS = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
@@ -42,14 +42,14 @@ class RapidInsightUiTestBuild extends Build {
         return options;
     }
 
- 
+
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
         testBuild.build();
     }
 
-    def findOs(){
+    def findOs() {
         def options = getTestOptions();
         setOption(options);
     }
@@ -59,29 +59,29 @@ class RapidInsightUiTestBuild extends Build {
     {
         try {
 
-            // buildDependentProjects()
-           //  clean();
-            // setupRi();
-            // compileUiTestClasses();
+            buildDependentProjects()
+            clean();
+            setupRi();
+            compileUiTestClasses();
 
-//           if(RI_UNIX_OS)
-//               startRIUnix();
-//
-//            if(RI_WINDOWS_OS)
-//                startRIWindows();
+            if (RI_UNIX_OS)
+                startRIUnix();
+
+            if (RI_WINDOWS_OS)
+                startRIWindows();
 
             startSeleniumServer();
 
-//            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-//            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults", "testResults")
         }
         finally {
-           // if(RI_UNIX_OS)
-           //     stopRIUnix();
-           // if(RI_WINDOWS_OS)
-                //stopRIWindows();
+            if (RI_UNIX_OS)
+                stopRIUnix();
+            if (RI_WINDOWS_OS)
+                stopRIWindows();
 
-          //  stopSeleniumServer()
+            stopSeleniumServer()
         }
     }
 
@@ -115,7 +115,7 @@ class RapidInsightUiTestBuild extends Build {
                 p.sleep(60000)
                 def content = url.getText()
                 break;
-              }
+            }
             catch (ConnectException e)
             {
                 if (i == 5)
@@ -143,7 +143,7 @@ class RapidInsightUiTestBuild extends Build {
         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
         def envVariables = [];
-        System.getenv().each{String key, String value->
+        System.getenv().each {String key, String value ->
             envVariables.add("${key}=${value}");
         }
         envVariables.add("RS_HOME=..")
@@ -182,7 +182,7 @@ class RapidInsightUiTestBuild extends Build {
         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
         def envVariables = [];
-        System.getenv().each{String key, String value->
+        System.getenv().each {String key, String value ->
             envVariables.add("${key}=${value}");
         }
         envVariables.add("RS_HOME=..")
@@ -265,27 +265,27 @@ class RapidInsightUiTestBuild extends Build {
 
             ant.formatter(type: "xml");
         }
-        //   ant.junitreport( todir:"${env.distribution}/uiTestResults"){
-        //         ant.fileset(dir:"${env.distribution}/uiTestResults") {
-        //                       ant.include(name:"TEST-*.xml");
-        //                  }
-        //          ant.report(format:"frames",todir:"${env.distribution}/uiTestResults/html")
-        // }
+        ant.junitreport(todir: "${env.distribution}/uiTestResults") {
+            ant.fileset(dir: "${env.distribution}/uiTestResults") {
+                ant.include(name: "TEST-*.xml");
+            }
+            ant.report(format: "frames", todir: "${env.distribution}/uiTestResults/html")
+        }
 
-       // ant.junit(printsummary: "yes", haltonfailure: "no") {
-         //   ant.batchtest(fork: "yes", todir: "${env.distribution}/uiTestResults") {
-           //     ant.fileset(dir: "${env.distribution}/uiTestResults") {
-           //         ant.include(name: "TEST-*.xml");
-           //     }
-          //  }
-       // }
-            //   ant.junit(printsummary: "yes", haltonfailure: "no") {
-                   
-          //     }
-       // <junit printsummary="yes" fork="yes" haltonfailure="yes">
- // <formatter type="plain"/>
- // <test name="my.test.TestCase"/>
-//</junit>
+        // ant.junit(printsummary: "yes", haltonfailure: "no") {
+        //   ant.batchtest(fork: "yes", todir: "${env.distribution}/uiTestResults") {
+        //     ant.fileset(dir: "${env.distribution}/uiTestResults") {
+        //         ant.include(name: "TEST-*.xml");
+        //     }
+        //  }
+        // }
+        //   ant.junit(printsummary: "yes", haltonfailure: "no") {
+
+        //     }
+        // <junit printsummary="yes" fork="yes" haltonfailure="yes">
+        // <formatter type="plain"/>
+        // <test name="my.test.TestCase"/>
+        //</junit>
 
     }
 

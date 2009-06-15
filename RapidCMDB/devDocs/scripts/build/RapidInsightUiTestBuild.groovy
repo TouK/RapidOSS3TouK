@@ -10,8 +10,16 @@ class RapidInsightUiTestBuild extends Build {
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
     def riZipFileName;
+    static def buildOption;
+    boolean RI_UNIX_OS, RI_WINDOWS_OS
 
-
+    def setOption(options){
+        if (options != null) {
+            buildOption = options;
+            RI_UNIX_OS = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
+            RI_WINDOWS_OS = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
+        }
+    }
 
     static def getTestOptions() {
         Properties options = new Properties();
@@ -34,31 +42,45 @@ class RapidInsightUiTestBuild extends Build {
         return options;
     }
 
+ 
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
+        testBuild.findOs()
         testBuild.build();
     }
+
+    def findOs(){
+        def options = getTestOptions();
+        setOption(options);
+    }
+
 
     def build()
     {
         try {
 
-            //startSeleniumServer();
-            // buildDependentProjects()
-            //   clean();
-            //    setupRi();
-            // compileUiTestClasses();
+             buildDependentProjects()
+             clean();
+             setupRi();
+             compileUiTestClasses();
 
-            //stopSeleniumServer();
-            //  startt()
-            startRI();
+           if(RI_UNIX_OS)
+               startRIUnix();
 
-            // def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-            // runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+            if(RI_WINDOWS_OS)
+                startRIWindows();
+
+            startSeleniumServer();
+            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally {
-            // stopRI()
-            //  stopSeleniumServer()
+            //if(RI_UNIX_OS)
+                //stopRIUnix();
+           // if(RI_WINDOWS_OS)
+             //   stopRIWindows();
+
+            stopSeleniumServer()
         }
     }
 
@@ -78,24 +100,14 @@ class RapidInsightUiTestBuild extends Build {
     }
 
 
-    def startt()
+    def startRIWindows()
     {
-        //  Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
-        // String[] test = new String[1]
-        //   test[0]  ="C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite"
-        //def list = ["./${env.distribution}/RapidServer"]
-        //Process p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute(list, null);
-        //p.waitFor()
-
         def list = ["./${env.distribution}/RapidServer"]
         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
-        Process p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute(['JAVA_HOME=list'], dir);
+        Process p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute();
 
-
-
-
-        for (int i = 0; i < 0; i++)
+        for (int i = 0; i < 6; i++)
         {
             println("u")
             try {
@@ -115,7 +127,7 @@ class RapidInsightUiTestBuild extends Build {
     }
 
 
-    def startRI()
+    def startRIUnix()
     {
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
         p.consumeProcessOutput(System.out, System.out);
@@ -135,9 +147,8 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        for (int i = 0; i < 0; i++)
+        for (int i = 0; i < 6; i++)
         {
-            println("u")
             try {
                 def url = new URL("http://localhost:12222/RapidSuite")
                 p.sleep(60000)
@@ -146,7 +157,7 @@ class RapidInsightUiTestBuild extends Build {
             }
             catch (ConnectException e)
             {
-                if (i == 0)
+                if (i == 5)
                 {
                     throw e;
                 }

@@ -109,24 +109,24 @@ class RapidInsightUiTestBuild extends Build {
      def startRI()
      {
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
-        p.consumeProcessOutput(System.out, System.out);
+       // p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
+        p = "${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        for(int i=0; i <10; i++)
+        for(int i=0; i <1; i++)
         {
             println("u")
             try{
                def url = new URL("http://localhost:12222/RapidSuite")
-                p.sleep(60000)
+                p.sleep(10000)
               def  content = url.getText()
                 break;
              }
             catch(ConnectException e)
             {
-                if(i == 9)
+                if(i == 0)
                 {
                     throw e;
                 }

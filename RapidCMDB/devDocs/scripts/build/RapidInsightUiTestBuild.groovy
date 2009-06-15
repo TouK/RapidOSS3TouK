@@ -71,6 +71,7 @@ class RapidInsightUiTestBuild extends Build {
                 startRIWindows();
 
             startSeleniumServer();
+
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
@@ -109,13 +110,12 @@ class RapidInsightUiTestBuild extends Build {
 
         for (int i = 0; i < 6; i++)
         {
-            println("u")
             try {
                 def url = new URL("http://localhost:12222/RapidSuite")
                 p.sleep(60000)
                 def content = url.getText()
                 break;
-            }
+              }
             catch (ConnectException e)
             {
                 if (i == 5)
@@ -244,8 +244,7 @@ class RapidInsightUiTestBuild extends Build {
     }
 
     def runTest(String testClassDir, List classPaths, String outputXmlDir, String outputXmlFile) {
-        ant.echo(message: "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
-        ant.delete(dir: outputXmlDir);
+        //ant.delete(dir: outputXmlDir);
         ant.mkdir(dir: outputXmlDir);
         ant.junit(printsummary: "yes", haltonfailure: "no", fork: "false", showoutput: "true") {
             ant.classpath

@@ -298,6 +298,31 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(3, model.count);
     }
 
+    public void testSearchWithDatePropertiesAsXml() {
+        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def datePropValues = [];
+        10.times {
+            datePropValues.add(new Date(System.currentTimeMillis() + it * 1000));
+        }
+
+        datePropValues.each {
+            RsEventJournal.add(rsTime: it);
+        }
+        def controller = new RsBrowserController();
+        def params = [:]
+        params["max"] = "10";
+        params["domain"] = "rsEventJournal"
+        params["query"] = "alias:*"
+        params["format"] = "xml"
+        controller._search(params);
+        def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        def objects = objectsXml.Object;
+        assertEquals(10, objects.size());
+        for (int i = 0; i < datePropValues.size(); i++) {
+            assertEquals(RapidConvertUtils.getInstance().lookup(String).convert(String, datePropValues[i]), objects[i].@rsTime.toString());
+        }
+    }
+
     void testSearchWithUserSearchQuery() {
         def username = "newuser"
         Connection.add(name: "a1")

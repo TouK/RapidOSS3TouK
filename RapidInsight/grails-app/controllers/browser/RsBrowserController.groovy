@@ -252,6 +252,7 @@ class RsBrowserController {
                     def sortOrder = 0;
                     def sw = new StringWriter();
                     def builder = new MarkupBuilder(sw);
+                    def stringConverter = RapidConvertUtils.getInstance().lookup(String)
                     builder.Objects(total: searchResults.total, offset: searchResults.offset) {
                         searchResults.results.each {result ->
                             def className = result.getClass().name;
@@ -265,7 +266,7 @@ class RsBrowserController {
                             def props = ["id": result.id];
                             grailsObjectProps.each {resultProperty ->
                                 if (resultProperty.name != "id") {
-                                    props[resultProperty.name] = result[resultProperty.name];
+                                    props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
                                 }
                             }
                             props.put("rsAlias", className)

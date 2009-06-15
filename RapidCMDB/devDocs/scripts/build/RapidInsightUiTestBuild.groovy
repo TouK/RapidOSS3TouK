@@ -130,7 +130,7 @@ class RapidInsightUiTestBuild extends Build {
         }
         envVariables.add("RS_HOME=${env.distribution}/RapidServer")
 
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(envVariables, dir);
+        p = "./rs.sh -start".execute(envVariables, dir);
 
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();

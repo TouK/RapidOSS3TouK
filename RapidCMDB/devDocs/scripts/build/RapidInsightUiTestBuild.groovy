@@ -43,14 +43,14 @@ class RapidInsightUiTestBuild extends Build {
     {
         try {
 
-         //startSeleniumServer();
-         // buildDependentProjects()
-         //   clean();
-         //    setupRi();
-         //  compileUiTestClasses();
+            //startSeleniumServer();
+            // buildDependentProjects()
+            //   clean();
+            //    setupRi();
+            // compileUiTestClasses();
 
             //stopSeleniumServer();
-           //  startt()
+            //  startt()
             startRI();
 
             // def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
@@ -88,9 +88,9 @@ class RapidInsightUiTestBuild extends Build {
         //p.waitFor()
 
         def list = ["./${env.distribution}/RapidServer"]
-               File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
-          Process    p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute(['JAVA_HOME=list'], dir);
+        Process p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute(['JAVA_HOME=list'], dir);
 
 
 
@@ -121,11 +121,17 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-          def list = ["./${env.distribution}/RapidServer"]
-         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+        def list = ["./${env.distribution}/RapidServer"]
+        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(['JAVA_HOME=list'], dir);
-        
+        def envVariables = [];
+        System.getenv().each{String key, String value->
+            envVariables.add("${key}=${value}");
+        }
+        envVariables["RS_HOME"] = "${env.distribution}/RapidServer";
+
+        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(envVariables, dir);
+
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 

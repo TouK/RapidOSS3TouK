@@ -3,10 +3,12 @@ package browser
 import auth.RsUser
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import connection.Connection
+import connection.SnmpConnection
 import datasource.BaseDatasource
 import search.SearchQuery
 import search.SearchQueryGroup
-import connection.SnmpConnection
+import com.ifountain.rcmdb.converter.RapidConvertUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,9 +19,12 @@ import connection.SnmpConnection
 */
 class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
+    def RsEventJournal;
     void setUp() throws Exception {
         super.setUp();
+        RsEventJournal = ApplicationHolder.application.classLoader.loadClass("RsEventJournal")
         BaseDatasource.removeAll();
+        RsEventJournal.removeAll();
         Connection.removeAll();
         SearchQuery.removeAll();
         SearchQueryGroup.removeAll();
@@ -96,6 +101,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
     }
 
+
     void testListDomainWithAllProperties() {
 
         def expectedProperties = BaseDatasource.getPropertiesList().findAll {it.name != "id" && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
@@ -118,6 +124,31 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(expectedProperties.size(), propertyList.size())
         assertEquals(10, model.count)
 
+    }
+
+    public void testListDomainWithDatePropertiesAsXml() {
+        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def datePropValues = [];
+        10.times {
+            datePropValues.add(new Date(System.currentTimeMillis() + it * 1000));
+        }
+
+        datePropValues.each {
+            RsEventJournal.add(rsTime: it);
+        }
+        def controller = new RsBrowserController();
+        controller.params["max"] = "10";
+        controller.params["sort"] = "id"
+        controller.params["order"] = "asc"
+        controller.params["domain"] = "rsEventJournal"
+        controller.params["format"] = "xml"
+        controller.listDomain();
+        def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        def objects = objectsXml.Object;
+        assertEquals(10, objects.size());
+        for (int i = 0; i < datePropValues.size(); i++) {
+            assertEquals(RapidConvertUtils.getInstance().lookup(String).convert(String, datePropValues[i]), objects[i].@rsTime.toString());
+        }
     }
 
     void testListDomainWithAllPropertiesWithXml() {
@@ -163,7 +194,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testListDomainWithOnlyKeyPropertiesWithXml() {
-       for (i in 0..9) {
+        for (i in 0..9) {
             Connection.add(name: "conn${i}");
         }
         def controller = new RsBrowserController();
@@ -182,8 +213,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(BaseDatasource.keySet().size() + 1, attributes.size()) // id is included if not in keyset
     }
 
-    void testShow(){
-        def connection = Connection.add(name:"conn1");
+    void testShow() {
+        def connection = Connection.add(name: "conn1");
         assertFalse(connection.hasErrors())
 
         def controller = new RsBrowserController();
@@ -196,8 +227,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def props = Connection.getPropertiesList();
         assertEquals(props.size(), propertiesList.size());
-        props.eachWithIndex { p, i ->
-             assertEquals(p.name, propertiesList[i].name);
+        props.eachWithIndex {p, i ->
+            assertEquals(p.name, propertiesList[i].name);
         }
 
         def keys = model.keys;
@@ -210,8 +241,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(connection.id, model.domainObject.id)
     }
 
-    void testShowWithXml(){
-        def connection = Connection.add(name:"conn1");
+    void testShowWithXml() {
+        def connection = Connection.add(name: "conn1");
         assertFalse(connection.hasErrors())
 
         def controller = new RsBrowserController();
@@ -219,37 +250,37 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         controller.params["domain"] = "connection"
         controller.params["format"] = "xml"
         controller.show();
-        
-        def props = Connection.getPropertiesList().findAll{!it.isKey && it.name !='id' && !(it.isRelation && (it.isOneToMany() || it.isManyToMany()))};
+
+        def props = Connection.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !(it.isRelation && (it.isOneToMany() || it.isManyToMany()))};
         def keySet = Connection.keySet();
         def objectXml = new XmlSlurper().parseText(controller.response.contentAsString);
 
-        def allNodes = objectXml.depthFirst().collect{ it }
-        assertEquals((props.size() + keySet.size() + 1), allNodes.size() -1) //all nodes includes the root node
+        def allNodes = objectXml.depthFirst().collect {it}
+        assertEquals((props.size() + keySet.size() + 1), allNodes.size() - 1) //all nodes includes the root node
 
         assertEquals("id", allNodes[1].name())
         assertEquals("${connection.id}", allNodes[1].text())
         keySet.eachWithIndex {p, i ->
-            assertEquals(p.name, allNodes[i+2].name())
-            assertEquals("${connection[p.name]}", allNodes[i+2].text())
+            assertEquals(p.name, allNodes[i + 2].name())
+            assertEquals("${connection[p.name]}", allNodes[i + 2].text())
         }
 
         props.eachWithIndex {p, i ->
-           assertEquals(p.name, allNodes[keySet.size() + i+2].name())
-            assertEquals("${connection[p.name]}", allNodes[keySet.size()+i+2].text()) 
+            assertEquals(p.name, allNodes[keySet.size() + i + 2].name())
+            assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 2].text())
         }
     }
 
-    void testSearchWithPublicSearchQuery(){
-        Connection.add(name:"a1")       
-        Connection.add(name:"a2")
-        Connection.add(name:"a3")
-        Connection.add(name:"b1")
-        Connection.add(name:"b2")
-        Connection.add(name:"b3");
-        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:RsUser.RSADMIN, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:RsUser.RSADMIN, isPublic:true, sortProperty:"name", type:"connection",
-                sortOrder:"desc", query:"name:a*", group:searchQueryGroup);
+    void testSearchWithPublicSearchQuery() {
+        Connection.add(name: "a1")
+        Connection.add(name: "a2")
+        Connection.add(name: "a3")
+        Connection.add(name: "b1")
+        Connection.add(name: "b2")
+        Connection.add(name: "b3");
+        def searchQueryGroup = SearchQueryGroup.add(name: "querygroup", username: RsUser.RSADMIN, type: "connection")
+        def searchQuery = SearchQuery.add(name: "myConnections", username: RsUser.RSADMIN, isPublic: true, sortProperty: "name", type: "connection",
+                sortOrder: "desc", query: "name:a*", group: searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 
         def controller = new RsBrowserController();
@@ -267,17 +298,17 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(3, model.count);
     }
 
-    void testSearchWithUserSearchQuery(){
+    void testSearchWithUserSearchQuery() {
         def username = "newuser"
-        Connection.add(name:"a1")
-        Connection.add(name:"a2")
-        Connection.add(name:"a3")
-        Connection.add(name:"b1")
-        Connection.add(name:"b2")
-        Connection.add(name:"b3");
-        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id", type:"connection",
-                sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
+        Connection.add(name: "a1")
+        Connection.add(name: "a2")
+        Connection.add(name: "a3")
+        Connection.add(name: "b1")
+        Connection.add(name: "b2")
+        Connection.add(name: "b3");
+        def searchQueryGroup = SearchQueryGroup.add(name: "querygroup", username: username, type: "connection")
+        def searchQuery = SearchQuery.add(name: "myConnections", username: username, sortProperty: "id", type: "connection",
+                sortOrder: "asc", query: "name:b*", group: searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 
         def controller = new RsBrowserController();
@@ -295,20 +326,20 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(2, objectList.size());
         assertEquals("b3", objectList[0].name)
         assertEquals("b2", objectList[1].name)
-        assertEquals(3, model.count);      
+        assertEquals(3, model.count);
     }
 
-    void testSearchWithOpenQuery(){
+    void testSearchWithOpenQuery() {
         def username = "newuser"
-        Connection.add(name:"a1")
-        Connection.add(name:"a2")
-        Connection.add(name:"a3")
-        Connection.add(name:"b1")
-        Connection.add(name:"b2")
-        Connection.add(name:"b3");
-        def searchQueryGroup = SearchQueryGroup.add(name:"querygroup", username:username, type:"connection")
-        def searchQuery = SearchQuery.add(name:"myConnections", username:username, sortProperty:"id",  type:"connection",
-                sortOrder:"asc", query:"name:b*", group:searchQueryGroup);
+        Connection.add(name: "a1")
+        Connection.add(name: "a2")
+        Connection.add(name: "a3")
+        Connection.add(name: "b1")
+        Connection.add(name: "b2")
+        Connection.add(name: "b3");
+        def searchQueryGroup = SearchQueryGroup.add(name: "querygroup", username: username, type: "connection")
+        def searchQuery = SearchQuery.add(name: "myConnections", username: username, sortProperty: "id", type: "connection",
+                sortOrder: "asc", query: "name:b*", group: searchQueryGroup);
         assertFalse(searchQuery.hasErrors())
 
         def controller = new RsBrowserController();
@@ -317,7 +348,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         params["domain"] = "connection"
         params["max"] = "2"
         params["searchQuery"] = searchQuery.name;
-        params["query"] = "alias:*";   //if query is given does not look given searchQuery
+        params["query"] = "alias:*"; //if query is given does not look given searchQuery
         params["sort"] = "name"; //if sort property is given it overrides searchQuery sortProperty
         params["order"] = "asc";
         controller._search(params);
@@ -331,19 +362,19 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
 
-    void testSearchWithXml(){
-        Connection.add(name:"a1")
-        Connection.add(name:"a2")
-        Connection.add(name:"a3")
-        SnmpConnection.add(name:"b1", host:"0.0.0.0")
-        SnmpConnection.add(name:"b2", host:"0.0.0.0")
-        SnmpConnection.add(name:"b3", host:"0.0.0.0");
+    void testSearchWithXml() {
+        Connection.add(name: "a1")
+        Connection.add(name: "a2")
+        Connection.add(name: "a3")
+        SnmpConnection.add(name: "b1", host: "0.0.0.0")
+        SnmpConnection.add(name: "b2", host: "0.0.0.0")
+        SnmpConnection.add(name: "b3", host: "0.0.0.0");
 
         def controller = new RsBrowserController();
         def params = [:]
         params["domain"] = "connection"
         params["query"] = "alias:*";
-        params["sort"] = "name"; 
+        params["sort"] = "name";
         params["order"] = "asc";
         params["format"] = "xml";
         controller._search(params);
@@ -351,21 +382,21 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
         def objects = objectsXml.Object;
         assertEquals(6, objects.size());
-        for(i in 0..2){
+        for (i in 0..2) {
             def object = objects[i];
-            assertEquals("a${i+1}", object.@name.toString())
+            assertEquals("a${i + 1}", object.@name.toString())
             assertEquals(Connection.class.name, object.@rsAlias.toString())
             assertEquals("${i}", object.@sortOrder.toString())
         }
 
-        for(i in 3..5){
-           def object = objects[i];
-           assertEquals("b${i-2}", object.@name.toString())
-           assertEquals(SnmpConnection.class.name, object.@rsAlias.toString())
-           assertEquals("${i}", object.@sortOrder.toString()) 
-           assertEquals("0.0.0.0", object.@host.toString()) 
+        for (i in 3..5) {
+            def object = objects[i];
+            assertEquals("b${i - 2}", object.@name.toString())
+            assertEquals(SnmpConnection.class.name, object.@rsAlias.toString())
+            assertEquals("${i}", object.@sortOrder.toString())
+            assertEquals("0.0.0.0", object.@host.toString())
         }
-        
+
     }
 
 }

@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import search.SearchQuery
 import auth.RsUser
 import groovy.xml.MarkupBuilder
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -81,6 +82,7 @@ class RsBrowserController {
     }
 
     def listDomain = {
+        def stringConverter = RapidConvertUtils.getInstance().lookup(String)
         if (params.max == null) {
             params.max = 20;
         }
@@ -97,7 +99,7 @@ class RsBrowserController {
                     objectList.each {object ->
                         def props = ["id": object.id]
                         propertyList.each {p ->
-                            props.put(p.name, object[p.name])
+                            props.put(p.name, stringConverter.convert(String, object[p.name]))
                         }
                         builder.Object(props)
                     }

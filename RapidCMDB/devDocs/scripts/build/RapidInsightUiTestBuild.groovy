@@ -62,7 +62,7 @@ class RapidInsightUiTestBuild extends Build {
             // buildDependentProjects()
            //  clean();
             // setupRi();
-             //compileUiTestClasses();
+             compileUiTestClasses();
 
            if(RI_UNIX_OS)
                startRIUnix();

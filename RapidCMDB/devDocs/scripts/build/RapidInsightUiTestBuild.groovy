@@ -64,16 +64,16 @@ class RapidInsightUiTestBuild extends Build {
             // setupRi();
             // compileUiTestClasses();
 
-           if(RI_UNIX_OS)
-               startRIUnix();
+//           if(RI_UNIX_OS)
+//               startRIUnix();
+//
+//            if(RI_WINDOWS_OS)
+//                startRIWindows();
 
-            if(RI_WINDOWS_OS)
-                startRIWindows();
+            startSeleniumServer();
 
-           // startSeleniumServer();
-
-            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+//            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+//            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally {
            // if(RI_UNIX_OS)
@@ -87,7 +87,7 @@ class RapidInsightUiTestBuild extends Build {
 
     def startSeleniumServer()
     {
-        ant.java(jar: "${env.third_party}/lib/selenium/selenium-server.jar", fork: "true",
+        ant.java(jar: new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath(), fork: "true",
                 spawn: "true", jvm: "/usr/java/jdk1.6.0_04/jre/bin/java")
     }
 
@@ -279,6 +279,13 @@ class RapidInsightUiTestBuild extends Build {
            //     }
           //  }
        // }
+            //   ant.junit(printsummary: "yes", haltonfailure: "no") {
+                   
+          //     }
+       // <junit printsummary="yes" fork="yes" haltonfailure="yes">
+ // <formatter type="plain"/>
+ // <test name="my.test.TestCase"/>
+//</junit>
 
     }
 

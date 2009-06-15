@@ -44,10 +44,10 @@ class RapidInsightUiTestBuild extends Build {
         try {
 
              //startSeleniumServer();
-             buildDependentProjects()
-              clean();
-              setupRi();
-            compileUiTestClasses();
+            // buildDependentProjects()
+           //   clean();
+          //    setupRi();
+          //  compileUiTestClasses();
 
             //stopSeleniumServer();
             //startt()
@@ -114,7 +114,7 @@ class RapidInsightUiTestBuild extends Build {
         p.waitFor();
 
         def list = ["./${env.distribution}/RapidServer"]
-        File dir = new File("${env.distribution}/RapidServer/RapidSuite")
+        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(list, dir);
 

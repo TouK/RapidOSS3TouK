@@ -1,7 +1,8 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import org.apache.commons.beanutils.Converter
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -31,9 +32,11 @@ class GetMethod extends AbstractRapidDomainReadMethod{
     List propKeys;
     List relationKeys;
     Map relations
+    Converter stringConverter;
     public GetMethod(MetaClass mcp, List keys, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         propKeys = [];
+        stringConverter = RapidConvertUtils.getInstance().lookup(String.class);
         relationKeys = [];
         keys.each{
             if(relations.containsKey(it))
@@ -75,23 +78,7 @@ class GetMethod extends AbstractRapidDomainReadMethod{
             else
             {
                 propKeys.each{
-                    def val = searchParams[it];
-                    if(val == null)
-                    {
-                        keyMap[it] = val;
-                    }
-                    else
-                    {
-                        def converter = RapidConvertUtils.getInstance().lookup(val.getClass());
-                        if(converter != null)
-                        {
-                            keyMap[it] = converter.convert(String, val);
-                        }
-                        else
-                        {
-                            throw new RuntimeException("No converter specified for ${val.getClass()}");
-                        }
-                    }
+                    keyMap[it] = stringConverter.convert(String, searchParams[it]);
                 }
                 def result = null;
                 if(propKeys.isEmpty() && relationKeys.isEmpty())

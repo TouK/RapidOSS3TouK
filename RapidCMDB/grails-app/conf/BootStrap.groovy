@@ -156,6 +156,8 @@ class BootStrap {
     def registerDefaultConverters()
     {
         def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), GString.class)
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)

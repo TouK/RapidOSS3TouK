@@ -25,6 +25,7 @@ import com.ifountain.rcmdb.util.RapidStringUtilities
 import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.converter.DateConverter
+import com.ifountain.rcmdb.converter.StringConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -184,7 +185,7 @@ class GetMethodTest extends RapidCmdbTestCase {
     public void testGetMethodWithDateKey()
     {
         def dateFormat = "yyyy-MM-dd HH:mm:ss"
-        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
         def df = new SimpleDateFormat(dateFormat);
 
         def keys = ["prop1", "prop4", "prop5"]
@@ -212,26 +213,6 @@ class GetMethodTest extends RapidCmdbTestCase {
         assertNull(result);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(propValues.prop1)} AND prop4:${RapidStringUtilities.exactQuery(df.format(datePropVal1))} AND prop5:${RapidStringUtilities.exactQuery(String.valueOf(null))}", GetMethodDomainObject.query);
     }
-
-    public void testGetMethodWithDateKeyWithNotRegisteredConverterThrowsException()
-    {
-        RapidConvertUtils.getInstance().deregister();
-
-        def keys = ["prop1", "prop4", "prop5"]
-        GetMethod get = new GetMethod(GetMethodChildDomainObjectWithDateProp.metaClass, keys, [:]);
-        def datePropVal1 = new Date();
-        def datePropVal2 = new Date(datePropVal1.getTime() + 1000);
-        def propValues = [prop1: "prop1Value", prop4: datePropVal1, prop5: datePropVal2];
-        try {
-            get.invoke(GetMethodChildDomainObjectWithDateProp, [propValues] as Object[]);
-            fail("Should throw exception since no converter specified for date property");
-        }
-        catch (java.lang.RuntimeException ex)
-        {
-            assertEquals("No converter specified for ${Date.class}", ex.getMessage());
-        }
-    }
-
 
     public void testGetMethodWithParentClass()
     {

@@ -28,6 +28,7 @@ import com.ifountain.rcmdb.converter.DoubleConverter
 import com.ifountain.rcmdb.converter.BooleanConverter
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.util.RapidDateUtilities
+import com.ifountain.rcmdb.converter.StringConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -54,6 +55,7 @@ public class RapidCmdbWithCompassTestCase extends RapidCmdbMockTestCase{
     def registerDefaultConverters()
     {
         def dateFormat = "yyyy-dd-MM HH:mm:ss.SSS";
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
         RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
         RapidConvertUtils.getInstance().register(new LongConverter(), Long.class)
         RapidConvertUtils.getInstance().register(new DoubleConverter(), Double.class)

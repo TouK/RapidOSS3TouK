@@ -128,7 +128,7 @@ class RapidInsightUiTestBuild extends Build {
         System.getenv().each{String key, String value->
             envVariables.add("${key}=${value}");
         }
-        envVariables["RS_HOME"] = "${env.distribution}/RapidServer";
+        envVariables.add("RS_HOME=${env.distribution}/RapidServer")
 
         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(envVariables, dir);
 

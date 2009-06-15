@@ -3,7 +3,6 @@ package com.ifountain.rcmdb.test.util
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
 import com.thoughtworks.selenium.SeleniumException
-import org.openqa.selenium.server.SeleniumServer;
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,21 +33,6 @@ class SeleniumTestCase extends SeleneseTestCase {
         if (start) {
             start = false;
             suiteSetUp(browserString, url);
-        }
-        for(int i=0; i < 15; i++)
-        {
-            try{
-                selenium.open(url);
-                selenium.waitForPageToLoad("300000");
-                break;
-            }
-            catch(SeleniumException e)
-            {
-                if(i == 14)
-                {
-                    throw e;
-                }
-            }
         }
     }
 

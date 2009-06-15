@@ -42,24 +42,26 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-         //startSeleniumServer();
 
-         //buildDependentProjects()
-         //clean();
-         //setupRi();
-         compileUiTestClasses();
+           // startt()
+          //startSeleniumServer();
+
+        buildDependentProjects()
+         clean();
+        setupRi();
+       compileUiTestClasses();
 
          //stopSeleniumServer();
 
-         //startRI();
+         startRI();
 
          
-         def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-         runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+       def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+        runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally{
-            stopRI()
-            stopSeleniumServer()
+           // stopRI()
+          //  stopSeleniumServer()
         }
     }
 
@@ -81,7 +83,29 @@ class RapidInsightUiTestBuild extends Build {
 
     def startt()
     {
-        Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
+      //  Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
+
+       Process  p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute();
+        p.waitFor()
+
+        for(int i=0; i <10; i++)
+        {
+            try{
+               def url = new URL("http://localhost:12222/RapidSuite")
+                p.sleep(60000)
+              def  content = url.getText()
+                break;
+             }
+            catch(ConnectException e)
+            {
+                if(i == 9)
+                {
+                    throw e;
+                }
+            }
+        }
+
+
     }
       
 
@@ -95,6 +119,25 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput();
         p.consumeProcessErrorStream(System.out);
         p.waitFor();
+
+         for(int i=0; i <10; i++)
+         {
+             try{
+                def url = new URL("http://localhost:12222/RapidSuite")
+                 p.sleep(60000)
+               def  content = url.getText()
+                 break;
+              }
+             catch(ConnectException e)
+             {
+                 if(i == 9)
+                 {
+                     throw e;
+                 }
+             }
+         }
+
+       
      }
 
      def stopRI()
@@ -182,13 +225,21 @@ class RapidInsightUiTestBuild extends Build {
 
             ant.formatter(type: "xml");
         }
-           ant.junitreport( todir:"${env.distribution}/uiTestResults"){
-                  ant.fileset(dir:"${env.distribution}/uiTestResults") {
-                              ant.include(name:"TEST-*.xml");
-                          }
-                  ant.report(format:"frames",todir:"${env.distribution}/uiTestResults/html")
+        //   ant.junitreport( todir:"${env.distribution}/uiTestResults"){
+       //         ant.fileset(dir:"${env.distribution}/uiTestResults") {
+       //                       ant.include(name:"TEST-*.xml");
+       //                  }
+        //          ant.report(format:"frames",todir:"${env.distribution}/uiTestResults/html")
+        // }
+         ant.junit(printsummary: "yes", haltonfailure: "no"){
+        ant.batchtest(fork:"yes",todir:"${env.distribution}/uiTestResults"){
+            ant.fileset(dir:"${env.distribution}/uiTestResults"){
+                  ant.include(name:"TEST-*.xml");
+            }
+        }
          }
-                     
+
+
     }
 
 

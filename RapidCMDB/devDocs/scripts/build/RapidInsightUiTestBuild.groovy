@@ -43,14 +43,14 @@ class RapidInsightUiTestBuild extends Build {
     {
         try {
 
-             //startSeleniumServer();
-            // buildDependentProjects()
-           //   clean();
-          //    setupRi();
-          //  compileUiTestClasses();
+         //startSeleniumServer();
+         // buildDependentProjects()
+         //   clean();
+         //    setupRi();
+         //  compileUiTestClasses();
 
             //stopSeleniumServer();
-            //startt()
+           //  startt()
             startRI();
 
             // def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
@@ -83,9 +83,17 @@ class RapidInsightUiTestBuild extends Build {
         //  Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
         // String[] test = new String[1]
         //   test[0]  ="C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite"
+        //def list = ["./${env.distribution}/RapidServer"]
+        //Process p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute(list, null);
+        //p.waitFor()
+
         def list = ["./${env.distribution}/RapidServer"]
-        Process p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute(list, null);
-        p.waitFor()
+               File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+
+          Process    p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute(['JAVA_HOME=list'], dir);
+
+
+
 
         for (int i = 0; i < 0; i++)
         {
@@ -113,11 +121,11 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        def list = ["./${env.distribution}/RapidServer"]
-        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+          def list = ["./${env.distribution}/RapidServer"]
+         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
 
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(list, dir);
-
+        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(['JAVA_HOME=list'], dir);
+        
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 

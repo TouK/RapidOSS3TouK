@@ -18,11 +18,10 @@
 */
 package search
 
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import org.compass.core.engine.SearchEngineQueryParseException;
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,6 +34,7 @@ class SearchController {
     def searchableService;
     def static Map propertyConfiguration = null;
     def index = {
+
         def searchResults = search(params);
         if (searchResults == null) {
             withFormat {
@@ -47,6 +47,7 @@ class SearchController {
         def grailsClassProperties = [:]
         def grailsClassRelations = [:]
         def sortOrder = 0;
+        def stringConverter = RapidConvertUtils.getInstance().lookup(String);
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {result ->
                 def className = result.getClass().name;
@@ -64,7 +65,7 @@ class SearchController {
                 def props = [:];
                 grailsObjectProps.each {resultProperty ->
                     if (!grailsObjectRelations.containsKey(resultProperty.name)) {
-                        props[resultProperty.name] = result[resultProperty.name];
+                        props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
                     }
                 }
                 props.put("sortOrder", sortOrder++)
@@ -194,7 +195,7 @@ class SearchController {
             GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
             if (grailsClass == null)
             {
-                addError("invalid.search.searchIn", [params.searchIn]);
+                addError("invalid.`.searchIn", [params.searchIn]);
                 return;
             }
             def mc = grailsClass.metaClass;

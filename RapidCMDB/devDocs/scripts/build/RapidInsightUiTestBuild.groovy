@@ -75,10 +75,10 @@ class RapidInsightUiTestBuild extends Build {
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally {
-            //if(RI_UNIX_OS)
-                //stopRIUnix();
-           // if(RI_WINDOWS_OS)
-             //   stopRIWindows();
+            if(RI_UNIX_OS)
+                stopRIUnix();
+            if(RI_WINDOWS_OS)
+                stopRIWindows();
 
             stopSeleniumServer()
         }
@@ -126,6 +126,12 @@ class RapidInsightUiTestBuild extends Build {
         }
     }
 
+    def stopRIWindows()
+    {
+        def list = ["./${env.distribution}/RapidServer"]
+        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+        Process p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -stop".execute();
+    }
 
     def startRIUnix()
     {
@@ -166,16 +172,26 @@ class RapidInsightUiTestBuild extends Build {
 
     }
 
-    def stopRI()
+    def stopRIUnix()
     {
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
-        p.consumeProcessOutput();
-        p.consumeProcessErrorStream(System.out);
+        p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
-        p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -stop".execute();
-        p.consumeProcessOutput();
-        p.consumeProcessErrorStream(System.out);
+
+        def list = ["./${env.distribution}/RapidServer"]
+        File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
+
+        def envVariables = [];
+        System.getenv().each{String key, String value->
+            envVariables.add("${key}=${value}");
+        }
+        envVariables.add("RS_HOME=..")
+
+        p = "./rs.sh -stop".execute(envVariables, dir);
+
+        p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
+
     }
 
     def compileUiTestClasses()
@@ -228,8 +244,8 @@ class RapidInsightUiTestBuild extends Build {
     }
 
     def runTest(String testClassDir, List classPaths, String outputXmlDir, String outputXmlFile) {
-        //ant.echo(message: "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
-        // ant.delete(dir: outputXmlDir);
+        ant.echo(message: "Running all tests for test class " + testClass + " and will output xml results to " + outputXmlDir + "/" + outputXmlFile);
+        ant.delete(dir: outputXmlDir);
         ant.mkdir(dir: outputXmlDir);
         ant.junit(printsummary: "yes", haltonfailure: "no", fork: "false", showoutput: "true") {
             ant.classpath

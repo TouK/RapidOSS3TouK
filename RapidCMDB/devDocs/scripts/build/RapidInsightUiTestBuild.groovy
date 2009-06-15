@@ -271,13 +271,14 @@ class RapidInsightUiTestBuild extends Build {
         //                  }
         //          ant.report(format:"frames",todir:"${env.distribution}/uiTestResults/html")
         // }
-        ant.junit(printsummary: "yes", haltonfailure: "no") {
-            ant.batchtest(fork: "yes", todir: "${env.distribution}/uiTestResults") {
-                ant.fileset(dir: "${env.distribution}/uiTestResults") {
-                    ant.include(name: "TEST-*.xml");
-                }
-            }
-        }
+
+       // ant.junit(printsummary: "yes", haltonfailure: "no") {
+         //   ant.batchtest(fork: "yes", todir: "${env.distribution}/uiTestResults") {
+           //     ant.fileset(dir: "${env.distribution}/uiTestResults") {
+           //         ant.include(name: "TEST-*.xml");
+           //     }
+          //  }
+       // }
 
     }
 

@@ -47,11 +47,11 @@ class RapidInsightUiTestBuild extends Build {
           // buildDependentProjects()
          //  clean();
          // setupRi();
-           compileUiTestClasses();
+          compileUiTestClasses();
 
          //stopSeleniumServer();
-       // startt()
-        startRI();
+         //startt()
+          startRI();
 
       // def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
        // runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
@@ -81,11 +81,13 @@ class RapidInsightUiTestBuild extends Build {
     def startt()
     {
       //  Runtime.getRuntime().exec("C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start");
-
-       Process  p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute();
+         // String[] test = new String[1]
+      //   test[0]  ="C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite"
+            def list = ["./${env.distribution}/RapidServer"]
+       Process  p = "C:/Documents and Settings/fadime/Desktop/RapidServer/RapidSuite/rs.exe -start".execute(list,null);
         p.waitFor()
 
-        for(int i=0; i <6; i++)
+        for(int i=0; i <0; i++)
         {
             println("u")
             try{
@@ -109,18 +111,21 @@ class RapidInsightUiTestBuild extends Build {
      def startRI()
      {
         Process p = "chmod +x ${env.distribution}/RapidServer/RapidSuite/rs.sh".execute();
-       // p.consumeProcessOutput(System.out, System.out);
-        p.waitFor();
-        p = "${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute();
+       p.consumeProcessOutput(System.out, System.out);
+         p.waitFor();
+         String[] test = new String[1]
+         test[0]  ="/RapidServer"
+         def list = ["./${env.distribution}/RapidServer"]
+         p = "./${env.distribution}/RapidServer/RapidSuite/rs.sh -start".execute(list,null);
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        for(int i=0; i <1; i++)
+        for(int i=0; i <0; i++)
         {
             println("u")
             try{
                def url = new URL("http://localhost:12222/RapidSuite")
-                p.sleep(10000)
+                p.sleep(60000)
               def  content = url.getText()
                 break;
              }

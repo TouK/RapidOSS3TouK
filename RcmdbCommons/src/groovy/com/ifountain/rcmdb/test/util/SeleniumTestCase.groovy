@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.test.util
 
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
+import com.thoughtworks.selenium.SeleniumException
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static DefaultSelenium selenium;
     private static boolean start = true;
-              
+
     public static void suiteSetUp(browserString, url) {
 
         selenium = new DefaultSelenium("192.168.1.66", 4444, browserString, url);

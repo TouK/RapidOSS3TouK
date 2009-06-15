@@ -153,7 +153,7 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 8; i++)
         {
             try {
                 def url = new URL("http://localhost:12222/RapidSuite")
@@ -163,7 +163,7 @@ class RapidInsightUiTestBuild extends Build {
             }
             catch (ConnectException e)
             {
-                if (i == 5)
+                if (i == 7)
                 {
                     throw e;
                 }

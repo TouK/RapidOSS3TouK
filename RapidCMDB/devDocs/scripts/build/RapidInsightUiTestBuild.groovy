@@ -43,21 +43,18 @@ class RapidInsightUiTestBuild extends Build {
     {
         try {
 
-           // startt()
           //startSeleniumServer();
-
-        buildDependentProjects()
-         clean();
-        setupRi();
-       compileUiTestClasses();
+           buildDependentProjects()
+           clean();
+           setupRi();
+           compileUiTestClasses();
 
          //stopSeleniumServer();
+       // startt()
+        startRI();
 
-         startRI();
-
-         
-       def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-        runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
+      // def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+       // runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults","testResults")
         }
         finally{
            // stopRI()
@@ -90,6 +87,7 @@ class RapidInsightUiTestBuild extends Build {
 
         for(int i=0; i <10; i++)
         {
+            println("u")
             try{
                def url = new URL("http://localhost:12222/RapidSuite")
                 p.sleep(60000)
@@ -105,7 +103,7 @@ class RapidInsightUiTestBuild extends Build {
             }
         }
 
-
+         println(content)
     }
       
 
@@ -120,22 +118,23 @@ class RapidInsightUiTestBuild extends Build {
         p.consumeProcessErrorStream(System.out);
         p.waitFor();
 
-         for(int i=0; i <10; i++)
-         {
-             try{
-                def url = new URL("http://localhost:12222/RapidSuite")
-                 p.sleep(60000)
-               def  content = url.getText()
-                 break;
-              }
-             catch(ConnectException e)
-             {
-                 if(i == 9)
-                 {
-                     throw e;
-                 }
+        for(int i=0; i <10; i++)
+        {
+            println("u")
+            try{
+               def url = new URL("http://localhost:12222/RapidSuite")
+                p.sleep(60000)
+              def  content = url.getText()
+                break;
              }
-         }
+            catch(ConnectException e)
+            {
+                if(i == 9)
+                {
+                    throw e;
+                }
+            }
+        }
 
        
      }

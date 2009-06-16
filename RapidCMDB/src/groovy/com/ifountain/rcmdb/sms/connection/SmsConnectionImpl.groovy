@@ -105,8 +105,8 @@ class SmsConnectionImpl extends BaseConnection implements ConnectionObserver {
     }
 
     public boolean checkConnection() {
-        if (isConnected()) {
-            synchronized (connectionLock) {
+        synchronized (connectionLock) {
+            if (isConnected()) {
                 enquireResult = NOT_RECEIVED
                 conn.enquireLink();
                 synchronized (enquireLock) {
@@ -153,8 +153,8 @@ class SmsConnectionImpl extends BaseConnection implements ConnectionObserver {
             case SMPPPacket.DELIVER_SM:
                 String sourceAddress = smppPacket.getSource().getAddress();
                 String messageText = smppPacket.getMessageText();
-                if(textReceivedCallback){
-                    textReceivedCallback(sourceAddress, messageText);    
+                if (textReceivedCallback) {
+                    textReceivedCallback(sourceAddress, messageText);
                 }
                 break;
             case SMPPPacket.SUBMIT_SM_RESP:

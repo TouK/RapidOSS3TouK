@@ -30,4 +30,10 @@ class ConnectionTestConstants {
     public static final String SMS_PORT = "SMSPort"
     public static final String SMS_USERNAME = "SMSUsername"
     public static final String SMS_PASSWORD = "SMSPassword"
+
+    public static final String AOL_TEST_CONNECTION = "AolConn"
+    public static final String AOL_HOST = "AolHost"
+    public static final String AOL_PORT = "AolPort"
+    public static final String AOL_USERNAME = "AolUsername"
+    public static final String AOL_PASSWORD = "AolPassword"
 }

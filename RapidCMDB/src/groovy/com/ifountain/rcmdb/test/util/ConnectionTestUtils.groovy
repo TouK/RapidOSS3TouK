@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.jabber.connection.JabberConnectionImpl
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.sametime.connection.SametimeConnectionImpl
 import com.ifountain.rcmdb.sms.connection.SmsConnectionImpl
+import com.ifountain.rcmdb.aol.connection.AolConnectionImpl
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,6 +14,8 @@ import com.ifountain.rcmdb.sms.connection.SmsConnectionImpl
 * Time: 4:00:15 PM
 */
 class ConnectionTestUtils {
+    private static int aolUserCount = 5;
+	private static int lastAolUser = 1;
     public static ConnectionParam getJabberConnectionParam() {
         Map otherParams = new HashMap();
         otherParams.put(JabberConnectionImpl.HOST, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_HOST))
@@ -50,5 +53,52 @@ class ConnectionTestUtils {
         param.setMinTimeout(30000);
         param.setMaxTimeout(30000);
         return param;
+    }
+
+    public static ConnectionParam getAolConnectionParam() {
+        Map otherParams = new HashMap();
+        AolUser aolUser = getAolUser();
+        otherParams.put(AolConnectionImpl.HOST, CommonTestUtils.getTestProperty(ConnectionTestConstants.AOL_HOST))
+        otherParams.put(AolConnectionImpl.PORT, Long.parseLong(CommonTestUtils.getTestProperty(ConnectionTestConstants.AOL_PORT)))
+        otherParams.put(AolConnectionImpl.USERNAME, aolUser.getUsername())
+        otherParams.put(AolConnectionImpl.PASSWORD, aolUser.getPassword())
+
+        ConnectionParam param = new ConnectionParam("SmsConnection", ConnectionTestConstants.AOL_TEST_CONNECTION, AolConnectionImpl.class.getName(), otherParams);
+        param.setMinTimeout(30000);
+        param.setMaxTimeout(30000);
+        return param;
+    }
+
+    public static AolUser getAolUser()
+    {
+    	lastAolUser++;
+    	if(lastAolUser > aolUserCount)
+    	{
+    		lastAolUser = 1;
+    	}
+    	return new AolUser(CommonTestUtils.getTestProperty(ConnectionTestConstants.AOL_USERNAME + lastAolUser), CommonTestUtils.getTestProperty(ConnectionTestConstants.AOL_PASSWORD + lastAolUser));
+    }
+}
+
+public class AolUser
+{
+    private String username;
+    private String password;
+    public AolUser(String username, String password)
+    {
+        this.username = username;
+        this.password = password;
+    }
+    public String getPassword()
+    {
+        return password;
+    }
+    public String getUsername()
+    {
+        return username;
+    }
+    public String toString()
+    {
+        return "Username: " + username + ", Password: " + password;
     }
 }

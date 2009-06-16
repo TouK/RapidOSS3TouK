@@ -144,7 +144,7 @@ class RapidInsightUiTestBuild extends Build {
             }
             catch (Throwable e)
             {
-                throw new Exception("Selenium server is not running");
+                throw new Exception("Selenium server is not running", e);
             }
     }
 

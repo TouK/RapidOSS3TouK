@@ -61,25 +61,25 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-            //  buildDependentProjects()
-            //   clean();
-            //             setupRi();
+            buildDependentProjects()
+            clean();
+            setupRi();
             compileUiTestClasses();
 
-//            if (RI_UNIX_OS)
-//                startRIUnix();
-//
-//            if (RI_WINDOWS_OS)
-//                startRIWindows();
-//
-//            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-//            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
+            if (RI_UNIX_OS)
+                startRIUnix();
+
+            if (RI_WINDOWS_OS)
+                startRIWindows();
+
+            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
         }
         finally {
-            // if (RI_UNIX_OS)
-            // stopRIUnix();
-//            if (RI_WINDOWS_OS)
-//                stopRIWindows();
+            if (RI_UNIX_OS)
+                stopRIUnix();
+            if (RI_WINDOWS_OS)
+                stopRIWindows();
         }
     }
 
@@ -180,14 +180,14 @@ class RapidInsightUiTestBuild extends Build {
                 todir: "${env.distribution}/tmpSourceDir/com/ifountain/rcmdb/test/util")
 
         ant.copy(file: "${env.rapid_comp_src}/com/ifountain/comp/test/util/CommonTestUtils.java",
-                 todir: "${env.distribution}/tmpSourceDir/com/ifountain/comp/test/util")
+                todir: "${env.distribution}/tmpSourceDir/com/ifountain/comp/test/util")
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
                 classpathref: "classpath",
                 srcdir: "${env.distribution}/tmpSourceDir")
-        {
-            ant.javac(source:"1.4", target:"1.4", debug:"on");
-        }
+                {
+                    ant.javac(source: "1.4", target: "1.4", debug: "on", cleanDestination: false);
+                }
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui") {
             ant.classpath {

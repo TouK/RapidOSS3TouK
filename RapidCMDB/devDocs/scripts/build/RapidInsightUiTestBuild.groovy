@@ -179,16 +179,12 @@ class RapidInsightUiTestBuild extends Build {
         ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestUtils.groovy",
                  todir: "${env.distribution}/case")
 
-        ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
-                classpathref: "classpath",
-                srcdir: "${env.distribution}/case");
-
-        ant.delete(dir:"${env.distribution}/case");
-
-
         ant.copy(file: "${env.rapid_modules}/comp/java/com/ifountain/comp/test/util/CommonTestUtils.java",
               todir: "${env.distribution}/uiTestClasses/testUtils")
 
+        ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
+                classpathref: "classpath",
+                srcdir: "${env.distribution}/case");
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui") {
             ant.classpath {
@@ -196,6 +192,7 @@ class RapidInsightUiTestBuild extends Build {
                 ant.path(location: "${env.distribution}/uiTestClasses/testUtils")
             }
         }
+
         ant.delete(dir: "${env.distribution}/case")
 
     }

@@ -46,13 +46,11 @@ class RapidInsightUiTestBuild extends Build {
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
-
          // Properties options = new Properties();
          //   println options.getProperty("request")
-
-                                
         testBuild.build();
     }
+
 
     def findOs() {
         def options = getTestOptions();
@@ -174,8 +172,13 @@ class RapidInsightUiTestBuild extends Build {
         ant.mkdir(dir: "${destDir}/testUtils");
         ant.mkdir(dir: "${destDir}/tests");
 
+
         ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestCase.groovy",
                 todir: "${env.distribution}/case")
+
+        ant.copy(file: "${env.rapid_modules}/comp/java/com/ifountain/comp/test/util/CommonTestUtils.java",
+                 todir: "${env.distribution}/case")
+           
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
                 classpathref: "classpath",

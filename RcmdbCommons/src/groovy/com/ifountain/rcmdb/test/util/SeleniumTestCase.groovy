@@ -4,6 +4,7 @@ import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
 import com.ifountain.comp.test.util.CommonTestUtils
 
+
 /**
 * Created by IntelliJ IDEA.
 * User: fadime

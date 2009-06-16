@@ -7,12 +7,13 @@ import com.ifountain.rcmdb.test.util.SeleniumTestCase
 * Time: 2:24:02 AM
 * To change this template use File | Settings | File Templates.
 */
+
 class AdminUiScriptingTest extends SeleniumTestCase
 {
 
     void setUp() throws Exception
     {
-        super.setUp("http://localhost:12222/", "*firefox");
+        super.setUp("http://localhost:12222/RapidServer/", "*firefox");
     }
 
     public void tearDown() {

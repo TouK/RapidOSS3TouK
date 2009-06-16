@@ -12,6 +12,7 @@ class RapidInsightUiTestBuild extends Build {
     def riZipFileName;
     static def buildOption;
     boolean RI_UNIX_OS, RI_WINDOWS_OS
+    Process seleniumProcess;
 
     def setOption(options) {
         if (options != null) {
@@ -59,10 +60,10 @@ class RapidInsightUiTestBuild extends Build {
     {
         try {
 
-            buildDependentProjects()
-            clean();
-            setupRi();
-            compileUiTestClasses();
+//            buildDependentProjects()
+//            clean();
+//            setupRi();
+//            compileUiTestClasses();
 
             startSeleniumServer();
 
@@ -87,8 +88,8 @@ class RapidInsightUiTestBuild extends Build {
 
     def startSeleniumServer()
     {
-        ant.java(jar: new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath(), fork: "true",
-                spawn: "true", jvm: "/usr/java/jdk1.6.0_04/jre/bin/java")
+        seleniumProcess = "./usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar &").getCanonicalPath()}".execute ()
+        seleniumProcess.consumeProcessOutput (System.out, System.err);
     }
 
     def stopSeleniumServer()
@@ -98,6 +99,8 @@ class RapidInsightUiTestBuild extends Build {
                     dest: "result.txt", ignoreerrors: "true")
             ant.echo(taskname: "selenium-shutdown", message: "DGF Errors during shutdown are expected")
         }
+
+        seleniumProcess.destroy();
     }
 
 

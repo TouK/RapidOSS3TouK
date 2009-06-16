@@ -99,7 +99,7 @@ class RapidInsightUiTestBuild extends Build {
         for (int i = 0; i < 50; i++)
         {
             try {
-                println("Checking RI ${i}th time")
+                println("Checking RI Accessibility ${i}. time")
                 def url = new URL("http://localhost:12222/RapidSuite/")
                 Thread.sleep(10000);
                 def content = url.getText()

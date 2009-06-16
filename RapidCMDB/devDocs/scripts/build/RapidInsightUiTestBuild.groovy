@@ -223,7 +223,7 @@ class RapidInsightUiTestBuild extends Build {
 
     def clean()
     {
-        ant.delete(dir: "${env.distribution}/RapidServer");
+        ant.delete(dir: "${env.rapid_modules}/../RapidServer");
     }
 
     def runTest(String testClassDir, List classPaths, String outputXmlDir) {

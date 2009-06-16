@@ -116,7 +116,7 @@ class RapidInsightUiTestBuild extends Build {
                 def content = url.getText()
                 break;
             }
-            catch (ConnectException e)
+            catch (Throwable e)
             {
                 if (i == 5)
                 {

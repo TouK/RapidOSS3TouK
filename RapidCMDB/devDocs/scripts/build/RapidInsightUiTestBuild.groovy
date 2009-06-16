@@ -116,8 +116,8 @@ class RapidInsightUiTestBuild extends Build {
         for (int i = 0; i < 6; i++)
         {
             try {
-                def url = new URL("http://localhost:12222/RapidSuite")
-                p.sleep(60000)
+                def url = new URL("http://localhost:12222/RapidSuite/")
+                Thread.sleep (60000);
                 def content = url.getText()
                 break;
             }
@@ -161,8 +161,8 @@ class RapidInsightUiTestBuild extends Build {
         for (int i = 0; i < 8; i++)
         {
             try {
-                def url = new URL("http://localhost:12222/RapidSuite")
-                p.sleep(60000)
+                def url = new URL("http://localhost:12222/RapidSuite/")
+                Thread.sleep (60000);
                 def content = url.getText()
                 break;
             }

@@ -176,8 +176,8 @@ class RapidInsightUiTestBuild extends Build {
         ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestCase.groovy",
                 todir: "${env.distribution}/case")
 
-        ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestUtils.groovy",
-                 todir: "${env.distribution}/case")
+   //     ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestUtils.groovy",
+    //             todir: "${env.distribution}/case")
 
         ant.copy(file: "${env.rapid_modules}/comp/java/com/ifountain/comp/test/util/CommonTestUtils.java",
               todir: "${env.distribution}/uiTestClasses/testUtils")

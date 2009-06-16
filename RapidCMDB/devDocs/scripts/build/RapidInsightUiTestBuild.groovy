@@ -88,7 +88,7 @@ class RapidInsightUiTestBuild extends Build {
 
     def startSeleniumServer()
     {
-        seleniumProcess = "./usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar &").getCanonicalPath()}".execute ()
+        seleniumProcess = ". /usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath()} &".execute ()
         seleniumProcess.consumeProcessOutput (System.out, System.err);
     }
 
@@ -99,8 +99,10 @@ class RapidInsightUiTestBuild extends Build {
                     dest: "result.txt", ignoreerrors: "true")
             ant.echo(taskname: "selenium-shutdown", message: "DGF Errors during shutdown are expected")
         }
-
-        seleniumProcess.destroy();
+        if(seleniumProcess)
+        {
+            seleniumProcess.destroy();
+        }
     }
 
 

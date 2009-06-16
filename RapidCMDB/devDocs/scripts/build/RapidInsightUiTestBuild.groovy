@@ -46,8 +46,8 @@ class RapidInsightUiTestBuild extends Build {
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
-         // Properties options = new Properties();
-         //   println options.getProperty("request")
+        // Properties options = new Properties();
+        //   println options.getProperty("request")
         testBuild.build();
     }
 
@@ -61,25 +61,25 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-           //  buildDependentProjects()
-           //   clean();
+            //  buildDependentProjects()
+            //   clean();
             //             setupRi();
             compileUiTestClasses();
 
-            if (RI_UNIX_OS)
-                startRIUnix();
-
-            if (RI_WINDOWS_OS)
-                startRIWindows();
-
-            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
+//            if (RI_UNIX_OS)
+//                startRIUnix();
+//
+//            if (RI_WINDOWS_OS)
+//                startRIWindows();
+//
+//            def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+//            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
         }
         finally {
-           // if (RI_UNIX_OS)
-               // stopRIUnix();
-            if (RI_WINDOWS_OS)
-                stopRIWindows();
+            // if (RI_UNIX_OS)
+            // stopRIUnix();
+//            if (RI_WINDOWS_OS)
+//                stopRIWindows();
         }
     }
 
@@ -174,26 +174,27 @@ class RapidInsightUiTestBuild extends Build {
 
 
         ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestCase.groovy",
-                todir: "${env.distribution}/case")
+                todir: "${env.distribution}/tmpSourceDir/com/ifountain/rcmdb/test/util")
 
-   //     ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestUtils.groovy",
-    //             todir: "${env.distribution}/case")
+        ant.copy(file: "${env.rapid_cmdb_commons_cvs}/src/groovy/com/ifountain/rcmdb/test/util/SeleniumTestUtils.groovy",
+                todir: "${env.distribution}/tmpSourceDir/com/ifountain/rcmdb/test/util")
 
-        ant.copy(file: "${env.rapid_modules}/comp/java/com/ifountain/comp/test/util/CommonTestUtils.java",
-              todir: "${env.distribution}/uiTestClasses/testUtils/com/ifountain/rcmdb/test/util")
+        ant.copy(file: "${env.rapid_comp_src}/com/ifountain/comp/test/util/CommonTestUtils.java",
+                 todir: "${env.distribution}/tmpSourceDir/com/ifountain/comp/test/util")
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
                 classpathref: "classpath",
-                srcdir: "${env.distribution}/case");
+                srcdir: "${env.distribution}/tmpSourceDir");
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui") {
             ant.classpath {
                 ant.path(refid: "classpath")
                 ant.path(location: "${env.distribution}/uiTestClasses/testUtils")
             }
+            ant.javac(debug:"on");
         }
 
-        ant.delete(dir: "${env.distribution}/case")
+        ant.delete(dir: "${env.distribution}/tmpSourceDir")
 
     }
 

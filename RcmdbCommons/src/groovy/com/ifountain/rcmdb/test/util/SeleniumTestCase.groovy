@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.test.util
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
 import com.thoughtworks.selenium.SeleniumException
+import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,8 +18,8 @@ class SeleniumTestCase extends SeleneseTestCase {
     private static boolean start = true;
 
     public static void suiteSetUp(browserString, url) {
-
-        selenium = new DefaultSelenium("localhost", 4444, browserString, url);
+        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(), SeleniumTestUtils.getSeleniumServerPort(), browserString, url);
         selenium.start();
         selenium.setTimeout("30000");
 

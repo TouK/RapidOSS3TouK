@@ -64,13 +64,13 @@ class RapidInsightUiTestBuild extends Build {
             setupRi();
             compileUiTestClasses();
 
+            startSeleniumServer();
+
             if (RI_UNIX_OS)
                 startRIUnix();
 
             if (RI_WINDOWS_OS)
                 startRIWindows();
-
-            startSeleniumServer();
 
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults", "testResults")
@@ -221,6 +221,7 @@ class RapidInsightUiTestBuild extends Build {
 
     }
 
+
     def setupRi()
     {
         ant.unzip(src: "${env.distribution}/${riZipFileName}", dest: "${env.distribution}");
@@ -271,21 +272,6 @@ class RapidInsightUiTestBuild extends Build {
             }
             ant.report(format: "frames", todir: "${env.distribution}/uiTestResults/html")
         }
-
-        // ant.junit(printsummary: "yes", haltonfailure: "no") {
-        //   ant.batchtest(fork: "yes", todir: "${env.distribution}/uiTestResults") {
-        //     ant.fileset(dir: "${env.distribution}/uiTestResults") {
-        //         ant.include(name: "TEST-*.xml");
-        //     }
-        //  }
-        // }
-        //   ant.junit(printsummary: "yes", haltonfailure: "no") {
-
-        //     }
-        // <junit printsummary="yes" fork="yes" haltonfailure="yes">
-        // <formatter type="plain"/>
-        // <test name="my.test.TestCase"/>
-        //</junit>
 
     }
 

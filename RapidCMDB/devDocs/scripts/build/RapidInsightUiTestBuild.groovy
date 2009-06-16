@@ -110,20 +110,24 @@ class RapidInsightUiTestBuild extends Build {
     {
         def list = ["./${env.distribution}/RapidServer"]
         File dir = new File("./${env.distribution}/RapidServer/RapidSuite")
-
         Process p = "./${env.distribution}/RapidServer/RapidSuite/rs.exe -start".execute();
+        waitForRI()
+    }
 
-        for (int i = 0; i < 6; i++)
+
+    def waitForRI()
+    {
+        for (int i = 0; i < 50; i++)
         {
             try {
                 def url = new URL("http://localhost:12222/RapidSuite/")
-                Thread.sleep (60000);
+                Thread.sleep (10000);
                 def content = url.getText()
                 break;
             }
             catch (Throwable e)
             {
-                if (i == 5)
+                if (i == 49)
                 {
                     throw e;
                 }
@@ -157,24 +161,7 @@ class RapidInsightUiTestBuild extends Build {
 
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
-
-        for (int i = 0; i < 8; i++)
-        {
-            try {
-                def url = new URL("http://localhost:12222/RapidSuite/")
-                Thread.sleep (60000);
-                def content = url.getText()
-                break;
-            }
-            catch (Throwable e)
-            {
-                if (i == 7)
-                {
-                    throw e;
-                }
-            }
-        }
-
+       waitForRI()
     }
 
     def stopRIUnix()

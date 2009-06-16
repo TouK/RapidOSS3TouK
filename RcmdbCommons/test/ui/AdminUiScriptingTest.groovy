@@ -1,4 +1,5 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
+import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,7 +14,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     void setUp() throws Exception
     {
-        super.setUp("http://localhost:12222/RapidServer/", "*firefox");
+        super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidServer/", SeleniumTestUtils.getSeleniumBrowser());
     }
 
     public void tearDown() {
@@ -42,7 +43,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.type("name", "logValidator");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
-        selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
         // the Hello from cron entry number will be stored in stored
         return selenium.getText("//body");
     }

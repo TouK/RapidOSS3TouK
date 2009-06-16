@@ -15,8 +15,20 @@ class SeleniumTestUtils {
         return CommonTestUtils.getTestProperty("Selenium.ServerHost");
     }
 
-    public static int getSeleniumServerPort()
+    public static String getSeleniumServerPort()
     {
         return CommonTestUtils.getTestProperty("Selenium.ServerPort");
+    }
+     public static String getRIHost()
+    {
+        return CommonTestUtils.getTestProperty("Selenium.RIHost");
+    }
+     public static String getRIPort()
+    {
+        return CommonTestUtils.getTestProperty("Selenium.RIPort");
+    }
+      public static String  getSeleniumBrowser()
+    {
+        return CommonTestUtils.getTestProperty("Selenium.browser");
     }
 }

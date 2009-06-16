@@ -12,7 +12,6 @@ class RapidInsightUiTestBuild extends Build {
     def riZipFileName;
     static def buildOption;
     boolean RI_UNIX_OS, RI_WINDOWS_OS
-    //    Process seleniumProcess;
 
     def setOption(options) {
         if (options != null) {
@@ -47,7 +46,12 @@ class RapidInsightUiTestBuild extends Build {
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
-        testBuild.build();
+
+         // Properties options = new Properties();
+         //   println options.getProperty("request")
+
+                                
+       // testBuild.build();
     }
 
     def findOs() {

@@ -2,7 +2,6 @@ package com.ifountain.rcmdb.test.util
 
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
-import com.thoughtworks.selenium.SeleniumException
 import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
@@ -16,10 +15,14 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static DefaultSelenium selenium;
     private static boolean start = true;
-
-    public static void suiteSetUp(browserString, url) {
+    static{
         CommonTestUtils.initializeFromFile("RCMDBTest.properties");
-        selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(), SeleniumTestUtils.getSeleniumServerPort(), browserString, url);
+    }
+
+    public static void suiteSetUp(url, browser) {
+
+        selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(),
+                Integer.parseInt(SeleniumTestUtils.getSeleniumServerPort()), browser, url);
         selenium.start();
         selenium.setTimeout("30000");
 
@@ -29,14 +32,15 @@ class SeleniumTestCase extends SeleneseTestCase {
     }
 
 
-     void setUp(String url, String browserString) throws Exception {
+    void setUp(String url, String browser) throws Exception {
 
+        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
         if (start) {
             start = false;
-            suiteSetUp(browserString, url);
+            suiteSetUp(url, browser);
         }
-                selenium.open(url);
-                selenium.waitForPageToLoad("30000");
+        selenium.open(url);
+        selenium.waitForPageToLoad("30000");
     }
 
 }

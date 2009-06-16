@@ -12,7 +12,7 @@ class RapidInsightUiTestBuild extends Build {
     def riZipFileName;
     static def buildOption;
     boolean RI_UNIX_OS, RI_WINDOWS_OS
-//    Process seleniumProcess;
+    //    Process seleniumProcess;
 
     def setOption(options) {
         if (options != null) {
@@ -59,9 +59,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-//            buildDependentProjects()
-//            clean();
-//            setupRi();
+            //            buildDependentProjects()
+            //            clean();
+            //            setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -96,7 +96,7 @@ class RapidInsightUiTestBuild extends Build {
         {
             try {
                 def url = new URL("http://localhost:12222/RapidSuite/")
-                Thread.sleep (10000);
+                Thread.sleep(10000);
                 def content = url.getText()
                 break;
             }
@@ -136,7 +136,7 @@ class RapidInsightUiTestBuild extends Build {
 
         p.consumeProcessOutput(System.out, System.out);
         p.waitFor();
-       waitForRI()
+        waitForRI()
     }
 
     def stopRIUnix()

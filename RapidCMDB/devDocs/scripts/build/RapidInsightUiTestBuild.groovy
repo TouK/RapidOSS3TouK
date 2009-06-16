@@ -138,15 +138,15 @@ class RapidInsightUiTestBuild extends Build {
 
     def checkSeleniumServer()
     {
-            try {
-                def url = new URL("http://192.168.1.134:4444/selenium-server")
-                def content = url.getText()
-            }
-            catch (Throwable e)
-            {
-                e.printStackTrace();
-                throw new Exception("Selenium server is not running", e);
-            }
+//            try {
+//                def url = new URL("http://192.168.1.134:4444/selenium-server")
+//                def content = url.getText()
+//            }
+//            catch (Throwable e)
+//            {
+//                e.printStackTrace();
+//                throw new Exception("Selenium server is not running", e);
+//            }
     }
 
     def stopRIWindows()

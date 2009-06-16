@@ -74,7 +74,7 @@ class RapidInsightUiTestBuild extends Build {
                 startRIWindows();
 
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/uiTestResults", "testResults")
+            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
         }
         finally {
             if (RI_UNIX_OS)
@@ -249,8 +249,8 @@ class RapidInsightUiTestBuild extends Build {
         ant.delete(dir: "${env.distribution}/RapidServer");
     }
 
-    def runTest(String testClassDir, List classPaths, String outputXmlDir, String outputXmlFile) {
-        //ant.delete(dir: outputXmlDir);
+    def runTest(String testClassDir, List classPaths, String outputXmlDir) {
+        ant.delete(dir: outputXmlDir);
         ant.mkdir(dir: outputXmlDir);
         ant.junit(printsummary: "yes", haltonfailure: "no", fork: "false", showoutput: "true") {
             ant.classpath
@@ -271,13 +271,6 @@ class RapidInsightUiTestBuild extends Build {
 
             ant.formatter(type: "xml");
         }
-        ant.junitreport(todir: "${env.distribution}/uiTestResults") {
-            ant.fileset(dir: "${env.distribution}/uiTestResults") {
-                ant.include(name: "TEST-*.xml");
-            }
-            ant.report(format: "frames", todir: "${env.distribution}/uiTestResults/html")
-        }
-
     }
 
 }

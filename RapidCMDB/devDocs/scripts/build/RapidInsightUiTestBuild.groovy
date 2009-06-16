@@ -186,7 +186,7 @@ class RapidInsightUiTestBuild extends Build {
                 classpathref: "classpath",
                 srcdir: "${env.distribution}/tmpSourceDir")
         {
-            ant.javac(debug:"on");
+            ant.javac(source:"1.4", target:"1.4", debug:"on");
         }
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/tests", srcdir: "${env.rapid_cmdb_commons_cvs}/test/ui") {

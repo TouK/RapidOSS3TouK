@@ -61,9 +61,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-            buildDependentProjects()
-            clean();
-            setupRi();
+//            buildDependentProjects()
+//            clean();
+//            setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -73,6 +73,8 @@ class RapidInsightUiTestBuild extends Build {
                 startRIWindows();
 
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
+            ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/RCMDBTest.properties",
+                todir: "${env.distribution}/RapidModules");
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
         }
         finally {
@@ -97,6 +99,7 @@ class RapidInsightUiTestBuild extends Build {
         for (int i = 0; i < 50; i++)
         {
             try {
+                println("Checking RI ${i}th time")
                 def url = new URL("http://localhost:12222/RapidSuite/")
                 Thread.sleep(10000);
                 def content = url.getText()

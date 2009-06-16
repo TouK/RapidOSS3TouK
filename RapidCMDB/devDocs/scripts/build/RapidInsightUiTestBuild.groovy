@@ -59,13 +59,10 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-             checkSeleniumServer()
 //            buildDependentProjects()
 //            clean();
 //            setupRi();
             compileUiTestClasses();
-
-            startSeleniumServer();
 
             if (RI_UNIX_OS)
                 startRIUnix();
@@ -81,31 +78,8 @@ class RapidInsightUiTestBuild extends Build {
                 stopRIUnix();
             if (RI_WINDOWS_OS)
                 stopRIWindows();
-
-            stopSeleniumServer()
         }
     }
-
-    def startSeleniumServer()
-    {
-//        def envVars = ["DISPLAY=localhost:0"];
-//        seleniumProcess = "/usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath()}".execute (envVars, new File("."))
-//        seleniumProcess.consumeProcessOutput (System.out, System.err);
-    }
-
-    def stopSeleniumServer()
-    {
-//        ant.target(name: "stop-server") {
-//            ant.get(taskname: "selenium-shutdown", src: "http://localhost:4444/selenium-server/driver/?cmd=shutDown",
-//                    dest: "result.txt", ignoreerrors: "true")
-//            ant.echo(taskname: "selenium-shutdown", message: "DGF Errors during shutdown are expected")
-//        }
-//        if(seleniumProcess)
-//        {
-//            seleniumProcess.destroy();
-//        }
-    }
-
 
     def startRIWindows()
     {
@@ -134,19 +108,6 @@ class RapidInsightUiTestBuild extends Build {
                 }
             }
         }
-    }
-
-    def checkSeleniumServer()
-    {
-//            try {
-//                def url = new URL("http://192.168.1.134:4444/selenium-server")
-//                def content = url.getText()
-//            }
-//            catch (Throwable e)
-//            {
-//                e.printStackTrace();
-//                throw new Exception("Selenium server is not running", e);
-//            }
     }
 
     def stopRIWindows()

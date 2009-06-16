@@ -25,9 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import junit.framework.AssertionFailedError;
-import com.ifountain.comp.utils.*;
-
 
 public class CommonTestUtils
 {

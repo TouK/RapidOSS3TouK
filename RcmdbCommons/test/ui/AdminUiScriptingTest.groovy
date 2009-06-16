@@ -12,7 +12,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     void setUp() throws Exception
     {
-        super.setUp("http://localhost:12222/RapidSuite/", "*firefox");
+        super.setUp("http://localhost:12222/", "*firefox");
     }
 
     public void tearDown() {

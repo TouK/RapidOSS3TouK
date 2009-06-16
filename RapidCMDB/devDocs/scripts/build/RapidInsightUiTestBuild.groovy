@@ -109,7 +109,7 @@ class RapidInsightUiTestBuild extends Build {
             {
                 if (i == 49)
                 {
-                    throw e;
+                    throw new Exception("RI server is not reachable.", e);
                 }
             }
         }

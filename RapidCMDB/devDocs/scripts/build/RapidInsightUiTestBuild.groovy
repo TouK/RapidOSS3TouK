@@ -51,7 +51,7 @@ class RapidInsightUiTestBuild extends Build {
          //   println options.getProperty("request")
 
                                 
-       // testBuild.build();
+        testBuild.build();
     }
 
     def findOs() {

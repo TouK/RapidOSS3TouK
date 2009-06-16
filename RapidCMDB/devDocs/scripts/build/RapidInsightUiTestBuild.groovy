@@ -63,7 +63,7 @@ class RapidInsightUiTestBuild extends Build {
 //            buildDependentProjects()
 //            clean();
 //            setupRi();
-//            compileUiTestClasses();
+            compileUiTestClasses();
 
             startSeleniumServer();
 
@@ -255,7 +255,6 @@ class RapidInsightUiTestBuild extends Build {
                             ant.include(name: "**/*Test.class");
                         }
             }
-
             ant.formatter(type: "xml");
         }
     }

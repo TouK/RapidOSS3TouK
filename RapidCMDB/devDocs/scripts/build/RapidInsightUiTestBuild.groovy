@@ -245,7 +245,6 @@ class RapidInsightUiTestBuild extends Build {
                             ant.include(name: "**/*Test.class");
                         }
             }
-            ant.formatter(type: "xml");
         }
     }
 

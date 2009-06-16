@@ -15,7 +15,7 @@ class SeleniumTestUtils {
         return CommonTestUtils.getTestProperty("Selenium.ServerHost");
     }
 
-    public static String getSeleniumServerPort()
+    public static int getSeleniumServerPort()
     {
         return CommonTestUtils.getTestProperty("Selenium.ServerPort");
     }

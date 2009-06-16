@@ -61,9 +61,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-            //            buildDependentProjects()
-            //            clean();
-            //            setupRi();
+                        buildDependentProjects()
+                        clean();
+                         setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -76,8 +76,8 @@ class RapidInsightUiTestBuild extends Build {
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
         }
         finally {
-            if (RI_UNIX_OS)
-                stopRIUnix();
+           // if (RI_UNIX_OS)
+               // stopRIUnix();
             if (RI_WINDOWS_OS)
                 stopRIWindows();
         }

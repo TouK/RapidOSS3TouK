@@ -32,6 +32,7 @@ class Parent {
                 delegate.delete(dir:map.destdir);
                 delegate.mkdir(dir:map.destdir);
             }
+            map.remove ("cleanDestination");
             delegate.invokeMethod("javac", [map, o1] as Object[]);
         }
         AntBuilder.metaClass.javac = { java.util.Map map->
@@ -41,7 +42,8 @@ class Parent {
                 delegate.delete(dir:map.destdir);
                 delegate.mkdir(dir:map.destdir);
             }
-            delegate.invokeMethod("javac", [map, null] as Object[]);
+            map.remove ("cleanDestination")
+            delegate.invokeMethod("javac", [map] as Object[]);
         }
         ant = new AntBuilder();
 	    env = new Env(ant);

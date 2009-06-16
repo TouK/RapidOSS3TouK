@@ -88,8 +88,8 @@ class RapidInsightUiTestBuild extends Build {
 
     def startSeleniumServer()
     {
-        def envVars = ["DISPLAY=192.168.1.134:0"];
-        seleniumProcess = "/usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath()}&".execute (envVars, new File("."))
+        def envVars = ["DISPLAY=localhost:0"];
+        seleniumProcess = "/usr/java/jdk1.6.0_04/jre/bin/java -jar ${new File("${env.third_party}/lib/selenium/selenium-server.jar").getCanonicalPath()}".execute (envVars, new File("."))
         seleniumProcess.consumeProcessOutput (System.out, System.err);
     }
 

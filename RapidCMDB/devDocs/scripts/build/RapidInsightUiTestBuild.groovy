@@ -47,8 +47,7 @@ class RapidInsightUiTestBuild extends Build {
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
-         testBuild.build();
-
+        testBuild.build();
     }
 
     def findOs() {
@@ -60,9 +59,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-             //buildDependentProjects()
-           // clean();
-          //  setupRi();
+             buildDependentProjects()
+            clean();
+            setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -77,8 +76,8 @@ class RapidInsightUiTestBuild extends Build {
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.rapid_modules}/../TestResults")
         }
         finally {
-           // if (RI_UNIX_OS)
-            //    stopRIUnix();
+            if (RI_UNIX_OS)
+                stopRIUnix();
             if (RI_WINDOWS_OS)
                 stopRIWindows();
         }
@@ -225,6 +224,7 @@ class RapidInsightUiTestBuild extends Build {
         ant.delete(dir: "${env.rapid_modules}/../RapidServer");
     }
 
+
     def runTest(String testClassDir, List classPaths, String outputXmlDir) {
         ant.delete(dir: outputXmlDir);
         ant.mkdir(dir: outputXmlDir);
@@ -246,5 +246,6 @@ class RapidInsightUiTestBuild extends Build {
             }
         }
     }
+
 
 }

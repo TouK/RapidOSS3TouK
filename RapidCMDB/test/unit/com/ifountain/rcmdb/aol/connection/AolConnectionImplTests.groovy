@@ -24,7 +24,6 @@ class AolConnectionImplTests extends RapidCoreTestCase {
     AolConnectionImpl connection;
     protected void setUp() {
         super.setUp();
-        TestLogUtils.enableLogger(Logger.getRootLogger())
         connection = new AolConnectionImpl();
     }
 
@@ -88,8 +87,8 @@ class AolConnectionImplTests extends RapidCoreTestCase {
         assertEquals(connection.getTimeout(), connection.getBosConn().getSocket().getSoTimeout())
     }
 
-    public void testIfHostIsUnreachableConnectThrowsException() {
-        String host = "UNKNOWN_HOST"
+    public void testIfPortIsUnreachableConnectThrowsException() {
+        String host = "192.168.1.100"
         ConnectionParam param = ConnectionTestUtils.getAolConnectionParam();
         param.getOtherParams().put(AolConnectionImpl.HOST, host)
         connection.init(param);
@@ -98,7 +97,7 @@ class AolConnectionImplTests extends RapidCoreTestCase {
             fail("should throw exception")
         }
         catch (ConnectionException e) {
-            assertEquals("java.net.UnknownHostException: ${host}", e.getMessage())
+            assertEquals("java.net.ConnectException: Connection refused: connect", e.getMessage())
         }
     }
 

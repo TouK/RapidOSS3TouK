@@ -81,13 +81,14 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(4,results.size());
         assertEquals(["aa","aab1","aac1","aad1"],results);
 
+        //test max 20 items are listed
         RsComputerSystem.removeAll();
         assertEquals(0,RsComputerSystem.countHits("alias:*"))
 
-        30.times{ count ->
+        22.times{ count ->
             RsComputerSystem.add(name:"b${count}");
         }
-        assertEquals(30,RsComputerSystem.countHits("alias:*"))
+        assertEquals(22,RsComputerSystem.countHits("alias:*"))
 
         results=getAutoCompleteData("b");
         assertEquals(20,results.size());

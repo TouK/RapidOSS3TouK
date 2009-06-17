@@ -61,9 +61,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-            buildDependentProjects()
-            clean();
-            setupRi();
+//            buildDependentProjects()
+//            clean();
+//            setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -75,7 +75,7 @@ class RapidInsightUiTestBuild extends Build {
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
             ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/RCMDBTest.properties",
                 todir: "${env.rapid_modules}");
-            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.distribution}/TestResults")
+            runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.rapid_modules}/../TestResults")
         }
         finally {
             if (RI_UNIX_OS)

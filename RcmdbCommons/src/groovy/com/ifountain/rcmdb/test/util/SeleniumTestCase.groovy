@@ -22,7 +22,8 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static void suiteSetUp(url, browser) {
 
-        selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(),
+       // selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(),
+        selenium = new DefaultSelenium("192.168.1.111",
                 Integer.parseInt(SeleniumTestUtils.getSeleniumServerPort()), browser, url);
         selenium.start();
         selenium.setTimeout("30000");

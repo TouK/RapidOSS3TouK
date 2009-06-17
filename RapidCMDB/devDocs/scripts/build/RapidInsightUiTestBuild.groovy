@@ -7,6 +7,7 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class RapidInsightUiTestBuild extends Build {
+    
     def version = "$env.rapid_insight/RIVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
     def riZipFileName;
@@ -46,11 +47,9 @@ class RapidInsightUiTestBuild extends Build {
     static void main(String[] args) {
         RapidInsightUiTestBuild testBuild = new RapidInsightUiTestBuild();
         testBuild.findOs()
-        // Properties options = new Properties();
-        //   println options.getProperty("request")
-        testBuild.build();
-    }
+         testBuild.build();
 
+    }
 
     def findOs() {
         def options = getTestOptions();
@@ -61,9 +60,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-            buildDependentProjects()
-            clean();
-            setupRi();
+             //buildDependentProjects()
+           // clean();
+          //  setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)
@@ -78,8 +77,8 @@ class RapidInsightUiTestBuild extends Build {
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.rapid_modules}/../TestResults")
         }
         finally {
-            if (RI_UNIX_OS)
-                stopRIUnix();
+           // if (RI_UNIX_OS)
+            //    stopRIUnix();
             if (RI_WINDOWS_OS)
                 stopRIWindows();
         }

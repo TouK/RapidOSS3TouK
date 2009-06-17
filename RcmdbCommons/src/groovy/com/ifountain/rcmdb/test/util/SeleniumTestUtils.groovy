@@ -9,7 +9,11 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * Time: 11:48:31 AM
 * To change this template use File | Settings | File Templates.
 */
-class SeleniumTestUtils {
+class SeleniumTestUtils  {
+
+
+    public static String base_Dir = "../Distribution/RapidServer/RapidSuite/scripts/"
+
     public static String getSeleniumServerHost()
     {
         return CommonTestUtils.getTestProperty("Selenium.ServerHost");
@@ -31,4 +35,10 @@ class SeleniumTestUtils {
     {
         return CommonTestUtils.getTestProperty("Selenium.browser");
     }
+     public static void createScript(String path,String scriptContent)
+     {
+          File file = new File(path)
+          file.setText(scriptContent)
+     }
+
 }

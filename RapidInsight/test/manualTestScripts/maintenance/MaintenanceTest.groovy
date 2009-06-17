@@ -46,7 +46,7 @@ assert(!event13.inMaintenance)
 assert(!RsEvent.get(name:eventDuringMaintenance1.name).inMaintenance)
 
 // inMaintenance with duration
-def endTime = new Date(System.currentTimeMillis() + 1000)
+def endTime = new Date(System.currentTimeMillis() + 1500)
 //device1.putInMaintenance(endTime, true)
 
 props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
@@ -58,7 +58,7 @@ assert(RsEvent.get(name:event12.name).inMaintenance)
 assert(maint1.source==source)
 assert(maint1.info==info)
 
-sleep(500)
+sleep(100)
 script.CmdbScript.runScript(maintScheduler) // still in maintenance
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(RsEvent.get(name:event11.name).inMaintenance)
@@ -67,7 +67,9 @@ assert(RsEvent.get(name:event12.name).inMaintenance)
 def event14 = RsEvent.add(name:"Event14", elementName:maint1.objectName)
 assert(RsEvent.get(name:event14.name).inMaintenance)
 
-sleep(600)
+def remainingTime=endTime.getTime()-System.currentTimeMillis();
+sleep(remainingTime+100)
+
 script.CmdbScript.runScript(maintScheduler) // no longer in maintenance
 assert(!RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(!RsEvent.get(name:event11.name).inMaintenance)

@@ -46,6 +46,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+
         // the Hello from cron entry number will be stored in stored
         return selenium.getText("//body");
     }
@@ -58,6 +59,14 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
         selenium.click("link=New Script");
         selenium.waitForPageToLoad("30000");
+    }
+
+    private void   isScriptExists(String path,String scriptContent)
+    {
+        File file = new File(path)
+        if(file.exists())
+            file.delete();
+        SeleniumTestUtils.createScript(path,scriptContent)
     }
 
 
@@ -73,6 +82,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
              logger.warn(resp)
              return resp """  ;
 
+        //checkes a script named aScript.groovy exists, if not creates a new one with specified content
         isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
@@ -87,27 +97,28 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("WARN", selenium.getText("logLevel"));
         verifyEquals("false", selenium.getText("identifier=logFileOwn"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
-    }
 
-    private void   isScriptExists(String path,String scriptContent)
-    {
-        File file = new File(path)
+        //deletes script named aScript.groovy
+        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy")
         if(file.exists())
             file.delete();
-        SeleniumTestUtils.createScript(path,scriptContent)
+
     }
+
 
     public void testCreateAnOnDemandscriptByName()
     {
+        //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
              def resp ="";
              res = CmdbScript.search("scriptFile:aScript")
              res.results.each{
-            resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
-            }
+             resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+             }
              logger.warn(resp)
              return resp """  ;
 
+        //checkes a script named aScript.groovy exists, if not creates a new one with specified content
         isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
@@ -122,23 +133,30 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("false", selenium.getText("logFileOwn"));
         verifyEquals("", selenium.getText("identifier=staticParam"));
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
+
+        //deletes script named aScript.groovy
+        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy")
+        if(file.exists())
+            file.delete();
     }
 
 
     public void testTestAScheduledCronScriptFilesSelTest()
     {
-
+        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """ import script.*
-             import org.apache.commons.lang.StringUtils
+              import org.apache.commons.lang.StringUtils
               def logFile = new File(params.file);
               def log = logFile.getText();
               return StringUtils.countMatches (log, "Hello from cron")
-                   """  ;
-          isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContent);
+               """  ;
+
+        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContent);
 
 
+        //creates cron.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContentTwo = """import script.*
-
                 def resp ="";
                 res = CmdbScript.search("scriptFile:cron")
                 res.results.each{
@@ -148,15 +166,17 @@ class AdminUiScriptingTest extends SeleniumTestCase
                 return resp
                  """  ;
 
-           isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy",scriptContentTwo);
+        //checkes a script named cron.groovy exists, if not creates a new one with specified content
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy",scriptContentTwo);
 
         // test a scheduled cron script
         login();
-        // looks RapidServer.log file for "Hello from cron" entries
-        String stored = newLogValidatorScript();
-        newScript();
 
-        // Creates a scheduled script with attributes
+        // looks RapidServer.log file for old "Hello from cron" entries
+        String stored = newLogValidatorScript();
+
+       // Creates a scheduled script with attributes
+        newScript();
         selenium.type("name", "scheduled2");
         selenium.type("scriptFile", "cron");
         selenium.select("type", "label=Scheduled");
@@ -178,7 +198,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("Scheduled", selenium.getText("type"));
         verifyEquals("Cron", selenium.getText("scheduleType"));
         verifyEquals("0", selenium.getText("startDelay"));
-        // selenium.type("cronExpression", "* * * * * ?");
         assertEquals("* * * * * ?", selenium.getText("cronExpression"));
         verifyEquals("true", selenium.getText("enabled"));
 
@@ -191,6 +210,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
         // if the "Hello from cron" number has changed means not equal to the value in 'stored', test will pass
         assertNotEquals(stored, selenium.isTextPresent(stored));
+
         // the script will be updated
         selenium.open("/RapidSuite/script/show/" + idValue);
         selenium.click("_action_Edit");
@@ -198,14 +218,14 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.click("logFileOwn");
         selenium.click("_action_Update");
         selenium.waitForPageToLoad("30000");
-
         assertEquals("Script " + idValue + " updated", selenium.getText("pageMessage"))
+
         // after update the use own log will be checked if it is true test will pass
         verifyEquals("true", selenium.getText("logFileOwn"));
 
 
-        newScript();
         // file scheduled2.log  will be looked if it has "Hello from cron" entries
+        newScript();
         selenium.type("name", "logValidator");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
@@ -213,35 +233,47 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
         // file scheduled2.log must have some entries
         assertNotEquals("0", selenium.getText("//body"));
+
         // the "Hello from cron" entry number will be stored
         stored = newLogValidatorScript();
-
         selenium.open("/RapidSuite/script/show/" + idValue);
+
         // the script will be updated again
         selenium.click("_action_Edit");
         selenium.waitForPageToLoad("30000");
         selenium.click("enabled");
         selenium.click("_action_Update");
         selenium.waitForPageToLoad("30000");
-
         verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
+
         // after update the enable attribute will be checked if it is false test will pass
         verifyEquals("false", selenium.getText("enabled"));
-                                                                       
         Thread.sleep(3000);
-        // file RapidServer.log must have some entries
 
+        // file RapidServer.log must have some entries
         newScript();
         selenium.type("name", "logValidator");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+        
         // if RapidServer.log has no new entries test will pass
         assertTrue(selenium.isTextPresent(stored));
         selenium.open("/RapidSuite/script/show/" + idValue);
         selenium.waitForPageToLoad("30000");
 
+        //deletes script named cron.groovy
+        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy")
+        if(file.exists())
+            file.delete();
+
+        //deletes script named logValidator.groovy
+        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
+        if(file.exists())
+            file.delete();
+
     }
+    
 }
 
 

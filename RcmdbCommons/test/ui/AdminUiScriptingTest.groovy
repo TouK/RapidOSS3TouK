@@ -14,7 +14,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     void setUp() throws Exception
     {
-        super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidServer/", SeleniumTestUtils.getSeleniumBrowser());
+        super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/", SeleniumTestUtils.getSeleniumBrowser());
     }
 
     public void tearDown() {
@@ -30,6 +30,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     private void login()
     {
         selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
+        selenium.waitForPageToLoad("30000");
         selenium.type("login", "rsadmin");
         selenium.type("password", "changeme");
         selenium.click("//input[@value='Sign in']");
@@ -51,14 +52,29 @@ class AdminUiScriptingTest extends SeleniumTestCase
     private void newScript()
     {
         selenium.open("/RapidSuite/script/list");
+        selenium.waitForPageToLoad("30000");
         selenium.click("link=Scripts");
         selenium.waitForPageToLoad("30000");
         selenium.click("link=New Script");
         selenium.waitForPageToLoad("30000");
     }
 
+
+
     public void testCreateAnOnDemandScriptByScriptFileName()
     {
+        def scriptContent = """import script.*
+             def resp ="";
+             res = CmdbScript.search("scriptFile:aScript")
+             res.results.each{
+            resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+            }
+             logger.warn(resp)
+             return resp """  ;
+
+        isScriptExists("${SeleniumTestUtils.base_Dir}aScript.groovy",scriptContent);
+        
+
         login();
         newScript();
         selenium.type("name", "ondemand2");
@@ -73,8 +89,27 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
     }
 
-    public void testCreateAnOnDemandscriptByName()
+    private void   isScriptExists(String path,String scriptContent)
     {
+        File file = new File(path)
+        if(file.exists())
+            file.delete();
+        SeleniumTestUtils.createScript(path,scriptContent)
+    }
+
+    public void atestCreateAnOnDemandscriptByName()
+    {
+        String scriptContent = """import script.*
+             def resp ="";
+             res = CmdbScript.search("scriptFile:aScript")
+             res.results.each{
+            resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+            }
+             logger.warn(resp)
+             return resp """  ;
+
+        isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}aScript.groovy",scriptContent);
+
         login();
         newScript();
         selenium.type("name", "aScript");
@@ -90,8 +125,31 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void testTestAScheduledCronScriptFilesSelTest()
+    public void atestTestAScheduledCronScriptFilesSelTest()
     {
+
+        String scriptContent = """ import script.*
+             import org.apache.commons.lang.StringUtils
+              def logFile = new File(params.file);
+              def log = logFile.getText();
+              return StringUtils.countMatches (log, "Hello from cron")
+                   """  ;
+          isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}logValidator.groovy",scriptContent);
+
+
+        String scriptContentTwo = """import script.*
+
+                def resp ="";
+                res = CmdbScript.search("scriptFile:cron")
+                res.results.each{
+                resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+                }
+                logger.warn("Hello from cron")
+                return resp
+                 """  ;
+
+          isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}cron.groovy",scriptContentTwo);
+
         // test a scheduled cron script
         login();
         // looks RapidServer.log file for "Hello from cron" entries
@@ -120,7 +178,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("Scheduled", selenium.getText("type"));
         verifyEquals("Cron", selenium.getText("scheduleType"));
         verifyEquals("0", selenium.getText("startDelay"));
-        selenium.type("cronExpression", "* * * * * ?");
+        // selenium.type("cronExpression", "* * * * * ?");
         assertEquals("* * * * * ?", selenium.getText("cronExpression"));
         verifyEquals("true", selenium.getText("enabled"));
 

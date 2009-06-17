@@ -12,7 +12,11 @@ import com.ifountain.comp.test.util.CommonTestUtils
 class SeleniumTestUtils  {
 
 
-    public static String base_Dir = "../Distribution/RapidServer/RapidSuite/scripts/"
+
+    public static String getRsHome()
+    {
+        return CommonTestUtils.getTestProperty("Selenium.RS_HOME");
+    }
 
     public static String getSeleniumServerHost()
     {

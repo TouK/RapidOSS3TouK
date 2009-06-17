@@ -14,7 +14,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     void setUp() throws Exception
     {
-        super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/", SeleniumTestUtils.getSeleniumBrowser());
+        super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/",
+                SeleniumTestUtils.getSeleniumBrowser());
     }
 
     public void tearDown() {
@@ -72,8 +73,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
              logger.warn(resp)
              return resp """  ;
 
-        isScriptExists("${SeleniumTestUtils.base_Dir}aScript.groovy",scriptContent);
-        
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
         newScript();
@@ -97,7 +97,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         SeleniumTestUtils.createScript(path,scriptContent)
     }
 
-    public void atestCreateAnOnDemandscriptByName()
+    public void testCreateAnOnDemandscriptByName()
     {
         String scriptContent = """import script.*
              def resp ="";
@@ -108,7 +108,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
              logger.warn(resp)
              return resp """  ;
 
-        isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}aScript.groovy",scriptContent);
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
         newScript();
@@ -125,7 +125,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void atestTestAScheduledCronScriptFilesSelTest()
+    public void testTestAScheduledCronScriptFilesSelTest()
     {
 
         String scriptContent = """ import script.*
@@ -134,7 +134,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
               def log = logFile.getText();
               return StringUtils.countMatches (log, "Hello from cron")
                    """  ;
-          isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}logValidator.groovy",scriptContent);
+          isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContent);
 
 
         String scriptContentTwo = """import script.*
@@ -148,7 +148,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
                 return resp
                  """  ;
 
-          isScriptExists("${SeleniumTestUtils.getSeleniumRIPath()}cron.groovy",scriptContentTwo);
+           isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy",scriptContentTwo);
 
         // test a scheduled cron script
         login();

@@ -81,10 +81,16 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         {
 
         }
+        def startTime=System.currentTimeMillis()
+        println "before schedule : ${System.currentTimeMillis()-startTime}";
         scriptScheduler.scheduleScript("myScript", 2, "0/3 * * * * ?");
+        println "after schedule,before sleep 200 : ${System.currentTimeMillis()-startTime}"
         Thread.sleep(200);
+        println "after sleep 200 : ${System.currentTimeMillis()-startTime}"
         assertEquals(0, executionCount);
+        println "before sleep 6500 : ${System.currentTimeMillis()-startTime}"
         Thread.sleep(6500);
+        println "after sleep 6500 : ${System.currentTimeMillis()-startTime}"
         assertEquals(2, executionCount);
     }
 

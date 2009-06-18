@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="" />
+<title>test_a_scheduled_periodic_script</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">test_a_scheduled_periodic_script</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&amp;format=html</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>login</td>
+	<td>rsadmin</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>password</td>
+	<td>changeme</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Sign in']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New Script</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>scheduled1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>scriptFile</td>
+	<td>periodic</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>type</td>
+	<td>label=Scheduled</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>period</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>staticParam</td>
+	<td>Hello from periodic</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>enabled</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Script created</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>name</td>
+	<td>scheduled1</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>scriptFile</td>
+	<td>periodic</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>logLevel</td>
+	<td>WARN</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>logFileOwn</td>
+	<td>false</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>staticParam</td>
+	<td>Hello from periodic</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>type</td>
+	<td>Scheduled</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>scheduleType</td>
+	<td>Periodic</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>startDelay</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>period</td>
+	<td>10</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>enabled</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>document.getElementById('id')</td>
+	<td>idValue</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Scripts</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New Script</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>logValidator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//body</td>
+	<td>stored</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>10000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Scripts</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New Script</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>logValidator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertNotText</td>
+	<td>//body</td>
+	<td>${stored}</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/show/${idValue}</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>_action_Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>enabled</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>_action_Update</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>pageMessage</td>
+	<td>Script ${idValue} updated</td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Script ${idValue} updated</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>enabled</td>
+	<td>false</td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Scripts</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New Script</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>logValidator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//body</td>
+	<td>stored</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>10000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/list</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Scripts</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New Script</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name</td>
+	<td>logValidator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//input[@value='Create']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//body</td>
+	<td>${stored}</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

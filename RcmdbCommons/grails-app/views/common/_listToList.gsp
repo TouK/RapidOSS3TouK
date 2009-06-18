@@ -60,7 +60,7 @@
 <input type="hidden" name="${inputName}" id="${inputName}" value="<%
     def allContent=[];
     toListContent.each{allContent.add(it[valueProperty])};
-    print allContent.join(',');    
+    print allContent.join(',');
 %>"/>
 <div id="${id}">
     <table style="border:none;width:auto">

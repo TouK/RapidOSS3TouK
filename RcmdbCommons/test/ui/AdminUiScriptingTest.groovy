@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
+
 /**
 * Created by IntelliJ IDEA.
 * User: fadime
@@ -73,6 +74,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testCreateAnOnDemandScriptByScriptFileName()
     {
+        //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
              def resp ="";
              res = CmdbScript.search("scriptFile:aScript")
@@ -106,7 +108,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void testCreateAnOnDemandscriptByName()
+    public void atestCreateAnOnDemandscriptByName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
@@ -273,6 +275,105 @@ class AdminUiScriptingTest extends SeleniumTestCase
             file.delete();
 
     }
+
+
+
+     public void testAScheduledPeriodicScript()
+     {
+         //creates periodic.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+         def scriptContent = """import script.*
+
+        def resp ="";
+        res = CmdbScript.search("scriptFile:periodic")
+        res.results.each{
+        resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+        }
+        logger.warn("Hello from periodic")
+        return resp """  ;
+
+        //checkes a script named periodic.groovy exists, if not creates a new one with specified content
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy",scriptContent);
+
+
+        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+        def scriptContentLog = """ import org.apache.commons.lang.StringUtils
+
+          def logFile = new File(params.file);
+          def log = logFile.getText();
+          return StringUtils.countMatches (log, "Hello from periodic")"""  ;
+
+        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
+        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
+
+
+
+        login();
+        newScript();
+
+		selenium.type("name", "scheduled1");
+		selenium.type("scriptFile", "periodic");
+		selenium.select("type", "label=Scheduled");
+		selenium.type("period", "10");
+		selenium.type("staticParam", "Hello from periodic");
+		selenium.click("enabled");
+		selenium.click("//input[@value='Create']");
+		selenium.waitForPageToLoad("30000");
+
+		verifyTrue(selenium.isTextPresent("Script created"));
+		verifyEquals("scheduled1", selenium.getText("name"));
+		verifyEquals("periodic", selenium.getText("scriptFile"));
+		verifyEquals("WARN", selenium.getText("logLevel"));
+		verifyEquals("false", selenium.getText("logFileOwn"));
+		verifyEquals("Hello from periodic", selenium.getText("staticParam"));
+		verifyEquals("Scheduled", selenium.getText("type"));
+		verifyEquals("Periodic", selenium.getText("scheduleType"));
+		verifyEquals("0", selenium.getText("startDelay"));
+		verifyEquals("10", selenium.getText("period"));
+		verifyEquals("true", selenium.getText("enabled"));
+		String idValue = selenium.getText("document.getElementById('id')");
+
+
+		int store =   Integer.parseInt(newLogValidatorScript())+1
+	    selenium.open("/RapidSuite/script/list");
+		String stored = store.toString()
+
+		Thread.sleep(10000);
+
+
+	    String str = newLogValidatorScript()
+		assertEquals(str, stored);
+
+		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
+		selenium.click("_action_Edit");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("enabled");
+		selenium.click("_action_Update");
+		selenium.waitForPageToLoad("30000");
+
+		verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
+		verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
+		verifyEquals("false", selenium.getText("enabled"));
+
+        stored =newLogValidatorScript()
+        selenium.open("/RapidSuite/script/list");
+
+		Thread.sleep(10000);
+		str = newLogValidatorScript()
+		assertEquals(stored, str);
+		
+		selenium.open("/RapidSuite/script/show/" + idValue);
+        selenium.waitForPageToLoad("30000");
+
+        //deletes script named cron.groovy
+        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy")
+        if(file.exists())
+            file.delete();
+
+        //deletes script named logValidator.groovy
+        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
+        if(file.exists())
+            file.delete();
+     }
     
 }
 

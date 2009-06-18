@@ -5,7 +5,7 @@
 %>
 <g:if test="${mode == 'edit' && (mapGroup = MapGroup.get([id: params.mapGroupId])) == null}">
     <div style="height:100%; background-color:#fff3f3;color:#cc0000">
-        MapGroup with id ${params.queryId} does not exist.
+        MapGroup with id ${params.mapGroupId} does not exist.
     </div>
 </g:if>
 <g:else>

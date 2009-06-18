@@ -543,6 +543,28 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         {
             assertEquals (ModelGenerationException.datasourcePropertyDoesnotExists(modelName, "prop3", prop2.name).getMessage(), e.getMessage());
         }
+
+        def prop3 = [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        modelXml = createModel (modelName, null, [], [prop1, prop2, prop3], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+        }catch(ModelGenerationException e)
+        {
+            fail("Should not throw exception datasource property exist");
+        }
+
+        def parentModelName = "Parent";
+        def parentModelXml = createModel (parentModelName, null, [], [prop1, prop3], [prop1], []);
+        modelXml = createModel (modelName, parentModelName, [], [prop2], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml, parentModelXml])
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace()
+            fail("Should not throw exception datasource property exist in parent model");
+        }
     }
     def createModel(String name, String parentModel,  List modelProperties, List keyProperties, List relations)
     {

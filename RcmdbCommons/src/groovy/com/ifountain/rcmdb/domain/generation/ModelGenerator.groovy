@@ -320,7 +320,7 @@ class ModelGenerator
         if(modelMetaData.parentModelName)
         {
             ModelMetaData parentModel = modelMetaDatas[modelMetaData.parentModelName];
-            return checkPropertyExist(parentModel, modelMetaDatas, propExist);
+            return checkPropertyExist(parentModel, modelMetaDatas, propertyName);
         }
         return false;
     }

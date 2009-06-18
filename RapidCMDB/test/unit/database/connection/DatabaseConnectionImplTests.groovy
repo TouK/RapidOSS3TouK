@@ -182,7 +182,7 @@ public class DatabaseConnectionImplTests extends RapidCoreTestCase {
 
     public void testQueryTimeoutWithMysql() throws Exception {
         // info.put("socketTimeout",timeout); handles
-        def minTimeout=20000;
+        def minTimeout=25000;
 
         ConnectionParam param = DatabaseConnectionImplTestUtils.getConnectionParam(DatabaseTestConstants.MYSQL);
         param.setMinTimeout(minTimeout);

@@ -108,7 +108,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void atestCreateAnOnDemandscriptByName()
+    public void testCreateAnOnDemandscriptByName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*

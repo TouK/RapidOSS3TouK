@@ -24,6 +24,8 @@ class DatasourceName {
      static cascaded = [modelDatasources:true]
      static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]
      String name;
+     String mappedName;
+     String mappedNameProperty;
      String rsOwner = "p"
      List modelDatasources = [];
      org.springframework.validation.Errors errors ;
@@ -31,6 +33,8 @@ class DatasourceName {
      static transients = ["errors", "__operation_class__"]
      static constraints = {
          name(blank:false, nullable:false, key:[]);
+         mappedName(blank:true, nullable:true, key:[]);
+         mappedNameProperty(blank:true, nullable:true, key:[]);
          errors(nullable:true);
          __operation_class__(nullable:true);
      };

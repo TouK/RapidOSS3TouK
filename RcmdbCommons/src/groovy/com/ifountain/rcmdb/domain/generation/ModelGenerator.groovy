@@ -208,6 +208,10 @@ class ModelGenerator
                 {
                     throw ModelGenerationException.duplicateParentDatasource(dsName, modelName);
                 }
+                if(dsConf.mappedNameProperty != null && !checkPropertyExist(modelMetaData, modelMetaDatas, dsConf.mappedNameProperty))
+                {
+                    throw ModelGenerationException.mappedNamePropertyDoesNotExist(modelName, dsName, dsConf.mappedNameProperty);
+                }
             }
         }
 
@@ -393,6 +397,20 @@ class ModelMetaData
         model.Datasources.Datasource.each{GPathResult datasource->
             def dsConf = [:];
             def dsName = datasource.@name.text();
+            def mappedName = datasource.@mappedName.text();
+            def mappedNameProperty = datasource.@mappedNameProperty.text();
+            if(mappedName != null && mappedName != "")
+            {
+                dsConf.mappedName = mappedName;
+            }
+            else if(mappedNameProperty != null  && mappedNameProperty != "")
+            {
+                dsConf.mappedNameProperty = mappedNameProperty;
+            }
+            else
+            {
+                dsConf.mappedName = dsName;    
+            }
             def keys = [:];
             datasource.Key.each{GPathResult keyMapping->
                 keys[keyMapping.@propertyName.text()] = ["nameInDs":keyMapping.@nameInDatasource != ""?keyMapping.@nameInDatasource.text():keyMapping.@propertyName.text()];

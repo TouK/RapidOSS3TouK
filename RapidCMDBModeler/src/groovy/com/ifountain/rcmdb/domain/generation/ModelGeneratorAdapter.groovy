@@ -62,7 +62,16 @@ class ModelGeneratorAdapter {
 
                 modelBuilder.Datasources(){
                     model.datasources.each{ModelDatasource datasource->
-                            modelBuilder.Datasource(name:datasource.datasource.name){
+                            def dsConf = [name:datasource.datasource.name]
+                            if(datasource.datasource.mappedName != null)
+                            {
+                                dsConf.mappedName = datasource.datasource.mappedName
+                            }
+                            else if(datasource.datasource.mappedNameProperty != null)
+                            {
+                                dsConf.mappedNameProperty = datasource.datasource.mappedNameProperty    
+                            }
+                            modelBuilder.Datasource(dsConf){
                                 datasource.keyMappings.each{ModelDatasourceKeyMapping key->
                                     modelBuilder.Key(propertyName:key.property.name, nameInDatasource:key.nameInDatasource);                          
                                 }

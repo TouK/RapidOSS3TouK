@@ -566,6 +566,47 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
             fail("Should not throw exception datasource property exist in parent model");
         }
     }
+
+    public void testThrowsExceptionIfMappedNamePropertyIsNotDefined()
+    {
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds2", lazy:false]
+        def ds1 = [name:"ds2",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name]], mappedNameProperty:"prop3"]
+        String modelName = "Model1";
+        def modelXml = createModel (modelName, null, [ds1], [prop1, prop2], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since  mappedNameProperty property doesnot exist");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.mappedNamePropertyDoesNotExist(modelName, ds1.name, "prop3").getMessage(), e.getMessage());
+        }
+
+        def prop3 = [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        modelXml = createModel (modelName, null, [ds1], [prop1, prop2, prop3], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace()
+            fail("Should not throw exception datasource property exist");
+        }
+
+
+        def parentModelName = "Parent";
+        def parentModelXml = createModel (parentModelName, null, [], [prop1, prop3], [prop1], []);
+        modelXml = createModel (modelName, parentModelName, [ds1], [prop2], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml, parentModelXml])
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace()
+            fail("Should not throw exception datasource property exist in parent model");
+        }
+    }
     def createModel(String name, String parentModel,  List modelProperties, List keyProperties, List relations)
     {
         return createModel(name, parentModel, [], modelProperties, keyProperties, relations);   
@@ -604,8 +645,9 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
                 boolean isIdAdded = false;
                 boolean isVersionAdded = false;
                 modelDatasources.each{Map dsConfig->
-                    def keyMaps = dsConfig.remove("keyMappings");
-                    modelbuilder.Datasource(dsConfig){
+                    def tmpDsConf = new HashMap(dsConfig);
+                    def keyMaps = tmpDsConf.remove("keyMappings");
+                    modelbuilder.Datasource(tmpDsConf){
                         keyMaps.each{key->
                             modelbuilder.Key(key);
                         }

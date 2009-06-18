@@ -226,6 +226,70 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals ("prop4", DataStore.get("getProperty")[0][1]);
     }
 
+    public void testInterceptorWithMappedNameProperty()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]],
+                [name:"datasourceAliasName", keyProperties:[[name:"prop1"]], mappedNameProperty:"prop2"]
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"datasourceAliasName"],
+        [name:"prop4", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"datasourceAliasName", lazy:true]];
+        Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
+
+
+        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+
+
+        def instance = domainClass.newInstance();
+        instance.prop2 = "ds1";
+        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+        assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
+        
+        instance = domainClass.newInstance();
+        instance.prop2 = "ds1";
+        DataStore.put("result", "prop4Value");
+        assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance, "prop4"));
+    }
+
+    public void testInterceptorWithMappedNamePropertyAndDynamicDatasourceProperty()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]],
+                [name:"datasourceAliasName", keyProperties:[[name:"prop1"]], mappedNameProperty:"prop2"]
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop5", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasourceProperty:"prop5"],
+        [name:"prop4", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasourceProperty:"prop5", lazy:true]];
+        Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
+
+
+        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+
+
+        def instance = domainClass.newInstance();
+        instance.prop2 = "ds1";
+        instance.prop5 = "datasourceAliasName";
+        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+        assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
+
+        instance = domainClass.newInstance();
+        instance.prop2 = "ds1";
+        instance.prop5 = "datasourceAliasName";
+        DataStore.put("result", "prop4Value");
+        assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance, "prop4"));
+    }
+
+
     public void testInterceptorFederatedPropertiesWithNonExistingDatasource()
     {
         def modelName = "Model1"
@@ -251,7 +315,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         def modelName = "Model1"
         def datasources = [
                 [name:"RCMDB", keyProperties:[[name:"prop1"]]],
-                [name:"undefinedDatasource", keyProperties:[[name:"prop1"]]]
+                [name:"ds1", keyProperties:[[name:"prop1"]]]
         ]
         def defaultValueForProp2 = "defaultVal"
         def defaultValueForProp3 = "defaultVal"
@@ -318,8 +382,10 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         modelbuilder.Model(name:name){
             modelbuilder.Datasources(){
                 datasources.each{datasource->
-                    modelbuilder.Datasource(name:datasource.name){
-                        datasource.keyProperties.each{Map keyPropConfig->
+                    def tmpDsConf = new HashMap(datasource);
+                    def keys = tmpDsConf.remove("keyProperties");
+                    modelbuilder.Datasource(tmpDsConf){
+                        keys.each{Map keyPropConfig->
                             modelbuilder.Key(propertyName:keyPropConfig.name)
                         }
                     }

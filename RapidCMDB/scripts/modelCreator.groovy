@@ -182,13 +182,24 @@ def getModelXmls()
                                 }
                     }
                     modelDatasources.each {modelDatasource ->
-                        def dsName = modelDatasource.@Name.text();
+                        def dsName = modelDatasource.@Definition.text();
+                        def mappedName = modelDatasource.@Name.text();
+                        def mappedNameProperty = modelDatasource.@NameProperty.text();
+                        def dsConf = [name:dsName]
+                        if(mappedName != null && mappedName != "")
+                        {
+                            dsConf.mappedName = mappedName;
+                        }
+                        else if(mappedNameProperty != null && mappedNameProperty != "")
+                        {
+                            dsConf.mappedNameProperty = mappedNameProperty;    
+                        }
                         def datasourceKeys = modelDatasource.Keys.Key;
-                        modelBuilder.Datasource(name: dsName)
+                        modelBuilder.Datasource(dsConf)
                                 {
                                     datasourceKeys.each {modelDatasourceKey ->
                                         def keyPropName = modelDatasourceKey.@Name.text();
-                                        def keyPropNameInDatasource = modelDatasourceKey.@NameinDatasource.text();
+                                        def keyPropNameInDatasource = modelDatasourceKey.@NameInDatasource.text();
                                         if (keyPropNameInDatasource == null || keyPropNameInDatasource == "")
                                         {
                                             keyPropNameInDatasource = keyPropName;

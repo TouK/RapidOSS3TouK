@@ -33,9 +33,11 @@ class PropertyDatasourceManagerBean implements InitializingBean
     public static BEAN_ID = "propertyDatasourceManager";
     private Map datasourceProperties;
     private Map datasourceKeys;
+    private Map mappedDatasourceNamesConfiguration;
     private Map propertyConfiguration;
     public void afterPropertiesSet()
     {
+        mappedDatasourceNamesConfiguration = new HashMap()
         propertyConfiguration = new HashMap()
         datasourceKeys = new HashMap()
         datasourceProperties = new HashMap()
@@ -53,6 +55,15 @@ class PropertyDatasourceManagerBean implements InitializingBean
         return domainObjectDatasourceKeys[datasourceName];
     }
 
+    public MappedDatasourceName getMappedDatasourceName(Class domainObject, String datasourceName) {
+        def mappedDatasourceNames =  mappedDatasourceNamesConfiguration[domainObject.name]
+        if(mappedDatasourceNames == null)
+        {
+            mappedDatasourceNames = [:]
+            constructMappedDatasourceNames(domainObject, mappedDatasourceNames);
+        }
+        return mappedDatasourceNames[datasourceName];
+    }
     def getPropertyConfiguration(Class domainObject, String propName) {
         return  getPropertyConfigurations(domainObject)[propName];
     }
@@ -125,6 +136,36 @@ class PropertyDatasourceManagerBean implements InitializingBean
             }
         }
     }
+
+    private void constructMappedDatasourceNames(Class domainClass, Map mappedDatasourceNames)
+    {
+        def superClass = domainClass.getSuperclass();
+        if(superClass && superClass != Object.class)
+        {
+            constructMappedDatasourceNames(superClass, mappedDatasourceNames);
+        }
+        def propertyConfigs = GrailsClassUtils.getStaticPropertyValue (domainClass, "datasources");
+        if(propertyConfigs)
+        {
+            propertyConfigs.each{String datasourceName, Map datsourceConfig->
+                def mappedName = datsourceConfig.mappedName
+                boolean isProperty = false;
+                if(mappedName == null)
+                {
+                    mappedName = datsourceConfig.mappedNameProperty;
+                    if(mappedName != null)
+                    {
+                        isProperty = true;
+                    }
+                    else
+                    {
+                        mappedName = datasourceName;
+                    }
+                }
+                mappedDatasourceNames[datasourceName] = new MappedDatasourceName(mappedName, isProperty);
+            }
+        }
+    }
     
     private void constructPropertyConfiguration(Class domainClass, Map propertiesByName)
     {
@@ -147,6 +188,16 @@ class PropertyDatasourceManagerBean implements InitializingBean
     }
 }
 
+class MappedDatasourceName
+{
+    String name;
+    boolean isProperty;
+    public MappedDatasourceName(String name, boolean isProperty)
+    {
+        this.name = name;
+        this.isProperty = isProperty;
+    }
+}
 class DatasourceProperty
 {
     String name;

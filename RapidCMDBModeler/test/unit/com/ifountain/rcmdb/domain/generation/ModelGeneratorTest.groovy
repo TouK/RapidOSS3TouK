@@ -315,11 +315,17 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         def model = new MockModel(name:"Class1");
         def datasource1 = new DatasourceName(name:"ds1-sample");
         def datasource2 = new DatasourceName(name:RapidCMDBConstants.RCMDB);
+        def datasource3 = new DatasourceName(name:"ds3-sample", mappedName:"ds3-sample-mapped-name");
+        def datasource4 = new DatasourceName(name:"ds4-sample", mappedNameProperty:"prop1");
         def modelDatasource1 = new MockModelDatasource(datasource:datasource1, model:model);
         def modelDatasource2 = new MockModelDatasource(datasource:datasource2, model:model);
+        def modelDatasource3 = new MockModelDatasource(datasource:datasource3, model:model);
+        def modelDatasource4 = new MockModelDatasource(datasource:datasource4, model:model);
 
         model.datasources += modelDatasource1;
         model.datasources += modelDatasource2;
+        model.datasources += modelDatasource3;
+        model.datasources += modelDatasource4;
         def prop0 = new ModelProperty(name:"prop1", type:ModelProperty.stringType, model:model, blank:true);
         def prop1 = new ModelProperty(name:"prop2", type:ModelProperty.stringType, model:model);
         def prop2 = new ModelProperty(name:"dsname", type:ModelProperty.stringType, model:model);
@@ -328,11 +334,17 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         model.modelProperties += prop2;
         model.modelProperties += new ModelProperty(name:"prop3", type:ModelProperty.numberType, model:model, propertyDatasource:modelDatasource1, nameInDatasource:"Prop3NameInDs", lazy:false, blank:true);
         model.modelProperties += new ModelProperty(name:"prop4", type:ModelProperty.dateType, model:model, propertySpecifyingDatasource:prop2);
+        model.modelProperties += new ModelProperty(name:"prop5", type:ModelProperty.dateType, model:model, propertyDatasource:modelDatasource3);
+        model.modelProperties += new ModelProperty(name:"prop6", type:ModelProperty.dateType, model:model, propertyDatasource:modelDatasource4);
 
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
         modelDatasource1.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource1);
-        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource1, nameInDatasource:"Prop1KeyNameInDs");
-        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource1);
+        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource2, nameInDatasource:"Prop1KeyNameInDs");
+        modelDatasource2.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource2);
+        modelDatasource3.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource3, nameInDatasource:"Prop1KeyNameInDs");
+        modelDatasource3.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource3);
+        modelDatasource4.keyMappings += new ModelDatasourceKeyMapping(property:prop0, datasource:modelDatasource4, nameInDatasource:"Prop1KeyNameInDs");
+        modelDatasource4.keyMappings += new ModelDatasourceKeyMapping(property:prop1, datasource:modelDatasource4);
 
 
 
@@ -348,6 +360,10 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals(object.class.getDeclaredField("prop3").getType(), Long.class);
         assertEquals(new Date(0), object.prop4);
         assertEquals(object.class.getDeclaredField("prop4").getType(), Date.class);
+        assertEquals(new Date(0), object.prop5);
+        assertEquals(object.class.getDeclaredField("prop5").getType(), Date.class);
+        assertEquals(new Date(0), object.prop6);
+        assertEquals(object.class.getDeclaredField("prop6").getType(), Date.class);
         assertEquals("", object.dsname);
         assertNotNull (object.constraints);
 
@@ -364,9 +380,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("prop2", dsDefinition2.keys["prop2"].nameInDs);
 
         def transients = object.transients;
-        assertEquals (5, transients.size());
+        assertEquals (7, transients.size());
         assertTrue(transients.contains("prop3"));
         assertTrue(transients.contains("prop4"));
+        assertTrue(transients.contains("prop5"));
+        assertTrue(transients.contains("prop6"));
         assertTrue(transients.contains("errors"));
         assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
         assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
@@ -375,9 +393,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
         searchable.setDelegate (closureGetter);
         searchable.call();
-        assertEquals(5, closureGetter.propertiesSetByClosure["except"].size());
+        assertEquals(7, closureGetter.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop3"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop4"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop5"));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop6"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
@@ -393,6 +413,23 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals("dsname", propertyConfiguration["prop4"].datasourceProperty);
         assertNull(propertyConfiguration["prop4"].datasource);
         assertTrue(propertyConfiguration["prop4"].lazy);
+
+        assertEquals("prop5", propertyConfiguration["prop5"].nameInDs);
+        assertEquals(modelDatasource3.datasource.name, propertyConfiguration["prop5"].datasource);
+        assertTrue(propertyConfiguration["prop5"].lazy);
+
+        assertEquals("prop6", propertyConfiguration["prop6"].nameInDs);
+        assertEquals(modelDatasource4.datasource.name, propertyConfiguration["prop6"].datasource);
+        assertTrue(propertyConfiguration["prop6"].lazy);
+
+        assertEquals(modelDatasource1.datasource.name, object.datasources[modelDatasource1.datasource.name].mappedName);
+        assertNull(object.datasources[modelDatasource1.datasource.name].mappedNameProperty);
+        assertEquals(modelDatasource2.datasource.name, object.datasources[modelDatasource2.datasource.name].mappedName);
+        assertNull(object.datasources[modelDatasource2.datasource.name].mappedNameProperty);
+        assertEquals(modelDatasource3.datasource.mappedName, object.datasources[modelDatasource3.datasource.name].mappedName);
+        assertNull(object.datasources[modelDatasource3.datasource.name].mappedNameProperty);
+        assertEquals(modelDatasource4.datasource.mappedNameProperty, object.datasources[modelDatasource4.datasource.name].mappedNameProperty);
+        assertNull(object.datasources[modelDatasource4.datasource.name].mappedName);
     }
 
     public void testGenerateModelWithRelation()

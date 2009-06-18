@@ -81,6 +81,12 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
         {
             realDsName = super.getDomainClassProperty(domainObject, datasourceName);
         }
+        def mappedDatasourceNameConfiguration = bean.getMappedDatasourceName(domainObject.class, realDsName)
+        def baseDatasourceName = mappedDatasourceNameConfiguration.name;
+        if(mappedDatasourceNameConfiguration.isProperty)
+        {
+            baseDatasourceName = super.getDomainClassProperty(domainObject, baseDatasourceName);
+        }
         if (datasourceName) {
             if (requestedPropertyConfiguration.isLazy) {
                 def datsourceKeys = bean.getDatasourceKeys(domainObject.class, realDsName)
@@ -88,7 +94,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                 datsourceKeys.each {DatasourceProperty key ->
                     keys[key.nameInDatasource] = domainObject[key.name];
                 }
-                BaseDatasource datasourceObject = BaseDatasource.get(name: realDsName);
+                BaseDatasource datasourceObject = BaseDatasource.get(name: baseDatasourceName);
                 if(datasourceObject)
                 {
 
@@ -127,7 +133,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                         }
                     }
 
-                    def datasourceObject = BaseDatasource.get(name: realDsName);
+                    def datasourceObject = BaseDatasource.get(name: baseDatasourceName);
                     if(datasourceObject)
                     {
                         Map returnedProps;

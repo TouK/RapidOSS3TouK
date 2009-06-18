@@ -109,6 +109,35 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         assertSame (keysForDs2, keysForDs2ReRequested);
     }
 
+
+    public void testGetMappedDatasourceName()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]],
+                [name:"ds1", keyProperties:[[name:"prop1"], [name:"prop2"]], mappedName:"aDsName"],
+                [name:"ds2", keyProperties:[[name:"prop3"]], mappedNameProperty:"prop1"],
+                [name:"ds3", keyProperties:[[name:"prop3"]]],
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"],
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1"]];
+        def modelClassText = ModelGenerator.getInstance().getModelText(createModel(modelName, null, datasources, properties));
+        def modelClass = gcl.parseClass(modelClassText);
+
+        PropertyDatasourceManagerBean manager = new PropertyDatasourceManagerBean();
+        manager.afterPropertiesSet();
+        def mappedNameForDs1 = manager.getMappedDatasourceName(modelClass, "ds1");
+        def mappedNameForDs2 = manager.getMappedDatasourceName(modelClass, "ds2");
+        def mappedNameForDs3 = manager.getMappedDatasourceName(modelClass, "ds3");
+        assertEquals ("aDsName", mappedNameForDs1.name);
+        assertFalse (mappedNameForDs1.isProperty);
+        assertEquals ("prop1", mappedNameForDs2.name);
+        assertTrue (mappedNameForDs2.isProperty);
+        assertEquals ("ds3", mappedNameForDs3.name);
+        assertFalse (mappedNameForDs3.isProperty);
+    }
+
     public void testIsFederated()
     {
         def modelName = "Model1"
@@ -211,7 +240,9 @@ class PropertyDatasourceManagerTest extends RapidCmdbMockTestCase
         modelbuilder.Model(modelMeta){
             modelbuilder.Datasources(){
                 datasources.each{datasource->
-                    modelbuilder.Datasource(name:datasource.name){
+                    def dsConfig = new HashMap(datasource);
+                    dsConfig.remove ("keyProperties")
+                    modelbuilder.Datasource(dsConfig){
                         datasource.keyProperties.each{Map keyPropConfig->
                             modelbuilder.Key(propertyName:keyPropConfig.name)
                         }

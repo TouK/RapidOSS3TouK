@@ -97,7 +97,7 @@ class AolConnectionImplTests extends RapidCoreTestCase {
             fail("should throw exception")
         }
         catch (ConnectionException e) {
-            assertEquals("java.net.ConnectException: Connection refused: connect", e.getMessage())
+            assertTrue(e.getMessage().indexOf("java.net.ConnectException: Connection refused")>=0);
         }
     }
 

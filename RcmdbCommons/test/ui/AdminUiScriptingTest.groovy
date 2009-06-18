@@ -300,7 +300,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
           def logFile = new File(params.file);
           def log = logFile.getText();
-          return StringUtils.countMatches (log, "Hello from periodic")"""  ;
+          return StringUtils.countMatches (log, "WARN: Hello from periodic")"""  ;
 
         //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
         isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);

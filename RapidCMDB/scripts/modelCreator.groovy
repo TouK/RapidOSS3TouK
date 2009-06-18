@@ -1,4 +1,10 @@
-/* 
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import groovy.xml.MarkupBuilder
+import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
+import org.apache.commons.io.filefilter.SuffixFileFilter
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,13 +22,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import groovy.xml.MarkupBuilder
-import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import org.apache.log4j.Logger
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.filefilter.SuffixFileFilter
-import org.apache.commons.io.filefilter.FalseFileFilter
-
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa seker

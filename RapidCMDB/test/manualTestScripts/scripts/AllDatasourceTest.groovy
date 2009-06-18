@@ -53,7 +53,7 @@ def testDatabaseDatasource(){
         ds.runUpdate("drop table testtable");
     }
     catch(e){}
-    ds.runUpdate("create table testtable (name varchar(50), age varchar(5));");
+    ds.runUpdate("create table testtable (name varchar(50), age varchar(5))");
     ds.runUpdate("insert into testtable values (?,?);",['my name','20']);
     ds.runUpdate("insert into testtable values (?,?);",['your name','30']);
     ds.runUpdate("insert into testtable values (?,?);",['his name','40']);

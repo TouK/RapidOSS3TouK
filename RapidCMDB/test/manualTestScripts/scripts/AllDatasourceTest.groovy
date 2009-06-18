@@ -34,7 +34,7 @@ return "successfully run";
 def generateConnAndDSForDatabase(){
   def conn1 = DatabaseConnection.get(name:CONNAME);
 	if(conn1 == null){
-	    conn1 = DatabaseConnection.add(name:CONNAME, driver:"com.mysql.jdbc.Driver",url:"jdbc:mysql://192.168.1.100/test", username:"root", userPassword:"root",minTimeout:20,maxTimeout:20);
+	    conn1 = DatabaseConnection.add(name:CONNAME, driver:"oracle.jdbc.driver.OracleDriver",url:"jdbc:oracle:thin:@192.168.1.100:1521:xe", username:"system", userPassword:"system",minTimeout:20,maxTimeout:20);
 	}
 	def ds= DatabaseDatasource.get(name:DSNAME);
 	if (ds == null){

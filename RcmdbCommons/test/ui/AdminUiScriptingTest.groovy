@@ -482,9 +482,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=aScript");
 		selenium.waitForPageToLoad("30000");
-
-		selenium.click("_action_Edit");
-		selenium.waitForPageToLoad("30000");
 		selenium.select("logLevel", "label=DEBUG");
 		selenium.click("logFileOwn");
 		selenium.click("_action_Update");

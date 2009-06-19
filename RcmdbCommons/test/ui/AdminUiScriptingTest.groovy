@@ -226,6 +226,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
         // the script will be updated
         selenium.open("/RapidSuite/script/show/" + idValue);
+        selenium.waitForPageToLoad("30000");
         selenium.click("_action_Edit");
         selenium.waitForPageToLoad("30000");
         selenium.click("logFileOwn");
@@ -251,6 +252,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         // the "Hello from cron" entry number will be stored
         stored = newLogValidatorScript();
         selenium.open("/RapidSuite/script/show/" + idValue);
+        selenium.waitForPageToLoad("30000");
 
         // the script will be updated again
         selenium.click("_action_Edit");
@@ -394,6 +396,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
 		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
+		selenium.waitForPageToLoad("30000");
 		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("enabled");
@@ -507,6 +510,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         assertEquals("0", selenium.getText("//body"));
 
 		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
+		selenium.waitForPageToLoad("30000");
 		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("logFileOwn");

@@ -456,25 +456,14 @@ class AdminUiScriptingTest extends SeleniumTestCase
        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
 
-       def scriptContentLog = """ import org.apache.commons.lang.StringUtils
-          def logFile = new File(params.file);
-          def log = logFile.getText();
-          return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:" )
-                """  ;
+       def scriptContentLog = """
+                 import org.apache.commons.lang.StringUtils
+                  def logFile = new File(params.file);
+                  def log = logFile.getText();
+                  return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: \${params.content} staticParameter:" )
+                  """  ;
 
-       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator1.groovy",scriptContentLog);
-
-        scriptContentLog = """
-             import org.apache.commons.lang.StringUtils
-
-              def logFile = new File(params.file);
-              def log = logFile.getText();
-              return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: false staticParameter:" )
-         """  ;
-
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator2.groovy",scriptContentLog);
-
-
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
 
         login()
         newScript()
@@ -506,12 +495,12 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 
         newScript()
-		selenium.type("name", "logValidator1");
+		selenium.type("name", "logValidator");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		String idValueLog1 = selenium.getText("document.getElementById('id')");
+		String idValueLog = selenium.getText("document.getElementById('id')");
 
-		selenium.open("/RapidSuite/script/run/logValidator1?file=logs/aScript.log");
+		selenium.open("/RapidSuite/script/run/logValidator?file=logs/aScript.log&content=true");
         assertNotEquals("0", selenium.getText("//body"));
 
 		selenium.open("/RapidSuite/script/show/" + idValue);
@@ -531,19 +520,16 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 
         newScript()
-		selenium.type("name", "logValidator2");
+		selenium.type("name", "logValidator");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		String idValueLog2 = selenium.getText("document.getElementById('id')");
-		selenium.open("/RapidSuite/script/run/logValidator2?file=logs/RapidServer.log");
+		selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log&content=false");
 		assertNotEquals("0", selenium.getText("//body"));
 
 		deleteScript(idValue)
-        deleteScript(idValueLog1)
-        deleteScript(idValueLog2)
+        deleteScript(idValueLog)
         deleteScriptFile ("aScript.groovy")
-        deleteScriptFile("logValidator1.groovy")
-        deleteScriptFile("logValidator2.groovy")
+        deleteScriptFile("logValidator.groovy")
 
     }
     

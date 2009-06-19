@@ -282,7 +282,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
 
-     public void testAScheduledPeriodicScript()
+    public void atestAScheduledPeriodicScript()
      {
          //creates periodic.groovy in RS_HOME/RapidSuite/scripts folder with the following content
          def scriptContent = """import script.*
@@ -439,10 +439,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
      }
 
 
-     public void atestLoggerParameters()
+     public void testLoggerParameters()
     {
-
-
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
 
@@ -458,19 +456,26 @@ class AdminUiScriptingTest extends SeleniumTestCase
        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
 
-       //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-       def scriptContentLog = """
-         import org.apache.commons.lang.StringUtils
-
+       def scriptContentLog = """ import org.apache.commons.lang.StringUtils
           def logFile = new File(params.file);
           def log = logFile.getText();
-          return StringUtils.countMatches(log,params.content})
-        """  ;
+          return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:" )
+                """  ;
 
-       //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
+       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator1.groovy",scriptContentLog);
 
-        
+        scriptContentLog = """
+             import org.apache.commons.lang.StringUtils
+
+              def logFile = new File(params.file);
+              def log = logFile.getText();
+              return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: false staticParameter:" )
+         """  ;
+
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator2.groovy",scriptContentLog);
+
+
+
         login()
         newScript()
 
@@ -478,7 +483,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
 
-		 
 		selenium.click("link=Script List");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=aScript");
@@ -502,15 +506,15 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 
         newScript()
-		selenium.type("name", "logValidator");
+		selenium.type("name", "logValidator1");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		String idValueLog = selenium.getText("document.getElementById('id')");
+		String idValueLog1 = selenium.getText("document.getElementById('id')");
 
-		selenium.open("/RapidSuite/script/run/logValidator?file=logs/aScript.log%20&%20content=scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:");
-        assertEquals("0", selenium.getText("//body"));
+		selenium.open("/RapidSuite/script/run/logValidator1?file=logs/aScript.log");
+        assertNotEquals("0", selenium.getText("//body"));
 
-		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
+		selenium.open("/RapidSuite/script/show/" + idValue);
 		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("logFileOwn");
@@ -522,34 +526,24 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		verifyEquals("DEBUG", selenium.getText("logLevel"));
 		verifyEquals("false", selenium.getText("logFileOwn"));
 		verifyEquals("OnDemand", selenium.getText("type"));
+
 		selenium.click("_action_Run");
 		selenium.waitForPageToLoad("30000");
 
         newScript()
-		selenium.type("name", "logValidator");
+		selenium.type("name", "logValidator2");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log%20&%20content=scriptName:aScript loglevel: DEBUG useOwnLogger: false staticParameter:");
+		String idValueLog2 = selenium.getText("document.getElementById('id')");
+		selenium.open("/RapidSuite/script/run/logValidator2?file=logs/RapidServer.log");
 		assertNotEquals("0", selenium.getText("//body"));
-		
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-		selenium.open("/RapidSuite/script/show/" + idValueLog);
-        selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-        //deletes script named cron.groovy
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy")
-        if(file.exists())
-            file.delete();
-
-            //deletes script named logValidator.groovy
-        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
-        if(file.exists())
-            file.delete();
+		deleteScript(idValue)
+        deleteScript(idValueLog1)
+        deleteScript(idValueLog2)
+        deleteScriptFile ("aScript.groovy")
+        deleteScriptFile("logValidator1.groovy")
+        deleteScriptFile("logValidator2.groovy")
 
     }
     

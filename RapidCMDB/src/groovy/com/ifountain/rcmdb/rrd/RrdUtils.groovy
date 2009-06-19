@@ -30,10 +30,6 @@ class RrdUtils {
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
 
-
-    public static RrdDef rrdDef;
-    public static RrdDb rrdDb;
-
     public static void createDatabase(Map config) {
         if (!config.containsKey(DATABASE_NAME)) {
             throw new Exception("Database name is not specified");
@@ -46,7 +42,7 @@ class RrdUtils {
             throw new Exception("No archive specified");
         }
 
-        rrdDef = new RrdDef(config.get(DATABASE_NAME));
+        RrdDef rrdDef = new RrdDef(config.get(DATABASE_NAME));
 
         if (config.containsKey(START_TIME) || config.containsKey("${START_TIME}"))
         {
@@ -79,7 +75,7 @@ class RrdUtils {
             throw new Exception("At least one Archive is distorted: " + ex.getMessage())
         }
 
-        rrdDb = new RrdDb(rrdDef);
+        RrdDb rrdDb = new RrdDb(rrdDef);
         rrdDb.close();
     }
 
@@ -126,12 +122,6 @@ class RrdUtils {
         rrdDb.close();
     }
 
-    public static RrdDef getRrdDef() {
-        return rrdDef
-    }
-    public static RrdDb getRrdDb(){ 
-        return rrdDb;
-    }
     public static byte[] graph(Map config){
         return Grapher.graph(config);
     }

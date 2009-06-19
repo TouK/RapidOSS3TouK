@@ -7,6 +7,7 @@ import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
 import org.jrobin.core.Datasource
+import org.apache.commons.io.FileUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,8 +18,13 @@ import org.jrobin.core.Datasource
 */
 class RrdUtilsTests extends RapidCoreTestCase {
 
+    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
     protected void setUp() {
         super.setUp();
+
+        new File(rrdFileName).delete();
+
 
     }
 
@@ -31,8 +37,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
                                             [
@@ -66,22 +72,22 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         RrdUtils.createDatabase(config)
 
-        assertTrue(new File(fileName).exists());
+        assertTrue(new File(rrdFileName).exists());
 
-        RrdDb rrdDb = new RrdDb(fileName);
+        RrdDb rrdDb = new RrdDb(rrdFileName);
         Datasource ds = rrdDb.getDatasource(0);
         assertEquals("testDs",ds.getDsName());
         ds = rrdDb.getDatasource(1);
         assertEquals("testDs2",ds.getDsName());
-
+        rrdDb.close()
     }
 
     public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception{
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
                                             [
@@ -119,7 +125,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         RrdUtils.createDatabase(config)
 
-        assertTrue(new File(fileName).exists());
+        assertTrue(new File(rrdFileName).exists());
+//        rrdDb.close()
     }
 
     public void testCreateDatabaseThrowsExceptionIfConfigMissesProperty() throws Exception {
@@ -132,8 +139,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("Database name is not specified", e.getMessage());
         }
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         try{
             RrdUtils.createDatabase(config)
@@ -166,8 +173,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
                                             [
@@ -216,8 +223,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
                                             [
@@ -333,8 +340,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
                                             [
@@ -360,19 +367,19 @@ class RrdUtilsTests extends RapidCoreTestCase {
         config[RrdUtils.START_TIME] = 978300900;
         RrdUtils.createDatabase(config)
 
-        RrdUtils.updateData(fileName,"978301200:200:1");
-        RrdUtils.updateData(fileName,"978301500:400:4");
-        RrdUtils.updateData(fileName,"978301800:900:5");
-        RrdUtils.updateData(fileName,"978302100:1200:3");
-        RrdUtils.updateData(fileName,"978302400:1400:1");
-        RrdUtils.updateData(fileName,"978302700:1900:2");
-        RrdUtils.updateData(fileName,"978303000:2100:4");
-        RrdUtils.updateData(fileName,"978303300:2400:6");
-        RrdUtils.updateData(fileName,"978303600:2900:4");
-        RrdUtils.updateData(fileName,"978303900:3300:2");
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
 
 
-        FetchRequest fetchRequest = new RrdDb(fileName).createFetchRequest("AVERAGE", 978301200, 978304200);
+        FetchRequest fetchRequest = new RrdDb(rrdFileName).createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
         fetchData.println();
 

@@ -1,7 +1,8 @@
 package com.ifountain.rcmdb.rrd
 
-import com.ifountain.core.test.util.RapidCoreTestCase
+
 import com.ifountain.comp.test.util.file.TestFile
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,28 +10,75 @@ import com.ifountain.comp.test.util.file.TestFile
 * Date: Jun 18, 2009
 * Time: 9:25:20 AM
 */
-class GrapherTest extends RapidCoreTestCase {
+class GrapherTest extends RapidCmdbTestCase {
 
-    public static final String GRAPH_LINE_FILE = TestFile.TESTOUTPUT_DIR + "/expectedLineRrdGraph.gif";
-    public static final String GRAPH_AREA_FILE = TestFile.TESTOUTPUT_DIR + "/expectedAreaRrdGraph.gif"
+    final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
+    final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
+    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
 
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+
+        new File(rrdFileName).delete();
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
+    public void createDatabase()
+    {
 
-     public static void testGraphWithArea() throws Exception{
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"a",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"b",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:100,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+    }
+     public void testGraphWithArea() throws Exception{
+         createDatabase();
+
+        Map config = [:]
+
+
 
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -69,15 +117,17 @@ class GrapherTest extends RapidCoreTestCase {
 
      }
 
-     public static void testGraphWithLine() throws Exception{
+     public void testGraphWithLine() throws Exception{
+        createDatabase();
+
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -118,16 +168,16 @@ class GrapherTest extends RapidCoreTestCase {
 
      }
 
-     public static void testGraphThrowsExceptionIfColorIsNotValid () throws Exception{
+     public void testGraphThrowsExceptionIfColorIsNotValid () throws Exception{
 
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -163,7 +213,7 @@ class GrapherTest extends RapidCoreTestCase {
 
      }
 
-     public static void testGraphThrowsExceptionIfDBNotExistent() throws Exception{
+     public void testGraphThrowsExceptionIfDBNotExistent() throws Exception{
         Map config = [:]
 
         String fileName = TestFile.TESTOUTPUT_DIR + "/thereisnosuchdatabase";
@@ -171,7 +221,7 @@ class GrapherTest extends RapidCoreTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -205,11 +255,11 @@ class GrapherTest extends RapidCoreTestCase {
 
      }
 
-     public static void testGraphThrowsExceptionIfConfigMissesProperty() throws Exception{
+     public void testGraphThrowsExceptionIfConfigMissesProperty() throws Exception{
 
        Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
        try{
             Grapher.graph(config)
@@ -222,7 +272,7 @@ class GrapherTest extends RapidCoreTestCase {
        config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -256,16 +306,16 @@ class GrapherTest extends RapidCoreTestCase {
 
      }
 
-     public static void testGraphThrowsExceptionIfStartTimeIsNotValid() throws Exception{
+     public void testGraphThrowsExceptionIfStartTimeIsNotValid() throws Exception{
 
        Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -300,16 +350,16 @@ class GrapherTest extends RapidCoreTestCase {
        }
      }
 
-     public static void testGraphThrowsExceptionIfEndTimeIsNotValid() throws Exception{
+     public void testGraphThrowsExceptionIfEndTimeIsNotValid() throws Exception{
 
        Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -344,10 +394,10 @@ class GrapherTest extends RapidCoreTestCase {
        }
      }
 
-     public static void testAddDataSourceThrowsExceptionIfNameIsNotSpecified() throws Exception{
+     public void testAddDataSourceThrowsExceptionIfNameIsNotSpecified() throws Exception{
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
@@ -357,7 +407,7 @@ class GrapherTest extends RapidCoreTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -385,10 +435,10 @@ class GrapherTest extends RapidCoreTestCase {
 
     }
 
-     public static void testAddDataSourceThrowsExceptionIfRpnIsNotSpecified() throws Exception{
+     public void testAddDataSourceThrowsExceptionIfRpnIsNotSpecified() throws Exception{
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
@@ -398,7 +448,7 @@ class GrapherTest extends RapidCoreTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: fileName,
+                                                dbname: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -426,10 +476,10 @@ class GrapherTest extends RapidCoreTestCase {
 
     }
 
-     public static void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
+     public   void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
         Map config = [:]
 
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+
 
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
@@ -442,7 +492,7 @@ class GrapherTest extends RapidCoreTestCase {
                                                 like:
                                                 [
                                                     name:"myspeed",
-                                                    dbname: fileName,
+                                                    dbname: rrdFileName,
                                                     dsname: "b",
                                                     function:"AVERAGE"
                                                 ]

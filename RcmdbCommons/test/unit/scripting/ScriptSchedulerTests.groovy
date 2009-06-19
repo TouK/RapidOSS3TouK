@@ -77,9 +77,10 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
     {
         //Wait for next turn
         long threeSecsInNano = (long)(Math.pow(10,9)*3);
-        while(System.nanoTime()%threeSecsInNano >= (long)(Math.pow(10,9)*0.5) || System.nanoTime()%threeSecsInNano <= (long)(Math.pow(10,9)*0.1))
+        long remainingTime=System.nanoTime()%threeSecsInNano;
+        while(remainingTime >= (long)(Math.pow(10,9)*0.5) || remainingTime <= (long)(Math.pow(10,9)*0.1))
         {
-
+            remainingTime=System.nanoTime()%threeSecsInNano;
         }
         def startTime=System.currentTimeMillis()
         println "before schedule : ${System.currentTimeMillis()-startTime}";
@@ -89,7 +90,7 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         println "after sleep 200 : ${System.currentTimeMillis()-startTime}"
         assertEquals(0, executionCount);
         println "before sleep 6500 : ${System.currentTimeMillis()-startTime}"
-        Thread.sleep(6500);
+        Thread.sleep(8000);
         println "after sleep 6500 : ${System.currentTimeMillis()-startTime}"
         assertEquals(2, executionCount);
     }

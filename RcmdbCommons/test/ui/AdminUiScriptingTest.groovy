@@ -85,7 +85,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
 
-    public void atestCreateAnOnDemandScriptByScriptFileName()
+    public void testCreateAnOnDemandScriptByScriptFileName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
@@ -119,7 +119,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void atestCreateAnOnDemandscriptByName()
+    public void testCreateAnOnDemandscriptByName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
@@ -153,7 +153,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
-    public void atestTestAScheduledCronScriptFilesSelTest()
+    public void testTestAScheduledCronScriptFilesSelTest()
     {
         //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """ import script.*
@@ -282,7 +282,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
 
-    public void atestAScheduledPeriodicScript()
+    public void testAScheduledPeriodicScript()
      {
          //creates periodic.groovy in RS_HOME/RapidSuite/scripts folder with the following content
          def scriptContent = """import script.*

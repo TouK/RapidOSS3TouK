@@ -60,17 +60,15 @@ public class RapidCmdbTestCase extends RapidTestCase{
     public String getWorkspacePath() throws Exception
     {
         String canonicalPath = new java.io.File(".").getCanonicalPath();
-        String workspacePath=null;
         //to run in developer pc
         if (canonicalPath.endsWith("RapidModules"))
         {
-            workspacePath= "..";
+            return  "..";
         }
         else    //to run in hudson
         {
-            workspacePath= "../../..";
+            return  "../../..";
         }
-        return workspacePath;
     }
     public java.io.File getWorkspaceDirectory() throws Exception
     {

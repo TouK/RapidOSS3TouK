@@ -59,9 +59,9 @@ class RapidInsightUiTestBuild extends Build {
     def build()
     {
         try {
-//            buildDependentProjects()
-//            clean();
-//            setupRi();
+            buildDependentProjects()
+            clean();
+            setupRi();
             compileUiTestClasses();
 
             if (RI_UNIX_OS)

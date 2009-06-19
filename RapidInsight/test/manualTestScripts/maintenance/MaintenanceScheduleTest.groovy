@@ -15,7 +15,7 @@ def event12 = RsEvent.add(name:"Event12", elementName:objectName)
 def event14 = RsEvent.add(name:"Event14", elementName:objectName)
 
 def startTime = new Date(System.currentTimeMillis()+ 500)
-endTime = new Date(System.currentTimeMillis() + 1200)
+endTime = new Date(System.currentTimeMillis() + 2000)
 def maintSchedule= RsInMaintenanceSchedule.addObjectSchedule(objectName,info,startTime,endTime)
 assert(maintSchedule.info==info)
 assert(maintSchedule.objectName==objectName)
@@ -55,7 +55,10 @@ assert(RsEvent.get(name:event12.name).inMaintenance)
 def event15 = RsEvent.add(name:"Event15", elementName:objectName)
 assert(RsEvent.get(name:event15.name).inMaintenance)
 
-sleep(500)
+
+def remainingTime=endTime.getTime()-System.currentTimeMillis();
+sleep(remainingTime+100);
+
 script.CmdbScript.runScript(maintScheduler) // no longer in maintenance
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==0)
 assert(RsInMaintenanceSchedule.countHits("objectName:${objectName.exactQuery()}")==0)

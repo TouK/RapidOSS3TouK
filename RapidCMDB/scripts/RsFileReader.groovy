@@ -41,11 +41,11 @@ public class RsFileReader{
 	}	
 	
 	// Do not modify unless you have specific needs that require changes to this method.
-	// This method will return you a list of lines appended to the file you are listening to
+	// This method will return you a list of lines appended to the file you are listening to.
+	// Throws exception if file cannot be accessed! Handle exception as needed in the calling script.
 	def getLines(){
 		if (readMode == READONCE) DataStore.remove(filePath);
 		
-		//def t3 = System.currentTimeMillis();
 		def raf = new RandomAccessFile(filePath, "r");
 		def fileLength = raf.length();
 		def previousFileLength = DataStore.get(filePath);
@@ -78,12 +78,7 @@ public class RsFileReader{
 				DataStore.put(filePath,fileLength);
 			}
 		}
-		
-		//def t4 = System.currentTimeMillis();
-		//def readDuration = t4 - t3;
-		//println "READ LINE COUNT: ${lines.size()} in ${readDuration} ms. Lines are: ${lines}";
 		return lines;
-
 	}
 	
 	

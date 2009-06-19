@@ -22,14 +22,13 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static void suiteSetUp(url, browser) {
 
-       // selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(),
-          selenium = new DefaultSelenium("192.168.1.111",
+        selenium = new DefaultSelenium(SeleniumTestUtils.getSeleniumServerHost(),
                 Integer.parseInt(SeleniumTestUtils.getSeleniumServerPort()), browser, url);
         selenium.start();
         selenium.setTimeout("30000");
 
         System.addShutdownHook {
-        // selenium.stop();
+         selenium.stop();
         }
     }
 

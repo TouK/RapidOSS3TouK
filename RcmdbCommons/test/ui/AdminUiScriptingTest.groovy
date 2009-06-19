@@ -335,7 +335,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
                  date = (Date)formatter.parse(secondTime);
                  long SlongDate=date.getTime();
 
-              return SlongDate-FlongDate"""  ;
+              return (SlongDate-FlongDate) """  ;
 
        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/timeController.groovy",scriptContentTime);
 
@@ -392,7 +392,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
         }
 
 
-		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
+		selenium.open("/RapidSuite/script/show/" + idValue);
+		println idValue
 		selenium.waitForPageToLoad("30000");
 		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
@@ -400,7 +401,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.click("_action_Update");
 		selenium.waitForPageToLoad("30000");
 
-		//verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
+		verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
 		verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
 		verifyEquals("false", selenium.getText("enabled"));
 
@@ -463,7 +464,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
           def logFile = new File(params.file);
           def log = logFile.getText();
-          return StringUtils.countMatches( "scriptName:aScript loglevel: DEBUG useOwnLogger: ${params.content} staticParameter:" )
+          return StringUtils.countMatches(log,params.content})
         """  ;
 
        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
@@ -506,7 +507,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 		String idValueLog = selenium.getText("document.getElementById('id')");
 
-		selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/aScript.log%20&%20content=scriptName:aScript%20loglevel:%20DEBUG%20useOwnLogger:%20true%20staticParameter:");
+		selenium.open("/RapidSuite/script/run/logValidator?file=logs/aScript.log%20&%20content=scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:");
         assertEquals("0", selenium.getText("//body"));
 
 		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
@@ -528,7 +529,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.type("name", "logValidator");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log%20&%20content=false");
+		selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log%20&%20content=scriptName:aScript loglevel: DEBUG useOwnLogger: false staticParameter:");
 		assertNotEquals("0", selenium.getText("//body"));
 		
 

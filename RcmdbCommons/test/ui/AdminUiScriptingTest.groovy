@@ -18,10 +18,10 @@ class AdminUiScriptingTest extends SeleniumTestCase
                 SeleniumTestUtils.getSeleniumBrowser());
     }
 
-//    public void tearDown() {
-//        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-//        logout()
-//    }
+    public void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        logout()
+    }
 
 
     private void logout()
@@ -62,7 +62,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
     }
 
-    private void   isScriptExists(String path,String scriptContent)
+    private void createScriptFile(String path,String scriptContent)
     {
         File file = new File(path)
         if(file.exists())
@@ -71,8 +71,22 @@ class AdminUiScriptingTest extends SeleniumTestCase
     }
 
 
+    private void deleteScriptFile(String name)
+    {
+       File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/${name}")
+        if(file.exists())
+            file.delete();
+    }
 
-    public void testCreateAnOnDemandScriptByScriptFileName()
+    private void deleteScript(String id){
+        selenium.open("/RapidSuite/script/show/${id}");
+		selenium.click("_action_Delete");
+		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
+    }
+
+
+
+    public void atestCreateAnOnDemandScriptByScriptFileName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
@@ -85,7 +99,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
              return resp """  ;
 
         //checkes a script named aScript.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
         newScript();
@@ -101,19 +115,12 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
         String idValue = selenium.getText("document.getElementById('id')");
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-        //deletes script named aScript.groovy
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy")
-        if(file.exists())
-            file.delete();
-
+        deleteScript(idValue)
+        deleteScriptFile("aScript.groovy")
     }
 
 
-    public void testCreateAnOnDemandscriptByName()
+    public void atestCreateAnOnDemandscriptByName()
     {
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
@@ -126,7 +133,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
              return resp """  ;
 
         //checkes a script named aScript.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
         login();
         newScript();
@@ -142,18 +149,12 @@ class AdminUiScriptingTest extends SeleniumTestCase
         verifyEquals("OnDemand", selenium.getText("identifier=type"));
         String idValue = selenium.getText("document.getElementById('id')");
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-        //deletes script named aScript.groovy
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy")
-        if(file.exists())
-            file.delete();
+        deleteScript(idValue)
+        deleteScriptFile("aScript.groovy")
     }
 
 
-    public void testTestAScheduledCronScriptFilesSelTest()
+    public void atestTestAScheduledCronScriptFilesSelTest()
     {
         //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """ import script.*
@@ -164,7 +165,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
                """  ;
 
         //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContent);
 
 
         //creates cron.groovy in RS_HOME/RapidSuite/scripts folder with the following content
@@ -179,7 +180,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
                  """  ;
 
         //checkes a script named cron.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy",scriptContentTwo);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy",scriptContentTwo);
 
         // test a scheduled cron script
         login();
@@ -272,27 +273,12 @@ class AdminUiScriptingTest extends SeleniumTestCase
         
         // if RapidServer.log has no new entries test will pass
         assertTrue(selenium.isTextPresent(stored));
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.waitForPageToLoad("30000");
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
+        deleteScript(idValue)
+        deleteScript(idValueLog)
 
-		selenium.open("/RapidSuite/script/show/" + idValueLog);
-		selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-        //deletes script named cron.groovy
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy")
-        if(file.exists())
-            file.delete();
-
-        //deletes script named logValidator.groovy
-        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
-        if(file.exists())
-            file.delete();
-
+        deleteScriptFile("cron.groovy")
+        deleteScriptFile("logValidator.groovy")
     }
 
 
@@ -311,7 +297,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         return resp """  ;
 
         //checkes a script named periodic.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy",scriptContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy",scriptContent);
 
 
         //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
@@ -322,7 +308,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
           return StringUtils.countMatches (log, "WARN: Hello from periodic")"""  ;
 
         //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-        isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
 
 
             def scriptContentTime = """      import java.text.SimpleDateFormat;
@@ -351,7 +337,8 @@ class AdminUiScriptingTest extends SeleniumTestCase
                  long SlongDate=date.getTime();
 
               return SlongDate-FlongDate"""  ;
-       isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/timeController.groovy",scriptContentTime);
+
+       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/timeController.groovy",scriptContentTime);
 
         login();
         newScript();
@@ -359,7 +346,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.type("name", "scheduled1");
 		selenium.type("scriptFile", "periodic");
 		selenium.select("type", "label=Scheduled");
-		selenium.type("period", "10");
+		selenium.type("period", "5");
 		selenium.type("staticParam", "Hello from periodic");
 		selenium.click("enabled");
 		selenium.click("//input[@value='Create']");
@@ -374,18 +361,24 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		verifyEquals("Scheduled", selenium.getText("type"));
 		verifyEquals("Periodic", selenium.getText("scheduleType"));
 		verifyEquals("0", selenium.getText("startDelay"));
-		verifyEquals("10", selenium.getText("period"));
+		verifyEquals("5", selenium.getText("period"));
 		verifyEquals("true", selenium.getText("enabled"));
 		String idValue = selenium.getText("document.getElementById('id')");
 
 
 		int store =   Integer.parseInt(newLogValidatorScript())+2
-	    selenium.open("/RapidSuite/script/list");
 		String stored = store.toString()
 
-		Thread.sleep(20000);
+        newScript();
+        selenium.type("name", "logValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        String idValueLog = selenium.getText("document.getElementById('id')");
 
-	    String str = newLogValidatorScript()
+		Thread.sleep(10000);
+
+        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+	    String str = selenium.getText("//body");
 
 		if(str!=stored)
         {
@@ -393,8 +386,10 @@ class AdminUiScriptingTest extends SeleniumTestCase
             selenium.type("name", "timeController");
             selenium.click("//input[@value='Create']");
             selenium.waitForPageToLoad("30000");
+            String idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyEquals("10000", selenium.getText("//body"));
+            verifyEquals("5000", selenium.getText("//body"));
+            deleteScript(idValueTime)
         }
 
 
@@ -405,48 +400,44 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.click("_action_Update");
 		selenium.waitForPageToLoad("30000");
 
-		verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
+		//verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
 		verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
 		verifyEquals("false", selenium.getText("enabled"));
 
         stored =newLogValidatorScript()
-        selenium.open("/RapidSuite/script/list");
 
-		Thread.sleep(20000);
-		str = newLogValidatorScript()
+        newScript();
+        selenium.type("name", "logValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+
+		Thread.sleep(10000);
+
+        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
+	    str = selenium.getText("//body");
+
 		if(str!=stored)
         {
             newScript();
             selenium.type("name", "timeController");
             selenium.click("//input[@value='Create']");
             selenium.waitForPageToLoad("30000");
+            String idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyNotEquals("10000", selenium.getText("//body"));
+            verifyNotEquals("5000", selenium.getText("//body"));
+            deleteScript(idValueTime)
         }
 
+        deleteScript(idValue)
+        deleteScript(idValueLog)
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-		selenium.click("_action_Delete");
-		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-
-         //deletes script named cron.groovy
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/timeController.groovy")
-        if(file.exists())
-            file.delete();
-
-        //deletes script named cron.groovy
-        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy")
-        if(file.exists())
-            file.delete();
-
-        //deletes script named logValidator.groovy
-        file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
-        if(file.exists())
-            file.delete();
+        deleteScriptFile("timeController.groovy")
+        deleteScriptFile("periodic.groovy")
+        deleteScriptFile("logValidator.groovy")
      }
 
 
-     public void testLoggerParameters()
+     public void atestLoggerParameters()
     {
 
 
@@ -462,7 +453,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             return resp"""  ;
 
        //checkes a script named aScript.groovy exists, if not creates a new one with specified content
-       isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
+       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy",scriptContent);
 
 
        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
@@ -473,7 +464,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
           return StringUtils.countMatches(log, params.content)"""  ;
 
        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-       isScriptExists("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
+       createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
 
         
         login()
@@ -551,7 +542,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         if(file.exists())
             file.delete();
 
-        //deletes script named logValidator.groovy
+            //deletes script named logValidator.groovy
         file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy")
         if(file.exists())
             file.delete();

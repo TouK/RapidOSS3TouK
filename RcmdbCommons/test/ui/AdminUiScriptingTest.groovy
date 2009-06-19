@@ -73,13 +73,13 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     private void deleteScriptFile(String name)
     {
-       File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/${name}")
+       File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/" + name)
         if(file.exists())
             file.delete();
     }
 
     private void deleteScript(String id){
-        selenium.open("/RapidSuite/script/show/${id}");
+        selenium.open("/RapidSuite/script/show/"+id);
 		selenium.click("_action_Delete");
 		assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
     }
@@ -226,7 +226,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
         // the script will be updated
         selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.waitForPageToLoad("30000");
         selenium.click("_action_Edit");
         selenium.waitForPageToLoad("30000");
         selenium.click("logFileOwn");
@@ -252,7 +251,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
         // the "Hello from cron" entry number will be stored
         stored = newLogValidatorScript();
         selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.waitForPageToLoad("30000");
 
         // the script will be updated again
         selenium.click("_action_Edit");
@@ -382,16 +380,16 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
 	    String str = selenium.getText("//body");
 
+        String idValueTime="*"
 		if(str!=stored)
         {
             newScript();
             selenium.type("name", "timeController");
             selenium.click("//input[@value='Create']");
             selenium.waitForPageToLoad("30000");
-            String idValueTime = selenium.getText("document.getElementById('id')")
+            idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
             verifyEquals("5000", selenium.getText("//body"));
-            deleteScript(idValueTime)
         }
 
 
@@ -425,14 +423,15 @@ class AdminUiScriptingTest extends SeleniumTestCase
             selenium.type("name", "timeController");
             selenium.click("//input[@value='Create']");
             selenium.waitForPageToLoad("30000");
-            String idValueTime = selenium.getText("document.getElementById('id')")
+            idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
             verifyNotEquals("5000", selenium.getText("//body"));
-            deleteScript(idValueTime)
         }
 
         deleteScript(idValue)
         deleteScript(idValueLog)
+        if(!idValueTime.equals("*"))
+            deleteScript(idValueTime)
 
         deleteScriptFile("timeController.groovy")
         deleteScriptFile("periodic.groovy")
@@ -460,11 +459,13 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-       def scriptContentLog = """  import org.apache.commons.lang.StringUtils
+       def scriptContentLog = """
+         import org.apache.commons.lang.StringUtils
 
           def logFile = new File(params.file);
           def log = logFile.getText();
-          return StringUtils.countMatches(log, params.content)"""  ;
+          return StringUtils.countMatches( "scriptName:aScript loglevel: DEBUG useOwnLogger: ${params.content} staticParameter:" )
+        """  ;
 
        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy",scriptContentLog);
@@ -481,6 +482,9 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.click("link=Script List");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=aScript");
+		selenium.waitForPageToLoad("30000");
+
+		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
 		selenium.select("logLevel", "label=DEBUG");
 		selenium.click("logFileOwn");
@@ -507,7 +511,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
         assertEquals("0", selenium.getText("//body"));
 
 		selenium.open("http://localhost:12222/RapidSuite/script/show/" + idValue);
-		selenium.waitForPageToLoad("30000");
 		selenium.click("_action_Edit");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("logFileOwn");
@@ -526,9 +529,9 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.type("name", "logValidator");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log%20&%20content=scriptName:aScript%20loglevel:%20DEBUG%20useOwnLogger:%20false%20staticParameter:");
+		selenium.open("http://localhost:12222/RapidSuite/script/run/logValidator?file=logs/RapidServer.log%20&%20content=false");
 		assertNotEquals("0", selenium.getText("//body"));
-
+		
 
         selenium.open("/RapidSuite/script/show/" + idValue);
         selenium.click("_action_Delete");

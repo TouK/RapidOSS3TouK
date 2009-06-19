@@ -45,38 +45,46 @@ public class RsFileReader{
 	// Throws exception if file cannot be accessed! Handle exception as needed in the calling script.
 	def getLines(){
 		if (readMode == READONCE) DataStore.remove(filePath);
-		
-		def raf = new RandomAccessFile(filePath, "r");
-		def fileLength = raf.length();
-		def previousFileLength = DataStore.get(filePath);
 		def  lines = [];
-		def inputFile = new File(filePath);
-
-		if(previousFileLength == null){	// first time reading the file
-			if(readMode == TAIL){
-				DataStore.put(filePath,fileLength);
-				return lines;
+		def raf;
+		try{
+			raf = new RandomAccessFile(filePath, "r");
+			def fileLength = raf.length();
+			def previousFileLength = DataStore.get(filePath);
+			def inputFile = new File(filePath);
+	
+			if(previousFileLength == null){	// first time reading the file
+				if(readMode == TAIL){
+					DataStore.put(filePath,fileLength);
+					return lines;
+				}
+				else{
+					lines = inputFile.readLines();	
+					DataStore.put(filePath,fileLength);
+				}
 			}
 			else{
-				lines = inputFile.readLines();	
-				DataStore.put(filePath,fileLength);
+				if(fileLength < previousFileLength){  // file rolled, we will read from the start
+					lines = inputFile.readLines();
+					DataStore.put(filePath,fileLength);
+				}
+				else if(fileLength == previousFileLength){ // no appends to the file
+					return lines;
+				}
+				else{
+					raf.seek(previousFileLength);
+					while (raf.getFilePointer() < raf.length()) {
+						lines.add(raf.readLine());
+					}
+					DataStore.put(filePath,fileLength);
+				}
 			}
 		}
-		else{
-			if(fileLength < previousFileLength){  // file rolled, we will read from the start
-				lines = inputFile.readLines();
-				DataStore.put(filePath,fileLength);
-			}
-			else if(fileLength == previousFileLength){ // no appends to the file
-				return lines;
-			}
-			else{
-				raf.seek(previousFileLength);
-				while (raf.getFilePointer() < raf.length()) {
-					lines.add(raf.readLine());
-				}
-				DataStore.put(filePath,fileLength);
-			}
+		catch(Exception e){
+			logger.error(e.getMessage());
+		}
+		finally{
+			if(raf!=null) raf.close();
 		}
 		return lines;
 	}

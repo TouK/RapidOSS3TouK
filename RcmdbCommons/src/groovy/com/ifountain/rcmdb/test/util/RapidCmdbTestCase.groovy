@@ -46,23 +46,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
         IdCache.initialize (10000);
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
-    public String getWorkspacePath()
-    {
-        def canonicalPath = new File(".").getCanonicalPath();
-        //to run in developer pc
-        if (canonicalPath.endsWith("RapidModules"))
-        {
-            return "..";
-        }
-        else    //to run in hudson
-        {
-            return "../../..";
-        }
-    }
-    public File getWorkspaceDirectory()
-    {
-        return new File(getWorkspacePath());
-    }
+    
 
     protected void tearDown() {
         System.setProperty("base.dir", defaultBaseDir);

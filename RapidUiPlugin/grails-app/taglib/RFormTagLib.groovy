@@ -57,6 +57,7 @@ class RFormTagLib {
         def componentId = attrs.remove("componentId");
         def formId=attrs.remove("formId");
         def useDefaultButtons=attrs.remove("useDefaultButtons");
+        def submitConfirmation=attrs.remove("submitConfirmation");
         def configAttrs=[:];
         if(formId)
         {
@@ -72,6 +73,9 @@ class RFormTagLib {
             {
                 configAttrs["useDefaultButtons"]="true";
             }
+        }
+        if(submitConfirmation){
+             configAttrs["submitConfirmation"]="\"${submitConfirmation.encodeAsJavaScript()}\"";
         }
 
         def configJs="";

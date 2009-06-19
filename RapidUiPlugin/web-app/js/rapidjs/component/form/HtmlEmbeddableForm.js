@@ -8,6 +8,7 @@ YAHOO.rapidjs.component.HtmlEmbeddableForm = function(container, config, htmlCom
         id=configClone["id"];
     }
     this.useDefaultButtons=true;
+    this.submitConfirmation = configClone.submitConfirmation;
     if(configClone["useDefaultButtons"]!=null)
     {
        if(configClone["useDefaultButtons"]==false)
@@ -179,7 +180,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     },
 
     submit: function() {
-        var oForm = this.form,
+        if(!this.submitConfirmation || eval('(' + this.submitConfirmation + ')')){
+            var oForm = this.form,
                 bUseFileUpload = false,
                 bUseSecureFileUpload = false,
                 aElements,
@@ -213,7 +215,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         var formAttrs = this._getFormAttributes(oForm);
         this.showMask();
         YAHOO.util.Connect.setForm(oForm, bUseFileUpload, bUseSecureFileUpload);
-        YAHOO.util.Connect.asyncRequest(formAttrs.method, formAttrs.action, callback);
+        YAHOO.util.Connect.asyncRequest(formAttrs.method, formAttrs.action, callback);    
+        }
+
     },
     isSecure: function () {
         if (window.location.href.toLowerCase().indexOf("https") === 0) {

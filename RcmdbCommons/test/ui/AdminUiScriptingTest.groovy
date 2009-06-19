@@ -42,7 +42,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
     private String newLogValidatorScript()
     {
         newScript();
-        String str = "RapidServer.log";
         selenium.type("name", "logValidator");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
@@ -346,7 +345,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		selenium.type("name", "scheduled1");
 		selenium.type("scriptFile", "periodic");
 		selenium.select("type", "label=Scheduled");
-		selenium.type("period", "5");
+		selenium.type("period", "10");
 		selenium.type("staticParam", "Hello from periodic");
 		selenium.click("enabled");
 		selenium.click("//input[@value='Create']");
@@ -361,7 +360,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 		verifyEquals("Scheduled", selenium.getText("type"));
 		verifyEquals("Periodic", selenium.getText("scheduleType"));
 		verifyEquals("0", selenium.getText("startDelay"));
-		verifyEquals("5", selenium.getText("period"));
+		verifyEquals("10", selenium.getText("period"));
 		verifyEquals("true", selenium.getText("enabled"));
 		String idValue = selenium.getText("document.getElementById('id')");
 
@@ -375,7 +374,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
         String idValueLog = selenium.getText("document.getElementById('id')");
 
-		Thread.sleep(10000);
+		Thread.sleep(20000);
 
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
 	    String str = selenium.getText("//body");
@@ -389,7 +388,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             selenium.waitForPageToLoad("30000");
             idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyEquals("5000", selenium.getText("//body"));
+            verifyEquals("10000", selenium.getText("//body"));
         }
 
 
@@ -412,7 +411,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
 
-		Thread.sleep(10000);
+		Thread.sleep(20000);
 
         selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
 	    str = selenium.getText("//body");
@@ -425,7 +424,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             selenium.waitForPageToLoad("30000");
             idValueTime = selenium.getText("document.getElementById('id')")
             selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyNotEquals("5000", selenium.getText("//body"));
+            verifyNotEquals("10000", selenium.getText("//body"));
         }
 
         deleteScript(idValue)

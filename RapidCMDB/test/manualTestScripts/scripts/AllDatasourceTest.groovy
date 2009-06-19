@@ -24,6 +24,9 @@ CONNAME = "mysql";
 DSNAME = "ds1";
 STDSNAME = "stds1";
 
+
+
+              
 generateConnAndDSForDatabase();
 testDatabaseDatasource();
 testSingleTableDatabaseDatasource();
@@ -54,11 +57,11 @@ def testDatabaseDatasource(){
     }
     catch(e){}
     ds.runUpdate("create table testtable (name varchar(50), age varchar(5))");
-    ds.runUpdate("insert into testtable values (?,?);",['my name','20']);
-    ds.runUpdate("insert into testtable values (?,?);",['your name','30']);
-    ds.runUpdate("insert into testtable values (?,?);",['his name','40']);
+    ds.runUpdate("insert into testtable values (?,?)",['my name','20']);
+    ds.runUpdate("insert into testtable values (?,?)",['your name','30']);
+    ds.runUpdate("insert into testtable values (?,?)",['his name','40']);
 
-    def records = ds.runQuery("select * from testtable where name=\"my name\";");
+    def records = ds.runQuery("select * from testtable where name='my name' ");
     assert records[0].age=="20";
 }
 
@@ -72,11 +75,11 @@ def testSingleTableDatabaseDatasource(){
     println records;
     assert records.size() == 3;
 
-    records = ds.getRecords("age>\"30\"");
+    records = ds.getRecords("age>'30'");
     println records;
     assert records[0].age=="40";
 
-    records = ds.getRecords("age>\"30\"",["name"]);
+    records = ds.getRecords("age>'30'",["name"]);
     println records;
     assert records[0].name=="his name";
 
@@ -96,10 +99,10 @@ def testSingleTableDatabaseDatasource(){
         ds.runUpdate("drop table testtable");
     }
     catch(e){}
-    ds.runUpdate("create table testtable (name varchar(50), age varchar(5));");
-    ds.runUpdate("insert into testtable values (?,?);",['my name','20']);
-    ds.runUpdate("insert into testtable values (?,?);",['your name','30']);
-    ds.runUpdate("insert into testtable values (?,?);",['his name','40']);
+    ds.runUpdate("create table testtable (name varchar(50), age varchar(5))");
+    ds.runUpdate("insert into testtable values (?,?)",['my name','20']);
+    ds.runUpdate("insert into testtable values (?,?)",['your name','30']);
+    ds.runUpdate("insert into testtable values (?,?)",['his name','40']);
 
     //records = ds.runQuery("select * from testtable where name=\"my name\";");
     records = ds.runQuery("select * from testtable where name=?",["my name"]);

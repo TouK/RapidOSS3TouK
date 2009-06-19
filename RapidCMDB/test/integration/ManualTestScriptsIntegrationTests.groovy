@@ -35,9 +35,8 @@ class ManualTestScriptIntegrationTests extends RapidCmdbIntegrationTestCase
     {
         def scriptName="AllDatasourceTest";
         copyScript(scriptName);
-        def script=CmdbScript.addScript([name:scriptName,type: CmdbScript.ONDEMAND],true)
-        println script.errors
-        assertFalse(script.hasErrors());
+        def script=CmdbScript.addScript([name:scriptName,type: CmdbScript.ONDEMAND],true)        
+        assertFalse(script.errors.toString(),script.hasErrors());
 
         try{
             def result=CmdbScript.runScript(script,[:]);

@@ -28,7 +28,7 @@ class SeleniumTestCase extends SeleneseTestCase {
         selenium.setTimeout("30000");
 
         System.addShutdownHook {
-            selenium.stop();
+          selenium.stop();
         }
     }
 

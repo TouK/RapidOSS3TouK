@@ -1,4 +1,6 @@
-/* 
+import com.ifountain.core.connection.DefaultTimeoutStrategy
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,9 +18,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
-import com.ifountain.core.connection.DefaultTimeoutStrategy
-
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 

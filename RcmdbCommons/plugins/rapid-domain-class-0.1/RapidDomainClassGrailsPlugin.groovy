@@ -1,4 +1,25 @@
-/* 
+import com.ifountain.rcmdb.domain.IdGenerator
+import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
+import com.ifountain.rcmdb.domain.constraints.KeyConstraint
+import com.ifountain.rcmdb.domain.method.*
+import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import com.ifountain.rcmdb.domain.property.*
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
+import com.ifountain.rcmdb.methods.MethodFactory
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import groovy.xml.MarkupBuilder
+import java.lang.reflect.Field
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.*
+import org.codehaus.groovy.grails.validation.ConstrainedProperty
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.Errors
+import org.springframework.validation.FieldError
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,38 +37,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import com.ifountain.rcmdb.domain.IdGenerator
-import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
-import com.ifountain.rcmdb.domain.constraints.KeyConstraint
-import com.ifountain.rcmdb.domain.method.AsMapMethod
-import com.ifountain.rcmdb.domain.method.ReloadOperationsMethod
-import com.ifountain.rcmdb.domain.operation.DomainOperationManager
-import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptor
-import com.ifountain.rcmdb.domain.property.DomainClassPropertyInterceptorFactoryBean
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import groovy.xml.MarkupBuilder
-import java.lang.reflect.Field
-import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.codehaus.groovy.grails.commons.ControllerArtefactHandler
-import org.codehaus.groovy.grails.commons.GrailsClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.validation.ConstrainedProperty
-import org.springframework.validation.BeanPropertyBindingResult
-import org.springframework.validation.Errors
-import org.springframework.validation.FieldError
-import org.codehaus.groovy.grails.commons.GrailsClassUtils
-import com.ifountain.rcmdb.domain.property.RelationUtils
-import com.ifountain.rcmdb.domain.method.GetPropertiesMethod
-import com.ifountain.rcmdb.domain.method.KeySetMethod
-import com.ifountain.rcmdb.domain.method.GetOperationsMethod
-import com.ifountain.rcmdb.methods.MethodFactory
-import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
-import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
-import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
-import com.ifountain.rcmdb.domain.method.GetRootClassMethod
-
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = [:]
     static{
@@ -69,6 +58,9 @@ class RapidDomainClassGrailsPlugin {
         domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) { bean ->
             propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME);
             classLoader = application.getClassLoader()
+        }
+        propertyDatasourceManager(PropertyDatasourceManagerBean)
+        {
         }
         DomainClassDefaultPropertyValueHolder.initialize (application.domainClasses.clazz);
     }
@@ -193,9 +185,9 @@ class RapidDomainClassGrailsPlugin {
     }
     def addOperationsSupport(GrailsDomainClass dc, application, ctx)
     {
-        GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc);
-
-        KeySetMethod keySetMethod = new KeySetMethod(dc);
+        FederatedPropertyManager impl = ctx.getBean(PropertyDatasourceManagerBean.BEAN_ID)
+        GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc, impl);
+        KeySetMethod keySetMethod = new KeySetMethod(dc, impl);
         GetRootClassMethod getRootClassMethod = new GetRootClassMethod(dc, application.getDomainClasses());
         MetaClass mc = dc.metaClass;
         GetOperationsMethod getOperationsMethod = new GetOperationsMethod(mc);

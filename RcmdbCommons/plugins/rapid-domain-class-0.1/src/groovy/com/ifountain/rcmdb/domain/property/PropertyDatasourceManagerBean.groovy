@@ -28,7 +28,7 @@ import org.codehaus.groovy.grails.commons.GrailsClassUtils
  * Time: 10:17:05 AM
  * To change this template use File | Settings | File Templates.
  */
-class PropertyDatasourceManagerBean implements InitializingBean
+class PropertyDatasourceManagerBean implements InitializingBean, FederatedPropertyManager
 {
     public static BEAN_ID = "propertyDatasourceManager";
     private Map datasourceProperties;

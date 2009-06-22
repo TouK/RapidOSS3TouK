@@ -45,7 +45,7 @@ class KeySetMethodTest extends RapidCmdbTestCase{
     {
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
         GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
-        KeySetMethod method = new KeySetMethod(cls);
+        KeySetMethod method = new KeySetMethod(cls, new FederatedPropertyManagerImpl());
         List keys = method.getKeys();
         assertEquals(3, keys.size());
 

@@ -34,9 +34,9 @@ class ModelGenerationTestUtils {
     public static boolean isInitialized = false;
     //replacement paremeter is a list of list. It will replace the specified regular expression with specified text
     //for example replacement = [["constraints\\s{", "constraints{prop1(nullable:false)"]] 
-    public static String getModelText(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations, List replacements)
+    public static String getModelText(Map modelDefinitionProperties, List datasources, List modelProperties, List keyProperties, List relations, List replacements)
     {
-        String modelXml = createModel(modelDefinitionProperties, modelProperties, keyProperties, relations);
+        String modelXml = createModel(modelDefinitionProperties, datasources, modelProperties, keyProperties, relations);
         String modelString = getModelGenerator().getModelText(modelXml)
         replacements.each{List replacementInfo->
             String replacedText = replacementInfo[0];
@@ -47,7 +47,11 @@ class ModelGenerationTestUtils {
     }
     public static String getModelText(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations)
     {
-        return getModelText(modelDefinitionProperties, modelProperties, keyProperties, relations, null);
+        return getModelText(modelDefinitionProperties, [], modelProperties, keyProperties, relations);
+    }
+    public static String getModelText(Map modelDefinitionProperties, List datsources, List modelProperties, List keyProperties, List relations)
+    {
+        return getModelText(modelDefinitionProperties, datsources, modelProperties, keyProperties, relations, null);
     }
     private static ModelGenerator getModelGenerator()
     {
@@ -66,7 +70,7 @@ class ModelGenerationTestUtils {
         return ModelGenerator.getInstance();
 
     }
-    def static createModel(Map modelDefinitionProperties, List modelProperties, List keyProperties, List relations)
+    def static createModel(Map modelDefinitionProperties, List datasources, List modelProperties, List keyProperties, List relations)
     {
         def model = new StringWriter();
         def modelbuilder = new MarkupBuilder(model);
@@ -75,6 +79,15 @@ class ModelGenerationTestUtils {
                 modelbuilder.Datasource(name:"RCMDB"){
                     keyProperties.each{Map keyPropConfig->
                         modelbuilder.Key(propertyName:keyPropConfig.name)
+                    }
+                }
+                datasources.each{Map datasource->
+                    def dsProps = new HashMap(datasource);
+                    def keys = dsProps.remove("keys")
+                    modelbuilder.Datasource(dsProps){
+                        keys.each{keyPropConfig->
+                            modelbuilder.Key(propertyName:keyPropConfig.propertyName, nameInDs:keyPropConfig.nameInDatasource)
+                        }
                     }
                 }
             }
@@ -96,4 +109,5 @@ class ModelGenerationTestUtils {
         }
         return model.toString();
     }
+
 }

@@ -39,7 +39,19 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertNotNull (objectInRepo);
         
         addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
+        println addedObject.errors
         assertFalse(addedObject.hasErrors());
+    }
+
+
+    public void testAddMethodWithFederatedProperty()
+    {
+        Map classes = initializePluginAndClassesForFederationTest();
+        def addedObjectProps = [keyProp:"key", prop1:"prop1Value", prop2:"invalid date prop value"]
+        def addedObject = classes.federatedModel.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+        def objectInRepo = classes.federatedModel.search("id:${addedObject.id}").results[0];
+        assertNotNull (objectInRepo);
     }
 
 
@@ -298,10 +310,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def relatedModelMetaProps = [name: relatedModelName]
         def modelProps = [keyProp, prop1];
         def keyPropList = [keyProp];
-        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, modelProps, keyPropList, [], additionalParts["parent"])
-        String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [rel1], additionalParts["child"])
-        String childModel2String = ModelGenerationTestUtils.getModelText(childModel2MetaProps, [], [], [rel1], additionalParts["child2"])
-        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, modelProps, keyPropList, [revrel1], additionalParts["related"])
+        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, [], modelProps, keyPropList, [], additionalParts["parent"])
+        String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [], [rel1], additionalParts["child"])
+        String childModel2String = ModelGenerationTestUtils.getModelText(childModel2MetaProps, [], [], [], [rel1], additionalParts["child2"])
+        String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [], modelProps, keyPropList, [revrel1], additionalParts["related"])
         String modelWithDateKeyPropString = ModelGenerationTestUtils.getModelText(modelWithDateKeyPropMetaData, [dateProp], [dateProp], [])
         this.gcl.parseClass(parentModelString + childModelString + relatedModelString + childModel2String+modelWithDateKeyPropString);
         Class parentModelClass = this.gcl.loadClass(parentModelName);
@@ -311,6 +323,25 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         Class modelWithDateKeyPropClass = this.gcl.loadClass(modelWithDateKeyPropName);
         initialize([parentModelClass, childModelClass, relatedModelClass, childModel2Class, modelWithDateKeyPropClass], [], isPersisted)
         return [parent: parentModelClass, child: childModelClass, related: relatedModelClass, child2: childModel2Class, modelWithDateKeyProp:modelWithDateKeyPropClass];
+    }
+
+    private Map initializePluginAndClassesForFederationTest()
+    {
+        def modelName = "FederatedModel";
+        def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE, blank: false];
+        def prop2 = [name: "prop2", type: ModelGenerator.DATE_TYPE, blank: false, datasource:"ds1"];
+
+        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+
+        def modelMetaProps = [name: modelName]
+        def modelProps = [keyProp, prop1, prop2];
+        def keyPropList = [keyProp];
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, [datasource], modelProps, keyPropList, [])
+        this.gcl.parseClass(modelString);
+        Class modelClass = this.gcl.loadClass(modelName);
+        initialize([modelClass], [], false)
+        return [federatedModel: modelClass];
     }
 
 }

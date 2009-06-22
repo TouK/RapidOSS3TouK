@@ -12,6 +12,7 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.converter.DateConverter
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.codehaus.groovy.grails.validation.BlankConstraint
+import com.ifountain.rcmdb.domain.method.FederatedPropertyManagerImpl
 
 /**
 * Created by IntelliJ IDEA.
@@ -85,7 +86,7 @@ class DesignerUtilsTest extends RapidCmdbWithCompassTestCase{
                 "undefinedProperty":undefinedPropertyConf
         ]
         DefaultGrailsDomainClass grailsDomainClass = new DefaultGrailsDomainClass(model1Class);
-        GetPropertiesMethod method = new GetPropertiesMethod(grailsDomainClass);
+        GetPropertiesMethod method = new GetPropertiesMethod(grailsDomainClass, new FederatedPropertyManagerImpl());
         model1Class.metaClass.'static'.getPropertiesList = {
             return method.getDomainObjectProperties();
         }

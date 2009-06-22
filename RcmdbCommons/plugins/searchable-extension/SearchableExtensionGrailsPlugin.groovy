@@ -1,4 +1,21 @@
-/* 
+import com.ifountain.compass.transaction.CompassTransactionFactory
+import com.ifountain.rcmdb.domain.IdGenerator
+import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
+import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.domain.method.*
+import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
+import com.ifountain.rcmdb.domain.property.PropertyDatasourceManagerBean
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.validator.RapidGrailsDomainClassValidator
+import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
+import org.apache.commons.lang.StringUtils
+import org.apache.log4j.Logger
+import org.apache.lucene.search.BooleanQuery
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.springframework.validation.BindException
+import org.springframework.validation.Errors
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,25 +33,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-import com.ifountain.rcmdb.domain.IdGenerator
-import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
-import com.ifountain.rcmdb.domain.method.*
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import org.apache.commons.lang.StringUtils
-import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.springframework.validation.BindException
-import org.springframework.validation.Errors
-import org.codehaus.groovy.grails.validation.GrailsDomainClassValidator
-import com.ifountain.rcmdb.domain.validator.RapidGrailsDomainClassValidator
-import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
-import com.ifountain.compass.transaction.CompassTransactionFactory
-import org.springframework.beans.factory.config.RuntimeBeanReference
-import org.apache.lucene.search.BooleanQuery
-import org.codehaus.groovy.runtime.InvokerHelper
-import com.ifountain.rcmdb.domain.cache.IdCache
-
 /**
 * Created by IntelliJ IDEA.
 * User: Administrator
@@ -151,6 +149,7 @@ class SearchableExtensionGrailsPlugin {
         dc.refreshConstraints();
         def keys = DomainClassUtils.getKeys(dc);
         def persProps = DomainClassUtils.getPersistantProperties(dc, true);
+
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def addUniqueMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         addUniqueMethod.setWillReturnErrorIfExist (true);

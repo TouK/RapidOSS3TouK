@@ -19,6 +19,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,9 +30,9 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
  */
 class KeySetMethod {
     List keys;
-    public KeySetMethod(GrailsDomainClass dc) {
+    public KeySetMethod(GrailsDomainClass dc, FederatedPropertyManager manager) {
         keys = [];
-        def getPropListMethod = new GetPropertiesMethod(dc);
+        def getPropListMethod = new GetPropertiesMethod(dc, manager);
         getPropListMethod.allDomainClassProperties.each{RapidDomainClassProperty prop->
             if(prop.isKey)
             {

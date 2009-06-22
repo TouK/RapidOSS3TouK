@@ -26,6 +26,8 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.lang.reflect.Modifier
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
+import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +41,7 @@ class GetPropertiesMethod
     GrailsDomainClass dc;
     def allProperties;
     def allDomainClassProperties = [];
-    public GetPropertiesMethod(GrailsDomainClass dc) {
+    public GetPropertiesMethod(GrailsDomainClass dc, FederatedPropertyManager manager) {
         this.dc = dc;
         def grailsDomainClassProperties = dc.getProperties();
         def relations = DomainClassUtils.getRelations(dc);
@@ -54,7 +56,7 @@ class GetPropertiesMethod
                 {
                     if (ModelGenerator.VALID_PROPERTY_TYPE_CLASSES.contains(prop.getType()) || prop.getType().isPrimitive())
                     {
-                        allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey, type:prop.getType()))
+                        allDomainClassProperties.add(new RapidDomainClassProperty(name: prop.name, isOperationProperty: false, isKey: isKey, type:prop.getType(), isFederated:manager.isFederated(dc.clazz, prop.name)))
                     }
                 }
                 else
@@ -122,6 +124,7 @@ class RapidDomainClassProperty implements Comparable
     Object type;
     boolean isKey;
     boolean isOperationProperty;
+    boolean isFederated;
 
     public int compareTo(Object o) {
         RapidDomainClassProperty other = o;

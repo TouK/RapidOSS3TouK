@@ -18,17 +18,13 @@
 */
 package com.ifountain.rcmdb.domain.property
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.apache.commons.io.FileUtils
-import groovy.xml.MarkupBuilder
-import java.lang.reflect.Method
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import datasource.BaseDatasource
-import grails.spring.BeanBuilder
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import datasource.BaseDatasource
+import groovy.xml.MarkupBuilder
+import org.apache.commons.io.FileUtils
 
 /**
  * Created by IntelliJ IDEA.

@@ -3,6 +3,7 @@ import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 import org.apache.commons.lang.StringUtils
 
 
+
 /**
 * Created by IntelliJ IDEA.
 * User: fadime
@@ -150,6 +151,62 @@ class AdminUiReloadingTest extends SeleniumTestCase
         deleteScript(idValue)
         deleteScriptFile("operationCheck.groovy")
 
+    }
+
+    public void testTestWebUIReload()
+    {
+        selenium.open("/RapidSuite/auth/login?targetUri=%2F&format=html");
+		selenium.type("login", "rsadmin");
+		selenium.type("password", "changeme");
+		selenium.click("//input[@value='Sign in']");
+		selenium.waitForPageToLoad("30000");
+		verifyFalse(selenium.isTextPresent("Acknowledge"));
+
+		selenium.open("/RapidSuite/admin.gsp");
+		selenium.click("//li[2]/a/em");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("link=Reload Web UI");
+		selenium.waitForPageToLoad("30000");
+		verifyTrue(selenium.isTextPresent("Views and controllers reloaded successfully."));
+
+        def eventsFileContent = ""
+        def newEventsFileContent=""
+        def isEventIncludesAck=false  //checks if  events.gsp includes colLabel="Act"
+
+        // def  br=new BufferedReader(new FileReader(params.file));
+        def  br=new BufferedReader(new FileReader("${SeleniumTestUtils.getRsHome()}/RapidSuite/web-app/index/events.gsp"));
+         String line=null;
+         while((line=br.readLine())!=null)
+         {
+             if (line.contains("colLabel=\"Ack\"") && line.contains("</rui:sgColumn>") )
+             {
+                   def splitted = new String[3]
+                   splitted = line.split("\"Ack\"")
+                   eventsFileContent=eventsFileContent   + line+ "\n"
+                   def lastLine = splitted[0]+  "\"Acknowledge\""+   splitted[1]
+                   newEventsFileContent=newEventsFileContent    + lastLine+ "\n"
+                   isEventIncludesAck=true
+             }
+             else
+             {       eventsFileContent=eventsFileContent   + line+ "\n"
+                     newEventsFileContent=newEventsFileContent    + line+ "\n"
+             }
+         }
+
+        assertTrue(isEventIncludesAck)
+
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/web-app/index/events.gsp", newEventsFileContent);
+
+		selenium.open("/RapidSuite/index.gsp");
+		verifyTrue(selenium.isTextPresent("Acknowledge"));
+
+
+		createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/web-app/index/events.gsp", eventsFileContent);
+		selenium.open("/RapidSuite/admin.gsp");
+		selenium.click("//li[2]/a/em");
+		selenium.waitForPageToLoad("30000");
+		selenium.click("link=Reload Web UI");
+		selenium.waitForPageToLoad("30000");
     }
 
 

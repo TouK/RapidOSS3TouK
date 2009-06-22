@@ -25,7 +25,7 @@ class Port extends DeviceAdapter
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["portNumber", "portKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
@@ -63,8 +63,8 @@ class Port extends DeviceAdapter
      
     }
 
-    static propertyConfiguration= ["portNumber":["nameInDs":"PortNumber", "datasourceProperty":"smartDs", "lazy":false], "portKey":["nameInDs":"PortKey", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["portNumber", "portKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

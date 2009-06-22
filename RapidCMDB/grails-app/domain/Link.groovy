@@ -25,7 +25,7 @@ class Link extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["connectedTo", "connectedSystems", "aa_AdminStatus", "aa_OperStatus", "aa_DisplayName", "zz_AdminStatus", "zz_OperStatus", "zz_DisplayName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["connectedTo", "connectedSystems", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
@@ -82,8 +82,8 @@ class Link extends SmartsObject
             connectedSystems:[isMany:true, type:Device, reverseName:"connectedVia"]
 
     ]
-    static propertyConfiguration= ["aa_AdminStatus":["nameInDs":"A_AdminStatus", "datasourceProperty":"smartDs", "lazy":true], "aa_OperStatus":["nameInDs":"A_OperStatus", "datasourceProperty":"smartDs", "lazy":true], "aa_DisplayName":["nameInDs":"A_DisplayName", "datasourceProperty":"smartDs", "lazy":true], "zz_AdminStatus":["nameInDs":"Z_AdminStatus", "datasourceProperty":"smartDs", "lazy":true], "zz_OperStatus":["nameInDs":"Z_OperStatus", "datasourceProperty":"smartDs", "lazy":true], "zz_DisplayName":["nameInDs":"Z_DisplayName", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["aa_AdminStatus", "aa_OperStatus", "aa_DisplayName", "zz_AdminStatus", "zz_OperStatus", "zz_DisplayName", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

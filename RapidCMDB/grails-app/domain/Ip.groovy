@@ -25,7 +25,7 @@ class Ip extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["hostedBy", "layeredOver", "netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["hostedBy", "layeredOver", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
@@ -91,8 +91,8 @@ class Ip extends DeviceComponent
             layeredOver:[isMany:false, type:DeviceInterface, reverseName:"underlying"]
 
     ]
-    static propertyConfiguration= ["netMask":["nameInDs":"NetMask", "datasourceProperty":"smartDs", "lazy":true], "interfaceAdminStatus":["nameInDs":"InterfaceAdminStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceName":["nameInDs":"InterfaceName", "datasourceProperty":"smartDs", "lazy":true], "interfaceOperStatus":["nameInDs":"InterfaceOperStatus", "datasourceProperty":"smartDs", "lazy":true], "ipStatus":["nameInDs":"IPStatus", "datasourceProperty":"smartDs", "lazy":true], "interfaceKey":["nameInDs":"InterfaceKey", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["netMask", "interfaceAdminStatus", "interfaceName", "interfaceOperStatus", "ipStatus", "interfaceKey", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

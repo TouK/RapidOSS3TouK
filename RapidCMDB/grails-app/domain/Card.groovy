@@ -25,7 +25,7 @@ class Card extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["realises", "status", "errors", "__operation_class__", "__is_federated_properties_loaded__", "realises"];
+        except = ["realises", "errors", "__operation_class__", "__is_federated_properties_loaded__", "realises"];
     };
     static datasources = [:]
 
@@ -58,8 +58,8 @@ class Card extends DeviceComponent
      
     }
 
-    static propertyConfiguration= ["status":["nameInDs":"Status", "datasourceProperty":"smartDs", "lazy":true]]
-    static transients = ["status", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static propertyConfiguration= [:]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     //AUTO_GENERATED_CODE
 }

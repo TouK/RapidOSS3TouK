@@ -41,17 +41,6 @@ class AdminUiReloadingTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
     }
 
-    private String newLogValidatorScript()
-    {
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
-
-        // the Hello from cron entry number will be stored in stored
-        return selenium.getText("//body");
-    }
 
     private void newScript()
     {
@@ -117,7 +106,7 @@ class AdminUiReloadingTest extends SeleniumTestCase
             temp=  rsRiArrayList.get(i)
             RsRiEventContent = RsRiEventContent + temp+ "\n"
 
-            if(i<arrayListSize-4)
+            if(i<arrayListSize-3)
             oldRsRiEventOperations = oldRsRiEventOperations +temp + "\n"
         }
          oldRsRiEventOperations = oldRsRiEventOperations + "}\n"
@@ -155,6 +144,7 @@ class AdminUiReloadingTest extends SeleniumTestCase
 
     public void testTestWebUIReload()
     {
+
         selenium.open("/RapidSuite/auth/login?targetUri=%2F&format=html");
 		selenium.type("login", "rsadmin");
 		selenium.type("password", "changeme");
@@ -162,6 +152,7 @@ class AdminUiReloadingTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 		selenium.click("//div[@id='top']/table/tbody/tr/td[2]/div/ul/li[1]/a/em");
 		selenium.waitForPageToLoad("30000");
+		verifyEquals("Ack", selenium.getText("//span[@id='elgen-37']/span"));
 		verifyFalse(selenium.isTextPresent("Acknowledge"));
 
 		selenium.open("/RapidSuite/admin.gsp");

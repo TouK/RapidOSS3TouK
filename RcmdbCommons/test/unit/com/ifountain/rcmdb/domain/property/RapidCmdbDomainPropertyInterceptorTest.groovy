@@ -25,6 +25,9 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import datasource.BaseDatasource
 import groovy.xml.MarkupBuilder
 import org.apache.commons.io.FileUtils
+import org.springframework.validation.Errors
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.FieldError
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,10 +89,15 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
+        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
         DataStore.put("result", [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"abcd"]);
         assertEquals (new Long(1), interceptor.getDomainClassProperty(instance, "prop4"));
+        assertEquals(1, instance.errors.allErrors.size());
+        FieldError error = instance.errors.allErrors[0]
+        assertEquals ("default.federation.property.conversion.exception", error.getCode());
+        assertEquals ("prop4", error.getField());
     }
     
     public void testInterceptorWithFederatedProperties()
@@ -306,10 +314,21 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"undefinedDatasource"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
+        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
         assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals(1, instance.errors.allErrors.size());
+        FieldError prop2Error = instance.errors.allErrors.find{it.getField() == "prop2"}
+        assertEquals ("default.federation.property.datasource.not.exist", prop2Error.code);
+
+        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance, "prop3"));
+        assertEquals(1, instance.errors.allErrors.size());
+        def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
+        assertEquals ("default.federation.property.datasource.not.exist", prop3Error.code);
+
+
     }
 
     public void testInterceptorFederatedPropertiesWithDatasourceThrowingException()
@@ -326,10 +345,20 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"ds1"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
+        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
         DataStore.put("exception", new Exception("An exception occurred"));
         assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals(1, instance.errors.allErrors.size());
+        def getPropertiesError = instance.errors.allErrors[0]
+        assertEquals ("default.federation.get.properties.exception", getPropertiesError.code);
+
+        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance, "prop3"));
+        assertEquals(1, instance.errors.allErrors.size());
+        def getPropertyError = instance.errors.allErrors[0]
+        assertEquals ("default.federation.property.datasource.exception", getPropertyError.code);
+        assertEquals ("prop3", getPropertyError.getField());
     }
 
 

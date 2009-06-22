@@ -65,14 +65,6 @@
               <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
             </files>
           </module>
-          <module name="Opennmstrunk">
-            <files>
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/features/acl/src/main/webapp/WEB-INF/web.xml" />
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/opennms-base-assembly/src/main/resources/contrib/qosdaemon/qos_example_configuration/opennms/web.xml" />
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/opennms-base-assembly/src/main/resources/contrib/qosdaemon/qos_example_configuration/tomcat55/images/WEB-INF/web.xml" />
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/opennms-webapp/src/main/webapp/WEB-INF/web.xml" />
-            </files>
-          </module>
         </modules>
       </facet-type>
       <facet-type id="Spring">
@@ -178,24 +170,6 @@
               <file url="file://$PROJECT_DIR$/../Netcool/src/groovy/com/ifountain/rcmdb/netcool/NetcoolConnectionImpl.groovy" />
               <file url="file://$PROJECT_DIR$/../Netcool/test/integration/datasource/NetcoolDatasourceIntegrationTest.groovy" />
               <file url="file://$PROJECT_DIR$/../Netcool/test/unit/netcool/connection/NetcoolConnectionImplTest.groovy" />
-            </files>
-          </module>
-        </modules>
-      </facet-type>
-      <facet-type id="gwt">
-        <modules>
-          <module name="Opennmstrunk">
-            <files>
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/opennms-webapp/src/main/java/org/opennms/dashboard/Dashboard.gwt.xml" />
-            </files>
-          </module>
-        </modules>
-      </facet-type>
-      <facet-type id="javaeeApplication">
-        <modules>
-          <module name="Opennmstrunk">
-            <files>
-              <file url="file://$PROJECT_DIR$/../Opennmstrunk/opennms-tools/nmsdesk-air/application.xml" />
             </files>
           </module>
         </modules>
@@ -376,7 +350,6 @@
       <module fileurl="file://$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" filepath="$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OpenNms/OpenNms.iml" filepath="$PROJECT_DIR$/../OpenNms/OpenNms.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Opennmstrunk/Opennmstrunk.iml" filepath="$PROJECT_DIR$/Opennmstrunk/Opennmstrunk.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidInsight/RapidInsight.iml" filepath="$PROJECT_DIR$/RapidInsight/RapidInsight.iml" />

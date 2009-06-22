@@ -160,6 +160,8 @@ class AdminUiReloadingTest extends SeleniumTestCase
 		selenium.type("password", "changeme");
 		selenium.click("//input[@value='Sign in']");
 		selenium.waitForPageToLoad("30000");
+		selenium.click("//div[@id='top']/table/tbody/tr/td[2]/div/ul/li[1]/a/em");
+		selenium.waitForPageToLoad("30000");
 		verifyFalse(selenium.isTextPresent("Acknowledge"));
 
 		selenium.open("/RapidSuite/admin.gsp");

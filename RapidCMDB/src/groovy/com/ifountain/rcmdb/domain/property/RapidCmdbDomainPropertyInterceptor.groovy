@@ -94,7 +94,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                 datsourceKeys.each {DatasourceProperty key ->
                     keys[key.nameInDatasource] = domainObject[key.name];
                 }
-                BaseDatasource datasourceObject = BaseDatasource.get(name: baseDatasourceName);
+                BaseDatasource datasourceObject = BaseDatasource.getOnDemand(name: baseDatasourceName);
                 if(datasourceObject)
                 {
 
@@ -133,7 +133,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                         }
                     }
 
-                    def datasourceObject = BaseDatasource.get(name: baseDatasourceName);
+                    def datasourceObject = BaseDatasource.getOnDemand(name: baseDatasourceName);
                     if(datasourceObject)
                     {
                         Map returnedProps;

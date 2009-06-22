@@ -46,6 +46,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         DataStore.clear();
         DataStore.put ("getProperty", []);
         DataStore.put ("getProperties", []);
+        DataStore.put ("getOnDemand", []);
 
         if(new File(".").getCanonicalPath().endsWith("RapidModules"))
         {
@@ -73,6 +74,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals("1", interceptor.getDomainClassProperty(instance, "prop1"));
         interceptor.setDomainClassProperty(instance, "prop1", "updatedProp1Value")
         assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance, "prop1"));
+        assertEquals (0, DataStore.get("getOnDemand").size());
     }
     public void testInterceptorDoesNotThrowConversionExceptionWithFederatedProperties()
     {
@@ -121,6 +123,8 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
         assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance, "prop4"));
 
+        assertEquals ("Should call getOnDemand to get a on demand datasource", 1, DataStore.get("getOnDemand").size());
+        assertEquals ([name:"ds1"], DataStore.get("getOnDemand")[0]);
         assertEquals (1, DataStore.get("getProperties").size());
         assertEquals (1, DataStore.get("getProperties")[0][0].size());
         assertEquals (prop1Value, DataStore.get("getProperties")[0][0]["prop1"]);
@@ -158,6 +162,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
 
         DataStore.put("result", "prop2Value");
+
         assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance, "prop2"));
         DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded"]);
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
@@ -182,8 +187,9 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
 
         DataStore.put("result", "updatedServerValue");
-
+        DataStore.get("getOnDemand").clear();
         assertEquals ("updatedServerValue", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals ("Should call getOnDemand to get a on demand datasource", [name:"ds1"], DataStore.get("getOnDemand")[0]);
         DataStore.put("result", [prop2:"updatedServerValue", prop3:"updatedServerValue", prop1:"updatedServerValue"]);
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
@@ -361,6 +367,10 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         classesTobeLoaded << BaseDatasource;
         classesTobeLoaded << datasourceClass;
         initialize(classesTobeLoaded, []);
+        BaseDatasource.metaClass.static.getOnDemand = {params->
+            DataStore.get("getOnDemand").add(params);
+            return BaseDatasource.get(params);
+        }
         def propertyDatasourceManagerBean = new PropertyDatasourceManagerBean();
         propertyDatasourceManagerBean.afterPropertiesSet();
         ctx.registerMockBean(RapidCMDBConstants.PROPERTY_DATASOURCE_MANAGER_BEAN, propertyDatasourceManagerBean)

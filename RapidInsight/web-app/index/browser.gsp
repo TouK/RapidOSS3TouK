@@ -276,7 +276,7 @@ functionActionCondition8818Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[createURL('browser/create.gsp', {className:params.data.name})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('browser/create.gsp', {__rsBrowserClassName:params.data.name})]]></rui:functionArg>
     
     <rui:functionArg><![CDATA['Create ' + params.data.name]]></rui:functionArg>
     
@@ -290,7 +290,7 @@ functionActionCondition8829Condition=""
 
 >
     
-    <rui:functionArg><![CDATA[createURL('browser/edit.gsp', {className:params.data.rsAlias, id:params.data.id})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('browser/edit.gsp', {__rsBrowserClassName:params.data.rsAlias, id:params.data.id})]]></rui:functionArg>
     
     <rui:functionArg><![CDATA['Edit ' + params.data.rsAlias]]></rui:functionArg>
     
@@ -314,7 +314,7 @@ parameter8843Visible="params.data.id"
 parameter8845Visible="params.data.rsAlias"
 %>
 
-    <rui:requestParam key="className" value="${parameter8845Visible}"></rui:requestParam>
+    <rui:requestParam key="__rsBrowserClassName" value="${parameter8845Visible}"></rui:requestParam>
     
 </rui:action>
 

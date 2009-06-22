@@ -6,7 +6,7 @@
 --%>
 
 <%
-    def className = params.className;
+    def className = params.__rsBrowserClassName;
     def domainClass = grailsApplication.getDomainClass(className)
     def domainObject = domainClass.clazz.newInstance();
     def properties = domainClass.clazz."getPropertiesList"();
@@ -20,7 +20,7 @@
     </script>
     <rui:formRemote componentId="${params.componentId}" method="POST" action="rsBrowserCrud/save" onSuccess="window.refreshObjectList">
         <table><tbody>
-            <input type="hidden" name="className" value="${className}">
+            <input type="hidden" name="__rsBrowserClassName" value="${className}">
             <g:each var="keyProp" in="${keys}">
                 <g:if test="${!keyProp.isRelation && keyProp.name != 'id'}">
                     <tr class="prop">

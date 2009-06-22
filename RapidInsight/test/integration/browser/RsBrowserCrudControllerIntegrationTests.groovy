@@ -27,7 +27,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     void testSaveRendersExceptionIfDomainClassNotFound() throws Exception {
         def className = "invalidClass"
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = className;
+        controller.params["__rsBrowserClassName"] = className;
         controller.save();
 
         def errors = new BindException(controller, controller.class.name);
@@ -37,7 +37,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     void testSuccessfulSave() throws Exception {
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["name"] = "newConnection";
         controller.save();
         assertEquals(1, Connection.list().size());
@@ -48,7 +48,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     void testSaveRendersExceptionIfObjectCannotBeAdded() {
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.save();
         assertEquals(0, Connection.list().size());
 
@@ -60,7 +60,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     void testUpdateRendersExceptionIfDomainClassNotFound() throws Exception {
         def className = "invalidClass"
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = className;
+        controller.params["__rsBrowserClassName"] = className;
         controller.update();
 
         def errors = new BindException(controller, controller.class.name);
@@ -70,7 +70,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     void testUpdateRendersExceptionIfObjectNotFound() throws Exception {
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["id"] = "1000";
         controller.update();
 
@@ -83,7 +83,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         def connection = Connection.add(name: "oldConnection");
         assertFalse(connection.hasErrors())
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["name"] = "newConnection";
         controller.params["connectionClass"] = "myConnectionClass";
         controller.params["id"] = "${connection.id}";
@@ -102,7 +102,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         def anotherConnection = Connection.add(name: "anotherConnection")
         assertFalse(anotherConnection.hasErrors())
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["name"] = anotherConnection.name;
         controller.params["id"] = "${connection.id}";
         controller.update();
@@ -115,7 +115,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
     void testDeleteRendersExceptionIfDomainClassNotFound() throws Exception {
         def className = "invalidClass"
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = className;
+        controller.params["__rsBrowserClassName"] = className;
         controller.delete();
 
         def errors = new BindException(controller, controller.class.name);
@@ -125,7 +125,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
     void testDeleteRendersExceptionIfObjectNotFound() throws Exception {
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["id"] = "1000";
         controller.delete();
 
@@ -138,7 +138,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         def connection = Connection.add(name: "oldConnection");
         assertFalse(connection.hasErrors())
         RsBrowserCrudController controller = new RsBrowserCrudController();
-        controller.params["className"] = Connection.class.name;
+        controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["id"] = "${connection.id}";
         controller.delete();
 

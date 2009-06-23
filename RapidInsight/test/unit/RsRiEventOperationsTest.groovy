@@ -44,8 +44,8 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
 
 
-        assertEquals(0,RsRiEvent.countHits("alias:*"));
-        assertEquals(0,RsEventJournal.countHits("alias:*"));
+        assertEquals(0,RsRiEvent.count());
+        assertEquals(0,RsEventJournal.count());
 
         def addProps=[name:"ev1",identifier:"ev1",severity:5];
         def timeBeforeCall=Date.now();
@@ -58,14 +58,14 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(addedEvent.severity,addProps.severity);
         assertEquals(addedEvent.identifier,addProps.identifier);
 
-        assertEquals(1,RsRiEvent.countHits("alias:*"));
+        assertEquals(1,RsRiEvent.count());
 
         assertEquals(addedEvent.createdAt,addedEvent.changedAt);
         assertTrue(addedEvent.changedAt>timeBeforeCall);
         assertEquals(1,addedEvent.count);
 
 
-        assertEquals(1,RsEventJournal.countHits("alias:*"));
+        assertEquals(1,RsEventJournal.count());
         def addedJournal=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[0]
 
         assertEquals(addedJournal.eventId,addedEvent.id);
@@ -85,13 +85,13 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         assertTrue(updatedEvent.changedAt>updatedEvent.createdAt);
         assertTrue(updatedEvent.changedAt>timeBeforeCall2);
         assertEquals(2,updatedEvent.count);
-        assertEquals(1,RsRiEvent.countHits("alias:*"));
+        assertEquals(1,RsRiEvent.count());
 
 
 
         assertFalse(addedEvent.asMap() == updatedEvent.asMap());
 
-        assertEquals(2,RsEventJournal.countHits("alias:*"));
+        assertEquals(2,RsEventJournal.count());
         def addedJournal2=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[1]
 
         assertEquals(addedJournal2.eventId,updatedEvent.id);
@@ -108,14 +108,14 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
         CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
         //we first test successfull case and propageElementstate is called
-        assertEquals(0,RsRiEvent.countHits("alias:*"));
-        assertEquals(0,RsEventJournal.countHits("alias:*"));
+        assertEquals(0,RsRiEvent.count());
+        assertEquals(0,RsEventJournal.count());
 
         def addProps=[name:"testev",identifier:"ev1",severity:5];
         def addedEvent=RsRiEvent.notify(addProps);
         assertFalse(addedEvent.hasErrors());
-        assertEquals(1,RsRiEvent.countHits("alias:*"));
-        assertEquals(1,RsEventJournal.countHits("alias:*"));
+        assertEquals(1,RsRiEvent.count());
+        assertEquals(1,RsEventJournal.count());
 
 
         //now we test the fail case
@@ -123,15 +123,15 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         RsEventJournal.removeAll();
 
 
-        assertEquals(0,RsRiEvent.countHits("alias:*"));
-        assertEquals(0,RsEventJournal.countHits("alias:*"));
+        assertEquals(0,RsRiEvent.count());
+        assertEquals(0,RsEventJournal.count());
 
         addProps=[name:null,identifier:"ev1",severity:5];
 
         addedEvent=RsRiEvent.notify(addProps);
         assertTrue(addedEvent.hasErrors());
-        assertEquals(0,RsRiEvent.countHits("alias:*"));
-        assertEquals(0,RsEventJournal.countHits("alias:*"));
+        assertEquals(0,RsRiEvent.count());
+        assertEquals(0,RsEventJournal.count());
 
     }
      public void testNotifyDoesNotSetCreatedAtAndChangedAtIfGiven()
@@ -180,9 +180,9 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
          def event=RsRiEvent.add(name:"testev");
          assertFalse(event.hasErrors());
-         assertEquals(1,RsRiEvent.countHits("alias:*"));
+         assertEquals(1,RsRiEvent.count());
          event.clear();
-         assertEquals(0,RsRiEvent.countHits("alias:*"));
+         assertEquals(0,RsRiEvent.count());
          assertEquals(1,RsRiHistoricalEvent.countHits("activeId:${event.id}"));
      }
 

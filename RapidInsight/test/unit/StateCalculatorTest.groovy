@@ -106,14 +106,14 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         def object = RsTopologyObject.add(name: "testobject");
         assertFalse(object.hasErrors());
 
-        assertEquals(0, RsObjectState.list().size());
+        assertEquals(0, RsObjectState.count());
 
         _StateCalculator.getObjectState(object);
-        assertEquals(1, RsObjectState.list().size());
+        assertEquals(1, RsObjectState.count());
 
         object.remove();
 
-        assertEquals(0, RsObjectState.list().size());
+        assertEquals(0, RsObjectState.count());
     }
 
     public static void testSaveStateAndLoadState()
@@ -124,18 +124,18 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         def object = RsTopologyObject.add(name: "testobject");
         assertFalse(object.hasErrors());
 
-        assertEquals(0, RsObjectState.list().size());
+        assertEquals(0, RsObjectState.count());
         assertEquals(_Constants.NOTSET, _StateCalculator.loadObjectState(object))
 
         def newState = 5
         _StateCalculator.saveObjectState(object,newState);
-        assertEquals(1, RsObjectState.list().size());
+        assertEquals(1, RsObjectState.count());
         assertEquals(newState, RsObjectState.get(objectId: object.id).state);
         assertEquals(newState, _StateCalculator.loadObjectState(object))
 
         newState = 3
         _StateCalculator.saveObjectState(object,newState);
-        assertEquals(1, RsObjectState.list().size());
+        assertEquals(1, RsObjectState.count());
         assertEquals(newState, RsObjectState.get(objectId: object.id).state);
         assertEquals(newState, _StateCalculator.loadObjectState(object))
 
@@ -208,7 +208,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         RsEvent.add(name: "ev4", severity: 4)
         RsEvent.add(name: "ev5", severity: 5)
 
-        assertEquals(5, RsEvent.countHits("alias:*"));
+        assertEquals(5, RsEvent.count());
 
         5.times {counter ->
             //need to calculate is true
@@ -254,7 +254,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         //assertEquals(5, RsTopologyObject.countHits("alias:RsTopologyObject"));
         assertEquals(5, RsTopologyObject.countHits("name:ev*"));
-        assertEquals(1, RsGroup.countHits("alias:*"));
+        assertEquals(1, RsGroup.count());
 
         5.times {counter ->
             //need to calculate is true
@@ -282,7 +282,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         RsEvent.add(name: "otherev1", severity: 1)
         RsEvent.add(name: "otherev2", severity: 1)
 
-        assertEquals(eventCount + 2, RsEvent.countHits("alias:*"));
+        assertEquals(eventCount + 2, RsEvent.count());
         //testing with 0 critical count
         int criticalCount = 0;
         assertEquals(criticalCount, RsEvent.countHits("elementName:${object.name} AND severity:${_Constants.CRITICAL}"));
@@ -621,7 +621,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         def object = RsTopologyObject.add(name: "testobject");
         assertFalse(object.hasErrors());
 
-        assertEquals(1, RsTopologyObject.countHits("alias:*"));
+        assertEquals(1, RsTopologyObject.count());
 
 
         //add 3 parentobjects and test calculate weight

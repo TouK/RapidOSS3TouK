@@ -8,6 +8,7 @@ import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
 import org.jrobin.core.Datasource
 import org.apache.commons.io.FileUtils
+import org.jrobin.core.DsDef
 
 /**
 * Created by IntelliJ IDEA.
@@ -125,8 +126,35 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         RrdUtils.createDatabase(config)
 
+        Map map = RrdUtils.getDatabaseInfo(rrdFileName);
+
         assertTrue(new File(rrdFileName).exists());
-//        rrdDb.close()
+    }
+
+    public boolean checkDatasources(dlist1, rrdDslist2){
+        int size1 = dlist1.size();
+        int size2 = rrdDslist2.size();
+        if (size1!=size2) return false;
+
+        dlist1 = dlist1.sort();
+        dlist2 = rrdDslist2.sort();
+
+        DsDef dsources = new DsDef[size1];
+        fdlist = [];
+        for(int i=0; i<size1; i++){
+            DsDef dsDef = new DsDef(
+                 dlist1[RrdUtils.NAME],
+                 dlist1[RrdUtils.TYPE],
+                 dlist[RrdUtils.HEARTBEAT],
+                 dlist1.containsKey(RrdUtils.MAX)?dlist[RrdUtils.MAX]:Double.NaN,
+                 dlist1.containsKey(RrdUtils.MIN)?dlist[RrdUtils.MIN]:Double.NaN
+            );
+            fdlist.add(dsDef);
+            
+        }
+        
+
+        return true;
     }
 
     public void testCreateDatabaseThrowsExceptionIfConfigMissesProperty() throws Exception {

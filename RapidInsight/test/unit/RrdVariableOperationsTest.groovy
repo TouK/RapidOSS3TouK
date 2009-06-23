@@ -20,12 +20,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         super.tearDown();
     }
 
-    public void testCreateDBConfigSuccessfulWithOneArchive(){
+    public void testCreateDBConfigSuccessfulWithOneArchive() {
+
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"GAUGE", heartbeat:300, file:"filename",
                                        startTime:9000L, step:300L, archives: archive1)
-
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -59,7 +59,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(archiveList, config[RrdUtils.ARCHIVE])
     }
 
-    public void testCreateDBConfigSuccessfulWithMultipleArchive(){
+    public void testCreateDBConfigSuccessfulWithMultipleArchive() {
+
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def archive2 = RrdArchive.add(name:"archive2", function:"MAX", xff:0.2, step:6, row:5)
         def archive3 = RrdArchive.add(name:"archive3", function:"MIN", xff:0.7, step:3, row:15)
@@ -68,7 +69,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
                                        type:"GAUGE", heartbeat:300, file:"filename",
                                        startTime:9000L, step:300L,
                                        archives: [archive1, archive2, archive3])
-
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -115,5 +115,140 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertEquals(archiveList, config[RrdUtils.ARCHIVE])
     }
+
+    public void testCreateUpdateDataSingleTimeandValue() {
+
+        def variable = RrdVariable.add(name:"variable")
+        
+        Map props = [time:10000L, value:5]
+
+        String data = variable.createUpdateData(props)
+
+        assertEquals("10000:5", data)
+    }
+
+    public void testCreateDBSuccessful() {
+
+        String fileName = "filename"
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       startTime:9000, step:300, archives: archive1)
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        def dbConfig = RrdUtils.getDatabaseInfo(fileName)
+
+        def config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = fileName
+        config[RrdUtils.START_TIME] = 9000L
+        config[RrdUtils.STEP] = 300L
+
+        def datapointList = []
+
+        def datapointConfig = [:]
+        datapointConfig[RrdUtils.NAME] = "variable"
+        datapointConfig[RrdUtils.TYPE] = "GAUGE"
+        datapointConfig[RrdUtils.HEARTBEAT] = 300L
+        datapointConfig[RrdUtils.MAX] = Double.NaN
+        datapointConfig[RrdUtils.MIN] = Double.NaN
+        datapointList.add(datapointConfig)
+
+        config[RrdUtils.DATASOURCE] = datapointList
+
+        def archiveList = []
+
+        def archiveConfig = [:]
+        archiveConfig[RrdUtils.FUNCTION] = "AVERAGE"
+        archiveConfig[RrdUtils.XFF] = 0.5D
+        archiveConfig[RrdUtils.STEPS] = 1L
+        archiveConfig[RrdUtils.ROWS] = 10L
+        archiveList.add(archiveConfig)
+
+        config[RrdUtils.ARCHIVE] = archiveList
+
+        assertEquals(config, dbConfig)
+
+    }
+
+    public void testRemoveDBSuccessful() {
+
+        String fileName = "filename"
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       startTime:9000, step:300, archives: archive1)
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        assertTrue(RrdUtils.databaseExists(fileName))
+
+        variable.removeDB()
+
+        assertTrue(!(RrdUtils.databaseExists(fileName)))
+
+    }
+
+    public void testUpdateSingleTimeandValue() {
+        String fileName = "filename"
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       startTime:9000, step:300, archives: archive1)
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        variable.updateDB(time:10000L, value:500)
+
+        //how to check update is successfull
+
+    }
+
+    public void testUpdateOnlyValue() {
+        String fileName = "filename"
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       startTime:9000, step:300, archives: archive1)
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        variable.updateDB(value:500)
+
+        //how to check update is successfull
+
+    }
+
+    public void testUpdateMultipleTimeandValue() {
+        String fileName = "filename"
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       startTime:9000, step:300, archives: archive1)
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        variable.updateDB( [[time:10000L, value:5], [time:10500L, value:10], [time:11000L, value:15]] )
+
+        //how to check update is successfull
+
+    }
+    
 
 }

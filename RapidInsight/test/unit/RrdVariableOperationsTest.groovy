@@ -1,5 +1,6 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.comp.test.util.file.TestFile
 import com.ifountain.rcmdb.rrd.RrdUtils;
 
 /**
@@ -9,14 +10,17 @@ import com.ifountain.rcmdb.rrd.RrdUtils;
 */
 class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
+    String fileName = TestFile.TESTOUTPUT_DIR + "/test.rrd";
+
     public void setUp() {
         super.setUp();
         initialize([RrdVariable,RrdArchive], []);
         CompassForTests.addOperationSupport(RrdVariable, RrdVariableOperations);
-
+        new File(fileName).delete();
     }
 
     public void tearDown() {
+        new File(fileName).delete();
         super.tearDown();
     }
 
@@ -201,7 +205,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testUpdateSingleTimeandValue() {
-        String fileName = "filename"
 
         def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
 
@@ -217,11 +220,10 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         variable.updateDB(time:9300, value:500)
 
-        assertEquals(500D, RrdUtils.fetchData("filename", "variable", "AVERAGE", 9300L, 9300L)[0])
+        assertEquals(500D, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300L, 9300L)[0])
     }
 
     public void testUpdateOnlyValue() {
-        String fileName = "filename"
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
@@ -236,7 +238,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testUpdateMultipleTimeandValue() {
-        String fileName = "filename"
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
@@ -249,7 +250,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         variable.updateDB( [[time:9300L, value:5], [time:9600L, value:10], [time:9900L, value:15]] )
 
-        assertEquals([5D,10D,15D], RrdUtils.fetchData("filename", "variable", "AVERAGE", 9300, 9900)[0,1,2])
+        assertEquals([5D,10D,15D], RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300, 9900)[0,1,2])
     }
     
 }

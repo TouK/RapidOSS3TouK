@@ -168,7 +168,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
         config[RrdUtils.START_TIME] = 920804400L;
 
         RrdUtils.createDatabase(config);
-        
+
         assertTrue(new File(rrdFileName).exists());
 
         RrdUtils.removeDatabase(rrdFileName)
@@ -178,7 +178,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testRemoveDatabaseThrowsExceptionIfDBNotExists() throws Exception {
-         
+
        try{
            RrdUtils.removeDatabase (rrdFileName)
            fail("should throw exception because there is no such file")
@@ -231,7 +231,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
         config[RrdUtils.START_TIME] = 920804400L;
 
         assertTrue(!(RrdUtils.isDatabaseExists(rrdFileName)))
-        
+
         RrdUtils.createDatabase(config);
 
         assertTrue(RrdUtils.isDatabaseExists(rrdFileName))
@@ -315,7 +315,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("No archive specified", e.getMessage());
         }
     }
-    
+
     public void testCreateDatabaseThrowsExceptionIfStartTimeIsNotValid() throws Exception{
 
         Map config = [:]
@@ -532,7 +532,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
          def values = fetchData.getValues("a");
          rrdDb.close();
-         
+
          DecimalFormat df = new DecimalFormat("#.##");
          def newValues = [];
          values.each{
@@ -543,7 +543,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
          def expectedValues = ["0.67", "1.67", "1", "0.67", "1.67", "0.67", "1", "1.67", "1.33"];
          assertEquals(expectedValues, newValues);
     }
-    
+
     public void testFetchDataThrowsException() throws Exception{
         Map config = [:]
 
@@ -592,7 +592,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("data source not found",e.getMessage());
         }
     }
-    
+
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
 
@@ -636,6 +636,53 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         RrdUtils.fetchData(rrdFileName,"a");
         RrdUtils.fetchData(rrdFileName,"b");
+//        println RrdUtils.fetchData(rrdFileName,"a");
+//        println RrdUtils.fetchData(rrdFileName,"b");
+
+    }
+
+    public void testFetchDataByDatabaseNameOnly() throws Exception{
+        Map config = [:]
+
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName;
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"a",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"b",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:30,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config);
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+
+        RrdUtils.fetchData(rrdFileName);
 //        println RrdUtils.fetchData(rrdFileName,"a");
 //        println RrdUtils.fetchData(rrdFileName,"b");
 

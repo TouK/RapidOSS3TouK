@@ -25,8 +25,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
         super.setUp();
 
         new File(rrdFileName).delete();
-
-
     }
 
     protected void tearDown() {
@@ -75,12 +73,11 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         assertTrue(new File(rrdFileName).exists());
 
-        RrdDb rrdDb = new RrdDb(rrdFileName);
-        Datasource ds = rrdDb.getDatasource(0);
-        assertEquals("testDs",ds.getDsName());
-        ds = rrdDb.getDatasource(1);
-        assertEquals("testDs2",ds.getDsName());
-        rrdDb.close()
+        Map map = RrdUtils.getDatabaseInfo(rrdFileName);
+        assertEquals(config[RrdUtils.DATABASE_NAME],map[RrdUtils.DATABASE_NAME]);
+        checkArchives(config[RrdUtils.ARCHIVE], map[RrdUtils.ARCHIVE]);
+        checkDatasources(config[RrdUtils.DATASOURCE], map[RrdUtils.DATASOURCE]);
+        assertTrue(new File(rrdFileName).exists());
     }
 
     public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception{
@@ -124,37 +121,59 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         config[RrdUtils.START_TIME] = 920804400L;
 
-        RrdUtils.createDatabase(config)
+        RrdUtils.createDatabase(config);
 
         Map map = RrdUtils.getDatabaseInfo(rrdFileName);
+        assertEquals(config[RrdUtils.DATABASE_NAME],map[RrdUtils.DATABASE_NAME]);
+        checkDatasources(config[RrdUtils.DATASOURCE], map[RrdUtils.DATASOURCE]);
+        checkArchives(config[RrdUtils.ARCHIVE], map[RrdUtils.ARCHIVE]);
+        assertEquals(config[RrdUtils.START_TIME],map[RrdUtils.START_TIME]);
 
         assertTrue(new File(rrdFileName).exists());
     }
 
-    public boolean checkDatasources(dlist1, rrdDslist2){
+    private void checkDatasources(dlist1, rrdDslist2) throws Exception {
         int size1 = dlist1.size();
         int size2 = rrdDslist2.size();
-        if (size1!=size2) return false;
+        assertEquals(size1, size2);
 
-        dlist1 = dlist1.sort();
-        dlist2 = rrdDslist2.sort();
+        for(int i=0; i<rrdDslist2.size(); i++){
+            double max, min;
 
-        DsDef dsources = new DsDef[size1];
-        fdlist = [];
-        for(int i=0; i<size1; i++){
-            DsDef dsDef = new DsDef(
-                 dlist1[RrdUtils.NAME],
-                 dlist1[RrdUtils.TYPE],
-                 dlist[RrdUtils.HEARTBEAT],
-                 dlist1.containsKey(RrdUtils.MAX)?dlist[RrdUtils.MAX]:Double.NaN,
-                 dlist1.containsKey(RrdUtils.MIN)?dlist[RrdUtils.MIN]:Double.NaN
-            );
-            fdlist.add(dsDef);
-            
+            max = ((double)dlist1[i][RrdUtils.MAX]==null)?Double.NaN:(double)dlist1[i][RrdUtils.MAX];
+            min = ((double)dlist1[i][RrdUtils.MIN]==null)?Double.NaN:(double)dlist1[i][RrdUtils.MIN];
+
+            assertEquals( dlist1[i][RrdUtils.NAME],rrdDslist2[i][RrdUtils.NAME]);
+            assertEquals( dlist1[i][RrdUtils.TYPE],rrdDslist2[i][RrdUtils.TYPE]);
+            assertEquals( dlist1[i][RrdUtils.HEARTBEAT],rrdDslist2[i][RrdUtils.HEARTBEAT]);
+            assertEquals(max ,(double)rrdDslist2[i][RrdUtils.MAX]);
+            assertEquals(min,(double)rrdDslist2[i][RrdUtils.MIN]);
+
+//            assertEquals( dlist1[i][RrdUtils.NAME],rrdDslist2[i].getDsName());
+//            assertEquals( dlist1[i][RrdUtils.TYPE],rrdDslist2[i].getDsType());
+//            assertEquals( dlist1[i][RrdUtils.HEARTBEAT],rrdDslist2[i].getHeartbeat());
+//            assertEquals(max ,(double)rrdDslist2[i].getMaxValue());
+//            assertEquals(min,(double)rrdDslist2[i].getMinValue());
         }
-        
+    }
 
-        return true;
+    private void checkArchives(dlist1, rrdDslist2) throws Exception {
+        int size1 = dlist1.size();
+        int size2 = rrdDslist2.size();
+        assertEquals(size1, size2);
+
+        for(int i=0; i<rrdDslist2.size(); i++){
+            assertEquals( dlist1[i][RrdUtils.FUNCTION],rrdDslist2[i][RrdUtils.FUNCTION]);
+            assertEquals( dlist1[i][RrdUtils.STEPS],rrdDslist2[i][RrdUtils.STEPS]);
+            assertEquals( dlist1[i][RrdUtils.ROWS],rrdDslist2[i][RrdUtils.ROWS]);
+            assertEquals( (double)dlist1[i][RrdUtils.XFF],(double)rrdDslist2[i][RrdUtils.XFF]);
+
+
+//            assertEquals( dlist1[i][RrdUtils.FUNCTION],rrdDslist2[i].getConsolFun());
+//            assertEquals( dlist1[i][RrdUtils.STEPS],rrdDslist2[i].getSteps());
+//            assertEquals( dlist1[i][RrdUtils.ROWS],rrdDslist2[i].getRows());
+//            assertEquals( (double)dlist1[i][RrdUtils.XFF],(double)rrdDslist2[i].getXff());
+        }
     }
 
     public void testCreateDatabaseThrowsExceptionIfConfigMissesProperty() throws Exception {
@@ -409,7 +428,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         FetchRequest fetchRequest = new RrdDb(rrdFileName).createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
-        fetchData.println();
+//        fetchData.println();
 
          def values = fetchData.getValues("a");
          DecimalFormat df = new DecimalFormat("#.##");

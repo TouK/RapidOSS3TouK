@@ -3,13 +3,30 @@ import com.ifountain.rcmdb.rrd.RrdUtils;
 
 public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    def createDB()
-    {
-        RrdUtils.createDatabase (createDBConfig);
+
+    def createDB() {
+        RrdUtils.createDatabase (createDBConfig())
     }
 
-    private def Map createDBConfig()
-    {
+    def removeDB() {
+        RrdUtils.removeDatabase(file)
+    }
+
+    def updateDB(Map config) {
+        String data = createUpdateData(config)
+        RrdUtils.updateData(file, data)
+    }
+
+    def updateDB(List config) {
+        String[] dataList = new String[config.size()]
+        for(int i = 0; i < dataList.length; i++)
+        {
+            dataList[i] = createUpdateData(config.get(i))
+        }
+        RrdUtils.updateData(file, dataList)
+    }
+
+    private def Map createDBConfig() {
         def dbConfig = [:]
 
         //there could be change in file name
@@ -43,6 +60,17 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[RrdUtils.ARCHIVE] = archiveList
 
         return dbConfig
+    }
+
+    private def String createUpdateData(Map config) {
+
+        def timestamp = config["time"] != null ? config["time"] : new Date().getTime()
+        def value = config["value"] != null ? config["value"] : Double.NaN
+
+        return "" + timestamp + ":" + value
+
+
+
     }
 
 

@@ -224,9 +224,14 @@ class RrdUtils {
         return config;
     }
     /**
-    *
+    *  returns first time series of first data point
+    *  it is the easiest call if the database has only one data source
     */
-    public static double[][] fetchData(String dbName){
+    public static double[] fetchData(String dbName){
+        return   fetchAllData(dbName)[0];
+    }
+
+    public static double[][] fetchAllData(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
         def dslist = fetchDatasources(rrdDb);

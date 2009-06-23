@@ -128,32 +128,58 @@ class RrdUtils {
         return Grapher.graph(config);
     }
 
-    public static Archive[] fetchArchives(String dbName){
+    static def fetchArchives(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         return fetchArchives(rrdDb);
     }
 
-    public static Archive[] fetchArchives(RrdDb rrdDb){
+    static def fetchArchives(RrdDb rrdDb){
         int arcCount = rrdDb.getArcCount();
         Archive[] arcs = new Archive[arcCount];
         for(int i=0; i<arcCount; i++){
             arcs[i] = rrdDb.getArchive(i);
         }
-        return arcs;
+        def alist = [];
+        for(int i=0; i<arcs.length; i++){
+            Map m = [:];
+
+            m[RrdUtils.FUNCTION] = arcs[i].getConsolFun();
+            m[RrdUtils.STEPS] = arcs[i].getSteps();
+            m[RrdUtils.ROWS] = arcs[i].getRows();
+            m[RrdUtils.XFF] = arcs[i].getXff();
+
+            alist.add(m);
+        }
+
+//        rrdDb.close();
+        return alist;
     }
 
-    public static Datasource[] fetchDatasources(String dbName){
+    static def fetchDatasources(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         return fetchDatasources(rrdDb);
     }
 
-    public static Datasource[] fetchDatasources(RrdDb rrdDb){
+    static def fetchDatasources(RrdDb rrdDb){
         int datCount = rrdDb.getDsCount();
         Datasource[] dats = new Datasource[datCount];
         for(int i=0; i<datCount; i++){
             dats[i] = rrdDb.getDatasource(i);
         }
-        return dats;
+
+        def dslist = [];
+        for(int i=0; i<dats.length; i++){
+            Map m = [:];
+            m[RrdUtils.NAME] = dats[i].getDsName();
+            m[RrdUtils.TYPE] = dats[i].getDsType();
+            m[RrdUtils.HEARTBEAT] = dats[i].getHeartbeat();
+            m[RrdUtils.MAX] = dats[i].getMaxValue();
+            m[RrdUtils.MIN] = dats[i].getMinValue();
+
+            dslist.add(m);
+        }
+//        rrdDb.close();
+        return dslist;
     }
 
     public static Map getDatabaseInfo(String dbName){
@@ -165,15 +191,8 @@ class RrdUtils {
         config[START_TIME] = rrdDef.getStartTime();
         config[DATASOURCE] = fetchDatasources(rrdDb );
         config[ARCHIVE] = fetchArchives(rrdDb);
-        println config;
-        fetchArchives(rrdDb).each{
-//            Map m = it;
-            println(it.getConsolFun() );
-        };
-        println "=================";
-        fetchDatasources(rrdDb).each{
-            println(it.toString())
-        };
+   
+        rrdDb.close();
         return config;
     }
 

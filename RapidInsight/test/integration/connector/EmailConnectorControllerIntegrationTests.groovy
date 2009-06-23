@@ -96,9 +96,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
 
-        assertEquals(0, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(0, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
         def model = controller.modelAndView.model;
         def conn = model.emailConnector;
@@ -117,9 +117,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
 
-        assertEquals(0, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(0, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
         def model = controller.modelAndView.model;
         def conn = model.emailConnection;
@@ -140,9 +140,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
         def connector=EmailConnector.list()[0]        
-        assertEquals(0, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(0, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
 
         def model = controller.modelAndView.model;
@@ -236,9 +236,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
         
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
         def updateParams=[:]
         updateParams.putAll(params)
@@ -261,9 +261,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertTrue(conn.hasErrors())
         assertEquals("default.not.unique.message", conn.errors.allErrors[0].code)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
 
         assertNull(EmailConnector.get(name:updateParams.name))
@@ -285,9 +285,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
         def updateParams=[:]
         updateParams.putAll(params)
@@ -310,9 +310,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertTrue(datasource.hasErrors())
         assertEquals("default.not.unique.message", datasource.errors.allErrors[0].code)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
 
         assertNull(EmailConnector.get(name:updateParams.name))
@@ -333,9 +333,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.save();
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
         
 
 
@@ -356,9 +356,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.update();
         
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
 
         def model = controller.modelAndView.model;
@@ -392,9 +392,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 //
 //        controller.save();
 //
-//        assertEquals(1, EmailConnector.list().size())
-//        assertEquals(1, EmailConnection.list().size())
-//        assertEquals(1, EmailDatasource.list().size())
+//        assertEquals(1, EmailConnector.count())
+//        assertEquals(1, EmailConnection.count())
+//        assertEquals(1, EmailDatasource.count())
 //
 //
 //

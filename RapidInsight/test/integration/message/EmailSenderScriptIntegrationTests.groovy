@@ -91,12 +91,12 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
     }
     void testSenderRecievesConnectorNameFromStaticParam(){
-         assertEquals(CmdbScript.list().size(),0)
+         assertEquals(CmdbScript.count(),0)
          
          def createScript=CmdbScript.addScript([name:"createDefaults"])
          CmdbScript.runScript(createScript.name);
          
-         assertTrue(CmdbScript.list().size()>1)
+         assertTrue(CmdbScript.count()>1)
 
          def senderScript=CmdbScript.get(name:"emailSender")
          assertEquals(senderScript.staticParam,"connectorName:emailConnector")
@@ -314,9 +314,9 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
     void addEmailConnectorViaController()
     {
-        assertEquals(EmailConnector.list().size(),0)
-        assertEquals(EmailConnection.list().size(),0)
-        assertEquals(EmailDatasource.list().size(),0)
+        assertEquals(EmailConnector.count(),0)
+        assertEquals(EmailConnection.count(),0)
+        assertEquals(EmailDatasource.count(),0)
         
         def params=[:]
         params.putAll(connectorParams)

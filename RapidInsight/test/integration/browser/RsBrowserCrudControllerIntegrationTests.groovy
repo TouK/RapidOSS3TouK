@@ -40,7 +40,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.params["name"] = "newConnection";
         controller.save();
-        assertEquals(1, Connection.list().size());
+        assertEquals(1, Connection.count());
         def connection = Connection.get(name: "newConnection");
         assertNotNull(connection)
         assertEquals(ControllerUtils.convertSuccessToXml("${Connection.class.name} ${connection.id} created"), controller.response.contentAsString)
@@ -50,7 +50,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         RsBrowserCrudController controller = new RsBrowserCrudController();
         controller.params["__rsBrowserClassName"] = Connection.class.name;
         controller.save();
-        assertEquals(0, Connection.list().size());
+        assertEquals(0, Connection.count());
 
         def errors = new BindException(new Connection(), Connection.class.name);
         errors.reject("default.blank.message", ["name", "class ${Connection.class.name}"] as Object[], "");
@@ -142,7 +142,7 @@ class RsBrowserCrudControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         controller.params["id"] = "${connection.id}";
         controller.delete();
 
-        assertEquals(0, Connection.list().size());
+        assertEquals(0, Connection.count());
         assertEquals(ControllerUtils.convertSuccessToXml("${Connection.class.name} ${connection.id} deleted"), controller.response.contentAsString)
     }
 

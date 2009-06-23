@@ -82,7 +82,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
         assertFalse(summaryScript.hasErrors());
 
-        assertEquals(classes.RsEvent.list().size(),0)
+        assertEquals(classes.RsEvent.count(),0)
 
         def params=[name:"TESTDS",nodeType:"Container"]
         def setMap=getSummaryDataMap(params);
@@ -100,7 +100,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
         assertFalse(summaryScript.hasErrors());
 
-        assertEquals(classes.RsEvent.list().size(),0)
+        assertEquals(classes.RsEvent.count(),0)
 
 
         def eventCounts=[:]
@@ -121,7 +121,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             }
 
         }
-        def totalEventCount=classes.RsEvent.list().size();
+        def totalEventCount=classes.RsEvent.count();
         assertEquals(eventCounts.values().sum(),totalEventCount)
 
 
@@ -151,7 +151,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
         assertFalse(summaryScript.hasErrors());
 
-        assertEquals(classes.RsEvent.list().size(),0)
+        assertEquals(classes.RsEvent.count(),0)
 
 
         def eventCounts=[:]
@@ -171,7 +171,7 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             }
 
         }
-        def totalEventCount=classes.RsEvent.list().size();
+        def totalEventCount=classes.RsEvent.count();
         assertEquals(eventCounts.values().sum(),totalEventCount)
 
 

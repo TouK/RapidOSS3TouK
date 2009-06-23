@@ -203,10 +203,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
 
-        assertEquals(1, SnmpConnector.list().size());
-        assertEquals(1, SnmpConnection.list().size());
-        assertEquals(1, SnmpDatasource.list().size());
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, SnmpConnector.count());
+        assertEquals(1, SnmpConnection.count());
+        assertEquals(1, SnmpDatasource.count());
+        assertEquals(1, CmdbScript.count());
 
         IntegrationTestUtils.resetController(controller);
         controller = getSnmpControllerForSave(connectorName, connectorSaveParams);
@@ -217,10 +217,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("/snmpConnector/list", controller.response.redirectedUrl);
 
         println  controller.response.redirectedUrl
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
     public void testSuccessfullStartConnectorAndStopConnector()
     {
@@ -234,10 +234,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
 
-        assertEquals(1, SnmpConnector.list().size());
-        assertEquals(1, SnmpConnection.list().size());
-        assertEquals(1, SnmpDatasource.list().size());
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, SnmpConnector.count());
+        assertEquals(1, SnmpConnection.count());
+        assertEquals(1, SnmpDatasource.count());
+        assertEquals(1, CmdbScript.count());
 
         def ds = SnmpDatasource.list()[0];
         assertTrue(ds.isFree());
@@ -282,10 +282,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
 
-        assertEquals(1, SnmpConnector.list().size());
-        assertEquals(1, SnmpConnection.list().size());
-        assertEquals(1, SnmpDatasource.list().size());
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, SnmpConnector.count());
+        assertEquals(1, SnmpConnection.count());
+        assertEquals(1, SnmpDatasource.count());
+        assertEquals(1, CmdbScript.count());
 
         def ds = SnmpDatasource.list()[0];
         assertTrue(ds.isFree());
@@ -295,7 +295,7 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         IntegrationTestUtils.resetController(controller);
 
         CmdbScript.removeAll();
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, CmdbScript.count());
         controller.params.id=snmpConnector.id;
         controller.startConnector();
         assertTrue(ds.isFree());
@@ -319,10 +319,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         assertEquals("/snmpConnector/show/${snmpConnector.id}", controller.response.redirectedUrl);
 
 
-        assertEquals(1, SnmpConnector.list().size());
-        assertEquals(1, SnmpConnection.list().size());
-        assertEquals(1, SnmpDatasource.list().size());
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, SnmpConnector.count());
+        assertEquals(1, SnmpConnection.count());
+        assertEquals(1, SnmpDatasource.count());
+        assertEquals(1, CmdbScript.count());
 
         def ds = SnmpDatasource.list()[0];
         assertTrue(ds.isFree());
@@ -496,10 +496,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         existingConnector.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
 
     }
 
@@ -521,10 +521,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         existingConnection.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
 
     }
     public void testSaveRollsBackIfScriptHasErrors()
@@ -547,10 +547,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         existingScript.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
 
     }
     public void testSaveRollsBackIfDatasourceHasErrors()
@@ -573,10 +573,10 @@ class SnmpConnectorControllerIntegrationTests extends RapidCmdbIntegrationTestCa
         connectionForDs.remove();
         existingDatasource.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
 
     }
 

@@ -121,11 +121,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: true]
 
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, CmdbScript.count());
         CmdbScript script = CmdbScript.addScript(params)
         assertFalse(script.hasErrors())
 
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, CmdbScript.count());
 
         assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
 
@@ -133,7 +133,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         CmdbScript script2 = CmdbScript.addScript(params2)
         assertFalse(script2.hasErrors())
 
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, CmdbScript.count());
 
         assertEquals(false,CmdbScript.get(id:script.id).logFileOwn);
     }
@@ -149,11 +149,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         def params = [name: "myscript", enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: true]
 
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, CmdbScript.count());
         CmdbScript script = CmdbScript.addScript(params)
         assertFalse(script.hasErrors())
 
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, CmdbScript.count());
 
         assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
 
@@ -161,7 +161,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         CmdbScript script2 = CmdbScript.addUniqueScript(params2,true)
         assertTrue(script2.hasErrors())
 
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, CmdbScript.count());
         assertEquals(true,CmdbScript.get(id:script.id).logFileOwn);
     }
     void testAddScript() {
@@ -183,11 +183,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         def params = [name: "myscript", allowedGroups: [gr1, gr2], enabledForAllGroups: true, type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: logParams.logFileOwn]
 
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, CmdbScript.count());
         CmdbScript script = CmdbScript.addScript(params)
         assertFalse(script.hasErrors())
 
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, CmdbScript.count());
 
         assertTrue(script.enabledForAllGroups);
         def groups = script.allowedGroups;
@@ -319,12 +319,12 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         def updateParams = [name: "myscript333", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.logLevel, logFileOwn: logParams.logFileOwn]
 
         def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.oldLogLevel, logFileOwn: logParams.oldLogFileOwn]
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
 
         def scriptToUpdate = CmdbScript.addScript(params);
 
         assertFalse(scriptToUpdate.hasErrors())
-        assertEquals(CmdbScript.list().size(), 1)
+        assertEquals(CmdbScript.count(), 1)
 
         def unscheduleScriptName = null;
         ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->
@@ -360,12 +360,12 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
 
         def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, logLevel: logParams.oldLogLevel, logFileOwn: logParams.logFileOwn]
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
 
         def scriptToUpdate = CmdbScript.addScript(params);
 
         assertFalse(scriptToUpdate.hasErrors())
-        assertEquals(CmdbScript.list().size(), 1)
+        assertEquals(CmdbScript.count(), 1)
 
         def oldLogger = CmdbScript.getScriptLogger(scriptToUpdate);
         assertEquals(oldLogger.getLevel(), oldLogLevel);
@@ -835,7 +835,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     void testRunScriptWithNameAndParamsGeneratesExceptionWhenScriptIsMissing() {
         initialize([CmdbScript, Group], [])
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
         try {
             CmdbScriptOperations.runScript("testscript", [:]);
             fail("should throw exception")
@@ -849,7 +849,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     void testUpdateScriptWithOnlyParamsGeneratesExceptionWhenScriptIsMissing() {
         initialize([CmdbScript, Group], [])
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
         try {
             CmdbScriptOperations.updateScript([name: "testscript"]);
             fail("should throw exception")
@@ -862,7 +862,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     void testStartAndStopListeningWithNameGeneratesExceptionWhenScriptIsMissing() {
         initialize([CmdbScript, Group], [])
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
         try {
             CmdbScriptOperations.startListening([name: "testscript"]);
             fail("should throw exception")
@@ -1038,7 +1038,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
     }
     void testDeleteScriptWithNameGeneratesExceptionWhenScriptIsMissing() {
         initialize([CmdbScript, Group], [])
-        assertEquals(CmdbScript.list().size(), 0)
+        assertEquals(CmdbScript.count(), 0)
         try {
             CmdbScriptOperations.deleteScript("testscript");
             fail("should throw exception")
@@ -1097,9 +1097,9 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         }
 
         //we test that the script is deleted and unschedule called
-        assertEquals(CmdbScript.list().size(), 1);
+        assertEquals(CmdbScript.count(), 1);
         CmdbScriptOperations.deleteScript(scriptInstance);
-        assertEquals(CmdbScript.list().size(), 0);
+        assertEquals(CmdbScript.count(), 0);
         assertEquals(unscheduleScriptName, scriptInstance.name);
 
 
@@ -1116,10 +1116,10 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         unscheduleScriptName = null;
 
         assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 1)
-        assertEquals(CmdbScript.list().size(), 1);
+        assertEquals(CmdbScript.count(), 1);
         assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
         CmdbScriptOperations.deleteScript(scriptInstance);
-        assertEquals(CmdbScript.list().size(), 0);
+        assertEquals(CmdbScript.count(), 0);
         assertEquals(unscheduleScriptName, scriptInstance.name);
         assertEquals(callParams.script.id, scriptInstance.id);
 
@@ -1163,12 +1163,12 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertFalse(scriptInstance.hasErrors())
         assertFalse(scriptInstance2.hasErrors())
 
-        assertEquals(CmdbScript.list().size(), 2);
+        assertEquals(CmdbScript.count(), 2);
         assertNotNull(ScriptManager.getInstance().getScript(scriptInstance.scriptFile))
         assertEquals(CmdbScript.countHits("scriptFile:${scriptInstance.scriptFile}"), 2)
         CmdbScriptOperations.deleteScript(scriptInstance);
         assertEquals(unscheduleScriptName, scriptInstance.name);
-        assertEquals(CmdbScript.list().size(), 1);
+        assertEquals(CmdbScript.count(), 1);
 
 
         //Now we also test that script is not removed from script Manager because its used

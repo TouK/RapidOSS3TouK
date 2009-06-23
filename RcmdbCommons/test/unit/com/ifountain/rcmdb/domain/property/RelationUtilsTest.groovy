@@ -467,6 +467,6 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def rel1MetaData = relations["rel1"]
         RelationUtils.addRelatedObjects(fromObj1, rel1MetaData, objectToBeIndexed, "source1");
         RelationUtils.removeRelations(fromObj1, rel1MetaData, objectToBeIndexed, "source1");
-        assertEquals (0, Relation.list().size());
+        assertEquals (0, Relation.count());
     }
 }

@@ -73,7 +73,7 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
     }
     public void testRunScriptDoesNotGenerateExceptionWhenScriptIsNotFound()
     {
-         assertEquals(CmdbScript.list().size(),0);
+         assertEquals(CmdbScript.count(),0);
          QuartzScriptJob job=new QuartzScriptJob();
          try{
             job.runScript("noscript");

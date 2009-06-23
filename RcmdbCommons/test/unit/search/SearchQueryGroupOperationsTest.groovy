@@ -25,8 +25,8 @@ class SearchQueryGroupOperationsTest  extends RapidCmdbWithCompassTestCase{
         initialize([SearchQuery, SearchQueryGroup], []);
         CompassForTests.addOperationSupport (SearchQueryGroup,SearchQueryGroupOperations);
 
-        assertEquals(0,SearchQuery.list().size());
-        assertEquals(0,SearchQueryGroup.list().size());
+        assertEquals(0,SearchQuery.count());
+        assertEquals(0,SearchQueryGroup.count());
 
         def group=SearchQueryGroup.add(name:"testgroup",username:"user1",type:"fixtype");
         assertFalse(group.hasErrors())
@@ -36,8 +36,8 @@ class SearchQueryGroupOperationsTest  extends RapidCmdbWithCompassTestCase{
         def query2=SearchQuery.add(name:"testquery2",username:"user1",group:group,query:"abc", type:"test");
         assertFalse(query2.hasErrors());
 
-        assertEquals(2,SearchQuery.list().size());
-        assertEquals(1,SearchQueryGroup.list().size());
+        assertEquals(2,SearchQuery.count());
+        assertEquals(1,SearchQueryGroup.count());
 
 
 
@@ -80,6 +80,6 @@ class SearchQueryGroupOperationsTest  extends RapidCmdbWithCompassTestCase{
              fail("Should not throw exception")
         }
 
-        assertEquals(0,SearchQueryGroup.list().size());
+        assertEquals(0,SearchQueryGroup.count());
     }
 }

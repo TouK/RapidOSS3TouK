@@ -123,10 +123,10 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         existingConnector.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
 
     public void testSaveRollsBackIfConnectionHasErrors()
@@ -143,10 +143,10 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         existingConnection.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
 
     public void testSaveRollsBackIfScriptHasErrors()
@@ -163,10 +163,10 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         existingScript.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
 
     public void testSaveRollsBackIfDatasourceHasErrors()
@@ -186,10 +186,10 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         connectionForDs.remove();
         existingDatasource.remove();
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
 
     public void testSuccessfulUpdate()
@@ -323,17 +323,17 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         SnmpConnector snmpConnector = snmpConnectors[0]
         assertEquals(connectorSaveParams["name"], snmpConnector.name);
 
-        assertEquals(1, SnmpConnector.list().size());
-        assertEquals(1, SnmpConnection.list().size());
-        assertEquals(1, SnmpDatasource.list().size());
-        assertEquals(1, CmdbScript.list().size());
+        assertEquals(1, SnmpConnector.count());
+        assertEquals(1, SnmpConnection.count());
+        assertEquals(1, SnmpDatasource.count());
+        assertEquals(1, CmdbScript.count());
 
         SnmpConnectorOperations.deleteConnector(snmpConnector)
 
-        assertEquals(0, SnmpConnector.list().size());
-        assertEquals(0, SnmpConnection.list().size());
-        assertEquals(0, SnmpDatasource.list().size());
-        assertEquals(0, CmdbScript.list().size());
+        assertEquals(0, SnmpConnector.count());
+        assertEquals(0, SnmpConnection.count());
+        assertEquals(0, SnmpDatasource.count());
+        assertEquals(0, CmdbScript.count());
     }
 
     public void testStartConnector() {

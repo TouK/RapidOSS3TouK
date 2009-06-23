@@ -442,7 +442,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def newIdAndVersion = 15555555;
         reloadedInstance.id = newIdAndVersion;
         reloadedInstance.version = newIdAndVersion;
-        assertEquals(1, loadedDomainClass.list().size());
+        assertEquals(1, loadedDomainClass.count());
         assertNull(loadedDomainClass.get(id: newIdAndVersion));
 
         reloadedInstance = loadedDomainClass.get(id: instance.id)

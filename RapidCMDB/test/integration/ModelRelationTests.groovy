@@ -65,7 +65,7 @@ class ModelRelationTests extends RapidCmdbIntegrationTestCase {
         assertNotNull(DeviceInterface.get(name: "myDeviceInt", creationClassName: "DeviceInterface").underlying)
 
         devInterface.remove();
-        assertEquals(0, DeviceInterface.list().size())
+        assertEquals(0, DeviceInterface.count())
         assertNull("layered over is not null", ip.layeredOver)
     }
 

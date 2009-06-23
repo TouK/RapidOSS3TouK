@@ -56,11 +56,11 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         RsUser user = RsUser.addUser(userProps);
         assertFalse(user.hasErrors());
         assertEquals (2, user.groups.size())
-        assertEquals(1,RsUser.list().size());
+        assertEquals(1,RsUser.count());
 
         RsUser user2 = RsUser.addUser(userProps);
         assertTrue(user2.hasErrors());
-        assertEquals(1,RsUser.list().size());
+        assertEquals(1,RsUser.count());
 
     }
     public void testAddUserWithGroupList()
@@ -97,7 +97,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         {
 
         }
-        assertEquals(0,RsUser.list().size())
+        assertEquals(0,RsUser.count())
     }
 
     public void testAddUserThrowsExceptionIfGroupsEmptyOrNull()
@@ -112,7 +112,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         {
             assertEquals ("no.group.specified", e.getCode());
         }
-        assertEquals(0,RsUser.list().size())
+        assertEquals(0,RsUser.count())
 
         try
         {
@@ -124,7 +124,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         {
             assertEquals ("no.group.specified", e.getCode());
         }
-        assertEquals(0,RsUser.list().size())
+        assertEquals(0,RsUser.count())
 
         try
         {
@@ -136,7 +136,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         {
             assertEquals ("no.group.specified", e.getCode());
         }
-        assertEquals(0,RsUser.list().size())
+        assertEquals(0,RsUser.count())
     }
 
       public void testUpdateUser()
@@ -156,7 +156,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         def updateProps=[username:"user2",password:"password2",groups:[group1,group2]];
         RsUser updatedUser=RsUser.updateUser(user,updateProps);
         assertFalse(updatedUser.hasErrors());
-        assertEquals(1,RsUser.list().size());
+        assertEquals(1,RsUser.count());
 
         assertEquals(updateProps.username,updatedUser.username);
         assertEquals(RsUser.hashPassword(updateProps.password),updatedUser.passwordHash);
@@ -200,7 +200,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         def group1=Group.add(name:"gr1");
         def userProps = [username:"user1", password:"password",groups:[group1]];
         def user=RsUser.addUser(userProps);
-        assertEquals(1,RsUser.list().size())
+        assertEquals(1,RsUser.count())
 
         try
         {
@@ -213,7 +213,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         {
             assertEquals ("no.group.specified", e.getCode());
         }
-        assertEquals(1,RsUser.list().size())
+        assertEquals(1,RsUser.count())
 
     }
 

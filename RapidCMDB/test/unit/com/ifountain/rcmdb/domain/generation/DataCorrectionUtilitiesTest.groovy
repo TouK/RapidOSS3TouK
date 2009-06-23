@@ -208,7 +208,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         DataCorrectionUtilities.dataCorrectionBeforeReloadStep (new File(base_directory).getPath(), new File(temp_directory).getPath(), oldDomainClasses, new ArrayList(newDomainClasses.values()), newDomainClasses );
         assertTrue (new File(base_directory+"operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
-        assertEquals(1, PropertyAction.list().size());
+        assertEquals(1, PropertyAction.count());
         assertEquals(PropertyAction.SET_DEFAULT_VALUE, PropertyAction.list()[0].action);
         assertEquals(prop2.name, PropertyAction.list()[0].propName);
     }
@@ -249,7 +249,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         this.initialize([newClass1, ModelAction, PropertyAction], [], true)
         DataCorrectionUtilities.dataCorrectionAfterReloadStep ();
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
-        assertEquals(0, PropertyAction.list().size());
+        assertEquals(0, PropertyAction.count());
         def instance = newClass1.'get'(prop1:"prop1Value1");
         assertEquals (new Long(1), instance.prop2);
         instance = newClass1.'get'(prop1:"prop1Value2");
@@ -304,7 +304,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         this.initialize([newParentClass1, newChildClass1, ModelAction, PropertyAction], [], true)
         DataCorrectionUtilities.dataCorrectionAfterReloadStep ();
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
-        assertEquals(0, PropertyAction.list().size());
+        assertEquals(0, PropertyAction.count());
         assertEquals (3, newChildClass1.'list'().size());
         def instance = newChildClass1.'get'(prop1:"prop1Value1");
         assertEquals (new Long(1), instance.prop2);
@@ -372,7 +372,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         this.initialize([newClass1, newClass2, ModelAction, PropertyAction], [], true)
         DataCorrectionUtilities.dataCorrectionAfterReloadStep ();
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
-        assertEquals(0, PropertyAction.list().size());
+        assertEquals(0, PropertyAction.count());
         class1Instance1 = newClass1.'get'(prop1:"class1Instance1");
         assertNotNull (class1Instance1);
         class2Instance1 = newClass2.'get'(prop1:"class2Instance1");

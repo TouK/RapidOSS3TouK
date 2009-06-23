@@ -45,7 +45,7 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         CompassForTests.addOperationSupport (BaseDatasource, BaseDatasourceOperations);
      }
      public void testGetOnDemandReturnsNullWhenNoDatasourceIsFound(){
-         assertEquals(BaseDatasource.list().size(),0);
+         assertEquals(BaseDatasource.count(),0);
          def onDemandDs=BaseDatasource.getOnDemand(name:"testds");
          assertNull(onDemandDs);
      }

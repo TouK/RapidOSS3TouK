@@ -69,7 +69,7 @@ class ExecuteBatchControllerTests extends RapidCmdbIntegrationTestCase {
         ebc.index();
         def errorXml = getErrorsAsXML(["Exception occured in action 1: " + ebc.message(code: "default.blank.message", args: ["name", "class SmartsObject"])]);
         XMLTestUtils.compareXml(errorXml, ebc.response.contentAsString);
-        assertEquals(0, SmartsObject.list().size());
+        assertEquals(0, SmartsObject.count());
     }
 
     void testAddObjectFailsIfModelDoesNotExist() {

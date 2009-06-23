@@ -141,7 +141,12 @@ class RrdUtils {
     public static byte[] graph(Map config){
         return Grapher.graph(config);
     }
-
+    /**
+    * retrieves defined archived in speficied database
+    * Notice: it is better to use overriden function fetchArchives(rrdDb) if an rrdDb is
+    * already defined and the database is open. Otherwise this function will give
+    * an exception since it cannot read the database
+    */
     private static def fetchArchives(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def result = fetchArchives(rrdDb);
@@ -170,7 +175,12 @@ class RrdUtils {
 
         return alist;
     }
-
+    /**
+    * retrieves defined datasources in speficied database
+    * Notice: it is better to use overriden function fetchDatasources(rrdDb) if an rrdDb is
+    * already defined and the database is open. Otherwise this function will give
+    * an exception since it cannot read the database
+    */
     private static def fetchDatasources(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def result = fetchDatasources(rrdDb);
@@ -212,6 +222,23 @@ class RrdUtils {
    
         rrdDb.close();
         return config;
+    }
+    /**
+    *
+    */
+    public static double[][] fetchData(String dbName){
+        RrdDb rrdDb = new RrdDb(dbName);
+        def arclist = fetchArchives(rrdDb);
+        def dslist = fetchDatasources(rrdDb);
+        String[] datasources = new String[dslist.size()];
+        for(int i=0; i<datasources.length; i++){
+            datasources[i] = dslist[i][NAME];
+        }
+        long endTime = rrdDb.getLastUpdateTime();
+        rrdDb.close();
+        String function = arclist[0][FUNCTION];
+        long startTime = arclist[0][START_TIME];
+        return fetchData(dbName, datasources, function, startTime, endTime);
     }
 
     public static double[] fetchData(String dbName, String datasource){
@@ -260,7 +287,7 @@ class RrdUtils {
                                    long startTime, long endTime){
         RrdDb rrdDb = new RrdDb(dbName);
         FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
-        fetchRequest.setFilter (datasources[]);
+        fetchRequest.setFilter (datasources);
         rrdDb.close();
         return fetchRequest.fetchData().getValues();
     }

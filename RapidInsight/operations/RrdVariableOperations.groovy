@@ -26,7 +26,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         RrdUtils.updateData(file, dataList)
     }
 
-    private def Map createDBConfig() {
+    private def createDBConfig() {
         def dbConfig = [:]
 
         //there could be change in file name
@@ -62,7 +62,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return dbConfig
     }
 
-    private def String createUpdateData(Map config) {
+    private def createUpdateData(Map config) {
 
         def timestamp = config["time"] != null ? config["time"] : new Date().getTime()
         def value = config["value"] != null ? config["value"] : Double.NaN

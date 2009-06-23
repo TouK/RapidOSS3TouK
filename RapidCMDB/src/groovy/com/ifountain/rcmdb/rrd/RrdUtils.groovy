@@ -5,6 +5,8 @@ import org.jrobin.core.RrdDb
 import org.jrobin.core.DsDef
 import org.jrobin.core.ArcDef
 import org.jrobin.core.Sample
+import org.jrobin.core.Archive
+import org.jrobin.core.Datasource
 
 /**
 * Created by IntelliJ IDEA.
@@ -124,6 +126,71 @@ class RrdUtils {
 
     public static byte[] graph(Map config){
         return Grapher.graph(config);
+    }
+
+    public static Archive[] fetchArchives(String dbName){
+        RrdDb rrdDb = new RrdDb(dbName);
+        return fetchArchives(rrdDb);
+    }
+
+    public static Archive[] fetchArchives(RrdDb rrdDb){
+        int arcCount = rrdDb.getArcCount();
+        Archive[] arcs = new Archive[arcCount];
+        for(int i=0; i<arcCount; i++){
+            arcs[i] = rrdDb.getArchive(i);
+        }
+        return arcs;
+    }
+
+    public static Datasource[] fetchDatasources(String dbName){
+        RrdDb rrdDb = new RrdDb(dbName);
+        return fetchDatasources(rrdDb);
+    }
+
+    public static Datasource[] fetchDatasources(RrdDb rrdDb){
+        int datCount = rrdDb.getDsCount();
+        Datasource[] dats = new Datasource[datCount];
+        for(int i=0; i<datCount; i++){
+            dats[i] = rrdDb.getDatasource(i);
+        }
+        return dats;
+    }
+
+    public static Map getDatabaseInfo(String dbName){
+        RrdDb rrdDb = new RrdDb(dbName);
+        RrdDef rrdDef = rrdDb.getRrdDef();
+
+        Map config = [:];
+        config[DATABASE_NAME] = dbName;
+        config[START_TIME] = rrdDef.getStartTime();
+        config[DATASOURCE] = fetchDatasources(rrdDb );
+        config[ARCHIVE] = fetchArchives(rrdDb);
+        println config;
+        fetchArchives(rrdDb).each{
+//            Map m = it;
+            println(it.getConsolFun() );
+        };
+        println "=================";
+        fetchDatasources(rrdDb).each{
+            println(it.toString())
+        };
+        return config;
+    }
+
+    public boolean checkLists(dlist1, dlist2){
+        int size1 = dlist1.size();
+        int size2 = dlist2.size();
+        if (size1!=size2) return false;
+
+        dlist1 = dlist1.sort();
+        dlist2 = dlist2.sort();
+
+        for(int i=0; i<size1; i++){
+            if(!dlist1[i].equals(dlist2[i])){
+                return false;
+            }
+        }
+        return true;
     }
     
     /*

@@ -197,13 +197,13 @@ class RapidDomainClassGrailsPlugin {
         mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
         }
-        mc.static.getFederatedPropertiesList = {->
+        mc.static.getFederatedPropertyList = {->
             return getPropertiesMethod.getFederatedProperties();
         }
-        mc.static.getRelationPropertiesList = {->
+        mc.static.getRelationPropertyList = {->
             return getPropertiesMethod.getRelations();
         }
-        mc.static.getNonFederatedPropertiesList = {->
+        mc.static.getNonFederatedPropertyList = {->
             return getPropertiesMethod.getNonFederatedProperties();
         }
         mc.static.getOperations = {->
@@ -274,10 +274,8 @@ class RapidDomainClassGrailsPlugin {
         mc.cloneObject = {->
             def cloned = dc.clazz.newInstance();
             def domainObject = delegate;
-            domainObject.getPropertiesList().each{p ->
-                if(!p.isRelation && !p.isOperationProperty){
-                    cloned.setPropertyWithoutUpdate(p.name, domainObject[p.name])
-                }
+            domainObject.getNonFederatedPropertyList().each{p ->
+                cloned.setPropertyWithoutUpdate(p.name, domainObject[p.name])
             }
             def filteredProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME];
             filteredProps.each{propName ->

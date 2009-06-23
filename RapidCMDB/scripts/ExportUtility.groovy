@@ -51,19 +51,16 @@ def exportConfigData(web, fname){
 		def ids = objs.id;
 		def model = web.grailsApplication.getDomainClass("relation.Relation").clazz;
 		def instances = model.list();
+		def props = web.grailsApplication.getDomainClass(objModelName).clazz.getNonFederatedPropertyList();
 		if (instances.size()>0){
 			instances.each{obj->
 				if (ids.contains(obj.objectId) && ids.contains(obj.reverseObjectId)){
 					def objModelName = obj.getClass().getName();
-					def props = web.grailsApplication.getDomainClass(objModelName).clazz.getPropertiesList();
 					def propValue;
 					def propMap = [:];
-					
 					props.each{prop->
-						if (!prop.isRelation && !prop.isOperationProperty){
-							propValue = obj."$prop.name";
-							propMap.put(prop.name, propValue);
-						}
+                        propValue = obj."$prop.name";
+                        propMap.put(prop.name, propValue);
 					}
 					propMap.id = obj.id;
 					propMap.modelName = objModelName;
@@ -216,18 +213,12 @@ def preparePropsForExport(web, modelName, objList){
 	if (objs.size()>0){
 		objs.each{obj->
 			def objModelName = obj.getClass().getName();
-			def props = web.grailsApplication.getDomainClass(objModelName).clazz.getPropertiesList();
+			def props = obj.getNonFederatedPropertyList();
 			def propMap = [:];
 			props.each{prop->
-				if (!prop.isRelation && !prop.isOperationProperty){
-					def propValue = obj."${prop.name}";
-					propMap.put(prop.name, propValue);
-				}
+                def propValue = obj."${prop.name}";
+                propMap.put(prop.name, propValue);
 			}
-			/*def propMap = obj.asMap();
-			propMap.remove("__is_federated_properties_loaded__");
-			propMap.remove("__operation_class__");
-			propMap.remove("errors");*/
 			propMap.id = obj.id;
 			propMap.modelName = objModelName;
 			objList.add(propMap);
@@ -241,20 +232,20 @@ def preparePropsAndKeyRelationsAsPropForExport(web, modelName, objList){
 	if (objs.size()>0){
 		objs.each{obj->
 			def objModelName = obj.getClass().getName();
-			def props = web.grailsApplication.getDomainClass(objModelName).clazz.getPropertiesList();
+			def props = obj.getPropertiesList();
 			def propValue;
 			def propMap = [:];
 			props.each{prop->
 				def propName = prop.name;
 				propValue = obj."$propName";
-				if (!prop.isRelation){
-					propMap.put(propName,propValue);
-				}
-				else {
-					if (prop.isKey){ 
+				if (prop.isRelation){
+					if (prop.isKey){
 						propValue = propValue.id;
 						propMap.put(propName,propValue);
 					}
+				}
+				else if (!prop.isOperationProperty && !prop.isFederated){
+				    propMap.put(propName,propValue);
 				}
 			}
 			propMap.id = obj.id;
@@ -270,29 +261,29 @@ def preparePropsAndRelationsAsPropForExport(web, modelName, objList){
 	if (objs.size()>0){
 		objs.each{obj->
 			def objModelName = obj.getClass().getName();
-			def props = web.grailsApplication.getDomainClass(objModelName).clazz.getPropertiesList();
+			def props = obj.getPropertiesList();
 			def propMap = [:];
 			props.each{prop->
-				def propName = prop.name;
-				def propValue = obj."$propName";
-				if (prop.isRelation){ 
-					if (propValue.getClass().getName() == "java.util.ArrayList"){
-						def tmp = "";
-						propValue.each{
-							tmp = it.id+" "+tmp;
-						}
-						propValue = tmp;
-					}
-					else{
-						if (propValue!=null){
-							propValue = propValue.id;
-						}
-					}
-// 					if (propValue!=""){
-// 						propMap.put(propName,propValue);
-// 					}
-				}
-				propMap.put(propName,propValue);
+			    if(!prop.isOperationProperty && !prop.isFederated)
+                {
+                    def propName = prop.name;
+                    def propValue = obj."$propName";
+                    if (prop.isRelation){
+                        if (propValue.getClass().getName() == "java.util.ArrayList"){
+                            def tmp = "";
+                            propValue.each{
+                                tmp = it.id+" "+tmp;
+                            }
+                            propValue = tmp;
+                        }
+                        else{
+                            if (propValue!=null){
+                                propValue = propValue.id;
+                            }
+                        }
+                    }
+                    propMap.put(propName,propValue);
+                }
 			}
 			propMap.id = obj.id;
 			propMap.modelName = objModelName;
@@ -325,39 +316,30 @@ def prepareSelectedPropsForExport(web, modelName, propList, objList){
 
 def prepareRelationsForExport(web, modelName, relationData){
 	def model = web.grailsApplication.getDomainClass(modelName).clazz;
-	def relationList = [];
-	def propList = model.getPropertiesList();
-	propList.each{
-		if (it.isRelation){
-			relationList.add(it.name);
-		}	
-	}
 	def objs = model.list();
 	if (objs.size()>0){
 		objs.each{obj->
 			def fromObjClass = obj.getClass().getName(); 
 			def fromObjId = obj.id; 
-			def props = web.grailsApplication.getDomainClass(fromObjClass).clazz.getPropertiesList();	
+			def props = obj.getRelationPropertyList();
 			props.each{prop->
-				if (prop.isRelation){
-					def relation = prop.name;
-					def toObj = obj."$relation";
-					if (toObj!=null){
-						def toObjClass = toObj.getClass().getName(); 
-						def toObjId ;
-						if (toObjClass == "java.util.ArrayList"){
-							toObj.each{manyRelationObj->
-								toObjClass = manyRelationObj.getClass().getName();
-								toObjId = manyRelationObj.id;
-								relationData.add([fromObjectId:fromObjId, fromModel:fromObjClass, toModel:toObjClass , toObjectId:toObjId, name:relation]);
-							}
-						}
-						else{						
-							toObjId = toObj.id;
-							relationData.add([fromObjectId:fromObjId, fromModel:fromObjClass, toModel:toObjClass , toObjectId:toObjId, name:relation]);
-						}
-					}
-				}
+                def relation = prop.name;
+                def toObj = obj."$relation";
+                if (toObj!=null){
+                    def toObjClass = toObj.getClass().getName();
+                    def toObjId ;
+                    if (toObjClass == "java.util.ArrayList"){
+                        toObj.each{manyRelationObj->
+                            toObjClass = manyRelationObj.getClass().getName();
+                            toObjId = manyRelationObj.id;
+                            relationData.add([fromObjectId:fromObjId, fromModel:fromObjClass, toModel:toObjClass , toObjectId:toObjId, name:relation]);
+                        }
+                    }
+                    else{
+                        toObjId = toObj.id;
+                        relationData.add([fromObjectId:fromObjId, fromModel:fromObjClass, toModel:toObjClass , toObjectId:toObjId, name:relation]);
+                    }
+                }
 			}
 		}
 	}

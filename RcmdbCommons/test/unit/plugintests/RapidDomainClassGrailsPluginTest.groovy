@@ -615,14 +615,14 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             assertEquals (expectedProps[i], allProperties[i].name);            
         }
 
-        def federatedProperties = model1Class.getFederatedPropertiesList();
+        def federatedProperties = model1Class.getFederatedPropertyList();
         assertEquals (1, federatedProperties.size());
         expectedProps = [ "prop3"]
         for(int i=0; i < federatedProperties.size();i++){
             assertEquals (expectedProps[i], federatedProperties[i].name);
         }
 
-        def relations = model1Class.getRelationPropertiesList();
+        def relations = model1Class.getRelationPropertyList();
         assertEquals (1, relations.size());
         expectedProps = [ "rel1"]
         for(int i=0; i < relations.size();i++){
@@ -630,7 +630,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         }
 
 
-        def nonFederatedProperties = model1Class.getNonFederatedPropertiesList();
+        def nonFederatedProperties = model1Class.getNonFederatedPropertyList();
         assertEquals (3, nonFederatedProperties.size());
         expectedProps = ["id", "prop1", "prop2"]
         for(int i=0; i < nonFederatedProperties.size();i++){

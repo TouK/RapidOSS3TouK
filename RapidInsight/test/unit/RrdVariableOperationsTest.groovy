@@ -51,9 +51,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archiveConfig = [:]
         archiveConfig[RrdUtils.FUNCTION] = "AVERAGE"
-        archiveConfig[RrdUtils.XFF] = 0.5D
         archiveConfig[RrdUtils.STEPS] = 1L
         archiveConfig[RrdUtils.ROWS] = 10L
+        archiveConfig[RrdUtils.XFF] = 0.5D
         archiveList.add(archiveConfig)
 
         assertEquals(archiveList, config[RrdUtils.ARCHIVE])
@@ -165,8 +165,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def archiveConfig = [:]
         archiveConfig[RrdUtils.FUNCTION] = "AVERAGE"
         archiveConfig[RrdUtils.XFF] = 0.5D
-        archiveConfig[RrdUtils.STEPS] = 1L
-        archiveConfig[RrdUtils.ROWS] = 10L
+        archiveConfig[RrdUtils.STEPS] = 1
+        archiveConfig[RrdUtils.ROWS] = 10
+
+
+        dbConfig[RrdUtils.ARCHIVE].get(0).remove(RrdUtils.START_TIME)
+
         archiveList.add(archiveConfig)
 
         config[RrdUtils.ARCHIVE] = archiveList
@@ -188,30 +192,32 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         variable.createDB()
 
-        assertTrue(RrdUtils.databaseExists(fileName))
+        assertTrue(RrdUtils.isDatabaseExists(fileName))
 
         variable.removeDB()
 
-        assertTrue(!(RrdUtils.databaseExists(fileName)))
+        assertTrue(!(RrdUtils.isDatabaseExists(fileName)))
 
     }
 
     public void testUpdateSingleTimeandValue() {
         String fileName = "filename"
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"GAUGE", heartbeat:300, file: fileName,
-                                       startTime:9000, step:300, archives: archive1)
+                                       startTime:9000, step:300, archives: archive)
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:10000L, value:500)
+        variable.updateDB(time:9300, value:500)
 
-        //how to check update is successfull
-
+        assertEquals(500D, RrdUtils.fetchData("filename", "variable", "AVERAGE", 9300L, 9300L)[0])
     }
 
     public void testUpdateOnlyValue() {
@@ -227,9 +233,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.createDB()
 
         variable.updateDB(value:500)
-
-        //how to check update is successfull
-
     }
 
     public void testUpdateMultipleTimeandValue() {
@@ -244,11 +247,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         variable.createDB()
 
-        variable.updateDB( [[time:10000L, value:5], [time:10500L, value:10], [time:11000L, value:15]] )
+        variable.updateDB( [[time:9300L, value:5], [time:9600L, value:10], [time:9900L, value:15]] )
 
-        //how to check update is successfull
-
+        assertEquals([5D,10D,15D], RrdUtils.fetchData("filename", "variable", "AVERAGE", 9300, 9900)[0,1,2])
     }
     
-
 }

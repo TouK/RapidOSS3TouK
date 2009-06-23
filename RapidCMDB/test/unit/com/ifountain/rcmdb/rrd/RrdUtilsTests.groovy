@@ -167,12 +167,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals( dlist1[i][RrdUtils.STEPS],rrdDslist2[i][RrdUtils.STEPS]);
             assertEquals( dlist1[i][RrdUtils.ROWS],rrdDslist2[i][RrdUtils.ROWS]);
             assertEquals( (double)dlist1[i][RrdUtils.XFF],(double)rrdDslist2[i][RrdUtils.XFF]);
-
-
-//            assertEquals( dlist1[i][RrdUtils.FUNCTION],rrdDslist2[i].getConsolFun());
-//            assertEquals( dlist1[i][RrdUtils.STEPS],rrdDslist2[i].getSteps());
-//            assertEquals( dlist1[i][RrdUtils.ROWS],rrdDslist2[i].getRows());
-//            assertEquals( (double)dlist1[i][RrdUtils.XFF],(double)rrdDslist2[i].getXff());
         }
     }
 
@@ -492,6 +486,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("data source not found",e.getMessage());
         }
     }
+    
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
 
@@ -540,125 +535,5 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     }
 
- /*
-//    public void testGetStartTimeSuccessfulByDate() throws Exception{
-//
-//        String time = "2009-06-17"
-//
-//        def object = RrdUtils.getFormattedStartTime(time)
-//
-//        Calendar check = Calendar.getInstance()
-//        check.clear()
-//        check.set(2009, 6, 17)
-//        assertEquals(check, object)
-//    }
-//
-//    public void testGetStartTimeSuccessfulByTime() throws Exception{
-//
-//        String time = "2009-06-17, 16:39:10"
-//
-//        def object = RrdUtils.getFormattedStartTime(time)
-//
-//        Calendar check = Calendar.getInstance()
-//        check.clear()
-//        check.set(2009, 6, 17, 16, 39, 10)
-//        assertEquals(check, object)
-//
-//    }
-//
-*/
- /*
-    public void testSuccessfullCreateDatabaseWithStartTimeByDate() throws Exception{
-
-        Map config = [:]
-
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
-
-        config[RrdUtils.DATASOURCE] = [
-                                            [
-                                                name:"testDs",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:3,
-                                                min:0
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:67,
-                                                min:0
-                                            ]
-                                      ]
-
-        config[RrdUtils.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:6,
-                                            rows:10,
-                                        ],
-                                        [
-                                            function:"MIN",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:5,
-                                        ]
-                                   ]
-
-        config[RrdUtils.START_TIME] = "2009-06-17";
-
-        RrdUtils.createDatabase(config)
-
-        assertTrue(new File(fileName).exists());
-    }
-
-    public void testSuccessfullCreateDatabaseWithStartTimeByTime() throws Exception{
-
-        Map config = [:]
-
-        String fileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-        config[RrdUtils.DATABASE_NAME] = fileName
-
-        config[RrdUtils.DATASOURCE] = [
-                                            [
-                                                name:"testDs",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:6,
-                                                min:0
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:4,
-                                                min:0
-                                            ]
-                                      ]
-
-        config[RrdUtils.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:6,
-                                            rows:10,
-                                        ],
-                                        [
-                                            function:"MIN",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:5,
-                                        ]
-                                   ]
-
-        config[RrdUtils.START_TIME] = "2009-06-17, 14:59:55";
-
-        RrdUtils.createDatabase(config)
-
-        assertTrue(new File(fileName).exists());
-    }
-     */
 
 }

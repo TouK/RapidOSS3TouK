@@ -203,15 +203,28 @@ class RrdUtils {
     public static double[] fetchData(String dbName, String datasource){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
-        String function = arclist[0][RrdUtils.FUNCTION];
-        long startTime = arclist[0][RrdUtils.START_TIME];
         long endTime = rrdDb.getLastUpdateTime();
         rrdDb.close();
+        String function = arclist[0][FUNCTION];
+        long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasource, function, startTime, endTime);
     }
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
+        boolean found = false;
         RrdDb rrdDb = new RrdDb(dbName);
+        def dslist = fetchDatasources(rrdDb);
+        for(int i=0; i<dslist.size(); i++){
+            Map m = dslist[i];
+            if(m.get(NAME).equals(datasource)){
+                found = true;
+            };
+        }
+        if(!found){
+            rrdDb.close();
+            throw new Exception("data source not found")
+            return null;
+        }
         FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
         fetchRequest.setFilter (datasource);
         rrdDb.close();

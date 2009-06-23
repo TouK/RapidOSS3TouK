@@ -7,6 +7,7 @@ import org.jrobin.core.ArcDef
 import org.jrobin.core.Sample
 import org.jrobin.core.Archive
 import org.jrobin.core.Datasource
+import org.jrobin.core.FetchRequest
 
 /**
 * Created by IntelliJ IDEA.
@@ -128,12 +129,14 @@ class RrdUtils {
         return Grapher.graph(config);
     }
 
-    static def fetchArchives(String dbName){
+    private static def fetchArchives(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
-        return fetchArchives(rrdDb);
+        def result = fetchArchives(rrdDb);
+        rrdDb.close();
+        return result;
     }
 
-    static def fetchArchives(RrdDb rrdDb){
+    private static def fetchArchives(RrdDb rrdDb){
         int arcCount = rrdDb.getArcCount();
         Archive[] arcs = new Archive[arcCount];
         for(int i=0; i<arcCount; i++){
@@ -147,20 +150,22 @@ class RrdUtils {
             m[RrdUtils.STEPS] = arcs[i].getSteps();
             m[RrdUtils.ROWS] = arcs[i].getRows();
             m[RrdUtils.XFF] = arcs[i].getXff();
+            m[RrdUtils.START_TIME] = arcs[i].getStartTime();
 
             alist.add(m);
         }
 
-//        rrdDb.close();
         return alist;
     }
 
-    static def fetchDatasources(String dbName){
+    private static def fetchDatasources(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
-        return fetchDatasources(rrdDb);
+        def result = fetchDatasources(rrdDb);
+        rrdDb.close();
+        return result;
     }
 
-    static def fetchDatasources(RrdDb rrdDb){
+    private static def fetchDatasources(RrdDb rrdDb){
         int datCount = rrdDb.getDsCount();
         Datasource[] dats = new Datasource[datCount];
         for(int i=0; i<datCount; i++){
@@ -178,7 +183,6 @@ class RrdUtils {
 
             dslist.add(m);
         }
-//        rrdDb.close();
         return dslist;
     }
 
@@ -196,20 +200,39 @@ class RrdUtils {
         return config;
     }
 
-    public boolean checkLists(dlist1, dlist2){
-        int size1 = dlist1.size();
-        int size2 = dlist2.size();
-        if (size1!=size2) return false;
-
-        dlist1 = dlist1.sort();
-        dlist2 = dlist2.sort();
-
-        for(int i=0; i<size1; i++){
-            if(!dlist1[i].equals(dlist2[i])){
-                return false;
-            }
-        }
-        return true;
+    public static double[] fetchData(String dbName, String datasource){
+        RrdDb rrdDb = new RrdDb(dbName);
+        def arclist = fetchArchives(rrdDb);
+        String function = arclist[0][RrdUtils.FUNCTION];
+        long startTime = arclist[0][RrdUtils.START_TIME];
+        long endTime = rrdDb.getLastUpdateTime();
+        rrdDb.close();
+        return fetchData(dbName, datasource, function, startTime, endTime);
+    }
+    public static double[] fetchData(String dbName, String datasource, String function,
+                                   long startTime, long endTime){
+        RrdDb rrdDb = new RrdDb(dbName);
+        FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
+        fetchRequest.setFilter (datasource);
+        rrdDb.close();
+        return fetchRequest.fetchData().getValues()[0];
+    }
+    public static double[][] fetchData(String dbName, String[] datasources){
+        RrdDb rrdDb = new RrdDb(dbName);
+        def arclist = fetchArchives(rrdDb);
+        String function = arclist[0][RrdUtils.FUNCTION];
+        long startTime = arclist[0][RrdUtils.START_TIME];
+        long endTime = rrdDb.getLastUpdateTime();
+        rrdDb.close();
+        return fetchData(dbName, datasources, function, startTime, endTime);
+    }
+    public static double[][] fetchData(String dbName, String[] datasources, String function,
+                                   long startTime, long endTime){
+        RrdDb rrdDb = new RrdDb(dbName);
+        FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
+        fetchRequest.setFilter (datasources[]);
+        rrdDb.close();
+        return fetchRequest.fetchData().getValues();
     }
     
     /*

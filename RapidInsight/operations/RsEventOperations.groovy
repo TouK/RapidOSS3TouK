@@ -52,11 +52,12 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 	public void clear(boolean createJournal, Map extraProperties = [:]) {
 		Map props = asMap();
 		props.putAll (extraProperties)
-		props.clearedAt = Date.now()
+		def now=Date.now();
+		props.clearedAt = now
 		props.activeId = id;
 		if(createJournal)
         {
-		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date())
+		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date(now))
         }
 		def historicalEvent = historicalEventModel().'add'(props)
 		remove()
@@ -68,28 +69,32 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
     }
 	
 	public void acknowledge(boolean action, userName){
-		if(acknowledged != action){
+        def now=Date.now();
+
+        if(acknowledged != action){
 			if(action){
-				RsEventJournal.add(eventId:id, eventName:"acknowledged", rsTime:new Date(), details:"Acknowledged by ${userName}")
+				RsEventJournal.add(eventId:id, eventName:"acknowledged", rsTime:new Date(now), details:"Acknowledged by ${userName}")
 			}
 			else{
-				RsEventJournal.add(eventId:id, eventName:"unacknowledged", rsTime:new Date(), details:"UnAcknowledged by ${userName}")
+				RsEventJournal.add(eventId:id, eventName:"unacknowledged", rsTime:new Date(now), details:"UnAcknowledged by ${userName}")
 			}
 		}
 		acknowledged = action
-		changedAt = Date.now()
+		changedAt = now
 	}	
 
 	public void setOwnership(boolean action, userName) {
-    	if(action)        {
-            RsEventJournal.add(eventId:id, eventName:"TakeOwnership", rsTime:new Date(), details:"TakeOwnership by ${userName}")
+        def now=Date.now();
+
+        if(action)        {
+            RsEventJournal.add(eventId:id, eventName:"TakeOwnership", rsTime:new Date(now), details:"TakeOwnership by ${userName}")
             owner = userName
         }
         else{
-            RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(), details:"RelaseOwnership by ${userName}")
+            RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(now), details:"ReleaseOwnership by ${userName}")
             owner = ""
         }
-		changedAt = Date.now()
+		changedAt = now
 	}
 	
 	public void addToJournal(name, details){

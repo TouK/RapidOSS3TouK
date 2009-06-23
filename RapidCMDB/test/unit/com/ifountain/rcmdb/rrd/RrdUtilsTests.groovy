@@ -425,12 +425,14 @@ class RrdUtilsTests extends RapidCoreTestCase {
         RrdUtils.updateData(rrdFileName,"978303600:2900:4");
         RrdUtils.updateData(rrdFileName,"978303900:3300:2");
 
-
-        FetchRequest fetchRequest = new RrdDb(rrdFileName).createFetchRequest("AVERAGE", 978301200, 978304200);
+        RrdDb rrdDb = new RrdDb(rrdFileName);
+        FetchRequest fetchRequest = rrdDb.createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
 //        fetchData.println();
 
          def values = fetchData.getValues("a");
+         rrdDb.close();
+         
          DecimalFormat df = new DecimalFormat("#.##");
          def newValues = [];
          values.each{
@@ -441,6 +443,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
          def expectedValues = ["0.67", "1.67", "1", "0.67", "1.67", "0.67", "1", "1.67", "1.33"];
          assertEquals(expectedValues, newValues);
     }
+    
     public void testFetchDataThrowsException() throws Exception{
         Map config = [:]
 
@@ -486,6 +489,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
             RrdUtils.fetchData(rrdFileName,"c");
             fail("should throw exception because datasource is not number");
         }catch (Exception e){
+            assertEquals("data source not found",e.getMessage());
         }
     }
     public void testFetchDataSuccessfully() throws Exception{
@@ -512,7 +516,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:100,
+                                            rows:30,
                                         ]
                                    ]
         config[RrdUtils.START_TIME] = 978300900;
@@ -530,6 +534,9 @@ class RrdUtilsTests extends RapidCoreTestCase {
         RrdUtils.updateData(rrdFileName,"978303900:3300:2");
 
         RrdUtils.fetchData(rrdFileName,"a");
+        RrdUtils.fetchData(rrdFileName,"b");
+//        println RrdUtils.fetchData(rrdFileName,"a");
+//        println RrdUtils.fetchData(rrdFileName,"b");
 
     }
 

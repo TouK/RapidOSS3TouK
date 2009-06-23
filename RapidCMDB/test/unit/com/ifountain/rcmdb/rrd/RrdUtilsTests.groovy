@@ -6,9 +6,6 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
-import org.jrobin.core.Datasource
-import org.apache.commons.io.FileUtils
-import org.jrobin.core.DsDef
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,7 +27,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
     protected void tearDown() {
         super.tearDown();
     }
-
 
     public void testSuccessfullCreateDatabase() throws Exception{
 
@@ -84,7 +80,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
         Map config = [:]
 
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         config[RrdUtils.DATASOURCE] = [
@@ -130,6 +125,117 @@ class RrdUtilsTests extends RapidCoreTestCase {
         assertEquals(config[RrdUtils.START_TIME],map[RrdUtils.START_TIME]);
 
         assertTrue(new File(rrdFileName).exists());
+    }
+
+    public void testRemoveDatabaseSuccessful() throws Exception {
+
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs",
+                                                type:"GAUGE",
+                                                heartbeat:600,
+                                                max:1,
+                                                min:0
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600,
+                                                max:2,
+                                                min:0
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:6,
+                                            rows:10,
+                                        ],
+                                        [
+                                            function:"MIN",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:5,
+                                        ]
+                                   ]
+
+        config[RrdUtils.START_TIME] = 920804400L;
+
+        RrdUtils.createDatabase(config);
+        
+        assertTrue(new File(rrdFileName).exists());
+
+        RrdUtils.removeDatabase(rrdFileName)
+
+        assertTrue(!(new File(rrdFileName).exists()));
+
+    }
+
+    public void testRemoveDatabaseThrowsExceptionIfDBNotExists() throws Exception {
+         
+       try{
+           RrdUtils.removeDatabase (rrdFileName)
+           fail("should throw exception because there is no such file")
+       }
+       catch(Exception e)
+       {
+           assertEquals(("File does not exists : " + rrdFileName), e.getMessage())
+       }
+
+    }
+
+    public void testIsDatabaseExistsSuccessful() throws Exception {
+
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs",
+                                                type:"GAUGE",
+                                                heartbeat:600,
+                                                max:1,
+                                                min:0
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600,
+                                                max:2,
+                                                min:0
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:6,
+                                            rows:10,
+                                        ],
+                                        [
+                                            function:"MIN",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:5,
+                                        ]
+                                   ]
+
+        config[RrdUtils.START_TIME] = 920804400L;
+
+        assertTrue(!(RrdUtils.isDatabaseExists(rrdFileName)))
+        
+        RrdUtils.createDatabase(config);
+
+        assertTrue(RrdUtils.isDatabaseExists(rrdFileName))
+
     }
 
     private void checkDatasources(dlist1, rrdDslist2) throws Exception {
@@ -534,6 +640,5 @@ class RrdUtilsTests extends RapidCoreTestCase {
 //        println RrdUtils.fetchData(rrdFileName,"b");
 
     }
-
 
 }

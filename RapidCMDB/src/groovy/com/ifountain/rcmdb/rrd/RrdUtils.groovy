@@ -82,6 +82,18 @@ class RrdUtils {
         rrdDb.close();
     }
 
+    public static void removeDatabase(String fileName) {
+        File file = new File(fileName)
+        if(file.exists())
+            file.delete()
+        else
+            throw new Exception("File does not exists : " + fileName)
+    }
+
+    public static boolean isDatabaseExists(String fileName) {
+        return new File(fileName).exists()
+    }
+
     public static DsDef[] getDsDefs(list){
         def dsList = [];
         list.each{
@@ -102,7 +114,7 @@ class RrdUtils {
     public static ArcDef[] getArcDefs(list){
         def arcList = [];
         list.each{
-           ArcDef arcTemp = new ArcDef(it.get(FUNCTION),it.get(XFF),it.get(STEPS), it.get(ROWS))
+           ArcDef arcTemp = new ArcDef(it.get(FUNCTION),it.get(XFF),(int)it.get(STEPS),(int)it.get(ROWS))
            arcList.add(arcTemp);
        }
        return arcList as ArcDef[]
@@ -194,6 +206,7 @@ class RrdUtils {
         Map config = [:];
         config[DATABASE_NAME] = dbName;
         config[START_TIME] = rrdDef.getStartTime();
+        config[STEP] = rrdDef.getStep();
         config[DATASOURCE] = fetchDatasources(rrdDb );
         config[ARCHIVE] = fetchArchives(rrdDb);
    

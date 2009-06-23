@@ -197,6 +197,15 @@ class RapidDomainClassGrailsPlugin {
         mc.static.getPropertiesList = {->
             return getPropertiesMethod.getDomainObjectProperties();
         }
+        mc.static.getFederatedPropertiesList = {->
+            return getPropertiesMethod.getFederatedProperties();
+        }
+        mc.static.getRelationPropertiesList = {->
+            return getPropertiesMethod.getRelations();
+        }
+        mc.static.getNonFederatedPropertiesList = {->
+            return getPropertiesMethod.getNonFederatedProperties();
+        }
         mc.static.getOperations = {->
             return getOperationsMethod.getOperations();
         }

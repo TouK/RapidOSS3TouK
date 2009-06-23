@@ -40,6 +40,9 @@ class GetPropertiesMethod
 {
     GrailsDomainClass dc;
     def allProperties;
+    def federatedProperties;
+    def relationProperties;
+    def nonFederatedProperties;
     def allDomainClassProperties = [];
     public GetPropertiesMethod(GrailsDomainClass dc, FederatedPropertyManager manager) {
         this.dc = dc;
@@ -71,6 +74,32 @@ class GetPropertiesMethod
         allProperties.addAll(allDomainClassProperties);
         Collections.sort(allProperties);
         allProperties = Collections.unmodifiableList(allProperties);
+        constructCategories();
+
+    }
+
+    private void constructCategories()
+    {
+        federatedProperties = [];
+        nonFederatedProperties = [];
+        relationProperties = [];
+        allProperties.each{RapidDomainClassProperty prop->
+            if(prop.isFederated)
+            {
+                federatedProperties.add(prop);
+            }
+            else if(prop.isRelation)
+            {
+                relationProperties.add(prop);
+            }
+            else if(!prop.isOperationProperty)
+            {
+                nonFederatedProperties.add(prop);
+            }
+        }
+        federatedProperties = Collections.unmodifiableList(federatedProperties);
+        nonFederatedProperties = Collections.unmodifiableList(nonFederatedProperties);
+        relationProperties = Collections.unmodifiableList(relationProperties);
     }
 
     public void setOperationClass(Class operationClass)
@@ -114,6 +143,20 @@ class GetPropertiesMethod
 
     public List getDomainObjectProperties() {
         return allProperties;
+    }
+
+    public List getFederatedProperties()
+    {
+        return federatedProperties;        
+    }
+
+    public List getRelations()
+    {
+        return relationProperties;
+    }
+    public List getNonFederatedProperties()
+    {
+        return nonFederatedProperties;
     }
 }
 

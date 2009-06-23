@@ -34,6 +34,7 @@ import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.BeanPropertyBindingResult
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -568,6 +569,73 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         args = ["arg1", "arg2", "arg3"]
         res = loadedDomainClass.method4(args[0], args[1], args[2]);
         assertEquals(args.join(""), res);
+    }
+
+    public void testGetPropertiesListMethods()
+    {
+        def model1Name = "Model1";
+        def model2Name = "Model2";
+        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.DATE_TYPE];
+        def prop3 = [name: "prop3", type: ModelGenerator.NUMBER_TYPE, datasource:datasource.name];
+        def rel1 = [name:"rel1",  reverseName:"revrel1", toModel:model2Name, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:true];
+        def revRel1 = [name:"revrel1",  reverseName:"rel1", toModel:model1Name, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
+        def model1MetaProps = [name: model1Name]
+        def model2MetaProps = [name: model2Name]
+
+        def modelProps = [prop1, prop2, prop3];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, [datasource], modelProps, keyPropList, [rel1]);
+        def model2Text = ModelGenerationTestUtils.getModelText(model2MetaProps, [datasource], modelProps, keyPropList, [revRel1]);
+
+        String baseDir = "../testoutput";
+        FileUtils.deleteDirectory(new File(baseDir));
+        System.setProperty("base.dir", baseDir);
+        gcl.parseClass(model1Text+model2Text)
+        def model1Class = gcl.loadClass(model1Name)
+        def model2Class = gcl.loadClass(model2Name)
+        def operationFile = new File("${System.getProperty("base.dir")}/operations/${model1Class.name}Operations.groovy");
+        operationFile.parentFile.mkdirs();
+        operationFile.setText("""
+            class ${model1Class.name}Operations extends ${AbstractDomainOperation.class.name}{
+                def declaredProp1;
+            }
+        """)
+        def classesTobeLoaded = [model1Class, model2Class, ObjectId];
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def allProperties = model1Class.getPropertiesList();
+        assertEquals (6, allProperties.size());
+        def expectedProps = ["declaredProp1", "id", "prop1", "prop2", "prop3", "rel1"]
+        for(int i=0; i < allProperties.size();i++){
+            assertEquals (expectedProps[i], allProperties[i].name);            
+        }
+
+        def federatedProperties = model1Class.getFederatedPropertiesList();
+        assertEquals (1, federatedProperties.size());
+        expectedProps = [ "prop3"]
+        for(int i=0; i < federatedProperties.size();i++){
+            assertEquals (expectedProps[i], federatedProperties[i].name);
+        }
+
+        def relations = model1Class.getRelationPropertiesList();
+        assertEquals (1, relations.size());
+        expectedProps = [ "rel1"]
+        for(int i=0; i < relations.size();i++){
+            assertEquals (expectedProps[i], relations[i].name);
+        }
+
+
+        def nonFederatedProperties = model1Class.getNonFederatedPropertiesList();
+        assertEquals (3, nonFederatedProperties.size());
+        expectedProps = ["id", "prop1", "prop2"]
+        for(int i=0; i < nonFederatedProperties.size();i++){
+            assertEquals (expectedProps[i], nonFederatedProperties[i].name);
+        }
     }
 
 }

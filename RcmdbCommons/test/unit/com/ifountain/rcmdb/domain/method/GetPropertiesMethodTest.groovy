@@ -175,6 +175,135 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals(7, allProperties.size())
     }
 
+    public void testGetFederatedProperties()
+    {
+        FederatedPropertyManagerImpl manager = new FederatedPropertyManagerImpl();
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
+        manager.federatedProps[cls.clazz] = ["prop4", "prop3"]
+
+        GetPropertiesMethod method = new GetPropertiesMethod(cls, manager);
+        method.operationClass = GetPropertiesMethodDomainObjectOperations;
+
+        def federatedProperties = method.getFederatedProperties();
+        assertEquals(2, federatedProperties.size())
+
+
+        RapidDomainClassProperty prop = federatedProperties[0]
+        assertEquals("prop3", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertTrue(prop.isFederated);
+
+        prop = federatedProperties[1]
+        assertEquals("prop4", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertTrue(prop.isFederated);
+
+        try
+        {
+            federatedProperties.remove(0)
+            fail("Should throw exception beacuse this list cannot be modified");
+        }
+        catch (UnsupportedOperationException e)
+        {
+        }
+    }
+
+    public void testGetRelations()
+    {
+        FederatedPropertyManagerImpl manager = new FederatedPropertyManagerImpl();
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
+
+        GetPropertiesMethod method = new GetPropertiesMethod(cls, manager);
+        method.operationClass = GetPropertiesMethodDomainObjectOperations;
+
+        def relationProperties = method.getRelations();
+        assertEquals(2, relationProperties.size())
+
+
+        RapidDomainClassProperty prop = relationProperties[0]
+        assertTrue(prop instanceof RapidDomainClassRelation);
+        assertEquals("rel1", prop.name);
+        assertTrue(prop.isRelation);
+        assertTrue(prop.isKey);
+        assertFalse(prop.isOperationProperty);
+        assertEquals(RelationMetaData.ONE_TO_ONE, prop.type);
+        assertEquals(RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals("revRel1", prop.reverseName);
+
+        prop = relationProperties[1]
+        assertTrue(prop instanceof RapidDomainClassRelation);
+        assertEquals("rel2", prop.name);
+        assertTrue(prop.isRelation);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isOperationProperty);
+        assertEquals(RelationMetaData.ONE_TO_MANY, prop.type);
+        assertEquals(RelationMethodDomainObject2, prop.relatedModel);
+        assertEquals("revRel2", prop.reverseName);
+
+        try
+        {
+            relationProperties.remove(0)
+            fail("Should throw exception beacuse this list cannot be modified");
+        }
+        catch (UnsupportedOperationException e)
+        {
+        }
+    }
+
+    public void testGetNonFederatedProperties()
+    {
+        FederatedPropertyManagerImpl manager = new FederatedPropertyManagerImpl();
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
+        manager.federatedProps[cls.clazz] = ["prop4", "prop3"]
+
+        GetPropertiesMethod method = new GetPropertiesMethod(cls, manager);
+        method.operationClass = GetPropertiesMethodDomainObjectOperations;
+
+        def simpleProperties = method.getNonFederatedProperties();
+        assertEquals(3, simpleProperties.size())
+
+
+        RapidDomainClassProperty prop = simpleProperties[0]
+        assertEquals("id", prop.name);
+        assertFalse(prop.isRelation);
+        assertEquals(Long, prop.type);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isOperationProperty);
+
+        prop = simpleProperties[1]
+        assertEquals("prop1", prop.name);
+        assertTrue(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        prop = simpleProperties[2]
+        assertEquals("prop2", prop.name);
+        assertTrue(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(String, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        try
+        {
+            simpleProperties.remove(0)
+            fail("Should throw exception beacuse this list cannot be modified");
+        }
+        catch (UnsupportedOperationException e)
+        {
+        }
+    }
 
     public void testGetPropertyIgnoresPropertyWithNotPrimitivePropertiesAndInvalidTypesAccordingToModelGeneration()
     {

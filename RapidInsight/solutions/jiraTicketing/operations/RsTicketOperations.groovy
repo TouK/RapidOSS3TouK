@@ -126,14 +126,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     		def jiraDs = JiraDatasource.get(name:rsDatasource);
 
     		jiraDs.updateIssue(name, tempProps);
-    		def modelProps = getPropertiesList()
-    		def toBeUpdated = [:]
-    		props.each{key,value->
-    			if (modelProps.contains(key)){
-    				toBeUpdated.put(key,value)
-    			}
-    		}
-    		update(toBeUpdated)
+    		update(props)
     	}
 
     	public retrieveDetails(){

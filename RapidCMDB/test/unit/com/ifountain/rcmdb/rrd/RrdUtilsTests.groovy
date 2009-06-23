@@ -254,12 +254,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals( dlist1[i][RrdUtils.HEARTBEAT],rrdDslist2[i][RrdUtils.HEARTBEAT]);
             assertEquals(max ,(double)rrdDslist2[i][RrdUtils.MAX]);
             assertEquals(min,(double)rrdDslist2[i][RrdUtils.MIN]);
-
-//            assertEquals( dlist1[i][RrdUtils.NAME],rrdDslist2[i].getDsName());
-//            assertEquals( dlist1[i][RrdUtils.TYPE],rrdDslist2[i].getDsType());
-//            assertEquals( dlist1[i][RrdUtils.HEARTBEAT],rrdDslist2[i].getHeartbeat());
-//            assertEquals(max ,(double)rrdDslist2[i].getMaxValue());
-//            assertEquals(min,(double)rrdDslist2[i].getMinValue());
         }
     }
 
@@ -682,10 +676,46 @@ class RrdUtilsTests extends RapidCoreTestCase {
         RrdUtils.updateData(rrdFileName,"978303600:2900:4");
         RrdUtils.updateData(rrdFileName,"978303900:3300:2");
 
-        RrdUtils.fetchData(rrdFileName);
-//        println RrdUtils.fetchData(rrdFileName,"a");
-//        println RrdUtils.fetchData(rrdFileName,"b");
+        println RrdUtils.fetchAllData(rrdFileName);
+    }
 
+    public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
+        Map config = [:]
+
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName;
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"a",
+                                                type:"GAUGE",
+                                                heartbeat:600,
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:30,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config);
+
+        RrdUtils.updateData(rrdFileName,"978301200:200");
+        RrdUtils.updateData(rrdFileName,"978301500:400");
+        RrdUtils.updateData(rrdFileName,"978301800:900");
+        RrdUtils.updateData(rrdFileName,"978302100:1200");
+        RrdUtils.updateData(rrdFileName,"978302400:1400");
+        RrdUtils.updateData(rrdFileName,"978302700:1900");
+        RrdUtils.updateData(rrdFileName,"978303000:2100");
+        RrdUtils.updateData(rrdFileName,"978303300:2400");
+        RrdUtils.updateData(rrdFileName,"978303600:2900");
+        RrdUtils.updateData(rrdFileName,"978303900:3300");
+
+        println RrdUtils.fetchData(rrdFileName);
     }
 
 }

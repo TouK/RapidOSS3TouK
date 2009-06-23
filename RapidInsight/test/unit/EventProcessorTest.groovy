@@ -90,7 +90,7 @@ class EventProcessorTest extends RapidCmdbWithCompassTestCase{
         callParams.clear();
 
         event.remove();
-        assertEquals(0,RsEvent.list().size());
+        assertEquals(0,RsEvent.count());
 
         assertEquals(1,callParams.size());
         assertEquals(event.id,callParams.eventIsDeleted.event.id);

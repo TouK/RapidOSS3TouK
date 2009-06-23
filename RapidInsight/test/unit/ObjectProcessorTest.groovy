@@ -93,7 +93,7 @@ class ObjectProcessorTest extends RapidCmdbWithCompassTestCase{
         callParams.clear();
 
         object.remove();
-        assertEquals(0,RsTopologyObject.list().size());
+        assertEquals(0,RsTopologyObject.count());
 
         assertEquals(1,callParams.size());
         assertEquals(object.id,callParams.objectIsDeleted.object.id);

@@ -81,9 +81,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
         assertTrue(createdObjects.emailConnector.hasErrors())
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
     }
 
     void testIfConnectionHasErrorsConnectorIsNotAdded() {
@@ -96,9 +96,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
         assertTrue(createdObjects.emailConnection.hasErrors())
-        assertEquals(0, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(0, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
 
     }
@@ -109,9 +109,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
         def connector = EmailConnector.list()[0]
-        assertEquals(0, EmailConnector.list().size())
-        assertEquals(0, EmailConnection.list().size())
-        assertEquals(0, EmailDatasource.list().size())
+        assertEquals(0, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
         def ds = createdObjects.emailDatasource;
         assertTrue(ds.hasErrors())
@@ -120,15 +120,15 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     void testSuccessfullDelete() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
-        assertEquals(1, EmailConnector.list().size());
-        assertEquals(1, EmailConnection.list().size());
-        assertEquals(1, EmailDatasource.list().size());
+        assertEquals(1, EmailConnector.count());
+        assertEquals(1, EmailConnection.count());
+        assertEquals(1, EmailDatasource.count());
 
         EmailConnectorOperations.deleteConnector(createdObjects["emailConnector"])
 
-        assertEquals(0, EmailConnector.list().size());
-        assertEquals(0, EmailConnection.list().size());
-        assertEquals(0, EmailDatasource.list().size());
+        assertEquals(0, EmailConnector.count());
+        assertEquals(0, EmailConnection.count());
+        assertEquals(0, EmailDatasource.count());
     }
 
     public void testSuccessfulUpdate()
@@ -180,9 +180,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     void testIfConnectionUpdateFailsUpdateIsRollbacked() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
         def baseConn = Connection.add(name: connectorUpdateParams.name)
         assertFalse(baseConn.hasErrors())
@@ -195,9 +195,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(conn.hasErrors())
         assertEquals("default.not.unique.message", conn.errors.allErrors[0].code)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
 
         assertNull(EmailConnector.get(name: connectorUpdateParams.name))
@@ -209,9 +209,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     void testIfDatasourceUpdateFailsUpdateIsRollbacked() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
         def baseDs = BaseDatasource.add(name: EmailConnector.getEmailDatasourceName(connectorUpdateParams.name))
         assertFalse(baseDs.hasErrors())
@@ -222,9 +222,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(datasource.hasErrors())
         assertEquals("default.not.unique.message", datasource.errors.allErrors[0].code)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
 
         assertNull(EmailConnector.get(name: connectorUpdateParams.name))
@@ -237,9 +237,9 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     void testIfConnectorUpdateFailsNothingIsUpdated() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
-        assertEquals(1, EmailConnector.list().size())
-        assertEquals(1, EmailConnection.list().size())
-        assertEquals(1, EmailDatasource.list().size())
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
 
         connectorUpdateParams["name"] = null;
         def updatedObjects = EmailConnectorOperations.updateConnector(createdObjects["emailConnector"], connectorUpdateParams);

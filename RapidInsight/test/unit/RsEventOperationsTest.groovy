@@ -31,21 +31,21 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
      public void testNotifyAddsRsEvent()
      {
-         assertEquals(0,RsEvent.list().size());
+         assertEquals(0,RsEvent.count());
 
          def addProps=[name:"ev1",severity:5];
          def addedEvent=RsEvent.notify(addProps);
          assertFalse(addedEvent.hasErrors());
          assertEquals(addedEvent.name,addProps.name);
          assertEquals(addedEvent.severity,addProps.severity);
-         assertEquals(1,RsEvent.list().size());
+         assertEquals(1,RsEvent.count());
 
 
          def updateProps=[name:"ev1",severity:1];
          def updatedEvent=RsEvent.notify(updateProps);
          assertEquals(updatedEvent.name,updateProps.name);
          assertEquals(updatedEvent.severity,updateProps.severity);
-         assertEquals(1,RsEvent.list().size());
+         assertEquals(1,RsEvent.count());
 
 
          assertFalse(addedEvent.asMap() == updatedEvent.asMap());

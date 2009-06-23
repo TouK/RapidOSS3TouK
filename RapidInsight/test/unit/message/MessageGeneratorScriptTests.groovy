@@ -308,7 +308,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorProcessDelayedMessages()
     {
-        assertEquals(RsMessage.list().size(), 0)
+        assertEquals(RsMessage.count(), 0)
         def date = new Date();
         def delay = 5000
         def params = [:]

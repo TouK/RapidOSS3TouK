@@ -115,6 +115,7 @@ class RrdUtils {
         sample.setAndUpdate(data);
         rrdDb.close();
     }
+
     public static void updateData(String dbname, String[] data){
         RrdDb rrdDb = new RrdDb(dbname);
 
@@ -209,6 +210,7 @@ class RrdUtils {
         long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasource, function, startTime, endTime);
     }
+
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
         boolean found = false;
@@ -230,6 +232,7 @@ class RrdUtils {
         rrdDb.close();
         return fetchRequest.fetchData().getValues()[0];
     }
+
     public static double[][] fetchData(String dbName, String[] datasources){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
@@ -239,6 +242,7 @@ class RrdUtils {
         rrdDb.close();
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
+
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
         RrdDb rrdDb = new RrdDb(dbName);
@@ -247,35 +251,5 @@ class RrdUtils {
         rrdDb.close();
         return fetchRequest.fetchData().getValues();
     }
-    
-    /*
-    public static Calendar getFormattedStartTime(String str){
-        def date = str.trim().split(",");
-        Calendar cal = Calendar.getInstance();
-        cal.clear()
-        int year,month,day,hour=0,min=0,sec=0;
-        if(date.length==1){
-           def ymd = date[0].split("-");
-           if(ymd.length!=3){
-               throw new Exception("date is not valid")
-           }
-           year = Integer.parseInt(ymd[0]);
-           month = Integer.parseInt(ymd[1]);
-           day = Integer.parseInt(ymd[2])
-        }
-        if(date.length==2){
-           def hms = date[1].split(":");
-           if(hms.length!=3){
-               throw new Exception("time is not valid")
-           }
-           hour = Integer.parseInt(hms[0].trim());
-           min = Integer.parseInt(hms[1]);
-           sec = Integer.parseInt(hms[2])
-        }
-        println hour +" "+min+" "+sec
-        cal.set(year, month ,day,hour,min,sec);
 
-        return cal;
-    }
-    */
 }

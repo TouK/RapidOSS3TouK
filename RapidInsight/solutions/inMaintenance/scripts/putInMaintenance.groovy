@@ -87,7 +87,7 @@ def getDate(dateName)
 
     def calendar=Calendar.getInstance()
     calendar.clear()
-    calendar.set(props.year, props.month, props.day, props.hour, props.minute);
+    calendar.set(props.year, props.month-1, props.day, props.hour, props.minute);
 
     return calendar.getTime();
 }

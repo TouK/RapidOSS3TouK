@@ -393,7 +393,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
           selenium.waitForPageToLoad("30000");
           selenium.type("login", "nmd1User");
 		  selenium.click("//input[@value='Sign in']");
-		  selenium.waitForPageToLoad("100000");
+		  selenium.waitForPageToLoad("200000");
 	      verifyTrue(selenium.isTextPresent("NMD1"));
 		  verifyFalse(selenium.isTextPresent("NMD2"));
 		  selenium.click("link=Logout");
@@ -402,7 +402,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
           selenium.waitForPageToLoad("30000");
           selenium.type("login", "nmd2User");
 		  selenium.click("//input[@value='Sign in']");
-	     selenium.waitForPageToLoad("150000");
+	     selenium.waitForPageToLoad("200000");
 	      verifyTrue(selenium.isTextPresent("NMD2"));
 		  verifyFalse(selenium.isTextPresent("NMD1"));
 		  selenium.click("link=Logout");

@@ -5,6 +5,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import datasource.BaseDatasource
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import org.apache.commons.lang.StringUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,9 +17,12 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     static transactional = false;
     def RsEventJournal;
+    def SmartsObjectModel;
     void setUp() throws Exception {
         super.setUp();
         RsEventJournal = ApplicationHolder.application.classLoader.loadClass("RsEventJournal")
+        SmartsObjectModel = ApplicationHolder.application.classLoader.loadClass("SmartsObject")
+        SmartsObjectModel.removeAll();
         BaseDatasource.removeAll();
         RsEventJournal.removeAll();
     }
@@ -61,6 +65,214 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         objects = objectsXml.Object;
         assertEquals(maxCount, objects.size());
         assertEquals("ds0", objects[0].@name.toString());
+    }
+
+
+    public void testExportAsXml()
+    {
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "name"]
+        def expectedDatasources = []
+        for (i in 0..9) {
+            BaseDatasource ds = BaseDatasource.add(name: "ds${i}");
+            expectedDatasources.add([id:ds.id.toString(), rsAlias:BaseDatasource.class.name, rsOwner:ds.rsOwner, name:ds.name])
+        }
+        expectedDatasources = expectedDatasources.sort{it.name}.reverse()
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.params["type"] = "xml"
+        controller.export();
+        def content = controller.response.contentAsString;
+        checkXmlFileContent(content, maxCount, expectedProperties, expectedDatasources);
+
+
+        //test by changing max number and sort order
+        expectedDatasources = expectedDatasources.reverse()
+        IntegrationTestUtils.resetController (controller);
+        maxCount = 10;
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "asc"
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.params["type"] = "xml"
+        controller.export();
+        content = controller.response.contentAsString;
+        checkXmlFileContent(content, maxCount, expectedProperties, expectedDatasources);
+    }
+
+    public void testExportAsXmlWithFederatedProps()
+    {
+        def federatedProperties = SmartsObjectModel.getFederatedPropertyList();
+        assertTrue (federatedProperties.size() > 0);
+        def expectedProperties = SmartsObjectModel.getNonFederatedPropertyList().name;
+        expectedProperties.add("rsAlias");
+        def smartsObject = SmartsObjectModel.add(name:"object1");
+        def expectedSmartsobjectPropValues = [];
+        def propvalues = [:]
+        SmartsObjectModel.getNonFederatedPropertyList().each{
+            propvalues[it.name] = smartsObject[it.name];
+        }
+        propvalues["rsAlias"] = SmartsObjectModel.name;
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["searchIn"] = SmartsObjectModel.name
+        controller.params["type"] = "xml"
+        controller.export();
+        String content = controller.response.contentAsString;
+        checkXmlFileContent(content, 1, expectedProperties, expectedSmartsobjectPropValues);
+        federatedProperties.each{
+            assertTrue (content.indexOf(it.name) < 0);
+        }
+
+    }
+
+    public void testExportAsCsv()
+    {
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "name"]
+        def expectedDatasources = []
+        for (i in 0..9) {
+            BaseDatasource ds = BaseDatasource.add(name: "ds${i}");
+            expectedDatasources.add([id:ds.id.toString(), rsAlias:BaseDatasource.class.name, rsOwner:ds.rsOwner, name:ds.name])
+        }
+        expectedDatasources = expectedDatasources.sort{it.name}.reverse()
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.params["type"] = "csv"
+        controller.export();
+        String content = controller.response.contentAsString;
+        checkCsvFileContent(content, maxCount, expectedProperties, expectedDatasources);
+
+
+        //test by changing max number and sort order
+        expectedDatasources = expectedDatasources.reverse()
+        IntegrationTestUtils.resetController (controller);
+        maxCount = 10;
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "asc"
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.params["type"] = "csv"
+        controller.export();
+        content = controller.response.contentAsString;
+        checkCsvFileContent(content, maxCount, expectedProperties, expectedDatasources);
+    }
+
+    public void testExportAsCsvWithFederatedProperties()
+    {
+        def federatedProperties = SmartsObjectModel.getFederatedPropertyList();
+        assertTrue (federatedProperties.size() > 0);
+        def expectedProperties = SmartsObjectModel.getNonFederatedPropertyList().name;
+        expectedProperties.add("rsAlias");
+        def smartsObject = SmartsObjectModel.add(name:"object1");
+        def expectedSmartsobjectPropValues = [];
+        def propvalues = [:]
+        SmartsObjectModel.getNonFederatedPropertyList().each{
+            propvalues[it.name] = smartsObject[it.name];
+        }
+        propvalues["rsAlias"] = SmartsObjectModel.name;
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["searchIn"] = SmartsObjectModel.name
+        controller.params["type"] = "csv"
+        controller.export();
+        String content = controller.response.contentAsString;
+        checkCsvFileContent(content, 1, expectedProperties, expectedSmartsobjectPropValues);
+        federatedProperties.each{
+            assertTrue (content.indexOf(it.name) < 0);
+        }
+    }
+
+    private void checkCsvFileContent(content, maxCount, expectedProperties, expectedObjectPropValues)
+    {
+        def lines = StringUtils.split(content, "\n");
+        def colNames = StringUtils.split(lines[0], ",");
+        assertEquals (expectedProperties.size(), colNames.length)
+        def objects = [];
+        for(int i=1; i < lines.length; i++)
+        {
+            def line = lines[i];
+            def colValues = StringUtils.split(line, ",");
+            def props = [:]
+            for(int j=0; j < colNames.length; j++)
+            {
+                def colName = colNames[j];
+                def colValue = colValues[j];
+                props[colName] = colValue;
+            }
+            objects.add(props);
+
+        }
+        assertEquals(maxCount, objects.size());
+        objects.eachWithIndex{obj,i->
+            assertEquals(expectedProperties.size(), obj.size())
+            def baseDsProps = expectedObjectPropValues[i];
+            baseDsProps.each{String propName, Object value->
+                assertEquals(obj.toString(), "\"${value}\"".toString(), obj["\"${propName}\""]);
+            }
+        }
+    }
+
+    private void checkXmlFileContent(content, maxCount, expectedProperties, expectedObjectPropValues)
+    {
+        def objectsXml = new XmlSlurper().parseText(content);
+        def objects = objectsXml.Object;
+        assertEquals(maxCount, objects.size());
+        objects.eachWithIndex{obj,i->
+            def attributes = obj.attributes();
+            assertEquals(expectedProperties.size(), attributes.size())
+            def baseDsProps = expectedObjectPropValues[i];
+            baseDsProps.each{String propName, Object value->
+                assertEquals(value, obj.@"${propName}".toString());
+            }
+        }
+    }
+
+    public void testSearchWithFederatedProperties()
+    {
+        def federatedProperties = SmartsObjectModel.getFederatedPropertyList();
+        assertTrue (federatedProperties.size() > 0);
+        def expectedProperties = SmartsObjectModel.getNonFederatedPropertyList().name;
+        expectedProperties.add("sortOrder");
+        expectedProperties.add("rsAlias");
+        SmartsObjectModel.add(name:"object1");
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["searchIn"] =SmartsObjectModel.name
+        controller.index();
+        String content = controller.response.contentAsString;
+        def objectsXml = new XmlSlurper().parseText(content);
+        def objects = objectsXml.Object;
+        assertEquals(1, objects.size());
+        assertEquals("object1", objects[0].@name.toString());
+
+        def attributes = objects[0].attributes();
+        assertEquals(expectedProperties.size(), attributes.size())
+
+        federatedProperties.each{
+            assertTrue (content.indexOf(it.name) < 0);
+            assertFalse (attributes.containsKey(it.name));
+        }
     }
 
     public void testSearchWithQuery()

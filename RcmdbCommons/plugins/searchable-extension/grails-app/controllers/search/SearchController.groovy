@@ -44,29 +44,15 @@ class SearchController {
         }
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
-        def grailsClassProperties = [:]
-        def grailsClassRelations = [:]
         def sortOrder = 0;
         def stringConverter = RapidConvertUtils.getInstance().lookup(String);
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {result ->
                 def className = result.getClass().name;
-                def grailsObjectProps = grailsClassProperties[className]
-                if (grailsObjectProps == null)
-                {
-                    grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
-                    grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                }
-                def grailsObjectRelations = grailsClassRelations[className];
-                if (grailsObjectRelations == null) {
-                    grailsObjectRelations = DomainClassUtils.getRelations(className);
-                    grailsClassRelations[result.getClass().name] = grailsObjectRelations;
-                }
+                def grailsObjectProps = result.getNonFederatedPropertyList();
                 def props = [:];
                 grailsObjectProps.each {resultProperty ->
-                    if (!grailsObjectRelations.containsKey(resultProperty.name)) {
-                        props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
-                    }
+                    props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
                 }
                 props.put("sortOrder", sortOrder++)
                 props.put("rsAlias", result.getClass().name)
@@ -97,22 +83,10 @@ class SearchController {
             builder.Objects(total: searchResults.total, offset: searchResults.offset) {
                 searchResults.results.each {result ->
                     def className = result.getClass().name;
-                    def grailsObjectProps = grailsClassProperties[className]
-                    if (grailsObjectProps == null)
-                    {
-                        grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
-                        grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                    }
-                    def grailsObjectRelations = grailsClassRelations[className];
-                    if (grailsObjectRelations == null) {
-                        grailsObjectRelations = DomainClassUtils.getRelations(className);
-                        grailsClassRelations[result.getClass().name] = grailsObjectRelations;
-                    }
+                    def grailsObjectProps = result.getNonFederatedPropertyList();
                     def props = [:];
                     grailsObjectProps.each {resultProperty ->
-                        if (!grailsObjectRelations.containsKey(resultProperty.name)) {
-                            props[resultProperty.name] = result[resultProperty.name];
-                        }
+                        props[resultProperty.name] = result[resultProperty.name];
                     }
                     props.put("rsAlias", result.getClass().name)
                     builder.Object(props);
@@ -124,36 +98,26 @@ class SearchController {
             def sb = new StringBuffer();
             def propertyMap = [:]
             if(searchResults.total == 0 && params.searchIn != null){
-                 def objectProps = DomainClassUtils.getFilteredProperties(params.searchIn);
-                 def objectRelations = DomainClassUtils.getRelations(params.searchIn);
-                 objectProps.each{property ->
-                     if(!objectRelations.containsKey(property.name)){
-                         propertyMap.put(property.name, "\"${property.name}\"")
-                     }
+                 def domainClass = grailsApplication.getDomainClass(params.searchIn);
+                 domainClass.getNonFederatedPropertyList().each{property ->
+                     propertyMap.put(property.name, "\"${property.name}\"")
                  }
             }
             def results = [];
+            def processedClasses =[:]
             searchResults.results.each {result ->
                 def className = result.getClass().name;
-                def grailsObjectProps = grailsClassProperties[className]
-                def grailsObjectRelations = grailsClassRelations[className];
-                if (grailsObjectProps == null)
+                def grailsobjectProps = result.getNonFederatedPropertyList();
+                if(processedClasses[className] == null)
                 {
-                    grailsObjectProps = DomainClassUtils.getFilteredProperties(className);
-                    grailsClassProperties[result.getClass().name] = grailsObjectProps;
-                    grailsObjectRelations = DomainClassUtils.getRelations(className);
-                    grailsClassRelations[result.getClass().name] = grailsObjectRelations;
-                    grailsObjectProps.each {resultProperty ->
-                        if (!grailsObjectRelations.containsKey(resultProperty.name)) {
-                            propertyMap[resultProperty.name] = "\"${resultProperty.name}\"";
-                        }
-                    }
+                    processedClasses[className] =className;
+                    grailsobjectProps.each{property ->
+                         propertyMap.put(property.name, "\"${property.name}\"")
+                     }
                 }
                 def props = [:];
-                grailsObjectProps.each {resultProperty ->
-                    if (!grailsObjectRelations.containsKey(resultProperty.name)) {
-                        props[resultProperty.name] = result[resultProperty.name];
-                    }
+                grailsobjectProps.each {resultProperty ->
+                    props[resultProperty.name] = result[resultProperty.name];
                 }
                 props.put("rsAlias", result.getClass().name)
                 results.add(props);

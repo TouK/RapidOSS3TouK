@@ -3,6 +3,9 @@ package com.ifountain.rcmdb.rrd
 
 import com.ifountain.comp.test.util.file.TestFile
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.comp.test.util.file.TestFile
 
 /**
 * Created by IntelliJ IDEA.
@@ -10,19 +13,27 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 * Date: Jun 18, 2009
 * Time: 9:25:20 AM
 */
-class GrapherTest extends RapidCmdbTestCase {
+class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
     final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
     String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-
-    protected void setUp() {
+    def classes=[:];
+    public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        classes.RrdVariable=loadClass("RrdVariable");
+        classes.RrdArchive=loadClass("RrdArchive");
 
+        initialize([classes.RrdVariable,classes.RrdArchive], []);
+        CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
         new File(rrdFileName).delete();
     }
+    def loadClass(className)
+    {
+        return this.class.classLoader.loadClass(className);
+    }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
     public void createDatabase()
@@ -516,6 +527,125 @@ class GrapherTest extends RapidCmdbTestCase {
             assertEquals("There is no database selected", e.getMessage())
         }
 
+    }
+
+    public void testMultipleDatasourceGraphDatasourcesSuccessfully()  throws Exception{
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs1", resource:"resource",
+                           type:"COUNTER", heartbeat:600, file: rrdFileName,
+                           startTime:978300900, archives: [archive1])
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900, archives: [archive1])
+
+        def rrdList = [
+                            [rrdVariable:"testDs1", color:"123456", description:"cpu"],
+                            [rrdVariable:"testDs2", color:"aabb22", description:"memory"]
+                        ];
+        Map map = [:];
+        map[Grapher.RRD_VARIABLES] = rrdList;
+        map[Grapher.START_TIME] = 978301200
+        map[Grapher.END_TIME] = 978303900;
+
+        byte[] bytes = Grapher.graphMultipleDatasources(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+    public void testOneDatasourceGraphDatasourcesSuccessfully()  throws Exception{
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900, archives: [archive1])
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200
+        map[Grapher.END_TIME] = 978303900;
+
+
+        byte[] bytes = Grapher.graphOneVariable(map,"testDs2");
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
     }
 
      

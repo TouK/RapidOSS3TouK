@@ -1,4 +1,7 @@
-/* 
+import groovy.xml.MarkupBuilder
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -17,10 +20,6 @@
 * USA.
 */
 
-import groovy.xml.MarkupBuilder
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-
 def rootClass = params.rootClass != null ? params.rootClass : "RsEvent"
 def extraFilteredProps = ["rsDatasource", "id"];
 def allProps = [];
@@ -29,16 +28,16 @@ if(domainClass == null){
     throw new Exception("Could not find class ${rootClass}");
 }
 domainClass.getSubClasses().each {
-    allProps.addAll(DomainClassUtils.getFilteredProperties(it.name, extraFilteredProps));
+    allProps.addAll(it.clazz.getNonFederatedPropertyList().name);
 }
-allProps.addAll(DomainClassUtils.getFilteredProperties(rootClass, extraFilteredProps));
-def sortedProps = allProps.sort {it.name}
+allProps.addAll(domainClass.clazz.getNonFederatedPropertyList().name);
+allProps = allProps.unique() - extraFilteredProps;
+def sortedProps = allProps.sort {it}
 def propertyMap = [:]
 def writer = new StringWriter();
 def builder = new MarkupBuilder(writer);
 builder.Fields() {
-    sortedProps.each {
-        def propertyName = it.name;
+    sortedProps.each {propertyName->
         if (!propertyMap.containsKey(propertyName)) {
             builder.Field(Name: propertyName)
             propertyMap.put(propertyName, propertyName);

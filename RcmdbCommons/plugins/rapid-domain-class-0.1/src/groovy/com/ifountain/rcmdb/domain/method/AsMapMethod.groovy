@@ -31,7 +31,7 @@ import org.apache.log4j.Logger
 class AsMapMethod extends AbstractRapidDomainMethod{
     def allProperties = [];
     Logger logger;
-    public AsMapMethod(MetaClass mc, Class domainClass, Logger logger, Map relations) {
+    public AsMapMethod(MetaClass mc, Class domainClass, Logger logger) {
         super(mc); //To change body of overridden methods use File | Settings | File Templates.
         this.logger = logger;
         def props = domainClass.'getPropertiesList'();

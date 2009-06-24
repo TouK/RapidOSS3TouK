@@ -64,7 +64,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
 
         
 
-        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger());
         def instanceAsMap=asMap.invoke(instance,null);
         
 
@@ -114,7 +114,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
 
         
 
-        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger());
         def instanceAsMap=asMap.invoke(instance,null);
 
 
@@ -167,7 +167,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
 
         
 
-        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger(), [:]);
+        AsMapMethod asMap = new AsMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger());
         def requestedProps=["name","pagecount"]
         def instanceAsMap=asMap.invoke(instance,requestedProps);
 

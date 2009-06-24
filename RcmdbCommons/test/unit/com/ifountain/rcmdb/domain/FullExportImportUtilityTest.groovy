@@ -11,6 +11,8 @@ import org.compass.core.CompassQuery
 import org.compass.core.CompassHits
 import org.apache.log4j.Logger
 import org.apache.lucene.search.BooleanQuery
+import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.domain.generation.ModelGenerator
 
 /**
 * Created by IntelliJ IDEA.
@@ -465,7 +467,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         repoResults.each{ repoObject ->
             assertTrue(xmlData.containsKey(repoObject.id.toString()));
-            def objectAttributes=repoObject.asMap();
+            def objectAttributes=repoObject.asMap(repoObject.getNonFederatedPropertyList().name);
             def xmlAttributes=xmlData[repoObject.id.toString()];
 
             assertEquals(objectAttributes.size(),xmlAttributes.size())
@@ -675,6 +677,56 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             def modelAlias="RsTopologyObject";
 
             def repoResults=modelClassMap.RsTopologyObject.searchEvery("alias:${modelAlias.exactQuery()}")
+            checkXmlData(xmlData,repoResults);
+        }
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+        }
+
+    }
+
+
+    public void testExportModelDiscardsFederatedProperties()
+    {
+        def model1Name = "Model1";
+        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE, datasource:"ds1"];
+        def model1MetaProps = [name: model1Name]
+        def modelProps = [prop1, prop2];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, [datasource], modelProps, keyPropList, []);
+        def modelClass = gcl.parseClass (model1Text);
+
+        initialize([modelClass],[],true);
+
+        5.times{
+            def obj=modelClass.add(prop1:"model1Instance${it}");
+            assertFalse(obj.hasErrors());
+        }
+
+        FullExportImportUtility fullExport=new FullExportImportUtility(Logger.getRootLogger());
+
+        File exportDir=new File(directoryPaths.exportDir);
+        FileUtils.deleteDirectory (exportDir);
+        assertTrue(exportDir.mkdirs());
+
+        fullExport.beginCompass(System.getProperty("index.dir"));
+        def tx=fullExport.beginCompassTransaction();
+        try{
+            fullExport.exportModel(exportDir.getPath(),5,modelClass.name,false);
+
+            def filesToCheck=[];
+            filesToCheck.add([name:"${modelClass.name}_0.xml",model:modelClass.name,objectCount:5])
+            def xmlData=checkXmlFiles(exportDir,filesToCheck);
+
+            //check xml properties are same as the object
+            def modelAlias=modelClass.name;
+
+            def repoResults=modelClass.searchEvery("alias:${modelAlias.exactQuery()}")
             checkXmlData(xmlData,repoResults);
         }
         finally{

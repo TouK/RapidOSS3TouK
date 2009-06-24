@@ -305,7 +305,8 @@ class FullExportImportUtility {
     {
         logger.info("   exporting model ${modelName}");
 
-
+        def modelClass = getModel(modelName)
+        def nonFederatedPropNames = modelClass.getNonFederatedPropertyList().name;
         def hits=getModelHits(modelName,"alias:*");
 
 
@@ -330,7 +331,7 @@ class FullExportImportUtility {
                         {
                             objectIds.add(object.id);
                         }
-                        def props=object.asMap();
+                        def props=object.asMap(nonFederatedPropNames);
                         builder.Object(props);
                     }
                 }
@@ -518,6 +519,7 @@ class FullExportImportUtility {
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
         )
         def config = new CompassConfiguration()
+        config.setClassLoader (ApplicationHolder.application.classLoader);
 
         String compassConnection=dataDir;                
         config.setConnection(compassConnection);

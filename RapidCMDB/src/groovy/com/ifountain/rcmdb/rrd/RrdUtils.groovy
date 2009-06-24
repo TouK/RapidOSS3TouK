@@ -272,10 +272,11 @@ class RrdUtils {
             throw new Exception("data source not found")
             return null;
         }
-        FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
-        fetchRequest.setFilter (datasource);
+        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, startTime, endTime);
+
+        double[] data = fetchRequest.fetchData().getValues(datasource)
         rrdDb.close();
-        return fetchRequest.fetchData().getValues()[0];
+        return data
     }
 
     public static double[][] fetchData(String dbName, String[] datasources){
@@ -291,10 +292,13 @@ class RrdUtils {
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
         RrdDb rrdDb = new RrdDb(dbName);
-        FetchRequest fetchRequest = new RrdDb(dbName).createFetchRequest(function, startTime, endTime);
+        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, startTime, endTime);
         fetchRequest.setFilter (datasources);
+
+        double[][] data = fetchRequest.fetchData().getValues();
         rrdDb.close();
-        return fetchRequest.fetchData().getValues();
+
+        return data
     }
 
 }

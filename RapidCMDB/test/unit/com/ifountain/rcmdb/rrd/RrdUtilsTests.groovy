@@ -586,7 +586,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("data source not found",e.getMessage());
         }
     }
-
+    
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
 
@@ -681,7 +681,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
         Map config = [:]
-
 
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
 

@@ -1,4 +1,4 @@
-
+<%@ page import="auth.Role" %>
 <html>
 <head>
     <g:render template="/layouts/layoutHeader"></g:render>
@@ -29,8 +29,10 @@
                     <li class="${request.uri.toString().indexOf('index/deviceView.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/deviceView.gsp')}"><em>Device View</em></a></li>
 
                     <li class="${request.uri.toString().indexOf('index/notifications.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/notifications.gsp')}"><em>Notifications</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/browser.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/browser.gsp')}"><em>Repository Browser</em></a></li>
+                    <jsec:hasRole name="${Role.ADMINISTRATOR}">
+                        <li class="${request.uri.toString().indexOf('index/browser.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/browser.gsp')}"><em>Repository Browser</em></a></li>
+                    </jsec:hasRole>
+
                     
                 </ul>
             </div>

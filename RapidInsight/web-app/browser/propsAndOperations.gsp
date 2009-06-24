@@ -14,6 +14,7 @@
         def operations = domainClass.clazz.getOperations();
         def keys = domainClass.clazz.keySet();
         def pureProps = domainClass.clazz.getNonFederatedPropertyList().findAll{return !it.isKey}
+        def federatedProps = domainClass.clazz.getFederatedPropertyList()
         def relations = domainClass.clazz.getRelationPropertyList();
     %>
     <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">
@@ -55,6 +56,18 @@
                             <% status++ %>
                         </g:each>
                     </tbody>
+                </table>
+                <div><h3 style="color:#083772">Federated Properties:</h3></div>
+                <table width="100%" cellspacing="1" cellpadding="1" style="border-bottom:1px solid #083772">
+                    <tbody>
+                        <g:each var="prop" in="${federatedProps}">
+                            <tr class="${(status % 2) == 0 ? 'odd' : 'even'}">
+                                <td width="0%" style="font-weight:bold">${prop.name}</td>
+                                <td>${prop.type.name}</td>
+                            </tr>
+                            <% status++ %>
+                        </g:each>
+
                 </table>
                 <div style="margin-top:10px;"><h3 style="color:#083772">Operations:</h3></div>
                 <table width="100%" cellspacing="1" cellpadding="1">

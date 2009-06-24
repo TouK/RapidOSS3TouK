@@ -1,8 +1,13 @@
 
 import com.ifountain.rcmdb.rrd.RrdUtils;
+import com.ifountain.rcmdb.rrd.Grapher;
 
 public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    static String TYPE = "type";
+    static String RRD_VARIABLES = "rrdVariables";
+    String typeVar = "line";
+    String colorVar = "000000";
 
     def createDB() {
         RrdUtils.createDatabase (createDBConfig())
@@ -26,8 +31,116 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         RrdUtils.updateData(file, dataList)
     }
 
-    def graph(Map config) {
+    def graph(Map config){
 
+    }
+
+    private def graphMultipleDatasources(Map config){
+       Map fConfig = [:];
+       if(!config.containsKey(Grapher.START_TIME) ){
+           throw new Exception("Start time is not specified");
+       }
+       if(!config.containsKey(Grapher.END_TIME) ){
+           fConfig[Grapher.END_TIME] = getCurrentTime();
+       }
+       else{
+           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+       }
+       if(config.containsKey(Grapher.MAX) ){
+          fconfig.get(Grapher.MAX) = config.get(Grapher.MAX);
+       }
+       if(config.containsKey(Grapher.MIN) ){
+          fconfig.get(Grapher.MIN) = config.get(Grapher.MIN);
+       }
+       if(config.containsKey(Grapher.HEIGHT) ){
+          fconfig.get(Grapher.HEIGHT) = config.get(Grapher.HEIGHT);
+       }
+       if(config.containsKey(Grapher.WIDTH) ){
+          fconfig.get(Grapher.WIDTH) = config.get(Grapher.WIDTH);
+       }
+       def rrdVariables = fConfig.get(RRD_VARIABLES);
+
+       def datasourceList = [];
+       def typeList = [];
+       for(int i=0; i<rrdVariables.size(); i++){
+           archives.each{
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVariables[i].name;
+               datasourceMap[Grapher.DATABASE_NAME] = rrdVariables[i].file;
+               datasourceMap[Grapher.DSNAME] = rrdVariables[i].name;
+               datasourceMap[Grapher.FUNCTION] = it.function;
+               datasourceList.add(dataSourceMap);
+           }
+           def typeMap = [:];
+           typeMap[Grapher.NAME] = rrdVariables[i].name;
+           typeMap[Grapher.DESCRIPTION] = rrdVariables[i].description;
+           typeMap[Grapher.COLOR] = rrdVariables[i].color;
+
+       }
+       fConfig[typeVar] = typelist;
+       fConfig[Grapher.DATASOURCE] = datasourceList;
+       
+    }
+
+    private def graphOneDatasource(Map config) {
+       Map fConfig = [:];  //converts the given config map to a formatted config map
+
+       if(!config.containsKey(Grapher.START_TIME) ){
+           throw new Exception("Start time is not specified");
+       }
+       if(!config.containsKey(Grapher.END_TIME) ){
+           fConfig[Grapher.END_TIME] = getCurrentTime();
+       }
+       else{
+           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+       }
+       if(config.containsKey(TYPE) ){
+          typeVar = config.get(TYPE);
+       }
+       if(config.containsKey(Grapher.COLOR) ){
+          colorVar = config.get(Grapher.COLOR);
+       }
+       if(config.containsKey(Grapher.MAX) ){
+          fconfig.get(Grapher.MAX) = config.get(Grapher.MAX);
+       }
+       if(config.containsKey(Grapher.MIN) ){
+          fconfig.get(Grapher.MIN) = config.get(Grapher.MIN);
+       }
+       if(config.containsKey(Grapher.HEIGHT) ){
+          fconfig.get(Grapher.HEIGHT) = config.get(Grapher.HEIGHT);
+       }
+       if(config.containsKey(Grapher.WIDTH) ){
+          fconfig.get(Grapher.WIDTH) = config.get(Grapher.WIDTH);
+       }
+
+       fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
+
+       def typeMap = [:];
+       typeMap[Grapher.NAME] = name;
+       typeMap[Grapher.DESCRIPTION] = name;
+       typeMap[Grapher.COLOR] = color;
+
+       fConfig[typeVar] = [];
+       fConfig[typeVar].add[typeMap];
+
+       def datasourceList = [];
+       archives.each{
+           def datasourceMap = [:];
+           datasourceMap[Grapher.NAME] = name;
+           datasourceMap[Grapher.DATABASE_NAME] = file;
+           datasourceMap[Grapher.DSNAME] = name;
+           datasourceMap[Grapher.FUNCTION] = it.function;
+           datasourceList.add(dataSourceMap);
+       }
+
+       fConfig[Grapher.DATASOURCE] = datasourceList;
+
+       return RrdUtils.graph(fconfig);
+    }
+
+    private long getCurrentTime(){
+        Calendar cal = Calendar.getInstance();
+        return cal.getTimeInMillis();
     }
 
     def graphLastHour(Map config) {
@@ -81,7 +194,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return "" + timestamp + ":" + value
     }
 
-
+    
 
     
     

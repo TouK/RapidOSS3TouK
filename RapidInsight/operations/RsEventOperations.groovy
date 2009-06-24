@@ -74,12 +74,14 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
         if(acknowledged != action){
 			if(action){
 				RsEventJournal.add(eventId:id, eventName:"acknowledged", rsTime:new Date(now), details:"Acknowledged by ${userName}")
+				update(acknowledged:true,changedAt:now)
 			}
 			else{
 				RsEventJournal.add(eventId:id, eventName:"unacknowledged", rsTime:new Date(now), details:"UnAcknowledged by ${userName}")
+				update(acknowledged:false,changedAt:now)
 			}
 		}
-		update(acknowledged:action,changedAt:now)
+
 	}	
 
 	public void setOwnership(boolean action, userName) {
@@ -87,13 +89,13 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 
         if(action)        {
             RsEventJournal.add(eventId:id, eventName:"TakeOwnership", rsTime:new Date(now), details:"TakeOwnership by ${userName}")
-            owner = userName
+            update(owner:userName,changedAt:now)
         }
         else{
             RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(now), details:"ReleaseOwnership by ${userName}")
-            owner = ""
+            update(owner:"",changedAt:now)
         }
-        update(changedAt:now)
+
 	}
 	
 	public void addToJournal(name, details){

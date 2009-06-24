@@ -14,10 +14,10 @@
 <div class="body">
     <h1>Show Group</h1>
     <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
+        <div class="message" id="pageMessage">${flash.message}</div>
     </g:if>
     <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
+       <div class="errors" id="pageFlashErrors">>
             <g:renderErrors bean="${flash.errors}"/>
         </div>
     </g:hasErrors>
@@ -27,30 +27,30 @@
 
 
                 <tr class="prop">
-                    <td valign="top" class="name">id:</td>
+                    <td valign="top" class="name" id="idLabel" >id:</td>
 
-                    <td valign="top" class="value">${group.id}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">name:</td>
-
-                    <td valign="top" class="value">${group.name}</td>
+                    <td valign="top" class="value" id="id" >${group.id}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">role:</td>
+                    <td valign="top" class="name"  id="nameLabel" >name:</td>
 
-                    <td valign="top" class="value">${group?.role}</td>
+                    <td valign="top" class="value" id="name" >${group.name}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">segmentFilter:</td>
+                    <td valign="top" class="name" id="roleLabel" >role:</td>
 
-                    <td valign="top" class="value">${group.segmentFilter}</td>
+                    <td valign="top" class="value"  id="role" >${group?.role}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name" id="segmentFilterLabel" >segmentFilter:</td>
+
+                    <td valign="top" class="value" id= "segmentFilter">${group.segmentFilter}</td>
 
                 </tr>
 
@@ -80,3 +80,5 @@
 </div>
 </body>
 </html>
+
+

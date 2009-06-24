@@ -15,7 +15,6 @@ import application.RsApplication
 class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
-        clearMetaClasses();
 
          initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RsApplication,RsComputerSystem], []);
          CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
@@ -25,18 +24,9 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-
-        clearMetaClasses();
         super.tearDown();
     }
-    private void clearMetaClasses()
-     {
-        ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(RsRiEvent)
-        GroovySystem.metaClassRegistry.removeMetaClass(RsRiEventOperations)
-        GroovySystem.metaClassRegistry.removeMetaClass(RsComputerSystem)
-        ExpandoMetaClass.enableGlobally();
-     }
+
 
 
      public void testNotifyAddsRsRiEvent()

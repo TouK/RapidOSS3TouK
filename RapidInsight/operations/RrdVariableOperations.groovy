@@ -50,16 +50,16 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
           colorVar = config.get(Grapher.COLOR);
        }
        if(config.containsKey(Grapher.MAX) ){
-          fconfig.get(Grapher.MAX) = config.get(Grapher.MAX);
+          fconfig[Grapher.MAX] = config.get(Grapher.MAX);
        }
        if(config.containsKey(Grapher.MIN) ){
-          fconfig.get(Grapher.MIN) = config.get(Grapher.MIN);
+          fconfig[Grapher.MIN] = config.get(Grapher.MIN);
        }
        if(config.containsKey(Grapher.HEIGHT) ){
-          fconfig.get(Grapher.HEIGHT) = config.get(Grapher.HEIGHT);
+          fconfig[Grapher.HEIGHT] = config.get(Grapher.HEIGHT);
        }
        if(config.containsKey(Grapher.WIDTH) ){
-          fconfig.get(Grapher.WIDTH) = config.get(Grapher.WIDTH);
+          fconfig[Grapher.WIDTH] = config.get(Grapher.WIDTH);
        }
 
        fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
@@ -70,7 +70,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
        typeMap[Grapher.COLOR] = color;
 
        fConfig[typeVar] = [];
-       fConfig[typeVar].add[typeMap];
+       fConfig[typeVar].add[typeMap];           
 
        def datasourceList = [];
        archives.each{

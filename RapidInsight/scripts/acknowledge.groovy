@@ -31,11 +31,7 @@ if (rsEvent) {
     else if (acknowledged == "false")
         rsEvent.acknowledge(false, user.username);
 
-    def props = [:];
-    def grailsDomainClass = web.grailsApplication.getDomainClass(rsEvent.class.name);
-    grailsDomainClass.getProperties().each {rsProperty ->
-        props[rsProperty.name] = rsEvent[rsProperty.name];
-    }
+    def props = rsEvent.asMap(rsEvent.getNonFederatedPropertyList().name);
     def sw = new StringWriter();
     def builder = new MarkupBuilder(sw);
     builder.Objects() {

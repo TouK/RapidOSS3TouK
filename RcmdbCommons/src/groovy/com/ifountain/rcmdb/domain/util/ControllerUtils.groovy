@@ -82,26 +82,6 @@ class ControllerUtils {
         return oldProperties;
     }
 
-    def static createValidateObject(domainInstance, Map params)
-    {
-        def tempInstance = domainInstance.getClass().newInstance();
-        domainInstance.getPropertiesList().each{
-            if(!it.isOperationProperty)
-            {
-                tempInstance.setProperty (it.name, domainInstance.getProperty(it.name), false);
-            }
-        }
-        params.each{String propName, Object propValue->
-            try
-            {
-                tempInstance.setProperty (propName, propValue, false);
-            }
-            catch(groovy.lang.MissingPropertyException e)
-            {
-            }
-        }
-        return tempInstance;
-    }
     def static getClassProperties(Map params, Class domainClass)
     {
         def relations = [:];

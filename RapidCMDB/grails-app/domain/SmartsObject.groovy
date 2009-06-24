@@ -25,9 +25,9 @@ class SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["federatedProperty","errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]], "ds1":[mappedName:"ds1", "keys":["name":["nameInDs":"Name"]]]]
 
     
     String name ="";
@@ -37,6 +37,7 @@ class SmartsObject
     String smartDs ="";
     
     String displayName ="";
+    String federatedProperty ="";
     
     Long id ;
     
@@ -55,6 +56,7 @@ class SmartsObject
      creationClassName(blank:true,nullable:true)
         
      smartDs(blank:true,nullable:true)
+     federatedProperty(blank:true,nullable:true)
         
      displayName(blank:true,nullable:true)
         
@@ -67,8 +69,8 @@ class SmartsObject
      
     }
 
-    static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static propertyConfiguration= [federatedProperty:["nameInDs":"FederatedProperty", "datasource":"ds1", "lazy":false]]
+    static transients = ["federatedProperty","errors", "__operation_class__", "__is_federated_properties_loaded__"];
     
     public String toString()
     {

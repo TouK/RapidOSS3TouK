@@ -20,14 +20,18 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
     def RsEventJournal;
+    def SmartsObjectModel = null;
     void setUp() throws Exception {
         super.setUp();
         RsEventJournal = ApplicationHolder.application.classLoader.loadClass("RsEventJournal")
+        SmartsObjectModel = ApplicationHolder.application.classLoader.loadClass("SmartsObject")
         BaseDatasource.removeAll();
         RsEventJournal.removeAll();
         Connection.removeAll();
         SearchQuery.removeAll();
+        SmartsObjectModel.removeAll();
         SearchQueryGroup.removeAll();
+
     }
 
     void tearDown() throws Exception {
@@ -172,6 +176,30 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(expectedProperties.size(), attributes.size())
     }
 
+
+    void testListDomainIgnoresFederatedProperties() {
+        def federatedProperties = SmartsObjectModel.getPropertiesList().findAll {return it.isFederated}
+        assertTrue (federatedProperties.size() > 0);
+        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty && !it.isFederated || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        SmartsObjectModel.add(name: "device0");
+        def controller = new RsBrowserController();
+        controller.params["max"] = "100";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["domain"] = "smartsObject"
+        controller.params["format"] = "xml"
+        controller.listDomain();
+        String content = controller.response.contentAsString;
+        def objectsXml = new XmlSlurper().parseText(content);
+        def objects = objectsXml.Object;
+        assertEquals(1, objects.size());
+        assertEquals("device0", objects[0].@name.toString());
+        federatedProperties.each{
+            assertTrue(content.indexOf(it.name) < 0);
+            assertFalse (objects[0].attributes().containsKey(it.name));
+        }
+    }
+
     void testListDomainWithOnlyKeyProperties() {
         for (i in 0..9) {
             Connection.add(name: "conn${i}");
@@ -270,6 +298,42 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
             assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 2].text())
         }
     }
+    void testShowIgnoresFederatedProperties() {
+        def smartsObjectInstance = SmartsObjectModel.add(name: "obj1");
+        assertFalse(smartsObjectInstance.hasErrors())
+
+        def controller = new RsBrowserController();
+        controller.params["id"] = "${smartsObjectInstance.id}"
+        controller.params["domain"] = "smartsObject"
+        controller.params["format"] = "xml"
+        controller.show();
+
+        def federatedProps = SmartsObjectModel.getPropertiesList().findAll {it.isFederated};
+        assertEquals(1, federatedProps.size());
+        def props = SmartsObjectModel.getPropertiesList().findAll {!it.isKey && !it.isFederated && it.name != 'id' && !(it.isRelation && (it.isOneToMany() || it.isManyToMany()))};
+        def keySet = SmartsObjectModel.keySet();
+        String content = controller.response.contentAsString;
+        def objectXml = new XmlSlurper().parseText(content);
+
+        def allNodes = objectXml.depthFirst().collect {it}
+        assertEquals((props.size() + keySet.size() + 1), allNodes.size() - 1) //all nodes includes the root node
+
+        assertEquals("id", allNodes[1].name())
+        assertEquals("${smartsObjectInstance.id}", allNodes[1].text())
+        keySet.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[i + 2].name())
+            assertEquals("${smartsObjectInstance[p.name]}", allNodes[i + 2].text())
+        }
+
+        props.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[keySet.size() + i + 2].name())
+            assertEquals("${smartsObjectInstance[p.name]}", allNodes[keySet.size() + i + 2].text())
+        }
+
+        federatedProps.each {p->
+            assertTrue(content.indexOf(p.name) < 0)
+        }
+    }
 
     void testSearchWithPublicSearchQuery() {
         Connection.add(name: "a1")
@@ -320,6 +384,27 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(10, objects.size());
         for (int i = 0; i < datePropValues.size(); i++) {
             assertEquals(RapidConvertUtils.getInstance().lookup(String).convert(String, datePropValues[i]), objects[i].@rsTime.toString());
+        }
+    }
+
+    public void testSearchIgnoresFederatedProperties() {
+        def federatedProps = SmartsObjectModel.getPropertiesList().findAll {it.isFederated}
+        assertTrue (federatedProps.size() > 0);
+        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isFederated && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        SmartsObjectModel.add(name: "dev1");
+        def controller = new RsBrowserController();
+        def params = [:]
+        params["max"] = "10";
+        params["domain"] = "smartsObject"
+        params["query"] = "alias:*"
+        params["format"] = "xml"
+        controller._search(params);
+        String content = controller.response.contentAsString;
+        def objectsXml = new XmlSlurper().parseText(content);
+        def objects = objectsXml.Object;
+        assertEquals(1, objects.size());
+        federatedProps.each{prop->
+            assertTrue (content.indexOf(prop.name) < 0);
         }
     }
 

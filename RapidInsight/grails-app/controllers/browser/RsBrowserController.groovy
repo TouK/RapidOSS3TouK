@@ -129,7 +129,7 @@ class RsBrowserController {
             def domainObject = domainClass.clazz."get"(id: params.id);
             if (domainObject) {
                 def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
-                def properties = objectClass.clazz."getPropertiesList"();
+                def properties = objectClass.clazz."getPropertiesList"().findAll{return !it.isFederated};
                 def keySet = objectClass.clazz."keySet"();
                 if (params.format == 'xml') {
                     def sw = new StringWriter();
@@ -319,7 +319,7 @@ class RsBrowserController {
     def getPropertiesWhichCanBeListed(domainClass, max) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();
-        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
         def keySet = domainClass.clazz."keySet"();
         if (propertiesCanBeListed.size() + keySet.size() > max) {
             propertyList = keySet;

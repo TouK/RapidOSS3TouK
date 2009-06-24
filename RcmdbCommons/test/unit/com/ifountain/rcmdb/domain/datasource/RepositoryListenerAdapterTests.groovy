@@ -92,10 +92,8 @@ class RepositoryListenerAdapterTests extends RapidCmdbMockTestCase {
         def receivedDomainObject = receivedChangeEvent[ObjectProcessor.DOMAIN_OBJECT];
         assertTrue(receivedDomainObject instanceof Connection);
         assertNotSame(conn, receivedDomainObject);
-        conn.getPropertiesList().each {p ->
-            if (!p.isRelation && !p.isOperationProperty) {
-                assertEquals(conn[p.name], receivedDomainObject[p.name])
-            }
+        conn.getNonFederatedPropertyList().each {p ->
+            assertEquals(conn[p.name], receivedDomainObject[p.name])
         }
     }
 

@@ -9,7 +9,7 @@
     def className = params.__rsBrowserClassName;
     def domainClass = grailsApplication.getDomainClass(className)
     def domainObject = domainClass.clazz.newInstance();
-    def properties = domainClass.clazz."getPropertiesList"();
+    def properties = domainClass.clazz.getNonFederatedPropertyList();
     def keys = domainClass.clazz."keySet"();
 %>
 <div class="ri-browser-form">
@@ -34,7 +34,7 @@
                 </g:if>
             </g:each>
             <g:each var="prop" in="${properties}">
-                <g:if test="${!prop.isRelation && !prop.isOperationProperty && !prop.isKey && prop.name != 'id'}">
+                <g:if test="${!prop.isKey && prop.name != 'id'}">
                     <tr class="prop">
                         <td valign="top" class="name">
                             <label>${prop.name}:</label>

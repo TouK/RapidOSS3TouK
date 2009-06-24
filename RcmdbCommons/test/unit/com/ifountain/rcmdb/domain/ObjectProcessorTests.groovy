@@ -45,10 +45,8 @@ class ObjectProcessorTests extends RapidCmdbMockTestCase {
         assertEquals(EventTriggeringUtils.BEFORE_INSERT_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME]);
         def domainObject = repositoryChange[ObjectProcessor.DOMAIN_OBJECT]
         assertNotSame(conn, domainObject);
-        domainObject.getPropertiesList().each {p ->
-            if (!p.isRelation && !p.isOperationProperty) {
-                assertEquals(conn[p.name], domainObject[p.name]);
-            }
+        domainObject.getNonFederatedPropertyList().each {p ->
+            assertEquals(conn[p.name], domainObject[p.name]);
         };
 
         def updateParams = ["prop1":"prop1Value1", "prop2":"prop2Value2"]
@@ -61,10 +59,8 @@ class ObjectProcessorTests extends RapidCmdbMockTestCase {
         assertEquals(EventTriggeringUtils.AFTER_UPDATE_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME]);
         domainObject = repositoryChange[ObjectProcessor.DOMAIN_OBJECT]
         assertNotSame(conn2, domainObject);
-        domainObject.getPropertiesList().each {p ->
-            if (!p.isRelation && !p.isOperationProperty) {
-                assertEquals(conn[p.name], domainObject[p.name]);
-            }
+        domainObject.getNonFederatedPropertyList().each {p ->
+            assertEquals(conn[p.name], domainObject[p.name]);
         };
         def updatedProperties = repositoryChange[ObjectProcessor.UPDATED_PROPERTIES];
         assertEquals(updateParams.size(), updatedProperties.size())

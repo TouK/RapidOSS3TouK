@@ -5,7 +5,7 @@
   Time: 2:34:40 PM
 --%>
 
-<%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
+<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.util.RapidCMDBConstants; org.codehaus.groovy.grails.commons.GrailsDomainClass; org.codehaus.groovy.grails.commons.ApplicationHolder" %>
 <%
     def dateProperties = [];
     SimpleDateFormat format = new SimpleDateFormat("dd MMM HH:mm:ss")
@@ -15,9 +15,8 @@
     
     if (domainObject != null) {
         def allProperties = domainObject.getPropertiesList();
-        def relations = DomainClassUtils.getRelations(domainObject.getClass().getName());
         def excludedProps = ["id", "rsDatasource", "createdAt", "changedAt", "clearedAt"]
-        def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !relations.containsKey(it.name)}
+        def filteredProps = allProperties.findAll {!excludedProps.contains(it.name) && !it.isRelation}
 %>
 <script type="text/javascript">
 window.showTopologyObject = function (url, title){

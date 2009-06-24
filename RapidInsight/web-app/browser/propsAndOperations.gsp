@@ -11,19 +11,10 @@
 %>
 <g:if test="domainClass">
     <%
-        def operations = domainClass.clazz."getOperations"();
-        def keys = domainClass.clazz."keySet"();
-        def properties = domainClass.clazz."getPropertiesList"();
-        def pureProps = [];
-        def relations = [];
-        properties.each {p ->
-            if (p.isRelation) {
-                relations.add(p)
-            }
-            else if (!p.isKey && !p.isOperationProperty) {
-                pureProps.add(p)
-            }
-        }
+        def operations = domainClass.clazz.getOperations();
+        def keys = domainClass.clazz.keySet();
+        def pureProps = domainClass.clazz.getNonFederatedPropertyList().findAll{return !it.isKey}
+        def relations = domainClass.clazz.getRelationPropertyList();
     %>
     <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">
         <div style="display:block">

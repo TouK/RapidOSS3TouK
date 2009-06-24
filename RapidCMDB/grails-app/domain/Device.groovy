@@ -25,7 +25,7 @@ class Device extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["connectedVia",  "hostsAccessPoints", "composedOf", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["federatedProperty", "connectedVia",  "hostsAccessPoints", "composedOf", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = [:]
 
@@ -46,6 +46,7 @@ class Device extends SmartsObject
     
     String discoveryTime ="";
     
+
     Long id ;
     
     Long version ;
@@ -78,7 +79,8 @@ class Device extends SmartsObject
      discoveredLastAt(blank:true,nullable:true)
         
      description(blank:true,nullable:true)
-        
+     
+
      discoveryErrorInfo(blank:true,nullable:true)
         
      discoveryTime(blank:true,nullable:true)

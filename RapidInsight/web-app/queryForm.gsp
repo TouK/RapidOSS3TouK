@@ -33,10 +33,10 @@
         def classes = [];
         def domainClass = grailsApplication.getDomainClass(className);
         classes.add(domainClass);
-        allProps.addAll(domainClass.clazz."getPropertiesList"());
+        allProps.addAll(domainClass.clazz.getNonFederatedPropertyList());
         domainClass.getSubClasses().each {
             classes.add(it);
-            allProps.addAll(it.clazz."getPropertiesList"());
+            allProps.addAll(it.clazz.getNonFederatedPropertyList());
         }
         classes = classes.sort{it.fullName};
         def sortedProps = allProps.sort {it.name}

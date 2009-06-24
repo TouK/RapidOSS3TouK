@@ -64,7 +64,7 @@ class RsTicketOperations  extends com.ifountain.rcmdb.domain.operation.AbstractD
     					def topoObj = RsTopologyObject.get(name:ticketProps.elementName);
     					ticket.addRelation("relatedObjects":topoObj);
     				}
-    				println "Successfully created issue: ${ticket.asMap()}"
+    				logger.info("Successfully created issue: ${ticket.asMap()}");
     				return ticket;
     			}
     		}

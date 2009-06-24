@@ -12,7 +12,7 @@
 %>
 <g:if test="${domainObject}">
     <%
-        def properties = domainClass.clazz."getPropertiesList"();
+        def properties = domainClass.clazz.getNonFederatedPropertyList();
         def keys = domainClass.clazz."keySet"();
     %>
     <script type="text/javascript">
@@ -38,7 +38,7 @@
                     </g:if>
                 </g:each>
                 <g:each var="prop" in="${properties}">
-                    <g:if test="${!prop.isRelation && !prop.isOperationProperty && !prop.isKey && prop.name != 'id'}">
+                    <g:if test="${!prop.isKey && prop.name != 'id'}">
                         <tr class="prop">
                             <td valign="top" class="name">
                                 <label>${prop.name}:</label>

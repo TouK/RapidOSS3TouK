@@ -18,10 +18,9 @@
 */
 package search
 
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.

@@ -26,7 +26,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-      //  logout()
+        logout()
     }
 
 
@@ -160,7 +160,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
     public void testScriptAuthorizationMechanism()
      {
 
-       // login( "rsadmin","changeme")
+       login( "rsadmin","changeme")
 
         newGroup()
 		selenium.type("name", "default");

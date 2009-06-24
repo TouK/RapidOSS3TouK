@@ -79,8 +79,7 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 				RsEventJournal.add(eventId:id, eventName:"unacknowledged", rsTime:new Date(now), details:"UnAcknowledged by ${userName}")
 			}
 		}
-		acknowledged = action
-		changedAt = now
+		update(acknowledged:action,changedAt:now)
 	}	
 
 	public void setOwnership(boolean action, userName) {
@@ -94,7 +93,7 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
             RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(now), details:"ReleaseOwnership by ${userName}")
             owner = ""
         }
-		changedAt = now
+        update(changedAt:now)
 	}
 	
 	public void addToJournal(name, details){

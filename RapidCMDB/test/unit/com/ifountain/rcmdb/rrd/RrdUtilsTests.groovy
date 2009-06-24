@@ -21,7 +21,9 @@ class RrdUtilsTests extends RapidCoreTestCase {
     protected void setUp() {
         super.setUp();
 
+        boolean isDeleted =
         new File(rrdFileName).delete();
+        println "file deletion successful: "+isDeleted;
     }
 
     protected void tearDown() {
@@ -676,7 +678,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
         RrdUtils.updateData(rrdFileName,"978303600:2900:4");
         RrdUtils.updateData(rrdFileName,"978303900:3300:2");
 
-        println RrdUtils.fetchAllData(rrdFileName);
+        RrdUtils.fetchAllData(rrdFileName);
     }
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
@@ -701,6 +703,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
         config[RrdUtils.START_TIME] = 978300900;
+
         RrdUtils.createDatabase(config);
 
         RrdUtils.updateData(rrdFileName,"978301200:200");

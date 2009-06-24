@@ -28,14 +28,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file:"filename",
+                                       type:"GAUGE", heartbeat:300, file:fileName,
                                        startTime:9000L, step:300L, archives: archive1)
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def config = variable.createDBConfig()
 
-        assertEquals("filename", config[RrdUtils.DATABASE_NAME])
+        assertEquals(fileName, config[RrdUtils.DATABASE_NAME])
         assertEquals(9000L, config[RrdUtils.START_TIME])
         assertEquals(300L, config[RrdUtils.STEP])
 
@@ -70,7 +70,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def archive3 = RrdArchive.add(name:"archive3", function:"MIN", xff:0.7, step:3, row:15)
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file:"filename",
+                                       type:"GAUGE", heartbeat:300, file:fileName,
                                        startTime:9000L, step:300L,
                                        archives: [archive1, archive2, archive3])
 
@@ -78,7 +78,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def config = variable.createDBConfig()
 
-        assertEquals("filename", config[RrdUtils.DATABASE_NAME])
+        assertEquals(fileName, config[RrdUtils.DATABASE_NAME])
         assertEquals(9000L, config[RrdUtils.START_TIME])
         assertEquals(300L, config[RrdUtils.STEP])
 
@@ -133,8 +133,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testCreateDBSuccessful() {
 
-        String fileName = "filename"
-
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"GAUGE", heartbeat:300, file: fileName,
@@ -184,8 +182,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testRemoveDBSuccessful() {
-
-        String fileName = "filename"
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
         def variable = RrdVariable.add(name:"variable", resource:"resource",
@@ -252,5 +248,22 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertEquals([5D,10D,15D], RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300, 9900)[0,1,2])
     }
+
+    public void testGraphWithoutTemplate() {
+
+    }
+
+    public void testGraphWithTemplate() {
+
+    }
+
+    public void testGraphLastDay() {
+
+    }
+
+    public void testGraphLastHour() {
+
+    }
+
     
 }

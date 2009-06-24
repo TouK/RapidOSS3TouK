@@ -26,6 +26,18 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         RrdUtils.updateData(file, dataList)
     }
 
+    def graph(Map config) {
+
+    }
+
+    def graphLastHour(Map config) {
+        
+    }
+
+    def graphLastDay(Map config) {
+        
+    }
+
     private def createDBConfig() {
         def dbConfig = [:]
 
@@ -63,14 +75,10 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     private def createUpdateData(Map config) {
-
         def timestamp = config["time"] != null ? config["time"] : new Date().getTime()
         def value = config["value"] != null ? config["value"] : Double.NaN
 
         return "" + timestamp + ":" + value
-
-
-
     }
 
 

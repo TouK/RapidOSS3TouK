@@ -365,7 +365,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance, "prop2"));
         assertNotSame (errorsBeforeFederationException, instance.errors);
         assertEquals(1, instance.errors.allErrors.size());
-        def getPropertiesError = instance.errors.allErrors[0]
+        FieldError getPropertiesError = instance.errors.allErrors[0]
         assertEquals ("default.federation.property.get.properties.exception", getPropertiesError.code);
 
         errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);

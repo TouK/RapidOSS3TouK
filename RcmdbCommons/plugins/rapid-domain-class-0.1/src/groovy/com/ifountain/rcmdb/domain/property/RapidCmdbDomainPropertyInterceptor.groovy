@@ -158,7 +158,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
 
                         }catch(Throwable t)
                         {
-                            ValidationUtils.addObjectError(bindingResult, "default.federation.property.get.properties.exception", [domainObject.getClass().name, propName, baseDatasourceName, t.toString()]);
+                            ValidationUtils.addFieldError(bindingResult, propName, null, "default.federation.property.get.properties.exception", [domainObject.getClass().name, propName, baseDatasourceName, t.toString()]);
                             logger.warn("Exception occured while getting federated property ${propName} of ${domainObject.class.name} with getProperties method of ${baseDatasourceName}.Reason:${t.getMessage()}");
                         }
 

@@ -644,6 +644,9 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.START_TIME] = 978301200
         map[Grapher.END_TIME] = 978303900;
 
+        map[Grapher.TITLE] = "Rrd Graph Utilities";
+        map[Grapher.VERTICAL_LABEL] = "rate";
+
         byte[] bytes = Grapher.graphMultipleDatasources(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
@@ -699,8 +702,10 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.RRD_VARIABLE] = "testDs2";
         //Optional properties:
         map[Grapher.END_TIME] = 978303900;
-        map[Grapher.DESCRIPTION] = "my graph description";
+        map[Grapher.DESCRIPTION] = "cpu util";
         map[Grapher.TYPE] = "area";
+        map[Grapher.COLOR] = "5566ff";
+        map[Grapher.MAX] = 10;
 
 
         byte[] bytes = Grapher.graphOneVariable(map);

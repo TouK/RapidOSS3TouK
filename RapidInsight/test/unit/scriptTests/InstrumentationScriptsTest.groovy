@@ -1,3 +1,4 @@
+package scriptTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
@@ -15,13 +16,18 @@ import org.apache.commons.io.FileUtils
 class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
      def static script_base_directory = "../testoutput/";
      def managerInitialized=false;
+     def classes=[:];
      
+
      public void setUp() {
         super.setUp();
-        initialize([CmdbScript,Statistics,InstrumentationParameters], []);
+        ["Statistics","InstrumentationParameters","StatisticsOperations"].each{ className ->
+            classes[className]=gcl.loadClass(className);
+        }
+        initialize([CmdbScript,classes.Statistics,classes.InstrumentationParameters], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
-        CompassForTests.addOperationSupport (Statistics,StatisticsOperations);
-        
+        CompassForTests.addOperationSupport (classes.Statistics,classes.StatisticsOperations);
+
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"enableInstrumentation",type: CmdbScript.ONDEMAND])
         assertFalse(script.hasErrors());
@@ -36,17 +42,9 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
         super.tearDown();
     }
-     void initializeScriptManager()
+    void initializeScriptManager()
     {
-         //to run in Hudson
-        def base_directory = "../RapidSuite";
-        //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
-        def canonicalPath=new File(".").getCanonicalPath();
-        //to run in developer pc
-        if(canonicalPath.endsWith("RapidModules"))
-        {
-            base_directory = "RapidInsight"
-        }
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
         if (new File(script_base_directory).exists())
@@ -67,33 +65,33 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
     public void testEnableDisableInstrumentationScripts()
     {
-        System.clearProperty (StatisticsOperations.GLOBAL_ENABLE_KEY);
+        System.clearProperty (classes.StatisticsOperations.GLOBAL_ENABLE_KEY);
 
-        assertFalse(Statistics.isEnabledGlobally());
+        assertFalse(classes.Statistics.isEnabledGlobally());
 
         def result=CmdbScript.runScript("enableInstrumentation",[:]);
-        assertTrue(Statistics.isEnabledGlobally());
+        assertTrue(classes.Statistics.isEnabledGlobally());
 
 
         result=CmdbScript.runScript("disableInstrumentation",[:]);
-        assertFalse(Statistics.isEnabledGlobally());
+        assertFalse(classes.Statistics.isEnabledGlobally());
 
         result=CmdbScript.runScript("enableInstrumentation",[:]);
-        assertTrue(Statistics.isEnabledGlobally());
+        assertTrue(classes.Statistics.isEnabledGlobally());
     }
 
     public void testCreateInstrumentationParametersScript()
     {
         def paramList=["system.totalMemory","system.usedMemory","user.login","ui.objectDetails","ui.eventDetails"];
 
-        assertEquals(0,InstrumentationParameters.countHits("alias:*"));
+        assertEquals(0,classes.InstrumentationParameters.countHits("alias:*"));
 
         CmdbScript.runScript("createInstrumentationParameters",[:]);
 
-        assertEquals(paramList.size(),InstrumentationParameters.countHits("alias:*"));
+        assertEquals(paramList.size(),classes.InstrumentationParameters.countHits("alias:*"));
 
         paramList.each{ paramName ->
-            assertEquals(1,InstrumentationParameters.countHits("name:${paramName.exactQuery()} AND enabled:true"));
+            assertEquals(1,classes.InstrumentationParameters.countHits("name:${paramName.exactQuery()} AND enabled:true"));
         }
     }
 

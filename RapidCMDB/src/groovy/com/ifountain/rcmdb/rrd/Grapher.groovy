@@ -100,7 +100,8 @@ class Grapher {
         if(config.containsKey(WIDTH) ){
            graphDef.setWidth(config.get(WIDTH));
         }
-
+//        graphDef.setImageQuality (1F);
+        graphDef.setSmallFont(new java.awt.Font("Serif",java.awt.Font.BOLD, 12) )
         RrdGraph graph = new RrdGraph(graphDef);
 
         return graph.getRrdGraphInfo().getBytes()
@@ -150,10 +151,10 @@ class Grapher {
            def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
            rrdVar.archives.each{
                def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVar.name;
-               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-               datasourceMap[Grapher.DSNAME] = rrdVar.name;
-               datasourceMap[Grapher.FUNCTION] = it.function;
+               datasourceMap[NAME] = rrdVar.name;
+               datasourceMap[DATABASE_NAME] = rrdVar.file;
+               datasourceMap[DSNAME] = rrdVar.name;
+               datasourceMap[FUNCTION] = it.function;
                datasourceList.add(datasourceMap);
            }
            def typeMap = [:];
@@ -162,9 +163,6 @@ class Grapher {
            typeMap[Grapher.COLOR] = rrdVariables[i][COLOR];
            typeList.add(typeMap);
        }
-
-       println "DS" + datasourceList
-       println "TYPE" + typeList
 
        fConfig[typeVar] = typeList;
 //       fConfig["area"] = typeList;
@@ -178,8 +176,7 @@ class Grapher {
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
     }
-    static def loadClass(String className)
-    {
+    static def loadClass(String className){
         return Grapher.class.classLoader.loadClass(className);
     }
     public static void addDataSource(RrdGraphDef rdef, dslist){
@@ -198,7 +195,6 @@ class Grapher {
                 }
 
                 try{
-                   println it.get(DATABASE_NAME)
                    rdef.datasource(it.get(NAME),it.get(DATABASE_NAME),it.get(DSNAME),it.get(FUNCTION) )
                    isSourceExist = true;
                 }
@@ -264,13 +260,16 @@ class Grapher {
             }
         }
     }
-    public static byte[] graphOneVariable(Map config, String rrdVarName){
+    public static byte[] graphOneVariable(Map config){
        Map fConfig = [:];  //converts the given config map to a formatted config map
        String typeVar = "line";
        String colorVar = "999999";
 
        if(!config.containsKey(Grapher.START_TIME) ){
            throw new Exception("Start time is not specified");
+       }
+       if(!config.containsKey(Grapher.DATASOURCE) ){
+           throw new Exception("RRD Datasource is not specified");
        }
        if(!config.containsKey(Grapher.END_TIME) ){
            fConfig[Grapher.END_TIME] = getCurrentTime();
@@ -296,7 +295,7 @@ class Grapher {
        if(config.containsKey(Grapher.WIDTH) ){
           fConfig[Grapher.WIDTH] = config.get(Grapher.WIDTH);
        }
-
+       String rrdVarName = config.get(Grapher.DATASOURCE);
        fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
 
        def typeMap = [:];
@@ -313,10 +312,10 @@ class Grapher {
        def datasourceList = [];
        rrdvar.archives.each{
            def datasourceMap = [:];
-           datasourceMap[Grapher.NAME] = rrdvar.name;
-           datasourceMap[Grapher.DATABASE_NAME] = rrdvar.file;
-           datasourceMap[Grapher.DSNAME] = rrdvar.name;
-           datasourceMap[Grapher.FUNCTION] = it.function;
+           datasourceMap[NAME] = rrdvar.name;
+           datasourceMap[DATABASE_NAME] = rrdvar.file;
+           datasourceMap[DSNAME] = rrdvar.name;
+           datasourceMap[FUNCTION] = it.function;
            datasourceList.add(datasourceMap);
        }
 

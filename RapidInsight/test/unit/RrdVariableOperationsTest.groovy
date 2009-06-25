@@ -300,7 +300,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808900L, value:12423)
 
         byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400L, endTime:920808000L,
-                       vLabel:"vlabel", color:"FF0000", type:"area", description:"Red Line")
+                       vlabel:"Vertical Label", color:"FF0000", type:"line", description:"Red Line")
         
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
@@ -342,7 +342,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
     }
-    /*
+    
     public void testGraphWithRPNSource() {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
@@ -353,7 +353,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400L, archives: [archive1, archive2])
+                                       startTime:920804400L, step:300, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
@@ -374,16 +374,13 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808600L, value:12422)
         variable.updateDB(time:920808900L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph With RPN Source", startTime:920804400L, endTime:920808000L,
+        byte[] data = variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400L, endTime:920808000L,
                        rpn:"variable,1000,*")
 
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
-
-        //TODO: test graph output
-
     }
-    */
+
     public void testGraphWithMultipleSource() {
   
         def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
@@ -437,6 +434,55 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+    }
+
+    public void testGraphWithMultipleSourceandRPN() {
+
+        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+        assertFalse(archive1.errors.toString(), archive1.hasErrors())
+
+        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, row:10)
+        assertFalse(archive2.errors.toString(), archive2.hasErrors())
+
+        def variable = RrdVariable.add(name:"variable", resource:"resource",
+                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       startTime:920804400L, step:300, archives: [archive1, archive2])
+
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        variable.createDB()
+
+        variable.updateDB(time:920804700L, value:12345)
+        variable.updateDB(time:920805000L, value:12357)
+        variable.updateDB(time:920805300L, value:12363)
+        variable.updateDB(time:920805600L, value:12363)
+        variable.updateDB(time:920805900L, value:12363)
+        variable.updateDB(time:920806200L, value:12373)
+        variable.updateDB(time:920806500L, value:12383)
+        variable.updateDB(time:920806800L, value:12393)
+        variable.updateDB(time:920807100L, value:12399)
+        variable.updateDB(time:920807400L, value:12405)
+        variable.updateDB(time:920807700L, value:12411)
+        variable.updateDB(time:920808000L, value:12415)
+        variable.updateDB(time:920808300L, value:12420)
+        variable.updateDB(time:920808600L, value:12422)
+        variable.updateDB(time:920808900L, value:12423)
+
+        def config = [:]
+        config[Grapher.TITLE] = "Graph With Multiple Source"
+        config[Grapher.START_TIME] = 920804400L
+        config[Grapher.END_TIME] = 920808000L
+
+        config[Grapher.RRD_VARIABLES] = []
+        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
+        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
+        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
+
+        byte[] data = RrdUtils.graph(config)
+
+        DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
+        outputStream.write(data)
+        
     }
 
 }

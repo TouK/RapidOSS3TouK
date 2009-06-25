@@ -280,6 +280,8 @@ class Grapher {
            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
            typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
            typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
+           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
+
            if(rrdVariables[i].containsKey(TYPE) ){
                try{
                     fConfig[rrdVariables[i][TYPE]].add(typeMap)
@@ -306,6 +308,9 @@ class Grapher {
        if(config.containsKey(COLOR) ){
            rVariable[COLOR] = config.get(COLOR);
        }
+       if(config.containsKey(THICKNESS)){
+           rrdVariable[THICKNESS] = config.get(THICKNESS)
+       }
        if(config.containsKey(TYPE)) {
            rVariable[TYPE] = config.get(TYPE);
        }
@@ -326,6 +331,7 @@ class Grapher {
        return graphMultipleDatasources(config);
 
     }
+
     public static Map getGeneralSettingsMap(Map config){
        Map fConfig = [:];
 

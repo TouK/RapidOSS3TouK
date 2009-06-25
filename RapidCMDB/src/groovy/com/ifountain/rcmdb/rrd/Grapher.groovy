@@ -41,7 +41,7 @@ class Grapher {
     static String RRD_VARIABLE = "rrdVariable";
 
     public static byte[] graph(Map config){
-        
+
         if (!config.containsKey(DATASOURCE)) {
             throw new Exception("No Datasource specified");
         }
@@ -101,11 +101,11 @@ class Grapher {
            graphDef.setWidth(config.get(WIDTH));
         }
 //        graphDef.setImageQuality (1F);
-        graphDef.setSmallFont(new java.awt.Font("Serif",java.awt.Font.BOLD, 12) )
+//        graphDef.setSmallFont(new java.awt.Font("Serif",java.awt.Font.BOLD, 12) )
         RrdGraph graph = new RrdGraph(graphDef);
 
         return graph.getRrdGraphInfo().getBytes()
-                
+
     }
 
     public static byte[] graphMultipleDatasources(Map config){
@@ -113,28 +113,28 @@ class Grapher {
        String typeVar = "line";
        String colorVar = "000000";
 
-       if(!config.containsKey(Grapher.START_TIME) ){
+       if(!config.containsKey(START_TIME) ){
            throw new Exception("Start time is not specified");
        }else {
-           fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
+           fConfig[START_TIME] = config.get(START_TIME);
        }
-       if(!config.containsKey(Grapher.END_TIME) ){
-           fConfig[Grapher.END_TIME] = getCurrentTime();
+       if(!config.containsKey(END_TIME) ){
+           fConfig[END_TIME] = getCurrentTime();
        }
        else{
-           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+           fConfig[END_TIME] = config.get(END_TIME);
        }
-       if(config.containsKey(Grapher.MAX) ){
-          fConfig[Grapher.MAX] = config.get(Grapher.MAX);
+       if(config.containsKey(MAX) ){
+          fConfig[MAX] = config.get(MAX);
        }
-       if(config.containsKey(Grapher.MIN) ){
-          fConfig[Grapher.MIN] = config.get(Grapher.MIN);
+       if(config.containsKey(MIN) ){
+          fConfig[MIN] = config.get(MIN);
        }
-       if(config.containsKey(Grapher.HEIGHT) ){
-          fConfig[Grapher.HEIGHT] = config.get(Grapher.HEIGHT);
+       if(config.containsKey(HEIGHT) ){
+          fConfig[HEIGHT] = config.get(HEIGHT);
        }
-       if(config.containsKey(Grapher.WIDTH) ){
-          fConfig[Grapher.WIDTH] = config.get(Grapher.WIDTH);
+       if(config.containsKey(WIDTH) ){
+          fConfig[WIDTH] = config.get(WIDTH);
        }
        if(config.containsKey(TYPE) ){
           typeVar = config.get(TYPE);
@@ -158,15 +158,15 @@ class Grapher {
                datasourceList.add(datasourceMap);
            }
            def typeMap = [:];
-           typeMap[Grapher.NAME] =rrdVar.name;
-           typeMap[Grapher.DESCRIPTION] = rrdVariables[i][DESCRIPTION];
-           typeMap[Grapher.COLOR] = rrdVariables[i][COLOR];
+           typeMap[NAME] =rrdVar.name;
+           typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION];
+           typeMap[COLOR] = rrdVariables[i][COLOR];
            typeList.add(typeMap);
        }
 
        fConfig[typeVar] = typeList;
 //       fConfig["area"] = typeList;
-       fConfig[Grapher.DATASOURCE] = datasourceList;
+       fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
     private static def getRrdVariable(){
@@ -183,7 +183,7 @@ class Grapher {
         boolean isSourceExist = false;
         dslist.each{
             if(!it.containsKey(NAME)){
-                 throw new Exception("Datasource distorted: Name of datasource is not specified");    
+                 throw new Exception("Datasource distorted: Name of datasource is not specified");
             }
             try{
                 rdef.datasource(it.get(NAME),it.get(RPN) )
@@ -265,44 +265,44 @@ class Grapher {
        String typeVar = "line";
        String colorVar = "999999";
 
-       if(!config.containsKey(Grapher.START_TIME) ){
+       if(!config.containsKey(START_TIME) ){
            throw new Exception("Start time is not specified");
        }
-       if(!config.containsKey(Grapher.DATASOURCE) ){
+       if(!config.containsKey(DATASOURCE) ){
            throw new Exception("RRD Datasource is not specified");
        }
-       if(!config.containsKey(Grapher.END_TIME) ){
-           fConfig[Grapher.END_TIME] = getCurrentTime();
+       if(!config.containsKey(END_TIME) ){
+           fConfig[END_TIME] = getCurrentTime();
        }
        else{
-           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+           fConfig[END_TIME] = config.get(END_TIME);
        }
        if(config.containsKey(TYPE) ){
           typeVar = config.get(TYPE);
        }
-       if(config.containsKey(Grapher.COLOR) ){
-          colorVar = config.get(Grapher.COLOR);
+       if(config.containsKey(COLOR) ){
+          colorVar = config.get(COLOR);
        }
-       if(config.containsKey(Grapher.MAX) ){
-          fConfig[Grapher.MAX] = config.get(Grapher.MAX);
+       if(config.containsKey(MAX) ){
+          fConfig[MAX] = config.get(MAX);
        }
-       if(config.containsKey(Grapher.MIN) ){
-          fConfig[Grapher.MIN] = config.get(Grapher.MIN);
+       if(config.containsKey(MIN) ){
+          fConfig[MIN] = config.get(MIN);
        }
-       if(config.containsKey(Grapher.HEIGHT) ){
-          fConfig[Grapher.HEIGHT] = config.get(Grapher.HEIGHT);
+       if(config.containsKey(HEIGHT) ){
+          fConfig[HEIGHT] = config.get(HEIGHT);
        }
-       if(config.containsKey(Grapher.WIDTH) ){
-          fConfig[Grapher.WIDTH] = config.get(Grapher.WIDTH);
+       if(config.containsKey(WIDTH) ){
+          fConfig[WIDTH] = config.get(WIDTH);
        }
-       String rrdVarName = config.get(Grapher.DATASOURCE);
-       fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
+       String rrdVarName = config.get(DATASOURCE);
+       fConfig[START_TIME] = config.get(START_TIME);
 
        def typeMap = [:];
        def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
-       typeMap[Grapher.NAME] = rrdvar.name;
-       typeMap[Grapher.DESCRIPTION] = rrdvar.name;
-       typeMap[Grapher.COLOR] = colorVar;
+       typeMap[NAME] = rrdvar.name;
+       typeMap[DESCRIPTION] = rrdvar.name;
+       typeMap[COLOR] = colorVar;
 
 //       fConfig[typeVar] = [];
        def list = []

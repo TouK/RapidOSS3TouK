@@ -131,67 +131,6 @@ class Grapher {
 
     }
 
-    public static byte[] graphMultipleDatasources(Map config){
-       Map fConfig = [:];
-       String typeVar = "line";
-       String colorVar = "000000";
-
-       if(!config.containsKey(START_TIME) ){
-           throw new Exception("Start time is not specified");
-       }else {
-           fConfig[START_TIME] = config.get(START_TIME);
-       }
-       if(!config.containsKey(END_TIME) ){
-           fConfig[END_TIME] = getCurrentTime();
-       }
-       else{
-           fConfig[END_TIME] = config.get(END_TIME);
-       }
-       if(config.containsKey(MAX) ){
-          fConfig[MAX] = config.get(MAX);
-       }
-       if(config.containsKey(MIN) ){
-          fConfig[MIN] = config.get(MIN);
-       }
-       if(config.containsKey(HEIGHT) ){
-          fConfig[HEIGHT] = config.get(HEIGHT);
-       }
-       if(config.containsKey(WIDTH) ){
-          fConfig[WIDTH] = config.get(WIDTH);
-       }
-       if(config.containsKey(Grapher.TYPE) ){
-          typeVar = config.get(TYPE);
-       }
-       if(!config.containsKey(RRD_VARIABLES) ){
-           throw new Exception("No rrd variable is specified");
-       }
-       def rrdVariables = config.get(RRD_VARIABLES);
-
-
-       def datasourceList = [];
-       def typeList = [];
-       for(int i=0; i<rrdVariables.size(); i++){
-           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
-           rrdVar.archives.each{
-               def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVar.name;
-               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-               datasourceMap[Grapher.DSNAME] = rrdVar.name;
-               datasourceMap[Grapher.FUNCTION] = it.function;
-               datasourceList.add(datasourceMap);
-           }
-           def typeMap = [:];
-           typeMap[NAME] =rrdVar.name;
-           typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION];
-           typeMap[COLOR] = rrdVariables[i][COLOR];
-           typeList.add(typeMap);
-       }
-
-       fConfig[typeVar] = typeList;
-//       fConfig["area"] = typeList;
-       fConfig[DATASOURCE] = datasourceList;
-       return graph(fConfig);
-    }
     private static def getRrdVariable(){
         return Grapher.class.classLoader.loadClass("RrdVariable");
     }
@@ -338,18 +277,24 @@ class Grapher {
                datasourceMap[Grapher.FUNCTION] = it.function;
                datasourceList.add(datasourceMap);
            }
+           if(rrdVariables[i].containsKey(RPN) ){
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVariables[i][RPN];
+               datasourceMap[Grapher.RPN] = rrdVariables[i][RPN];
+               datasourceList.add(datasourceMap);
+           }
            def typeMap = [:];
-           typeMap[NAME] =rrdVar.name;
-           typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION];
+           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
+           typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
            typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
            typeList.add(typeMap);
        }
 
        fConfig[typeVar] = typeList;
-//       fConfig["area"] = typeList;
        fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
+    
     public static byte[] graphOneVariable(Map config){
        String rrdVarName = config.get(RRD_VARIABLE);
        def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
@@ -363,6 +308,9 @@ class Grapher {
        if(config.containsKey(TYPE)) {
            rVariable[TYPE] = config.get(TYPE);
        }
+       if(config.containsKey(RPN)) {
+           rVariable[RPN] = config.get(RPN);
+       }
 
        config.remove (RRD_VARIABLE);
        if (config.containsKey(DESCRIPTION) ){
@@ -373,8 +321,7 @@ class Grapher {
        config[RRD_VARIABLES] = vlist;
 
        println config;
-//       return null;
-//
+
        return graphMultipleDatasources(config);
 
     }
@@ -386,20 +333,11 @@ class Grapher {
        }else {
            fConfig[START_TIME] = config.get(START_TIME);
        }
-       if(!config.containsKey(DATASOURCE) ){
-           throw new Exception("RRD Datasource is not specified");
-       }
        if(!config.containsKey(END_TIME) ){
            fConfig[END_TIME] = getCurrentTime();
        }
        else{
            fConfig[END_TIME] = config.get(END_TIME);
-       }
-       if(config.containsKey(TYPE) ){
-          typeVar = config.get(TYPE);
-       }
-       if(config.containsKey(COLOR) ){
-          colorVar = config.get(COLOR);
        }
        if(config.containsKey(MAX) ){
           fConfig[MAX] = config.get(MAX);

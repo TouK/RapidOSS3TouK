@@ -61,6 +61,10 @@ class Grapher {
         if(config.containsKey(WIDTH) ){
            graphDef.setWidth(config.get(WIDTH));
         }
+
+        if(config.containsKey(VERTICAL_LABEL) ){
+           graphDef.setVerticalLabel(config.get(VERTICAL_LABEL));
+        }
     }
 
     public static byte[] graph(Map config){
@@ -108,21 +112,7 @@ class Grapher {
             addStack(graphDef,config.get(STACK));
         }
 
-        if(config.containsKey(MAX) ){
-           graphDef.setMaxValue (config.get(MAX));
-        }
-
-        if(config.containsKey(MIN) ){
-           graphDef.setMinValue (config.get(MIN));
-        }
-
-        if(config.containsKey(HEIGHT) ){
-           graphDef.setHeight (config.get(HEIGHT));
-        }
-
-        if(config.containsKey(WIDTH) ){
-           graphDef.setWidth(config.get(WIDTH));
-        }
+        setGeneralSettings(graphDef,config);
 //        graphDef.setImageQuality (1F);
 //        graphDef.setSmallFont(new java.awt.Font("Serif",java.awt.Font.BOLD, 12) )
         RrdGraph graph = new RrdGraph(graphDef);
@@ -266,6 +256,9 @@ class Grapher {
 
 
        def datasourceList = [];
+       fConfig[AREA] = [];
+       fConfig[LINE] = [];
+       fConfig[STACK] = [];
        def typeList = [];
        for(int i=0; i<rrdVariables.size(); i++){
            def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
@@ -287,10 +280,18 @@ class Grapher {
            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
            typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
            typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
-           typeList.add(typeMap);
+           if(rrdVariables[i].containsKey(TYPE) ){
+               try{
+                    fConfig[rrdVariables[i][TYPE]].add(typeMap)
+               }catch (Exception ex){
+                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
+               }
+           }
+           else{
+               fConfig[typeVar].add(typeMap);
+           }
        }
 
-       fConfig[typeVar] = typeList;
        fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
@@ -350,6 +351,12 @@ class Grapher {
        }
        if(config.containsKey(WIDTH) ){
           fConfig[WIDTH] = config.get(WIDTH);
+       }
+       if(config.containsKey(TITLE) ){
+          fConfig[TITLE] = config.get(TITLE);
+       }
+       if(config.containsKey(VERTICAL_LABEL) ){
+          fConfig[VERTICAL_LABEL] = config.get(VERTICAL_LABEL);
        }
        return fConfig;
     }

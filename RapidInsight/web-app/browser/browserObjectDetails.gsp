@@ -54,7 +54,13 @@ cursor:pointer;
                                     <tr class="${(status % 2) == 0 ? 'odd' : 'even'}">
                                         <td width="0%" style="font-weight:bold">${p.name}</td>
                                         <g:if test="${!p.isRelation}">
-                                            <td>${domainObject[p.name]}&nbsp;</td>
+                                            <%         
+                                                def propValue = domainObject[p.name];
+                                                def fieldHasError = domainObject.hasErrors(p.name)
+                                            %>
+                                            <td ${fieldHasError?'class="ri-field-error"':""}>
+                                                ${fieldHasError?"InAccessible":(propValue)}&nbsp;
+                                            </td>
                                         </g:if>
                                         <g:elseif test="${p.isOneToMany() || p.isManyToMany()}">
                                             <td width="100%">

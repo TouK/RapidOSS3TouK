@@ -42,15 +42,21 @@
                     <tbody>
                         <g:each var="propertyName" status="i" in="${propertyNames}">
                             <g:if test="${propertyName != 'id' && propertyName != 'rsDatasource'}">
+                                <g:set var="propertyValue" value=""/>
                                 <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                     <td width="0%" style="font-weight:bold">${propertyName}</td>
                                     <g:if test="${!relations.containsKey(propertyName)}">
-                                        <g:if test="${dateProperties.contains(propertyName)}">
-                                            <td>${format.format(new Timestamp(domainObject[propertyName]))}&nbsp;</td>
-                                        </g:if>
-                                        <g:else>
-                                            <td>${domainObject[propertyName]}&nbsp;</td>
-                                        </g:else>
+                                        <%
+                                            propertyValue=domainObject[propertyName];
+                                            if(dateProperties.contains(propertyName))
+                                            {
+                                                propertyValue = format.format(new Timestamp(propertyValue))
+                                            }
+                                            def fieldHasError = domainObject.hasErrors(propertyName)
+                                        %>
+                                        <td ${fieldHasError?'class="ri-field-error"':""}>
+                                            ${fieldHasError?"InAccessible":propertyValue}&nbsp;
+                                        </td>
                                     </g:if>
                                     <g:else>
                                         <g:set var="relation" value="${relations[propertyName]}"></g:set>

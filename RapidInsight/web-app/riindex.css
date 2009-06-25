@@ -97,4 +97,9 @@
     margin-right: 5px;
 }
 
+.ri-field-error{
+    color: #9F9F9F;
+    font-style:italic;
+}
+
 

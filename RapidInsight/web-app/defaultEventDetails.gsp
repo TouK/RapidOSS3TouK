@@ -80,20 +80,21 @@ objectDialog.show(url, title);
                             <tbody>
                                 <g:each var="property" status="i" in="${filteredProps}">
                                     <g:set var="propertyName" value="${property.name}" />
-                                    <g:set var="propertyValue" value="" />
+                                    <g:set var="propertyValue" value=""/>
+                                    <%
+                                        propertyValue = domainObject[propertyName];
+                                    %>
                                     <g:if test="${dateProperties.contains(propertyName)}">
                                         <%
-                                            propertyValue = format.format(new Timestamp(domainObject[propertyName]));    
+                                                propertyValue = format.format(new Timestamp(propertyValue));
                                         %>
                                     </g:if>
-                                    <g:else>
-                                        <%
-                                             propertyValue = domainObject[propertyName]
-                                        %>
-                                    </g:else>
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td style="font-weight:bold">${propertyName}</td>
-                                        <td>
+                                        <%
+                                            def fieldHasError = domainObject.hasErrors(propertyName)
+                                        %>
+                                        <td ${fieldHasError?'class="ri-field-error"':""}>
                                             <g:if test="${propertyName =='elementName'}">
                                                <g:set var="targetObject" value="${RsTopologyObject.get(name:domainObject[propertyName])}" />
                                                <g:if test="${targetObject!=null}">
@@ -104,7 +105,7 @@ objectDialog.show(url, title);
                                                 </g:else>
                                             </g:if>
                                             <g:else>
-                                                ${propertyValue}
+                                                ${fieldHasError?"InAccessible":propertyValue}
                                             </g:else>
                                         </td>
                                     </tr>

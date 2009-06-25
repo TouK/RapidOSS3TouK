@@ -262,13 +262,23 @@ class Grapher {
        def typeList = [];
        for(int i=0; i<rrdVariables.size(); i++){
            def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
-           rrdVar.archives.each{
+           if(rrdVariables[i].containsKey(FUNCTION) ){
                def datasourceMap = [:];
                datasourceMap[Grapher.NAME] = rrdVar.name;
                datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
                datasourceMap[Grapher.DSNAME] = rrdVar.name;
-               datasourceMap[Grapher.FUNCTION] = it.function;
+               datasourceMap[Grapher.FUNCTION] = rrdVariables[i][FUNCTION];
                datasourceList.add(datasourceMap);
+
+           }else{
+               rrdVar.archives.each{
+                   def datasourceMap = [:];
+                   datasourceMap[Grapher.NAME] = rrdVar.name;
+                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+                   datasourceMap[Grapher.DSNAME] = rrdVar.name;
+                   datasourceMap[Grapher.FUNCTION] = it.function;
+                   datasourceList.add(datasourceMap);
+               }
            }
            if(rrdVariables[i].containsKey(RPN) ){
                def datasourceMap = [:];

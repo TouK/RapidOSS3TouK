@@ -74,6 +74,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         interceptor.setDomainClassProperty(instance, "prop1", "updatedProp1Value")
         assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance, "prop1"));
         assertEquals (0, DataStore.get("getOnDemand").size());
+        assertNull (instance.errors);
     }
     public void testInterceptorDoesNotThrowConversionExceptionWithFederatedProperties()
     {
@@ -143,6 +144,8 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
         assertEquals (1, DataStore.get("getProperties").size());
+
+        assertNull (instance.errors);
     }
 
     public void testInterceptorWithLazyFederatedProperties()
@@ -198,6 +201,8 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals (prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
         assertEquals (1, DataStore.get("getProperties").size());
+
+        assertNull (instance.errors);
     }
 
     public void testInterceptorWithDynamicDatasourceName()
@@ -234,6 +239,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertEquals (1, DataStore.get("getProperty")[0][0].size());
         assertEquals ("1", DataStore.get("getProperty")[0][0]["prop1"]);
         assertEquals ("prop4", DataStore.get("getProperty")[0][1]);
+        assertNull (instance.errors);
     }
 
     public void testInterceptorWithMappedNameProperty()
@@ -264,6 +270,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         DataStore.put("result", "prop4Value");
         assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
         assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance, "prop4"));
+        assertNull (instance.errors);
     }
 
     public void testInterceptorWithMappedNamePropertyAndDynamicDatasourceProperty()
@@ -290,6 +297,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
         assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
         assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance, "prop3"));
+        assertNull (instance.errors);
 
         instance = domainClass.newInstance();
         instance.prop2 = "ds1";
@@ -297,6 +305,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         DataStore.put("result", "prop4Value");
         assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
         assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance, "prop4"));
+        assertNull (instance.errors);
     }
 
 
@@ -314,19 +323,23 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"undefinedDatasource"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
-        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
+        def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+        instance.errors = errorsBeforeFederationException
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
         assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance, "prop2"));
         assertEquals(1, instance.errors.allErrors.size());
         FieldError prop2Error = instance.errors.allErrors.find{it.getField() == "prop2"}
         assertEquals ("default.federation.property.datasource.not.exist", prop2Error.code);
+        assertNotSame (errorsBeforeFederationException, instance.errors);
 
-        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
+        errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+        instance.errors = errorsBeforeFederationException
         assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals(1, instance.errors.allErrors.size());
         def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
         assertEquals ("default.federation.property.datasource.not.exist", prop3Error.code);
+        assertNotSame (errorsBeforeFederationException, instance.errors);
 
 
     }
@@ -345,17 +358,21 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"ds1"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
-        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
+        def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+        instance.errors = errorsBeforeFederationException
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
         DataStore.put("exception", new Exception("An exception occurred"));
         assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance, "prop2"));
+        assertNotSame (errorsBeforeFederationException, instance.errors);
         assertEquals(1, instance.errors.allErrors.size());
         def getPropertiesError = instance.errors.allErrors[0]
-        assertEquals ("default.federation.get.properties.exception", getPropertiesError.code);
+        assertEquals ("default.federation.property.get.properties.exception", getPropertiesError.code);
 
-        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
+        errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+        instance.errors = errorsBeforeFederationException
         assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance, "prop3"));
         assertEquals(1, instance.errors.allErrors.size());
+        assertNotSame (errorsBeforeFederationException, instance.errors);
         def getPropertyError = instance.errors.allErrors[0]
         assertEquals ("default.federation.property.datasource.exception", getPropertyError.code);
         assertEquals ("prop3", getPropertyError.getField());

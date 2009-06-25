@@ -27,6 +27,8 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
 import com.ifountain.rcmdb.domain.util.ValidationUtils
+import org.springframework.validation.BeanPropertyBindingResult
+import org.springframework.validation.BindingResult
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,7 +53,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
         return super.getDomainClassProperty(domainObject, propertyName);
     }
     
-    private void  convertAndSetDomainClassProperty(Object domainObject,String propName,Object propValue,Class fieldType)
+    private void  convertAndSetDomainClassProperty(Object domainObject,String propName,Object propValue,Class fieldType, BindingResult bindingResult)
     {
         try
         {
@@ -70,7 +72,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
         }
         catch(ConversionException t)
         {
-            ValidationUtils.addFieldError (domainObject.errors, propName, propValue, "default.federation.property.conversion.exception", [t.toString()]);
+            ValidationUtils.addFieldError (bindingResult, propName, propValue, "default.federation.property.conversion.exception", [propName, domainObject.class, t.toString()]);
             logger.warn("Exception occured while converting federated property ${propName} of ${domainObject.class.name}.Reason:${t.getMessage()}");
             logger.info("Exception occured while converting federated property ${propName} of ${domainObject.class.name}.Reason:${t.getMessage()}", t);
         }
@@ -90,6 +92,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
             baseDatasourceName = super.getDomainClassProperty(domainObject, baseDatasourceName);
         }
         if (datasourceName) {
+            BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
             if (requestedPropertyConfiguration.isLazy) {
                 def datsourceKeys = bean.getDatasourceKeys(domainObject.class, realDsName)
                 def keys = [:];
@@ -104,18 +107,18 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                     try
                     {
                         propValue = datasourceObject.getProperty(keys, requestedPropertyConfiguration.nameInDatasource);
-                        convertAndSetDomainClassProperty(domainObject, propName,propValue,requestedPropertyConfiguration.type);
+                        convertAndSetDomainClassProperty(domainObject, propName,propValue,requestedPropertyConfiguration.type, bindingResult);
                     }
                     catch(Throwable t)
                     {
-                        ValidationUtils.addFieldError (domainObject.errors, propName, null, "default.federation.property.datasource.exception", [t.toString()]);
-                        logger.warn("Exception occured while getting federated property ${propName} of ${domainObject.class.name}.Reason:${t.getMessage()}");
+                        ValidationUtils.addFieldError (bindingResult, propName, null, "default.federation.property.datasource.exception", [propName, domainObject.class, baseDatasourceName, t.toString()]);
+                        logger.warn("Exception occured while getting federated property ${propName} of ${domainObject.class.name} with getProperty method of ${baseDatasourceName}. Reason:${t.getMessage()}");
                     }
 
                 }
                 else
                 {
-                    ValidationUtils.addFieldError (domainObject.errors, propName, null, "default.federation.property.datasource.not.exist", [realDsName]);
+                    ValidationUtils.addFieldError (bindingResult, propName, null, "default.federation.property.datasource.not.exist", [propName, domainObject.class, baseDatasourceName]);
                 }
             }
             else {
@@ -148,23 +151,27 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                         try
                         {
                             returnedProps = datasourceObject.getProperties(keys, props);
-                            datasourceProperties.each {DatasourceProperty prop ->                                
-                                convertAndSetDomainClassProperty(domainObject, prop.name,returnedProps[prop.nameInDatasource],prop.type);
+                            datasourceProperties.each {DatasourceProperty prop ->
+                                convertAndSetDomainClassProperty(domainObject, prop.name,returnedProps[prop.nameInDatasource],prop.type, bindingResult);
                             }
                             isPropsLoadedMap[datasourceName] = true;
 
                         }catch(Throwable t)
                         {
-                            ValidationUtils.addObjectError(domainObject.errors, "default.federation.get.properties.exception", [domainObject.getClass().name, realDsName, t.toString()]);
-                            logger.warn("Exception occured while getting federated properties of ${domainObject.class.name}.Reason:${t.getMessage()}");
+                            ValidationUtils.addObjectError(bindingResult, "default.federation.property.get.properties.exception", [domainObject.getClass().name, propName, baseDatasourceName, t.toString()]);
+                            logger.warn("Exception occured while getting federated property ${propName} of ${domainObject.class.name} with getProperties method of ${baseDatasourceName}.Reason:${t.getMessage()}");
                         }
 
                     }
                     else
                     {
-                        ValidationUtils.addFieldError (domainObject.errors, propName, null, "default.federation.property.datasource.not.exist", [realDsName]);
+                        ValidationUtils.addFieldError (bindingResult, propName, null, "default.federation.property.datasource.not.exist", [propName, domainObject.class, baseDatasourceName]);
                     }
                 }
+            }
+            if(bindingResult.hasErrors())
+            {
+                domainObject.errors = bindingResult;
             }
             return super.getDomainClassProperty(domainObject, propName);
         }

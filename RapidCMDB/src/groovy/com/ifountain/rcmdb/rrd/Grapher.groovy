@@ -12,33 +12,33 @@ import org.jrobin.graph.RrdGraph
 * Time: 9:24:26 AM
 */
 class Grapher {
-    static final String DATABASE_NAME = "dbname";
-    static final String DATASOURCE = "datasource";
-    static final String START_TIME = "startTime";
-    static final String END_TIME = "endTime";
+    public static final String DATABASE_NAME = "dbname";
+    public static final String DATASOURCE = "datasource";
+    public static final String START_TIME = "startTime";
+    public static final String END_TIME = "endTime";
 
-    static final String FUNCTION = "function";
-    static final String VERTICAL_LABEL = "vlabel";
-    static final String HORIZONTAL_LABEL = "hlabel";
-    static final String LINE = "line";
-    static final String AREA = "area";
-    static final String HRULE = "hrule";
-    static final String VRULE = "vrule";
-    static final String RPN = "rpn";
-    static final String DSNAME = "dsname";
-    static final String NAME = "name";
-    static final String COLOR = "color";
-    static final String DESCRIPTION = "description";
-    static final String THICKNESS = "thickness";
-    static final String TITLE = "title";
-    static final String MAX = "max";
-    static final String MIN = "min";
-    static final String HEIGHT = "height";
-    static final String WIDTH = "width";
+    public static final String FUNCTION = "function";
+    public static final String VERTICAL_LABEL = "vlabel";
+    public static final String HORIZONTAL_LABEL = "hlabel";
+    public static final String LINE = "line";
+    public static final String AREA = "area";
+    public static final String HRULE = "hrule";
+    public static final String VRULE = "vrule";
+    public static final String RPN = "rpn";
+    public static final String DSNAME = "dsname";
+    public static final String NAME = "name";
+    public static final String COLOR = "color";
+    public static final String DESCRIPTION = "description";
+    public static final String THICKNESS = "thickness";
+    public static final String TITLE = "title";
+    public static final String MAX = "max";
+    public static final String MIN = "min";
+    public static final String HEIGHT = "height";
+    public static final String WIDTH = "width";
 
-    static String TYPE = "type";
-    static String RRD_VARIABLES = "rrdVariables";
-    static String RRD_VARIABLE = "rrdVariable";
+    public static final  String TYPE = "type";
+    public static final  String RRD_VARIABLES = "rrdVariables";
+    public static final  String RRD_VARIABLE = "rrdVariable";
 
     public static byte[] graph(Map config){
 
@@ -136,7 +136,7 @@ class Grapher {
        if(config.containsKey(WIDTH) ){
           fConfig[WIDTH] = config.get(WIDTH);
        }
-       if(config.containsKey(TYPE) ){
+       if(config.containsKey(Grapher.TYPE) ){
           typeVar = config.get(TYPE);
        }
        if(!config.containsKey(RRD_VARIABLES) ){
@@ -151,10 +151,10 @@ class Grapher {
            def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
            rrdVar.archives.each{
                def datasourceMap = [:];
-               datasourceMap[NAME] = rrdVar.name;
-               datasourceMap[DATABASE_NAME] = rrdVar.file;
-               datasourceMap[DSNAME] = rrdVar.name;
-               datasourceMap[FUNCTION] = it.function;
+               datasourceMap[Grapher.NAME] = rrdVar.name;
+               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+               datasourceMap[Grapher.DSNAME] = rrdVar.name;
+               datasourceMap[Grapher.FUNCTION] = it.function;
                datasourceList.add(datasourceMap);
            }
            def typeMap = [:];

@@ -18,22 +18,23 @@ import org.apache.commons.io.FileUtils
 class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
     def static script_base_directory = "../testoutput/";
-    def classes=[:];
+
+    def RsComputerSystem;
+    def RsTopologyObject;
     
     public void setUp() {
         super.setUp();
 
         ["RsComputerSystem","RsTopologyObject"].each{ className ->
-            classes[className]=gcl.loadClass(className);
+            setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,classes.RsComputerSystem,classes.RsTopologyObject], []);
+        initialize([CmdbScript,RsComputerSystem,RsTopologyObject], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         initializeScriptManager();
     }
 
     public void tearDown() {
-
         super.tearDown();
     }
     void initializeScriptManager()
@@ -61,17 +62,17 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         def script=CmdbScript.addScript([name:"autocomplete",scriptFile:"autocomplete",type: CmdbScript.ONDEMAND])
         assertFalse(script.hasErrors());
 
-        classes.RsTopologyObject.add(name:"obj1");
-        assertEquals(1,classes.RsTopologyObject.countHits("alias:*"))
+        RsTopologyObject.add(name:"obj1");
+        assertEquals(1,RsTopologyObject.countHits("alias:*"))
 
-        classes.RsComputerSystem.add(name:"aad1");
-        classes.RsComputerSystem.add(name:"aab1");
-        classes.RsComputerSystem.add(name:"aac1");
-        classes.RsComputerSystem.add(name:"aa");
-        classes.RsComputerSystem.add(name:"ab");
-        classes.RsComputerSystem.add(name:"ac");
-        classes.RsComputerSystem.add(name:"ad");
-        assertEquals(7,classes.RsComputerSystem.countHits("alias:*"))
+        RsComputerSystem.add(name:"aad1");
+        RsComputerSystem.add(name:"aab1");
+        RsComputerSystem.add(name:"aac1");
+        RsComputerSystem.add(name:"aa");
+        RsComputerSystem.add(name:"ab");
+        RsComputerSystem.add(name:"ac");
+        RsComputerSystem.add(name:"ad");
+        assertEquals(7,RsComputerSystem.countHits("alias:*"))
 
         def results=getAutoCompleteData("a");
         assertEquals(7,results.size());
@@ -82,13 +83,13 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(["aa","aab1","aac1","aad1"],results);
 
         //test max 20 items are listed
-        classes.RsComputerSystem.removeAll();
-        assertEquals(0,classes.RsComputerSystem.countHits("alias:*"))
+        RsComputerSystem.removeAll();
+        assertEquals(0,RsComputerSystem.countHits("alias:*"))
 
         22.times{ count ->
-            classes.RsComputerSystem.add(name:"b${count}");
+            RsComputerSystem.add(name:"b${count}");
         }
-        assertEquals(22,classes.RsComputerSystem.countHits("alias:*"))
+        assertEquals(22,RsComputerSystem.countHits("alias:*"))
 
         results=getAutoCompleteData("b");
         assertEquals(20,results.size());
@@ -101,13 +102,13 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(script.hasErrors());
 
 
-        classes.RsComputerSystem.add(name:"a 1");
-        classes.RsComputerSystem.add(name:"a 2");
-        classes.RsComputerSystem.add(name:"a3");
-        classes.RsComputerSystem.add(name:"b1");
-        classes.RsComputerSystem.add(name:"aa1");
+        RsComputerSystem.add(name:"a 1");
+        RsComputerSystem.add(name:"a 2");
+        RsComputerSystem.add(name:"a3");
+        RsComputerSystem.add(name:"b1");
+        RsComputerSystem.add(name:"aa1");
 
-        assertEquals(5,classes.RsComputerSystem.countHits("alias:*"));
+        assertEquals(5,RsComputerSystem.countHits("alias:*"));
 
         def spacedResults=getAutoCompleteData("a ");
         def nospaceResults=getAutoCompleteData("a");

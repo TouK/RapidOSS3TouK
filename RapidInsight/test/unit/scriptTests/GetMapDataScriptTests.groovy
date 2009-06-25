@@ -19,18 +19,25 @@ import org.apache.commons.io.FileUtils
 class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
     def static script_base_directory = "../testoutput/";
-    def classes=[:];
+
+    def RsComputerSystem;
+    def RsTopologyObject;
+    def RsLink;
+    def RsObjectState;
+    def RsEvent;
+    def RsComputerSystemOperations;
+    def RsLinkOperations;
 
     public void setUp() {
         super.setUp();
         ["RsComputerSystem","RsTopologyObject","RsLink","RsObjectState","RsEvent","RsComputerSystemOperations","RsLinkOperations"].each{ className ->
-            classes[className]=gcl.loadClass(className);
+             setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,classes.RsComputerSystem,classes.RsTopologyObject,classes.RsLink,classes.RsObjectState,classes.RsEvent,RsApplication], []);
+        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsApplication], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
-        CompassForTests.addOperationSupport (classes.RsComputerSystem,classes.RsComputerSystemOperations);
-        CompassForTests.addOperationSupport (classes.RsLink,classes.RsLinkOperations);
+        CompassForTests.addOperationSupport (RsComputerSystem,RsComputerSystemOperations);
+        CompassForTests.addOperationSupport (RsLink,RsLinkOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
 
         initializeScriptManager();
@@ -64,7 +71,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testGetMapDataWith1Node()
     {
-        def source=classes.RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
+        def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
 
 
@@ -84,11 +91,11 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
     {
 
-        def source=classes.RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
+        def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
-        def target=classes.RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
+        def target=RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
         assertFalse(target.hasErrors())
-        def link1=classes.RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1.hasErrors())
 
         def params=[:];
@@ -109,7 +116,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeData,link1,source.name,target.name);
 
         // add a duplicate link ,  and check that result is same
-        def link1Duplicate=classes.RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1Duplicate.hasErrors())
 
         def duplicateGetMapData=getMapDataFromScript(params);
@@ -126,7 +133,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeDuplicateData,link1,source.name,target.name);
 
         // add a reverse link , link is duplicated , and check that result is same
-        def link1Reverse=classes.RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
+        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
         assertFalse(link1Reverse.hasErrors())
 
         def reverseGetMapData=getMapDataFromScript(params);
@@ -144,7 +151,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     }
      public void  testExpandMapWithNNodesAndMEdges()
     {
-        def sourceNode=classes.RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
+        def sourceNode=RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
         assertFalse(sourceNode.hasErrors())
 
 
@@ -155,19 +162,19 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         def targets=[:];
         def links=[:];
         nodeCount.times{ counter ->
-            def target=classes.RsComputerSystem.add(name:"target${counter}",model:"modelt",className:"classt");
+            def target=RsComputerSystem.add(name:"target${counter}",model:"modelt",className:"classt");
             targets[target.name]=target;
             assertFalse(target.hasErrors())
         }
         linkCount.times{ counter ->
-            def link=classes.RsLink.add(name:"l${counter}",a_ComputerSystemName:"source${counter}",z_ComputerSystemName:"target${counter}");
+            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:"source${counter}",z_ComputerSystemName:"target${counter}");
             links[link.name]=link;
             assertFalse(link.hasErrors())
         }
 
 
-        assertEquals(1+nodeCount,classes.RsComputerSystem.countHits("alias:*"))
-        assertEquals(linkCount,classes.RsLink.countHits("alias:*"))
+        assertEquals(1+nodeCount,RsComputerSystem.countHits("alias:*"))
+        assertEquals(linkCount,RsLink.countHits("alias:*"))
 
 
         //call with 1  , 2  ... N nodes

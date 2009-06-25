@@ -17,16 +17,18 @@ import org.apache.commons.io.FileUtils
 class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
     def static script_base_directory = "../testoutput/";
-    def classes=[:];
+    def RsComputerSystem;
+    def RsTopologyObject;
+    def RsLink;
 
     public void setUp() {
         super.setUp();
 
         ["RsComputerSystem","RsTopologyObject","RsLink"].each{ className ->
-            classes[className]=gcl.loadClass(className);
+             setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,classes.RsComputerSystem,classes.RsTopologyObject,classes.RsLink], []);
+        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND],true)
@@ -58,7 +60,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     public void testExpandMapWith1Node()
     {
 
-        def source=classes.RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
+        def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
 
         //calling with no expandedNodeName
@@ -89,11 +91,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
      public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
     {
 
-        def source=classes.RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
+        def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
-        def target=classes.RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
+        def target=RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
         assertFalse(target.hasErrors())
-        def link1=classes.RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1.hasErrors())
 
 
@@ -114,7 +116,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeData,source.name,target.name);
 
         // add a duplicate link ,  and check that result is same
-        def link1Duplicate=classes.RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1Duplicate.hasErrors())
 
         def duplicateExpandData=getExpandMapData(params);
@@ -131,7 +133,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         checkEdgeData(edgeDuplicateData,source.name,target.name);
 
         // add a reverse link , link is duplicated , and check that result is same
-        def link1Reverse=classes.RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
+        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
         assertFalse(link1Reverse.hasErrors())
 
         def reverseExpandData=getExpandMapData(params);
@@ -150,15 +152,15 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     public void testExpandMapWith1To1To1Nodes()
     {
 
-        def node1=classes.RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
+        def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
         assertFalse(node1.hasErrors())
-        def node2=classes.RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
+        def node2=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
         assertFalse(node2.hasErrors())
-        def node3=classes.RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
+        def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
         assertFalse(node3.hasErrors())
-        def link1=classes.RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
         assertFalse(link1.hasErrors())
-        def link2=classes.RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
         assertFalse(link2.hasErrors())
 
 
@@ -221,17 +223,17 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testExpandMapWithTriangleNodes()
     {
-        def node1=classes.RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
+        def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
         assertFalse(node1.hasErrors())
-        def node2=classes.RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
+        def node2=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
         assertFalse(node2.hasErrors())
-        def node3=classes.RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
+        def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
         assertFalse(node3.hasErrors())
-        def link1=classes.RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
         assertFalse(link1.hasErrors())
-        def link2=classes.RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node2.name,z_ComputerSystemName:node3.name);
         assertFalse(link2.hasErrors())
-        def link3=classes.RsLink.add(name:"l3",a_ComputerSystemName:node3.name,z_ComputerSystemName:node1.name);
+        def link3=RsLink.add(name:"l3",a_ComputerSystemName:node3.name,z_ComputerSystemName:node1.name);
         assertFalse(link3.hasErrors())
 
         def params=[:];
@@ -308,7 +310,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void  testExpandMapWith1ToNToMNodes()
     {
-        def sourceNode=classes.RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
+        def sourceNode=RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
         assertFalse(sourceNode.hasErrors())
 
 
@@ -317,24 +319,24 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def targets=[:];
         targetCount.times{ counter ->
-            def target=classes.RsComputerSystem.add(name:"target${counter}",model:"modelt",className:"classt");
+            def target=RsComputerSystem.add(name:"target${counter}",model:"modelt",className:"classt");
             targets[target.name]=target;
 
             assertFalse(target.hasErrors())
-            def link=classes.RsLink.add(name:"l${counter}",a_ComputerSystemName:sourceNode.name,z_ComputerSystemName:target.name);
+            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:sourceNode.name,z_ComputerSystemName:target.name);
             assertFalse(link.hasErrors())
             subTargetCount.times{ subCounter ->
-                def subTarget=classes.RsComputerSystem.add(name:"subtarget${counter}_${subCounter}",model:"modelt",className:"classt");
+                def subTarget=RsComputerSystem.add(name:"subtarget${counter}_${subCounter}",model:"modelt",className:"classt");
                 targets[subTarget.name]=subTarget;
 
                 assertFalse(subTarget.hasErrors())
-                def subLink=classes.RsLink.add(name:"subl${counter}_${subCounter}",a_ComputerSystemName:subTarget.name,z_ComputerSystemName:target.name);
+                def subLink=RsLink.add(name:"subl${counter}_${subCounter}",a_ComputerSystemName:subTarget.name,z_ComputerSystemName:target.name);
                 assertFalse(link.hasErrors())
 
             }
         }
-        assertEquals(1+targetCount+targetCount*subTargetCount,classes.RsComputerSystem.countHits("alias:*"))
-        assertEquals(targetCount+targetCount*subTargetCount,classes.RsLink.countHits("alias:*"))
+        assertEquals(1+targetCount+targetCount*subTargetCount,RsComputerSystem.countHits("alias:*"))
+        assertEquals(targetCount+targetCount*subTargetCount,RsLink.countHits("alias:*"))
 
         def params=[:];
         params.nodes="sourceNode,false,,;"

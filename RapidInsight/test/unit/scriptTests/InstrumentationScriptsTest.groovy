@@ -17,16 +17,19 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
      def static script_base_directory = "../testoutput/";
      def managerInitialized=false;
      def classes=[:];
-     
+
+     def Statistics;
+     def InstrumentationParameters;
+     def StatisticsOperations;
 
      public void setUp() {
         super.setUp();
         ["Statistics","InstrumentationParameters","StatisticsOperations"].each{ className ->
-            classes[className]=gcl.loadClass(className);
+             setProperty(className,gcl.loadClass(className));
         }
-        initialize([CmdbScript,classes.Statistics,classes.InstrumentationParameters], []);
+        initialize([CmdbScript,Statistics,InstrumentationParameters], []);
         CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
-        CompassForTests.addOperationSupport (classes.Statistics,classes.StatisticsOperations);
+        CompassForTests.addOperationSupport (Statistics,StatisticsOperations);
 
         initializeScriptManager();
         def script=CmdbScript.addScript([name:"enableInstrumentation",type: CmdbScript.ONDEMAND])
@@ -65,33 +68,33 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
     public void testEnableDisableInstrumentationScripts()
     {
-        System.clearProperty (classes.StatisticsOperations.GLOBAL_ENABLE_KEY);
+        System.clearProperty (StatisticsOperations.GLOBAL_ENABLE_KEY);
 
-        assertFalse(classes.Statistics.isEnabledGlobally());
+        assertFalse(Statistics.isEnabledGlobally());
 
         def result=CmdbScript.runScript("enableInstrumentation",[:]);
-        assertTrue(classes.Statistics.isEnabledGlobally());
+        assertTrue(Statistics.isEnabledGlobally());
 
 
         result=CmdbScript.runScript("disableInstrumentation",[:]);
-        assertFalse(classes.Statistics.isEnabledGlobally());
+        assertFalse(Statistics.isEnabledGlobally());
 
         result=CmdbScript.runScript("enableInstrumentation",[:]);
-        assertTrue(classes.Statistics.isEnabledGlobally());
+        assertTrue(Statistics.isEnabledGlobally());
     }
 
     public void testCreateInstrumentationParametersScript()
     {
         def paramList=["system.totalMemory","system.usedMemory","user.login","ui.objectDetails","ui.eventDetails"];
 
-        assertEquals(0,classes.InstrumentationParameters.countHits("alias:*"));
+        assertEquals(0,InstrumentationParameters.countHits("alias:*"));
 
         CmdbScript.runScript("createInstrumentationParameters",[:]);
 
-        assertEquals(paramList.size(),classes.InstrumentationParameters.countHits("alias:*"));
+        assertEquals(paramList.size(),InstrumentationParameters.countHits("alias:*"));
 
         paramList.each{ paramName ->
-            assertEquals(1,classes.InstrumentationParameters.countHits("name:${paramName.exactQuery()} AND enabled:true"));
+            assertEquals(1,InstrumentationParameters.countHits("name:${paramName.exactQuery()} AND enabled:true"));
         }
     }
 

@@ -158,8 +158,7 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
-        if(config.containsKey(Grapher.DATASOURCE) &&
-                config[Grapher.DATASOURCE].getClass().getName().indexOf("String")>-1 ){
+        if(config.containsKey(Grapher.RRD_VARIABLE)  ){
             return Grapher.graphOneVariable(config);
         }
         else if(config.containsKey(Grapher.RRD_VARIABLES)){

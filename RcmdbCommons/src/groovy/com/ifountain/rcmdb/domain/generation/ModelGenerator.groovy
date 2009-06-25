@@ -204,6 +204,12 @@ class ModelGenerator
                 {
                     throw ModelGenerationException.noKeySpecifiedForDatasource(dsName, modelName);
                 }
+                dsConf.keys.each{String keyPropName, keyConfig->
+                    if(!checkPropertyExist(modelMetaData, modelMetaDatas, keyPropName))
+                    {
+                        throw ModelGenerationException.datasourceKeyPropertyDoesNotExist(modelName, dsName, keyPropName);
+                    }
+                }
                 if(modelMetaData.parentModelName && checkDatasourceExist(modelMetaDatas[modelMetaData.parentModelName], modelMetaDatas, dsName))
                 {
                     throw ModelGenerationException.duplicateParentDatasource(dsName, modelName);

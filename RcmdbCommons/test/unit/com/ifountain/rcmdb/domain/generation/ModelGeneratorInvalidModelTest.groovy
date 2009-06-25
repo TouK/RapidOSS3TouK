@@ -567,6 +567,47 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
     }
 
+
+    public void testThrowsExceptionIfFederatedDatasourceKeyPropertyIsNotDefined()
+    {
+        def ds1 = [name:"ds1",keyMappings:[[propertyName:"prop3", nameInDatasource:"prop3"]], mappedName:"ds1"]
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop2 = [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:ds1.name, lazy:false]
+
+        String modelName = "Model1";
+        def modelXml = createModel (modelName, null, [ds1], [prop1, prop2], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since  key property prop3 doesnot exist");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.datasourceKeyPropertyDoesNotExist(modelName,ds1.name,  "prop3").getMessage(), e.getMessage());
+        }
+//
+        def prop3 = [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        modelXml = createModel (modelName, null, [ds1], [prop1, prop2, prop3], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+        }catch(ModelGenerationException e)
+        {
+            fail("Should not throw exception datasource key property exist");
+        }
+        
+        def parentModelName = "Parent";
+        def parentModelXml = createModel (parentModelName, null, [], [prop1, prop3], [prop1], []);
+        modelXml = createModel (modelName, parentModelName, [ds1], [prop2], [], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml, parentModelXml])
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace()
+            fail("Should not throw exception datasource key property exist in parent model");
+        }
+    }
+
     public void testThrowsExceptionIfMappedNamePropertyIsNotDefined()
     {
         def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]

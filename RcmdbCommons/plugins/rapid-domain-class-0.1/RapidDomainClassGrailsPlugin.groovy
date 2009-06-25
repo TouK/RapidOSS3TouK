@@ -162,6 +162,7 @@ class RapidDomainClassGrailsPlugin {
         {
         	Field errField = mc.theClass.getDeclaredField("errors");
             errField.setAccessible (true);
+            mc.hasErrors = {String fieldName-> delegate.errors?.hasFieldErrors(fieldName) }
             mc.hasErrors = {-> delegate.errors?.hasErrors() }
 	        mc.getErrors = {->
 	            def errors = errField.get(delegate);

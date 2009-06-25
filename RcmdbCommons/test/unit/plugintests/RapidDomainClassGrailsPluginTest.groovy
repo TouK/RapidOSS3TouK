@@ -116,6 +116,29 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         assertEquals(1, interceptor.setPropertyList.size());
     }
 
+    public void testHasErrorsWithFieldName()
+    {
+        def model1Name = "Model1";
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE];
+        def model1MetaProps = [name: model1Name]
+
+        def modelProps = [prop1, prop2];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, modelProps, keyPropList, []);
+        gcl.parseClass(model1Text)
+        def model1Class = gcl.loadClass(model1Name)
+        def classesTobeLoaded = [model1Class, ObjectId];
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def modelClass = model1Class.add([:]);
+        assertTrue (modelClass.hasErrors(prop1.name));
+        assertFalse (modelClass.hasErrors(prop2.name));
+    }
+
     public void testCloneObject() {
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{

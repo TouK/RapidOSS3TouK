@@ -169,16 +169,20 @@ class Grapher {
        fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
+
     private static def getRrdVariable(){
         return Grapher.class.classLoader.loadClass("RrdVariable");
     }
+
     private long getCurrentTime(){
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
     }
+
     static def loadClass(String className){
         return Grapher.class.classLoader.loadClass(className);
     }
+
     public static void addDataSource(RrdGraphDef rdef, dslist){
         boolean isSourceExist = false;
         dslist.each{
@@ -208,6 +212,7 @@ class Grapher {
             throw new Exception("There is no database selected")
         }
     }
+
     public static void addArea(RrdGraphDef rdef, alist){
          //sample area: graphDef.area("good", new Color(0, 0xFF, 0), "Good speed");
          alist.each{
@@ -232,6 +237,7 @@ class Grapher {
             }
         }
     }
+
     public static void addLine(RrdGraphDef rdef, llist){
          //sample line: graphDef.line("lineb", Color.GREEN, "Line B", 3);
          llist.each{
@@ -260,6 +266,7 @@ class Grapher {
             }
         }
     }
+
     public static byte[] graphOneVariable(Map config){
        Map fConfig = [:];  //converts the given config map to a formatted config map
        String typeVar = "line";

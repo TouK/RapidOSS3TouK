@@ -33,6 +33,9 @@ class RrdUtils {
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
 
+    /**
+    * create a Round Robin database according to the given configuration map
+    */
     public static void createDatabase(Map config) {
         if (!config.containsKey(DATABASE_NAME)) {
             throw new Exception("Database name is not specified");
@@ -81,7 +84,9 @@ class RrdUtils {
         RrdDb rrdDb = new RrdDb(rrdDef);
         rrdDb.close();
     }
-
+    /**
+    * removes database specified with its path from the system
+    */
     public static void removeDatabase(String fileName) {
         File file = new File(fileName)
         if(file.exists())
@@ -90,10 +95,16 @@ class RrdUtils {
             throw new Exception("File does not exists : " + fileName)
     }
 
+    /**
+    * checks whether the database file exists
+    */
+
     public static boolean isDatabaseExists(String fileName) {
         return new File(fileName).exists()
     }
-
+    /**
+    *  returns the DsDef classes of given list of maps holding DsDef properties
+    */
     public static DsDef[] getDsDefs(list){
         def dsList = [];
         list.each{
@@ -110,7 +121,9 @@ class RrdUtils {
        }
        return dsList as DsDef[]
     }
-
+    /**
+    *  returns the ArcDef classes of given list of maps holding ArcDef properties
+    */
     public static ArcDef[] getArcDefs(list){
         def arcList = [];
         list.each{
@@ -119,7 +132,11 @@ class RrdUtils {
        }
        return arcList as ArcDef[]
     }
-
+    /**
+    * inserts a data to the rrd database
+    * sample data is "timestamp:variable1:variable2:...:variablen"
+    * e.g. : "978301200:200:1" or "978301200:200"
+    */
     public static void updateData(String dbname, String data){
         RrdDb rrdDb = new RrdDb(dbname);
 
@@ -127,7 +144,9 @@ class RrdUtils {
         sample.setAndUpdate(data);
         rrdDb.close();
     }
-
+    /**
+    *  inserts an array of data to the database at a time
+    */
     public static void updateData(String dbname, String[] data){
         RrdDb rrdDb = new RrdDb(dbname);
 
@@ -139,7 +158,16 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
-        return Grapher.graph(config);
+        if(config.containsKey(Grapher.DATASOURCE) &&
+                config[Grapher.DATASOURCE].getClass().getName().indexOf("String")>-1 ){
+            return Grapher.graphOneVariable(config);
+        }
+        else if(config.containsKey(Grapher.RRD_VARIABLES)){
+            return Grapher.graphMultipleDatasources(config);
+        }
+        else{
+            return Grapher.graph(config);
+        }
     }
     /**
     * retrieves defined archived in speficied database
@@ -208,7 +236,9 @@ class RrdUtils {
         }
         return dslist;
     }
-
+    /**
+    *  returns the configuration map of specified rrd database
+    */
     public static Map getDatabaseInfo(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         RrdDef rrdDef = rrdDb.getRrdDef();
@@ -230,7 +260,9 @@ class RrdUtils {
     public static double[] fetchData(String dbName){
         return   fetchAllData(dbName)[0];
     }
-
+    /**
+    * returns the all datasources in the database according to the first archive method.
+    */
     public static double[][] fetchAllData(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
@@ -245,7 +277,9 @@ class RrdUtils {
         long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
-
+    /**
+    * returns time series of one data index specified with its datasource name
+    */
     public static double[] fetchData(String dbName, String datasource){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
@@ -255,7 +289,10 @@ class RrdUtils {
         long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasource, function, startTime, endTime);
     }
-
+    /**
+    *  returns time series of one data index specified with its datasource name,
+    * archive function of datasource, start time and end time
+    */
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
         boolean found = false;
@@ -278,7 +315,9 @@ class RrdUtils {
         rrdDb.close();
         return data
     }
-
+    /**
+    *  returns time series of data indexes specified with its datasource names
+    */
     public static double[][] fetchData(String dbName, String[] datasources){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
@@ -288,7 +327,10 @@ class RrdUtils {
         rrdDb.close();
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
-
+    /**
+    *  returns time series of data indexes specified with its datasource names,
+    * archive function of datasource, start time and end time
+    */
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
         RrdDb rrdDb = new RrdDb(dbName);

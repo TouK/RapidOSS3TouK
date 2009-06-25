@@ -641,9 +641,10 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         def map = [:];
         map[Grapher.START_TIME] = 978301200
         map[Grapher.END_TIME] = 978303900;
+        map[Grapher.DATASOURCE] = "testDs2";
 
 
-        byte[] bytes = Grapher.graphOneVariable(map,"testDs2");
+        byte[] bytes = Grapher.graphOneVariable(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }

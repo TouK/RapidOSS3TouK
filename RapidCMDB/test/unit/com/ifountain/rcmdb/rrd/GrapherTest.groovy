@@ -15,12 +15,10 @@ import com.ifountain.comp.test.util.file.TestFile
 */
 class GrapherTest extends RapidCmdbWithCompassTestCase {
 
-    final String GRAPH_LINE_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
+    final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
     final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
-    final String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-
+    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
     def classes=[:];
-
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         classes.RrdVariable=loadClass("RrdVariable");
@@ -30,19 +28,21 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
         new File(rrdFileName).delete();
     }
-
-    def loadClass(className) {
+    def loadClass(className)
+    {
         return this.class.classLoader.loadClass(className);
     }
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
+    public void createDatabase()
+    {
 
-    public void createDatabase() {
         Map config = [:]
 
         config[RrdUtils.DATABASE_NAME] = rrdFileName
+
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
@@ -55,6 +55,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
+
         config[RrdUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -64,7 +65,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                         ]
                                    ]
         config[RrdUtils.START_TIME] = 978300900;
-
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200:200:1");
@@ -78,11 +78,11 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         RrdUtils.updateData(rrdFileName,"978303600:2900:4");
         RrdUtils.updateData(rrdFileName,"978303900:3300:2");
     }
-
-    public void testGraphWithArea() throws Exception{
-        createDatabase();
+     public void testGraphWithArea() throws Exception{
+         createDatabase();
 
         Map config = [:]
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -99,6 +99,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -106,6 +107,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
+
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -120,9 +122,10 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        for(int i=0; i<expectedBytes.length; i++){
            assertEquals(expectedBytes[i], actualBytes[i])
        }
+
      }
 
-    public void testGraphWithLine() throws Exception{
+     public void testGraphWithLine() throws Exception{
         createDatabase();
 
         Map config = [:]
@@ -143,7 +146,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-       config[Grapher.LINE] = [
+
+        config[Grapher.LINE] = [
                                         [
                                             name:"kmh",
                                             color: "ff00ff",
@@ -151,10 +155,12 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             thickness: 3
                                         ]
                                ]
+
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
        byte[] actualBytes = Grapher.graph(config)
+
 
        File expectedGraphFile = new File(GRAPH_LINE_FILE)
        DataInputStream dis = new DataInputStream(new java.io.FileInputStream(expectedGraphFile));
@@ -165,10 +171,13 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        for(int i=0; i<expectedBytes.length; i++){
            assertEquals(expectedBytes[i], actualBytes[i])
        }
-    }
 
-    public void testGraphThrowsExceptionIfColorIsNotValid () throws Exception{
+     }
+
+     public void testGraphThrowsExceptionIfColorIsNotValid () throws Exception{
+
         Map config = [:]
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -185,13 +194,15 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-       config[Grapher.AREA] = [
+
+        config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
                                             color: "notvalidcolor",
                                             description:"My Graph"
                                         ]
-                                ]
+                                   ]
+
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -203,12 +214,14 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
            assertTrue(e.getMessage().indexOf("Invalid color")>=0);
 
        }
-    }
 
-    public void testGraphThrowsExceptionIfDBNotExistent() throws Exception{
+     }
+
+     public void testGraphThrowsExceptionIfDBNotExistent() throws Exception{
         Map config = [:]
 
         String fileName = TestFile.TESTOUTPUT_DIR + "/thereisnosuchdatabase";
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -225,6 +238,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -232,6 +246,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
+
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -241,10 +256,14 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        }
        catch(FileNotFoundException e){
        }
+
      }
 
-    public void testGraphThrowsExceptionIfConfigMissesProperty() throws Exception{
+     public void testGraphThrowsExceptionIfConfigMissesProperty() throws Exception{
+
        Map config = [:]
+
+
 
        try{
             Grapher.graph(config)
@@ -291,8 +310,12 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
      }
 
-    public void testGraphThrowsExceptionIfStartTimeIsNotValid() throws Exception{
-        Map config = [:]
+     public void testGraphThrowsExceptionIfStartTimeIsNotValid() throws Exception{
+
+       Map config = [:]
+
+
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -309,6 +332,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -316,6 +340,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
+
        config[Grapher.START_TIME] = -1232L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -329,8 +354,12 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        }
      }
 
-    public void testGraphThrowsExceptionIfEndTimeIsNotValid() throws Exception{
-        Map config = [:]
+     public void testGraphThrowsExceptionIfEndTimeIsNotValid() throws Exception{
+
+       Map config = [:]
+
+
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -347,6 +376,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -354,8 +384,9 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
-        config[Grapher.START_TIME] = 978301200L;
-        config[Grapher.END_TIME] = "12312zdfasd";
+
+       config[Grapher.START_TIME] = 978301200L;
+       config[Grapher.END_TIME] = "12312zdfasd";
 
        try{
             Grapher.graph(config)
@@ -367,10 +398,16 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        }
      }
 
-    public void testAddDataSourceThrowsExceptionIfNameIsNotSpecified() throws Exception{
+     public void testAddDataSourceThrowsExceptionIfNameIsNotSpecified() throws Exception{
         Map config = [:]
+
+
+
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
+
+
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -389,6 +426,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
+
         try{
             Grapher.graph(config)
             fail("should throw exception because name of datasource is missing")
@@ -397,12 +436,19 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals("Datasource distorted: Name of datasource is not specified", e.getMessage()) 
         }
+
     }
 
-    public void testAddDataSourceThrowsExceptionIfRpnIsNotSpecified() throws Exception{
+     public void testAddDataSourceThrowsExceptionIfRpnIsNotSpecified() throws Exception{
         Map config = [:]
+
+
+
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
+
+
+
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -421,6 +467,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
+
         try{
             Grapher.graph(config)
             fail("should throw exception because rpn of datasource is missing")
@@ -429,12 +477,17 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals("Datasource distorted", e.getMessage())
         }
+
     }
 
-    public void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
+     public   void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
         Map config = [:]
+
+
+
         config[Grapher.START_TIME] = 978301200L;
         config[Grapher.END_TIME] = 978303900L;
+
         config[Grapher.DATASOURCE] = [
                                             /*
                                                 There should be at least one
@@ -457,6 +510,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
+
         try{
             Grapher.graph(config)
             fail("should throw exception because db datasource is missing")
@@ -470,7 +524,9 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     public void testMultipleDatasourceGraphDatasourcesSuccessfully()  throws Exception{
         Map config = [:]
+
         config[RrdUtils.DATABASE_NAME] = rrdFileName
+
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
@@ -483,6 +539,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
+
         config[RrdUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -492,7 +549,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                         ]
                                    ]
         config[RrdUtils.START_TIME] = 978300900;
-
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200:200:1");
@@ -518,7 +574,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
         def rrdList = [
                             [rrdVariable:"testDs1", color:"123456", description:"cpu"],
-                            [rrdVariable:"testDs2", color:"aabb22", description:"memory"]
+                            [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE"]
                         ];
         Map map = [:];
         map[Grapher.RRD_VARIABLES] = rrdList;
@@ -529,10 +585,11 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
-
-    public void testOneDatasourceGraphDatasourcesSuccessfully()  throws Exception{
+    public void testOneDatasourceGraphSuccessfully()  throws Exception{
         Map config = [:]
+
         config[RrdUtils.DATABASE_NAME] = rrdFileName
+
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
@@ -545,7 +602,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
-       config[RrdUtils.ARCHIVE] = [
+
+        config[RrdUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -554,7 +612,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                         ]
                                    ]
         config[RrdUtils.START_TIME] = 978300900;
-
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200:200:1");
@@ -575,9 +632,72 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                            startTime:978300900, archives: [archive1])
 
         def map = [:];
-        map[Grapher.START_TIME] = 978301200
+        map[Grapher.START_TIME] = 978301200;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
         map[Grapher.END_TIME] = 978303900;
-        map[Grapher.DATASOURCE] = "testDs2";
+        map[Grapher.DESCRIPTION] = "my graph description";
+        map[Grapher.TYPE] = "area";
+
+
+        byte[] bytes = Grapher.graphOneVariable(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+    public void testOneDatasourceGraphWithRpnSuccessfully()  throws Exception{
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900, archives: [archive1])
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
+        map[Grapher.END_TIME] = 978303900;
+        map[Grapher.DESCRIPTION] = "my graph description";
+        map[Grapher.TYPE] = "area";
+        map[Grapher.RPN] = "testDs2,2,*";
 
 
         byte[] bytes = Grapher.graphOneVariable(map);

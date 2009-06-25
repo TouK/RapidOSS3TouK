@@ -158,6 +158,7 @@ runGrailsTests() {
 
 #    cd ../RapidSuite
 
+    cd $WORKSPACE/Distribution/RapidServer/RapidSuite
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
 

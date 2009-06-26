@@ -26,10 +26,10 @@
 	        <Properties>
 		        <Property Name="name" Type="string" IsKey="true"/>
 		        <Property Name="width" Type="number" Default="500"/>
-		        <Property Name="height" Type="number" Default="250"/>
+		        <Property Name="height" Type="number" Default="450"/>
                 <Property Name="verticalLabel" Type="string"/>
-                <Property Name="max" Type="number"/>
-                <Property Name="min" Type="number"/>
+                <Property Name="max" Type="float" Default="Double.NaN"/>
+                <Property Name="min" Type="float" Default="Double.NaN"/>
                 <Property Name="title" Type="string"/>
                 <Property Name="color" Type="string"/>
                 <Property Name="type" Type="string" Default="line"/>

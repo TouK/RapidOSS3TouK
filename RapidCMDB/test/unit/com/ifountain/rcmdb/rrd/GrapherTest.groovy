@@ -656,7 +656,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
     public void testOneDatasourceGraphSuccessfully()  throws Exception{
         Map config = [:]
 
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
+        config[RrdUtils.DATABASE_NAME] = rrdFileName;
 
         config[RrdUtils.DATASOURCE] = [
                                             [

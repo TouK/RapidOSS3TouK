@@ -29,20 +29,23 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * Time: 5:35:46 PM
 * To change this template use File | Settings | File Templates.
 */
-class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
+class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
     def classes;
 
-    
-
     public void setUp() {
         super.setUp();
-
         classes = [:];
-
-        base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
+        //to run in Hudson
+        base_directory = "../../../RapidModules/RapidInsight";
+        def canonicalPath = new File(".").getCanonicalPath();
+        //to run in developer pc
+        if (canonicalPath.endsWith("RapidModules"))
+        {
+            base_directory = "RapidInsight";
+        }
         initializeScriptManager();
 
     }
@@ -422,6 +425,4 @@ class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 }
-
-
 

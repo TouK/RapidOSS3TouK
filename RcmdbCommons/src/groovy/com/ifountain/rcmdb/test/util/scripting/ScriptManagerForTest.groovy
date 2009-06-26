@@ -29,6 +29,7 @@ class ScriptManagerForTest {
         groovyClassLoager=gcl;
         scriptRunParams=[:];
         scriptBaseDirectory=scriptDirectory;
+
     }
 
     public static def runScriptWithWeb(String scriptFilePath, Map scriptParams, webMock)
@@ -80,6 +81,7 @@ class ScriptManagerForTest {
     private static Script createScript(String scriptFilePath, Map scriptParams)
     {
         def scriptRealPath=null;
+        def scriptClassLoader = new GroovyClassLoader(groovyClassLoager);
         if(scriptBaseDirectory == null)
         {
            scriptRealPath="${scriptFilePath}.groovy";
@@ -87,8 +89,12 @@ class ScriptManagerForTest {
         else
         {
            scriptRealPath="${scriptBaseDirectory}/${scriptFilePath}.groovy";
+           scriptClassLoader.addClasspath(scriptBaseDirectory);
         }
-        def scriptClass = groovyClassLoager.parseClass(new File(scriptRealPath));
+
+
+
+        def scriptClass = scriptClassLoader.parseClass(new File(scriptRealPath));
         def scriptInstance = scriptClass.newInstance();
         def params = new HashMap(scriptParams);
         scriptParams.each{ propName, propVal ->

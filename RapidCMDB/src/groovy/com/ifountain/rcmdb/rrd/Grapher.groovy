@@ -4,6 +4,7 @@ import org.jrobin.core.RrdDef
 import org.jrobin.graph.RrdGraphDef
 import java.awt.Color
 import org.jrobin.graph.RrdGraph
+import org.jrobin.core.RrdDb
 
 /**
 * Created by IntelliJ IDEA.
@@ -146,6 +147,19 @@ class Grapher {
                         it.containsKey(DATABASE_NAME) &&   it.containsKey(FUNCTION))){
                     throw new Exception("Datasource distorted");
                 }
+//                RrdDb testrrdDb = new RrdDb(it.get(DATABASE_NAME) );
+//                int testdsCount = rrdDb.getDsCount();
+//                boolean testfound = false;
+//                for(int i=0; i<dsCount; i++){
+//                    if(testrrdDb.getDatasource(i).getDsName().equals(it.get(DSNAME))){
+//                        testfound = true;
+//                        break;
+//                    }
+//                }
+//                if(!testfound){
+//                    throw new Exception("Datapoint "+it.get(DSNAME)+" is not found.");
+//                }
+//                testrrdDb.close();
 
                 try{
                    rdef.datasource(it.get(NAME),it.get(DATABASE_NAME),it.get(DSNAME),it.get(FUNCTION) )
@@ -308,82 +322,15 @@ class Grapher {
        fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
-    /*
-    public static byte[] graphMultipleDatasourceWithTemplate(Map config){
-       String typeVar = "line";
-       String colorVar = "999999";
-       Map fConfig = getGeneralSettingsMapWithTemplate(config);
-
-       if(config.containsKey(TYPE) ){
-          typeVar = config.get(TYPE);
-       }
-
-       if(config.containsKey(COLOR) ){
-          colorVar = config.get(COLOR);
-       }
-
-       if(!config.containsKey(RRD_VARIABLES) ){
-           throw new Exception("No rrd variable is specified");
-       }
-       def rrdVariables = config.get(RRD_VARIABLES);
-
-
-       def datasourceList = [];
-       fConfig[AREA] = [];
-       fConfig[LINE] = [];
-       fConfig[STACK] = [];
-       def typeList = [];
-       for(int i=0; i<rrdVariables.size(); i++){
-           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
-           if(rrdVariables[i].containsKey(FUNCTION) ){
-               def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVar.name;
-               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-               datasourceMap[Grapher.DSNAME] = rrdVar.name;
-               datasourceMap[Grapher.FUNCTION] = rrdVariables[i][FUNCTION];
-               datasourceList.add(datasourceMap);
-
-           }else{
-               rrdVar.archives.each{
-                   def datasourceMap = [:];
-                   datasourceMap[Grapher.NAME] = rrdVar.name;
-                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-                   datasourceMap[Grapher.DSNAME] = rrdVar.name;
-                   datasourceMap[Grapher.FUNCTION] = it.function;
-                   datasourceList.add(datasourceMap);
-               }
-           }
-           if(rrdVariables[i].containsKey(RPN) ){
-               def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVariables[i][RPN];
-               datasourceMap[Grapher.RPN] = rrdVariables[i][RPN];
-               datasourceList.add(datasourceMap);
-           }
-           def typeMap = [:];
-           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
-           typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
-           typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
-           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
-
-           if(rrdVariables[i].containsKey(TYPE) ){
-               try{
-                    fConfig[rrdVariables[i][TYPE]].add(typeMap)
-               }catch (Exception ex){
-                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
-               }
-           }
-           else{
-               fConfig[typeVar].add(typeMap);
-           }
-       }
-
-       fConfig[DATASOURCE] = datasourceList;
-       return graph(fConfig);
-    }
-    */
     public static byte[] graphOneVariable(Map config){
+       if(!(config.get(RRD_VARIABLE) instanceof String )) {
+           throw new Exception("Configuration map is distorted: RrdVariable should be an instance of string");
+       }
        String rrdVarName = config.get(RRD_VARIABLE);
        def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
+       if(rrdvar ==null){
+           throw new Exception("RrdVariable \""+rrdVarName+"\" can not be found.");
+       }
 
        Map rVariable = [:];
        rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);

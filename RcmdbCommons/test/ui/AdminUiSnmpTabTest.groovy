@@ -113,6 +113,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
     public void testCreateASNMPConnector()
       {
+
+      
        def  scriptContent= eventSnmpContent()
         createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
 
@@ -191,10 +193,36 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
       public void testTestSnmpConnectorUsingAScript()
       {
+
+
          def testScriptContent = generateSnmpScriptContent()
           createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/GenerateSnmpTraps.groovy", testScriptContent);
          def scriptContent= eventSnmpContent()
           createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
+
+
+
+       def eventValidatorContent = """
+
+         if((params.file).equals("RsEvent"))
+         {
+             def notificationCount
+             notificationCount = RsEvent.search("source:NMD1").total +RsEvent.search("source:NMD2").total
+              return notificationCount;
+         }
+         if((params.file).equals("RsHistoricalEvent"))
+        {
+            def  notificationCount = RsHistoricalEvent.search("source:NMD1").total+RsHistoricalEvent.search("source:NMD2").total
+            return notificationCount;
+        }
+      """
+          createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/eventValidator.groovy", eventValidatorContent);
+
+      def clearScriptContent="""
+            RsEvent.removeAll();
+            RsHistoricalEvent.removeAll();
+      """
+         createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/clear.groovy", clearScriptContent);
 
         login()
         selenium.click("link=SNMP");
@@ -211,13 +239,39 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		verifyTrue(selenium.isTextPresent("snmp1"));
 		selenium.click("link=Start");
 		selenium.waitForPageToLoad("30000");
+	    verifyTrue(selenium.isTextPresent("Connector snmp1 successfully started"));
 
-        selenium.click("//em");
+        selenium.click("link=SNMP");
         selenium.waitForPageToLoad("30000");
         selenium.click("link=snmp1");
         selenium.waitForPageToLoad("30000");
         def eventSnmpScriptIdValue =  findId("RapidSuite/script/show/")
 
+
+        newScript()
+		selenium.type("name", "clear");
+		selenium.click("//input[@value='Create']");
+		selenium.waitForPageToLoad("30000");
+		def clearScriptId= findId("RapidSuite/script/show/")
+		selenium.click("_action_Run");
+		selenium.waitForPageToLoad("30000");
+
+
+
+        newScript()
+		selenium.type("name", "eventValidator");
+		selenium.click("//input[@value='Create']");
+		selenium.waitForPageToLoad("30000");
+		def eventValidatorScriptId= findId("RapidSuite/script/show/")
+
+		selenium.open("RapidSuite/script/run/eventValidator?file=RsEvent");
+		String rsEventCount = selenium.getText("//body");
+
+		selenium.open("RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+		String rsHistoricalEventCount = selenium.getText("//body");
+
+
+        newScript()
 		selenium.click("link=Scripts");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=New Script");
@@ -230,21 +284,39 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		Thread.sleep(180000);
 		verifyTrue(selenium.isTextPresent("Completed event trap generation"));
 
-		
-		selenium.open("http://localhost:12222/RapidSuite/index/events.gsp");
-		selenium.waitForPageToLoad("30000");
-		selenium.click("link=Events");
-	    selenium.waitForPageToLoad("30000");
-		selenium.click("link=Historical Events");
+
+        newScript()
+		selenium.type("name", "eventValidator");
+		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
 
+		selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
+		assertNotEquals("rsEventCount", selenium.getText("//body"));
 
+		selenium.open("RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+		assertNotEquals("rsHistoricalEventCount", selenium.getText("//body"));
+
+
+		newScript()
+		selenium.type("name", "clear");
+		selenium.click("//input[@value='Create']");
+		selenium.waitForPageToLoad("30000");
+
+		 
       deleteScript(eventSnmpScriptIdValue)
       deleteScriptFile("EventSnmpListener.groovy")
       deleteScript(GenerateSnmpTrapsIdValue)
       deleteSNMPConnector(snmp1Id) ;
       deleteScriptFile("GenerateSnmpTraps.groovy")
-          
+      deleteScript(eventSnmpScriptIdValue)
+      deleteScriptFile("eventValidator.groovy")
+      deleteScript(clearScriptId)
+      deleteScriptFile("clear.groovy")
+
+
+
+
+
       }
 
 

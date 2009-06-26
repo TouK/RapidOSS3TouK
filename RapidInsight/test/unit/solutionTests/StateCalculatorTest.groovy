@@ -136,7 +136,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         assertFalse(object.hasErrors());
 
         assertEquals(0, RsObjectState.count());
-        assertEquals(_Constants.NOTSET, _StateCalculator.loadObjectState(object))
+        assertEquals((int)_Constants.NOTSET, _StateCalculator.loadObjectState(object))
 
         def newState = 5
         _StateCalculator.saveObjectState(object,newState);
@@ -502,7 +502,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         //test that if state is calculated before not state calculation is not done and result is returned
         //save the state of the object
         RsObjectState.removeAll();
-        assertEquals(_Constants.NOTSET, _StateCalculator.loadObjectState(object));
+        assertEquals((int)_Constants.NOTSET, _StateCalculator.loadObjectState(object));
         def newState = 3;
         _StateCalculator.saveObjectState(object,newState)
         assertEquals(newState, _StateCalculator.loadObjectState(object));
@@ -720,7 +720,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         objects=_StateCalculator.getObjectsOfEvent(elEvent);
         assertEquals(1,objects.size());
-        assertEquals(elObject.id,objects[0].id);
+        assertEquals((Long)elObject.id,objects[0].id);
 
 
 

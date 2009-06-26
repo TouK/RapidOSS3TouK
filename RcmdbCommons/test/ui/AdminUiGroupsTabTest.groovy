@@ -37,7 +37,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
     private void login(String name, String passWord)
     {
-        selenium.open("/RapidSuite/admin.gsp");
+        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
         selenium.waitForPageToLoad("30000");
         selenium.type("login",name);
         selenium.type("password", passWord);
@@ -378,22 +378,22 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
         assertEquals("Group " + nmd2GroupId + " updated", selenium.getText("pageMessage")) 
 
        
-           logout()
-           selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-           selenium.waitForPageToLoad("30000");
-           selenium.type("login", "nmd1User");
-		   selenium.click("//input[@value='Sign in']");
-		   Thread.sleep(15000);
-	       verifyTrue(selenium.isTextPresent("NMD1"));
-		   verifyFalse(selenium.isTextPresent("NMD2"));
-		   selenium.click("link=Logout");
-		   selenium.waitForPageToLoad("30000");
-		   selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-           selenium.waitForPageToLoad("30000");
-           selenium.type("login", "nmd2User");
-		   selenium.click("//input[@value='Sign in']");
-	       Thread.sleep(15000);
-	       verifyTrue(selenium.isTextPresent("NMD2"));
+          logout()
+          selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+          selenium.waitForPageToLoad("30000");
+          selenium.type("login", "nmd1User");
+		  selenium.click("//input[@value='Sign in']");
+		  Thread.sleep(15000);
+	      verifyTrue(selenium.isTextPresent("NMD1"));
+		  verifyFalse(selenium.isTextPresent("NMD2"));
+		  selenium.click("link=Logout");
+		  selenium.waitForPageToLoad("30000");
+		 selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+          selenium.waitForPageToLoad("30000");
+          selenium.type("login", "nmd2User");
+		  selenium.click("//input[@value='Sign in']");
+	      Thread.sleep(15000);
+	      verifyTrue(selenium.isTextPresent("NMD2"));
 		   verifyFalse(selenium.isTextPresent("NMD1"));
 		   selenium.click("link=Logout");
 		   selenium.waitForPageToLoad("30000");

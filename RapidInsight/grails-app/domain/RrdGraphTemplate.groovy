@@ -22,9 +22,9 @@ class RrdGraphTemplate
     
     String verticalLabel ="";
     
-    Long max =0;
+    Double max =Double.NaN;
     
-    Long min =0;
+    Double min =Double.NaN;
     
     String title ="";
     

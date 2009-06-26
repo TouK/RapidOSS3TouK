@@ -5,6 +5,9 @@
   <title>Login</title>
 </head>
 <body>
+<script type="text/javascript">
+    document.getElementById('logoutwrp').style.display = 'none';
+</script>
 <div class="front"><h1 >Login</h1></div>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>

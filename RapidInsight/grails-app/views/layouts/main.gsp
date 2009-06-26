@@ -13,7 +13,7 @@
     </div>
     <div class="logo"><img src="${createLinkTo(dir: 'images', file: 'RapidInsight-white.png')}" alt="Grails"/></div>
     <div>
-        <div class="menuButton" style="position:absolute;top:40px;right:3px"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></div>
+        <div id="logoutwrp" class="menuButton" style="position:absolute;top:40px;right:3px"><a class="logout" href="${createLinkTo(dir: 'auth/logout')}">Logout</a></div>
         <g:layoutBody/>
     </div>
 </body>

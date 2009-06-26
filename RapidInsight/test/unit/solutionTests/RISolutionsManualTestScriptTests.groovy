@@ -69,14 +69,8 @@ class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
 
         classes = [:];
-        //to run in Hudson
-        base_directory = "../../../RapidModules/RapidInsight";
-        def canonicalPath = new File(".").getCanonicalPath();
-        //to run in developer pc
-        if (canonicalPath.endsWith("RapidModules"))
-        {
-            base_directory = "RapidInsight";
-        }
+
+        base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
         initializeScriptManager();
 
     }

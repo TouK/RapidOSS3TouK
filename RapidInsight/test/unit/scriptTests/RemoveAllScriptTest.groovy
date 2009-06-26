@@ -61,15 +61,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
 
     void copyScriptFile()
     {
-        //to run in Hudson
-        def scriptDirectory = "../RapidSuite";
-        //def canonicalPath=new File(System.getProperty("base.dir", ".")).getCanonicalPath();
-        def canonicalPath = new File(".").getCanonicalPath();
-        //to run in developer pc
-        if (canonicalPath.endsWith("RapidModules"))
-        {
-            scriptDirectory = "RapidInsight"
-        }
+        def scriptDirectory=getWorkspacePath()+"/RapidModules/RapidInsight"
 
         removeAllScriptFile = new File("${scriptDirectory}/scripts/removeAll.groovy");
         removeAllScriptCopiedTargetFile = new File("${baseDir}/scripts/removeAll.groovy");

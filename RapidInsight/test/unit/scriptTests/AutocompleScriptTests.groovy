@@ -38,8 +38,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         super.tearDown();
     }
     void initializeScriptManager()
-    {
-         //to run in Hudson
+    {             
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
         println "base path is :"+new File(base_directory).getCanonicalPath();
 

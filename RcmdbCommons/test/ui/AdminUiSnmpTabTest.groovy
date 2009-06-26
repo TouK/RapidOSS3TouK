@@ -239,11 +239,11 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 
 
-//      deleteScript(eventSnmpScriptIdValue)
-//      deleteScriptFile("EventSnmpListener.groovy")
-//      deleteScript(GenerateSnmpTrapsIdValue)
-//      deleteSNMPConnector(snmp1Id) ;
-//      deleteScriptFile("GenerateSnmpTraps.groovy")
+      deleteScript(eventSnmpScriptIdValue)
+      deleteScriptFile("EventSnmpListener.groovy")
+      deleteScript(GenerateSnmpTrapsIdValue)
+      deleteSNMPConnector(snmp1Id) ;
+      deleteScriptFile("GenerateSnmpTraps.groovy")
           
       }
 
@@ -342,9 +342,11 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
   }
 
 
-     public String contentEventVal
+
+
+  public String contentEventVal()
      {
-         return """
+         def content= """
          if(param.file.equals("RsEvent"))
          {
              def  notificationCount = RsEvent.search("source:NMD2").total
@@ -356,8 +358,11 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
             return notificationCount;
         }
         """
-
+             return content;
 
  }
+
+
+
 
 }

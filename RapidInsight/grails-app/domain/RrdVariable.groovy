@@ -3,7 +3,7 @@ import com.ifountain.core.domain.annotations.*;
 
 class RrdVariable 
 {
-    
+
     //AUTO_GENERATED_CODE
 
     static searchable = {

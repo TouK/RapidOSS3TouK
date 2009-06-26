@@ -58,7 +58,7 @@ devices.each {RsComputerSystem device ->
             if (deviceState > location["state"]) {
                 location.put("state", deviceState)
             }
-            location.put("cntr", cntr.toString());
+            location.put("cntr", cntr);
         }
         else {
             def geos = device.geocodes.split("::");

@@ -23,17 +23,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-      //  logout()
+       logout()
     }
-
-
-   public void testLog()
-   {
-       login()
-      selenium.open("http://localhost:12222/RapidSuite/index/events.gsp") 
-   }
-
-
 
     private void logout()
     {
@@ -139,8 +130,6 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
 
         selenium.open("/RapidSuite/script/list");
-		selenium.click("//em");
-		selenium.waitForPageToLoad("30000");
 		selenium.click("link=snmp1");
 		selenium.waitForPageToLoad("30000");
         def scriptIdValue =  findId("RapidSuite/script/show/")
@@ -221,7 +210,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
       def clearScriptContent="""
             RsEvent.removeAll();
             RsHistoricalEvent.removeAll();
-      """
+           """
          createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/clear.groovy", clearScriptContent);
 
         login()
@@ -241,21 +230,19 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 	    verifyTrue(selenium.isTextPresent("Connector snmp1 successfully started"));
 
-        selenium.click("link=SNMP");
+        selenium.open("/RapidSuite/script/list");
         selenium.waitForPageToLoad("30000");
         selenium.click("link=snmp1");
         selenium.waitForPageToLoad("30000");
-        def eventSnmpScriptIdValue =  findId("RapidSuite/script/show/")
 
 
         newScript()
 		selenium.type("name", "clear");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
-		def clearScriptId= findId("RapidSuite/script/show/")
+		def clearScriptId= findId("/RapidSuite/script/show/")
 		selenium.click("_action_Run");
 		selenium.waitForPageToLoad("30000");
-
 
 
         newScript()
@@ -264,18 +251,14 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 		def eventValidatorScriptId= findId("RapidSuite/script/show/")
 
-		selenium.open("RapidSuite/script/run/eventValidator?file=RsEvent");
+		selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
 		String rsEventCount = selenium.getText("//body");
 
-		selenium.open("RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+		selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
 		String rsHistoricalEventCount = selenium.getText("//body");
 
 
         newScript()
-		selenium.click("link=Scripts");
-		selenium.waitForPageToLoad("30000");
-		selenium.click("link=New Script");
-		selenium.waitForPageToLoad("30000");
 		selenium.type("name", "GenerateSnmpTraps");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
@@ -293,7 +276,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
 		assertNotEquals("rsEventCount", selenium.getText("//body"));
 
-		selenium.open("RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+		selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
 		assertNotEquals("rsHistoricalEventCount", selenium.getText("//body"));
 
 
@@ -302,13 +285,12 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
 
-		 
-      deleteScript(eventSnmpScriptIdValue)
+
+      deleteSNMPConnector(snmp1Id) ;
       deleteScriptFile("EventSnmpListener.groovy")
       deleteScript(GenerateSnmpTrapsIdValue)
-      deleteSNMPConnector(snmp1Id) ;
       deleteScriptFile("GenerateSnmpTraps.groovy")
-      deleteScript(eventSnmpScriptIdValue)
+      deleteScript(eventValidatorScriptId)
       deleteScriptFile("eventValidator.groovy")
       deleteScript(clearScriptId)
       deleteScriptFile("clear.groovy")

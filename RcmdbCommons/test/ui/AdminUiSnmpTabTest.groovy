@@ -134,9 +134,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
         def scriptIdValue =  findId("RapidSuite/script/show/")
 
-		deleteScript(scriptIdValue)
-        deleteScriptFile("EventSnmpListener.groovy")
         deleteSNMPConnector(snmpId)
+        deleteScriptFile("EventSnmpListener.groovy")
 
         File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/logs/snmp1.log")
         def isSnmp1LogFileCreated=false
@@ -173,8 +172,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
         verifyTrue(selenium.isTextPresent("Connector snmp1 successfully stopped"));
 
-        deleteScriptFile("EventSnmpListener.groovy")
         deleteSNMPConnector(snmpId)
+        deleteScriptFile("EventSnmpListener.groovy")
     }
 
 

@@ -40,6 +40,7 @@ class Grapher {
     public static final  String TYPE = "type";
     public static final  String RRD_VARIABLES = "rrdVariables";
     public static final  String RRD_VARIABLE = "rrdVariable";
+    public static final  String GRAPH_TEMPLATE = "template";
 
     /**
     * sets the following properties of graphdef:
@@ -307,7 +308,79 @@ class Grapher {
        fConfig[DATASOURCE] = datasourceList;
        return graph(fConfig);
     }
-    
+    /*
+    public static byte[] graphMultipleDatasourceWithTemplate(Map config){
+       String typeVar = "line";
+       String colorVar = "999999";
+       Map fConfig = getGeneralSettingsMapWithTemplate(config);
+
+       if(config.containsKey(TYPE) ){
+          typeVar = config.get(TYPE);
+       }
+
+       if(config.containsKey(COLOR) ){
+          colorVar = config.get(COLOR);
+       }
+
+       if(!config.containsKey(RRD_VARIABLES) ){
+           throw new Exception("No rrd variable is specified");
+       }
+       def rrdVariables = config.get(RRD_VARIABLES);
+
+
+       def datasourceList = [];
+       fConfig[AREA] = [];
+       fConfig[LINE] = [];
+       fConfig[STACK] = [];
+       def typeList = [];
+       for(int i=0; i<rrdVariables.size(); i++){
+           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
+           if(rrdVariables[i].containsKey(FUNCTION) ){
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVar.name;
+               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+               datasourceMap[Grapher.DSNAME] = rrdVar.name;
+               datasourceMap[Grapher.FUNCTION] = rrdVariables[i][FUNCTION];
+               datasourceList.add(datasourceMap);
+
+           }else{
+               rrdVar.archives.each{
+                   def datasourceMap = [:];
+                   datasourceMap[Grapher.NAME] = rrdVar.name;
+                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+                   datasourceMap[Grapher.DSNAME] = rrdVar.name;
+                   datasourceMap[Grapher.FUNCTION] = it.function;
+                   datasourceList.add(datasourceMap);
+               }
+           }
+           if(rrdVariables[i].containsKey(RPN) ){
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVariables[i][RPN];
+               datasourceMap[Grapher.RPN] = rrdVariables[i][RPN];
+               datasourceList.add(datasourceMap);
+           }
+           def typeMap = [:];
+           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
+           typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
+           typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
+           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
+
+           if(rrdVariables[i].containsKey(TYPE) ){
+               try{
+                    fConfig[rrdVariables[i][TYPE]].add(typeMap)
+               }catch (Exception ex){
+                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
+               }
+           }
+           else{
+               fConfig[typeVar].add(typeMap);
+           }
+       }
+
+       fConfig[DATASOURCE] = datasourceList;
+       return graph(fConfig);
+    }
+    */
     public static byte[] graphOneVariable(Map config){
        String rrdVarName = config.get(RRD_VARIABLE);
        def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
@@ -341,8 +414,46 @@ class Grapher {
        return graphMultipleDatasources(config);
 
     }
+    /*
+    public static byte[] graphOneVariable(Map config){
+       String rrdVarName = config.get(RRD_VARIABLE);
+       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
+
+       Map rVariable = [:];
+       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
+       rVariable[DESCRIPTION] = config.containsKey(DESCRIPTION)?config.get(DESCRIPTION):rrdvar.name;
+       if(config.containsKey(COLOR) ){
+           rVariable[COLOR] = config.get(COLOR);
+       }
+       if(config.containsKey(THICKNESS)){
+           rrdVariable[THICKNESS] = config.get(THICKNESS)
+       }
+       if(config.containsKey(TYPE)) {
+           rVariable[TYPE] = config.get(TYPE);
+       }
+       if(config.containsKey(RPN)) {
+           rVariable[RPN] = config.get(RPN);
+       }
+
+       config.remove (RRD_VARIABLE);
+       if (config.containsKey(DESCRIPTION) ){
+           config.remove (DESCRIPTION);
+       }
+       def vlist = [];
+       vlist.add(rVariable);
+       config[RRD_VARIABLES] = vlist;
+
+       println config;
+
+       return graphMultipleDatasources(config);
+
+    }
+    */
 
     public static Map getGeneralSettingsMap(Map config){
+       if(config.containsKey("templateName")){
+           return  getGeneralSettingsMapWithTemplate(config);
+       }
        Map fConfig = [:];
 
        if(!config.containsKey(START_TIME) ){
@@ -376,5 +487,54 @@ class Grapher {
        }
        return fConfig;
     }
+    public static Map getGeneralSettingsMapWithTemplate(Map config){
+       Map fConfig = [:];
 
+       def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));
+
+//       println template.name+" "+template.color+" "+template.description+" "+template.height+" "+
+//               template.width+" "+template.max+" "+template.min+" "+template.title+" "+template.type+" "+
+//                template.verticalLabel;
+
+       if(!config.containsKey(START_TIME) ){
+           throw new Exception("Start time is not specified");
+       }else {
+           fConfig[START_TIME] = config.get(START_TIME);
+       }
+       if(!config.containsKey(END_TIME) ){
+           fConfig[END_TIME] = getCurrentTime();
+       }
+       else{
+           fConfig[END_TIME] = config.get(END_TIME);
+       }
+       if(template.max != Double.NaN ){
+          fConfig[MAX] = template.max;
+       }
+       if(template.min != Double.NaN ){
+          fConfig[MIN] = template.min;
+       }
+
+       fConfig[HEIGHT] = (int)template.height;
+
+       fConfig[WIDTH] = (int)template.width;
+
+       if(template.title.length()>0 ){
+          fConfig[TITLE] = template.title;
+       }
+       if(template.verticalLabel.length()>0 ){
+          fConfig[VERTICAL_LABEL] = template.verticalLabel ;
+       }
+       //note that they are not fConfig
+       if(template.description.length()>0 ){
+          config[DESCRIPTION] = template.description ;
+       }
+       if(template.color.length()>0 ){
+          config[COLOR] = template.color ;
+       }
+       if(template.type.length()>0 ){
+          config[TYPE] = template.type ;
+       }
+       
+       return fConfig;
+    }
 }

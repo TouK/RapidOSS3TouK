@@ -53,6 +53,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
     void initializeScriptManager()
     {
         ScriptManagerForTest.initialize (gcl,"${baseDir}/scripts");
+
     }
 
     void copyScriptFile()
@@ -81,6 +82,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
+        ScriptManagerForTest.addScript("removeAll");
         ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count());
         assertEquals(0, childClass.count());
@@ -109,6 +111,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
+        ScriptManagerForTest.addScript("removeAll");
         ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count());
         assertEquals(0, childClass.count());
@@ -137,6 +140,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
+        ScriptManagerForTest.addScript("removeAll");
         ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count()-childClass.count());
         assertEquals(2, childClass.count());

@@ -37,6 +37,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
         ScriptManagerForTest.initialize(gcl,base_directory);
+        ScriptManagerForTest.addScript('autocomplete');
 
     }
     public void testAutoCompleteReturnsRsComputerSystemWithMaxAndSort()

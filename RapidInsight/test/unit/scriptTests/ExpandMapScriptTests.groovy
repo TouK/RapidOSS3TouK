@@ -16,6 +16,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     def RsComputerSystem;
     def RsTopologyObject;
     def RsLink;
+    
 
     public void setUp() {
         super.setUp();
@@ -40,6 +41,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
         ScriptManagerForTest.initialize (gcl,base_directory);
+        ScriptManagerForTest.addScript("expandMap");
     }
     public void testExpandMapWith1Node()
     {

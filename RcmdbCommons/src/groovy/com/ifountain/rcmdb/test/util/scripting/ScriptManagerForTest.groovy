@@ -15,6 +15,7 @@ class ScriptManagerForTest {
     private static def groovyClassLoager;
     private static def scriptRunParams;
     private static def scriptBaseDirectory;
+    private static def scriptClasses;
 
     public static final String SCRIPT_RUN_RESULT_KEY="SCRIPT_RUN_RESULT";
     public static final String WEB_RENDER_PARAMS_KEY="WEB_RENDER_PARAMS";
@@ -28,20 +29,31 @@ class ScriptManagerForTest {
     {
         groovyClassLoager=gcl;
         scriptRunParams=[:];
+        scriptClasses=[:];
         scriptBaseDirectory=scriptDirectory;
 
     }
 
     public static def runScriptWithWeb(String scriptFilePath, Map scriptParams, webMock)
     {
-        return  runScriptInstance(scriptFilePath,createScriptWithWeb(scriptFilePath,scriptParams,webMock))
+        scriptParams.web=webMock;
+        return  runScript(scriptFilePath,scriptParams);
     }
     public static def runScript(String scriptFilePath, Map scriptParams)
     {
-        return  runScriptInstance(scriptFilePath,createScript(scriptFilePath,scriptParams))
-    }
-    private static def runScriptInstance(String scriptFilePath,scriptInstance)
-    {
+        def scriptClass = scriptClasses[scriptFilePath];
+        if(scriptClass == null )
+        {
+            throw new Exception("Script ${scriptFilePath} should be added first");
+        }
+
+        def scriptInstance = scriptClass.newInstance();
+        def params = new HashMap(scriptParams);
+        scriptParams.each{ propName, propVal ->
+            scriptInstance.setProperty(propName, propVal);
+        }
+        scriptInstance.setProperty(RapidCMDBConstants.LOGGER, TestLogUtils.log);
+
         def result=scriptInstance.run();
         addEntryForScript(scriptFilePath,"runResult",result)
         return result;
@@ -73,12 +85,7 @@ class ScriptManagerForTest {
         ]
     }
 
-    private static Script createScriptWithWeb(String scriptFilePath, Map scriptParams, webMock)
-    {
-        scriptParams.web=webMock;
-        return createScript(scriptFilePath,scriptParams);
-    }
-    private static Script createScript(String scriptFilePath, Map scriptParams)
+    public static Class addScript(String scriptFilePath)
     {
         def scriptRealPath=null;
         def scriptClassLoader = new GroovyClassLoader(groovyClassLoager);
@@ -92,16 +99,9 @@ class ScriptManagerForTest {
            scriptClassLoader.addClasspath(scriptBaseDirectory);
         }
 
-
-
         def scriptClass = scriptClassLoader.parseClass(new File(scriptRealPath));
-        def scriptInstance = scriptClass.newInstance();
-        def params = new HashMap(scriptParams);
-        scriptParams.each{ propName, propVal ->
-            scriptInstance.setProperty(propName, propVal);
-        }
-        scriptInstance.setProperty(RapidCMDBConstants.LOGGER, TestLogUtils.log);
-        return scriptInstance;
+        scriptClasses[scriptFilePath]=scriptClass;
+        return scriptClass;
     }
 
 

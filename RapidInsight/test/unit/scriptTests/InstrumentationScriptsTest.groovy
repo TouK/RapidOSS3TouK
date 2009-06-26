@@ -51,6 +51,9 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
     public void testEnableDisableInstrumentationScripts()
     {
+        ScriptManagerForTest.addScript('enableInstrumentation');
+        ScriptManagerForTest.addScript('disableInstrumentation');
+
         System.clearProperty (StatisticsOperations.GLOBAL_ENABLE_KEY);
 
         assertFalse(Statistics.isEnabledGlobally());
@@ -68,6 +71,8 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
     public void testCreateInstrumentationParametersScript()
     {
+        ScriptManagerForTest.addScript('createInstrumentationParameters');
+
         def paramList=["system.totalMemory","system.usedMemory","user.login","ui.objectDetails","ui.eventDetails"];
 
         assertEquals(0,InstrumentationParameters.countHits("alias:*"));

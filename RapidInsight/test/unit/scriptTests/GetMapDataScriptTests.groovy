@@ -43,7 +43,6 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
-
         super.tearDown();
     }
     void initializeScriptManager()
@@ -52,6 +51,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
         ScriptManagerForTest.initialize (gcl,base_directory);
+        ScriptManagerForTest.addScript('getMapData');
 
     }
     public void testGetMapDataWith1Node()

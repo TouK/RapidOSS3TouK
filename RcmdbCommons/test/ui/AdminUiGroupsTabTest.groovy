@@ -37,7 +37,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
     private void login(String name, String passWord)
     {
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
+        selenium.open("/RapidSuite/admin.gsp");
         selenium.waitForPageToLoad("30000");
         selenium.type("login",name);
         selenium.type("password", passWord);
@@ -317,12 +317,6 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 		selenium.click("_action_StartConnector");
 		selenium.waitForPageToLoad("30000");
 
-        selenium.click("link=Scripts");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=snmp1");
-        selenium.waitForPageToLoad("30000");
-        def eventSnmpScriptIdValue =  findId("RapidSuite/script/show/")
-
 		selenium.click("link=Scripts");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=New Script");
@@ -384,35 +378,34 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
         assertEquals("Group " + nmd2GroupId + " updated", selenium.getText("pageMessage")) 
 
        
-          logout()
-          selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-          selenium.waitForPageToLoad("30000");
-          selenium.type("login", "nmd1User");
-		  selenium.click("//input[@value='Sign in']");
-		  Thread.sleep(10000);
-	      verifyTrue(selenium.isTextPresent("NMD1"));
-		  verifyFalse(selenium.isTextPresent("NMD2"));
-		  selenium.click("link=Logout");
-		  selenium.waitForPageToLoad("30000");
-		 selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-          selenium.waitForPageToLoad("30000");
-          selenium.type("login", "nmd2User");
-		  selenium.click("//input[@value='Sign in']");
-	      Thread.sleep(10000);
-	      verifyTrue(selenium.isTextPresent("NMD2"));
-		  verifyFalse(selenium.isTextPresent("NMD1"));
-		  selenium.click("link=Logout");
-
-         login( "rsadmin","changeme");
+           logout()
+           selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+           selenium.waitForPageToLoad("30000");
+           selenium.type("login", "nmd1User");
+		   selenium.click("//input[@value='Sign in']");
+		   Thread.sleep(15000);
+	       verifyTrue(selenium.isTextPresent("NMD1"));
+		   verifyFalse(selenium.isTextPresent("NMD2"));
+		   selenium.click("link=Logout");
+		   selenium.waitForPageToLoad("30000");
+		   selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+           selenium.waitForPageToLoad("30000");
+           selenium.type("login", "nmd2User");
+		   selenium.click("//input[@value='Sign in']");
+	       Thread.sleep(15000);
+	       verifyTrue(selenium.isTextPresent("NMD2"));
+		   verifyFalse(selenium.isTextPresent("NMD1"));
+		   selenium.click("link=Logout");
+		   selenium.waitForPageToLoad("30000");
+           login( "rsadmin","changeme");
 
 
         deleteGroup(nmd1GroupId)
         deleteGroup(nmd2GroupId)
         deleteUser(nmd1UserId)
         deleteUser(nmd2UserId)
-        deleteScript(eventSnmpScriptIdValue)
-        deleteScriptFile("EventSnmpListener.groovy")
         deleteSNMPConnector(snmpId)
+        deleteScriptFile("EventSnmpListener.groovy")
         deleteScript(GenerateSnmpTrapsIdValue)
         deleteScriptFile("GenerateSnmpTraps.groovy")
 

@@ -760,8 +760,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                            type:"GAUGE", heartbeat:600, file: rrdFileName,
                            startTime:978300900, archives: [archive1])
         classes.RrdGraphTemplate.add(["name":"tName", "description":"desc",
-                    "title":"title", "type":"line",
-                    "verticalLabel":"kmh", "width":100, "description":"cpu util",
+                    "title":"title", "verticalLabel":"kmh", "width":100,
                     "type":"area","color":"234231"]);
 
 

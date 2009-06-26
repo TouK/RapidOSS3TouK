@@ -488,6 +488,8 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         UiWebPage.list().each {url ->
             def urlLayoutFile = new File(baseDir + "/${url.getUrlLayoutFilePath()}");
             assertTrue(urlLayoutFile.exists());
+            def urlHelpFile = new File(baseDir + "/${url.getHelpFilePath()}");
+            assertTrue(urlHelpFile.exists());
             def urlRedirectFile = new File(baseDir + "/${url.getUrlFilePath()}");
             assertTrue(urlRedirectFile.exists());
             url.tabs.each {tab ->

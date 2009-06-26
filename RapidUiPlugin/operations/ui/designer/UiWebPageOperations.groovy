@@ -55,6 +55,11 @@ public class UiWebPageOperations extends AbstractDomainOperation
         return "grails-app/views/layouts/${name}Layout.gsp".toString()
     }
 
+    def getHelpFilePath()
+    {
+        return "web-app/help/${name}Help.gsp".toString()
+    }
+
     def getUrlFilePath()
     {
         return "web-app/${name}.gsp".toString()

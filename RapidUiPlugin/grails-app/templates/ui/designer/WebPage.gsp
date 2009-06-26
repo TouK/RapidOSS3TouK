@@ -29,6 +29,11 @@
             <img src="/RapidSuite/images/network-offline.png"/>
         </td>
         <td width="0%">
+        	<a href="/RapidSuite/help/${url.name}Help.gsp" target="_blank">
+            <img src="/RapidSuite/images/rapidjs/component/tools/help.png" border="0" style="margin-right:5px"/>
+            </a>
+        </td>
+        <td width="0%">
             <div style="vertical-align:bottom">
                 <span id="rsUser" style="font-size:12px;font-weight:bold;color:#083772;text-align:right;margin-bottom:5px;cursor:pointer">\${session.username}</span>
                 <a href="/RapidSuite/auth/logout" style="font-size:13px;font-weight:bold;color:#083772;text-align:right;text-decoration:none">Logout</a>

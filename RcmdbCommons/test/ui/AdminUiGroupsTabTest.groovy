@@ -49,7 +49,6 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
    private String createNewGroup(String name)
    {
-        //selenium.click("//li[4]/a/em");
         selenium.click("link=Groups");
 		selenium.waitForPageToLoad("30000");
 		selenium.click("link=New Group");
@@ -208,8 +207,6 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 		selenium.waitForPageToLoad("30000");
 		def group2Id = groupId()
 
-
-		//selenium.click("//em");
         selenium.click("link=Scripts");
         selenium.waitForPageToLoad("30000");
 		selenium.click("link=New Script");
@@ -242,7 +239,6 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 		login( "rsadmin","changeme")
         selenium.open("/RapidSuite/script/list");
         selenium.waitForPageToLoad("30000");
-		//selenium.click("//em");
         selenium.click("link=Scripts");
         selenium.waitForPageToLoad("30000");
 		selenium.click("link=HelloWorld");
@@ -321,7 +317,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 		selenium.click("_action_StartConnector");
 		selenium.waitForPageToLoad("30000");
 
-        selenium.click("//em");
+        selenium.click("link=Scripts");
         selenium.waitForPageToLoad("30000");
         selenium.click("link=snmp1");
         selenium.waitForPageToLoad("30000");
@@ -389,7 +385,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
        
           logout()
-          selenium.open("http://localhost:12222/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+          selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
           selenium.waitForPageToLoad("30000");
           selenium.type("login", "nmd1User");
 		  selenium.click("//input[@value='Sign in']");
@@ -398,7 +394,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 		  verifyFalse(selenium.isTextPresent("NMD2"));
 		  selenium.click("link=Logout");
 		  selenium.waitForPageToLoad("30000");
-		 selenium.open("http://localhost:12222/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
+		 selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
           selenium.waitForPageToLoad("30000");
           selenium.type("login", "nmd2User");
 		  selenium.click("//input[@value='Sign in']");

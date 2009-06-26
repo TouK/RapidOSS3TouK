@@ -1,3 +1,5 @@
+package solutionTests
+
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.scripting.ScriptManager
@@ -29,14 +31,43 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * Time: 5:35:46 PM
 * To change this template use File | Settings | File Templates.
 */
-class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
+class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
     def classes;
 
+    def RsTopologyObject;
+    def RsCustomer;
+    def RsEvent;
+    def RsRiEvent;
+    def RsGroup;
+    def RsService;
+    def RsObjectState;
+    def RsInMaintenance;
+    def RsInMaintenanceSchedule;
+    def RsEventJournal;
+    def RsHistoricalEvent;
+    def RsHeartBeat;
+
+    def RsEventOperations;
+    def RsRiEventOperations;
+    def RsHistoricalEventOperations;
+    def RsEventJournalOperations;
+    def RsTopologyObjectOperations;
+
     public void setUp() {
         super.setUp();
+
+
+        ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
+               setProperty(className,gcl.loadClass(className));
+        }
+
+        ["RsEventOperations", "RsRiEventOperations","RsHistoricalEventOperations","RsEventJournalOperations", "RsTopologyObjectOperations"].each{ className ->
+               setProperty(className,gcl.loadClass(className));
+        }
+
         classes = [:];
         //to run in Hudson
         base_directory = "../../../RapidModules/RapidInsight";
@@ -59,7 +90,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         RsApplicationTestUtils.clearUtilityPaths();
         ListeningAdapterManager.getInstance().destroyInstance();
         if(ConnectionManager.isInitialized()){
-            ConnectionManager.destroy();    
+            ConnectionManager.destroy();
         }
         super.tearDown();
 
@@ -425,4 +456,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 }
+
+
 

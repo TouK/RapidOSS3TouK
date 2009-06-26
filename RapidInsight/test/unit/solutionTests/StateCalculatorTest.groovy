@@ -1,3 +1,5 @@
+package solutionTests
+
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
@@ -14,6 +16,12 @@ import application.RsApplication
 class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
     static def classes = [:];
     def base_directory = "";
+
+    static def RsTopologyObject=null;
+    static def RsObjectState=null;
+    static def RsEvent=null;
+    static def RsGroup=null
+    static def Constants=null;
 
     public void setUp() {
         super.setUp();
@@ -43,19 +51,15 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.enableGlobally();
     }
     public static void clearClasses()
-    {            
+    {
         getClasses().StateCalculator.setToDefault();
         classes=[:];
     }
     public def initializeClasses()
     {
-        base_directory = "../../../RapidModules/RapidInsight";
-        def canonicalPath=new File(".").getCanonicalPath();
-        //to run in developer pc
-        if(canonicalPath.endsWith("RapidModules"))
-        {
-            base_directory = "RapidInsight";
-        }
+        StateCalculatorTest.loadDefaultClasses(gcl);
+
+        base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
 
         def classMap = [:];
 
@@ -69,10 +73,17 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         StateCalculatorTest.initializeClassesFrom(classMap);
     }
+
     public File getOperationPathAsFile(fromPlugin, opdir, opfile)
     {
         def plugin_base_dir = "${base_directory}";
         return new File("${plugin_base_dir}/${opdir}/${opfile}.groovy");
+    }
+    public static void loadDefaultClasses(gcl)
+    {
+        ["RsTopologyObject","RsObjectState","RsEvent","RsGroup","Constants"].each{ className ->
+            setProperty(className,gcl.loadClass(className));
+        }
     }
     public static def initializeClassesFrom(classesToLoad)
     {
@@ -501,7 +512,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
         assertEquals(0, callParams.size());
 
     }
-    
+
     public static void testSetState()
     {
         def _Constants=getClasses().Constants;
@@ -652,7 +663,7 @@ class StateCalculatorTest extends RapidCmdbWithCompassTestCase{
 
         int findMaxSeverityReturnValue;
         int criticalPercentReturnValue;
-        
+
         def findMaxSeverityCallParams = [:]
         def criticalPercentCallParams = [:]
 

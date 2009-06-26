@@ -23,9 +23,11 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         classes.RrdVariable=loadClass("RrdVariable");
         classes.RrdArchive=loadClass("RrdArchive");
+        classes.RrdGraphTemplate=loadClass("RrdGraphTemplate");
 
-        initialize([classes.RrdVariable,classes.RrdArchive], []);
+        initialize([classes.RrdVariable,classes.RrdArchive,classes.RrdGraphTemplate], []);
         CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
+        CompassForTests.addOperationSupport(classes.RrdGraphTemplate, loadClass("RrdGraphTemplateOperations"));
         new File(rrdFileName).delete();
     }
     def loadClass(className)
@@ -712,6 +714,69 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
+    public void testOneDatasourceGraphSuccessfullyWithTemplate()  throws Exception{
+        Map config = [:]
+
+        config[RrdUtils.DATABASE_NAME] = rrdFileName
+
+        config[RrdUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[RrdUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[RrdUtils.START_TIME] = 978300900;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900, archives: [archive1])
+        classes.RrdGraphTemplate.add(["name":"tName", "description":"desc",
+                    "title":"title", "type":"line",
+                    "verticalLabel":"kmh", "width":100, "description":"cpu util",
+                    "type":"area","color":"234231"]);
+
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
+        map[Grapher.END_TIME] = 978303900;
+        map[Grapher.GRAPH_TEMPLATE] = "tName";
+
+
+        byte[] bytes = Grapher.graphOneVariable(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
     public void testOneDatasourceGraphWithRpnSuccessfully()  throws Exception{
         Map config = [:]
 
@@ -774,5 +839,13 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
+//    public void testGraphTemplate() throws Exception{
+//          Map map = [name:"tName", description:"desc",
+//                    min:0, title:"title", type:"line",
+//                    verticalLabel:"kmh", width:100]
+//          loadClass("RrdGraphTemplate").add(map);
+//          Grapher.getGeneralSettingsMap ([startTime:3243426,endTime:4243426,
+//                                        templateName:"tName"]);
+//    }
 
 }

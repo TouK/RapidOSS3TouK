@@ -24,41 +24,41 @@
             <tbody>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Name:</td>
+                    <td valign="top" class="name" id="nameLabel" >Name:</td>
 
-                    <td valign="top" class="value">${snmpConnector.name}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name">Host:</td>
-
-                    <td valign="top" class="value">${snmpConnector?.connection?.host}</td>
+                    <td valign="top" class="value" id="name" >${snmpConnector.name}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">Port:</td>
-                    <td valign="top" class="value">${snmpConnector?.connection?.port}</td>
-                </tr>
-                <tr class="prop">
-                    <td valign="top" class="name">Script File:</td>
-                    <td valign="top" class="value">${snmpConnector?.script?.scriptFile}</td>
-                </tr>
-                <tr class="prop">
-                    <td valign="top" class="name">Log Level:</td>
+                    <td valign="top" class="name" id="hostLabel"  >Host:</td>
 
-                    <td valign="top" class="value">${snmpConnector?.script?.logLevel}</td>
+                    <td valign="top" class="value" id="host" >${snmpConnector?.connection?.host}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name" id="portLabel"  >Port:</td>
+                    <td valign="top" class="value" id="port" >${snmpConnector?.connection?.port}</td>
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Use Own Log File:</td>
-
-                    <td valign="top" class="value">${snmpConnector?.script?.logFileOwn}</td>
+                    <td valign="top" class="name" id="scriptFileLabel" >Script File:</td>
+                    <td valign="top" class="value" id="scriptFile" >${snmpConnector?.script?.scriptFile}</td>
                 </tr>
                 <tr class="prop">
-                    <td valign="top" class="name">Static Parameter:</td>
+                    <td valign="top" class="name" id="logLevelLabel"  >Log Level:</td>
 
-                    <td valign="top" class="value">${snmpConnector?.script?.staticParam}</td>
+                    <td valign="top" class="value" id="logLevel" >${snmpConnector?.script?.logLevel}</td>
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name" id="logFileOwnLabel" >Use Own Log File:</td>
+
+                    <td valign="top" class="value" id="logFileOwn" >${snmpConnector?.script?.logFileOwn}</td>
+                </tr>
+                <tr class="prop">
+                    <td valign="top" class="name" id="staticParamLabel" >Static Parameter:</td>
+
+                    <td valign="top" class="value" id="staticParam" >${snmpConnector?.script?.staticParam}</td>
                 </tr>
             </tbody>
         </table>

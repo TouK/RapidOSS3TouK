@@ -284,6 +284,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 		selenium.type("name", "clear");
 		selenium.click("//input[@value='Create']");
 		selenium.waitForPageToLoad("30000");
+		selenium.click("_action_Run");
+		selenium.waitForPageToLoad("30000");
 
 
       deleteSNMPConnector(snmp1Id) ;
@@ -295,12 +297,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
       deleteScript(clearScriptId)
       deleteScriptFile("clear.groovy")
 
-
-
-
-
       }
-
 
 
   public String eventSnmpContent()

@@ -21,7 +21,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RrdVariable, RrdVariableOperations);
         def rrdFile = new File(fileName);
         def imageFile = new File(imageFileName)
-        assertTrue(rrdFile.mkdirs());
+        rrdFile.mkdirs();
         rrdFile.delete();
         imageFile.delete();
     }
@@ -225,14 +225,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"GAUGE", heartbeat:300, file: fileName,
-                                       startTime:9000, step:300, archives: archive)
+                                       startTime:9000000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:9300, value:500)
+        variable.updateDB(time:9300000, value:500)
 
-        assertEquals(500D, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300L, 9300L)[0])
+        assertEquals(500D, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300000L, 9300000L)[0])
     }
 
     public void testUpdateOnlyValue() {
@@ -258,14 +258,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"GAUGE", heartbeat:300, file: fileName,
-                                       startTime:9000, step:300, archives: archive)
+                                       startTime:9000000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB( [[time:9300L, value:5], [time:9600L, value:10], [time:9900L, value:15]] )
+        variable.updateDB( [[time:9300000L, value:5], [time:9600000L, value:10], [time:9900000L, value:15]] )
 
-        assertEquals([5D,10D,15D], RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300, 9900)[0,1,2])
+        assertEquals([5D,10D,15D], RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300000, 9900000)[0,1,2])
     }
 
     public void testGraphWithoutTemplate() {
@@ -278,28 +278,28 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400L, archives: [archive1, archive2])
+                                       startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:920804700L, value:12345)
-        variable.updateDB(time:920805000L, value:12357)
-        variable.updateDB(time:920805300L, value:12363)
-        variable.updateDB(time:920805600L, value:12363)
-        variable.updateDB(time:920805900L, value:12363)
-        variable.updateDB(time:920806200L, value:12373)
-        variable.updateDB(time:920806500L, value:12383)
-        variable.updateDB(time:920806800L, value:12393)
-        variable.updateDB(time:920807100L, value:12399)
-        variable.updateDB(time:920807400L, value:12405)
-        variable.updateDB(time:920807700L, value:12411)
-        variable.updateDB(time:920808000L, value:12415)
-        variable.updateDB(time:920808300L, value:12420)
-        variable.updateDB(time:920808600L, value:12422)
-        variable.updateDB(time:920808900L, value:12423)
+        variable.updateDB(time:920804700000L, value:12345)
+        variable.updateDB(time:920805000000L, value:12357)
+        variable.updateDB(time:920805300000L, value:12363)
+        variable.updateDB(time:920805600000L, value:12363)
+        variable.updateDB(time:920805900000L, value:12363)
+        variable.updateDB(time:920806200000L, value:12373)
+        variable.updateDB(time:920806500000L, value:12383)
+        variable.updateDB(time:920806800000L, value:12393)
+        variable.updateDB(time:920807100000L, value:12399)
+        variable.updateDB(time:920807400000L, value:12405)
+        variable.updateDB(time:920807700000L, value:12411)
+        variable.updateDB(time:920808000000L, value:12415)
+        variable.updateDB(time:920808300000L, value:12420)
+        variable.updateDB(time:920808600000L, value:12422)
+        variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400L, endTime:920808000L,
+        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L,
                        vlabel:"Vertical Label", color:"FF0000", type:"line", description:"Red Line")
         
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
@@ -316,28 +316,28 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400L, archives: [archive1, archive2])
+                                       startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:920804700L, value:12345)
-        variable.updateDB(time:920805000L, value:12357)
-        variable.updateDB(time:920805300L, value:12363)
-        variable.updateDB(time:920805600L, value:12363)
-        variable.updateDB(time:920805900L, value:12363)
-        variable.updateDB(time:920806200L, value:12373)
-        variable.updateDB(time:920806500L, value:12383)
-        variable.updateDB(time:920806800L, value:12393)
-        variable.updateDB(time:920807100L, value:12399)
-        variable.updateDB(time:920807400L, value:12405)
-        variable.updateDB(time:920807700L, value:12411)
-        variable.updateDB(time:920808000L, value:12415)
-        variable.updateDB(time:920808300L, value:12420)
-        variable.updateDB(time:920808600L, value:12422)
-        variable.updateDB(time:920808900L, value:12423)
+        variable.updateDB(time:920804700000L, value:12345)
+        variable.updateDB(time:920805000000L, value:12357)
+        variable.updateDB(time:920805300000L, value:12363)
+        variable.updateDB(time:920805600000L, value:12363)
+        variable.updateDB(time:920805900000L, value:12363)
+        variable.updateDB(time:920806200000L, value:12373)
+        variable.updateDB(time:920806500000L, value:12383)
+        variable.updateDB(time:920806800000L, value:12393)
+        variable.updateDB(time:920807100000L, value:12399)
+        variable.updateDB(time:920807400000L, value:12405)
+        variable.updateDB(time:920807700000L, value:12411)
+        variable.updateDB(time:920808000000L, value:12415)
+        variable.updateDB(time:920808300000L, value:12420)
+        variable.updateDB(time:920808600000L, value:12422)
+        variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400L, endTime:920808000L)
+        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L)
 
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
@@ -353,28 +353,28 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400L, step:300, archives: [archive1, archive2])
+                                       startTime:920804400000L, step:300, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:920804700L, value:12345)
-        variable.updateDB(time:920805000L, value:12357)
-        variable.updateDB(time:920805300L, value:12363)
-        variable.updateDB(time:920805600L, value:12363)
-        variable.updateDB(time:920805900L, value:12363)
-        variable.updateDB(time:920806200L, value:12373)
-        variable.updateDB(time:920806500L, value:12383)
-        variable.updateDB(time:920806800L, value:12393)
-        variable.updateDB(time:920807100L, value:12399)
-        variable.updateDB(time:920807400L, value:12405)
-        variable.updateDB(time:920807700L, value:12411)
-        variable.updateDB(time:920808000L, value:12415)
-        variable.updateDB(time:920808300L, value:12420)
-        variable.updateDB(time:920808600L, value:12422)
-        variable.updateDB(time:920808900L, value:12423)
+        variable.updateDB(time:920804700000L, value:12345)
+        variable.updateDB(time:920805000000L, value:12357)
+        variable.updateDB(time:920805300000L, value:12363)
+        variable.updateDB(time:920805600000L, value:12363)
+        variable.updateDB(time:920805900000L, value:12363)
+        variable.updateDB(time:920806200000L, value:12373)
+        variable.updateDB(time:920806500000L, value:12383)
+        variable.updateDB(time:920806800000L, value:12393)
+        variable.updateDB(time:920807100000L, value:12399)
+        variable.updateDB(time:920807400000L, value:12405)
+        variable.updateDB(time:920807700000L, value:12411)
+        variable.updateDB(time:920808000000L, value:12415)
+        variable.updateDB(time:920808300000L, value:12420)
+        variable.updateDB(time:920808600000L, value:12422)
+        variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400L, endTime:920808000L,
+        byte[] data = variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400000L, endTime:920808000000L,
                        rpn:"variable,1000,*")
 
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
@@ -388,43 +388,43 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
                                        type:"GAUGE", heartbeat:600, file: fileName,
-                                       startTime:978300900L, archives: [archive])
+                                       startTime:978300900000L, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
         def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
                                         type:"COUNTER", heartbeat:600, file:fileNameExt,
-                                        startTime:978300900L, archives: [archive])
+                                        startTime:978300900000L, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
         variable1.createDB()
         variable2.createDB()
 
-        variable1.updateDB(time:978301200, value:1)
-        variable1.updateDB(time:978301500, value:3)
-        variable1.updateDB(time:978301800, value:5)
-        variable1.updateDB(time:978302100, value:3)
-        variable1.updateDB(time:978302400, value:1)
-        variable1.updateDB(time:978302700, value:2)
-        variable1.updateDB(time:978303000, value:4)
-        variable1.updateDB(time:978303300, value:6)
-        variable1.updateDB(time:978303600, value:4)
-        variable1.updateDB(time:978303900, value:2)
+        variable1.updateDB(time:978301200000, value:1)
+        variable1.updateDB(time:978301500000, value:3)
+        variable1.updateDB(time:978301800000, value:5)
+        variable1.updateDB(time:978302100000, value:3)
+        variable1.updateDB(time:978302400000, value:1)
+        variable1.updateDB(time:978302700000, value:2)
+        variable1.updateDB(time:978303000000, value:4)
+        variable1.updateDB(time:978303300000, value:6)
+        variable1.updateDB(time:978303600000, value:4)
+        variable1.updateDB(time:978303900000, value:2)
 
-        variable2.updateDB(time:978301200, value:300)
-        variable2.updateDB(time:978301500, value:600)
-        variable2.updateDB(time:978301800, value:900)
-        variable2.updateDB(time:978302100, value:1200)
-        variable2.updateDB(time:978302400, value:1500)
-        variable2.updateDB(time:978302700, value:1800)
-        variable2.updateDB(time:978303000, value:2100)
-        variable2.updateDB(time:978303300, value:2400)
-        variable2.updateDB(time:978303600, value:2700)
-        variable2.updateDB(time:978303900, value:3000)
+        variable2.updateDB(time:978301200000, value:300)
+        variable2.updateDB(time:978301500000, value:600)
+        variable2.updateDB(time:978301800000, value:900)
+        variable2.updateDB(time:978302100000, value:1200)
+        variable2.updateDB(time:978302400000, value:1500)
+        variable2.updateDB(time:978302700000, value:1800)
+        variable2.updateDB(time:978303000000, value:2100)
+        variable2.updateDB(time:978303300000, value:2400)
+        variable2.updateDB(time:978303600000, value:2700)
+        variable2.updateDB(time:978303900000, value:3000)
 
         def config = [:]
         config[Grapher.TITLE] = "Graph With Multiple Source"
-        config[Grapher.START_TIME] = 978300600L
-        config[Grapher.END_TIME] = 978304200L
+        config[Grapher.START_TIME] = 978300600000L
+        config[Grapher.END_TIME] = 978304200000L
 
         config[Grapher.RRD_VARIABLES] = []
         config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
@@ -446,32 +446,32 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
                                        type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400L, step:300, archives: [archive1, archive2])
+                                       startTime:920804400000L, step:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB(time:920804700L, value:12345)
-        variable.updateDB(time:920805000L, value:12357)
-        variable.updateDB(time:920805300L, value:12363)
-        variable.updateDB(time:920805600L, value:12363)
-        variable.updateDB(time:920805900L, value:12363)
-        variable.updateDB(time:920806200L, value:12373)
-        variable.updateDB(time:920806500L, value:12383)
-        variable.updateDB(time:920806800L, value:12393)
-        variable.updateDB(time:920807100L, value:12399)
-        variable.updateDB(time:920807400L, value:12405)
-        variable.updateDB(time:920807700L, value:12411)
-        variable.updateDB(time:920808000L, value:12415)
-        variable.updateDB(time:920808300L, value:12420)
-        variable.updateDB(time:920808600L, value:12422)
-        variable.updateDB(time:920808900L, value:12423)
+        variable.updateDB(time:920804700000L, value:12345)
+        variable.updateDB(time:920805000000L, value:12357)
+        variable.updateDB(time:920805300000L, value:12363)
+        variable.updateDB(time:920805600000L, value:12363)
+        variable.updateDB(time:920805900000L, value:12363)
+        variable.updateDB(time:920806200000L, value:12373)
+        variable.updateDB(time:920806500000L, value:12383)
+        variable.updateDB(time:920806800000L, value:12393)
+        variable.updateDB(time:920807100000L, value:12399)
+        variable.updateDB(time:920807400000L, value:12405)
+        variable.updateDB(time:920807700000L, value:12411)
+        variable.updateDB(time:920808000000L, value:12415)
+        variable.updateDB(time:920808300000L, value:12420)
+        variable.updateDB(time:920808600000L, value:12422)
+        variable.updateDB(time:920808900000L, value:12423)
 
         def config = [:]
         config[Grapher.TITLE] = "Graph With Multiple Source"
-        config[Grapher.START_TIME] = 920804400L
-        config[Grapher.END_TIME] = 920808000L
+        config[Grapher.START_TIME] = 920804400000L
+        config[Grapher.END_TIME] = 920808000000L
 
         config[Grapher.RRD_VARIABLES] = []
         config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])

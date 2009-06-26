@@ -53,7 +53,8 @@ class RrdUtils {
         if (config.containsKey(START_TIME) || config.containsKey("${START_TIME}"))
         {
             try {
-                rrdDef.setStartTime(config.get(START_TIME))
+                long ntime = (long)(config.get(START_TIME) / 1000)
+                rrdDef.setStartTime(ntime)
             }
             catch (MissingMethodException e) {
                 throw new Exception("Start time is not valid");
@@ -84,6 +85,7 @@ class RrdUtils {
         RrdDb rrdDb = new RrdDb(rrdDef);
         rrdDb.close();
     }
+
     /**
     * removes database specified with its path from the system
     */
@@ -98,10 +100,10 @@ class RrdUtils {
     /**
     * checks whether the database file exists
     */
-
     public static boolean isDatabaseExists(String fileName) {
         return new File(fileName).exists()
     }
+
     /**
     *  returns the DsDef classes of given list of maps holding DsDef properties
     */
@@ -121,6 +123,7 @@ class RrdUtils {
        }
        return dsList as DsDef[]
     }
+
     /**
     *  returns the ArcDef classes of given list of maps holding ArcDef properties
     */
@@ -132,6 +135,7 @@ class RrdUtils {
        }
        return arcList as ArcDef[]
     }
+
     /**
     * inserts a data to the rrd database
     * sample data is "timestamp:variable1:variable2:...:variablen"
@@ -141,9 +145,21 @@ class RrdUtils {
         RrdDb rrdDb = new RrdDb(dbname);
 
         Sample sample = rrdDb.createSample();
-        sample.setAndUpdate(data);
+
+        String[] stime = data.split(":")
+
+        long ntime = Long.parseLong(stime[0]);
+        ntime = (long)(ntime / 1000)
+
+        String ndata = "" + ntime
+        for(int i = 1; i < stime.length; i++){
+            ndata = ndata + ":" + stime[i]    
+        }
+
+        sample.setAndUpdate(ndata);
         rrdDb.close();
     }
+
     /**
     *  inserts an array of data to the database at a time
     */
@@ -152,7 +168,15 @@ class RrdUtils {
 
         Sample sample = rrdDb.createSample();
         for(int i=0; i<data.length; i++){
-            sample.setAndUpdate(data[i]);
+            String[] stime = data[i].split(":")
+            long ntime = Long.parseLong(stime[0]);
+            ntime = (long)(ntime / 1000)
+
+            String ndata = "" + ntime
+            for(int j = 1; j < stime.length; j++){
+                ndata = ndata + ":" + stime[j]
+            }
+            sample.setAndUpdate(ndata);
         }
         rrdDb.close();
     }
@@ -168,6 +192,7 @@ class RrdUtils {
             return Grapher.graph(config);
         }
     }
+
     /**
     * retrieves defined archived in speficied database
     * Notice: it is better to use overriden function fetchArchives(rrdDb) if an rrdDb is
@@ -202,6 +227,7 @@ class RrdUtils {
 
         return alist;
     }
+
     /**
     * retrieves defined datasources in speficied database
     * Notice: it is better to use overriden function fetchDatasources(rrdDb) if an rrdDb is
@@ -235,6 +261,7 @@ class RrdUtils {
         }
         return dslist;
     }
+
     /**
     *  returns the configuration map of specified rrd database
     */
@@ -244,7 +271,7 @@ class RrdUtils {
 
         Map config = [:];
         config[DATABASE_NAME] = dbName;
-        config[START_TIME] = rrdDef.getStartTime();
+        config[START_TIME] = rrdDef.getStartTime() * 1000;
         config[STEP] = rrdDef.getStep();
         config[DATASOURCE] = fetchDatasources(rrdDb );
         config[ARCHIVE] = fetchArchives(rrdDb);
@@ -252,6 +279,7 @@ class RrdUtils {
         rrdDb.close();
         return config;
     }
+
     /**
     *  returns first time series of first data point
     *  it is the easiest call if the database has only one data source
@@ -259,6 +287,7 @@ class RrdUtils {
     public static double[] fetchData(String dbName){
         return   fetchAllData(dbName)[0];
     }
+
     /**
     * returns the all datasources in the database according to the first archive method.
     */
@@ -276,6 +305,7 @@ class RrdUtils {
         long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
+
     /**
     * returns time series of one data index specified with its datasource name
     */
@@ -288,6 +318,7 @@ class RrdUtils {
         long startTime = arclist[0][START_TIME];
         return fetchData(dbName, datasource, function, startTime, endTime);
     }
+
     /**
     *  returns time series of one data index specified with its datasource name,
     * archive function of datasource, start time and end time
@@ -308,7 +339,11 @@ class RrdUtils {
             throw new Exception("data source not found")
             return null;
         }
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, startTime, endTime);
+
+        long nstarttime = (long)(startTime / 1000)
+        long nendtime = (long)(endTime / 1000)
+
+        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
 
         double[] data = fetchRequest.fetchData().getValues(datasource)
         rrdDb.close();
@@ -326,6 +361,7 @@ class RrdUtils {
         rrdDb.close();
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
+
     /**
     *  returns time series of data indexes specified with its datasource names,
     * archive function of datasource, start time and end time
@@ -333,7 +369,9 @@ class RrdUtils {
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
         RrdDb rrdDb = new RrdDb(dbName);
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, startTime, endTime);
+        long nstarttime = (long)(startTime / 1000)
+        long nendtime = (long)(endTime / 1000)
+        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
         fetchRequest.setFilter (datasources);
 
         double[][] data = fetchRequest.fetchData().getValues();

@@ -115,7 +115,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400L;
+        config[RrdUtils.START_TIME] = 920804400000L;
 
         RrdUtils.createDatabase(config);
 
@@ -166,7 +166,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400L;
+        config[RrdUtils.START_TIME] = 920804400000L;
 
         RrdUtils.createDatabase(config);
 
@@ -229,7 +229,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400L;
+        config[RrdUtils.START_TIME] = 920804400000L;
 
         assertTrue(!(RrdUtils.isDatabaseExists(rrdFileName)))
 
@@ -506,24 +506,24 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:100,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900;
+        config[RrdUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
-        RrdUtils.updateData(rrdFileName,"978301200:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         RrdDb rrdDb = new RrdDb(rrdFileName);
+        /* note that Jrobin works with time in seconds not milliseconds as java do */
         FetchRequest fetchRequest = rrdDb.createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
-//        fetchData.println();
 
          def values = fetchData.getValues("a");
          rrdDb.close();
@@ -541,7 +541,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataThrowsException() throws Exception{
         Map config = [:]
-
 
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
 
@@ -566,19 +565,19 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:100,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900;
+        config[RrdUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         try{
             RrdUtils.fetchData(rrdFileName,"c");
@@ -591,7 +590,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
 
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
 
         config[RrdUtils.DATASOURCE] = [
@@ -615,19 +613,19 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900;
+        config[RrdUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         RrdUtils.fetchData(rrdFileName,"a");
         RrdUtils.fetchData(rrdFileName,"b");
@@ -639,7 +637,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
     public void testFetchDataByDatabaseNameOnly() throws Exception{
         Map config = [:]
 
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
 
         config[RrdUtils.DATASOURCE] = [
@@ -663,19 +660,19 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900;
+        config[RrdUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900:3300:2");
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         RrdUtils.fetchAllData(rrdFileName);
     }
@@ -701,20 +698,20 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900;
+        config[RrdUtils.START_TIME] = 978300900000;
 
         RrdUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200:200");
-        RrdUtils.updateData(rrdFileName,"978301500:400");
-        RrdUtils.updateData(rrdFileName,"978301800:900");
-        RrdUtils.updateData(rrdFileName,"978302100:1200");
-        RrdUtils.updateData(rrdFileName,"978302400:1400");
-        RrdUtils.updateData(rrdFileName,"978302700:1900");
-        RrdUtils.updateData(rrdFileName,"978303000:2100");
-        RrdUtils.updateData(rrdFileName,"978303300:2400");
-        RrdUtils.updateData(rrdFileName,"978303600:2900");
-        RrdUtils.updateData(rrdFileName,"978303900:3300");
+        RrdUtils.updateData(rrdFileName,"978301200000:200");
+        RrdUtils.updateData(rrdFileName,"978301500000:400");
+        RrdUtils.updateData(rrdFileName,"978301800000:900");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300");
 
         println RrdUtils.fetchData(rrdFileName);
     }

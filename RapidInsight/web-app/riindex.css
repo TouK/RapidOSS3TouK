@@ -1,8 +1,9 @@
 .r-filterTree-groupAdd {
     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -79px;
 }
-.r-mapTree-mapAdd{
-   background: transparent url( images/rapidjs/component/tools/map_add.png ) no-repeat scroll center; 
+
+.r-mapTree-mapAdd {
+    background: transparent url( images/rapidjs/component/tools/map_add.png ) no-repeat scroll center;
 }
 
 .r-filterTree-queryAdd {
@@ -97,9 +98,22 @@
     margin-right: 5px;
 }
 
-.ri-field-error{
+.ri-field-error {
     color: #9F9F9F;
-    font-style:italic;
+    font-style: italic;
+}
+
+.ri-objectdetails-expand {
+    border: 1px solid #CFB39B;
+    color: #666666;
+    font-size: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    background: transparent url( js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0 -1300px;
+    border-color: #BFDAFF;
+    cursor: pointer;
+    width: 80px;
 }
 
 

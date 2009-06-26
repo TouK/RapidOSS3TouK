@@ -35,6 +35,21 @@
     cursor:pointer;
     }
     </style>
+    <script type="text/javascript">
+         window.expandRelations = function(propertyName, relCount){
+            var divEl = document.getElementById(propertyName + '_hiddenObjects');
+            var buttonEl = document.getElementById(propertyName + '_expandButton');
+            if(divEl.style.display == 'none'){
+                divEl.style.display = '';
+                buttonEl.innerHTML = 'Collapse'
+            }
+            else{
+                divEl.style.display = 'none';
+                buttonEl.innerHTML = 'Expand (' + (relCount - 10) + ')';
+            }
+         }
+
+    </script>
     <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">
         <div style="display:block">
             <div>
@@ -47,15 +62,15 @@
                                     <td width="0%" style="font-weight:bold">${propertyName}</td>
                                     <g:if test="${!relations.containsKey(propertyName)}">
                                         <%
-                                            propertyValue=domainObject[propertyName];
-                                            if(dateProperties.contains(propertyName))
+                                            propertyValue = domainObject[propertyName];
+                                            if (dateProperties.contains(propertyName))
                                             {
                                                 propertyValue = format.format(new Timestamp(propertyValue))
                                             }
                                             def fieldHasError = domainObject.hasErrors(propertyName)
                                         %>
-                                        <td ${fieldHasError?'class="ri-field-error"':""}>
-                                            ${fieldHasError?"InAccessible":propertyValue}&nbsp;
+                                        <td ${fieldHasError ? 'class="ri-field-error"' : ""}>
+                                            ${fieldHasError ? "InAccessible" : propertyValue}&nbsp;
                                         </td>
                                     </g:if>
                                     <g:else>
@@ -77,12 +92,35 @@
                                                     <%
                                                         def relatedObjects = domainObject[propertyName];
                                                         def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
-                                                        sortedRelatedObjects.each {
                                                     %>
-                                                    <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${it.name}'}), 'Details of ${it.className} ${it.name}');">${it.className} ${it.name}</a></li>
-                                                    <%
-                                                        }
-                                                    %>
+                                                    <g:if test="${sortedRelatedObjects.size() > 10}">
+                                                        <div>
+                                                            <%
+                                                                for (j in 0..9) {
+                                                            %>
+                                                            <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
+                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                            <%
+                                                                }
+                                                            %>
+                                                        </div>
+                                                        <div style="display:none" id="${propertyName}_hiddenObjects">
+                                                            <%
+                                                                for (int j=10; j< sortedRelatedObjects.size(); j++) {
+                                                            %>
+                                                            <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
+                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                            <%
+                                                                }
+                                                            %>
+                                                        </div>
+                                                        <div class="ri-objectdetails-expand" id="${propertyName}_expandButton" onclick="window.expandRelations('${propertyName}', ${sortedRelatedObjects.size()});">Expand (${sortedRelatedObjects.size() - 10})</div>
+                                                    </g:if>
+                                                    <g:else>
+                                                        <g:each var="rObj" in="${sortedRelatedObjects}">
+                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                        </g:each>
+                                                    </g:else>
                                                 </ul>
                                             </td>
                                         </g:else>

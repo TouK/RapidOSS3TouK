@@ -27,7 +27,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
         initialize([classes.RrdVariable,classes.RrdArchive,classes.RrdGraphTemplate], []);
         CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
-        CompassForTests.addOperationSupport(classes.RrdGraphTemplate, loadClass("RrdGraphTemplateOperations"));
+
         new File(rrdFileName).delete();
     }
     def loadClass(className)

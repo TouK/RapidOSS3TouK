@@ -5,12 +5,12 @@ import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
 /**
- * Created by IntelliJ IDEA.
- * User: fadime
- * Date: Jun 23, 2009
- * Time: 9:28:20 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: fadime
+* Date: Jun 23, 2009
+* Time: 9:28:20 PM
+* To change this template use File | Settings | File Templates.
+*/
 class AdminUiSnmpTabTest extends SeleniumTestCase
 {
     void setUp() throws Exception
@@ -342,6 +342,22 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
   }
 
 
+     public String contentEventVal
+     {
+         return """
+         if(param.file.equals("RsEvent"))
+         {
+             def  notificationCount = RsEvent.search("source:NMD2").total
+             return notificationCount;
+         }
+         if(param.file.equals("RsHistoricalEvent"))
+        {
+            def  notificationCount = RsHistoricalEvent.search("source:NMD2").total
+            return notificationCount;
+        }
+        """
 
+
+ }
 
 }

@@ -5,6 +5,7 @@ import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
 import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import org.apache.commons.io.FileUtils
 * To change this template use File | Settings | File Templates.
 */
 class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
-     def static script_base_directory = "../testoutput/";
+     def base_directory ;
      def managerInitialized=false;
      def classes=[:];
 
@@ -32,13 +33,6 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
         CompassForTests.addOperationSupport (Statistics,StatisticsOperations);
 
         initializeScriptManager();
-        def script=CmdbScript.addScript([name:"enableInstrumentation",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
-        def script2=CmdbScript.addScript([name:"disableInstrumentation",type: CmdbScript.ONDEMAND])
-        assertFalse(script2.hasErrors());
-
-        def script3=CmdbScript.addScript([name:"createInstrumentationParameters",type: CmdbScript.ONDEMAND])
-        assertFalse(script3.hasErrors());
     }
 
     public void tearDown() {
@@ -47,22 +41,11 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
     }
     void initializeScriptManager()
     {
-        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
+        base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
-        if (new File(script_base_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(script_base_directory));
-        }
-        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
 
-        ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
-
-
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/enableInstrumentation.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/disableInstrumentation.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/createInstrumentationParameters.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+        ScriptManagerForTest.initialize (gcl,base_directory);
 
     }
 
@@ -72,14 +55,14 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
         assertFalse(Statistics.isEnabledGlobally());
 
-        def result=CmdbScript.runScript("enableInstrumentation",[:]);
+        def result=ScriptManagerForTest.runScript("enableInstrumentation",[:]);
         assertTrue(Statistics.isEnabledGlobally());
 
 
-        result=CmdbScript.runScript("disableInstrumentation",[:]);
+        result=ScriptManagerForTest.runScript("disableInstrumentation",[:]);
         assertFalse(Statistics.isEnabledGlobally());
 
-        result=CmdbScript.runScript("enableInstrumentation",[:]);
+        result=ScriptManagerForTest.runScript("enableInstrumentation",[:]);
         assertTrue(Statistics.isEnabledGlobally());
     }
 
@@ -89,7 +72,7 @@ class InstrumentationScriptsTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(0,InstrumentationParameters.countHits("alias:*"));
 
-        CmdbScript.runScript("createInstrumentationParameters",[:]);
+        ScriptManagerForTest.runScript("createInstrumentationParameters",[:]);
 
         assertEquals(paramList.size(),InstrumentationParameters.countHits("alias:*"));
 

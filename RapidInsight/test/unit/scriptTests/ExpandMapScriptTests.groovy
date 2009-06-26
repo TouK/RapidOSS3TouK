@@ -1,11 +1,7 @@
 package scriptTests
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.scripting.ScriptManager
-import script.CmdbScript
-import script.CmdbScriptOperations
-import com.ifountain.rcmdb.test.util.CompassForTests
-import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,7 +12,7 @@ import org.apache.commons.io.FileUtils
 */
 class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
-    def static script_base_directory = "../testoutput/";
+
     def RsComputerSystem;
     def RsTopologyObject;
     def RsLink;
@@ -28,11 +24,10 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
              setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink], []);
-        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        initialize([RsComputerSystem,RsTopologyObject,RsLink], []);
+
         initializeScriptManager();
-        def script=CmdbScript.addScript([name:"expandMap",type: CmdbScript.ONDEMAND],true)
-        assertFalse(script.errors.toString(),script.hasErrors());
+
     }
 
     public void tearDown() {
@@ -41,25 +36,13 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     void initializeScriptManager()
     {
-        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
-        if (new File(script_base_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(script_base_directory));
-        }
-        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-
-        ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
-
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/expandMap.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/mapConfiguration.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-
+        ScriptManagerForTest.initialize (gcl,base_directory);
     }
     public void testExpandMapWith1Node()
     {
-
         def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
         assertFalse(source.hasErrors())
 
@@ -540,9 +523,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
      def getExpandMapData(params){
         params.nodePropertyList="name,expanded,x,y"
 
-        def script=CmdbScript.get(name:"expandMap")
 
-        def scriptResult=CmdbScript.runScript(script,["params":params]);
+        def scriptResult=ScriptManagerForTest.runScript("expandMap",["params":params]);
 
         def resultXml = new XmlSlurper().parseText(scriptResult);
 
@@ -575,6 +557,3 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 }
-
-
-

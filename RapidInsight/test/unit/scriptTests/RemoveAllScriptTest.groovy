@@ -1,13 +1,10 @@
 package scriptTests
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.scripting.ScriptManager
-import com.ifountain.rcmdb.test.util.CompassForTests
-import script.CmdbScript
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
-import script.CmdbScriptOperations
 import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -44,9 +41,9 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         parentClass = gcl.loadClass(model1Name)
         childClass = gcl.loadClass(model2Name)
         model3Class = gcl.loadClass(model3Name)
-        def compassClasses = [CmdbScript, parentClass, childClass, model3Class];
+        def compassClasses = [ parentClass, childClass, model3Class];
         initialize(compassClasses, []);
-        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
+
     }
 
     public void tearDown() {
@@ -55,8 +52,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
     }
     void initializeScriptManager()
     {
-        ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(gcl, baseDir, [], [:]);
+        ScriptManagerForTest.initialize (gcl,"${baseDir}/scripts");
     }
 
     void copyScriptFile()
@@ -74,8 +70,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
     {
         copyScriptFile();
         initializeScriptManager();
-        def script = CmdbScript.addScript([name: "removeAll", type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
+        
         def allObjects = [];
         allObjects << parentClass.add(prop1: "obj1");
         allObjects << parentClass.add(prop1: "obj2");
@@ -86,11 +81,11 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
-        CmdbScript.runScript(script, [:])
+        ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count());
         assertEquals(0, childClass.count());
         assertEquals(0, model3Class.count());
-        assertEquals(1, CmdbScript.count());
+
     }
 
     public void testRemoveAllWithExcludedModelList()
@@ -103,8 +98,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
 
         removeAllScriptCopiedTargetFile.setText (scriptText);
         initializeScriptManager();
-        def script = CmdbScript.addScript([name: "removeAll", type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
+
         def allObjects = [];
         allObjects << parentClass.add(prop1: "obj1");
         allObjects << parentClass.add(prop1: "obj2");
@@ -115,11 +109,11 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
-        CmdbScript.runScript(script, [:])
+        ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count());
         assertEquals(0, childClass.count());
         assertEquals(2, model3Class.count());
-        assertEquals(1, CmdbScript.count());
+        
     }
 
     public void testRemoveAllWithExcludedModelListIncludingChildModelName()
@@ -132,8 +126,7 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
 
         removeAllScriptCopiedTargetFile.setText (scriptText);
         initializeScriptManager();
-        def script = CmdbScript.addScript([name: "removeAll", type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
+
         def allObjects = [];
         allObjects << parentClass.add(prop1: "obj1");
         allObjects << parentClass.add(prop1: "obj2");
@@ -144,10 +137,10 @@ class RemoveAllScriptTest extends RapidCmdbWithCompassTestCase {
         allObjects.each {
             assertFalse(it.hasErrors());
         }
-        CmdbScript.runScript(script, [:])
+        ScriptManagerForTest.runScript("removeAll", [:])
         assertEquals(0, parentClass.count()-childClass.count());
         assertEquals(2, childClass.count());
         assertEquals(0, model3Class.count());
-        assertEquals(1, CmdbScript.count());
+        
     }
 }

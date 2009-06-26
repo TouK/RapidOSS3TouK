@@ -1,13 +1,12 @@
 package scriptTests
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.scripting.ScriptManager
-import script.CmdbScript
-import script.CmdbScriptOperations
+
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 import application.RsApplication
-import org.apache.commons.io.FileUtils
+
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,7 +17,7 @@ import org.apache.commons.io.FileUtils
 */
 class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
-    def static script_base_directory = "../testoutput/";
+
 
     def RsComputerSystem;
     def RsTopologyObject;
@@ -34,15 +33,13 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
              setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsApplication], []);
-        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        initialize([RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsApplication], []);
         CompassForTests.addOperationSupport (RsComputerSystem,RsComputerSystemOperations);
         CompassForTests.addOperationSupport (RsLink,RsLinkOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
 
         initializeScriptManager();
-        def script=CmdbScript.addScript([name:"getMapData",type: CmdbScript.ONDEMAND],true)
-        assertFalse(script.errors.toString(),script.hasErrors());
+
     }
 
     public void tearDown() {
@@ -51,22 +48,10 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     void initializeScriptManager()
     {
-        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
 
-        if (new File(script_base_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(script_base_directory));
-        }
-        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-
-        ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
-
-
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/getMapData.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/mapConfiguration.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-
+        ScriptManagerForTest.initialize (gcl,base_directory);
 
     }
     public void testGetMapDataWith1Node()
@@ -330,9 +315,10 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
      def getMapDataFromScript(params){
         params.nodePropertyList="name"
 
-        def script=CmdbScript.get(name:"getMapData")
+//         FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/getMapData.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
+//         FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/mapConfiguration.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
 
-        def scriptResult=CmdbScript.runScript(script,["params":params]);
+        def scriptResult=ScriptManagerForTest.runScript("getMapData",["params":params]);
 
         def resultXml = new XmlSlurper().parseText(scriptResult);
 

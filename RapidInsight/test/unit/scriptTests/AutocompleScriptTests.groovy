@@ -2,11 +2,7 @@ package scriptTests
 
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.scripting.ScriptManager
-import script.CmdbScript
-import script.CmdbScriptOperations
-import com.ifountain.rcmdb.test.util.CompassForTests
-import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,11 +13,11 @@ import org.apache.commons.io.FileUtils
 */
 class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
-    def static script_base_directory = "../testoutput/";
+
 
     def RsComputerSystem;
     def RsTopologyObject;
-    
+
     public void setUp() {
         super.setUp();
 
@@ -29,8 +25,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
             setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([CmdbScript,RsComputerSystem,RsTopologyObject], []);
-        CompassForTests.addOperationSupport (CmdbScript,CmdbScriptOperations);
+        initialize([RsComputerSystem,RsTopologyObject], []);
         initializeScriptManager();
     }
 
@@ -38,28 +33,14 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
         super.tearDown();
     }
     void initializeScriptManager()
-    {             
-        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight"
+    {
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
-
-        if (new File(script_base_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(script_base_directory));
-        }
-        new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-
-        ScriptManager manager = ScriptManager.getInstance();
-        manager.initialize(this.class.getClassLoader(), script_base_directory, [], [:]);
-
-
-        FileUtils.copyFileToDirectory (new File("${base_directory}/scripts/autocomplete.groovy"),new File("$script_base_directory/$ScriptManager.SCRIPT_DIRECTORY"));
-
+        ScriptManagerForTest.initialize(gcl,base_directory);
 
     }
     public void testAutoCompleteReturnsRsComputerSystemWithMaxAndSort()
     {
-        def script=CmdbScript.addScript([name:"autocomplete",scriptFile:"autocomplete",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
 
         RsTopologyObject.add(name:"obj1");
         assertEquals(1,RsTopologyObject.countHits("alias:*"))
@@ -97,10 +78,6 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testAutoCompleteIgnoresLeftRightSpaceInQuery()
     {
-         def script=CmdbScript.addScript([name:"autocomplete",scriptFile:"autocomplete",type: CmdbScript.ONDEMAND])
-        assertFalse(script.hasErrors());
-
-
         RsComputerSystem.add(name:"a 1");
         RsComputerSystem.add(name:"a 2");
         RsComputerSystem.add(name:"a3");
@@ -119,9 +96,7 @@ class AutocompleScriptTests  extends RapidCmdbWithCompassTestCase {
 
     }
      def getAutoCompleteData(query){
-        def script=CmdbScript.get(name:"autocomplete")
-
-        def result=CmdbScript.runScript(script,["params":["query":query]]);
+        def result=ScriptManagerForTest.runScript("autocomplete",["params":["query":query]]);
 
         def resultXml = new XmlSlurper().parseText(result);
 

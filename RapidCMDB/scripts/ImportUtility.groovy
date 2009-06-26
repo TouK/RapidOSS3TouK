@@ -169,9 +169,14 @@ def importRenamedRelations(web, Map changedRelationNameMap, fname){
 		to=rel.attributes().toObjectId;
 		if (idmapFilledDuringImportObjects.size()>0){
 			from=idmapFilledDuringImportObjects[from];
-			to=idmapFilledDuringImportObjects[to];
+			if (idmapFilledDuringImportObjects[to]!=null){
+				to=idmapFilledDuringImportObjects[to]
+			}
+			else{
+				to = Integer.parseInt(to,10)
+			}
+				
 		}
-		
 		fromModelName=rel.attributes().fromModel
 		toModelName=rel.attributes().toModel
 		def fromModel = web.grailsApplication.getDomainClass(fromModelName).clazz;

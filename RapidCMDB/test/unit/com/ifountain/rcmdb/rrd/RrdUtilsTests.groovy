@@ -29,7 +29,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
     protected void tearDown() {
         super.tearDown();
     }
-
     public void testSuccessfullCreateDatabase() throws Exception{
 
         Map config = [:]

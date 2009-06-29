@@ -293,7 +293,7 @@ class RrdUtils {
 
     }
 
-    public static Map getGeneralSettingsMap(Map config){
+    private static Map getGeneralSettingsMap(Map config){
        if(config.containsKey("templateName")){
            return  getGeneralSettingsMapWithTemplate(config);
        }
@@ -330,7 +330,7 @@ class RrdUtils {
        }
        return fConfig;
     }
-    public static Map getGeneralSettingsMapWithTemplate(Map config){
+    private static Map getGeneralSettingsMapWithTemplate(Map config){
        Map fConfig = [:];
 
        def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));

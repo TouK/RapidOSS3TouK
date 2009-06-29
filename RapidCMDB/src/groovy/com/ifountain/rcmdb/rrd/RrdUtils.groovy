@@ -1,13 +1,10 @@
 package com.ifountain.rcmdb.rrd
 
-import org.jrobin.core.RrdDef
 import org.jrobin.core.RrdDb
 import org.jrobin.core.DsDef
 import org.jrobin.core.ArcDef
-import org.jrobin.core.Sample
-import org.jrobin.core.Archive
-import org.jrobin.core.Datasource
-import org.jrobin.core.FetchRequest
+
+import org.jrobin.graph.RrdGraphDef;
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,124 +13,40 @@ import org.jrobin.core.FetchRequest
 * Time: 9:37:31 AM
 */
 class RrdUtils {
-    public static final String DATABASE_NAME = "databaseName";
-    public static final String DATASOURCE = "datasource";
-    public static final String START_TIME = "startTime";
-    public static final String ARCHIVE = "archive";
-    public static final String STEP = "step";
-
-    public static final String NAME = "name";
-    public static final String TYPE = "type";
-    public static final String HEARTBEAT= "heartbeat";
-    public static final String MAX = "max";
-    public static final String MIN = "min";
-
-    public static final String FUNCTION = "function";
-    public static final String XFF = "xff"
-    public static final String STEPS = "steps"
-    public static final String ROWS = "rows"
 
     /**
     * create a Round Robin database according to the given configuration map
     */
     public static void createDatabase(Map config) {
-        if (!config.containsKey(DATABASE_NAME)) {
-            throw new Exception("Database name is not specified");
-        }
-
-        if (!config.containsKey(DATASOURCE)) {
-            throw new Exception("No Datasource specified");
-        }
-        if (!config.containsKey(ARCHIVE)) {
-            throw new Exception("No archive specified");
-        }
-
-        RrdDef rrdDef = new RrdDef(config.get(DATABASE_NAME));
-
-        if (config.containsKey(START_TIME) || config.containsKey("${START_TIME}"))
-        {
-            try {
-                long ntime = (long)(config.get(START_TIME) / 1000)
-                rrdDef.setStartTime(ntime)
-            }
-            catch (MissingMethodException e) {
-                throw new Exception("Start time is not valid");
-            }
-        }
-
-        if (config.containsKey(STEP))
-        {
-            try {
-                rrdDef.setStep(config.get(STEP))
-            }
-            catch (MissingMethodException e) {
-                throw new Exception("Step is not valid");
-            }
-        }
-
-        try {
-            rrdDef.addDatasource(getDsDefs(config.get(DATASOURCE)));
-        } catch (Exception ex) {
-            throw new Exception("At least one Datasource is distorted: " + ex.getMessage())
-        }
-        try {
-            rrdDef.addArchive(getArcDefs(config.get(ARCHIVE)));
-        } catch (Exception ex) {
-            throw new Exception("At least one Archive is distorted: " + ex.getMessage())
-        }
-
-        RrdDb rrdDb = new RrdDb(rrdDef);
-        rrdDb.close();
+        DbUtils.createDatabase(config);
     }
 
     /**
     * removes database specified with its path from the system
     */
     public static void removeDatabase(String fileName) {
-        File file = new File(fileName)
-        if(file.exists())
-            file.delete()
-        else
-            throw new Exception("File does not exists : " + fileName)
+        DbUtils.removeDatabase( fileName) ;
     }
 
     /**
     * checks whether the database file exists
     */
     public static boolean isDatabaseExists(String fileName) {
-        return new File(fileName).exists()
+        return DbUtils.isDatabaseExists(fileName);
     }
 
     /**
     *  returns the DsDef classes of given list of maps holding DsDef properties
     */
     public static DsDef[] getDsDefs(list){
-        def dsList = [];
-        list.each{
-           double min = Double.NaN
-           double max = Double.NaN
-           if(it.containsKey(MIN) ){
-               min = it.get(MIN)
-           }
-           if(it.containsKey(MAX)){
-               max = it.get(MAX)
-           }
-           DsDef dsTemp = new DsDef(it.get(NAME),it.get(TYPE),it.get(HEARTBEAT), min, max)
-           dsList.add(dsTemp);
-       }
-       return dsList as DsDef[]
+       return DbUtils.getDsDefs(list);
     }
 
     /**
     *  returns the ArcDef classes of given list of maps holding ArcDef properties
     */
     public static ArcDef[] getArcDefs(list){
-        def arcList = [];
-        list.each{
-           ArcDef arcTemp = new ArcDef(it.get(FUNCTION),it.get(XFF),(int)it.get(STEPS),(int)it.get(ROWS))
-           arcList.add(arcTemp);
-       }
-       return arcList as ArcDef[]
+       return DbUtils.getArcDefs(list);
     }
 
     /**
@@ -142,51 +55,22 @@ class RrdUtils {
     * e.g. : "978301200:200:1" or "978301200:200"
     */
     public static void updateData(String dbname, String data){
-        RrdDb rrdDb = new RrdDb(dbname);
-
-        Sample sample = rrdDb.createSample();
-
-        String[] stime = data.split(":")
-
-        long ntime = Long.parseLong(stime[0]);
-        ntime = (long)(ntime / 1000)
-
-        String ndata = "" + ntime
-        for(int i = 1; i < stime.length; i++){
-            ndata = ndata + ":" + stime[i]    
-        }
-
-        sample.setAndUpdate(ndata);
-        rrdDb.close();
+        DbUtils.updateData( dbname,  data);
     }
 
     /**
     *  inserts an array of data to the database at a time
     */
     public static void updateData(String dbname, String[] data){
-        RrdDb rrdDb = new RrdDb(dbname);
-
-        Sample sample = rrdDb.createSample();
-        for(int i=0; i<data.length; i++){
-            String[] stime = data[i].split(":")
-            long ntime = Long.parseLong(stime[0]);
-            ntime = (long)(ntime / 1000)
-
-            String ndata = "" + ntime
-            for(int j = 1; j < stime.length; j++){
-                ndata = ndata + ":" + stime[j]
-            }
-            sample.setAndUpdate(ndata);
-        }
-        rrdDb.close();
+        DbUtils.updateData( dbname, data);
     }
 
     public static byte[] graph(Map config){
         if(config.containsKey(Grapher.RRD_VARIABLE)  ){
-            return Grapher.graphOneVariable(config);
+            return graphOneVariable(config);
         }
         else if(config.containsKey(Grapher.RRD_VARIABLES)){
-            return Grapher.graphMultipleDatasources(config);
+            return graphMultipleDatasources(config);
         }
         else{
             return Grapher.graph(config);
@@ -200,32 +84,11 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     private static def fetchArchives(String dbName){
-        RrdDb rrdDb = new RrdDb(dbName);
-        def result = fetchArchives(rrdDb);
-        rrdDb.close();
-        return result;
+        return DbUtils.fetchArchives( dbName);
     }
 
     private static def fetchArchives(RrdDb rrdDb){
-        int arcCount = rrdDb.getArcCount();
-        Archive[] arcs = new Archive[arcCount];
-        for(int i=0; i<arcCount; i++){
-            arcs[i] = rrdDb.getArchive(i);
-        }
-        def alist = [];
-        for(int i=0; i<arcs.length; i++){
-            Map m = [:];
-
-            m[RrdUtils.FUNCTION] = arcs[i].getConsolFun();
-            m[RrdUtils.STEPS] = arcs[i].getSteps();
-            m[RrdUtils.ROWS] = arcs[i].getRows();
-            m[RrdUtils.XFF] = arcs[i].getXff();
-            m[RrdUtils.START_TIME] = arcs[i].getStartTime();
-
-            alist.add(m);
-        }
-
-        return alist;
+        return fetchArchives(rrdDb);
     }
 
     /**
@@ -235,49 +98,18 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     private static def fetchDatasources(String dbName){
-        RrdDb rrdDb = new RrdDb(dbName);
-        def result = fetchDatasources(rrdDb);
-        rrdDb.close();
-        return result;
+        return DbUtils.fetchDatasources(dbName);
     }
 
     private static def fetchDatasources(RrdDb rrdDb){
-        int datCount = rrdDb.getDsCount();
-        Datasource[] dats = new Datasource[datCount];
-        for(int i=0; i<datCount; i++){
-            dats[i] = rrdDb.getDatasource(i);
-        }
-
-        def dslist = [];
-        for(int i=0; i<dats.length; i++){
-            Map m = [:];
-            m[RrdUtils.NAME] = dats[i].getDsName();
-            m[RrdUtils.TYPE] = dats[i].getDsType();
-            m[RrdUtils.HEARTBEAT] = dats[i].getHeartbeat();
-            m[RrdUtils.MAX] = dats[i].getMaxValue();
-            m[RrdUtils.MIN] = dats[i].getMinValue();
-
-            dslist.add(m);
-        }
-        return dslist;
+       return DbUtils.fetchDatasources(rrdDb);
     }
 
     /**
     *  returns the configuration map of specified rrd database
     */
     public static Map getDatabaseInfo(String dbName){
-        RrdDb rrdDb = new RrdDb(dbName);
-        RrdDef rrdDef = rrdDb.getRrdDef();
-
-        Map config = [:];
-        config[DATABASE_NAME] = dbName;
-        config[START_TIME] = rrdDef.getStartTime() * 1000;
-        config[STEP] = rrdDef.getStep();
-        config[DATASOURCE] = fetchDatasources(rrdDb );
-        config[ARCHIVE] = fetchArchives(rrdDb);
-   
-        rrdDb.close();
-        return config;
+        return DbUtils.getDatabaseInfo(dbName);
     }
 
     /**
@@ -285,38 +117,21 @@ class RrdUtils {
     *  it is the easiest call if the database has only one data source
     */
     public static double[] fetchData(String dbName){
-        return   fetchAllData(dbName)[0];
+        return   DbUtils.fetchData(dbName);
     }
 
     /**
     * returns the all datasources in the database according to the first archive method.
     */
     public static double[][] fetchAllData(String dbName){
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        def dslist = fetchDatasources(rrdDb);
-        String[] datasources = new String[dslist.size()];
-        for(int i=0; i<datasources.length; i++){
-            datasources[i] = dslist[i][NAME];
-        }
-        long endTime = rrdDb.getLastUpdateTime();
-        rrdDb.close();
-        String function = arclist[0][FUNCTION];
-        long startTime = arclist[0][START_TIME];
-        return fetchData(dbName, datasources, function, startTime, endTime);
+        return DbUtils.fetchAllData(dbName);
     }
 
     /**
     * returns time series of one data index specified with its datasource name
     */
     public static double[] fetchData(String dbName, String datasource){
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        long endTime = rrdDb.getLastUpdateTime();
-        rrdDb.close();
-        String function = arclist[0][FUNCTION];
-        long startTime = arclist[0][START_TIME];
-        return fetchData(dbName, datasource, function, startTime, endTime);
+        return DbUtils.fetchData(dbName, datasource);
     }
 
     /**
@@ -325,41 +140,13 @@ class RrdUtils {
     */
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
-        boolean found = false;
-        RrdDb rrdDb = new RrdDb(dbName);
-        def dslist = fetchDatasources(rrdDb);
-        for(int i=0; i<dslist.size(); i++){
-            Map m = dslist[i];
-            if(m.get(NAME).equals(datasource)){
-                found = true;
-            };
-        }
-        if(!found){
-            rrdDb.close();
-            throw new Exception("data source not found")
-            return null;
-        }
-
-        long nstarttime = (long)(startTime / 1000)
-        long nendtime = (long)(endTime / 1000)
-
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-
-        double[] data = fetchRequest.fetchData().getValues(datasource)
-        rrdDb.close();
-        return data
+        return DbUtils.fetchData(dbName, datasource, function, startTime, endTime);
     }
     /**
     *  returns time series of data indexes specified with its datasource names
     */
     public static double[][] fetchData(String dbName, String[] datasources){
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        String function = arclist[0][RrdUtils.FUNCTION];
-        long startTime = arclist[0][RrdUtils.START_TIME];
-        long endTime = rrdDb.getLastUpdateTime();
-        rrdDb.close();
-        return fetchData(dbName, datasources, function, startTime, endTime);
+        return DbUtils.fetchData(dbName, datasources);
     }
 
     /**
@@ -368,16 +155,279 @@ class RrdUtils {
     */
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
-        RrdDb rrdDb = new RrdDb(dbName);
-        long nstarttime = (long)(startTime / 1000)
-        long nendtime = (long)(endTime / 1000)
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-        fetchRequest.setFilter (datasources);
+        return DbUtils.fetchData(dbName, datasources, function, startTime, endTime);
+    }
 
-        double[][] data = fetchRequest.fetchData().getValues();
-        rrdDb.close();
 
-        return data
+    /**
+    * sets the following properties of graphdef:
+    * title, width, height, maxValue, minValue
+    */
+    private static void setGeneralSettings(RrdGraphDef graphDef, Map config){
+        if(config.containsKey(Grapher.TITLE) ){
+           graphDef.setTitle(config.get(Grapher.TITLE));
+        }
+        if(config.containsKey(Grapher.MAX) ){
+           graphDef.setMaxValue (config.get(Grapher.MAX));
+        }
+        if(config.containsKey(Grapher.MIN) ){
+           graphDef.setMinValue (config.get(Grapher.MIN));
+        }
+        if(config.containsKey(Grapher.HEIGHT) ){
+           graphDef.setHeight (config.get(Grapher.HEIGHT));
+        }
+        if(config.containsKey(Grapher.WIDTH) ){
+           graphDef.setWidth(config.get(Grapher.WIDTH));
+        }
+
+        if(config.containsKey(Grapher.VERTICAL_LABEL) ){
+           graphDef.setVerticalLabel(config.get(Grapher.VERTICAL_LABEL));
+        }
+    }
+
+    private static def getRrdVariable(){
+        return Grapher.class.classLoader.loadClass("RrdVariable");
+    }
+    private long getCurrentTime(){
+        Calendar cal = Calendar.getInstance();
+        return cal.getTimeInMillis();
+    }
+    private static def loadClass(String className){
+        return Grapher.class.classLoader.loadClass(className);
+    }
+
+    public static byte[] graphMultipleDatasources(Map config){
+       String typeVar = "line";
+       String colorVar = "999999";
+       Map fConfig = getGeneralSettingsMap(config);
+
+       if(config.containsKey(Grapher.TYPE) ){
+          typeVar = config.get(Grapher.TYPE);
+       }
+
+       if(config.containsKey(Grapher.COLOR) ){
+          colorVar = config.get(Grapher.COLOR);
+       }
+
+       if(!config.containsKey(Grapher.RRD_VARIABLES) ){
+           throw new Exception("No rrd variable is specified");
+       }
+       def rrdVariables = config.get(Grapher.RRD_VARIABLES);
+
+
+       def datasourceList = [];
+       fConfig[Grapher.AREA] = [];
+       fConfig[Grapher.LINE] = [];
+       fConfig[Grapher.STACK] = [];
+       def typeList = [];
+       for(int i=0; i<rrdVariables.size(); i++){
+           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][Grapher.RRD_VARIABLE]);
+           if(rrdVariables[i].containsKey(Grapher.FUNCTION) ){
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVar.name;
+               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+               datasourceMap[Grapher.DSNAME] = rrdVar.name;
+               datasourceMap[Grapher.FUNCTION] = rrdVariables[i][Grapher.FUNCTION];
+               datasourceList.add(datasourceMap);
+
+           }else{
+               rrdVar.archives.each{
+                   def datasourceMap = [:];
+                   datasourceMap[Grapher.NAME] = rrdVar.name;
+                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+                   datasourceMap[Grapher.DSNAME] = rrdVar.name;
+                   datasourceMap[Grapher.FUNCTION] = it.function;
+                   datasourceList.add(datasourceMap);
+               }
+           }
+           if(rrdVariables[i].containsKey(Grapher.RPN) ){
+               def datasourceMap = [:];
+               datasourceMap[Grapher.NAME] = rrdVariables[i][Grapher.RPN];
+               datasourceMap[Grapher.RPN] = rrdVariables[i][Grapher.RPN];
+               datasourceList.add(datasourceMap);
+           }
+           def typeMap = [:];
+           typeMap[Grapher.NAME] = rrdVariables[i].containsKey(Grapher.RPN) ? rrdVariables[i][Grapher.RPN] : rrdVar.name
+           typeMap[Grapher.DESCRIPTION] = rrdVariables[i].containsKey(Grapher.DESCRIPTION)?rrdVariables[i][Grapher.DESCRIPTION]:rrdVar.name;
+           typeMap[Grapher.COLOR] = rrdVariables[i].containsKey(Grapher.COLOR)?rrdVariables[i][Grapher.COLOR]:colorVar;
+           typeMap[Grapher.THICKNESS] = rrdVariables[i].containsKey(Grapher.THICKNESS) ? rrdVariables[i][Grapher.THICKNESS]:2;
+
+           if(rrdVariables[i].containsKey(Grapher.TYPE) ){
+               try{
+                    fConfig[rrdVariables[i][Grapher.TYPE]].add(typeMap)
+               }catch (Exception ex){
+                   throw new Exception("Not valid type: "+ rrdVariables[i][Grapher.TYPE]);
+               }
+           }
+           else{
+               fConfig[typeVar].add(typeMap);
+           }
+       }
+
+       fConfig[Grapher.DATASOURCE] = datasourceList;
+       return Grapher.graph(fConfig);
+    }
+    public static byte[] graphOneVariable(Map config){
+       if(!(config.get(Grapher.RRD_VARIABLE) instanceof String )) {
+           throw new Exception("Configuration map is distorted: RrdVariable should be an instance of string");
+       }
+       String rrdVarName = config.get(Grapher.RRD_VARIABLE);
+       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
+       if(rrdvar ==null){
+           throw new Exception("RrdVariable \""+rrdVarName+"\" can not be found.");
+       }
+
+       Map rVariable = [:];
+       rVariable[Grapher.RRD_VARIABLE] = config.get(Grapher.RRD_VARIABLE);
+       rVariable[Grapher.DESCRIPTION] = config.containsKey(Grapher.DESCRIPTION)?config.get(Grapher.DESCRIPTION):rrdvar.name;
+       if(config.containsKey(Grapher.COLOR) ){
+           rVariable[Grapher.COLOR] = config.get(Grapher.COLOR);
+       }
+       if(config.containsKey(Grapher.THICKNESS)){
+           rrdVariable[Grapher.THICKNESS] = config.get(Grapher.THICKNESS)
+       }
+       if(config.containsKey(Grapher.TYPE)) {
+           rVariable[Grapher.TYPE] = config.get(Grapher.TYPE);
+       }
+       if(config.containsKey(Grapher.RPN)) {
+           rVariable[Grapher.RPN] = config.get(Grapher.RPN);
+       }
+
+       config.remove (Grapher.RRD_VARIABLE);
+       if (config.containsKey(Grapher.DESCRIPTION) ){
+           config.remove (Grapher.DESCRIPTION);
+       }
+       def vlist = [];
+       vlist.add(rVariable);
+       config[Grapher.RRD_VARIABLES] = vlist;
+
+       println config;
+
+       return graphMultipleDatasources(config);
+
+    }
+    /*
+    public static byte[] graphOneVariable(Map config){
+       String rrdVarName = config.get(RRD_VARIABLE);
+       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
+
+       Map rVariable = [:];
+       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
+       rVariable[DESCRIPTION] = config.containsKey(DESCRIPTION)?config.get(DESCRIPTION):rrdvar.name;
+       if(config.containsKey(COLOR) ){
+           rVariable[COLOR] = config.get(COLOR);
+       }
+       if(config.containsKey(THICKNESS)){
+           rrdVariable[THICKNESS] = config.get(THICKNESS)
+       }
+       if(config.containsKey(TYPE)) {
+           rVariable[TYPE] = config.get(TYPE);
+       }
+       if(config.containsKey(RPN)) {
+           rVariable[RPN] = config.get(RPN);
+       }
+
+       config.remove (RRD_VARIABLE);
+       if (config.containsKey(DESCRIPTION) ){
+           config.remove (DESCRIPTION);
+       }
+       def vlist = [];
+       vlist.add(rVariable);
+       config[RRD_VARIABLES] = vlist;
+
+       println config;
+
+       return graphMultipleDatasources(config);
+
+    }
+    */
+
+    public static Map getGeneralSettingsMap(Map config){
+       if(config.containsKey("templateName")){
+           return  getGeneralSettingsMapWithTemplate(config);
+       }
+       Map fConfig = [:];
+
+       if(!config.containsKey(Grapher.START_TIME) ){
+           throw new Exception("Start time is not specified");
+       }else {
+           fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
+       }
+       if(!config.containsKey(Grapher.END_TIME) ){
+           fConfig[Grapher.END_TIME] = getCurrentTime();
+       }
+       else{
+           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+       }
+       if(config.containsKey(Grapher.MAX) ){
+          fConfig[Grapher.MAX] = config.get(Grapher.MAX);
+       }
+       if(config.containsKey(Grapher.MIN) ){
+          fConfig[Grapher.MIN] = config.get(Grapher.MIN);
+       }
+       if(config.containsKey(Grapher.HEIGHT) ){
+          fConfig[Grapher.HEIGHT] = config.get(Grapher.HEIGHT);
+       }
+       if(config.containsKey(Grapher.WIDTH) ){
+          fConfig[Grapher.WIDTH] = config.get(Grapher.WIDTH);
+       }
+       if(config.containsKey(Grapher.TITLE) ){
+          fConfig[Grapher.TITLE] = config.get(Grapher.TITLE);
+       }
+       if(config.containsKey(Grapher.VERTICAL_LABEL) ){
+          fConfig[Grapher.VERTICAL_LABEL] = config.get(Grapher.VERTICAL_LABEL);
+       }
+       return fConfig;
+    }
+    public static Map getGeneralSettingsMapWithTemplate(Map config){
+       Map fConfig = [:];
+
+       def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));
+
+//       println template.name+" "+template.color+" "+template.description+" "+template.height+" "+
+//               template.width+" "+template.max+" "+template.min+" "+template.title+" "+template.type+" "+
+//                template.verticalLabel;
+
+       if(!config.containsKey(Grapher.START_TIME) ){
+           throw new Exception("Start time is not specified");
+       }else {
+           fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
+       }
+       if(!config.containsKey(Grapher.END_TIME) ){
+           fConfig[Grapher.END_TIME] = getCurrentTime();
+       }
+       else{
+           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
+       }
+       if(template.max != Double.NaN ){
+          fConfig[Grapher.MAX] = template.max;
+       }
+       if(template.min != Double.NaN ){
+          fConfig[Grapher.MIN] = template.min;
+       }
+
+       fConfig[Grapher.HEIGHT] = (int)template.height;
+
+       fConfig[Grapher.WIDTH] = (int)template.width;
+
+       if(template.title.length()>0 ){
+          fConfig[Grapher.TITLE] = template.title;
+       }
+       if(template.verticalLabel.length()>0 ){
+          fConfig[Grapher.VERTICAL_LABEL] = template.verticalLabel ;
+       }
+       //note that they are not fConfig
+       if(template.description.length()>0 ){
+          config[Grapher.DESCRIPTION] = template.description ;
+       }
+       if(template.color.length()>0 ){
+          config[Grapher.COLOR] = template.color ;
+       }
+       if(template.type.length()>0 ){
+          config[Grapher.TYPE] = template.type ;
+       }
+
+       return fConfig;
     }
 
 }

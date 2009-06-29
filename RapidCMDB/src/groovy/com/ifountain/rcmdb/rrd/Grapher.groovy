@@ -43,32 +43,6 @@ class Grapher {
     public static final  String RRD_VARIABLE = "rrdVariable";
     public static final  String GRAPH_TEMPLATE = "template";
 
-    /**
-    * sets the following properties of graphdef:
-    * title, width, height, maxValue, minValue
-    */
-    public static void setGeneralSettings(RrdGraphDef graphDef, Map config){
-        if(config.containsKey(TITLE) ){
-           graphDef.setTitle(config.get(TITLE));
-        }
-        if(config.containsKey(MAX) ){
-           graphDef.setMaxValue (config.get(MAX));
-        }
-        if(config.containsKey(MIN) ){
-           graphDef.setMinValue (config.get(MIN));
-        }
-        if(config.containsKey(HEIGHT) ){
-           graphDef.setHeight (config.get(HEIGHT));
-        }
-        if(config.containsKey(WIDTH) ){
-           graphDef.setWidth(config.get(WIDTH));
-        }
-
-        if(config.containsKey(VERTICAL_LABEL) ){
-           graphDef.setVerticalLabel(config.get(VERTICAL_LABEL));
-        }
-    }
-
     public static byte[] graph(Map config){
 
         if (!config.containsKey(DATASOURCE)) {
@@ -125,16 +99,6 @@ class Grapher {
 
     }
 
-    private static def getRrdVariable(){
-        return Grapher.class.classLoader.loadClass("RrdVariable");
-    }
-    private long getCurrentTime(){
-        Calendar cal = Calendar.getInstance();
-        return cal.getTimeInMillis();
-    }
-    static def loadClass(String className){
-        return Grapher.class.classLoader.loadClass(className);
-    }
     public static void addDataSource(RrdGraphDef rdef, dslist){
         boolean isSourceExist = false;
         dslist.each{
@@ -149,20 +113,6 @@ class Grapher {
                         it.containsKey(DATABASE_NAME) &&   it.containsKey(FUNCTION))){
                     throw new Exception("Datasource distorted");
                 }
-//                RrdDb testrrdDb = new RrdDb(it.get(DATABASE_NAME) );
-//                int testdsCount = rrdDb.getDsCount();
-//                boolean testfound = false;
-//                for(int i=0; i<dsCount; i++){
-//                    if(testrrdDb.getDatasource(i).getDsName().equals(it.get(DSNAME))){
-//                        testfound = true;
-//                        break;
-//                    }
-//                }
-//                if(!testfound){
-//                    throw new Exception("Datapoint "+it.get(DSNAME)+" is not found.");
-//                }
-//                testrrdDb.close();
-
                 try{
                    rdef.datasource(it.get(NAME),it.get(DATABASE_NAME),it.get(DSNAME),it.get(FUNCTION) )
                    isSourceExist = true;
@@ -253,237 +203,27 @@ class Grapher {
             }
         }
     }
-    public static byte[] graphMultipleDatasources(Map config){
-       String typeVar = "line";
-       String colorVar = "999999";
-       Map fConfig = getGeneralSettingsMap(config);
 
-       if(config.containsKey(TYPE) ){
-          typeVar = config.get(TYPE);
-       }
+    public static void setGeneralSettings(RrdGraphDef graphDef, Map config){
+        if(config.containsKey(Grapher.TITLE) ){
+           graphDef.setTitle(config.get(Grapher.TITLE));
+        }
+        if(config.containsKey(Grapher.MAX) ){
+           graphDef.setMaxValue (config.get(Grapher.MAX));
+        }
+        if(config.containsKey(Grapher.MIN) ){
+           graphDef.setMinValue (config.get(Grapher.MIN));
+        }
+        if(config.containsKey(Grapher.HEIGHT) ){
+           graphDef.setHeight (config.get(Grapher.HEIGHT));
+        }
+        if(config.containsKey(Grapher.WIDTH) ){
+           graphDef.setWidth(config.get(Grapher.WIDTH));
+        }
 
-       if(config.containsKey(COLOR) ){
-          colorVar = config.get(COLOR);
-       }
-
-       if(!config.containsKey(RRD_VARIABLES) ){
-           throw new Exception("No rrd variable is specified");
-       }
-       def rrdVariables = config.get(RRD_VARIABLES);
-
-
-       def datasourceList = [];
-       fConfig[AREA] = [];
-       fConfig[LINE] = [];
-       fConfig[STACK] = [];
-       def typeList = [];
-       for(int i=0; i<rrdVariables.size(); i++){
-           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
-           if(rrdVariables[i].containsKey(FUNCTION) ){
-               def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVar.name;
-               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-               datasourceMap[Grapher.DSNAME] = rrdVar.name;
-               datasourceMap[Grapher.FUNCTION] = rrdVariables[i][FUNCTION];
-               datasourceList.add(datasourceMap);
-
-           }else{
-               rrdVar.archives.each{
-                   def datasourceMap = [:];
-                   datasourceMap[Grapher.NAME] = rrdVar.name;
-                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
-                   datasourceMap[Grapher.DSNAME] = rrdVar.name;
-                   datasourceMap[Grapher.FUNCTION] = it.function;
-                   datasourceList.add(datasourceMap);
-               }
-           }
-           if(rrdVariables[i].containsKey(RPN) ){
-               def datasourceMap = [:];
-               datasourceMap[Grapher.NAME] = rrdVariables[i][RPN];
-               datasourceMap[Grapher.RPN] = rrdVariables[i][RPN];
-               datasourceList.add(datasourceMap);
-           }
-           def typeMap = [:];
-           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
-           typeMap[DESCRIPTION] = rrdVariables[i].containsKey(DESCRIPTION)?rrdVariables[i][DESCRIPTION]:rrdVar.name;
-           typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
-           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
-
-           if(rrdVariables[i].containsKey(TYPE) ){
-               try{
-                    fConfig[rrdVariables[i][TYPE]].add(typeMap)
-               }catch (Exception ex){
-                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
-               }
-           }
-           else{
-               fConfig[typeVar].add(typeMap);
-           }
-       }
-
-       fConfig[DATASOURCE] = datasourceList;
-       return graph(fConfig);
+        if(config.containsKey(Grapher.VERTICAL_LABEL) ){
+           graphDef.setVerticalLabel(config.get(Grapher.VERTICAL_LABEL));
+        }
     }
-    public static byte[] graphOneVariable(Map config){
-       if(!(config.get(RRD_VARIABLE) instanceof String )) {
-           throw new Exception("Configuration map is distorted: RrdVariable should be an instance of string");
-       }
-       String rrdVarName = config.get(RRD_VARIABLE);
-       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
-       if(rrdvar ==null){
-           throw new Exception("RrdVariable \""+rrdVarName+"\" can not be found.");
-       }
-
-       Map rVariable = [:];
-       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
-       rVariable[DESCRIPTION] = config.containsKey(DESCRIPTION)?config.get(DESCRIPTION):rrdvar.name;
-       if(config.containsKey(COLOR) ){
-           rVariable[COLOR] = config.get(COLOR);
-       }
-       if(config.containsKey(THICKNESS)){
-           rrdVariable[THICKNESS] = config.get(THICKNESS)
-       }
-       if(config.containsKey(TYPE)) {
-           rVariable[TYPE] = config.get(TYPE);
-       }
-       if(config.containsKey(RPN)) {
-           rVariable[RPN] = config.get(RPN);
-       }
-
-       config.remove (RRD_VARIABLE);
-       if (config.containsKey(DESCRIPTION) ){
-           config.remove (DESCRIPTION);
-       }
-       def vlist = [];
-       vlist.add(rVariable);
-       config[RRD_VARIABLES] = vlist;
-
-       println config;
-
-       return graphMultipleDatasources(config);
-
-    }
-    /*
-    public static byte[] graphOneVariable(Map config){
-       String rrdVarName = config.get(RRD_VARIABLE);
-       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
-
-       Map rVariable = [:];
-       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
-       rVariable[DESCRIPTION] = config.containsKey(DESCRIPTION)?config.get(DESCRIPTION):rrdvar.name;
-       if(config.containsKey(COLOR) ){
-           rVariable[COLOR] = config.get(COLOR);
-       }
-       if(config.containsKey(THICKNESS)){
-           rrdVariable[THICKNESS] = config.get(THICKNESS)
-       }
-       if(config.containsKey(TYPE)) {
-           rVariable[TYPE] = config.get(TYPE);
-       }
-       if(config.containsKey(RPN)) {
-           rVariable[RPN] = config.get(RPN);
-       }
-
-       config.remove (RRD_VARIABLE);
-       if (config.containsKey(DESCRIPTION) ){
-           config.remove (DESCRIPTION);
-       }
-       def vlist = [];
-       vlist.add(rVariable);
-       config[RRD_VARIABLES] = vlist;
-
-       println config;
-
-       return graphMultipleDatasources(config);
-
-    }
-    */
-
-    public static Map getGeneralSettingsMap(Map config){
-       if(config.containsKey("templateName")){
-           return  getGeneralSettingsMapWithTemplate(config);
-       }
-       Map fConfig = [:];
-
-       if(!config.containsKey(START_TIME) ){
-           throw new Exception("Start time is not specified");
-       }else {
-           fConfig[START_TIME] = config.get(START_TIME);
-       }
-       if(!config.containsKey(END_TIME) ){
-           fConfig[END_TIME] = getCurrentTime();
-       }
-       else{
-           fConfig[END_TIME] = config.get(END_TIME);
-       }
-       if(config.containsKey(MAX) ){
-          fConfig[MAX] = config.get(MAX);
-       }
-       if(config.containsKey(MIN) ){
-          fConfig[MIN] = config.get(MIN);
-       }
-       if(config.containsKey(HEIGHT) ){
-          fConfig[HEIGHT] = config.get(HEIGHT);
-       }
-       if(config.containsKey(WIDTH) ){
-          fConfig[WIDTH] = config.get(WIDTH);
-       }
-       if(config.containsKey(TITLE) ){
-          fConfig[TITLE] = config.get(TITLE);
-       }
-       if(config.containsKey(VERTICAL_LABEL) ){
-          fConfig[VERTICAL_LABEL] = config.get(VERTICAL_LABEL);
-       }
-       return fConfig;
-    }
-    public static Map getGeneralSettingsMapWithTemplate(Map config){
-       Map fConfig = [:];
-
-       def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));
-
-//       println template.name+" "+template.color+" "+template.description+" "+template.height+" "+
-//               template.width+" "+template.max+" "+template.min+" "+template.title+" "+template.type+" "+
-//                template.verticalLabel;
-
-       if(!config.containsKey(START_TIME) ){
-           throw new Exception("Start time is not specified");
-       }else {
-           fConfig[START_TIME] = config.get(START_TIME);
-       }
-       if(!config.containsKey(END_TIME) ){
-           fConfig[END_TIME] = getCurrentTime();
-       }
-       else{
-           fConfig[END_TIME] = config.get(END_TIME);
-       }
-       if(template.max != Double.NaN ){
-          fConfig[MAX] = template.max;
-       }
-       if(template.min != Double.NaN ){
-          fConfig[MIN] = template.min;
-       }
-
-       fConfig[HEIGHT] = (int)template.height;
-
-       fConfig[WIDTH] = (int)template.width;
-
-       if(template.title.length()>0 ){
-          fConfig[TITLE] = template.title;
-       }
-       if(template.verticalLabel.length()>0 ){
-          fConfig[VERTICAL_LABEL] = template.verticalLabel ;
-       }
-       //note that they are not fConfig
-       if(template.description.length()>0 ){
-          config[DESCRIPTION] = template.description ;
-       }
-       if(template.color.length()>0 ){
-          config[COLOR] = template.color ;
-       }
-       if(template.type.length()>0 ){
-          config[TYPE] = template.type ;
-       }
-       
-       return fConfig;
-    }
+    
 }

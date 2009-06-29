@@ -84,7 +84,8 @@ class Grapher {
         RrdGraphDef graphDef = new RrdGraphDef()
 
         try{
-            graphDef.setStartTime(config.get(START_TIME))
+            long ntime = (long)(config.get(START_TIME) / 1000)
+            graphDef.setStartTime(ntime)
         }
         catch(MissingMethodException e)
         {
@@ -92,7 +93,8 @@ class Grapher {
         }
 
         try{
-            graphDef.setEndTime(config.get(END_TIME));
+            long ntime = (long)(config.get(END_TIME) / 1000)
+            graphDef.setEndTime(ntime);
         }
         catch(MissingMethodException e)
         {

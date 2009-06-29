@@ -29,13 +29,10 @@ class RrdUtilsTests extends RapidCoreTestCase {
     protected void tearDown() {
         super.tearDown();
     }
+
     public void testSuccessfullCreateDatabase() throws Exception{
-
         Map config = [:]
-
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -78,11 +75,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception{
-
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -129,11 +123,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testRemoveDatabaseSuccessful() throws Exception {
-
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -179,7 +170,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testRemoveDatabaseThrowsExceptionIfDBNotExists() throws Exception {
-
        try{
            RrdUtils.removeDatabase (rrdFileName)
            fail("should throw exception because there is no such file")
@@ -188,15 +178,11 @@ class RrdUtilsTests extends RapidCoreTestCase {
        {
            assertEquals(("File does not exists : " + rrdFileName), e.getMessage())
        }
-
     }
 
     public void testIsDatabaseExistsSuccessful() throws Exception {
-
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -281,7 +267,6 @@ class RrdUtilsTests extends RapidCoreTestCase {
             assertEquals("Database name is not specified", e.getMessage());
         }
 
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
 
         try{
@@ -312,12 +297,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testCreateDatabaseThrowsExceptionIfStartTimeIsNotValid() throws Exception{
-
         Map config = [:]
-
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -362,12 +343,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testCreateDatabaseThrowsExceptionIfStepIsNotNumber() throws Exception{
-
         Map config = [:]
-
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
@@ -479,12 +456,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     }
 
     public void testUpdateDataSuccessful() throws Exception{
-
         Map config = [:]
-
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
@@ -541,9 +514,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataThrowsException() throws Exception{
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
@@ -589,9 +560,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
     
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
@@ -636,9 +605,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataByDatabaseNameOnly() throws Exception{
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
@@ -679,9 +646,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
         Map config = [:]
-
         config[RrdUtils.DATABASE_NAME] = rrdFileName;
-
         config[RrdUtils.DATASOURCE] = [
                                             [
                                                 name:"a",

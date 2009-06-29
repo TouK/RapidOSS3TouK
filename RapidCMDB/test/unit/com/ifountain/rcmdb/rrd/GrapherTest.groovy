@@ -5,6 +5,7 @@ import com.ifountain.comp.test.util.file.TestFile
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
+
 import com.ifountain.comp.test.util.file.TestFile
 
 /**
@@ -43,8 +44,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
     public void createDatabase() {
         Map config = [:]
 
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
@@ -57,7 +58,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -65,7 +66,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:100,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -492,8 +493,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 type:"COUNTER",
@@ -506,7 +507,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -514,7 +515,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:24,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -547,15 +548,15 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.START_TIME] = 978301200000
         map[Grapher.END_TIME] = 978303900000;
 
-        byte[] bytes = Grapher.graphMultipleDatasources(map);
+        byte[] bytes = RrdUtils.graph(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
 
     public void testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 type:"COUNTER",
@@ -568,7 +569,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -576,7 +577,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:24,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -612,15 +613,15 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.TITLE] = "Rrd Graph Utilities";
         map[Grapher.VERTICAL_LABEL] = "rate";
 
-        byte[] bytes = Grapher.graphMultipleDatasources(map);
+        byte[] bytes = RrdUtils.graph(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
 
     public void testOneDatasourceGraphSuccessfully() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName;
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 type:"COUNTER",
@@ -633,7 +634,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -641,7 +642,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:24,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -672,15 +673,15 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.MAX] = 10;
 
 
-        byte[] bytes = Grapher.graphOneVariable(map);
+        byte[] bytes = RrdUtils.graph(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
 
     public void testOneDatasourceGraphSuccessfullyWithTemplate() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 type:"COUNTER",
@@ -693,7 +694,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -701,7 +702,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:24,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -733,15 +734,15 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.GRAPH_TEMPLATE] = "tName";
 
 
-        byte[] bytes = Grapher.graphOneVariable(map);
+        byte[] bytes = RrdUtils.graph(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }
 
     public void testOneDatasourceGraphWithRpnSuccessfully() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 type:"COUNTER",
@@ -754,7 +755,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -762,7 +763,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             rows:24,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
         RrdUtils.createDatabase(config)
 
         RrdUtils.updateData(rrdFileName,"978301200000:200:1");
@@ -794,7 +795,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         map[Grapher.TITLE] = "Rrd Graph Utilities";
         map[Grapher.VERTICAL_LABEL] = "rate";
 
-        byte[] bytes = Grapher.graphOneVariable(map);
+        byte[] bytes = RrdUtils.graph(map);
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
         dos.write(bytes);
     }

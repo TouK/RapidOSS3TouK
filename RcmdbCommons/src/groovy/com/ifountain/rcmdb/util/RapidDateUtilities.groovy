@@ -48,6 +48,11 @@ class RapidDateUtilities {
             return dateFormat.parse(formattedString)
         }
 
+        Date.metaClass.'static'.toDate = {String formattedString, String pattern, Locale locale->
+            SimpleDateFormat dateFormat = new SimpleDateFormat(pattern, locale);
+            return dateFormat.parse(formattedString)
+        }
+
 
         Date.metaClass.toString = {String pattern->
             SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);

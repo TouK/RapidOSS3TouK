@@ -32,8 +32,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testSuccessfullCreateDatabase() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -48,7 +48,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -63,21 +63,21 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        RrdUtils.createDatabase(config)
+        DbUtils.createDatabase(config)
 
         assertTrue(new File(rrdFileName).exists());
 
-        Map map = RrdUtils.getDatabaseInfo(rrdFileName);
-        assertEquals(config[RrdUtils.DATABASE_NAME],map[RrdUtils.DATABASE_NAME]);
-        checkArchives(config[RrdUtils.ARCHIVE], map[RrdUtils.ARCHIVE]);
-        checkDatasources(config[RrdUtils.DATASOURCE], map[RrdUtils.DATASOURCE]);
+        Map map = DbUtils.getDatabaseInfo(rrdFileName);
+        assertEquals(config[DbUtils.DATABASE_NAME],map[DbUtils.DATABASE_NAME]);
+        checkArchives(config[DbUtils.ARCHIVE], map[DbUtils.ARCHIVE]);
+        checkDatasources(config[DbUtils.DATASOURCE], map[DbUtils.DATASOURCE]);
         assertTrue(new File(rrdFileName).exists());
     }
 
     public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -94,7 +94,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -109,23 +109,23 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400000L;
+        config[DbUtils.START_TIME] = 920804400000L;
 
-        RrdUtils.createDatabase(config);
+        DbUtils.createDatabase(config);
 
-        Map map = RrdUtils.getDatabaseInfo(rrdFileName);
-        assertEquals(config[RrdUtils.DATABASE_NAME],map[RrdUtils.DATABASE_NAME]);
-        checkDatasources(config[RrdUtils.DATASOURCE], map[RrdUtils.DATASOURCE]);
-        checkArchives(config[RrdUtils.ARCHIVE], map[RrdUtils.ARCHIVE]);
-        assertEquals(config[RrdUtils.START_TIME],map[RrdUtils.START_TIME]);
+        Map map = DbUtils.getDatabaseInfo(rrdFileName);
+        assertEquals(config[DbUtils.DATABASE_NAME],map[DbUtils.DATABASE_NAME]);
+        checkDatasources(config[DbUtils.DATASOURCE], map[DbUtils.DATASOURCE]);
+        checkArchives(config[DbUtils.ARCHIVE], map[DbUtils.ARCHIVE]);
+        assertEquals(config[DbUtils.START_TIME],map[DbUtils.START_TIME]);
 
         assertTrue(new File(rrdFileName).exists());
     }
 
     public void testRemoveDatabaseSuccessful() throws Exception {
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -142,7 +142,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -157,13 +157,13 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400000L;
+        config[DbUtils.START_TIME] = 920804400000L;
 
-        RrdUtils.createDatabase(config);
+        DbUtils.createDatabase(config);
 
         assertTrue(new File(rrdFileName).exists());
 
-        RrdUtils.removeDatabase(rrdFileName)
+        DbUtils.removeDatabase(rrdFileName)
 
         assertTrue(!(new File(rrdFileName).exists()));
 
@@ -171,7 +171,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testRemoveDatabaseThrowsExceptionIfDBNotExists() throws Exception {
        try{
-           RrdUtils.removeDatabase (rrdFileName)
+           DbUtils.removeDatabase (rrdFileName)
            fail("should throw exception because there is no such file")
        }
        catch(Exception e)
@@ -182,8 +182,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testIsDatabaseExistsSuccessful() throws Exception {
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -200,7 +200,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -215,13 +215,13 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-        config[RrdUtils.START_TIME] = 920804400000L;
+        config[DbUtils.START_TIME] = 920804400000L;
 
-        assertTrue(!(RrdUtils.isDatabaseExists(rrdFileName)))
+        assertTrue(!(DbUtils.isDatabaseExists(rrdFileName)))
 
-        RrdUtils.createDatabase(config);
+        DbUtils.createDatabase(config);
 
-        assertTrue(RrdUtils.isDatabaseExists(rrdFileName))
+        assertTrue(DbUtils.isDatabaseExists(rrdFileName))
 
     }
 
@@ -233,14 +233,14 @@ class RrdUtilsTests extends RapidCoreTestCase {
         for(int i=0; i<rrdDslist2.size(); i++){
             double max, min;
 
-            max = ((double)dlist1[i][RrdUtils.MAX]==null)?Double.NaN:(double)dlist1[i][RrdUtils.MAX];
-            min = ((double)dlist1[i][RrdUtils.MIN]==null)?Double.NaN:(double)dlist1[i][RrdUtils.MIN];
+            max = ((double)dlist1[i][DbUtils.MAX]==null)?Double.NaN:(double)dlist1[i][DbUtils.MAX];
+            min = ((double)dlist1[i][DbUtils.MIN]==null)?Double.NaN:(double)dlist1[i][DbUtils.MIN];
 
-            assertEquals( dlist1[i][RrdUtils.NAME],rrdDslist2[i][RrdUtils.NAME]);
-            assertEquals( dlist1[i][RrdUtils.TYPE],rrdDslist2[i][RrdUtils.TYPE]);
-            assertEquals( dlist1[i][RrdUtils.HEARTBEAT],rrdDslist2[i][RrdUtils.HEARTBEAT]);
-            assertEquals(max ,(double)rrdDslist2[i][RrdUtils.MAX]);
-            assertEquals(min,(double)rrdDslist2[i][RrdUtils.MIN]);
+            assertEquals( dlist1[i][DbUtils.NAME],rrdDslist2[i][DbUtils.NAME]);
+            assertEquals( dlist1[i][DbUtils.TYPE],rrdDslist2[i][DbUtils.TYPE]);
+            assertEquals( dlist1[i][DbUtils.HEARTBEAT],rrdDslist2[i][DbUtils.HEARTBEAT]);
+            assertEquals(max ,(double)rrdDslist2[i][DbUtils.MAX]);
+            assertEquals(min,(double)rrdDslist2[i][DbUtils.MIN]);
         }
     }
 
@@ -250,27 +250,27 @@ class RrdUtilsTests extends RapidCoreTestCase {
         assertEquals(size1, size2);
 
         for(int i=0; i<rrdDslist2.size(); i++){
-            assertEquals( dlist1[i][RrdUtils.FUNCTION],rrdDslist2[i][RrdUtils.FUNCTION]);
-            assertEquals( dlist1[i][RrdUtils.STEPS],rrdDslist2[i][RrdUtils.STEPS]);
-            assertEquals( dlist1[i][RrdUtils.ROWS],rrdDslist2[i][RrdUtils.ROWS]);
-            assertEquals( (double)dlist1[i][RrdUtils.XFF],(double)rrdDslist2[i][RrdUtils.XFF]);
+            assertEquals( dlist1[i][DbUtils.FUNCTION],rrdDslist2[i][DbUtils.FUNCTION]);
+            assertEquals( dlist1[i][DbUtils.STEPS],rrdDslist2[i][DbUtils.STEPS]);
+            assertEquals( dlist1[i][DbUtils.ROWS],rrdDslist2[i][DbUtils.ROWS]);
+            assertEquals( (double)dlist1[i][DbUtils.XFF],(double)rrdDslist2[i][DbUtils.XFF]);
         }
     }
 
     public void testCreateDatabaseThrowsExceptionIfConfigMissesProperty() throws Exception {
         Map config =[:];
         try{
-            RrdUtils.createDatabase(config)
+            DbUtils.createDatabase(config)
             fail("should throw exception because Database name is not specified")
         }
         catch(Exception e){
             assertEquals("Database name is not specified", e.getMessage());
         }
 
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATABASE_NAME] = rrdFileName
 
         try{
-            RrdUtils.createDatabase(config)
+            DbUtils.createDatabase(config)
             fail("should throw exception because there is no datasource specified")
         }
         catch(Exception e){
@@ -278,7 +278,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
         }
 
 
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -288,7 +288,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                        ]
         try{
-            RrdUtils.createDatabase(config)
+            DbUtils.createDatabase(config)
             fail("should throw exception because there is no archive specified")
         }
         catch(Exception e){
@@ -298,8 +298,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testCreateDatabaseThrowsExceptionIfStartTimeIsNotValid() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -316,7 +316,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -331,10 +331,10 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-         config[RrdUtils.START_TIME] = "notnumber";
+         config[DbUtils.START_TIME] = "notnumber";
 
         try{
-            RrdUtils.createDatabase(config)
+            DbUtils.createDatabase(config)
             fail("should throw exception because start time is not number")
         }
         catch(Exception e){
@@ -344,8 +344,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testCreateDatabaseThrowsExceptionIfStepIsNotNumber() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"testDs",
                                                 type:"GAUGE",
@@ -362,7 +362,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -377,10 +377,10 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                         ]
                                    ]
 
-         config[RrdUtils.STEP] = "notnumber";
+         config[DbUtils.STEP] = "notnumber";
 
          try{
-            RrdUtils.createDatabase(config)
+            DbUtils.createDatabase(config)
             fail("should throw exception because step is not number")
          }
          catch(Exception e){
@@ -405,7 +405,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                             ]
                         ]
 
-        def object = RrdUtils.getDsDefs(datasource)
+        def object = DbUtils.getDsDefs(datasource)
 
         assertEquals(2, object.length);
 
@@ -439,7 +439,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                             ]
                      ]
 
-        def object = RrdUtils.getArcDefs(archives)
+        def object = DbUtils.getArcDefs(archives)
 
         assertEquals(2, object.length);
 
@@ -457,8 +457,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testUpdateDataSuccessful() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
@@ -471,7 +471,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -479,19 +479,19 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:100,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
+        config[DbUtils.START_TIME] = 978300900000;
+        DbUtils.createDatabase(config)
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         RrdDb rrdDb = new RrdDb(rrdFileName);
         /* note that Jrobin works with time in seconds not milliseconds as java do */
@@ -514,8 +514,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
 
     public void testFetchDataThrowsException() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName;
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
@@ -528,7 +528,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -536,22 +536,22 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:100,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config);
+        config[DbUtils.START_TIME] = 978300900000;
+        DbUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         try{
-            RrdUtils.fetchData(rrdFileName,"c");
+            DbUtils.fetchData(rrdFileName,"c");
             fail("should throw exception because datasource is not number");
         }catch (Exception e){
             assertEquals("data source not found",e.getMessage());
@@ -560,8 +560,8 @@ class RrdUtilsTests extends RapidCoreTestCase {
     
     public void testFetchDataSuccessfully() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName;
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
@@ -574,7 +574,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -582,31 +582,31 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config);
+        config[DbUtils.START_TIME] = 978300900000;
+        DbUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
-        RrdUtils.fetchData(rrdFileName,"a");
-        RrdUtils.fetchData(rrdFileName,"b");
-//        println RrdUtils.fetchData(rrdFileName,"a");
-//        println RrdUtils.fetchData(rrdFileName,"b");
+        DbUtils.fetchData(rrdFileName,"a");
+        DbUtils.fetchData(rrdFileName,"b");
+//        println DbUtils.fetchData(rrdFileName,"a");
+//        println DbUtils.fetchData(rrdFileName,"b");
 
     }
 
     public void testFetchDataByDatabaseNameOnly() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName;
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
@@ -619,7 +619,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -627,27 +627,27 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config);
+        config[DbUtils.START_TIME] = 978300900000;
+        DbUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
-        RrdUtils.fetchAllData(rrdFileName);
+        DbUtils.fetchAllData(rrdFileName);
     }
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
         Map config = [:]
-        config[RrdUtils.DATABASE_NAME] = rrdFileName;
-        config[RrdUtils.DATASOURCE] = [
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
                                             [
                                                 name:"a",
                                                 type:"GAUGE",
@@ -655,7 +655,7 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             ]
                                       ]
 
-        config[RrdUtils.ARCHIVE] = [
+        config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -663,22 +663,22 @@ class RrdUtilsTests extends RapidCoreTestCase {
                                             rows:30,
                                         ]
                                    ]
-        config[RrdUtils.START_TIME] = 978300900000;
+        config[DbUtils.START_TIME] = 978300900000;
 
-        RrdUtils.createDatabase(config);
+        DbUtils.createDatabase(config);
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200");
-        RrdUtils.updateData(rrdFileName,"978301500000:400");
-        RrdUtils.updateData(rrdFileName,"978301800000:900");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300");
+        DbUtils.updateData(rrdFileName,"978301200000:200");
+        DbUtils.updateData(rrdFileName,"978301500000:400");
+        DbUtils.updateData(rrdFileName,"978301800000:900");
+        DbUtils.updateData(rrdFileName,"978302100000:1200");
+        DbUtils.updateData(rrdFileName,"978302400000:1400");
+        DbUtils.updateData(rrdFileName,"978302700000:1900");
+        DbUtils.updateData(rrdFileName,"978303000000:2100");
+        DbUtils.updateData(rrdFileName,"978303300000:2400");
+        DbUtils.updateData(rrdFileName,"978303600000:2900");
+        DbUtils.updateData(rrdFileName,"978303900000:3300");
 
-        println RrdUtils.fetchData(rrdFileName);
+        println DbUtils.fetchData(rrdFileName);
     }
 
 }

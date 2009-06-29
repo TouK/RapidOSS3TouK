@@ -6,6 +6,11 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.test.util.CompassForTests
+
+import com.ifountain.comp.test.util.file.TestFile
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,21 +19,32 @@ import java.text.DecimalFormat
 * Time: 9:38:15 AM
 * To change this template use File | Settings | File Templates.
 */
-class RrdUtilsTests extends RapidCoreTestCase {
+class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
     String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+    def classes=[:];
 
-    protected void setUp() {
+    public void setUp() {
         super.setUp();
+        classes.RrdVariable=loadClass("RrdVariable");
+        classes.RrdArchive=loadClass("RrdArchive");
+        classes.RrdGraphTemplate=loadClass("RrdGraphTemplate");
+
+        initialize([classes.RrdVariable,classes.RrdArchive,classes.RrdGraphTemplate], []);
+        CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
 
         boolean isDeleted =
         new File(rrdFileName).delete();
         println "file deletion successful: "+isDeleted;
     }
 
-    protected void tearDown() {
+    public void tearDown() {
         super.tearDown();
     }
+    def loadClass(className) {
+        return this.class.classLoader.loadClass(className);
+    }
+
 
     public void testSuccessfullCreateDatabase() throws Exception{
         Map config = [:]
@@ -679,6 +695,315 @@ class RrdUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303900000:3300");
 
         println DbUtils.fetchData(rrdFileName);
+    }
+
+    public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs1", resource:"resource",
+                           type:"COUNTER", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        def rrdList = [
+                            [rrdVariable:"testDs1", color:"123456", description:"cpu"],
+                            [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE"]
+                        ];
+        Map map = [:];
+        map[Grapher.RRD_VARIABLES] = rrdList;
+        map[Grapher.START_TIME] = 978301200000
+        map[Grapher.END_TIME] = 978303900000;
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+
+    public void testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs1", resource:"resource",
+                           type:"COUNTER", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        def rrdList = [
+                            [rrdVariable:"testDs1", color:"123456", description:"cpu", rpn:"testDs1,2,*"],
+                            [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE", type:"area"]
+                        ];
+        Map map = [:];
+        map[Grapher.RRD_VARIABLES] = rrdList;
+        map[Grapher.START_TIME] = 978301200000
+        map[Grapher.END_TIME] = 978303900000;
+
+        map[Grapher.TITLE] = "Rrd Graph Utilities";
+        map[Grapher.VERTICAL_LABEL] = "rate";
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+
+    public void testOneDatasourceGraphSuccessfully() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200000;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
+        map[Grapher.END_TIME] = 978303900000;
+        map[Grapher.DESCRIPTION] = "cpu util";
+        map[Grapher.TYPE] = "area";
+        map[Grapher.COLOR] = "5566ff";
+        map[Grapher.MAX] = 10;
+
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+
+    public void testOneDatasourceGraphSuccessfullyWithTemplate() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+        classes.RrdGraphTemplate.add(["name":"tName", "description":"desc",
+                    "title":"title", "verticalLabel":"kmh", "width":100,
+                    "type":"area","color":"234231"]);
+
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200000;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
+        map[Grapher.END_TIME] = 978303900000;
+        map[Grapher.GRAPH_TEMPLATE] = "tName";
+
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+
+    public void testOneDatasourceGraphWithRpnSuccessfully() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        def map = [:];
+        map[Grapher.START_TIME] = 978301200000;
+        map[Grapher.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
+        map[Grapher.END_TIME] = 978303900000;
+        map[Grapher.DESCRIPTION] = "my graph description";
+        map[Grapher.TYPE] = "area";
+        map[Grapher.RPN] = "testDs2,2,*";
+
+        map[Grapher.TITLE] = "Rrd Graph Utilities";
+        map[Grapher.VERTICAL_LABEL] = "rate";
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
     }
 
 }

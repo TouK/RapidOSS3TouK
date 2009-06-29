@@ -168,7 +168,6 @@ class RrdUtils {
            graphDef.setVerticalLabel(config.get(Grapher.VERTICAL_LABEL));
         }
     }
-
     private static def getRrdVariable(){
         return Grapher.class.classLoader.loadClass("RrdVariable");
     }
@@ -179,7 +178,6 @@ class RrdUtils {
     private static def loadClass(String className){
         return Grapher.class.classLoader.loadClass(className);
     }
-
     public static byte[] graphMultipleDatasources(Map config){
        String typeVar = "line";
        String colorVar = "999999";
@@ -290,7 +288,6 @@ class RrdUtils {
        return graphMultipleDatasources(config);
 
     }
-
     private static Map getGeneralSettingsMap(Map config){
        if(config.containsKey("templateName")){
            return  getGeneralSettingsMapWithTemplate(config);

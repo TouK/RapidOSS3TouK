@@ -1,8 +1,6 @@
 package com.ifountain.rcmdb.rrd
 
 import org.jrobin.core.RrdDb
-import org.jrobin.core.DsDef
-import org.jrobin.core.ArcDef
 
 import org.jrobin.graph.RrdGraphDef;
 

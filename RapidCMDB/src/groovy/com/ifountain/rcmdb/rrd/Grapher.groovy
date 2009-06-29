@@ -39,9 +39,6 @@ class Grapher {
     public static final String WIDTH = "width";
 
     public static final  String TYPE = "type";
-    public static final  String RRD_VARIABLES = "rrdVariables";
-    public static final  String RRD_VARIABLE = "rrdVariable";
-    public static final  String GRAPH_TEMPLATE = "template";
 
     public static byte[] graph(Map config){
 
@@ -224,6 +221,13 @@ class Grapher {
         if(config.containsKey(Grapher.VERTICAL_LABEL) ){
            graphDef.setVerticalLabel(config.get(Grapher.VERTICAL_LABEL));
         }
+    }
+
+    public static void toFile(byte[] bytes, String path) {
+        DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(path))
+        outputStream.write(bytes)
+        outputStream.flush()
+        outputStream.close()
     }
     
 }

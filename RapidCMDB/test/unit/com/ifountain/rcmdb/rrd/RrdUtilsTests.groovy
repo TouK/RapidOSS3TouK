@@ -750,7 +750,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
                             [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE"]
                         ];
         Map map = [:];
-        map[Grapher.RRD_VARIABLES] = rrdList;
+        map[RrdUtils.RRD_VARIABLES] = rrdList;
         map[Grapher.START_TIME] = 978301200000
         map[Grapher.END_TIME] = 978303900000;
 
@@ -812,7 +812,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
                             [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE", type:"area"]
                         ];
         Map map = [:];
-        map[Grapher.RRD_VARIABLES] = rrdList;
+        map[RrdUtils.RRD_VARIABLES] = rrdList;
         map[Grapher.START_TIME] = 978301200000
         map[Grapher.END_TIME] = 978303900000;
 
@@ -870,7 +870,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         def map = [:];
         map[Grapher.START_TIME] = 978301200000;
-        map[Grapher.RRD_VARIABLE] = "testDs2";
+        map[RrdUtils.RRD_VARIABLE] = "testDs2";
         //Optional properties:
         map[Grapher.END_TIME] = 978303900000;
         map[Grapher.DESCRIPTION] = "cpu util";
@@ -934,10 +934,10 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         def map = [:];
         map[Grapher.START_TIME] = 978301200000;
-        map[Grapher.RRD_VARIABLE] = "testDs2";
+        map[RrdUtils.RRD_VARIABLE] = "testDs2";
         //Optional properties:
         map[Grapher.END_TIME] = 978303900000;
-        map[Grapher.GRAPH_TEMPLATE] = "tName";
+        map[RrdUtils.GRAPH_TEMPLATE] = "tName";
 
 
         byte[] bytes = RrdUtils.graph(map);
@@ -991,7 +991,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         def map = [:];
         map[Grapher.START_TIME] = 978301200000;
-        map[Grapher.RRD_VARIABLE] = "testDs2";
+        map[RrdUtils.RRD_VARIABLE] = "testDs2";
         //Optional properties:
         map[Grapher.END_TIME] = 978303900000;
         map[Grapher.DESCRIPTION] = "my graph description";

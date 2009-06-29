@@ -12,6 +12,10 @@ import org.jrobin.graph.RrdGraphDef;
 */
 class RrdUtils {
 
+    public static final  String RRD_VARIABLES = "rrdVariables";
+    public static final  String RRD_VARIABLE = "rrdVariable";
+    public static final  String GRAPH_TEMPLATE = "template";
+
     /**
     * create a Round Robin database according to the given configuration map
     */
@@ -50,10 +54,10 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
-        if(config.containsKey(Grapher.RRD_VARIABLE)  ){
+        if(config.containsKey(RRD_VARIABLE)  ){
             return graphOneVariable(config);
         }
-        else if(config.containsKey(Grapher.RRD_VARIABLES)){
+        else if(config.containsKey(RRD_VARIABLES)){
             return graphMultipleDatasources(config);
         }
         else{
@@ -178,7 +182,7 @@ class RrdUtils {
     private static def loadClass(String className){
         return Grapher.class.classLoader.loadClass(className);
     }
-    public static byte[] graphMultipleDatasources(Map config){
+    public static def graphMultipleDatasources(Map config){
        String typeVar = "line";
        String colorVar = "999999";
        Map fConfig = getGeneralSettingsMap(config);
@@ -191,10 +195,10 @@ class RrdUtils {
           colorVar = config.get(Grapher.COLOR);
        }
 
-       if(!config.containsKey(Grapher.RRD_VARIABLES) ){
+       if(!config.containsKey(RRD_VARIABLES) ){
            throw new Exception("No rrd variable is specified");
        }
-       def rrdVariables = config.get(Grapher.RRD_VARIABLES);
+       def rrdVariables = config.get(RRD_VARIABLES);
 
 
        def datasourceList = [];
@@ -203,7 +207,7 @@ class RrdUtils {
        fConfig[Grapher.STACK] = [];
        def typeList = [];
        for(int i=0; i<rrdVariables.size(); i++){
-           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][Grapher.RRD_VARIABLE]);
+           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
            if(rrdVariables[i].containsKey(Grapher.FUNCTION) ){
                def datasourceMap = [:];
                datasourceMap[Grapher.NAME] = rrdVar.name;
@@ -247,20 +251,32 @@ class RrdUtils {
        }
 
        fConfig[Grapher.DATASOURCE] = datasourceList;
-       return Grapher.graph(fConfig);
+
+       byte[] bytes = Grapher.graph(fConfig);
+
+       if(config.containsKey("destination")) {
+           if(config["destination"] instanceof String) {
+                Grapher.toFile (bytes, config["destination"])
+           }
+           //todo: destination is a web
+       }
+       else {
+           return bytes
+       }
+
     }
     public static byte[] graphOneVariable(Map config){
-       if(!(config.get(Grapher.RRD_VARIABLE) instanceof String )) {
+       if(!(config.get(RRD_VARIABLE) instanceof String )) {
            throw new Exception("Configuration map is distorted: RrdVariable should be an instance of string");
        }
-       String rrdVarName = config.get(Grapher.RRD_VARIABLE);
+       String rrdVarName = config.get(RRD_VARIABLE);
        def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
        if(rrdvar ==null){
            throw new Exception("RrdVariable \""+rrdVarName+"\" can not be found.");
        }
 
        Map rVariable = [:];
-       rVariable[Grapher.RRD_VARIABLE] = config.get(Grapher.RRD_VARIABLE);
+       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
        rVariable[Grapher.DESCRIPTION] = config.containsKey(Grapher.DESCRIPTION)?config.get(Grapher.DESCRIPTION):rrdvar.name;
        if(config.containsKey(Grapher.COLOR) ){
            rVariable[Grapher.COLOR] = config.get(Grapher.COLOR);
@@ -275,15 +291,13 @@ class RrdUtils {
            rVariable[Grapher.RPN] = config.get(Grapher.RPN);
        }
 
-       config.remove (Grapher.RRD_VARIABLE);
+       config.remove (RRD_VARIABLE);
        if (config.containsKey(Grapher.DESCRIPTION) ){
            config.remove (Grapher.DESCRIPTION);
        }
        def vlist = [];
        vlist.add(rVariable);
-       config[Grapher.RRD_VARIABLES] = vlist;
-
-       println config;
+       config[RRD_VARIABLES] = vlist;
 
        return graphMultipleDatasources(config);
 

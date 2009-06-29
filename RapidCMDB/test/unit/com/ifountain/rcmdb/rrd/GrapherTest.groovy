@@ -15,6 +15,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
     final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
     final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
     String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+    String testImageName = TestFile.TESTOUTPUT_DIR + "/testImage.png"
 
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
@@ -437,7 +438,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    public   void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
+    public void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
         Map config = [:]
         config[Grapher.START_TIME] = 978301200000L;
         config[Grapher.END_TIME] = 978303900000L;
@@ -474,5 +475,51 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         }
 
     }
+
+    public void testToFileSuccessfull() throws Exception{
+        createDatabase();
+        Map config = [:]
+        config[Grapher.DATASOURCE] = [
+                                            [
+                                                name:"myspeed",
+                                                dbname: rrdFileName,
+                                                dsname: "b",
+                                                function:"AVERAGE"
+                                            ],
+                                            [
+                                                name:"kmh",
+                                                rpn: "myspeed,10,*"
+                                            ],
+                                            [
+                                                name:"fast",
+                                                rpn:"kmh,100,GT,100,0,IF"
+                                            ]
+                                      ]
+        config[Grapher.AREA] = [
+                                        [
+                                            name:"kmh",
+                                            color: "ff00ff",
+                                            description:"My Graph"
+                                        ]
+                                   ]
+       config[Grapher.START_TIME] = 978301200000L;
+       config[Grapher.END_TIME] = 978303900000L;
+
+       byte[] bytesToFile = Grapher.graph(config)
+
+       Grapher.toFile(bytesToFile, testImageName)
+
+       File testFile = new File(testImageName)
+       DataInputStream dis = new DataInputStream(new FileInputStream(testFile));
+       byte[] bytesFromFile = new byte[testFile.length()]
+       dis.read(bytesFromFile)
+
+       assertEquals(bytesToFile.length, bytesFromFile.length)
+       for(int i=0; i<bytesToFile.length; i++){
+           assertEquals(bytesToFile[i], bytesFromFile[i])
+       }
+
+     }
+
 
 }

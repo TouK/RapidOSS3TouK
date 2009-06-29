@@ -46,32 +46,32 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def config = variable.createDBConfig()
 
-        assertEquals(fileName, config[RrdUtils.DATABASE_NAME])
-        assertEquals(9000L, config[RrdUtils.START_TIME])
-        assertEquals(300L, config[RrdUtils.STEP])
+        assertEquals(fileName, config["databaseName"])
+        assertEquals(9000L, config["startTime"])
+        assertEquals(300L, config["step"])
 
         def datapointList = []
 
         def datapointConfig = [:]
-        datapointConfig[RrdUtils.NAME] = "variable"
-        datapointConfig[RrdUtils.TYPE] = "GAUGE"
-        datapointConfig[RrdUtils.HEARTBEAT] = 300L
-        datapointConfig[RrdUtils.MAX] = Double.NaN
-        datapointConfig[RrdUtils.MIN] = Double.NaN
+        datapointConfig["name"] = "variable"
+        datapointConfig["type"] = "GAUGE"
+        datapointConfig["heartbeat"] = 300L
+        datapointConfig["max"] = Double.NaN
+        datapointConfig["min"] = Double.NaN
         datapointList.add(datapointConfig)
 
-        assertEquals(datapointList, config[RrdUtils.DATASOURCE])
+        assertEquals(datapointList, config["datasource"])
 
         def archiveList = []
 
         def archiveConfig = [:]
-        archiveConfig[RrdUtils.FUNCTION] = "AVERAGE"
-        archiveConfig[RrdUtils.STEPS] = 1L
-        archiveConfig[RrdUtils.ROWS] = 10L
-        archiveConfig[RrdUtils.XFF] = 0.5D
+        archiveConfig["function"] = "AVERAGE"
+        archiveConfig["steps"] = 1L
+        archiveConfig["rows"] = 10L
+        archiveConfig["xff"] = 0.5D
         archiveList.add(archiveConfig)
 
-        assertEquals(archiveList, config[RrdUtils.ARCHIVE])
+        assertEquals(archiveList, config["archive"])
     }
 
     public void testCreateDBConfigSuccessfulWithMultipleArchive() {
@@ -93,46 +93,46 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def config = variable.createDBConfig()
 
-        assertEquals(fileName, config[RrdUtils.DATABASE_NAME])
-        assertEquals(9000L, config[RrdUtils.START_TIME])
-        assertEquals(300L, config[RrdUtils.STEP])
+        assertEquals(fileName, config["databaseName"])
+        assertEquals(9000L, config["startTime"])
+        assertEquals(300L, config["step"])
 
         def datapointList = []
 
         def datapointConfig = [:]
-        datapointConfig[RrdUtils.NAME] = "variable"
-        datapointConfig[RrdUtils.TYPE] = "GAUGE"
-        datapointConfig[RrdUtils.HEARTBEAT] = 300L
-        datapointConfig[RrdUtils.MAX] = Double.NaN
-        datapointConfig[RrdUtils.MIN] = Double.NaN
+        datapointConfig["name"] = "variable"
+        datapointConfig["type"] = "GAUGE"
+        datapointConfig["heartbeat"] = 300L
+        datapointConfig["max"] = Double.NaN
+        datapointConfig["min"] = Double.NaN
         datapointList.add(datapointConfig)
 
-        assertEquals(datapointList, config[RrdUtils.DATASOURCE])
+        assertEquals(datapointList, config["datasource"])
 
         def archiveList = []
 
         def archiveConfig1 = [:]
-        archiveConfig1[RrdUtils.FUNCTION] = "AVERAGE"
-        archiveConfig1[RrdUtils.XFF] = 0.5D
-        archiveConfig1[RrdUtils.STEPS] = 1L
-        archiveConfig1[RrdUtils.ROWS] = 10L
+        archiveConfig1["function"] = "AVERAGE"
+        archiveConfig1["xff"] = 0.5D
+        archiveConfig1["steps"] = 1L
+        archiveConfig1["rows"] = 10L
         archiveList.add(archiveConfig1)
 
         def archiveConfig2 = [:]
-        archiveConfig2[RrdUtils.FUNCTION] = "MAX"
-        archiveConfig2[RrdUtils.XFF] = 0.2D
-        archiveConfig2[RrdUtils.STEPS] = 6L
-        archiveConfig2[RrdUtils.ROWS] = 5L
+        archiveConfig2["function"] = "MAX"
+        archiveConfig2["xff"] = 0.2D
+        archiveConfig2["steps"] = 6L
+        archiveConfig2["rows"] = 5L
         archiveList.add(archiveConfig2)
 
         def archiveConfig3 = [:]
-        archiveConfig3[RrdUtils.FUNCTION] = "MIN"
-        archiveConfig3[RrdUtils.XFF] = 0.7D
-        archiveConfig3[RrdUtils.STEPS] = 3L
-        archiveConfig3[RrdUtils.ROWS] = 15L
+        archiveConfig3["function"] = "MIN"
+        archiveConfig3["xff"] = 0.7D
+        archiveConfig3["steps"] = 3L
+        archiveConfig3["rows"] = 15L
         archiveList.add(archiveConfig3)
 
-        assertEquals(archiveList, config[RrdUtils.ARCHIVE])
+        assertEquals(archiveList, config["archive"])
     }
 
     public void testCreateUpdateDataSingleTimeandValue() {
@@ -162,36 +162,36 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def config = [:]
 
-        config[RrdUtils.DATABASE_NAME] = fileName
-        config[RrdUtils.START_TIME] = 9000L
-        config[RrdUtils.STEP] = 300L
+        config["databaseName"] = fileName
+        config["startTime"] = 9000L
+        config["step"] = 300L
 
         def datapointList = []
 
         def datapointConfig = [:]
-        datapointConfig[RrdUtils.NAME] = "variable"
-        datapointConfig[RrdUtils.TYPE] = "GAUGE"
-        datapointConfig[RrdUtils.HEARTBEAT] = 300L
-        datapointConfig[RrdUtils.MAX] = Double.NaN
-        datapointConfig[RrdUtils.MIN] = Double.NaN
+        datapointConfig["name"] = "variable"
+        datapointConfig["type"] = "GAUGE"
+        datapointConfig["heartbeat"] = 300L
+        datapointConfig["max"] = Double.NaN
+        datapointConfig["min"] = Double.NaN
         datapointList.add(datapointConfig)
 
-        config[RrdUtils.DATASOURCE] = datapointList
+        config["datasource"] = datapointList
 
         def archiveList = []
 
         def archiveConfig = [:]
-        archiveConfig[RrdUtils.FUNCTION] = "AVERAGE"
-        archiveConfig[RrdUtils.XFF] = 0.5D
-        archiveConfig[RrdUtils.STEPS] = 1
-        archiveConfig[RrdUtils.ROWS] = 10
+        archiveConfig["function"] = "AVERAGE"
+        archiveConfig["xff"] = 0.5D
+        archiveConfig["steps"] = 1
+        archiveConfig["rows"] = 10
 
 
-        dbConfig[RrdUtils.ARCHIVE].get(0).remove(RrdUtils.START_TIME)
+        dbConfig["archive"].get(0).remove("startTime")
 
         archiveList.add(archiveConfig)
 
-        config[RrdUtils.ARCHIVE] = archiveList
+        config["archive"] = archiveList
 
         assertEquals(config, dbConfig)
 
@@ -299,11 +299,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808600000L, value:12422)
         variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L,
-                       vlabel:"Vertical Label", color:"FF0000", type:"line", description:"Red Line")
-        
+        variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L,
+                       vlabel:"Vertical Label", color:"FF0000", type:"line", description:"Red Line", destination: imageFileName)
+
+        assertTrue(new File(imageFileName).exists())
+
+        /*
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+        */
     }
 
     public void testGraphWithDefaultProperties() {
@@ -337,10 +341,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808600000L, value:12422)
         variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L)
+        variable.graph(title:"Graph Without Template", startTime:920804400000L,
+                       endTime:920808000000L, destination:imageFileName)
 
+        assertTrue(new File(imageFileName).exists())
+
+        /*
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+        */
     }
     
     public void testGraphWithRPNSource() {
@@ -374,11 +383,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808600000L, value:12422)
         variable.updateDB(time:920808900000L, value:12423)
 
-        byte[] data = variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400000L, endTime:920808000000L,
-                       rpn:"variable,1000,*")
+        variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400000L, endTime:920808000000L,
+                       rpn:"variable,1000,*", destination:imageFileName)
 
+        assertTrue(new File(imageFileName).exists())
+
+        /*
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+        */
     }
 
     public void testGraphWithMultipleSource() {
@@ -422,18 +435,23 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable2.updateDB(time:978303900000, value:3000)
 
         def config = [:]
-        config[Grapher.TITLE] = "Graph With Multiple Source"
-        config[Grapher.START_TIME] = 978300600000L
-        config[Grapher.END_TIME] = 978304200000L
+        config["title"] = "Graph With Multiple Source"
+        config["startTime"] = 978300600000L
+        config["endTime"] = 978304200000L
+        config["destination"] = imageFileName
 
-        config[Grapher.RRD_VARIABLES] = []
-        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
-        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable2", color:"00FF00", type:"line", description:"Variable 2"])
+        config["rrdVariables"] = []
+        config["rrdVariables"].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
+        config["rrdVariables"].add([rrdVariable:"variable2", color:"00FF00", type:"line", description:"Variable 2"])
 
-        byte[] data = RrdUtils.graph(config)
+        RrdUtils.graph(config)
 
+        assertTrue(new File(imageFileName).exists())
+
+        /*
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+        */
     }
 
     public void testGraphWithMultipleSourceandRPN() {
@@ -469,19 +487,24 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(time:920808900000L, value:12423)
 
         def config = [:]
-        config[Grapher.TITLE] = "Graph With Multiple Source"
-        config[Grapher.START_TIME] = 920804400000L
-        config[Grapher.END_TIME] = 920808000000L
+        config["title"] = "Graph With Multiple Source"
+        config["startTime"] = 920804400000L
+        config["endTime"] = 920808000000L
+        config["destination"] = imageFileName
 
-        config[Grapher.RRD_VARIABLES] = []
-        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
-        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
-        config[Grapher.RRD_VARIABLES].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
+        config["rrdVariables"] = []
+        config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
         byte[] data = RrdUtils.graph(config)
-
+                                                                    
+        assertTrue(new File(imageFileName).exists())
+        
+        /*
         DataOutputStream outputStream = new DataOutputStream( new FileOutputStream(imageFileName))
         outputStream.write(data)
+        */
         
     }
 

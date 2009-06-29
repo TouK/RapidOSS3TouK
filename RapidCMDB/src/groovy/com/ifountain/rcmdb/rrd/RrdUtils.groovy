@@ -306,41 +306,6 @@ class RrdUtils {
        return graphMultipleDatasources(config);
 
     }
-    /*
-    public static byte[] graphOneVariable(Map config){
-       String rrdVarName = config.get(RRD_VARIABLE);
-       def rrdvar = loadClass("RrdVariable").get(name:rrdVarName);
-
-       Map rVariable = [:];
-       rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
-       rVariable[DESCRIPTION] = config.containsKey(DESCRIPTION)?config.get(DESCRIPTION):rrdvar.name;
-       if(config.containsKey(COLOR) ){
-           rVariable[COLOR] = config.get(COLOR);
-       }
-       if(config.containsKey(THICKNESS)){
-           rrdVariable[THICKNESS] = config.get(THICKNESS)
-       }
-       if(config.containsKey(TYPE)) {
-           rVariable[TYPE] = config.get(TYPE);
-       }
-       if(config.containsKey(RPN)) {
-           rVariable[RPN] = config.get(RPN);
-       }
-
-       config.remove (RRD_VARIABLE);
-       if (config.containsKey(DESCRIPTION) ){
-           config.remove (DESCRIPTION);
-       }
-       def vlist = [];
-       vlist.add(rVariable);
-       config[RRD_VARIABLES] = vlist;
-
-       println config;
-
-       return graphMultipleDatasources(config);
-
-    }
-    */
 
     public static Map getGeneralSettingsMap(Map config){
        if(config.containsKey("templateName")){

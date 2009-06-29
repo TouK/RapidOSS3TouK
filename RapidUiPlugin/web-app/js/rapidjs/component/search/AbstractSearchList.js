@@ -39,6 +39,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.configureTimeout(config);
     this.searchInput = null;
     this.classesInput = null;
+    this.searchClassesLoaded = false;
     this.rootNode = null;
     this.searchData = [];
     this.rowHeight = null;
@@ -73,7 +74,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
 
-    getSearchClasses: function() {
+    retrieveSearchClasses: function() {
         var cb = {
             success: this.searchClassesSuccess,
             failure: this.processFailure,
@@ -90,16 +91,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             SelectUtils.addOption(this.classesInput, className, className);
         }
         SelectUtils.selectTheValue(this.classesInput, this.defaultSearchClass, 0);
+        this.searchClassesLoaded = true;
     },
     handleSearch: function(e) {
         this.offset = 0;
         var newHistoryState = [];
-        this._poll();
+        this.poll();
         this._changeScroll(0);
         newHistoryState[newHistoryState.length] = this.searchInput.value;
         newHistoryState[newHistoryState.length] = this.lastSortAtt;
         newHistoryState[newHistoryState.length] = this.lastSortOrder;
-        newHistoryState[newHistoryState.length] = this.classesInput.options[this.classesInput.selectedIndex].value
+        newHistoryState[newHistoryState.length] = this.params['searchIn'];
         this.saveHistoryChange(newHistoryState.join("!::!"));
     },
 
@@ -116,7 +118,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             var order = params[2]
             var searchClass = params[3]
             this._setQuery(queryString, sort, order, searchClass);
-            this._poll();
+            this.poll();
         }
 
     },
@@ -133,7 +135,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.searchInput.value = queryString;
         this.lastSortAtt = sortAtt || this.keyAttribute;
         this.lastSortOrder = sortOrder || 'asc';
-        SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
+        if (this.searchClassesLoaded) {
+            SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
+        }
         this.offset = 0;
         if (extraParams) {
             for (var extraParam in extraParams) {
@@ -145,7 +149,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     appendToQuery: function(query)
     {
         var queryString = this.searchInput.value + " " + query;
-        this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.classesInput.options[this.classesInput.selectedIndex].value);
+        this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.getSearchClass());
     },
     appendExceptQuery: function(key, value) {
         if (this.searchInput.value != "")
@@ -193,7 +197,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         }
     },
 
-    _poll: function() {
+    poll: function() {
         this.currentlyExecutingQuery = this.searchInput.value;
         if (this.defaultFilter != null)
         {
@@ -211,8 +215,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.params[this.queryParameter] = this.currentlyExecutingQuery;
         this.params['sort'] = this.lastSortAtt;
         this.params['order'] = this.lastSortOrder;
-        this.params['searchIn'] = this.classesInput.options[this.classesInput.selectedIndex].value;
-        this.poll();
+        this.params['searchIn'] = this.getSearchClass();
+        YAHOO.rapidjs.component.search.AbstractSearchList.superclass.poll.call(this);
     },
 
     loadData : function(data) {
@@ -278,7 +282,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;
         this.offset = 0;
-        this._poll();
+        this.poll();
     },
 
     handleScroll: function() {
@@ -293,7 +297,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     scrollPoll : function(offset) {
         this.offset = offset;
-        this._poll();
+        this.poll();
     },
 
     _verticalScrollChanged : function() {
@@ -680,7 +684,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     getSearchClass:function() {
-        return this.classesInput.options[this.classesInput.selectedIndex].value;
+        if (this.searchClassesLoaded) {
+            return this.classesInput.options[this.classesInput.selectedIndex].value;
+        }
+        return this.defaultSearchClass;
     },
 
     showCurrentState: function() {

@@ -120,7 +120,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         }
         this.cellMenu.render(document.body);
         YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.cellMenu);
-        this.getSearchClasses();
+        this.retrieveSearchClasses();
     },
 
     createMask: function() {

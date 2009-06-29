@@ -156,7 +156,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
 
         if(this.queryEnabled){
-            this.getSearchClasses();
+            this.retrieveSearchClasses();
         }
         else{
            SelectUtils.addOption(this.classesInput, this.defaultSearchClass, this.defaultSearchClass);
@@ -556,7 +556,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortAtt = column['attributeName'];
             sortOrder = column['sortOrder'] || 'asc';
         }
-        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.classesInput.options[this.classesInput.selectedIndex].value);
+        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.getSearchClass());
         this.handleSearch(null, willSaveHistory);
     },
     getColumnConfigFromViewNode: function(viewNode) {
@@ -604,7 +604,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     viewBuilderSuccess: function() {
         this.events["success"].fireDirect(this);
     },
-    _poll : function() {
+    poll : function() {
         var lastClicked = this.lastSortedHeader;
         if (lastClicked) {
             lastClicked.sortDir = null;
@@ -623,7 +623,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.lastSortedHeader.sortDir = this.lastSortOrder;
             this.updateHeaderSortState(this.lastSortedHeader);
         }
-        YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
+        YAHOO.rapidjs.component.search.SearchGrid.superclass.poll.call(this);
     },
     setQueryWithView: function(queryString, view, searchIn, title, extraParams)
     {
@@ -631,14 +631,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.setTitle(title);
         }
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
-        SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
+        if(this.searchClassesLoaded){
+            SelectUtils.selectTheValue(this.classesInput, searchIn, 0);    
+        }
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
             this.viewChanged(queryString);
         }
         else {
-            var currentSearchIn = this.classesInput.options[this.classesInput.selectedIndex].value
-            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, currentSearchIn, extraParams);
+            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.getSearchClass(), extraParams);
             this.handleSearch();
         }
     },
@@ -649,12 +650,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
 
     handleSearch: function(e, willSaveHistory) {
         this.offset = 0;
-        this._poll();
+        this.poll();
         this._changeScroll(0);
         if (willSaveHistory !== false) {
             var newHistoryState = [];
             newHistoryState[newHistoryState.length] = this.searchInput.value;
-            newHistoryState[newHistoryState.length] = this.classesInput.options[this.classesInput.selectedIndex].value;
+            newHistoryState[newHistoryState.length] = this.params['searchIn']
             newHistoryState[newHistoryState.length] = this.viewInput[this.viewInput.selectedIndex].value;
             this.saveHistoryChange(newHistoryState.join("!::!"));
         }
@@ -667,7 +668,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var searchClass = params[1]
             var view = params[2]
             SelectUtils.selectTheValue(this.viewInput, view, 0);
-            SelectUtils.selectTheValue(this.classesInput, searchClass, 0);
+            if(this.searchClassesLoaded){
+                SelectUtils.selectTheValue(this.classesInput, searchClass, 0);    
+            }
             this.viewChanged(queryString, false);
         }
     },

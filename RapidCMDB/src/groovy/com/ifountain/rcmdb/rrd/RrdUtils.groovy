@@ -36,20 +36,6 @@ class RrdUtils {
     }
 
     /**
-    *  returns the DsDef classes of given list of maps holding DsDef properties
-    */
-    public static DsDef[] getDsDefs(list){
-       return DbUtils.getDsDefs(list);
-    }
-
-    /**
-    *  returns the ArcDef classes of given list of maps holding ArcDef properties
-    */
-    public static ArcDef[] getArcDefs(list){
-       return DbUtils.getArcDefs(list);
-    }
-
-    /**
     * inserts a data to the rrd database
     * sample data is "timestamp:variable1:variable2:...:variablen"
     * e.g. : "978301200:200:1" or "978301200:200"
@@ -83,11 +69,11 @@ class RrdUtils {
     * already defined and the database is open. Otherwise this function will give
     * an exception since it cannot read the database
     */
-    private static def fetchArchives(String dbName){
+    public static def fetchArchives(String dbName){
         return DbUtils.fetchArchives( dbName);
     }
 
-    private static def fetchArchives(RrdDb rrdDb){
+    public static def fetchArchives(RrdDb rrdDb){
         return fetchArchives(rrdDb);
     }
 
@@ -97,11 +83,11 @@ class RrdUtils {
     * already defined and the database is open. Otherwise this function will give
     * an exception since it cannot read the database
     */
-    private static def fetchDatasources(String dbName){
+    public static def fetchDatasources(String dbName){
         return DbUtils.fetchDatasources(dbName);
     }
 
-    private static def fetchDatasources(RrdDb rrdDb){
+    public static def fetchDatasources(RrdDb rrdDb){
        return DbUtils.fetchDatasources(rrdDb);
     }
 

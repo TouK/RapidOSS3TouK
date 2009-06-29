@@ -107,7 +107,7 @@ class DbUtils {
     /**
     *  returns the DsDef classes of given list of maps holding DsDef properties
     */
-    public static DsDef[] getDsDefs(list){
+    private static DsDef[] getDsDefs(list){
         def dsList = [];
         list.each{
            double min = Double.NaN
@@ -127,7 +127,7 @@ class DbUtils {
     /**
     *  returns the ArcDef classes of given list of maps holding ArcDef properties
     */
-    public static ArcDef[] getArcDefs(list){
+    private static ArcDef[] getArcDefs(list){
         def arcList = [];
         list.each{
            ArcDef arcTemp = new ArcDef(it.get(FUNCTION),it.get(XFF),(int)it.get(STEPS),(int)it.get(ROWS))
@@ -187,14 +187,14 @@ class DbUtils {
     * already defined and the database is open. Otherwise this function will give
     * an exception since it cannot read the database
     */
-    private static def fetchArchives(String dbName){
+    public static def fetchArchives(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def result = fetchArchives(rrdDb);
         rrdDb.close();
         return result;
     }
 
-    private static def fetchArchives(RrdDb rrdDb){
+    public static def fetchArchives(RrdDb rrdDb){
         int arcCount = rrdDb.getArcCount();
         Archive[] arcs = new Archive[arcCount];
         for(int i=0; i<arcCount; i++){
@@ -222,14 +222,14 @@ class DbUtils {
     * already defined and the database is open. Otherwise this function will give
     * an exception since it cannot read the database
     */
-    private static def fetchDatasources(String dbName){
+    public static def fetchDatasources(String dbName){
         RrdDb rrdDb = new RrdDb(dbName);
         def result = fetchDatasources(rrdDb);
         rrdDb.close();
         return result;
     }
 
-    private static def fetchDatasources(RrdDb rrdDb){
+    public static def fetchDatasources(RrdDb rrdDb){
         int datCount = rrdDb.getDsCount();
         Datasource[] dats = new Datasource[datCount];
         for(int i=0; i<datCount; i++){

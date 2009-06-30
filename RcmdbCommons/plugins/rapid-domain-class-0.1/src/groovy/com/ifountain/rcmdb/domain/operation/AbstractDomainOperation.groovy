@@ -177,8 +177,8 @@ public class AbstractDomainOperation {
     }
 
     def onLoad(){}
-    def beforeUpdate(Map params){}
-    def afterUpdate(Map params){}
+    def beforeUpdate(params){}
+    def afterUpdate(params){}
     def beforeInsert(){}
     def afterInsert(){}
     def beforeDelete(){}

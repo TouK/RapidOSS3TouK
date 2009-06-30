@@ -260,6 +260,7 @@ class DbUtils {
         Map config = [:];
         config[DATABASE_NAME] = dbName;
         config[START_TIME] = rrdDef.getStartTime() * 1000;
+        config[Grapher.END_TIME] = rrdDb.getLastArchiveUpdateTime()*1000;
         config[STEP] = rrdDef.getStep();
         config[DATASOURCE] = fetchDatasources(rrdDb );
         config[ARCHIVE] = fetchArchives(rrdDb);

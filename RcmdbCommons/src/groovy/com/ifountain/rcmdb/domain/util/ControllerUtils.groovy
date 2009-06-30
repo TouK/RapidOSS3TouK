@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.domain.util
 import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.web.binding.DataBindingUtils
+import javax.imageio.ImageIO
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,6 +31,14 @@ import org.codehaus.groovy.grails.web.binding.DataBindingUtils
  * To change this template use File | Settings | File Templates.
  */
 class ControllerUtils {
+
+    def static drawImageToWeb(java.awt.Image image,String contentType,response)
+    {
+        response.contentType = "image/png";
+        ImageIO.write(image, "png", response.outputStream);
+        response.outputStream.flush()
+    }
+
     def static convertSuccessToXml(String successMessage)
     {
         StringWriter writer = new StringWriter();

@@ -2,7 +2,7 @@ package com.ifountain.rcmdb.rrd
 
 import org.jrobin.core.RrdDb
 
-import org.jrobin.graph.RrdGraphDef;
+import org.jrobin.graph.RrdGraphDef
 
 /**
 * Created by IntelliJ IDEA.
@@ -200,14 +200,14 @@ class RrdUtils {
        }
        def rrdVariables = config.get(RRD_VARIABLES);
 
-
        def datasourceList = [];
        fConfig[Grapher.AREA] = [];
        fConfig[Grapher.LINE] = [];
        fConfig[Grapher.STACK] = [];
        def typeList = [];
+       def rrdVar;
        for(int i=0; i<rrdVariables.size(); i++){
-           def rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
+           rrdVar = loadClass("RrdVariable").get(name:rrdVariables[i][RRD_VARIABLE]);
            if(rrdVariables[i].containsKey(Grapher.FUNCTION) ){
                def datasourceMap = [:];
                datasourceMap[Grapher.NAME] = rrdVar.name;
@@ -249,7 +249,13 @@ class RrdUtils {
                fConfig[typeVar].add(typeMap);
            }
        }
-
+       Map dbInfo = DbUtils.getDatabaseInfo(rrdVar.file);
+       if(!fConfig.containsKey (DbUtils.START_TIME)){
+           fConfig[DbUtils.START_TIME] = dbInfo[DbUtils.START_TIME];
+       }
+       if(!fConfig.containsKey (Grapher.END_TIME)){
+           fConfig[Grapher.END_TIME] = dbInfo[Grapher.END_TIME];
+       }
        fConfig[Grapher.DATASOURCE] = datasourceList;
 
        byte[] bytes = Grapher.graph(fConfig);
@@ -282,7 +288,7 @@ class RrdUtils {
            rVariable[Grapher.COLOR] = config.get(Grapher.COLOR);
        }
        if(config.containsKey(Grapher.THICKNESS)){
-           rrdVariable[Grapher.THICKNESS] = config.get(Grapher.THICKNESS)
+           rVariable[Grapher.THICKNESS] = config.get(Grapher.THICKNESS)
        }
        if(config.containsKey(Grapher.TYPE)) {
            rVariable[Grapher.TYPE] = config.get(Grapher.TYPE);
@@ -308,15 +314,10 @@ class RrdUtils {
        }
        Map fConfig = [:];
 
-       if(!config.containsKey(Grapher.START_TIME) ){
-           throw new Exception("Start time is not specified");
-       }else {
+       if(config.containsKey(Grapher.START_TIME) ){
            fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
        }
-       if(!config.containsKey(Grapher.END_TIME) ){
-           fConfig[Grapher.END_TIME] = getCurrentTime();
-       }
-       else{
+       if(config.containsKey(Grapher.END_TIME) ){
            fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
        }
        if(config.containsKey(Grapher.MAX) ){
@@ -354,7 +355,7 @@ class RrdUtils {
            fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
        }
        if(!config.containsKey(Grapher.END_TIME) ){
-           fConfig[Grapher.END_TIME] = getCurrentTime();
+           fConfig[Grapher.END_TIME] = Date.now();
        }
        else{
            fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);

@@ -259,8 +259,25 @@ class DbUtils {
 
         Map config = [:];
         config[DATABASE_NAME] = dbName;
-        config[START_TIME] = rrdDef.getStartTime() * 1000;
-        config[Grapher.END_TIME] = rrdDb.getLastArchiveUpdateTime()*1000;
+
+        long max = 0
+        long min = Long.MAX_VALUE
+        int counter = 0;
+        while(true)
+        {
+            try{
+                Archive archive = rrdDb.getArchive(counter++)
+            if(archive.getStartTime() < min)
+                min = archive.getStartTime()
+            if(archive.getEndTime() > max)
+                max = archive.getEndTime()
+            }
+            catch(ArrayIndexOutOfBoundsException e) { break;}
+        }
+
+        config[START_TIME] = min * 1000;
+        config[Grapher.END_TIME] = max * 1000;
+
         config[STEP] = rrdDef.getStep();
         config[DATASOURCE] = fetchDatasources(rrdDb );
         config[ARCHIVE] = fetchArchives(rrdDb);
@@ -288,10 +305,10 @@ class DbUtils {
         for(int i=0; i<datasources.length; i++){
             datasources[i] = dslist[i][NAME];
         }
-        long endTime = rrdDb.getLastUpdateTime();
+        long endTime = rrdDb.getLastUpdateTime() * 1000;
         rrdDb.close();
         String function = arclist[0][FUNCTION];
-        long startTime = arclist[0][START_TIME];
+        long startTime = arclist[0][START_TIME] * 1000;
         return fetchData(dbName, datasources, function, startTime, endTime);
     }
 
@@ -301,10 +318,10 @@ class DbUtils {
     public static double[] fetchData(String dbName, String datasource){
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
-        long endTime = rrdDb.getLastUpdateTime();
+        long endTime = rrdDb.getLastUpdateTime() * 1000;
         rrdDb.close();
         String function = arclist[0][FUNCTION];
-        long startTime = arclist[0][START_TIME];
+        long startTime = arclist[0][START_TIME] * 1000;
         return fetchData(dbName, datasource, function, startTime, endTime);
     }
 
@@ -345,8 +362,8 @@ class DbUtils {
         RrdDb rrdDb = new RrdDb(dbName);
         def arclist = fetchArchives(rrdDb);
         String function = arclist[0][DbUtils.FUNCTION];
-        long startTime = arclist[0][DbUtils.START_TIME];
-        long endTime = rrdDb.getLastUpdateTime();
+        long startTime = arclist[0][DbUtils.START_TIME] * 1000;
+        long endTime = rrdDb.getLastUpdateTime() * 1000;
         rrdDb.close();
         return fetchData(dbName, datasources, function, startTime, endTime);
     }

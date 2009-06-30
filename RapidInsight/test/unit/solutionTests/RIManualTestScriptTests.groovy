@@ -195,7 +195,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
-        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)
+        def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true,logFileOwn:true], true)
         def script = CmdbScript.addScript([name: "findMaxTest", type: CmdbScript.ONDEMAND], true)
 
         CmdbScript.startListening(listeningscript);

@@ -1,1 +1,7 @@
 solutionTests.RIManualTestScriptTests
+plugintests.SearchableExtensionPluginBulkOperationTest
+com.ifountain.rcmdb.domain.util.ControllerUtilsTest
+netcool.conversion.NetcoolRuleFunctionsTest
+auth.AuthenticationAuthorizationControllerIntegrationTests
+com.ifountain.compass.integration.CompassTransactionTest
+performance.writeOperations.RepositoryPerformanceTest

@@ -31,7 +31,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * Time: 5:35:46 PM
 * To change this template use File | Settings | File Templates.
 */
-class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
+class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
@@ -59,17 +59,16 @@ class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
 
-
         ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
-               setProperty(className,gcl.loadClass(className));
+              setProperty(className,gcl.loadClass(className));
         }
 
         ["RsEventOperations", "RsRiEventOperations","RsHistoricalEventOperations","RsEventJournalOperations", "RsTopologyObjectOperations"].each{ className ->
-               setProperty(className,gcl.loadClass(className));
+              setProperty(className,gcl.loadClass(className));
         }
 
-        classes = [:];
 
+        classes = [:];
         base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
         initializeScriptManager();
 
@@ -450,6 +449,4 @@ class RISolutionsManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 }
-
-
 

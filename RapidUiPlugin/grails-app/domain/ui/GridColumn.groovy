@@ -33,13 +33,14 @@ class GridColumn {
     String header = "";
     Long width = 0;
     GridView gridView;
+    Long gridViewId = 0;
 
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
 
     static constraints = {
-        attributeName(blank: false, nullable: false, key: ["gridView"])
+        attributeName(blank: false, nullable: false, key: ["gridViewId"])
         header(blank:true, nullable: true)
         columnIndex(nullable: true)
         width(nullable: true)

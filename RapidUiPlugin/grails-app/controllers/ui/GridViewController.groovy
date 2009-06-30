@@ -189,7 +189,7 @@ class GridViewController {
                     def attributeName = props[0]
                     def header = props[1]
                     def width = Long.parseLong(props[2]);
-                    GridColumn.add(gridView: gridView, attributeName: attributeName, header: header, width: width, columnIndex: columnIndex)
+                    GridColumn.add(gridView: gridView, gridViewId:gridView.id, attributeName: attributeName, header: header, width: width, columnIndex: columnIndex)
                     columnIndex++;
                 }
             }

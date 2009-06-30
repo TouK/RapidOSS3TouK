@@ -25,6 +25,8 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.
@@ -143,6 +145,7 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
 class RemoveMethodDomainObject
 {
+    def __operation_class__ = null;
     def static relatedInstancesShouldBeReturnedFromRemoveRelationMethod = [:];
     Long id;
     String prop1;
@@ -208,26 +211,26 @@ class RemoveMethodDomainObject
 
 class RemoveMethodDomainObjectWithEvents extends RemoveMethodDomainObject
 {
-    def onLoad = {
+    def onLoadWrapper(){
         eventCallList.add("onLoad");
     }
 
-    def beforeInsert = {
+    def beforeInsertWrapper(){
         eventCallList.add("beforeInsert");
     }
-    def beforeUpdate = {
+    def beforeUpdateWrapper(params){
         eventCallList.add("beforeUpdate");
     }
-    def beforeDelete = {
+    def beforeDeleteWrapper(){
         eventCallList.add("beforeDelete");
     }
-    def afterInsert = {
+    def afterInsertWrapper(){
         eventCallList.add("afterInsert");
     }
-    def afterUpdate = {
+    def afterUpdateWrapper(params){
         eventCallList.add("afterUpdate");
     }
-    def afterDelete = {
+    def afterDeleteWrapper(){
         eventCallList.add("afterDelete");
     }
 }

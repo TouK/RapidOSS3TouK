@@ -55,6 +55,230 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
 
 
     }
+    public void testSetPropertiesCallsNonPersistantSetPropertyIfFlagIsSet()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+        assertTrue(domainOpr.rsSetPropertyWillUpdate instanceof ThreadLocal);
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+
+        def updatedProp1Val = "prop1UpdatedValue";
+        domainOpr.disableSetPropertyWillUpdate{
+            assertFalse (domainOpr.rsSetPropertyWillUpdate.get());
+            domainOpr.setProperty ("prop1", updatedProp1Val);
+        }
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        List params = DataStore.get("setProperty");
+        assertEquals ("prop1", params[0]);
+        assertEquals (updatedProp1Val, params[1]);
+        assertEquals (false, params[2]);
+    }
+
+    public void testBeforeEventWrappersWillCallNonPersistantSetProperty()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+
+        def newOprClassStr = """
+            class NewOpr extends ${AbstractDomainOperation.class.name}
+            {
+                def onLoad()
+                {
+                    assert rsSetPropertyWillUpdate.get() == true
+                    ${DataStore.class.name}.get("methodCalls").add("onLoad")
+                }
+                def beforeDelete()
+                {
+                    assert rsSetPropertyWillUpdate.get() == false
+                    ${DataStore.class.name}.get("methodCalls").add("beforeDelete")
+                }
+                def beforeUpdate(Map props)
+                {
+                    assert rsSetPropertyWillUpdate.get() == false
+                    ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
+                }
+                def beforeInsert()
+                {
+                    assert rsSetPropertyWillUpdate.get() == false
+                    ${DataStore.class.name}.get("methodCalls").add("beforeInsert")
+                }
+                def afterDelete()
+                {
+                    assert rsSetPropertyWillUpdate.get() == true
+                    ${DataStore.class.name}.get("methodCalls").add("afterDelete")
+                }
+                def afterUpdate(Map props)
+                {
+                    assert rsSetPropertyWillUpdate.get() == true
+                    ${DataStore.class.name}.get("methodCalls").add("afterUpdate")
+                }
+                def afterInsert()
+                {
+                    assert rsSetPropertyWillUpdate.get() == true
+                    ${DataStore.class.name}.get("methodCalls").add("afterInsert")
+                }
+            }
+        """
+
+        def newOprClass = gcl.parseClass(newOprClassStr);
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        DataStore.put("methodCalls", [])
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = newOprClass.newInstance();
+        domainOpr.domainObject = domainInstance;
+        domainOpr.onLoadWrapper();
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("onLoad", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.beforeDeleteWrapper();
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("beforeDelete", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.beforeUpdateWrapper([:]);
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("beforeUpdate", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.beforeInsertWrapper();
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("beforeInsert", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.afterDeleteWrapper();
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("afterDelete", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.afterUpdateWrapper([:]);
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("afterUpdate", DataStore.get("methodCalls")[0]);
+
+        DataStore.put("methodCalls", [])
+
+        domainOpr.afterInsertWrapper();
+        assertEquals(1, DataStore.get("methodCalls").size());
+        assertEquals("afterInsert", DataStore.get("methodCalls")[0]);
+    }
+
+    public void testBeforeUpdateWrapperWillReturnUpdatedPropsList()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        DataStore.put("methodCalls", [])
+        def newOprClassStr = """
+            class NewOpr extends ${AbstractDomainOperation.class.name}
+            {
+                def beforeUpdate(Map props)
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
+                    prop1 = "prop1UpdatedValue1"
+                    prop1 = "prop1UpdatedValue2"
+                }
+                def afterUpdate(Map props)
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("afterUpdate");
+                }
+            }
+        """
+
+        def newOprClass = gcl.parseClass(newOprClassStr);
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def prop1ValueBeforeUpdate = "prop1Value";
+        def domainInstance = domainClass.newInstance();
+        domainInstance.prop1 = prop1ValueBeforeUpdate;
+        
+        AbstractDomainOperation domainOpr = newOprClass.newInstance();
+        domainOpr.domainObject = domainInstance;
+
+        Map updatedProps = domainOpr.beforeUpdateWrapper([:]);
+
+        assertEquals (1, updatedProps.size());
+        assertTrue(updatedProps.containsKey("prop1"));
+        assertEquals(prop1ValueBeforeUpdate, updatedProps.get("prop1"));
+    }
+
+    public void testBeforeUpdateWrapperWillNotReturnNameOfNotUpdatedPropsEvenIfSetPropertyIsCalled()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        def prop1Value = "prop1Value"
+        DataStore.put("methodCalls", [])
+        def newOprClassStr = """
+            class NewOpr extends ${AbstractDomainOperation.class.name}
+            {
+                def beforeUpdate(Map props)
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
+                    prop1 = "${prop1Value}"
+                }
+                def afterUpdate(Map props)
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("afterUpdate");
+                }
+            }
+        """
+
+        def newOprClass = gcl.parseClass(newOprClassStr);
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+        domainInstance.prop1 = prop1Value;
+
+        AbstractDomainOperation domainOpr = newOprClass.newInstance();
+        domainOpr.domainObject = domainInstance;
+
+        Map updatedProps = domainOpr.beforeUpdateWrapper([:]);
+
+        assertEquals ("Since prop1 value didnot changed updated props will not contain property name", 0, updatedProps.size());
+    }
 
     public void testMethodMissing()
     {

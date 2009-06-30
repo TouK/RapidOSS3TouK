@@ -46,23 +46,27 @@ class EventTriggeringUtilsTest extends RapidCmdbTestCase{
     public void testTriggerEventWithParameter()
     {
         EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
-        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+        def res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT);
         assertEquals (1, obj.beforeDeleteParams.size());
         assertEquals (null, obj.beforeDeleteParams[0]);
+        assertEquals("beforeDeleteWrapperRes", res);
 
         def mapToBePassed = [:];
         obj = new EventTriggeringUtilsTestObject();
-        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT, mapToBePassed);
+        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT, mapToBePassed);
         assertEquals (1, obj.beforeDeleteParams.size());
         assertSame(mapToBePassed, obj.beforeDeleteParams[0]);
+        assertEquals("beforeDeleteWrapperRes", res);
 
         obj = new EventTriggeringUtilsTestObject();
-        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT, null);
+        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT, null);
         assertEquals(1, obj.beforeUpdateParams.size());
+        assertEquals("beforeUpdateCalledRes", res);
 
         obj = new EventTriggeringUtilsTestObject();
-        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
+        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
         assertEquals(1, obj.beforeUpdateParams.size());
+        assertEquals("beforeUpdateCalledRes", res);
     }
 }
 
@@ -71,15 +75,17 @@ class   EventTriggeringUtilsTestObject
     boolean isOnLoadCalled = false;
     List beforeDeleteParams = [];
     List beforeUpdateParams = [];
-    def onLoad = {
+    def onLoadWrapper = {
         isOnLoadCalled = true;
     }
 
-    def beforeDelete = {params->
+    def beforeDeleteWrapper = {params->
         beforeDeleteParams.add(params);
+        return "beforeDeleteWrapperRes"
     }
 
-    def beforeUpdate(){
+    def beforeUpdateWrapper(){
         beforeUpdateParams.add("beforeUpdateCalled");
+        return "beforeUpdateCalledRes"
     }
 }

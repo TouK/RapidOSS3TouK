@@ -27,6 +27,8 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.
@@ -191,6 +193,55 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals("cache should not be updated since no property changed", numberOfUpdateCacheCall, AddMethodDomainObject1.updateCacheCallParams.size());
     }
 
+    public void testUpdateMethodWillAddUpdatedPropsMapReturnedFromBeforeUpdate()
+    {
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        def relations = [:];
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObjectWithEvents.eventCalls.clear();
+        AddMethodDomainObjectWithEvents.indexList.clear();
+        def afterUpdateCalled = false;
+        addedObject.closureToBeInvokedAfterUpdate = {params->
+            afterUpdateCalled = true;
+            assertEquals (2, params.updatedProps.size());
+            assertEquals (objectBeforeAdd.prop2, params.updatedProps["prop2"]);
+            assertEquals ("updatedProp3Value", params.updatedProps["prop3"]);            
+        }
+
+
+        MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
+        ObjectProcessor.getInstance().addObserver(observer);
+
+        addedObject.updatedPropsMap = [prop3:"updatedProp3Value"]
+
+        IdCacheEntry entry = AddMethodDomainObjectWithEvents.idCache[addedObject.prop1];
+        def numberOfUpdateCacheCall = AddMethodDomainObject1.updateCacheCallParams.size();
+        props = [prop1: objectBeforeAdd.prop1, prop2: "updatedProp2"];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
+
+        assertTrue (afterUpdateCalled);
+
+        assertEquals(1, observer.repositoryChanges.size());
+        Map repositoryChange = observer.repositoryChanges[0];
+        assertEquals(3, repositoryChange.size());
+        assertEquals(EventTriggeringUtils.AFTER_UPDATE_EVENT, repositoryChange[ObjectProcessor.EVENT_NAME])
+        assertEquals(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
+        assertNotSame(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
+        Map updatedProps = repositoryChange[ObjectProcessor.UPDATED_PROPERTIES]
+        assertEquals(2, updatedProps.size())
+        assertEquals(objectBeforeAdd.prop2, updatedProps.prop2);
+        assertSame(addedObject.updatedPropsMap.prop3, updatedProps.prop3);
+
+    }
+
     public void testUpdateMethodWillReturnErrorsIfErrorsOccurredWhileConvertingStringProperties()
     {
         def dateFormat = "yyyy-dd-MM HH:mm:ss";
@@ -302,15 +353,13 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         assertEquals(1, beforeUpdateParams.size());
         Map params = beforeUpdateParams[0];
-        assertEquals(3, params[UpdateMethod.UPDATED_PROPERTIES].size())
-        assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(2, params[UpdateMethod.UPDATED_PROPERTIES].size())
         assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
         assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
 
         assertEquals(1, afterUpdateParams.size());
         params = afterUpdateParams[0];
-        assertEquals(3, params[UpdateMethod.UPDATED_PROPERTIES].size())
-        assertEquals(objectBeforeAdd.prop1, params[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(2, params[UpdateMethod.UPDATED_PROPERTIES].size())
         assertEquals(objectBeforeAdd.prop2, params[UpdateMethod.UPDATED_PROPERTIES].prop2);
         assertSame(objectBeforeAdd.rel1, params[UpdateMethod.UPDATED_PROPERTIES].rel1);
 
@@ -321,8 +370,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
         assertNotSame(updatedObject, repositoryChange[ObjectProcessor.DOMAIN_OBJECT])
         Map updatedProps = repositoryChange[ObjectProcessor.UPDATED_PROPERTIES]
-        assertEquals(3, updatedProps.size())
-        assertEquals(objectBeforeAdd.prop1, updatedProps.prop1);
+        assertEquals(2, updatedProps.size())
         assertEquals(objectBeforeAdd.prop2, updatedProps.prop2);
         assertSame(objectBeforeAdd.rel1, updatedProps.rel1);
     }

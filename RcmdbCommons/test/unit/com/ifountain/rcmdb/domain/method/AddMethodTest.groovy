@@ -32,6 +32,8 @@ import java.text.SimpleDateFormat
 import org.springframework.validation.BindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.
@@ -197,6 +199,7 @@ class AddMethodTest extends RapidCmdbTestCase {
     {
         MockObjectProcessorObserver observer = new MockObjectProcessorObserver();
         ObjectProcessor.getInstance().addObserver(observer);
+
         AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value");
         def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)]
         AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
@@ -471,6 +474,7 @@ class AddMethodTest extends RapidCmdbTestCase {
 
 class AddMethodDomainObject1 extends GroovyObjectSupport
 {
+    def __operation_class__ = null;
     def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "rel3": [type: Object], "rel4": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
     def static searchResult = [total: 0, results: []];
     def static query;
@@ -671,40 +675,42 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     def static closureToBeInvokedBeforeInsert;
     def closureToBeInvokedBeforeUpdate;
     def closureToBeInvokedAfterUpdate;
-    def onLoad() {
+    def updatedPropsMap = null;
+    def onLoadWrapper() {
         eventCalls.add("onLoad");
     }
 
 
-    def beforeInsert(params) {
+    def beforeInsertWrapper() {
         eventCalls.add("beforeInsert");
         if (closureToBeInvokedBeforeInsert)
         {
             closureToBeInvokedBeforeInsert(this);
         }
     }
-    def beforeUpdate(params) {
+    def beforeUpdateWrapper(params) {
         eventCalls.add("beforeUpdate");
         if (closureToBeInvokedBeforeUpdate)
         {
             closureToBeInvokedBeforeUpdate(params);
         }
+        return updatedPropsMap;
     }
-    def beforeDelete() {
+    def beforeDeleteWrapper() {
         eventCalls.add("beforeDelete");
     }
 
-    def afterInsert() {
+    def afterInsertWrapper() {
         eventCalls.add("afterInsert");
     }
-    def afterUpdate(params) {
+    def afterUpdateWrapper(params) {
         eventCalls.add("afterUpdate");
         if (closureToBeInvokedAfterUpdate)
         {
             closureToBeInvokedAfterUpdate(params);
         }
     }
-    def afterDelete() {
+    def afterDeleteWrapper() {
         eventCalls.add("afterDelete");
     }
 }

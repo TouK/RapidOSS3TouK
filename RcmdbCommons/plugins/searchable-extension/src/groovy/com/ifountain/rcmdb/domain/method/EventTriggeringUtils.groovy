@@ -32,24 +32,24 @@ class EventTriggeringUtils {
     static final String AFTER_INSERT_EVENT = 'afterInsert'
     static final String AFTER_UPDATE_EVENT = 'afterUpdate'
     static final String AFTER_DELETE_EVENT = 'afterDelete'
-    public static void triggerEvent(entity, event) {
-        triggerEvent (entity, event, null);
+    public static Object triggerEvent(entity, event) {
+        return triggerEvent (entity, event, null);
     }
-    public static void triggerEvent(entity, event, Map params) {
+    public static Object triggerEvent(entity, event, Map params) {
         try
         {
             if(params != null)
             {
-                entity."${event}"(params);
+                return entity."${event}Wrapper"(params);
             }
             else
             {
-                entity."${event}"();                
+                return entity."${event}Wrapper"();
             }
         }
         catch(MissingMethodException exception)
         {
-            if(exception.getMethod() != event || exception.getType().name != entity.class.name)
+            if(exception.getMethod() != event && exception.getMethod() != "${event}Wrapper"|| exception.getType().name != entity.class.name)
             {
                 throw exception;                
             }

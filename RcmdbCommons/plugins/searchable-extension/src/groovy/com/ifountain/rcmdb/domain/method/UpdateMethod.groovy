@@ -79,11 +79,11 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (fieldType)
                 {
                     def propValueBeforeUpdate = domainObject.getProperty(propName);
-                    updatedPropsOldValues[propName] = propValueBeforeUpdate;
                     MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
                     if (domainObject.getProperty(propName) != propValueBeforeUpdate)
                     {
                         willBeIndexed = true;
+                        updatedPropsOldValues[propName] = propValueBeforeUpdate;
                     }
                 }
             }
@@ -108,7 +108,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         {
             def triggeredEventParams = [:];
             triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
+            def updatedPropsFromBeforeUpdate = EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
             if (!errors.hasErrors())
             {
                 validator.validate(new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
@@ -126,6 +126,9 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 domainObject.removeRelation(relationToBeRemovedMap);
                 domainObject.addRelation(relationToBeAddedMap);
                 statistics.start();
+                updatedPropsFromBeforeUpdate.each{String updatedPropName, Object updatedPropValue->
+                    updatedPropsOldValues[updatedPropName] = updatedPropValue;
+                }
                 EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
                 EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
                 ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, updatedPropsOldValues)

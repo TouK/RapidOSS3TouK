@@ -35,6 +35,8 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
  */
 public class AbstractDomainOperation {
     def domainObject;
+    RsSetPropertyWillUpdate rsSetPropertyWillUpdate = new RsSetPropertyWillUpdate();
+    def rsUpdatedProps = null;
     public Object getProperty(String propName)
     {
         def prop = this.metaClass.getMetaProperty(propName);
@@ -67,6 +69,13 @@ public class AbstractDomainOperation {
     }
 
 
+    public void disableSetPropertyWillUpdate(Closure closureToBeExecuted)
+    {
+        rsSetPropertyWillUpdate.set(false);
+        closureToBeExecuted();
+        rsSetPropertyWillUpdate.set(true);
+    }
+
     public Map getProperties()
     {
         domainObject.getProperty("properties");
@@ -81,7 +90,22 @@ public class AbstractDomainOperation {
             }
             else
             {
-                domainObject.setProperty(propName, value);
+                if(rsSetPropertyWillUpdate.get())
+                {
+                    domainObject.setProperty(propName, value);
+                }
+                else
+                {
+                    if(rsUpdatedProps != null)
+                    {
+                        def oldValue = domainObject.getProperty(propName);
+                        if(oldValue != value)
+                        {
+                            rsUpdatedProps.put(propName, oldValue);
+                        }
+                    }
+                    domainObject.setProperty(propName, value, false);                    
+                }
             }
     }
 
@@ -107,5 +131,67 @@ public class AbstractDomainOperation {
         throw new MissingMethodException (methodName,  this.class, args); 
 
     }
+
+
+    public void onLoadWrapper()
+    {
+        onLoad();
+    }
+
+    Map beforeUpdateWrapper(Map params)
+    {
+        rsUpdatedProps = [:]
+        disableSetPropertyWillUpdate {
+            beforeUpdate(params);
+        }
+        return rsUpdatedProps;
+    }
+
+    public void afterUpdateWrapper(Map params)
+    {
+        afterUpdate(params);
+    }
+
+    public void beforeInsertWrapper()
+    {
+        disableSetPropertyWillUpdate {
+            beforeInsert();
+        }
+    }
+
+    public void afterInsertWrapper()
+    {
+        afterInsert();
+    }
+
+    public void beforeDeleteWrapper()
+    {
+        disableSetPropertyWillUpdate {
+            beforeDelete();
+        }
+    }
+
+    public void afterDeleteWrapper()
+    {
+        afterDelete();
+    }
+
+    def onLoad(){}
+    def beforeUpdate(Map params){}
+    def afterUpdate(Map params){}
+    def beforeInsert(){}
+    def afterInsert(){}
+    def beforeDelete(){}
+    def afterDelete(){}
     
+}
+
+class RsSetPropertyWillUpdate extends ThreadLocal<Boolean>
+{
+
+    protected Boolean initialValue() {
+        return true; //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+
 }

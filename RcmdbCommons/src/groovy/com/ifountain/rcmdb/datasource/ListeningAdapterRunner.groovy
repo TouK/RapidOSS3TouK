@@ -89,7 +89,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
             try {
                 scriptObject.run();
             }
-            catch (Exception e) {
+            catch (Throwable e) {
                 setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
                 throw ListeningAdapterException.listeningScriptExecutionException(datasourceId, script.name, "run", e);
             }
@@ -97,7 +97,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
             try
             {
                 params = scriptObject.getParameters();
-            } catch (Exception e)
+            } catch (Throwable e)
             {
                 setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
                 throw ListeningAdapterException.listeningScriptExecutionException(datasourceId, script.name, "getParameters", e);

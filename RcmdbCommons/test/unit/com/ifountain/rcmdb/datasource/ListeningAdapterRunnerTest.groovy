@@ -261,7 +261,8 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
-        DataStore.put("runException", new Exception("run exception"));
+        DataStore.put("runException", new Throwable("run exception"));
+
         try
         {
             runner.start(ds);
@@ -280,7 +281,7 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningAdapter = new BaseListeningAdapterMock();
         ds.listeningScript = createScriptObject();
-        DataStore.put("getParametersException", new Exception("getParameters exception"));
+        DataStore.put("getParametersException", new Throwable("getParameters exception"));
         try
         {
             runner.start(ds);

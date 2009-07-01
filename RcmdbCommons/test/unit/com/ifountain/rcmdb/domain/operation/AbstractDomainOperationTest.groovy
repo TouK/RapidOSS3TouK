@@ -55,6 +55,75 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
 
 
     }
+
+    public void testInvokeCompassOperation()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            def _update(Map props)
+            {
+                ${DataStore.class.name}.put("updateCall", [props]);
+                return "updateRes"
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+
+        def props = [myProp:"myPropValue"]
+        def res = domainOpr.invokeCompassOperation ("update", [props]);
+        assertEquals ("updateRes", res);
+        assertEquals (1, DataStore.get("updateCall").size());
+        assertEquals (props, DataStore.get("updateCall")[0]);
+
+
+        try{
+            domainOpr.invokeCompassOperation ("invalid", [props]);
+            fail("should throw exception invalid method does not exist");
+        }catch(MissingMethodException e)
+        {
+            assertEquals ("_invalid", e.getMethod());
+        }
+    }
+
+    public void testThrowsExceptionIfCompassOperationIsInvokedWhileBeforeContinue()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            def _update(Map props)
+            {
+                ${DataStore.class.name}.put("updateCall", [props]);
+                return "updateRes"
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+
+        def methodName = "update";
+        try{
+            domainOpr.invokeBeforeEventTriggerOperation {
+                domainOpr.invokeCompassOperation (methodName, [[:]]);
+            }
+            fail("Should throw exception since we cannot execute update method while before operation continue");
+        }catch(RuntimeException e)
+        {
+            assertEquals ("${methodName} cannot be executed in before triggers", e.getMessage());
+        }
+    }
+
     public void testSetPropertiesCallsNonPersistantSetPropertyIfFlagIsSet()
     {
         def gcl = new GroovyClassLoader();
@@ -75,10 +144,12 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         domainOpr.domainObject = domainInstance;
         assertTrue(domainOpr.rsSetPropertyWillUpdate instanceof ThreadLocal);
         assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
 
         def updatedProp1Val = "prop1UpdatedValue";
-        domainOpr.disableSetPropertyWillUpdate{
+        domainOpr.invokeBeforeEventTriggerOperation{
             assertFalse (domainOpr.rsSetPropertyWillUpdate.get());
+            assertTrue (domainOpr.rsIsBeforeTriggerContinue);
             domainOpr.setProperty ("prop1", updatedProp1Val);
         }
         assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
@@ -106,36 +177,43 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
             {
                 def onLoad()
                 {
+                    assert rsIsBeforeTriggerContinue == false
                     assert rsSetPropertyWillUpdate.get() == true
                     ${DataStore.class.name}.get("methodCalls").add("onLoad")
                 }
                 def beforeDelete()
                 {
+                    assert rsIsBeforeTriggerContinue == true
                     assert rsSetPropertyWillUpdate.get() == false
                     ${DataStore.class.name}.get("methodCalls").add("beforeDelete")
                 }
                 def beforeUpdate(Map props)
                 {
+                    assert rsIsBeforeTriggerContinue == true
                     assert rsSetPropertyWillUpdate.get() == false
                     ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
                 }
                 def beforeInsert()
                 {
+                    assert rsIsBeforeTriggerContinue == true
                     assert rsSetPropertyWillUpdate.get() == false
                     ${DataStore.class.name}.get("methodCalls").add("beforeInsert")
                 }
                 def afterDelete()
                 {
+                    assert rsIsBeforeTriggerContinue == false
                     assert rsSetPropertyWillUpdate.get() == true
                     ${DataStore.class.name}.get("methodCalls").add("afterDelete")
                 }
                 def afterUpdate(Map props)
                 {
+                    assert rsIsBeforeTriggerContinue == false
                     assert rsSetPropertyWillUpdate.get() == true
                     ${DataStore.class.name}.get("methodCalls").add("afterUpdate")
                 }
                 def afterInsert()
                 {
+                    assert rsIsBeforeTriggerContinue == false
                     assert rsSetPropertyWillUpdate.get() == true
                     ${DataStore.class.name}.get("methodCalls").add("afterInsert")
                 }

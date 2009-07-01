@@ -161,26 +161,46 @@ class SearchableExtensionGrailsPlugin {
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
 
-
-        mc.update = {Map props->
+        mc._update = {Map props->
             return updateMethod.invoke(delegate,  [props] as Object[])
         }
 
-        mc.addRelation = {Map props->
+        mc._addRelation = {Map props->
             return addRelationMethod.invoke(delegate,  [props, null] as Object[])
         }
-        mc.addRelation = {Map props, String source->
+        mc._addRelation = {Map props, String source->
           return addRelationMethod.invoke(delegate,  [props, source] as Object[])
         }
-        mc.removeRelation = {Map props, String source->
+        mc._removeRelation = {Map props, String source->
             return removeRelationMethod.invoke(delegate,  [props, source] as Object[])
         }
-        mc.removeRelation = {Map props->
+        mc._removeRelation = {Map props->
             return removeRelationMethod.invoke(delegate,  [props, null] as Object[])
+        }
+
+        mc._remove = {->
+            return removeMethod.invoke(delegate, null);
+        }
+
+        mc.update = {Map props->
+            return invokeCompassOperation("update", [props]);
+        }
+
+        mc.addRelation = {Map props->
+            return invokeCompassOperation("addRelation", [props]);
+        }
+        mc.addRelation = {Map props, String source->
+          return invokeCompassOperation("addRelation", [props, source]);
+        }
+        mc.removeRelation = {Map props, String source->
+            return invokeCompassOperation("removeRelation", [props, source]);
+        }
+        mc.removeRelation = {Map props->
+            return invokeCompassOperation("removeRelation", [props]);
         }
         
         mc.remove = {->
-            return removeMethod.invoke(delegate, null);
+            return invokeCompassOperation("remove", []);
         }
 
         mc.'static'.removeAll = {->

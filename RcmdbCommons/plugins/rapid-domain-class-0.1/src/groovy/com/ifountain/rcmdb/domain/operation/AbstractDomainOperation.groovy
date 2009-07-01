@@ -37,6 +37,7 @@ public class AbstractDomainOperation {
     def domainObject;
     RsSetPropertyWillUpdate rsSetPropertyWillUpdate = new RsSetPropertyWillUpdate();
     def rsUpdatedProps = null;
+    def rsIsBeforeTriggerContinue = false;
     public Object getProperty(String propName)
     {
         def prop = this.metaClass.getMetaProperty(propName);
@@ -69,11 +70,13 @@ public class AbstractDomainOperation {
     }
 
 
-    public void disableSetPropertyWillUpdate(Closure closureToBeExecuted)
+    public void invokeBeforeEventTriggerOperation(Closure closureToBeExecuted)
     {
+        rsIsBeforeTriggerContinue = true;
         rsSetPropertyWillUpdate.set(false);
         closureToBeExecuted();
         rsSetPropertyWillUpdate.set(true);
+        rsIsBeforeTriggerContinue = false;
     }
 
     public Map getProperties()
@@ -132,6 +135,15 @@ public class AbstractDomainOperation {
 
     }
 
+    def invokeCompassOperation(String methodName, List args)
+    {
+        if(rsIsBeforeTriggerContinue)
+        {
+            throw new RuntimeException("${methodName} cannot be executed in before triggers");
+        }
+        return this.domainObject.invokeMethod("_${methodName}", args as Object[]);
+    }
+
 
     public void onLoadWrapper()
     {
@@ -141,7 +153,7 @@ public class AbstractDomainOperation {
     Map beforeUpdateWrapper(Map params)
     {
         rsUpdatedProps = [:]
-        disableSetPropertyWillUpdate {
+        invokeBeforeEventTriggerOperation {
             beforeUpdate(params);
         }
         return rsUpdatedProps;
@@ -154,7 +166,7 @@ public class AbstractDomainOperation {
 
     public void beforeInsertWrapper()
     {
-        disableSetPropertyWillUpdate {
+        invokeBeforeEventTriggerOperation {
             beforeInsert();
         }
     }
@@ -166,7 +178,7 @@ public class AbstractDomainOperation {
 
     public void beforeDeleteWrapper()
     {
-        disableSetPropertyWillUpdate {
+        invokeBeforeEventTriggerOperation {
             beforeDelete();
         }
     }

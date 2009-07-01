@@ -42,12 +42,15 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
     public static final String UPDATED_PROPERTIES = "updatedProps"
     def relations;
     def fieldTypes = [:]
+    def defaultValues = [:]
     IRapidValidator validator;
     public UpdateMethod(MetaClass mcp, IRapidValidator validator, Map allFields, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
+        def instance = mcp.theClass.newInstance ();
         allFields.each {fieldName, field ->
             fieldTypes[fieldName] = field.type;
+            defaultValues[fieldName] = instance[fieldName];
         }
         this.relations = relations;
     }
@@ -79,7 +82,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (fieldType)
                 {
                     def propValueBeforeUpdate = domainObject.getProperty(propName);
-                    MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, defaultValues[propName], value);
                     if (domainObject.getProperty(propName) != propValueBeforeUpdate)
                     {
                         willBeIndexed = true;

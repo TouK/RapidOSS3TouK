@@ -109,6 +109,24 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals(objectBeforeAdd.id, updatedObject.id);
     }
 
+    public void testUpdateMethodWithNullPropValue()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethodDomainObject1 relatedObject = new AddMethodDomainObject1(id: 100, prop1: "object2Prop1Value");
+
+        def relations = ["rel1": new RelationMetaData("rel1", "revRel1", AddMethodDomainObject1.class, AddMethodDomainObject1.class, RelationMetaData.ONE_TO_ONE)];
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObject1.allFields, relations, ["prop1"]);
+
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+
+        props = [prop1: objectBeforeAdd.prop1, nullableProp: null];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
+        AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
+        assertEquals ("defaultValue", updatedObject.nullableProp);
+    }
+
     public void testUpdateMethodWithKeyProperties()
     {
         AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");

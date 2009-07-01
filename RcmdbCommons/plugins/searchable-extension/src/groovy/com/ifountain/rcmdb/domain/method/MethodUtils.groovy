@@ -16,7 +16,7 @@ import org.springframework.validation.BindingResult;
  */
 class MethodUtils {
 
-    public static void convertAndSetDomainObjectProperty(BindingResult errors, Object domainObject, String fieldName, Class fieldType, Object value) {
+    public static void convertAndSetDomainObjectProperty(BindingResult errors, Object domainObject, String fieldName, Class fieldType, Object defaultValue, Object value) {
         if(value != null)
         {
             try
@@ -32,7 +32,7 @@ class MethodUtils {
         }
         else
         {
-            domainObject.setProperty(fieldName, value, false);
+            domainObject.setProperty(fieldName, defaultValue, false);
         }
     }
     public static void getCompassHitsSubset(CompassHits compassHits, Map options, Closure hitIteratorClosure) {

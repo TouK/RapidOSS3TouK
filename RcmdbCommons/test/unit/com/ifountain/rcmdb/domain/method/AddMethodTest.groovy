@@ -134,6 +134,16 @@ class AddMethodTest extends RapidCmdbTestCase {
 
     }
 
+    public void testAddMethodWithNullPropertyValue()
+    {
+        AddMethodDomainObject1 expectedDomainObject1 = new AddMethodDomainObject1(prop1: "object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["prop1"]);
+
+        def props = [prop1: expectedDomainObject1.prop1, nullableProp:null];
+        AddMethodDomainObject1 addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        assertEquals ("defaultValue", addedObject.nullableProp);
+    }
+
 
 
     public void testGetLockName()
@@ -475,7 +485,7 @@ class AddMethodTest extends RapidCmdbTestCase {
 class AddMethodDomainObject1 extends GroovyObjectSupport
 {
     def __operation_class__ = null;
-    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "rel3": [type: Object], "rel4": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long]];
+    def static allFields = ["rel1": [type: Object], "rel2": [type: Object], "rel3": [type: Object], "rel4": [type: Object], "prop1": [type: String], "prop2": [type: String], "prop3": [type: String], "prop4": [type: Long], "prop5": [type: Date], "doubleProp": [type: Double], "booleanProp": [type: Boolean], "id": [type: Long], "nullableProp":[type:String]];
     def static searchResult = [total: 0, results: []];
     def static query;
     def static cacheEntryParams = [];
@@ -502,6 +512,7 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     Date prop5;
     Double doubleProp;
     Boolean booleanProp;
+    String nullableProp = "defaultValue";
     long id;
     def static searchWithoutTriggering(queryClosure)
     {

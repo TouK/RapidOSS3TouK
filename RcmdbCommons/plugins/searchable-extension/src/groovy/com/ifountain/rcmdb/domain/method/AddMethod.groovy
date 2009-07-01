@@ -40,6 +40,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
     def relations;
     GetMethod getMethod
     def fieldTypes = [:]
+    def defaultValues = [:]
     IRapidValidator validator;
     Class rootDomainClass;
     List keys;
@@ -48,8 +49,10 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         super(mcp);
         this.keys = keys;
         this.validator = validator;
+        def instance = mcp.theClass.newInstance ();
         allFields.each{String fieldName, field->
             fieldTypes[fieldName] = field.type;
+            defaultValues[fieldName] = instance[fieldName];
         }
         this.relations = relations
         this.rootDomainClass=rootDomainClass;
@@ -100,7 +103,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-                    MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, value);
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, defaultValues[propName], value);
                 }
             }
             else

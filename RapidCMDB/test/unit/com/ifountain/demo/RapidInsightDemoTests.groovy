@@ -36,8 +36,8 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
 
         //since we are logged in we no longer get request with credentials
         def urlsToCheck=[:];
-        urlsToCheck["index/events.gsp"]='rsadmin';
-        urlsToCheck["index/inventory.gsp"]='rsadmin';
+        urlsToCheck["index/events.gsp"]='<li class="selected"><a href="/RapidSuite/index/events.gsp">';
+        urlsToCheck["index/inventory.gsp"]='<li class="selected"><a href="/RapidSuite/index/inventory.gsp">';
         
         urlsToCheck["getEventDetails.gsp?name=testevent"]='does not exist';
         urlsToCheck["getObjectDetails.gsp?name=testobject"]='does not exist';

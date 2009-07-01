@@ -1,6 +1,3 @@
-
-
-
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
@@ -23,7 +20,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-       logout()
+        logout()
     }
 
     private void logout()
@@ -92,65 +89,64 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
 
     private void deleteSNMPConnector(String snmpId)
-   {
-     selenium.open("/RapidSuite/snmpConnector/show/" + snmpId);
-     selenium.waitForPageToLoad("30000");
-     selenium.click("_action_Delete");
-     selenium.waitForPageToLoad("30000");
-     assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-    selenium.waitForPageToLoad("30000");
-   }
+    {
+        selenium.open("/RapidSuite/snmpConnector/show/" + snmpId);
+        selenium.waitForPageToLoad("30000");
+        selenium.click("_action_Delete");
+        selenium.waitForPageToLoad("30000");
+        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
+        selenium.waitForPageToLoad("30000");
+    }
 
 
     public void testCreateASNMPConnector()
-      {
+    {
 
-      
-       def  scriptContent= eventSnmpContent()
+        def scriptContent = eventSnmpContent()
         createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
 
         login()
-        
-		selenium.click("link=SNMP");
-		selenium.waitForPageToLoad("30000");
-		selenium.click("link=New SnmpConnector");
-		selenium.waitForPageToLoad("30000");
-		selenium.type("name", "snmp1");
-		selenium.type("scriptFile", "EventSnmpListener");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
+
+        selenium.click("link=SNMP");
+        selenium.waitForPageToLoad("30000");
+        selenium.click("link=New SnmpConnector");
+        selenium.waitForPageToLoad("30000");
+        selenium.type("name", "snmp1");
+        selenium.type("scriptFile", "EventSnmpListener");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
 
         verifyEquals("snmp1", selenium.getText("name"));
-		verifyEquals("0.0.0.0", selenium.getText("host"));
-		verifyEquals("162", selenium.getText("port"));
-		verifyEquals("EventSnmpListener", selenium.getText("scriptFile"));
-		verifyEquals("WARN", selenium.getText("logLevel"));
-		verifyEquals("true", selenium.getText("logFileOwn"));
-		def snmpId=findId("RapidSuite/snmpConnector/show/")
+        verifyEquals("0.0.0.0", selenium.getText("host"));
+        verifyEquals("162", selenium.getText("port"));
+        verifyEquals("EventSnmpListener", selenium.getText("scriptFile"));
+        verifyEquals("WARN", selenium.getText("logLevel"));
+        verifyEquals("true", selenium.getText("logFileOwn"));
+        def snmpId = findId("RapidSuite/snmpConnector/show/")
 
 
         selenium.open("/RapidSuite/script/list");
-		selenium.click("link=snmp1");
-		selenium.waitForPageToLoad("30000");
-        def scriptIdValue =  findId("RapidSuite/script/show/")
+        selenium.click("link=snmp1");
+        selenium.waitForPageToLoad("30000");
+        def scriptIdValue = findId("RapidSuite/script/show/")
 
         deleteSNMPConnector(snmpId)
         deleteScriptFile("EventSnmpListener.groovy")
 
         File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/logs/snmp1.log")
-        def isSnmp1LogFileCreated=false
-        if(file.exists())
-            isSnmp1LogFileCreated=true
+        def isSnmp1LogFileCreated = false
+        if (file.exists())
+            isSnmp1LogFileCreated = true
         assertTrue(isSnmp1LogFileCreated)
 
- }
+    }
 
 
 
     public void testTestSnmpConnectorStartStop()
     {
-        def  scriptContent= eventSnmpContent()
-           createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
+        def scriptContent = eventSnmpContent()
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
         login()
         selenium.click("link=SNMP");
         selenium.waitForPageToLoad("30000");
@@ -160,7 +156,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
         selenium.type("scriptFile", "EventSnmpListener");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
-        def snmpId=findId("RapidSuite/snmpConnector/show/")
+        def snmpId = findId("RapidSuite/snmpConnector/show/")
 
         selenium.click("link=SNMP");
         selenium.waitForPageToLoad("30000");
@@ -179,18 +175,17 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
 
 
-      public void testTestSnmpConnectorUsingAScript()
-      {
+    public void testTestSnmpConnectorUsingAScript()
+    {
+
+        def testScriptContent = generateSnmpScriptContent()
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/GenerateSnmpTraps.groovy", testScriptContent);
+        def scriptContent = eventSnmpContent()
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
 
 
-         def testScriptContent = generateSnmpScriptContent()
-          createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/GenerateSnmpTraps.groovy", testScriptContent);
-         def scriptContent= eventSnmpContent()
-          createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
 
-
-
-       def eventValidatorContent = """
+        def eventValidatorContent = """
 
          if((params.file).equals("RsEvent"))
          {
@@ -204,13 +199,13 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
             return notificationCount;
         }
       """
-          createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/eventValidator.groovy", eventValidatorContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/eventValidator.groovy", eventValidatorContent);
 
-      def clearScriptContent="""
+        def clearScriptContent = """
             RsEvent.removeAll();
             RsHistoricalEvent.removeAll();
            """
-         createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/clear.groovy", clearScriptContent);
+        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/clear.groovy", clearScriptContent);
 
         login()
         selenium.click("link=SNMP");
@@ -221,13 +216,13 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
         selenium.type("scriptFile", "EventSnmpListener");
         selenium.click("//input[@value='Create']");
         selenium.waitForPageToLoad("30000");
-        def snmp1Id=findId("RapidSuite/snmpConnector/show/")
+        def snmp1Id = findId("RapidSuite/snmpConnector/show/")
         selenium.click("link=SNMP");
-		selenium.waitForPageToLoad("30000");
-		verifyTrue(selenium.isTextPresent("snmp1"));
-		selenium.click("link=Start");
-		selenium.waitForPageToLoad("30000");
-	    verifyTrue(selenium.isTextPresent("Connector snmp1 successfully started"));
+        selenium.waitForPageToLoad("30000");
+        verifyTrue(selenium.isTextPresent("snmp1"));
+        selenium.click("link=Start");
+        selenium.waitForPageToLoad("30000");
+        verifyTrue(selenium.isTextPresent("Connector snmp1 successfully started"));
 
         selenium.open("/RapidSuite/script/list");
         selenium.waitForPageToLoad("30000");
@@ -236,72 +231,72 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
 
 
         newScript()
-		selenium.type("name", "clear");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
-		def clearScriptId= findId("/RapidSuite/script/show/")
-		selenium.click("_action_Run");
-		selenium.waitForPageToLoad("30000");
+        selenium.type("name", "clear");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        def clearScriptId = findId("/RapidSuite/script/show/")
+        selenium.click("_action_Run");
+        selenium.waitForPageToLoad("30000");
 
 
         newScript()
-		selenium.type("name", "eventValidator");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
-		def eventValidatorScriptId= findId("RapidSuite/script/show/")
+        selenium.type("name", "eventValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        def eventValidatorScriptId = findId("RapidSuite/script/show/")
 
-		selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
-		String rsEventCount = selenium.getText("//body");
+        selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
+        String rsEventCount = selenium.getText("//body");
 
-		selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
-		String rsHistoricalEventCount = selenium.getText("//body");
-
-
-        newScript()
-		selenium.type("name", "GenerateSnmpTraps");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
-		def GenerateSnmpTrapsIdValue =  findId("RapidSuite/script/show/")
-		selenium.click("_action_Run");
-		Thread.sleep(180000);
-		verifyTrue(selenium.isTextPresent("Completed event trap generation"));
+        selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+        String rsHistoricalEventCount = selenium.getText("//body");
 
 
         newScript()
-		selenium.type("name", "eventValidator");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
-
-		selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
-		assertNotEquals("rsEventCount", selenium.getText("//body"));
-
-		selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
-		assertNotEquals("rsHistoricalEventCount", selenium.getText("//body"));
+        selenium.type("name", "GenerateSnmpTraps");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        def GenerateSnmpTrapsIdValue = findId("RapidSuite/script/show/")
+        selenium.click("_action_Run");
+        Thread.sleep(180000);
+        verifyTrue(selenium.isTextPresent("Completed event trap generation"));
 
 
-		newScript()
-		selenium.type("name", "clear");
-		selenium.click("//input[@value='Create']");
-		selenium.waitForPageToLoad("30000");
-		selenium.click("_action_Run");
-		selenium.waitForPageToLoad("30000");
+        newScript()
+        selenium.type("name", "eventValidator");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+
+        selenium.open("/RapidSuite/script/run/eventValidator?file=RsEvent");
+        assertNotEquals("rsEventCount", selenium.getText("//body"));
+
+        selenium.open("/RapidSuite/script/run/eventValidator?file=RsHistoricalEvent");
+        assertNotEquals("rsHistoricalEventCount", selenium.getText("//body"));
 
 
-      deleteSNMPConnector(snmp1Id) ;
-      deleteScriptFile("EventSnmpListener.groovy")
-      deleteScript(GenerateSnmpTrapsIdValue)
-      deleteScriptFile("GenerateSnmpTraps.groovy")
-      deleteScript(eventValidatorScriptId)
-      deleteScriptFile("eventValidator.groovy")
-      deleteScript(clearScriptId)
-      deleteScriptFile("clear.groovy")
-
-      }
+        newScript()
+        selenium.type("name", "clear");
+        selenium.click("//input[@value='Create']");
+        selenium.waitForPageToLoad("30000");
+        selenium.click("_action_Run");
+        selenium.waitForPageToLoad("30000");
 
 
-  public String eventSnmpContent()
-  {
-     return """import datasource.*
+        deleteSNMPConnector(snmp1Id);
+        deleteScriptFile("EventSnmpListener.groovy")
+        deleteScript(GenerateSnmpTrapsIdValue)
+        deleteScriptFile("GenerateSnmpTraps.groovy")
+        deleteScript(eventValidatorScriptId)
+        deleteScriptFile("eventValidator.groovy")
+        deleteScript(clearScriptId)
+        deleteScriptFile("clear.groovy")
+
+    }
+
+
+    public String eventSnmpContent()
+    {
+        return """import datasource.*
     def getParameters(){
        return [:]}
     def init(){ }
@@ -342,16 +337,14 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
          }
           } """;
 
-
-
-  }
+    }
 
 
 
 
-  public String  generateSnmpScriptContent()
-  {
-      return  """
+    public String generateSnmpScriptContent()
+    {
+        return """
                 import com.ifountain.rcmdb.snmp.*
                 import snmp.SnmpUtils
                 long sec = (System.currentTimeMillis())/1000;
@@ -389,14 +382,14 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
                 return "Completed event trap generation"
             """
 
-  }
+    }
 
 
 
 
-  public String contentEventVal()
-     {
-         def content= """
+    public String contentEventVal()
+    {
+        def content = """
          if(param.file.equals("RsEvent"))
          {
              def  notificationCount = RsEvent.search("source:NMD2").total
@@ -408,11 +401,8 @@ class AdminUiSnmpTabTest extends SeleniumTestCase
             return notificationCount;
         }
         """
-             return content;
+        return content;
 
- }
-
-
-
+    }
 
 }

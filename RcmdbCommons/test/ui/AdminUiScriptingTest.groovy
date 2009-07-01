@@ -540,8 +540,6 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     }
 
-
-
 }
 
 

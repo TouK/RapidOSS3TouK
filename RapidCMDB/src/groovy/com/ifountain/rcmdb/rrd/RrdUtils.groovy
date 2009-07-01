@@ -266,10 +266,8 @@ class RrdUtils {
            }
            //todo: destination is a web
        }
-       else {
-           return bytes
-       }
 
+        return bytes
     }
     public static byte[] graphOneVariable(Map config){
        if(!(config.get(RRD_VARIABLE) instanceof String )) {
@@ -344,10 +342,6 @@ class RrdUtils {
        Map fConfig = [:];
 
        def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));
-
-//       println template.name+" "+template.color+" "+template.description+" "+template.height+" "+
-//               template.width+" "+template.max+" "+template.min+" "+template.title+" "+template.type+" "+
-//                template.verticalLabel;
 
        if(!config.containsKey(Grapher.START_TIME) ){
            throw new Exception("Start time is not specified");

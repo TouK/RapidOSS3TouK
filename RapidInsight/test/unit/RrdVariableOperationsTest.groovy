@@ -188,6 +188,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
 
         dbConfig["archive"].get(0).remove("startTime")
+        dbConfig.remove("endTime")
 
         archiveList.add(archiveConfig)
 

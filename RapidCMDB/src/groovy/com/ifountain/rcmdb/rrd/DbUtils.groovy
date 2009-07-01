@@ -260,23 +260,8 @@ class DbUtils {
         Map config = [:];
         config[DATABASE_NAME] = dbName;
 
-        long max = 0
-        long min = Long.MAX_VALUE
-        int counter = 0;
-        while(true)
-        {
-            try{
-                Archive archive = rrdDb.getArchive(counter++)
-            if(archive.getStartTime() < min)
-                min = archive.getStartTime()
-            if(archive.getEndTime() > max)
-                max = archive.getEndTime()
-            }
-            catch(ArrayIndexOutOfBoundsException e) { break;}
-        }
-
-        config[START_TIME] = min * 1000;
-        config[Grapher.END_TIME] = max * 1000;
+        config[START_TIME] = rrdDef.getStartTime() * 1000;
+        config[Grapher.END_TIME] = rrdDb.getLastUpdateTime() * 1000;
 
         config[STEP] = rrdDef.getStep();
         config[DATASOURCE] = fetchDatasources(rrdDb );

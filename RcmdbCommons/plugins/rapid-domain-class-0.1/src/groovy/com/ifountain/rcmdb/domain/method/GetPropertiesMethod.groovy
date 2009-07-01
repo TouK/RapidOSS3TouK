@@ -18,16 +18,14 @@
 */
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import java.lang.reflect.Modifier
-import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
-import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.util.RapidCMDBConstants
+import java.lang.reflect.Modifier
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +46,7 @@ class GetPropertiesMethod
         this.dc = dc;
         def grailsDomainClassProperties = dc.getProperties();
         def relations = DomainClassUtils.getRelations(dc);
-        def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED]
+        def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, ""]
         def keyProps = DomainClassUtils.getKeys(dc);
         grailsDomainClassProperties.each {GrailsDomainClassProperty prop ->
             if (!propsToBeFiltered.contains(prop.name))
@@ -108,7 +106,7 @@ class GetPropertiesMethod
         allProperties.addAll(allDomainClassProperties);
         if (operationClass != null)
         {
-            def propsToBeFiltered = ["domainObject", "class", "properties", "metaClass"]
+            def propsToBeFiltered = ["domainObject", "class", "properties", "metaClass", "rsSetPropertyWillUpdate", "rsUpdatedProps"]
             
             allDomainClassProperties.each{ RapidDomainClassProperty prop ->
                  if(!propsToBeFiltered.contains(prop.name))

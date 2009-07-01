@@ -33,6 +33,7 @@ class RapidCMDBConstants {
     public static final String PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME = "domain.property.interceptorclass";
     public static final String LOGGER = "logger";
     public static final String USERNAME = "username";
+    public static final String WEB_RESPONSE = "web_response";
 
 
 

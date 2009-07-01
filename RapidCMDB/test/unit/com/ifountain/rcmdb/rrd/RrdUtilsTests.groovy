@@ -45,7 +45,6 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         return this.class.classLoader.loadClass(className);
     }
 
-
     public void testSuccessfullCreateDatabase() throws Exception{
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
@@ -877,6 +876,59 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.TYPE] = "area";
         map[Grapher.COLOR] = "5566ff";
         map[Grapher.MAX] = 10;
+
+
+        byte[] bytes = RrdUtils.graph(map);
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        dos.write(bytes);
+    }
+    public void testOneDatasourceWithOneParameterGraphSuccessfully() throws Exception{
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:24,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        RrdUtils.createDatabase(config)
+
+        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
+        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
+        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
+        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
+        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
+        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
+        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
+        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
+        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
+        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+
+        def archive1 = classes.RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
+
+        classes.RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+                           startTime:978300900000, archives: [archive1])
+
+        def map = [:];
+        map[RrdUtils.RRD_VARIABLE] = "testDs2";
+        //Optional properties:
 
 
         byte[] bytes = RrdUtils.graph(map);

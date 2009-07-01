@@ -85,7 +85,17 @@ class BootStrap {
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
+        def invalidNames = [];
+        def invalidNameFile = new File("invalidNames.txt");
+        if (invalidNameFile.exists())
+        {
+            def invalidNameFileLines = invalidNameFile.readLines();
+            invalidNameFileLines.each {
+                invalidNames.add(it.trim())
+            }
+        }
         ModelGenerator.getInstance().initialize(baseDirectory, tempDirectory, System.getProperty("base.dir"));
+        ModelGenerator.getInstance().setInvalidNames (invalidNames);
     }
 
     def initializeScripting()

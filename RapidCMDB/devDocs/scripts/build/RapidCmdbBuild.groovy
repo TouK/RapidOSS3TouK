@@ -218,6 +218,7 @@ class RapidCmdbBuild extends Build {
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.vmoptions");
             ant.fileset(file: "$env.rapid_cmdb_commons_cvs/rsconsole.sh");
             ant.fileset(file: "$env.rapid_cmdb_cvs/rs.sh");
+            ant.fileset(file: env.invalidNames);
         }
         if (TEST) {
             ant.copy(todir: "$env.dist_rapid_suite") {

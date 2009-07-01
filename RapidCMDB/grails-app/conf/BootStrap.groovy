@@ -7,8 +7,10 @@ import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
+import com.ifountain.rcmdb.domain.cache.IdCache
 import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.scripting.ScriptScheduler
 import com.ifountain.rcmdb.scripting.ScriptingUtils
@@ -16,7 +18,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.RapidDateUtilities
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.session.SessionManager
-import datasource.BaseListeningDatasource
+import connection.RepositoryConnection
 import datasource.RCMDBDatasource
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ApplicationHolder
@@ -26,11 +28,6 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.compass.core.Compass
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
-import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
-import com.ifountain.rcmdb.methods.MethodFactory
-import datasource.RepositoryDatasource
-import connection.RepositoryConnection
-import com.ifountain.rcmdb.domain.cache.IdCache
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -88,7 +85,17 @@ class BootStrap {
     {
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
+        def invalidNames = [];
+        def invalidNameFile = new File("invalidNames.txt");
+        if (invalidNameFile.exists())
+        {
+            def invalidNameFileLines = invalidNameFile.readLines();
+            invalidNameFileLines.each {
+                invalidNames.add(it.trim())
+            }
+        }
         ModelGenerator.getInstance().initialize(baseDirectory, tempDirectory, System.getProperty("base.dir"));
+        ModelGenerator.getInstance().setInvalidNames (invalidNames);
     }
 
     def registerUtilities()

@@ -43,7 +43,7 @@ class Env {
     static def dev_docs = "$rapid_cmdb_cvs/devDocs"
     static def version = "$rapid_cmdb_commons_cvs/RCMDBVersion.txt"
         static def versionInBuild = "$dist_rapid_suite/RCMDBVersion.txt"
-    static def invalidNames = "$rapid_cmdb_modeler_cvs/invalidNames.txt"
+    static def invalidNames = "$rapid_cmdb_commons_cvs/invalidNames.txt"
     static def rapid_comp_build = basedir+"/build/comp"
     static def rapid_comp_src = "$rapid_modules/comp/java"
     static def rapid_comp_resources = "$rapid_modules/comp/resources"

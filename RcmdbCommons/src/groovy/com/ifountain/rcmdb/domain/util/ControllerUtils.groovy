@@ -22,6 +22,9 @@ import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.web.binding.DataBindingUtils
 import javax.imageio.ImageIO
+import com.ifountain.rcmdb.execution.ExecutionContext
+import com.ifountain.rcmdb.execution.ExecutionContextManager
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,11 +35,16 @@ import javax.imageio.ImageIO
  */
 class ControllerUtils {
 
-    def static drawImageToWeb(java.awt.Image image,String contentType,response)
+    def static drawImageToWeb(java.awt.Image image,String contentTypeForWeb,String imageFormat,response)
     {
-        response.contentType = "image/png";
-        ImageIO.write(image, "png", response.outputStream);
-        response.outputStream.flush()
+        response.contentType = contentTypeForWeb;
+        ImageIO.write(image, imageFormat, response.outputStream);
+        response.outputStream.flush();
+    }
+    def static getWebResponse()
+    {
+        ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
+        return context?.get(RapidCMDBConstants.WEB_RESPONSE);
     }
 
     def static convertSuccessToXml(String successMessage)

@@ -2,6 +2,8 @@ package com.ifountain.rcmdb.util
 
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
+import javax.servlet.http.HttpServletResponse
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,6 +23,12 @@ class ExecutionContextManagerUtils {
     {
         addToCurrentContext(){context->
             context[RapidCMDBConstants.LOGGER] = logger;
+        }
+    }
+    public static void addWebResponseToCurrentContext(HttpServletResponse webResponse )
+    {
+       addToCurrentContext(){context->
+            context[RapidCMDBConstants.WEB_RESPONSE] = webResponse;
         }
     }
 

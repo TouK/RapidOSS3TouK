@@ -4,6 +4,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
 import org.apache.log4j.Logger
+import javax.servlet.http.HttpServletResponse
+import org.springframework.mock.web.MockHttpServletResponse
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,6 +48,17 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
         ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
         assertSame ("context username should be same as given username", userName, currContext[RapidCMDBConstants.USERNAME]);
     }
+    public void testAddWebResponse()
+    {
+        def mockResponse=new MockHttpServletResponse();
+        ExecutionContextManagerUtils.addWebResponseToCurrentContext(mockResponse);
+        assertFalse("Since the is no context response should not be added", ExecutionContextManager.getInstance().hasExecutionContext());
+        ExecutionContextManager.getInstance().startExecutionContext([:]);
+        ExecutionContextManagerUtils.addWebResponseToCurrentContext(mockResponse);
+
+        ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
+        assertSame ("context response should be same as given username", mockResponse, currContext[RapidCMDBConstants.WEB_RESPONSE]);
+    }
     public void testExecuteInContext()
     {
         def contextProps = [param1: "param1Value"]
@@ -82,3 +95,4 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
     }
 
 }
+

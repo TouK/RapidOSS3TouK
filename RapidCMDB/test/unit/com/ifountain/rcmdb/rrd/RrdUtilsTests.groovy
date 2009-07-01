@@ -27,6 +27,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         classes.RrdVariable=loadClass("RrdVariable");
         classes.RrdArchive=loadClass("RrdArchive");
         classes.RrdGraphTemplate=loadClass("RrdGraphTemplate");
@@ -41,7 +42,15 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         new File(rrdFileName).delete();
         new File(testImageFile).delete();
+        clearMetaClasses();
         super.tearDown();
+    }
+
+    private void clearMetaClasses()
+    {
+         ExpandoMetaClass.disableGlobally();
+         GroovySystem.metaClassRegistry.removeMetaClass(Grapher);
+         ExpandoMetaClass.enableGlobally();
     }
     def loadClass(className) {
         return this.class.classLoader.loadClass(className);
@@ -874,11 +883,13 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.TYPE] = "area";
         map[Grapher.COLOR] = "5566ff";
         map[Grapher.MAX] = 10;
+        map['destination']="${TestFile.TESTOUTPUT_DIR}/testDs2.png";
 
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
-        dos.write(bytes);
+        
+        File f=new File(map['destination']);
+        assertTrue(f.exists());
     }
     public void testOneDatasourceWithOneParameterGraphSuccessfully() throws Exception{
         Map config = [:]
@@ -994,7 +1005,29 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
+    public void testGraphThrowsExceptionIfNoWebResponseIsDefined()
+    {
+        def graphCallConfig=null;
+        Grapher.metaClass.'static'.graph={ Map config ->
+             graphCallConfig=config;
+        }
 
+        def graphConfig=[destination:'web'];
+
+        try{
+            RrdUtils.graph(graphConfig);
+            fail("should throw 'Web response is not avaliable' Exception");
+        }
+        catch(e)
+        {
+            assertTrue("wrong exception ${e}",e.getMessage().indexOf("Web response is not avaliable")>=0)
+        }
+        finally
+        {
+            assertSame(graphConfig,graphCallConfig);
+        }
+    }
+    
     public void testOneDatasourceGraphWithRpnSuccessfully() throws Exception{
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
@@ -1055,5 +1088,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
+
+
 
 }

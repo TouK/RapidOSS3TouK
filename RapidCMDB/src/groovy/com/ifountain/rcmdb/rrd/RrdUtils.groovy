@@ -3,6 +3,8 @@ package com.ifountain.rcmdb.rrd
 import org.jrobin.core.RrdDb
 
 import org.jrobin.graph.RrdGraphDef
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import javax.imageio.ImageIO
 
 /**
 * Created by IntelliJ IDEA.
@@ -54,15 +56,41 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
+        def bytes=null;
+
         if(config.containsKey(RRD_VARIABLE)  ){
-            return graphOneVariable(config);
+            bytes=graphOneVariable(config);
         }
         else if(config.containsKey(RRD_VARIABLES)){
-            return graphMultipleDatasources(config);
+            bytes=graphMultipleDatasources(config);
         }
         else{
-            return Grapher.graph(config);
+            bytes=Grapher.graph(config);
         }
+
+
+        if(config.containsKey("destination")) {
+           def destination=config["destination"];
+           if( destination == 'web')
+           {
+	            def webResponse=ControllerUtils.getWebResponse();
+	            if(webResponse == null )
+                {
+                    throw new Exception("Web response is not avaliable, web destination only usable from scripts or controllers");
+                }
+
+                InputStream inn = new ByteArrayInputStream(bytes);
+                def image =  ImageIO.read(inn);
+
+                ControllerUtils.drawImageToWeb (image,"image/png","png",webResponse);
+           }
+           else{
+              Grapher.toFile (bytes, destination);
+           }
+
+        }
+
+        return bytes;
     }
 
     /**
@@ -259,14 +287,8 @@ class RrdUtils {
 
        byte[] bytes = Grapher.graph(fConfig);
 
-       if(config.containsKey("destination")) {
-           if(config["destination"] instanceof String) {
-                Grapher.toFile (bytes, config["destination"])
-           }
-           //todo: destination is a web
-       }
 
-        return bytes
+       return bytes
     }
     public static byte[] graphOneVariable(Map config){
        if(!(config.get(RRD_VARIABLE) instanceof String )) {

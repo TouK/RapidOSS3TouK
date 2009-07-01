@@ -4,6 +4,8 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import org.springframework.mock.web.MockHttpServletResponse
 
 //
 ///**
@@ -147,5 +149,23 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         def errorNode=xmlNode.Error[0];
         assertEquals(message, errorNode.@error);
         assertEquals("Error", errorNode.name());
+    }
+
+    public void testGetWebResponse()
+    {
+        //test with no execution context
+        assertNull(ControllerUtils.getWebResponse());
+                
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            //test with execution context but with no response added
+            assertNull(ControllerUtils.getWebResponse());
+
+            //test with execution context and response added
+            def mockWebResponse=new MockHttpServletResponse();
+            ExecutionContextManagerUtils.addWebResponseToCurrentContext (mockWebResponse);
+            assertSame(mockWebResponse,ControllerUtils.getWebResponse());
+
+        }
     }
 }

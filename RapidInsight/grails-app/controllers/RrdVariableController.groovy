@@ -12,7 +12,7 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils;
 
 class RrdVariableController {
 
-    def index = {redirect(action: show, params: params)}
+    def index = {redirect(action: graph, params: params)}
 
     def graph = {
     	//take parameters:
@@ -52,7 +52,7 @@ class RrdVariableController {
     		config[Grapher.DESCRIPTION] = params.description;
     	}
 
-        config["destination"] = 'web' /*web olcakmis:D*/
+        config["destination"] = 'web' 
 
     	try{
 		    byte[] rowData = RrdUtils.graph(config);

@@ -146,7 +146,6 @@ class RrdUtils {
         return DbUtils.fetchData(dbName, datasources, function, startTime, endTime);
     }
 
-
     /**
     * sets the following properties of graphdef:
     * title, width, height, maxValue, minValue
@@ -307,7 +306,7 @@ class RrdUtils {
 
     }
     private static Map getGeneralSettingsMap(Map config){
-       if(config.containsKey("templateName")){
+       if(config.containsKey(RrdUtils.GRAPH_TEMPLATE)){
            return  getGeneralSettingsMapWithTemplate(config);
        }
        Map fConfig = [:];
@@ -341,7 +340,7 @@ class RrdUtils {
     private static Map getGeneralSettingsMapWithTemplate(Map config){
        Map fConfig = [:];
 
-       def template = loadClass("RrdGraphTemplate").get(name:config.get("templateName"));
+       def template = loadClass("RrdGraphTemplate").get(name:config.get(RrdUtils.GRAPH_TEMPLATE));
 
        if(!config.containsKey(Grapher.START_TIME) ){
            throw new Exception("Start time is not specified");

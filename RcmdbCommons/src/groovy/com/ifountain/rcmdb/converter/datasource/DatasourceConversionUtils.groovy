@@ -19,8 +19,8 @@ public class DatasourceConversionUtils
     }
     public static void registerDefaultConverters()
     {
-        registerDefaultConverters([Integer, int, short, Short, Long, long, byte, Byte], Long);
-        registerDefaultConverters([float, Float, double, Double], Double);
+        registerDefaultConverters([Integer, int, short, Short, Long, long, byte, Byte, BigInteger], Long);
+        registerDefaultConverters([float, Float, double, Double, BigDecimal], Double);
         registerDefaultConverters([Boolean, boolean], Boolean);
         register (Date, new NotConvertingConverter());
         register (List, new ListConverter());

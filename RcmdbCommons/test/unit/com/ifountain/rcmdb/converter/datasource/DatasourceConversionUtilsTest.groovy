@@ -33,12 +33,12 @@ public class DatasourceConversionUtilsTest extends RapidCmdbTestCase
     public void testDefaultConversionSettings()
     {
         DatasourceConversionUtils.registerDefaultConverters();
-        def objectsToBeConvertedToLong = [new Integer(100), 100, new Short((short)100), (short)100, (long)100, new Long(100), (byte)1, new Byte((byte)1)];
-        def expectedLongValues = [new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(1), new Long(1)];
+        def objectsToBeConvertedToLong = [new Integer(100), 100, new Short((short)100), (short)100, (long)100, new Long(100), (byte)1, new Byte((byte)1), new BigInteger("100")];
+        def expectedLongValues = [new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(100), new Long(1), new Long(1), new Long(100)];
         checkConversion(objectsToBeConvertedToLong, expectedLongValues, DefaultConverter);
 
-        def objectsToBeConvertedToDouble = [new Float(100), (float)100, new Double(100), (double)100];
-        def expectedDoubleValues = [new Double(100),new Double(100),new Double(100),new Double(100)];
+        def objectsToBeConvertedToDouble = [new Float(100), (float)100, new Double(100), (double)100, new BigDecimal("100")];
+        def expectedDoubleValues = [new Double(100),new Double(100),new Double(100),new Double(100),new Double(100)];
         checkConversion(objectsToBeConvertedToDouble, expectedDoubleValues, DefaultConverter);
 
         def objectsToBeConvertedBoolean = [new Boolean(false), false];

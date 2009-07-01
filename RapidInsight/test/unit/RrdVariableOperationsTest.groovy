@@ -163,7 +163,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def config = [:]
 
         config["databaseName"] = fileName
-        config["startTime"] = 9000L
+        //get databaseinfo does not returns db start time rather archive start time
+        //config["startTime"] = 9000L
         config["step"] = 300L
 
         def datapointList = []
@@ -189,6 +190,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         dbConfig["archive"].get(0).remove("startTime")
         dbConfig.remove("endTime")
+        dbConfig.remove("startTime")
 
         archiveList.add(archiveConfig)
 

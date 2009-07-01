@@ -260,22 +260,6 @@ class DbUtils {
         Map config = [:];
         config[DATABASE_NAME] = dbName;
 
-        config[START_TIME] = rrdDef.getStartTime() * 1000;
-        config[Grapher.END_TIME] = rrdDb.getLastUpdateTime() * 1000;
-
-        config[STEP] = rrdDef.getStep();
-        config[DATASOURCE] = fetchDatasources(rrdDb );
-        config[ARCHIVE] = fetchArchives(rrdDb);
-
-        rrdDb.close();
-        return config;
-    }
-
-    public static Map getDatabaseTimeStamps(String dbName){
-        RrdDb rrdDb = new RrdDb(dbName);
-        RrdDef rrdDef = rrdDb.getRrdDef();
-
-        Map config = [:];
         long max = 0
         long min = Long.MAX_VALUE
         int counter = 0;
@@ -290,8 +274,14 @@ class DbUtils {
             }
             catch(ArrayIndexOutOfBoundsException e) { break;}
         }
+
         config[START_TIME] = min * 1000;
         config[Grapher.END_TIME] = max * 1000;
+
+        config[STEP] = rrdDef.getStep();
+        config[DATASOURCE] = fetchDatasources(rrdDb );
+        config[ARCHIVE] = fetchArchives(rrdDb);
+
         rrdDb.close();
         return config;
     }

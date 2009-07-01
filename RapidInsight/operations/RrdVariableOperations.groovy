@@ -89,7 +89,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         def dbConfig = [:]
 
         //there could be change in file name
-        dbConfig[DATABASE_NAME] = file
+        if(file == "" || file == null)
+            dbConfig[DATABASE_NAME] = name + ".rrd"
+        else
+            dbConfig[DATABASE_NAME] = file
+        
         dbConfig[START_TIME] = startTime
         dbConfig[STEP] = step
 

@@ -29,7 +29,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         new File(fileName).delete();
         new File(fileNameExt).delete();
-        //new File(imageFileName).delete();
+        new File(imageFileName).delete();
         super.tearDown();
     }
 
@@ -152,17 +152,19 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       type:"GAUGE", heartbeat:300, /*file: fileName,*/
                                        startTime:9000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
+        new File("variable.rrd").delete();
+
         variable.createDB()
 
-        def dbConfig = RrdUtils.getDatabaseInfo(fileName)
+        def dbConfig = RrdUtils.getDatabaseInfo("variable.rrd")
 
         def config = [:]
 
-        config["databaseName"] = fileName
+        config["databaseName"] = "variable.rrd"
         //get databaseinfo does not returns db start time rather archive start time
         //config["startTime"] = 9000L
         config["step"] = 300L
@@ -187,7 +189,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         archiveConfig["steps"] = 1
         archiveConfig["rows"] = 10
 
-
         dbConfig["archive"].get(0).remove("startTime")
         dbConfig.remove("endTime")
         dbConfig.remove("startTime")
@@ -197,6 +198,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["archive"] = archiveList
 
         assertEquals(config, dbConfig)
+
+        new File("variable.rrd").delete();
 
     }
 

@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
     String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
+    String testImageFile = TestFile.TESTOUTPUT_DIR + "/testImage.png" 
     def classes=[:];
 
     public void setUp() {
@@ -33,12 +34,13 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         initialize([classes.RrdVariable,classes.RrdArchive,classes.RrdGraphTemplate], []);
         CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
 
-        boolean isDeleted =
         new File(rrdFileName).delete();
-        println "file deletion successful: "+isDeleted;
+        new File(testImageFile).delete();
     }
 
     public void tearDown() {
+        new File(rrdFileName).delete();
+        new File(testImageFile).delete();
         super.tearDown();
     }
     def loadClass(className) {
@@ -614,9 +616,6 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         DbUtils.fetchData(rrdFileName,"a");
         DbUtils.fetchData(rrdFileName,"b");
-//        println DbUtils.fetchData(rrdFileName,"a");
-//        println DbUtils.fetchData(rrdFileName,"b");
-
     }
 
     public void testFetchDataByDatabaseNameOnly() throws Exception{
@@ -693,8 +692,6 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         DbUtils.updateData(rrdFileName,"978303300000:2400");
         DbUtils.updateData(rrdFileName,"978303600000:2900");
         DbUtils.updateData(rrdFileName,"978303900000:3300");
-
-        println DbUtils.fetchData(rrdFileName);
     }
 
     public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
@@ -755,7 +752,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.END_TIME] = 978303900000;
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
 
@@ -820,7 +817,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.VERTICAL_LABEL] = "rate";
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
 
@@ -880,7 +877,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
     public void testOneDatasourceWithOneParameterGraphSuccessfully() throws Exception{
@@ -933,7 +930,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
 
@@ -994,7 +991,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
 
@@ -1055,7 +1052,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.VERTICAL_LABEL] = "rate";
 
         byte[] bytes = RrdUtils.graph(map);
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(rrdFileName+".png") );
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(testImageFile) );
         dos.write(bytes);
     }
 

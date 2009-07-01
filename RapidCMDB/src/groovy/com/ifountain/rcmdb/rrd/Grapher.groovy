@@ -115,7 +115,6 @@ class Grapher {
                    isSourceExist = true;
                 }
                 catch(Exception e){
-                    e.printStackTrace()
                     throw new Exception("Datasource distorted: " + e.getMessage())
                 }
             }

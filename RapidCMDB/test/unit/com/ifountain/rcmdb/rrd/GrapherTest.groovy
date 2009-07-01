@@ -20,9 +20,12 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         new File(rrdFileName).delete();
+        new File(testImageName).delete();
     }
 
     public void tearDown() {
+        new File(rrdFileName).delete();
+        new File(testImageName).delete();
         super.tearDown();
     }
 

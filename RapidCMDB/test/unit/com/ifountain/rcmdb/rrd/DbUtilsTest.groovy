@@ -20,13 +20,11 @@ class DbUtilsTests extends RapidCoreTestCase {
 
     protected void setUp() {
         super.setUp();
-
-        boolean isDeleted =
         new File(rrdFileName).delete();
-        println "file deletion successful: "+isDeleted;
     }
 
     protected void tearDown() {
+        new File(rrdFileName).delete();
         super.tearDown();
     }
 
@@ -599,9 +597,6 @@ class DbUtilsTests extends RapidCoreTestCase {
 
         DbUtils.fetchData(rrdFileName,"a");
         DbUtils.fetchData(rrdFileName,"b");
-//        println DbUtils.fetchData(rrdFileName,"a");
-//        println DbUtils.fetchData(rrdFileName,"b");
-
     }
 
     public void testFetchDataByDatabaseNameOnly() throws Exception{
@@ -679,7 +674,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303600000:2900");
         DbUtils.updateData(rrdFileName,"978303900000:3300");
 
-        println DbUtils.fetchData(rrdFileName);
     }
 
 }

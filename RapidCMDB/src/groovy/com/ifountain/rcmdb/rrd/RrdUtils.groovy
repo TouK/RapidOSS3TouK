@@ -306,10 +306,11 @@ class RrdUtils {
 
     }
     private static Map getGeneralSettingsMap(Map config){
-       if(config.containsKey(RrdUtils.GRAPH_TEMPLATE)){
-           return  getGeneralSettingsMapWithTemplate(config);
-       }
+
        Map fConfig = [:];
+       if(config.containsKey(RrdUtils.GRAPH_TEMPLATE)){
+           fConfig = getGeneralSettingsMapWithTemplate(config);
+       }
 
        if(config.containsKey(Grapher.START_TIME) ){
            fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
@@ -342,44 +343,30 @@ class RrdUtils {
 
        def template = loadClass("RrdGraphTemplate").get(name:config.get(RrdUtils.GRAPH_TEMPLATE));
 
-       if(!config.containsKey(Grapher.START_TIME) ){
-           throw new Exception("Start time is not specified");
-       }else {
-           fConfig[Grapher.START_TIME] = config.get(Grapher.START_TIME);
-       }
-       if(!config.containsKey(Grapher.END_TIME) ){
-           fConfig[Grapher.END_TIME] = Date.now();
-       }
-       else{
-           fConfig[Grapher.END_TIME] = config.get(Grapher.END_TIME);
-       }
-       if(template.max != Double.NaN ){
+       if(template.max != Double.NaN )
           fConfig[Grapher.MAX] = template.max;
-       }
-       if(template.min != Double.NaN ){
+
+       if(template.min != Double.NaN )
           fConfig[Grapher.MIN] = template.min;
-       }
 
        fConfig[Grapher.HEIGHT] = (int)template.height;
-
        fConfig[Grapher.WIDTH] = (int)template.width;
 
-       if(template.title.length()>0 ){
+       if(template.title.length()>0 )
           fConfig[Grapher.TITLE] = template.title;
-       }
-       if(template.verticalLabel.length()>0 ){
+
+       if(template.verticalLabel.length()>0 )
           fConfig[Grapher.VERTICAL_LABEL] = template.verticalLabel ;
-       }
+
        //note that they are not fConfig
-       if(template.description.length()>0 ){
+       if(template.description.length()>0 )
           config[Grapher.DESCRIPTION] = template.description ;
-       }
-       if(template.color.length()>0 ){
+
+       if(template.color.length()>0 )
           config[Grapher.COLOR] = template.color ;
-       }
-       if(template.type.length()>0 ){
+
+       if(template.type.length()>0 )
           config[Grapher.TYPE] = template.type ;
-       }
 
        return fConfig;
     }

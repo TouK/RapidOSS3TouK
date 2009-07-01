@@ -271,6 +271,31 @@ class DbUtils {
         return config;
     }
 
+    public static Map getDatabaseTimeStamps(String dbName){
+        RrdDb rrdDb = new RrdDb(dbName);
+        RrdDef rrdDef = rrdDb.getRrdDef();
+
+        Map config = [:];
+        long max = 0
+        long min = Long.MAX_VALUE
+        int counter = 0;
+        while(true)
+        {
+            try{
+                Archive archive = rrdDb.getArchive(counter++)
+            if(archive.getStartTime() < min)
+                min = archive.getStartTime()
+            if(archive.getEndTime() > max)
+                max = archive.getEndTime()
+            }
+            catch(ArrayIndexOutOfBoundsException e) { break;}
+        }
+        config[START_TIME] = min * 1000;
+        config[Grapher.END_TIME] = max * 1000;
+        rrdDb.close();
+        return config;
+    }
+
     /**
     *  returns first time series of first data point
     *  it is the easiest call if the database has only one data source

@@ -88,6 +88,7 @@ scriptsToAdd.each{  scriptParams ->
 
 def scriptsToRun=[]
 scriptsToRun.add("createDefaultQueries")
+scriptsToRun.add("createDefaultRrdArchives")
 
 scriptsToRun.each{  scriptName ->
 

@@ -9,7 +9,7 @@ class InMaintenanceCalculator {
 
     static def eventInBeforeInsert(event){
         def inMaintenance=RsInMaintenance.isEventInMaintenance(event);
-        event.setPropertyWithoutUpdate("inMaintenance",inMaintenance);
+        event.setProperty("inMaintenance",inMaintenance);
     }
     static def eventInBeforeUpdate(event,changedProps){
 

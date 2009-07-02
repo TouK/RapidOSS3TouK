@@ -1,5 +1,4 @@
-<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat"
-  @ page import="com.ifountain.rcmdb.rrd.DbUtils;" %>
+<%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat"%>
 <%--
   Created by Crimson Editor.
   User: ender
@@ -7,7 +6,6 @@
   Time: 4:13:32 PM
 --%>
 <%
-	params.name="yahooUtil";
 	def sourceName = params.name;
     def zoomLevel = params["zoomLevel"] ? params["zoomLevel"] : "24";
     def end = params["end"] ? params["end"] : "${System.currentTimeMillis()}";
@@ -99,7 +97,7 @@
 
     <div>
         <table align="center"><tr><td>
-            <img src="${createLink(controller:'rrdVariable', action:'graph', params:[ startTime:previousEnd, name:"yahooUtil", endTime:end, rnd:System.currentTimeMillis()])}"  onload="window.graphHandler.hideGraphMask()">
+            <img src="${createLink(controller:'rrdVariable', action:'graph', params:[ startTime:previousEnd, name:params.name, endTime:end, rnd:System.currentTimeMillis()])}"  onload="window.graphHandler.hideGraphMask()">
         </td></tr></table>
     </div>
 

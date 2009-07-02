@@ -391,7 +391,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
             assertSame(graphConfig,graphCallConfig);
         }
     }
-    
+
     public void testOneDatasourceGraphWithRpnSuccessfully() throws Exception{
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
@@ -454,7 +454,5 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         File f=new File(map['destination']);
         assertTrue(f.exists());
     }
-
-
 
 }

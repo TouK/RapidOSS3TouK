@@ -35,6 +35,7 @@ import com.ifountain.rcmdb.domain.operation.DomainOperationLoadException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.BeanPropertyBindingResult
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.util.DataStore
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,10 +50,12 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     Class loadedDomainClass;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DataStore.clear()
     }
 
     public void tearDown() {
         IdGenerator.destroy();
+        DataStore.clear()
         super.tearDown();
     }
 
@@ -483,6 +486,57 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         //test setPropertyWithoutUpdate
         instance.setPropertyWithoutUpdate("prop1", "prop1SetWithoutUpdate");
         assertEquals(0, numberOfCalls);
+    }
+
+
+    public void testDoesNotSaveInstanceForEachSetpropertyInBeforeMethodsAndAddsChangedPropertyToUpdatedProperyList()
+    {
+        def model1Name = "Model1";
+        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE];
+        def prop3 = [name: "prop3", type: ModelGenerator.STRING_TYPE];
+        def model1MetaProps = [name: model1Name]
+
+        def modelProps = [prop1, prop2, prop3];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, [datasource], modelProps, keyPropList, []);
+
+        String baseDir = "../testoutput";
+        FileUtils.deleteDirectory(new File(baseDir));
+        System.setProperty("base.dir", baseDir);
+        gcl.parseClass(model1Text)
+        def model1Class = gcl.loadClass(model1Name)
+        def operationFile = new File("${System.getProperty("base.dir")}/operations/${model1Class.name}Operations.groovy");
+        operationFile.parentFile.mkdirs();
+        operationFile.setText("""
+            class ${model1Class.name}Operations extends ${AbstractDomainOperation.class.name}{
+                def beforeUpdate(params)
+                {
+                    ${DataStore.class.name}.put("beforeUpdate", [params]);
+                    prop3 = "updatedProp3Value"
+                    assert ${model1Class.name}.get(prop1:"prop1Value").prop3 != "updatedProp3Value";
+                    assert domainObject.prop3 == "updatedProp3Value";
+                }
+
+                def afterUpdate(params)
+                {
+                    ${DataStore.class.name}.put("afterUpdate", [params]);
+                    assert params.updatedProps.prop3 == "prop3Value"
+                }
+            }
+        """)
+        def classesTobeLoaded = [model1Class, ObjectId];
+        def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def model1Instance = model1Class.add(prop1:"prop1Value", prop2:"prop2Value", prop3:"prop3Value");
+        assertFalse (model1Instance.hasErrors());
+        model1Instance.prop2 = "updatedProp2Value"
+        assertNotNull(DataStore.get("beforeUpdate"));
+        assertNotNull(DataStore.get("afterUpdate"));
     }
 
     public void testThrowsExceptioNifOperationPropertyIsNotDefinedInModel()

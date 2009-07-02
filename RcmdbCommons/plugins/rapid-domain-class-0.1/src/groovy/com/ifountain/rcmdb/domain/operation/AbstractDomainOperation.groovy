@@ -96,22 +96,7 @@ public class AbstractDomainOperation {
             }
             else
             {
-                if(rsSetPropertyWillUpdate.get())
-                {
-                    domainObject.setProperty(propName, value);
-                }
-                else
-                {
-                    if(rsUpdatedProps != null)
-                    {
-                        def oldValue = domainObject.getProperty(propName);
-                        if(oldValue != value)
-                        {
-                            rsUpdatedProps.put(propName, oldValue);
-                        }
-                    }
-                    domainObject.setProperty(propName, value, false);                    
-                }
+                domainObject.setProperty(propName, value);
             }
     }
 
@@ -140,11 +125,37 @@ public class AbstractDomainOperation {
 
     def invokeCompassOperation(String methodName, List args)
     {
-        if(rsIsBeforeTriggerContinue)
+        if(methodName == "updateForSetProperty")
         {
-            throw new RuntimeException("${methodName} cannot be executed in before triggers");
+            if(rsSetPropertyWillUpdate.get())
+            {
+                this.domainObject.invokeMethod("_update", args as Object[]);
+            }
+            else
+            {
+                args[0].each{propName, value->
+                    if(rsUpdatedProps != null)
+                    {
+                        def oldValue = domainObject.getProperty(propName);
+                        if(oldValue != value)
+                        {
+                            rsUpdatedProps.put(propName, oldValue);
+                        }
+                    }
+                    domainObject.setProperty(propName, value, false);
+                }
+            }
+            return null;
         }
-        return this.domainObject.invokeMethod("_${methodName}", args as Object[]);
+        else
+        {
+            if(rsIsBeforeTriggerContinue)
+            {
+                throw new RuntimeException("${methodName} cannot be executed in before triggers");
+            }
+            return this.domainObject.invokeMethod("_${methodName}", args as Object[]);
+        }
+
     }
 
 

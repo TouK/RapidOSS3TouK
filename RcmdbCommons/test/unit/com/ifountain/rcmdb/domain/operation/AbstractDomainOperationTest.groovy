@@ -124,7 +124,22 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         }
     }
 
-    public void testSetPropertiesCallsNonPersistantSetPropertyIfFlagIsSet()
+    public void testInvokeBeforeEventTriggerOperationSetsTheFlags()
+    {
+        def gcl = new GroovyClassLoader();
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        assertTrue(domainOpr.rsSetPropertyWillUpdate instanceof ThreadLocal);
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
+        domainOpr.invokeBeforeEventTriggerOperation{
+            assertFalse (domainOpr.rsSetPropertyWillUpdate.get());
+            assertTrue (domainOpr.rsIsBeforeTriggerContinue);
+        }
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
+    }
+
+    public void testInvokeCompassOperationWithUpdateForSetPropertyCallsNonPersistantSetPropertyIfFlagIsSet()
     {
         def gcl = new GroovyClassLoader();
         def domainClassStr = """
@@ -142,25 +157,20 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
 
         AbstractDomainOperation domainOpr = new AbstractDomainOperation();
         domainOpr.domainObject = domainInstance;
-        assertTrue(domainOpr.rsSetPropertyWillUpdate instanceof ThreadLocal);
-        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
-        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
-
         def updatedProp1Val = "prop1UpdatedValue";
         domainOpr.invokeBeforeEventTriggerOperation{
             assertFalse (domainOpr.rsSetPropertyWillUpdate.get());
             assertTrue (domainOpr.rsIsBeforeTriggerContinue);
-            domainOpr.setProperty ("prop1", updatedProp1Val);
+            domainOpr.invokeCompassOperation("updateForSetProperty", [["prop1":updatedProp1Val]])
         }
-        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
-        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
         List params = DataStore.get("setProperty");
         assertEquals ("prop1", params[0]);
         assertEquals (updatedProp1Val, params[1]);
         assertEquals (false, params[2]);
+        assertNull (domainOpr.rsUpdatedProps);
     }
 
-    public void testInvokeBeforeEventTriggerOperationWillRestoreFlagsIfExceptionIsThrown()
+    public void testInvokeCompassOperationWithUpdateForSetPropertyCallsUpdateMethodIfFlagIsNotSet()
     {
         def gcl = new GroovyClassLoader();
         def domainClassStr = """
@@ -170,6 +180,70 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
             {
                 ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
             }
+            public void _update(props)
+            {
+                ${DataStore.class.name}.put("_update", [props]);
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+
+        domainOpr.rsUpdatedProps = [:];
+        def updatedProp1Val = "prop1UpdatedValue";
+        def expectedParams = ["prop1":updatedProp1Val]
+        domainOpr.invokeCompassOperation("updateForSetProperty", [expectedParams])
+        assertNull (DataStore.get("setProperty"));
+        Map params = DataStore.get("_update")[0];
+        assertEquals (expectedParams, params);
+        assertEquals (0, domainOpr.rsUpdatedProps.size());
+    }
+
+    public void testInvokeCompassOperationWithUpdateForSetPropertyCallsWillStoreUpdatedPropsIfUpdatedPropsIsNotNull()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+        domainInstance.prop1 = "prop1Value"
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+        def updatedProp1Val = "prop1UpdatedValue";
+        domainOpr.rsUpdatedProps = [:];
+        domainOpr.invokeBeforeEventTriggerOperation{
+            assertFalse (domainOpr.rsSetPropertyWillUpdate.get());
+            assertTrue (domainOpr.rsIsBeforeTriggerContinue);
+            domainOpr.invokeCompassOperation("updateForSetProperty", [["prop1":updatedProp1Val]])
+        }
+        List params = DataStore.get("setProperty");
+        assertEquals ("prop1", params[0]);
+        assertEquals (updatedProp1Val, params[1]);
+        assertEquals (false, params[2]);
+        assertEquals (1, domainOpr.rsUpdatedProps.size());
+        assertEquals("prop1Value", domainOpr.rsUpdatedProps.prop1);
+    }
+
+
+    public void testInvokeBeforeEventTriggerOperationWillRestoreFlagsIfExceptionIsThrown()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
         }
         """
         def domainClass = gcl.parseClass (domainClassStr);
@@ -198,16 +272,12 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         assertFalse (domainOpr.rsIsBeforeTriggerContinue);
     }
 
-    public void testBeforeEventWrappersWillCallNonPersistantSetProperty()
+    public void testBeforeEventWrappersChangesFlagsAppropritely()
     {
         def gcl = new GroovyClassLoader();
         def domainClassStr = """
         class DomainClass1{
             String prop1;
-            public void setProperty(String propName, String propValue, boolean willPersist)
-            {
-                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
-            }
         }
         """
 
@@ -314,10 +384,6 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         def domainClassStr = """
         class DomainClass1{
             String prop1;
-            public void setProperty(String propName, String propValue, boolean willPersist)
-            {
-                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
-            }
         }
         """
         DataStore.put("methodCalls", [])
@@ -327,8 +393,7 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
                 def beforeUpdate(Map props)
                 {
                     ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
-                    prop1 = "prop1UpdatedValue1"
-                    prop1 = "prop1UpdatedValue2"
+                    rsUpdatedProps["prop1"] = "prop1Value"
                 }
                 def afterUpdate(Map props)
                 {
@@ -343,7 +408,7 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         def prop1ValueBeforeUpdate = "prop1Value";
         def domainInstance = domainClass.newInstance();
         domainInstance.prop1 = prop1ValueBeforeUpdate;
-        
+
         AbstractDomainOperation domainOpr = newOprClass.newInstance();
         domainOpr.domainObject = domainInstance;
 

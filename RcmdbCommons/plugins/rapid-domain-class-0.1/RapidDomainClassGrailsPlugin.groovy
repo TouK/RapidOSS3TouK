@@ -326,7 +326,7 @@ class RapidDomainClassGrailsPlugin {
             {
                 if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && persistantProps.containsKey(name) && ((MetaClass)delegate.metaClass).getMetaMethod("update", Map) != null)
                 {
-                    delegate.update(["$name":value]);
+                    delegate.invokeCompassOperation("updateForSetProperty", [["$name":value]]);
                 }
                 else
                 {

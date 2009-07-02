@@ -106,7 +106,7 @@ class GetPropertiesMethod
         allProperties.addAll(allDomainClassProperties);
         if (operationClass != null)
         {
-            def propsToBeFiltered = ["domainObject", "class", "properties", "metaClass", "rsSetPropertyWillUpdate", "rsUpdatedProps"]
+            def propsToBeFiltered = ["domainObject", "class", "properties", "metaClass", "rsSetPropertyWillUpdate", "rsUpdatedProps", "rsIsBeforeTriggerContinue"]
             
             allDomainClassProperties.each{ RapidDomainClassProperty prop ->
                  if(!propsToBeFiltered.contains(prop.name))

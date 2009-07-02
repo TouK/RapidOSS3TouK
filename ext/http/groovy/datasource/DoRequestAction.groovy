@@ -55,7 +55,7 @@ public class DoRequestAction implements Action {
         {
             response =  conn.getHttpConnection().doGetRequest(completeUrl, params);
         }
-        logger.debug("Response received:\n" + response);
+        logger.debug("Response received:\n"+completeUrl);
     }
 
     protected String getCompleteUrl(String baseUrl){

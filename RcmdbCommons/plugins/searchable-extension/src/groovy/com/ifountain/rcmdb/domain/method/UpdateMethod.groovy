@@ -72,6 +72,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         def relationToBeAddedMap = [:]
         def updatedPropsOldValues = [:];
         def updatedRelations = [:];
+        def nullProps = [];
         def relationToBeRemovedMap = [:]
         boolean willBeIndexed = false;
         boolean willRelationsBeIndexed = false;
@@ -82,7 +83,11 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (fieldType)
                 {
                     def propValueBeforeUpdate = domainObject.getProperty(propName);
-                    MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, defaultValues[propName], value);
+                    if(value == null)
+                    {
+                        nullProps.add(propName);
+                    }
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, domainObject, propName, fieldType, value);
                     if (domainObject.getProperty(propName) != propValueBeforeUpdate)
                     {
                         willBeIndexed = true;
@@ -121,6 +126,9 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (willBeIndexed)
                 {
                     existingInstanceEntry.clear();
+                    nullProps.each{propName->
+                        domainObject.setProperty (propName, defaultValues[propName], false);
+                    }
                     domainObject.index(domainObject);
                     domainObject.updateCacheEntry(domainObject, true);
 

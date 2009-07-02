@@ -153,10 +153,49 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
             domainOpr.setProperty ("prop1", updatedProp1Val);
         }
         assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
         List params = DataStore.get("setProperty");
         assertEquals ("prop1", params[0]);
         assertEquals (updatedProp1Val, params[1]);
         assertEquals (false, params[2]);
+    }
+
+    public void testInvokeBeforeEventTriggerOperationWillRestoreFlagsIfExceptionIsThrown()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+
+        AbstractDomainOperation domainOpr = new AbstractDomainOperation();
+        domainOpr.domainObject = domainInstance;
+        assertTrue(domainOpr.rsSetPropertyWillUpdate instanceof ThreadLocal);
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
+        def exception = new Exception("exception");
+        try{
+            domainOpr.invokeBeforeEventTriggerOperation{
+                assertFalse(domainOpr.rsSetPropertyWillUpdate.get());
+                assertTrue(domainOpr.rsIsBeforeTriggerContinue);
+                throw exception;
+            }
+            fail("Should throw exception");
+        }
+        catch(Exception e)
+        {
+            assertSame (exception, e);
+        }
+        assertTrue(domainOpr.rsSetPropertyWillUpdate.get());
+        assertFalse (domainOpr.rsIsBeforeTriggerContinue);
     }
 
     public void testBeforeEventWrappersWillCallNonPersistantSetProperty()

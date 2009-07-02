@@ -74,9 +74,12 @@ public class AbstractDomainOperation {
     {
         rsIsBeforeTriggerContinue = true;
         rsSetPropertyWillUpdate.set(false);
-        closureToBeExecuted();
-        rsSetPropertyWillUpdate.set(true);
-        rsIsBeforeTriggerContinue = false;
+        try{
+            closureToBeExecuted();
+        }finally{
+            rsSetPropertyWillUpdate.set(true);
+            rsIsBeforeTriggerContinue = false;
+        }
     }
 
     public Map getProperties()

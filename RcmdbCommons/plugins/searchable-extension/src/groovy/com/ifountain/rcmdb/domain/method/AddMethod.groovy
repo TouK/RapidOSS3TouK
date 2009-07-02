@@ -96,6 +96,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
         def addedprops = [:]
+        def nullProps = [];
         props.each{propName,value->
             RelationMetaData relation = relations.get(propName);
             if(!relation)
@@ -103,7 +104,11 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 def fieldType = fieldTypes[propName];
                 if(fieldType)
                 {
-                    MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, defaultValues[propName], value);
+                    if(value == null)
+                    {
+                        nullProps.add(propName);    
+                    }
+                    MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, value);
                 }
             }
             else
@@ -136,6 +141,9 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         else
         {
             sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
+            nullProps.each{propName->
+                sampleBean.setProperty (propName, defaultValues[propName], false);                
+            }
             CompassMethodInvoker.index (mc, sampleBean);
             sampleBean.updateCacheEntry(sampleBean, true);
             if(!relatedInstances.isEmpty())

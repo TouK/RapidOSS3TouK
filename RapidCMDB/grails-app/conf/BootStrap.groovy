@@ -28,6 +28,7 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.compass.core.Compass
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -57,12 +58,16 @@ class BootStrap {
         registerUtilities();
         registerDefaultConverters();
         initializeModelGenerator();
+        initializeSegmentHelper();
         registerDefaultUsers();
         registerDefaultDatasources();
         corrrectModelData();
         initializeScripting();
     }
 
+    def initializeSegmentHelper(){
+        SegmentQueryHelper.getInstance().initialize(ApplicationHolder.application.domainClasses.clazz.findAll{it.name.indexOf(".") < 0})
+    }
     def initializeSessionManager()
     {
         SessionManager.getInstance().addSessionListener (new FilterSessionListener());

@@ -26,11 +26,14 @@ package auth
 
 class Group
 {
+    public static final String GLOBAL_FILTER = "Global"
+    public static final String CLASS_BASED_FILTER = "Class Based"
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role", "filters"];
     };
     static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
     String name = "";
+    String segmentFilterType = GLOBAL_FILTER;
     String segmentFilter = "";
     String rsOwner = "p"
     Long id;
@@ -39,10 +42,12 @@ class Group
     Object __operation_class__;
     Object __is_federated_properties_loaded__;
     List users = [];
+    List filters = [];
     Role role;
     static relations = [
             users: [type: RsUser, reverseName: "groups", isMany: true],
-            role: [type: Role, reverseName: "groups", isMany: false]
+            role: [type: Role, reverseName: "groups", isMany: false],
+            filters: [type: SegmentFilter, reverseName: "groups", isMany: true]
     ]
     static constraints = {
         name(key:[],blank: false, nullable: false)
@@ -51,10 +56,11 @@ class Group
         __is_federated_properties_loaded__(nullable: true)
         errors(nullable: true)
         role(nullable: true)
+        segmentFilterType(inList:[GLOBAL_FILTER, CLASS_BASED_FILTER])
     }
 
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role", "filters"];
 
     public String toString()
     {

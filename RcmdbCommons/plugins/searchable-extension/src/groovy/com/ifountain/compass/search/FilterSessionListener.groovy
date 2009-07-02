@@ -3,7 +3,8 @@ package com.ifountain.compass.search;
 import com.ifountain.session.SessionListener;
 import com.ifountain.session.Session
 import auth.RsUser
-import auth.Group;
+import auth.Group
+import com.ifountain.rcmdb.auth.SegmentQueryHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,37 +13,45 @@ import auth.Group;
  * Time: 2:35:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FilterSessionListener implements SessionListener{
-    public static final String DEFAULT_FILTER = "rsOwner:p";
+public class FilterSessionListener implements SessionListener {
     public void sessionEnded(Session session)
     {
-        session.get (FilterManager.SESSION_FILTER_KEY)?.clear();        
+        session.remove(FilterManager.SESSION_FILTER_KEY);
     }
 
     public void sessionStarted(Session session)
     {
-        if(session.username != null)
+        if (session.username != null)
         {
-            RsUser user = RsUser.get(username:session.username);
-            if(user)
+            RsUser user = RsUser.get(username: session.username);
+            if (user)
             {
                 def groups = user.groups;
-                if(!groups.isEmpty())
+                if (!groups.isEmpty())
                 {
-                    def filters = [];
-                    def willAddRsOwner = false;
-                    groups.each{Group group->
-                        if(group.segmentFilter != null && group.segmentFilter != "")
-                        {
-                            filters.add(group.segmentFilter);
-                            willAddRsOwner = true;
+                    def filters = [:];
+                    filters[FilterManager.GROUP_FILTERS] = [];
+                    filters[FilterManager.CLASS_FILTERS] = [:]
+                    groups.each {Group group ->
+                        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(group.name)
+                        if (groupFilters != null) {
+                            def classesMap = groupFilters[SegmentQueryHelper.CLASSES];
+                            if (classesMap != null) {
+                                classesMap.each {className, classQuery ->
+                                    def classQueries = filters[FilterManager.CLASS_FILTERS][className];
+                                    if (classQueries == null) {
+                                        classQueries = [];
+                                        filters[FilterManager.CLASS_FILTERS][className] = classQueries
+                                    }
+                                    classQueries.add(classQuery);
+                                }
+                            }
+                            else if (groupFilters[SegmentQueryHelper.SEGMENT_FILTER] != "") {
+                                filters[FilterManager.GROUP_FILTERS].add(groupFilters[SegmentQueryHelper.SEGMENT_FILTER]);
+                            }
                         }
                     }
-                    if(willAddRsOwner)
-                    {
-                        filters.add(DEFAULT_FILTER);
-                    }
-                    session.put (FilterManager.SESSION_FILTER_KEY, filters);
+                    session.put(FilterManager.SESSION_FILTER_KEY, filters);
                 }
             }
         }

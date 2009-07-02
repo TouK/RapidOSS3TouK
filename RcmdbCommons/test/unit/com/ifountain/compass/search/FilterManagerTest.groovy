@@ -68,41 +68,48 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
     {
         Session session = SessionManager.getInstance().startSession ("user1");
 
-        final String filterQuery1 = "rsOwner:p OR owner:owner1";
         initialize([FilterManagerTestDomainObject1, FilterManagerTestDomainObject2], []);
 
+        def obj1Inst1 = FilterManagerTestDomainObject1.add(prop1:"obj1Inst1", owner:"owner1", rsOwner:"p");
+        def obj1Inst2 = FilterManagerTestDomainObject1.add(prop1:"obj1Inst2", owner:"owner2", rsOwner:"p");
+        def obj1Inst3 = FilterManagerTestDomainObject1.add(prop1:"obj1Inst2", owner:"owner2", rsOwner:"someRsOwner");
 
-
-        def obj1Inst1 = FilterManagerTestDomainObject1.add(prop1:"obj1Inst1", owner:"owner1");
-        def obj1Inst2 = FilterManagerTestDomainObject1.add(prop1:"obj1Inst2", owner:"owner2");
-
-        def obj2Inst1 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst1", owner:"owner1");
-        def obj2Inst2 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst2", owner:"owner1");
-        def obj2Inst3 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst3", owner:"owner2");
-        def obj2Inst4 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst4", owner:"owner2");
+        def obj2Inst1 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst1", owner:"owner1", rsOwner:"someRsOwner");
+        def obj2Inst2 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst2", owner:"owner1", rsOwner:"someRsOwner");
+        def obj2Inst3 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst3", owner:"owner2", rsOwner:"someRsOwner");
+        def obj2Inst4 = FilterManagerTestDomainObject2.add(prop1:"obj2Inst4", owner:"owner2", rsOwner:"someRsOwner");
         obj1Inst1.addRelation(rel1:[obj2Inst1,obj2Inst3], rel2:[obj2Inst2], rel3:[obj2Inst4]);
 
         def res = FilterManagerTestDomainObject1.search("alias:*").results;
-        assertEquals (2, res.size());
+        assertEquals (3, res.size());
         assertTrue (res.contains(obj1Inst1));
         assertTrue (res.contains(obj1Inst2));
+        assertTrue (res.contains(obj1Inst3));
         assertEquals (2, res[0].rel1.size())
         assertEquals (obj2Inst2, res[0].rel2)
         assertEquals (obj2Inst4, res[0].rel3)
 
-        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1]);
+        def searchFilters = [:]
+        searchFilters[FilterManager.GROUP_FILTERS] = ["owner:owner1"]
+        searchFilters[FilterManager.CLASS_FILTERS] = [:]
+        searchFilters[FilterManager.CLASS_FILTERS][FilterManagerTestDomainObject2.class.name] = ["prop1:obj2Inst2"]
+        session.put (FilterManager.SESSION_FILTER_KEY, searchFilters);
 
         res = FilterManagerTestDomainObject1.search("alias:*").results;
-        assertEquals (1, res.size());
+        assertEquals (2, res.size());
         assertTrue (res.contains(obj1Inst1));
+        assertTrue (res.contains(obj1Inst2));
         assertEquals (1, res[0].rel1.size())
+        assertEquals(obj2Inst1, res[0].rel1[0])
         assertEquals (obj2Inst2, res[0].rel2)
         assertNull (res[0].rel3)
 
         res = FilterManagerTestDomainObject1.searchEvery("alias:*");
-        assertEquals (1, res.size());
+        assertEquals (2, res.size());
         assertTrue (res.contains(obj1Inst1));
+        assertTrue (res.contains(obj1Inst2));
         assertEquals (1, res[0].rel1.size())
+         assertEquals(obj2Inst1, res[0].rel1[0])
         assertEquals (obj2Inst2, res[0].rel2)
         assertNull (res[0].rel3)
 
@@ -119,6 +126,7 @@ class FilterManagerTestDomainObject2 {
     Long version ;
     String prop1;
     String owner;
+    String rsOwner = "p"
     List revRel1 = [];
     FilterManagerTestDomainObject1 revRel2;
     FilterManagerTestDomainObject1 revRel3;
@@ -161,6 +169,7 @@ class FilterManagerTestDomainObject1 {
     Long version ;
     String prop1;
     String owner;
+    String rsOwner = "p"
     List rel1 = [];
     FilterManagerTestDomainObject2 rel2;
     FilterManagerTestDomainObject2 rel3;

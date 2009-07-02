@@ -1,9 +1,7 @@
-
-
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="adminLayout" />
+    <meta name="layout" content="adminLayout"/>
     <title>Show Group</title>
 </head>
 <body>
@@ -17,40 +15,39 @@
         <div class="message" id="pageMessage">${flash.message}</div>
     </g:if>
     <g:hasErrors bean="${flash.errors}">
-       <div class="errors" id="pageFlashErrors">>
-            <g:renderErrors bean="${flash.errors}"/>
+        <div class="errors" id="pageFlashErrors">>
+        <g:renderErrors bean="${flash.errors}"/>
         </div>
     </g:hasErrors>
     <div class="dialog">
         <table>
             <tbody>
 
-
                 <tr class="prop">
-                    <td valign="top" class="name" id="idLabel" >id:</td>
+                    <td valign="top" class="name" id="idLabel">id:</td>
 
-                    <td valign="top" class="value" id="id" >${group.id}</td>
+                    <td valign="top" class="value" id="id">${group.id}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name"  id="nameLabel" >name:</td>
+                    <td valign="top" class="name" id="nameLabel">name:</td>
 
-                    <td valign="top" class="value" id="name" >${group.name}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name" id="roleLabel" >role:</td>
-
-                    <td valign="top" class="value"  id="role" >${group?.role}</td>
+                    <td valign="top" class="value" id="name">${group.name}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name" id="segmentFilterLabel" >segmentFilter:</td>
+                    <td valign="top" class="name" id="roleLabel">role:</td>
 
-                    <td valign="top" class="value" id= "segmentFilter">${group.segmentFilter}</td>
+                    <td valign="top" class="value" id="role">${group?.role}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name" id="segmentFilterLabel">segmentFilter:</td>
+
+                    <td valign="top" class="value" id="segmentFilter">${group.segmentFilter}</td>
 
                 </tr>
 
@@ -68,6 +65,45 @@
                 </tr>
 
             </tbody>
+        </table>
+    </div>
+    <div style="margin-top:20px;">
+        <%
+            def currentUrl=request.request.uri.toString().replace("/RapidSuite","");
+            def startIndex=currentUrl.indexOf("group")
+            if(script>=0)
+            {
+                currentUrl=currentUrl.substring(startIndex)
+            }
+
+        %>
+        <table>
+            <tr>
+                <td>
+                    <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">SegmentFilter List</span>
+                    <span class="menuButton"><g:link class="create" controller="segmentFilter" params="['groupId':group?.id, 'targetURI':currentUrl]" action="create">New SegmentFilter</g:link></span>
+                    <div class="list">
+                        <table><br>
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Filter</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <g:each in="${group.filters}" status="i" var="segmentFilter">
+                                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                        <td><g:link action="show" controller="segmentFilter" id="${segmentFilter.id}" params="${[groupId:group.id]}">${segmentFilter.className?.encodeAsHTML()}</g:link></td>
+                                        <td>${segmentFilter.filter.encodeAsHTML()}</td>
+                                        <td><g:link action="edit" controller="segmentFilter" id="${segmentFilter.id}" class="edit" params="${[groupId:group.id, targetURI:currentUrl]}">Edit</g:link></td>
+                                    </tr>
+                                </g:each>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
         </table>
     </div>
     <div class="buttons">

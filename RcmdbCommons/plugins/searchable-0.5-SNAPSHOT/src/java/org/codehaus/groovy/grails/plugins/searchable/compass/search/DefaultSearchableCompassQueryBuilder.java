@@ -56,7 +56,6 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
         Assert.notNull(query, "query cannot be null");
         CompassQuery compassQuery;
         if (query instanceof String) {
-            query = FilterManager.getQuery((String)query);
             compassQuery = stringQueryBuilder.buildQuery(grailsApplication, compassSession, options, query);
         } else {
             Assert.isInstanceOf(Closure.class, query, "query is neither String nor Closure: must be one of these but is [" + query.getClass().getName() + "]");

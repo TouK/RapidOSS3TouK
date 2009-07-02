@@ -32,23 +32,36 @@ import java.util.List;
  * Time: 2:20:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FilterManager
-{
+public class FilterManager {
     public static String SESSION_FILTER_KEY = "searchfilters";
+    public static String CLASS_FILTERS = "classFilters";
+    public static String GROUP_FILTERS = "groupFilters";
+    public static final String DEFAULT_FILTER = "rsOwner:p";
 
-    public static String getQuery(String query)
-    {
-        List filterList = (List)SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
-        if(filterList == null || filterList.isEmpty()) return query;
-
+    public static String getQuery(String query, String className) {
+        Map searchFilters = (Map) SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
+        if (searchFilters == null) return query;
+        List filterList = new ArrayList();
+        List groupFilters = (List) searchFilters.get(GROUP_FILTERS);
+        filterList.addAll(groupFilters);
+        if (groupFilters.size() > 0) {
+            filterList.add(DEFAULT_FILTER);
+        }
+        if (className != null) {
+            Map allClassFilters = (Map) searchFilters.get(CLASS_FILTERS);
+            List classFilters = (List) allClassFilters.get(className);
+            if (classFilters != null) {
+                filterList.addAll(classFilters);
+            }
+        }
+        if (filterList.isEmpty()) return query;
         StringBuffer bf = new StringBuffer("(");
         bf.append(query).append(") AND (");
-        for(int i=0; i < filterList.size(); i++)
-        {
-            String filter = (String)filterList.get(i);
+        for (int i = 0; i < filterList.size(); i++) {
+            String filter = (String) filterList.get(i);
             bf.append("(").append(filter).append(") OR ");
         }
-        bf.delete(bf.length()-4, bf.length());
+        bf.delete(bf.length() - 4, bf.length());
         bf.append(")");
         return bf.toString();
     }

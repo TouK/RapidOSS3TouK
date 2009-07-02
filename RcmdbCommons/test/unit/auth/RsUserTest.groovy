@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.exception.MessageSourceException
 import org.jsecurity.crypto.hash.Sha1Hash
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.execution.ExecutionContextManager
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,6 +20,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
         initialize([RsUser,Group, ChannelUserInformation], []);
+        SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
     }

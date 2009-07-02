@@ -139,7 +139,7 @@
                         <td valign="top" class="name">
                             <label for="type">Type:</label>
                         </td>
-                        <td valign="top" class="value ${hasErrors(bean: modelProperty, field: 'type', 'errors')}">
+                        <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'type', 'errors')}">
                             <g:select class="inputtextfield" id="type" name="type" from="${cmdbScript.constraints.type.inList.collect{it.encodeAsHTML()}}"
                                     value="${fieldValue(bean:cmdbScript,field:'type')}" onchange="typeChanged()"></g:select>
                         </td>

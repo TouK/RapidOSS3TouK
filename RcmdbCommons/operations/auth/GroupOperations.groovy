@@ -1,13 +1,24 @@
 package auth
+
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
+
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa sener
- * Date: Dec 17, 2008
- * Time: 5:16:08 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: mustafa sener
+* Date: Dec 17, 2008
+* Time: 5:16:08 PM
+* To change this template use File | Settings | File Templates.
+*/
 class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation 
 {
+    def afterDelete(){
+        SegmentQueryHelper.getInstance().removeGroupFilters(name);
+    }
+
+     def afterInsert(){
+        SegmentQueryHelper.getInstance().calculateGroupFilters(name);
+    }
+
     public static Group createGroup(Map groupProps)
     {
         return createGroup(groupProps, []);

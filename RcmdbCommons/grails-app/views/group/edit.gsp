@@ -73,6 +73,39 @@
                 </tbody>
             </table>
         </div>
+        <div style="margin-top:20px;">
+            <%
+                def currentUrl = "/group/edit/${group.id}"
+            %>
+        <table>
+            <tr>
+                <td>
+                    <span style="color:#006DBA;font-size:14px;font-weight:bold;margin:0.8em 0pt 0.3em;">SegmentFilter List</span>
+                    <span class="menuButton"><g:link class="create" controller="segmentFilter" params="${['groupId':group?.id, 'targetURI':currentUrl]}" action="create">New SegmentFilter</g:link></span>
+                    <div class="list">
+                        <table><br>
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Filter</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <g:each in="${group.filters}" status="i" var="segmentFilter">
+                                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                                        <td><g:link action="show" controller="segmentFilter" id="${segmentFilter.id}" params="${[groupId:group.id, targetURI:currentUrl]}">${segmentFilter.className?.encodeAsHTML()}</g:link></td>
+                                        <td>${segmentFilter.filter.encodeAsHTML()}</td>
+                                        <td><g:link action="edit" controller="segmentFilter" id="${segmentFilter.id}" class="edit" params="${[groupId:group.id, targetURI:currentUrl]}">Edit</g:link></td>
+                                    </tr>
+                                </g:each>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
         <div class="buttons">
             <span class="button"><g:actionSubmit class="save" value="Update"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>

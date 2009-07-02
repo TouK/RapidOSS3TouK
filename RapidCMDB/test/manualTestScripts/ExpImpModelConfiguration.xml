@@ -1,0 +1,38 @@
+<Rsmodel>
+	<Models>
+		<Model Name="Author">
+			<Properties>
+				<Property Name="name" Type="string" IsKey="true"/>
+				<Property Name="lastname" Type="string" IsKey="true"/>
+			</Properties>
+		</Model>
+        <Model Name="Publisher" >
+			<Properties>
+                <Property Name="name" Type="string" IsKey="true"/>
+                <Property Name="address" Type="string"/>
+			</Properties>
+		</Model>
+		<Model Name="Book">
+            <Properties>
+                <Property Name="isbn" Type="string" IsKey="true"/>
+                <Property Name="title" Type="string" />
+            </Properties>
+        </Model>
+        <Model Name="Nonfiction" Parent="Book">
+            <Properties>
+                <Property Name="nonfictionProp" Type="string" />
+            </Properties>
+        </Model>
+        <Model Name="Fiction" Parent="Book">
+            <Properties>
+                <Property Name="fictionProp" Type="string" />
+                <Property Name="prop2" Type="number" />
+            </Properties>
+        </Model>
+    </Models>
+	<Relations>
+        <Relation From="Author" To="Book" Name="myBooks" ReverseName="myAuthor" Type="OneToMany"></Relation>
+        <Relation From="Fiction" To="Publisher" Name="fictionPublisher" ReverseName="publishedFictionBooks" Type="ManyToOne"></Relation>
+        <Relation From="Nonfiction" To="Publisher" Name="nonfictionPublisher" ReverseName="publishedNonfictionBooks" Type="ManyToOne"></Relation>
+    </Relations>
+</Rsmodel>

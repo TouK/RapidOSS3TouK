@@ -91,7 +91,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
             if (mappedDatasourceNameConfiguration == null)
             {
                 ValidationUtils.addFieldError(bindingResult, propName, null, "default.federation.property.datasource.definition.exception", [propName, domainObject.class, realDsName]);
-                logger.warn("No datasource is defined with name ${datasourceName} for property ${propName} in model ${domainObject.class.name}");
+                logger.warn("No datasource is defined with name ${realDsName} for property ${propName} in model ${domainObject.class.name}");
             }
             else
             {

@@ -23,6 +23,7 @@ class ExecutionContextFilters {
                 {
                     ExecutionContextManagerUtils.addLoggerToCurrentContext (RapidCmdbLogFactory.getControllerLogger(controllerName));
                 }
+                ExecutionContextManagerUtils.addWebResponseToCurrentContext (response);
             }
             afterView = {
                 //TODO:In afterview context should never be empty. The if statement should be unnecessary

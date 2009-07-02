@@ -33,3 +33,5 @@ assert books.size == 2
 books.each{
 	assert (it.isbn == "isbn_TC" || it.isbn == "isbn_GGS")
 }
+
+return "Success"

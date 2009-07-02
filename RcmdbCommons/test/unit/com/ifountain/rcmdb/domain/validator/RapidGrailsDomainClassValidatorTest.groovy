@@ -8,7 +8,9 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.springframework.context.MessageSource
 import org.springframework.context.MessageSourceResolvable
 import org.springframework.validation.BeanPropertyBindingResult
-import com.ifountain.rcmdb.util.DataStore;
+import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.domain.method.RapidDomainClassProperty
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 
 
 /**
@@ -65,8 +67,21 @@ public class RapidGrailsDomainClassValidatorTest extends RapidCmdbTestCase{
         ]
         Map classes = initializePluginAndClasses (replacementParts);
         Class childClass = classes.child;
+
+
         
         GrailsDomainClass domainClass = new DefaultGrailsDomainClass(childClass);
+        def allProps = []
+        domainClass.getPersistentProperties().each{GrailsDomainClassProperty p->
+            allProps.add(new RapidDomainClassProperty(name:p.name, type:p.getType(), isRelation:false));
+        }
+
+        def getNonFederatedPropertyListCalled = false;
+        childClass.metaClass.'static'.getNonFederatedPropertyList = {->
+            getNonFederatedPropertyListCalled = true;
+            return allProps
+        }
+
         RapidGrailsDomainClassValidator validator = new RapidGrailsDomainClassValidator();
         validator.setDomainClass (domainClass);
         validator.setMessageSource (new MessageSourceImpl());
@@ -75,21 +90,55 @@ public class RapidGrailsDomainClassValidatorTest extends RapidCmdbTestCase{
 
         //test blank
         validator.validate (new Wrapper(domainObject:domainObject), domainObject,errors);
+        assertTrue (getNonFederatedPropertyListCalled);
         assertSame(errors, domainObject.errors);
         assertTrue (errors.hasErrors());
         println errors.allErrors
         assertEquals ("nullable", errors.allErrors[0].code);
 
         //test validator
+        getNonFederatedPropertyListCalled = false;
         errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
         domainObject = childClass.newInstance ();
         domainObject.prop1 = invalidPropValue;
         validator.validate (new Wrapper(domainObject:domainObject), domainObject,errors);
+        assertTrue (getNonFederatedPropertyListCalled);
         assertTrue (errors.hasErrors());
         assertEquals (invalidPropMessage, errors.allErrors[0].code);
         assertTrue (DataStore.get("passedObject") instanceof Wrapper);
     }
 
+
+    public void testIfReturnedNonFederatyedPropIsNotConstrainedPropertyItWillBeDiscarded()
+        {
+            Map classes = initializePluginAndClasses ([:]);
+            Class childClass = classes.child;
+
+            GrailsDomainClass domainClass = new DefaultGrailsDomainClass(childClass);
+            def allProps = [new RapidDomainClassProperty(name:"nonExistingProp", type:String, isRelation:false)]
+            domainClass.getPersistentProperties().each{GrailsDomainClassProperty p->
+                allProps.add(new RapidDomainClassProperty(name:p.name, type:p.getType(), isRelation:false));
+            }
+
+            def getNonFederatedPropertyListCalled = false;
+            childClass.metaClass.'static'.getNonFederatedPropertyList = {->
+                getNonFederatedPropertyListCalled = true;
+                return allProps
+            }
+
+            RapidGrailsDomainClassValidator validator = new RapidGrailsDomainClassValidator();
+            validator.setDomainClass (domainClass);
+            validator.setMessageSource (new MessageSourceImpl());
+            def domainObject = childClass.newInstance ();
+            BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
+
+
+
+            validator.validate (new Wrapper(domainObject:domainObject), domainObject,errors);
+            assertTrue (getNonFederatedPropertyListCalled);
+            assertSame(errors, domainObject.errors);
+            assertFalse (errors.hasErrors());
+        }
 
 
     private Map initializePluginAndClasses(Map additionalParts)

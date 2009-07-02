@@ -29,7 +29,6 @@ class RapidGrailsDomainClassValidator implements IRapidValidator {
     private GrailsDomainClass domainClass;
     private MessageSource messageSource;
     private static final String ERRORS_PROPERTY = "errors";
-    private Map relations = [:];
     public boolean supports(Class clazz) {
         return this.targetClass.equals(clazz);
     }
@@ -41,12 +40,6 @@ class RapidGrailsDomainClassValidator implements IRapidValidator {
         this.targetClass = this.domainClass.getClazz();
     }
 
-    public void setRelations(Map relations)
-    {
-        this.relations = relations;
-    }
-
-
     public GrailsDomainClass getDomainClass() {
         return domainClass;
     }
@@ -57,12 +50,10 @@ class RapidGrailsDomainClassValidator implements IRapidValidator {
 
     public void validate(Object wrappedObject, Object realObject, Errors errors) {
         BeanWrapper bean = new BeanWrapperImpl(realObject);
-
-        Map constrainedProperties = domainClass.getConstrainedProperties();
-
-        GrailsDomainClassProperty[] persistentProperties = domainClass.getPersistentProperties();
-        constrainedProperties.each{String propName, ConstrainedProperty constrainedProperty->
-            if(!relations.containsKey(propName))
+         def constarainedProps = domainClass.getConstrainedProperties();
+        targetClass.getNonFederatedPropertyList().each{prop->
+            def constrainedProperty = constarainedProps[prop.name]
+            if(constrainedProperty != null)
             {
                 validatePropertyWithConstraint(constrainedProperty, wrappedObject, errors, bean);
             }

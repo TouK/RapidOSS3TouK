@@ -68,21 +68,20 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     def graphLastHour(Map config) {
         config[RrdUtils.RRD_VARIABLE] = name
-        config[START_TIME] = getCurrentTime() - ONE_HOUR
-        config[END_TIME] =  getCurrentTime()
+        config[START_TIME] = currentTime() - ONE_HOUR
+        config[END_TIME] =  currentTime()
         return RrdUtils.graph(config)
     }
 
     def graphLastDay(Map config) {
         config[RrdUtils.RRD_VARIABLE] = name
-        config[START_TIME] = getCurrentTime() - ONE_DAY
-        config[END_TIME] =  getCurrentTime()
+        config[START_TIME] = currentTime() - ONE_DAY
+        config[END_TIME] =  currentTime()
         return RrdUtils.graph(config)
     }
 
-    private def getCurrentTime() {
-        Calendar calendar = Calendar.getInstance()
-        calendar.getTimeInMillis()
+    private def currentTime() {
+        System.currentTimeMillis();
     }
 
     private def createDBConfig() {
@@ -126,7 +125,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     private def createUpdateData(Map config) {
-        def timestamp = config["time"] != null ? config["time"] : getCurrentTime()
+        def timestamp = config["time"] != null ? config["time"] : currentTime()
         def value = config["value"] != null ? config["value"] : Double.NaN
 
         return "" + timestamp + ":" + value

@@ -61,8 +61,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     def graph(Map config) {
         config[RrdUtils.RRD_VARIABLE] = name
-        if(!config.containsKey(END_TIME))
-            config[END_TIME] = getCurrentTime()
         return RrdUtils.graph(config)
     }
 

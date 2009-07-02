@@ -242,6 +242,33 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         assertNull (instance.errors);
     }
 
+
+    public void testReturnsErrorIfDynamicDatasourceNameDoesNotExist()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]]
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop3", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasourceProperty:"prop2"]];
+        Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
+
+        def instance = domainClass.newInstance();
+        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+
+        instance.prop2 = "ds1";
+        instance.prop3 = "defaultValue";
+
+        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+        assertEquals ("ds1", interceptor.getDomainClassProperty(instance, "prop2"));
+        assertEquals(instance.prop3, interceptor.getDomainClassProperty(instance, "prop3"));
+        assertTrue(instance.errors.hasErrors());
+        def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
+        assertEquals ("default.federation.property.datasource.definition.exception", prop3Error.code);
+    }
+
+
     public void testInterceptorWithMappedNameProperty()
     {
         def modelName = "Model1"

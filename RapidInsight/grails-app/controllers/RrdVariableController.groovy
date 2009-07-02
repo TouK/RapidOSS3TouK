@@ -1,8 +1,8 @@
-import javax.imageio.ImageIO
-import java.io.*;
-import java.io.ByteArrayInputStream;
 import com.ifountain.rcmdb.rrd.*;
-import com.ifountain.rcmdb.domain.util.ControllerUtils;
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import java.awt.image.BufferedImage
+import java.awt.Graphics
+import java.awt.Color;
 
 /**
  * User: ifountain
@@ -18,9 +18,6 @@ class RrdVariableController {
     	//take parameters:
     	Map config = [:];
     	Map rrdVariable = [:];
-    	if(params.name != null){
-    		config[RrdUtils.RRD_VARIABLE] = params.name;
-    	}
     	if(params.template != null){
       		config[RrdUtils.GRAPH_TEMPLATE] = params.template;
      	}
@@ -54,18 +51,30 @@ class RrdVariableController {
 
         config["destination"] = 'web' 
 
-    	try{
-		    byte[] rowData = RrdUtils.graph(config);
+    	try {
+            def variable=RrdVariable.get(name:params.name);
+            variable.graph(config);
+
+            /*byte[] rowData = variable.graph(config);
 		    if (rowData != null) {
 	            InputStream inn = new ByteArrayInputStream(rowData);
 	            def image =  ImageIO.read(inn);
 	            String contentType = "image/png";
 	            ControllerUtils.drawImageToWeb(image,contentType,response);
-	        }
-        }
-        catch(Exception e){
+	        }*/
             
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+            def image = new BufferedImage(500, 250, BufferedImage.TYPE_INT_RGB);
+            Graphics g = image.getGraphics();
+            g.setColor(new Color(255, 204, 204));
+            g.fillRect(20, 10, 460, 200);
+            g.setColor(new Color(77, 85, 95));
+            g.drawString(e.getMessage()?e.getMessage():e.toString(), 50, 50);
+            g.dispose();
 
+            ControllerUtils.drawImageToWeb(image,"image/png", "png", response);
         }
     }
 

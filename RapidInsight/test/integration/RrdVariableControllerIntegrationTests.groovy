@@ -1,6 +1,8 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
-import com.ifountain.comp.test.util.file.TestFile
 import javax.imageio.ImageIO
+import org.apache.commons.io.output.ByteArrayOutputStream
+import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.util.DataStore
 
 /**
 * User: ifountain
@@ -8,84 +10,142 @@ import javax.imageio.ImageIO
 * Time: 3:55:32 PM
 */
 class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
-      static transactional = false;
 
-      String fileName = TestFile.TESTOUTPUT_DIR + "/test.rrd";
+    static transactional = false;
 
-      public void setUp() {
-          super.setUp();
-          def rrdFile = new File(fileName);
-          rrdFile.mkdirs();
-          rrdFile.delete();
-      }
+    public void setUp() {
+        super.setUp();
+    }
 
-      public void tearDown() {
-          new File(fileName).delete();
-          super.tearDown();
-      }
+    public void tearDown() {
+        loadOriginalOperation()
+        super.tearDown();
+    }
 
-      public void testGraphDrawnSuccessfuly()
-      {
-          def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:24)
-          assertFalse(archive.errors.toString(), archive.hasErrors())
+    private void overrideOperation() {
 
-          def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
-                                         file: fileName, startTime:920804400000L, step:300, archives: [archive])
-          assertFalse(variable.errors.toString(), variable.hasErrors())
+        File opFile=new File("operations/RrdVariableOperations.groovy");
+        opFile.setText("""
+            import javax.imageio.ImageIO
+            import java.awt.image.BufferedImage
+            import java.awt.Graphics
+            import java.awt.Color
+            import org.apache.commons.io.output.ByteArrayOutputStream
+            import com.ifountain.rcmdb.domain.util.ControllerUtils
 
-          variable.createDB()
+            public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+            {
+                def graph(Map config) {
+                    com.ifountain.rcmdb.util.DataStore.put("graphTestConfig",config);
+                    def bufImage = new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB);
+                    Graphics g = bufImage.getGraphics();
+                    g.setColor(new Color(255, 0, 0));
+                    g.fillRect(0,0,5,5);
+                    g.dispose();
 
-          variable.updateDB(time:920804700000L, value:12345)
-          variable.updateDB(time:920805000000L, value:12357)
-          variable.updateDB(time:920805300000L, value:12363)
-          variable.updateDB(time:920805600000L, value:12363)
-          variable.updateDB(time:920805900000L, value:12363)
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(bufImage, 'png', baos);
+                    byte[] bytesOut = baos.toByteArray();
 
-          def controller = new RrdVariableController();
-          controller.params["name"] = "variable";
-          controller.params["startTime"] = "920804400000"
-          controller.params["endTime"] = "920806200000"
-          controller.graph();
+                    def webResponse=ControllerUtils.getWebResponse();                    
+                    def image =  ImageIO.read(new ByteArrayInputStream(bytesOut));
+                    ControllerUtils.drawImageToWeb (image,"image/png","png",webResponse);
 
-          //org.springframework.mock.web.MockHttpServletResponse
+                    return bytesOut;
+                }
+            }
+        """)
+        RrdVariable.reloadOperations();
+    }
 
-          byte[] content = controller.response.getContentAsByteArray()
+    private void loadOriginalOperation() {
 
-          byte[] realData = variable.graph([startTime:920804400000L, endTime:920806200000L]);
+        FileUtils.copyFileToDirectory(new File("../../../RapidModules/RapidInsight/operations/RrdVariableOperations.groovy"),new File("operations"));
+        RrdVariable.reloadOperations();
 
-          println "Content:" + content
-          println "realData   :" + realData
+    }
 
+    public void testGraphDrawnSuccessfuly() {
+        overrideOperation();
 
-//          DataOutputStream dos = new DataOutputStream( new FileOutputStream("testContImage.png"))
-//          dos.write(content)
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
+                                       startTime:920804400000L, step:300)
+        assertFalse(variable.errors.toString(), variable.hasErrors())
 
-          ByteArrayOutputStream bos=new ByteArrayOutputStream(realData.size());
+        def controller = new RrdVariableController();
+        controller.params["name"] = "variable";
+        controller.params["startTime"] = "920804400000"
+        controller.params["endTime"] = "920806200000"
+        controller.graph();
 
-          InputStream inn = new ByteArrayInputStream(realData);
-          def image =  ImageIO.read(inn);
-          ImageIO.write(image, "png", bos);
-          //ImageIO.write(image, "png", new File("test2.png"));
+        byte[] content = controller.response.getContentAsByteArray()
+        byte[] realData = variable.graph([startTime:920804400000L, endTime:920806200000L]);
 
-          byte[] compressedData = bos.toByteArray();
-          println "dataimage :"+compressedData
-          
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(realData.size());
+        InputStream inn = new ByteArrayInputStream(realData);
+        def image =  ImageIO.read(inn);
+        ImageIO.write(image, "png", bos);
+        byte[] compressedData = bos.toByteArray();
 
+        def graphMethodConfig = DataStore.get("graphTestConfig");
+        def expectedConfig = [:]
+        expectedConfig["startTime"] = 920804400000L
+        expectedConfig["endTime"] = 920806200000L
 
-          assertEquals(compressedData.length, content.length)
+        assertEquals(expectedConfig, graphMethodConfig)
 
-          for(int i = 0; i < compressedData.length; i++)
-                assertEquals(compressedData[i], content[i])
+        assertEquals(compressedData.length, content.length)
 
-      }
-//      public void testGraphDrawsExceptionGrapIfExceptionOccurs()
-//      {
-//
-//      }
-//      public void testGraphBuildConfigurationFromParameters()
-//      {
-//
-//      }
+        for(int i = 0; i < compressedData.length; i++)
+            assertEquals(compressedData[i], content[i])
+
+    }
+
+    public void testGraphDrawsExceptionGrapIfExceptionOccurs() {
+        def controller = new RrdVariableController();
+        controller.params["name"] = "NotExistentVariable";
+        controller.graph();
+
+        assertEquals("image/png", controller.response.getContentType())
+    }
+
+    public void testGraphBuildConfigurationFromParameters() {
+        overrideOperation();
+
+        def variable = RrdVariable.add(name:"TestVariable", resource:"resource", type:"COUNTER", heartbeat:600,
+                                       startTime:920804400000L, step:300)
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+
+        def controller = new RrdVariableController();
+        controller.params["name"] = "TestVariable"
+        controller.params["template"] = "TestTemplate"
+        controller.params["title"] = "TestTitle"
+        controller.params["color"] = "TestColor"
+        controller.params["thickness"] = "TestThickness"
+        controller.params["type"] = "TestType"
+        controller.params["rpn"] = "TestRPN"
+        controller.params["startTime"] = "123456789"
+        controller.params["endTime"] = "987654321"
+        controller.params["verticalLabel"] = "TestVerticalLabel"
+        controller.params["description"] = "TestDescription"
+        controller.graph();
+
+        def graphMethodConfig = DataStore.get("graphTestConfig");
+        def expectedConfig = [:]
+
+        assertEquals("TestTemplate",graphMethodConfig.template)
+        assertEquals("TestTitle",graphMethodConfig.title)
+        assertEquals("TestColor", graphMethodConfig.color)
+        assertEquals("TestThickness", graphMethodConfig.thickness)
+        assertEquals("TestType", graphMethodConfig.type)
+        assertEquals("TestRPN", graphMethodConfig.rpn)
+        assertEquals(123456789L, graphMethodConfig.startTime)
+        assertEquals(987654321L, graphMethodConfig.endTime)
+        assertEquals("TestVerticalLabel", graphMethodConfig.vlabel)
+        assertEquals("TestDescription", graphMethodConfig.description)
+        assertEquals('web',graphMethodConfig.destination)
+
+    }
 
 
 }

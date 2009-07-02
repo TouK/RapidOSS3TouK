@@ -108,7 +108,7 @@ class SortTestParentObject {
     }
     static relations = [:]
     org.springframework.validation.Errors errors;
-    org.springframework.validation.Errors __operation_class__;
+    def __operation_class__;
     Long id
     Long version
 

@@ -496,9 +496,10 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
         def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE];
         def prop3 = [name: "prop3", type: ModelGenerator.STRING_TYPE];
+        def prop4 = [name: "prop4", type: ModelGenerator.STRING_TYPE];
         def model1MetaProps = [name: model1Name]
 
-        def modelProps = [prop1, prop2, prop3];
+        def modelProps = [prop1, prop2, prop3, prop4];
         def keyPropList = [prop1];
 
 
@@ -517,14 +518,18 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 {
                     ${DataStore.class.name}.put("beforeUpdate", [params]);
                     prop3 = "updatedProp3Value"
+                    domainObject.prop4 = "updatedProp4Value"
                     assert ${model1Class.name}.get(prop1:"prop1Value").prop3 != "updatedProp3Value";
+                    assert ${model1Class.name}.get(prop1:"prop1Value").prop4 != "updatedProp4Value";
                     assert domainObject.prop3 == "updatedProp3Value";
+                    assert domainObject.prop4 == "updatedProp4Value";
                 }
 
                 def afterUpdate(params)
                 {
                     ${DataStore.class.name}.put("afterUpdate", [params]);
                     assert params.updatedProps.prop3 == "prop3Value"
+                    assert params.updatedProps.prop4 == "prop4Value"
                 }
             }
         """)
@@ -532,7 +537,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        def model1Instance = model1Class.add(prop1:"prop1Value", prop2:"prop2Value", prop3:"prop3Value");
+        def model1Instance = model1Class.add(prop1:"prop1Value", prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value");
         assertFalse (model1Instance.hasErrors());
         model1Instance.prop2 = "updatedProp2Value"
         assertNotNull(DataStore.get("beforeUpdate"));

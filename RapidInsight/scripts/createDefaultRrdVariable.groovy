@@ -16,7 +16,7 @@ def twelveHours = RrdArchive.get(name:"12hours")
 def oneDay = RrdArchive.get(name:"1day")
 
 long ntime = Date.now() - 50 * 300000
-
+      
 def sampleRrdVariable = RrdVariable.add(
 								name:"sampleRrdVariable",					//name of RrdVariable
 								resource:"default",							//Resource of this variable. Mostly for groupping

@@ -11,7 +11,7 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 class CreateDefaultRrdArchivesScriptTests  extends RapidCmdbWithCompassTestCase  {
 
     def rrdArchive;
-
+       
     public void setUp() {
         super.setUp();
         rrdArchive = this.class.classLoader.loadClass("RrdArchive");

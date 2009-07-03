@@ -12,7 +12,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 class CreateDefaultRrdVariableTest extends RapidCmdbWithCompassTestCase {
 
     def rrdVariable;
-
+      
     public void setUp() {
         super.setUp();
         def rrdArchive = this.class.classLoader.loadClass("RrdArchive");

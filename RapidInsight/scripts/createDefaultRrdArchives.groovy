@@ -1,7 +1,7 @@
 
 //note that these all assumes step of RrdVariable to be 300 seconds(5 minutes)
 //otherwise timespans of these archives will not be what their name say
-
+                  
 RrdArchive.add(name:"1hour",function: "AVERAGE",xff: 0.5,step:1,row:12);
 RrdArchive.add(name:"6hours",function:"AVERAGE",xff:0.5,step:4,row:18);
 RrdArchive.add(name:"12hours",function:"AVERAGE",xff:0.5,step:6,row:24);

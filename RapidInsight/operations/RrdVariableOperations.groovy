@@ -42,12 +42,12 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     def removeDB() {
-        RrdUtils.removeDatabase(file)
+        RrdUtils.removeDatabase(fileSource())
     }
 
     def updateDB(Map config) {
         String data = createUpdateData(config)
-        RrdUtils.updateData(file, data)
+        RrdUtils.updateData(fileSource(), data)
     }
 
     def updateDB(List config) {
@@ -56,7 +56,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         {
             dataList[i] = createUpdateData(config.get(i))
         }
-        RrdUtils.updateData(file, dataList)
+        RrdUtils.updateData(fileSource(), dataList)
     }
 
     def graph(Map config) {
@@ -86,11 +86,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         def dbConfig = [:]
 
         //there could be change in file name
-        if(file == "" || file == null)
-            dbConfig[DATABASE_NAME] = name + ".rrd"
-        else
-            dbConfig[DATABASE_NAME] = file
-        
+        dbConfig[DATABASE_NAME] = fileSource()
+
         dbConfig[START_TIME] = startTime
         dbConfig[STEP] = step
 
@@ -127,6 +124,13 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         def value = config["value"] != null ? config["value"] : Double.NaN
 
         return "" + timestamp + ":" + value
+    }
+
+    private def fileSource() {
+        if(file == "" || file == null)
+            return name + ".rrd"
+        else
+            return file
     }
 
 }

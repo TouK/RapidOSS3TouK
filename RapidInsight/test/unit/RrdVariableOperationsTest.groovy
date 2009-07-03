@@ -614,4 +614,18 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(new File(imageFileName).exists())
     }
 
+    public void testFileSource() {
+
+        def variable1 = RrdVariable.add(name:"variable1")
+        def fileName = variable1.fileSource()
+
+        assertEquals("variable1.rrd", fileName)
+
+        def variable2 = RrdVariable.add(name:"variable2", file:"explicitDef")
+        fileName = variable2.fileSource()
+        
+        assertEquals("explicitDef", fileName)
+
+    }
+
 }

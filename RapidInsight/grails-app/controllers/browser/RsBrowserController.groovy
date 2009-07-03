@@ -319,7 +319,7 @@ class RsBrowserController {
     def getPropertiesWhichCanBeListed(domainClass, max) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();
-        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty}
         def keySet = domainClass.clazz."keySet"();
         if (propertiesCanBeListed.size() + keySet.size() > max) {
             propertyList = keySet;

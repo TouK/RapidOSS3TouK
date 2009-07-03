@@ -108,7 +108,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     void testListDomainWithAllProperties() {
 
-        def expectedProperties = BaseDatasource.getPropertiesList().findAll {it.name != "id" && !it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = BaseDatasource.getPropertiesList().findAll {it.name != "id" && !it.isRelation && !it.isOperationProperty}
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -131,7 +131,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     public void testListDomainWithDatePropertiesAsXml() {
-        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty }
         def datePropValues = [];
         10.times {
             datePropValues.add(new Date(System.currentTimeMillis() + it * 1000));
@@ -156,7 +156,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testListDomainWithAllPropertiesWithXml() {
-        def expectedProperties = BaseDatasource.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = BaseDatasource.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty}
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -180,7 +180,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     void testListDomainIgnoresFederatedProperties() {
         def federatedProperties = SmartsObjectModel.getPropertiesList().findAll {return it.isFederated}
         assertTrue (federatedProperties.size() > 0);
-        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty && !it.isFederated || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty && !it.isFederated}
         SmartsObjectModel.add(name: "device0");
         def controller = new RsBrowserController();
         controller.params["max"] = "100";
@@ -279,7 +279,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         controller.params["format"] = "xml"
         controller.show();
 
-        def props = Connection.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !(it.isRelation && (it.isOneToMany() || it.isManyToMany()))};
+        def props = Connection.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation};
         def keySet = Connection.keySet();
         def objectXml = new XmlSlurper().parseText(controller.response.contentAsString);
 
@@ -310,7 +310,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def federatedProps = SmartsObjectModel.getPropertiesList().findAll {it.isFederated};
         assertEquals(1, federatedProps.size());
-        def props = SmartsObjectModel.getPropertiesList().findAll {!it.isKey && !it.isFederated && it.name != 'id' && !(it.isRelation && (it.isOneToMany() || it.isManyToMany()))};
+        def props = SmartsObjectModel.getPropertiesList().findAll {!it.isKey && !it.isFederated && it.name != 'id' && !it.isRelation};
         def keySet = SmartsObjectModel.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
@@ -363,7 +363,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     public void testSearchWithDatePropertiesAsXml() {
-        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = RsEventJournal.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty}
         def datePropValues = [];
         10.times {
             datePropValues.add(new Date(System.currentTimeMillis() + it * 1000));
@@ -390,7 +390,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     public void testSearchIgnoresFederatedProperties() {
         def federatedProps = SmartsObjectModel.getPropertiesList().findAll {it.isFederated}
         assertTrue (federatedProps.size() > 0);
-        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isFederated && !it.isOperationProperty || (it.isRelation && (it.isOneToOne() || it.isManyToOne()))}
+        def expectedProperties = SmartsObjectModel.getPropertiesList().findAll {!it.isRelation && !it.isFederated && !it.isOperationProperty}
         SmartsObjectModel.add(name: "dev1");
         def controller = new RsBrowserController();
         def params = [:]

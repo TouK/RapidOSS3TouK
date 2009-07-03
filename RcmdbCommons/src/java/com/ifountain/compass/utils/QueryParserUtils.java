@@ -106,6 +106,11 @@ public class QueryParserUtils {
         return queryText.substring(1, queryText.length()-1);        
     }
 
+    public static String getUntokenizedFieldName(String field)
+    {
+        return CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+    }
+
     public static Query getAliasQuery(String alias, String queryText)
     {
         BooleanQuery query = new BooleanQuery();
@@ -120,7 +125,11 @@ public class QueryParserUtils {
             if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) && endsWithExactQuery(lastNonEscapedTerm, queryText))
             {
                 queryText = trimExactQuerySymbols(queryText);
-                field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+                field = getUntokenizedFieldName(field);
+                if(EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
+                {
+                    queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
+                }
             }
             else if(lastNonEscapedTerm.startsWith(EXACT_QUERY_START) || endsWithExactQuery(lastNonEscapedTerm, queryText))
             {
@@ -129,7 +138,7 @@ public class QueryParserUtils {
             else if(QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY.equals(queryText))
             {
                 queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
-                field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
+                field = getUntokenizedFieldName(field);
             }
             if(field.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
             {

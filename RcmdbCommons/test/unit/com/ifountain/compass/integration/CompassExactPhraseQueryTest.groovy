@@ -97,6 +97,38 @@ class CompassExactPhraseQueryTest extends AbstractSearchableCompassTests {
         });
     }
 
+
+    public void testExactPhraseWithEmptyString()
+    {
+        GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])
+        ApplicationHolder.application = application;
+        CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
+        Map mappings = [:];
+
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
+        def id = 0;
+        def instancesToBeSaved = [
+                new CompassTestObject(id: id++, prop1: ""),
+                new CompassTestObject(id: id++, prop1: "x")
+        ] as Object[];
+        TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
+
+
+        TestCompassUtils.withCompassQueryBuilder (compass, {CompassQueryBuilder builder->
+            String propQuery = ""
+            CompassQuery query = builder.queryString ("prop1:${QueryParserUtils.toExactQuery(propQuery)}").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            CompassHits hits = query.hits();
+            assertEquals (1, hits.length());
+            assertEquals (instancesToBeSaved[0].id, hits.data(0).id);
+
+            query = builder.queryString ("alias:* NOT prop1:${QueryParserUtils.toExactQuery(propQuery)}").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals (1, hits.length());
+            assertEquals (instancesToBeSaved[1].id, hits.data(0).id);
+
+        });
+    }
+
     public void testExactPhraseValidQueries()
     {
         GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])

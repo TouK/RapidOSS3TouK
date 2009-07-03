@@ -44,26 +44,6 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
         SessionManager.destroyInstance();
     }
 
-    public void testFilterManager()
-    {
-        String filterQuery1 = "prop1:prop1Value";
-        Session session = SessionManager.getInstance().startSession ("user1");
-        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1]);
-
-        String query = "prop2:prop2Value";
-        String filteredQuery = FilterManager.getQuery(query);
-        assertEquals ("(${query}) AND ((${filterQuery1}))", filteredQuery);
-
-        String filterQuery2 = "prop3:prop1Value";
-        session.put (FilterManager.SESSION_FILTER_KEY, [filterQuery1, filterQuery2]);
-        filteredQuery = FilterManager.getQuery(query);
-        assertEquals ("(${query}) AND ((${filterQuery1}) OR (${filterQuery2}))", filteredQuery);
-        session.get (FilterManager.SESSION_FILTER_KEY).clear();
-        filteredQuery = FilterManager.getQuery(query);
-        assertEquals ("${query}", filteredQuery);
-    }
-
-
     public void testFilterManagerWithCompass()
     {
         Session session = SessionManager.getInstance().startSession ("user1");

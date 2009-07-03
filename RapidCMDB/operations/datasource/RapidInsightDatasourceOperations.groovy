@@ -29,6 +29,10 @@ import org.apache.log4j.Logger;
 class RapidInsightDatasourceOperations extends BaseDatasourceOperations{
     RapidInsightAdapter adapter;
     def onLoad(){
-       this.adapter = new RapidInsightAdapter(getProperty("connection").name, reconnectInterval*1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new RapidInsightAdapter(ownConnection.name, reconnectInterval*1000, getLogger());
+       }
     }
 }

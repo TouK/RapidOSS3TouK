@@ -16,7 +16,11 @@ import com.ifountain.core.datasource.BaseAdapter
 class EmailDatasourceOperations extends BaseDatasourceOperations{
     EmailAdapter adapter;
     def onLoad(){
-       this.adapter = new EmailAdapter(getProperty("connection").name, reconnectInterval*1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new EmailAdapter(ownConnection.name, reconnectInterval*1000, getLogger());
+       }
     }
 
     def getAdapters()

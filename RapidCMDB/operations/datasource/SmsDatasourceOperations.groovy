@@ -11,7 +11,11 @@ import com.ifountain.rcmdb.sms.datasource.SmsAdapter
 class SmsDatasourceOperations extends BaseDatasourceOperations {
     SmsAdapter adapter;
     def onLoad() {
-        this.adapter = new SmsAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new SmsAdapter(ownConnection.name, reconnectInterval * 1000, getLogger());
+       }
     }
     def sendMessage(target, message) {
         this.adapter.sendMessage(target, message);

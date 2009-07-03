@@ -11,7 +11,11 @@ import com.ifountain.rcmdb.sametime.datasource.SametimeAdapter
 class SametimeDatasourceOperations extends BaseDatasourceOperations{
     SametimeAdapter adapter;
     def onLoad() {
-        this.adapter = new SametimeAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new SametimeAdapter(ownConnection.name, reconnectInterval * 1000, getLogger());
+       }
     }
 
     def sendMessage(target, message){

@@ -29,7 +29,11 @@ import org.apache.log4j.Logger;
 class DatabaseDatasourceOperations extends BaseDatasourceOperations{
     DatabaseAdapter adapter;
     def onLoad(){
-       this.adapter = new DatabaseAdapter(getProperty("connection").name, reconnectInterval*1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new DatabaseAdapter(ownConnection.name, reconnectInterval*1000, getLogger());
+       }
     }
     def getAdapters()
     {

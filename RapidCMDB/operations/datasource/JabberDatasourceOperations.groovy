@@ -11,7 +11,11 @@ import com.ifountain.rcmdb.jabber.datasource.JabberAdapter
 class JabberDatasourceOperations extends BaseDatasourceOperations {
     JabberAdapter adapter;
     def onLoad() {
-        this.adapter = new JabberAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new JabberAdapter(ownConnection.name, reconnectInterval * 1000, getLogger());
+       }
     }
 
     def sendMessage(target, message) {

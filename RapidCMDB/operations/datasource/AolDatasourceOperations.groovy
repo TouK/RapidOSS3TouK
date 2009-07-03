@@ -11,7 +11,11 @@ import com.ifountain.rcmdb.aol.datasource.AolAdapter
 class AolDatasourceOperations extends BaseDatasourceOperations {
     AolAdapter adapter;
     def onLoad() {
-        this.adapter = new AolAdapter(getProperty("connection").name, reconnectInterval * 1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+          this.adapter = new AolAdapter(ownConnection.name, reconnectInterval * 1000, getLogger());
+       }
     }
 
     def sendMessage(target, message) {

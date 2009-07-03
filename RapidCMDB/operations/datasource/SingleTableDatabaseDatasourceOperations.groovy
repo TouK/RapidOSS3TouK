@@ -30,7 +30,11 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
 
     SingleTableDatabaseAdapter adapter;
     def onLoad(){
-       this.adapter = new SingleTableDatabaseAdapter(getProperty("connection").name, tableName, tableKeys, reconnectInterval*1000, getLogger());
+       def ownConnection=getProperty("connection")
+       if(ownConnection != null)
+       {
+            this.adapter = new SingleTableDatabaseAdapter(ownConnection.name, tableName, tableKeys, reconnectInterval*1000, getLogger());
+       }
     }
     def getAdapters()
     {

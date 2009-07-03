@@ -3,7 +3,11 @@ package email.datasource
 import com.ifountain.core.test.util.RapidCoreTestCase
 import datasource.EmailAdapter
 import datasource.EmailDatasourceOperations
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import connection.EmailConnection
+import com.ifountain.rcmdb.test.util.CompassForTests
+import datasource.EmailDatasource;
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,13 +16,13 @@ import org.apache.log4j.Logger;
 * Time: 8:59:39 AM
 * To change this template use File | Settings | File Templates.
 */
-class EmailDatasourceOperationsTest extends RapidCoreTestCase{
-    protected void setUp() throws Exception {
+class EmailDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
+    public void setUp() throws Exception {
         super.setUp();
         clearMetaClasses();
     }
 
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
     }
     public void clearMetaClasses()
@@ -75,6 +79,37 @@ class EmailDatasourceOperationsTest extends RapidCoreTestCase{
             assertEquals(val,adapter.callParams[key])
         }
         assertEquals(adapter.callParams["body"],"testrenderresult")
+    }
+
+    public void testOnLoadDoesNotThrowExceptionWhenDatasourceDoesNotHaveConnection()
+    {
+         initialize([EmailDatasource,EmailConnection],[]);
+         CompassForTests.addOperationSupport (EmailDatasource,EmailDatasourceOperations);
+
+
+         def con=EmailConnection.add(name:"testcon",smtpHost:"u",smtpHost:50,protocol:EmailConnection.SMTP);
+         assertFalse(con.errors.toString(),con.hasErrors());
+
+         def newDs=EmailDatasource.add(name:"testds",connection:con);
+         assertFalse(newDs.hasErrors());
+         assertNotNull(newDs.adapter);
+
+         newDs.removeRelation(connection:con);
+         assertFalse(newDs.hasErrors());
+         assertNull(newDs.connection);
+
+         try{
+            def dsFromRepo=EmailDatasource.get(name:newDs.name);
+            assertNull(dsFromRepo.adapter);
+
+         }
+         catch(e)
+         {
+             e.printStackTrace();
+             fail("Should not throw exception. Exception thrown is ${e}");
+         }
+
+
     }
 }
 

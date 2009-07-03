@@ -22,9 +22,9 @@ class RsUser {
     def static final String RSADMIN = "rsadmin";
     def static final String DEFAULT_PASSWORD = "changeme";
     static searchable = {
-        except:["groups", "permissionRelations", "userInformations"]
-     };
-    Long id; 
+        except: ["groups", "permissionRelations", "userInformations"]
+    };
+    Long id;
     Long version;
     String username
     String rsOwner = "p"
@@ -33,24 +33,28 @@ class RsUser {
     List groups = [];
     List permissionRelations = [];
     List userInformations = [];
-    org.springframework.validation.Errors errors ;
-    Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
-    static cascaded = ["permissionRelations":true, "userInformations":true]
+    org.springframework.validation.Errors errors;
+    Object __operation_class__;
+    Object __is_federated_properties_loaded__;
+    static cascaded = ["permissionRelations": true, "userInformations": true]
     static relations = [
-            groups:[type:Group, reverseName:"users", isMany:true],
-            permissionRelations:[isMany:true, reverseName:"rsUser", type:UserPermissionRel],
-            userInformations:[type:RsUserInformation,isMany:true, reverseName:"rsUser"]
+            groups: [type: Group, reverseName: "users", isMany: true],
+            permissionRelations: [isMany: true, reverseName: "rsUser", type: UserPermissionRel],
+            userInformations: [type: RsUserInformation, isMany: true, reverseName: "rsUser"]
     ]
     static constraints = {
         username(key: [], nullable: false, blank: false)
-        __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
-        errors(nullable:true)
-        email(nullable:true)
+        __operation_class__(nullable: true)
+        __is_federated_properties_loaded__(nullable: true)
+        errors(nullable: true)
+        email(nullable: true)
     }
 
-    String toString(){
+    String toString() {
         return "$username";
+    }
+
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
     }
 }

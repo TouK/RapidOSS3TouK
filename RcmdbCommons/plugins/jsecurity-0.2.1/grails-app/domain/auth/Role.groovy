@@ -47,4 +47,8 @@ class Role {
     String toString(){
         return "$name";
     }
+
+    public boolean equals(Object obj) {
+        return obj.id == this.id;
+    }
 }

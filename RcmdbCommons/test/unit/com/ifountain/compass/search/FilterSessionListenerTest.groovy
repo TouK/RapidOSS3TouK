@@ -41,8 +41,8 @@ class FilterSessionListenerTest extends RapidCmdbWithCompassTestCase{
 
         def segmentFilter1 = "name:a*"
         def segmentFilter2 = "name:b*"
-        SegmentFilter filter1 = SegmentFilter.add(className:Object.class.name, filter:segmentFilter1, group:gr3, groupId:gr3.id)
-        SegmentFilter filter2 = SegmentFilter.add(className:Object.class.name, filter:segmentFilter2, group:gr4, groupId:gr4.id)
+        SegmentFilter filter1 = SegmentFilter.add(className:Object.class.name, filter:segmentFilter1, groups:[gr3], groupId:gr3.id)
+        SegmentFilter filter2 = SegmentFilter.add(className:Object.class.name, filter:segmentFilter2, groups:[gr4], groupId:gr4.id)
 
         assertFalse (filter1.hasErrors());
         assertFalse (filter2.hasErrors());

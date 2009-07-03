@@ -42,4 +42,18 @@ class GroupOperationsWithCompassTests extends RapidCmdbWithCompassTestCase {
 
     }
 
+    public void testSegmentGroupFiltersCalculationAfterUpdate() {
+        String groupName = "group1";
+        Group group = Group.createGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER);
+        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
+        assertNotNull(groupFilters);
+        SegmentQueryHelper.getInstance().removeGroupFilters(groupName);
+        
+        group.update(segmentFilterType:Group.CLASS_BASED_FILTER)
+        
+        groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
+        assertNotNull(groupFilters);
+
+    }
+
 }

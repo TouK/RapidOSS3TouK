@@ -1,8 +1,6 @@
 package com.ifountain.rcmdb.auth
 
 import auth.Group
-import auth.Role
-import auth.RsUser
 import auth.SegmentFilter
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
@@ -31,16 +29,16 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testGroupWithGlobalSegmentFilter() {
-        def classes = [SegmentQueryHelper.class, SegmentQueryHelperTest.class]
+        def classes = [SegmentQueryHelperTest.class, RapidCmdbWithCompassTestCase.class]
         def groupName = "group1"
         SegmentQueryHelper.getInstance().initialize(classes);
         assertNull(SegmentQueryHelper.getInstance().getGroupFilters(groupName));
 
         def segmentFilter = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.GLOBAL_FILTER, segmentFilter: segmentFilter);
-        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: "alias:*", group: group)
+        def filter1 = SegmentFilter.add(className: RapidCmdbWithCompassTestCase.class.name, groupId: group.id, filter: "alias:*", groups: [group])
         assertFalse(filter1.hasErrors());
-        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", group: group)
+        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", groups: [group])
         assertFalse(filter2.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -60,9 +58,9 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
 
         def segmentFilter = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER, segmentFilter: segmentFilter);
-        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: "alias:*", group: group)
+        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: "alias:*", groups: [group])
         assertFalse(filter1.hasErrors());
-        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", group: group)
+        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", groups: [group])
         assertFalse(filter2.hasErrors());
 
         def filter3 = SegmentFilter.add(className: Date.class.name, groupId: group.id, filter: "alias:*", group: group)
@@ -86,13 +84,13 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testOnlyChildClassHasASegmentFilter() {
-        def classes = [SegmentQueryHelper.class, Object.class, SegmentQueryHelperTest.class]
+        def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
         SegmentQueryHelper.getInstance().initialize(classes);
 
         def groupName = "group1"
         def query = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: query, group: group)
+        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: query, groups: [group])
         assertFalse(filter1.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -102,18 +100,20 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(2, classesFilters.size());
-        assertEquals(query, classesFilters[SegmentQueryHelper.class.name])
-        assertEquals("(alias:${SegmentQueryHelper.class.name} AND (${query})) OR (alias:* NOT alias:${SegmentQueryHelper.class.name})", classesFilters[Object.class.name])
+        String parentQuery ="(alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${query}))";
+        String childQuery = "alias:${RuntimeException.class.name} AND (${parentQuery})"
+        assertEquals(parentQuery, classesFilters[Exception.class.name])
+        assertEquals(childQuery, classesFilters[RuntimeException.class.name])
     }
 
     public void testParentClassHavingSegmentFilter(){
-        def classes = [SegmentQueryHelper.class, Object.class, SegmentQueryHelperTest.class]
+        def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
         SegmentQueryHelper.getInstance().initialize(classes);
 
         def groupName = "group1"
         def query = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Object.class.name, groupId: group.id, filter: query, group: group)
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: query, groups: [group])
         assertFalse(filter1.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -123,23 +123,23 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(3, classesFilters.size());
-        assertEquals(query, classesFilters[SegmentQueryHelper.class.name])
-        assertEquals(query, classesFilters[SegmentQueryHelperTest.class.name])
-        assertEquals(query, classesFilters[Object.class.name])
+        assertEquals(query, classesFilters[Exception.class.name])
+        assertEquals("alias:${RuntimeException.class.name} AND (${query})", classesFilters[RuntimeException.class.name])
+        assertEquals("alias:${ClassNotFoundException.class.name} AND (${query})", classesFilters[ClassNotFoundException.class.name])
     }
 
     public void testBothChildAndParentClassHavingSegmentFilter(){
-        def classes = [SegmentQueryHelper.class, Object.class, SegmentQueryHelperTest.class]
+        def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
         SegmentQueryHelper.getInstance().initialize(classes);
 
         def groupName = "group1"
         def parentQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Object.class.name, groupId: group.id, filter: parentQuery, group: group)
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: parentQuery, groups: [group])
         assertFalse(filter1.hasErrors());
 
         def childQuery = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: childQuery, group: group)
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: childQuery, groups: [group])
         assertFalse(filter2.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -149,10 +149,10 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(3, classesFilters.size());
-        def objectClassQuery = "${parentQuery} AND ((alias:${SegmentQueryHelper.class.name} AND (${childQuery})) OR (alias:* NOT alias:${SegmentQueryHelper.class.name}))"; 
-        assertEquals(objectClassQuery, classesFilters[Object.class.name])
-        assertEquals("${childQuery} AND (${parentQuery})", classesFilters[SegmentQueryHelper.class.name])
-        assertEquals(parentQuery, classesFilters[SegmentQueryHelperTest.class.name])
+        def exClassQuery = "${parentQuery} AND ((alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${childQuery})))"; 
+        assertEquals(exClassQuery, classesFilters[Exception.class.name])
+        assertEquals("alias:${RuntimeException.class.name} AND (${exClassQuery})", classesFilters[RuntimeException.class.name])
+        assertEquals("alias:${ClassNotFoundException.class.name} AND (${parentQuery})", classesFilters[ClassNotFoundException.class.name])
     }
 
     public void testThreeLevelHierarchyAllHavingFilters(){
@@ -161,15 +161,15 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def rootQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, group: group)
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, groups: [group])
         assertFalse(filter1.hasErrors());
 
         def parentQuery = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, group: group)
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, groups: [group])
         assertFalse(filter2.hasErrors());
 
         def childQuery = "description:b*";
-        def filter3 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: childQuery, group: group)
+        def filter3 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: childQuery, groups: [group])
         assertFalse(filter3.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -178,28 +178,103 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(6, classesFilters.size());
+        def concurrentQuery = "alias:${ConcurrentModificationException.class.name} AND (${childQuery})"
+        def runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery}) AND ((alias:* NOT alias:${ConcurrentModificationException.class.name}) OR (${concurrentQuery}))"
         def exClassQuery = rootQuery;
-        exClassQuery += " AND ((alias:${RuntimeException.class.name} AND (${parentQuery})) OR (alias:${ConcurrentModificationException.class.name} AND (${childQuery}))"
-        exClassQuery += " OR (alias:* NOT alias:${RuntimeException.class.name} NOT alias:${ConcurrentModificationException.class.name}))"
+        exClassQuery += " AND ((alias:* NOT alias:${RuntimeException.class.name} NOT alias:${ConcurrentModificationException.class.name}) OR (${runtimeQuery}))"
 
         assertEquals(exClassQuery, classesFilters[Exception.class.name]);
+        assertEquals("alias:${IOException.class.name} AND (${rootQuery})", classesFilters[IOException.class.name])
+        assertEquals("alias:${InvalidPropertiesFormatException.class.name} AND (${rootQuery})", classesFilters[InvalidPropertiesFormatException.class.name])
 
-        def runtimeExClassQuery = parentQuery
-        runtimeExClassQuery += " AND (${rootQuery})"
-        runtimeExClassQuery += " AND ((alias:${ConcurrentModificationException.class.name} AND (${childQuery})) OR (alias:* NOT alias:${ConcurrentModificationException.class.name}))"
+        assertEquals("alias:${RuntimeException.class.name} AND (${exClassQuery})", classesFilters[RuntimeException.class.name]);
+        assertEquals("alias:${ConcurrentModificationException.class.name} AND (${exClassQuery})", classesFilters[ConcurrentModificationException.class.name]);
 
-        assertEquals(runtimeExClassQuery, classesFilters[RuntimeException.class.name]);
-
-        def concExClassQuery = "${childQuery} AND ((${rootQuery}) AND (${parentQuery}))";
-        assertEquals(concExClassQuery, classesFilters[ConcurrentModificationException.class.name]);
-
-        def illArgExQuery = "(${rootQuery}) AND (${parentQuery})"
-        assertEquals(illArgExQuery, classesFilters[IllegalArgumentException.class.name])
-        
-        assertEquals(rootQuery, classesFilters[IOException.class.name])
-        assertEquals(rootQuery, classesFilters[InvalidPropertiesFormatException.class.name])
-
+        runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery})"
+        exClassQuery = "${rootQuery} AND ((alias:* NOT alias:${RuntimeException.class.name}) OR (${runtimeQuery}))"
+        assertEquals("alias:${IllegalArgumentException.class.name} AND (${exClassQuery})", classesFilters[IllegalArgumentException.class.name])
     }
+
+    public void testThreeLevelHieararchFirstAndSecondLevelHavingFilters(){
+        def classes = [Exception.class, IOException.class, RuntimeException.class, ConcurrentModificationException.class, IllegalArgumentException.class, InvalidPropertiesFormatException.class]
+        SegmentQueryHelper.getInstance().initialize(classes)
+        def groupName = "group1"
+        def rootQuery = "name:a*";
+        def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, groups: [group])
+        assertFalse(filter1.hasErrors());
+
+        def parentQuery1 = "displayName:b*";
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery1, groups: [group])
+        assertFalse(filter2.hasErrors());
+
+        def parentQuery2 = "description:b*";
+        def filter3 = SegmentFilter.add(className: IOException.class.name, groupId: group.id, filter: parentQuery2, groups: [group])
+        assertFalse(filter3.hasErrors());
+
+        SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
+
+        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
+        def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
+
+        assertEquals(6, classesFilters.size());
+
+        def runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery1})"
+        def ioQuery = "alias:${IOException.class.name} AND (${parentQuery2})"
+        def exQuery = "${rootQuery} AND ((alias:* NOT alias:${RuntimeException.class.name} NOT alias:${IOException.class.name}) OR (${ioQuery}) OR (${runtimeQuery}))"
+
+        assertEquals(exQuery, classesFilters[Exception.class.name])
+
+        exQuery = "${rootQuery} AND ((alias:* NOT alias:${RuntimeException.class.name}) OR (${runtimeQuery}))"
+        assertEquals("alias:${RuntimeException.class.name} AND (${exQuery})", classesFilters[RuntimeException.class.name])
+        assertEquals("alias:${ConcurrentModificationException.class.name} AND (${exQuery})", classesFilters[ConcurrentModificationException.class.name])
+        assertEquals("alias:${IllegalArgumentException.class.name} AND (${exQuery})", classesFilters[IllegalArgumentException.class.name])
+
+        exQuery = "${rootQuery} AND ((alias:* NOT alias:${IOException.class.name}) OR (${ioQuery}))"
+        assertEquals("alias:${IOException.class.name} AND (${exQuery})", classesFilters[IOException.class.name])
+        assertEquals("alias:${InvalidPropertiesFormatException.class.name} AND (${exQuery})", classesFilters[InvalidPropertiesFormatException.class.name])
+    }
+
+     public void testThreeLevelHieararchSecondAndThirdLevelHavingFilters(){
+        def classes = [Exception.class, IOException.class, RuntimeException.class, ConcurrentModificationException.class, IllegalArgumentException.class, InvalidPropertiesFormatException.class]
+        SegmentQueryHelper.getInstance().initialize(classes)
+        def groupName = "group1"
+        def parentQuery = "name:a*";
+        def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
+        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, groups: [group])
+        assertFalse(filter1.hasErrors());
+
+        def leafQuery1 = "displayName:b*";
+        def filter2 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: leafQuery1, groups: [group])
+        assertFalse(filter2.hasErrors());
+
+        def leafQuery2 = "description:b*";
+        def filter3 = SegmentFilter.add(className: IllegalArgumentException.class.name, groupId: group.id, filter: leafQuery2, groups: [group])
+        assertFalse(filter3.hasErrors());
+
+        SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
+
+        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
+        def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
+
+        assertEquals(4, classesFilters.size());
+
+        def illQuery = "alias:${IllegalArgumentException.class.name} AND (${leafQuery2})"
+        def concurrentQuery = "alias:${ConcurrentModificationException.class.name} AND (${leafQuery1})"
+        def runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery}) AND ((alias:* NOT alias:${ConcurrentModificationException.class.name} NOT alias:${IllegalArgumentException.class.name}) OR (${concurrentQuery}) OR (${illQuery}))"
+        def exQuery = "(alias:* NOT alias:${RuntimeException.class.name} NOT alias:${ConcurrentModificationException.class.name} NOT alias:${IllegalArgumentException.class.name}) OR (${runtimeQuery})"
+
+        assertEquals(exQuery, classesFilters[Exception.class.name])
+        assertEquals("alias:${RuntimeException.class.name} AND (${exQuery})", classesFilters[RuntimeException.class.name])
+
+        runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery}) AND ((alias:* NOT alias:${ConcurrentModificationException.class.name}) OR (${concurrentQuery}))"
+        exQuery = "(alias:* NOT alias:${RuntimeException.class.name} NOT alias:${ConcurrentModificationException.class.name}) OR (${runtimeQuery})"
+        assertEquals("alias:${ConcurrentModificationException.class.name} AND (${exQuery})", classesFilters[ConcurrentModificationException.class.name])
+
+        runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery}) AND ((alias:* NOT alias:${IllegalArgumentException.class.name}) OR (${illQuery}))"
+        exQuery = "(alias:* NOT alias:${RuntimeException.class.name} NOT alias:${IllegalArgumentException.class.name}) OR (${runtimeQuery})"
+        assertEquals("alias:${IllegalArgumentException.class.name} AND (${exQuery})", classesFilters[IllegalArgumentException.class.name])
+     }
 
     public void testInitialize(){
         def groupName = "group"

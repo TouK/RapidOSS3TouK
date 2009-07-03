@@ -19,6 +19,12 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         SegmentQueryHelper.getInstance().calculateGroupFilters(name);
     }
 
+    def afterUpdate(params){
+        if(params.updatedProps.containsKey("segmentFilter") || params.updatedProps.containsKey("segmentFilterType")){
+            SegmentQueryHelper.getInstance().calculateGroupFilters(name);    
+        }
+    }
+
     public static Group createGroup(Map groupProps)
     {
         return createGroup(groupProps, []);

@@ -47,7 +47,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     def updateDB(Map config) {
         String data = createUpdateData(config)
-        RrdUtils.updateData(fileSource(), data)
+        RrdUtils.updateData(file, data)
     }
 
     def updateDB(List config) {
@@ -56,7 +56,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         {
             dataList[i] = createUpdateData(config.get(i))
         }
-        RrdUtils.updateData(fileSource(), dataList)
+        RrdUtils.updateData(file, dataList)
     }
 
     def graph(Map config) {
@@ -128,9 +128,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     private def fileSource() {
         if(file == "" || file == null)
-            return name + ".rrd"
-        else
-            return file
+            file = name + ".rrd"
+        return file
     }
 
 }

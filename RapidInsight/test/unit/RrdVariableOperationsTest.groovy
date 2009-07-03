@@ -574,8 +574,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
-                                       startTime:920804400000L, step:300, archives: [archive1, archive2])
+                                       type:"COUNTER", heartbeat:600, startTime:920804400000L,
+                                       step:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -612,6 +612,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.graph(config)
 
         assertTrue(new File(imageFileName).exists())
+
+        new File("variable.rrd").delete()
     }
 
     public void testFileSource() {

@@ -45,6 +45,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.rowHeight = null;
     this.totalRowCount = 0;
     this.lastOffset = 0;
+    this.offset = 0;
     this.lastSortAtt = this.keyAttribute;
     this.lastSortOrder = 'asc';
     this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed, "searchIn":this.defaultSearchClass};

@@ -133,6 +133,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             var queryIndex = url.indexOf("?");
             if (queryIndex >= 0)
             {
+                this.params = {};
                 this.url = url.substring(0, queryIndex);
                 var postData = url.substring(queryIndex + 1, url.length)
                 var keyValuePairs = postData.split("&");

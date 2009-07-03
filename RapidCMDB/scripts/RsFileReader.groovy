@@ -42,7 +42,6 @@ public class RsFileReader{
 	
 	// Do not modify unless you have specific needs that require changes to this method.
 	// This method will return you a list of lines appended to the file you are listening to.
-	// Throws exception if file cannot be accessed! Handle exception as needed in the calling script.
 	def getLines(){
 		if (readMode == READONCE) DataStore.remove(filePath);
 		def  lines = [];

@@ -22,7 +22,7 @@ YAHOO.rapidjs.component.Html = function(container, config)
     YAHOO.rapidjs.component.Html.superclass.constructor.call(this, container, config);
     this.iframe = config.iframe;
     this.format = "html";
-    this.params = {componentId:this.id}
+    this.resetUrlParams();
     this.render();
     var events = {
         'bodyCleared': new YAHOO.util.CustomEvent('bodyCleared')
@@ -35,6 +35,9 @@ YAHOO.rapidjs.component.Html = function(container, config)
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingComponentContainer, {
+    resetUrlParams: function(){
+       this.params = {componentId:this.id} 
+    },
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
@@ -133,7 +136,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
             var queryIndex = url.indexOf("?");
             if (queryIndex >= 0)
             {
-                this.params = {};
+                this.resetUrlParams();
                 this.url = url.substring(0, queryIndex);
                 var postData = url.substring(queryIndex + 1, url.length)
                 var keyValuePairs = postData.split("&");

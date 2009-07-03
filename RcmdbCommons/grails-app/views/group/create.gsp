@@ -6,7 +6,7 @@
     <meta name="layout" content="adminLayout" />
     <title>Create Group</title>
 </head>
-<body>
+<body onload="render()">
 <div class="nav">
     <span class="menuButton"><g:link class="list" action="list">Group List</g:link></span>
 </div>
@@ -32,7 +32,7 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
+                            <label for="name">Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'name','errors')}">
                             <input type="text" id="name" name="name" value="${fieldValue(bean:group,field:'name')}"/>
@@ -41,21 +41,32 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="role">role:</label>
+                            <label for="role">Role:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'role','errors')}">
                             <g:select optionKey="id" from="${Role.list()}" name="role.id" value="${group?.role?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
-                    
+
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="segmentFilter">segmentFilter:</label>
+                            <label for="segmentFilterType">Segment Filter Type:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: group, field: 'segmentFilterType', 'errors')}">
+                            <g:select id="segmentFilterType" name="segmentFilterType" from="${group.constraints.segmentFilterType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:group,field:'segmentFilterType')}"></g:select>
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="segmentFilter">Segment Filter:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'segmentFilter','errors')}">
                             <input type="text" id="segmentFilter" name="segmentFilter" value="${fieldValue(bean:group,field:'segmentFilter')}"/>
                         </td>
                     </tr>
+
+
 
                     <tr class="prop">
                         <td valign="top" class="name" colspan="2">

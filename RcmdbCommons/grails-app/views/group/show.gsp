@@ -1,4 +1,4 @@
-<html>
+<%@ page import="auth.Group" %><html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="adminLayout"/>
@@ -24,35 +24,35 @@
             <tbody>
 
                 <tr class="prop">
-                    <td valign="top" class="name" id="idLabel">id:</td>
-
-                    <td valign="top" class="value" id="id">${group.id}</td>
-
-                </tr>
-
-                <tr class="prop">
-                    <td valign="top" class="name" id="nameLabel">name:</td>
+                    <td valign="top" class="name" id="nameLabel">Name:</td>
 
                     <td valign="top" class="value" id="name">${group.name}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name" id="roleLabel">role:</td>
+                    <td valign="top" class="name" id="roleLabel">Role:</td>
 
                     <td valign="top" class="value" id="role">${group?.role}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name" id="segmentFilterLabel">segmentFilter:</td>
+                    <td valign="top" class="name" id="segmentFilterTypeLabel">Segment Filter Type:</td>
+
+                    <td valign="top" class="value" id="segmentFilterType">${group.segmentFilterType}</td>
+
+                </tr>
+
+                <tr class="prop">
+                    <td valign="top" class="name" id="segmentFilterLabel">Segment Filter:</td>
 
                     <td valign="top" class="value" id="segmentFilter">${group.segmentFilter}</td>
 
                 </tr>
 
                 <tr class="prop">
-                    <td valign="top" class="name">users:</td>
+                    <td valign="top" class="name">Users:</td>
 
                     <td valign="top" style="text-align:left;" class="value">
                         <ul>
@@ -67,7 +67,10 @@
             </tbody>
         </table>
     </div>
-    <div style="margin-top:20px;">
+    <%
+        def filterDisplay = group.segmentFilterType == Group.GLOBAL_FILTER ? 'none': ''
+    %>
+    <div style="margin-top:20px;display:${filterDisplay}" >
         <%
             def currentUrl=request.request.uri.toString().replace("/RapidSuite","");
             def startIndex=currentUrl.indexOf("group")

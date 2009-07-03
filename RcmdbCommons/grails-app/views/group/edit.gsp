@@ -1,4 +1,4 @@
-<%@ page import="auth.Role" %>
+<%@ page import="auth.Group; auth.Role" %>
 
 <html>
 <head>
@@ -6,7 +6,24 @@
     <meta name="layout" content="adminLayout" />
     <title>Edit Group</title>
 </head>
-<body>
+<script type="text/javascript">
+      function render(){
+        segmentTypeChanged();
+      }
+      function segmentTypeChanged(){
+           var segmentFilterTypeSelect = document.getElementById('segmentFilterType')
+           var segmentFiltersEl = document.getElementById('segmentFilters')
+           var segmentFilterType = segmentFilterTypeSelect.options[segmentFilterTypeSelect.selectedIndex].value;
+           if(segmentFilterType == '${Group.GLOBAL_FILTER}'){
+                segmentFiltersEl.style.display = 'none'
+           }
+           else{
+               segmentFiltersEl.style.display = ''
+           }
+      }
+
+</script>
+<body onload="render()">
 <div class="nav">
     <span class="menuButton"><g:link class="list" action="list">Group List</g:link></span>
     <span class="menuButton"><g:link class="create" action="create">New Group</g:link></span>
@@ -34,7 +51,7 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="name">name:</label>
+                            <label for="name">Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'name','errors')}">
                             <input type="text" id="name" name="name" value="${fieldValue(bean:group,field:'name')}"/>
@@ -43,16 +60,25 @@
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="role">role:</label>
+                            <label for="role">Role:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'role','errors')}">
                             <g:select optionKey="id" from="${Role.list()}" name="role.id" value="${group?.role?.id}" noSelection="['null':'']"></g:select>
                         </td>
                     </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="segmentFilterType">Segment Filter Type:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean: group, field: 'segmentFilterType', 'errors')}">
+                            <g:select id="segmentFilterType" name="segmentFilterType" from="${group.constraints.segmentFilterType.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:group,field:'segmentFilterType')}" onchange="segmentTypeChanged()"></g:select>
+                        </td>
+                    </tr>
                     
                     <tr class="prop">
                         <td valign="top" class="name">
-                            <label for="segmentFilter">segmentFilter:</label>
+                            <label for="segmentFilter">Segment Filter:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'segmentFilter','errors')}">
                             <input type="text" id="segmentFilter" name="segmentFilter" value="${fieldValue(bean:group,field:'segmentFilter')}"/>
@@ -73,7 +99,7 @@
                 </tbody>
             </table>
         </div>
-        <div style="margin-top:20px;">
+        <div style="margin-top:20px;" id="segmentFilters">
             <%
                 def currentUrl = "/group/edit/${group.id}"
             %>

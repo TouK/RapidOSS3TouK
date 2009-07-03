@@ -54,7 +54,6 @@ scriptsToAdd.add([name:"getEventClassesForSearch", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getTopologyClassesForSearch", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHistoricalEventClassesForSearch", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultRrdArchives", enabledForAllGroups:true])
-scriptsToAdd.add([name:"createDefaultRrdVariable", enabledForAllGroups:true])
 
 
 // topology scripts

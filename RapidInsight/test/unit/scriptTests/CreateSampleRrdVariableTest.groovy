@@ -9,7 +9,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * Date: Jul 3, 2009
 * Time: 10:39:03 AM
 */
-class CreateDefaultRrdVariableTest extends RapidCmdbWithCompassTestCase {
+class CreateSampleRrdVariableTest extends RapidCmdbWithCompassTestCase {
 
     def rrdVariable;
       
@@ -33,14 +33,14 @@ class CreateDefaultRrdVariableTest extends RapidCmdbWithCompassTestCase {
         println "base path is :"+new File(base_directory).getCanonicalPath();
         ScriptManagerForTest.initialize(gcl,base_directory);
         ScriptManagerForTest.addScript('createDefaultRrdArchives');
-        ScriptManagerForTest.addScript('createDefaultRrdVariable');
+        ScriptManagerForTest.addScript('createSampleRrdVariable');
     }
 
     public void testVariableCreatedSuccessfully(){
         //default archives must be available in RI to create default rrd variable
         def archiveResult = ScriptManagerForTest.runScript("createDefaultRrdArchives",[:]);
 
-        def result = ScriptManagerForTest.runScript("createDefaultRrdVariable",[:]);
+        def result = ScriptManagerForTest.runScript("createSampleRrdVariable",[:]);
 
         def variable = rrdVariable.get(name:"sampleRrdVariable");
 

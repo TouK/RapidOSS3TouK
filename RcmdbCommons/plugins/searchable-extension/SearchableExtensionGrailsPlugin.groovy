@@ -246,6 +246,10 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.getFromHierarchy = {Map searchParams->
             return getMethod.invoke(parentDomainClass, [searchParams] as Object[])
         }
+
+        mc.'static'.getFromHierarchy = {Map searchParams, boolean willTriggerOnLoad->
+            return getMethod.invoke(parentDomainClass, [searchParams, willTriggerOnLoad] as Object[])
+        }
         mc.'static'.getCacheEntry = {object->
             return IdCache.get(mc.theClass, object);
         }
@@ -255,6 +259,10 @@ class SearchableExtensionGrailsPlugin {
         }
         mc.'static'.get = {Map searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
+        }
+
+        mc.'static'.get = {Map searchParams, boolean willTriggerOnLoad->
+            return getMethod.invoke(mc.theClass, [searchParams, willTriggerOnLoad] as Object[])
         }
         mc.'static'.get = {Long searchParams->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])

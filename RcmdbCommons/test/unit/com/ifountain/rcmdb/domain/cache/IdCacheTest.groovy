@@ -4,6 +4,9 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.test.util.CompassForTests
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,6 +16,18 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 * To change this template use File | Settings | File Templates.
 */
 public class IdCacheTest extends RapidCmdbWithCompassTestCase {
+
+    public void setUp() {
+        super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DataStore.clear();
+    }
+
+    public void tearDown() {
+        super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        DataStore.clear();
+    }
+
+
     public void testGetWithNonExistingInstances()
     {
         IdCache.initialize(10000);
@@ -80,16 +95,29 @@ public class IdCacheTest extends RapidCmdbWithCompassTestCase {
         IdCache.initialize(10000);
         Map classes = initializeCompass();
         Class modelWithoutInheritance = classes["modelWithoutInheritance"]
+        def operationClassString = """
+            class ${modelWithoutInheritance.name}Operations extends ${AbstractDomainOperation.class.name}
+            {
+                def onLoad()
+                {
+                    ${DataStore.class.name}.put("onLoad", "onLoad")
+                }
+            }
+        """
+        def operationClass = gcl.parseClass(operationClassString);
+        CompassForTests.addOperationSupport (modelWithoutInheritance, operationClass)
 
         def params1 = [prop1: "prop1value1", prop2: "prop2value1"]
         def addedInstance = modelWithoutInheritance.add(params1)
 
         IdCache.clearCache();
-
+        DataStore.clear();
         IdCacheEntry entry = IdCache.get(modelWithoutInheritance, params1)
+        assertNull ("onLoad should not be called", DataStore.get("onLoad"));
         assertTrue(entry.exist);
         assertEquals(modelWithoutInheritance, entry.alias);
         assertEquals(addedInstance.id, entry.id);
+
 
 
         //cache will respond without going to compass for subsequent requests

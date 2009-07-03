@@ -145,7 +145,7 @@ public class IdCache {
         {
             checkSize();
             entry = new IdCacheEntry();
-            def instanceFromCompass = domainClass.getFromHierarchy(keyMap)
+            def instanceFromCompass = domainClass.getFromHierarchy(keyMap, false)
             if(instanceFromCompass != null)
             {
                 entry.setProperties(instanceFromCompass.class, instanceFromCompass.id);

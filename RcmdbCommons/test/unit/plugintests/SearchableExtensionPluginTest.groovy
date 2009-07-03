@@ -110,6 +110,42 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+
+    public void testGetMethods()
+    {
+        Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass("""
+        class ${classes.child.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def onLoad()
+            {
+                ${DataStore.class.name}.put("onLoad", true);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.child, operationClass);
+        def addedObjectProps = [keyProp: "object1", prop1: "prop1Value"]
+        def addedObject = classes.child.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+
+        DataStore.clear();
+        assertNotNull(classes.child.get(keyProp:"object1"));
+        assertTrue (DataStore.get("onLoad"));
+
+        DataStore.clear();
+        assertNotNull(classes.child.getFromHierarchy(keyProp:"object1"));
+        assertTrue (DataStore.get("onLoad"));
+
+        DataStore.clear();
+        assertNotNull(classes.child.get([keyProp:"object1"], false));
+        assertNull (DataStore.get("onLoad"));
+
+        DataStore.clear();
+        assertNotNull(classes.child.getFromHierarchy([keyProp:"object1"], false));
+        assertNull (DataStore.get("onLoad"));
+
+
+    }
+
     //this test is written to check whether can we access relation inside other validators
     public void testAddMethodWithConstraintsAndAccessingRelationFromPropertyConstraint()
     {

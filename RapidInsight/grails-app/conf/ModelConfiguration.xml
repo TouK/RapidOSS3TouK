@@ -156,22 +156,7 @@
 				<Property Name="z_Name" Type="string"/>
 				<Property Name="z_RsClassName" Type="string"/>
 			</Properties>
-		</Model>
-        <Model Name="Statistics">
-            <Properties>
-                <Property Name="timestamp" Type="number" />
-                <Property Name="user" Type="string" />
-                <Property Name="parameter" Type="string" />
-                <Property Name="value" Type="string" />
-            </Properties>
-        </Model>
-        <Model Name="InstrumentationParameters">
-            <Properties>
-                <Property Name="name" Type="string" IsKey="true"/>
-                <Property Name="description" Type="string" />
-                <Property Name="enabled" Type="boolean" />
-            </Properties>
-        </Model>
+		</Model>          
     </Models>
 	<Relations>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>

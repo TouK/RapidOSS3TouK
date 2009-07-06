@@ -1,0 +1,21 @@
+<Rsmodel>
+	<Models>		
+        <Model Name="Statistics">
+            <Properties>
+                <Property Name="timestamp" Type="number" />
+                <Property Name="user" Type="string" />
+                <Property Name="parameter" Type="string" />
+                <Property Name="value" Type="string" />
+            </Properties>
+        </Model>
+        <Model Name="InstrumentationParameters">
+            <Properties>
+                <Property Name="name" Type="string" IsKey="true"/>
+                <Property Name="description" Type="string" />
+                <Property Name="enabled" Type="boolean" />
+            </Properties>
+        </Model>
+    </Models>
+	<Relations>
+    </Relations>
+</Rsmodel>

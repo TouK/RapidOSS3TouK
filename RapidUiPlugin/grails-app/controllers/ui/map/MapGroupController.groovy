@@ -61,18 +61,32 @@ class MapGroupController {
     def delete = {
         def mapGroup = MapGroup.get([id: params.id])
         if (mapGroup) {
-            def maps = mapGroup.maps;
-            mapGroup.remove();
-            def username = session.username;
-            maps.each {
-                it.remove();
-            }
-            withFormat {
-                html {
-                    flash.message = "MapGroup ${params.id} deleted"
-                    redirect(action: list)
+            try{
+                def maps = mapGroup.maps;
+                mapGroup.remove();
+                def username = session.username;
+                maps.each {
+                    it.remove();
                 }
-                xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("MapGroup ${params.id} deleted"), contentType: "text/xml")}
+                withFormat {
+                    html {
+                        flash.message = "MapGroup ${params.id} deleted"
+                        redirect(action: list)
+                    }
+                    xml {render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("MapGroup ${params.id} deleted"), contentType: "text/xml")}
+                }
+            }
+             catch (e) {
+                addError("default.custom.error", [e.getMessage()])
+
+                withFormat {
+                    html {
+                        flash.errors = errors;
+                        redirect(action: show, id: mapGroup.id)
+                    }
+                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
+                }
+
             }
         }
         else {

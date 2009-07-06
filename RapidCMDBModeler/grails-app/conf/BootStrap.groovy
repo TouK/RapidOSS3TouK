@@ -25,6 +25,7 @@ import script.CmdbScript
 import com.ifountain.rcmdb.methods.WithSessionDefaultMethod
 import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -53,11 +54,14 @@ class BootStrap {
         registerUtilities();
         registerDefaultConverters();
         initializeModelGenerator();
+        initializeSegmentHelper();
         registerDefaultUsers();
         registerDefaultDatasourceNames();
         initializeScripting();
     }
-
+    def initializeSegmentHelper(){
+        SegmentQueryHelper.getInstance().initialize(ApplicationHolder.application.domainClasses.clazz.findAll{it.name.indexOf(".") < 0})
+    }
     def initializeCaches()
     {
         IdCache.initialize(100000);

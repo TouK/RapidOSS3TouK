@@ -44,7 +44,7 @@ class BackupActionTest extends AbstractSearchableCompassTests
         }
         destDir.mkdirs();
         compass = TestCompassFactory.getCompass([CompassTestObject]);
-        BackupAction action = new BackupAction(compass, destDir.getPath());
+        BackupAction action = new BackupAction(compass, [CompassTestObject], destDir.getPath());
         CompassTestObject savedCompassObject1 = new CompassTestObject(id:0, prop1:"prop1ValueForInstance1");
         saveToCompass([savedCompassObject1]);
         assertEquals(1, WrapperIndexDeletionPolicy.getPolicies().size());
@@ -85,6 +85,45 @@ class BackupActionTest extends AbstractSearchableCompassTests
         assertNull (obj3);
         assertEquals (savedCompassObject1.prop1, obj1.prop1);
         assertEquals (savedCompassObject2.prop1, obj2.prop1);
+
+    }
+
+    public void testBackupWithRestartedCompass()
+    {
+
+        FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
+
+        def destDir = new File("../backupDir");
+        if(destDir.exists())
+        {
+            FileUtils.deleteDirectory (destDir);
+        }
+        destDir.mkdirs();
+        compass = TestCompassFactory.getCompass([CompassTestObject], [], true);
+
+        CompassTestObject savedCompassObject1 = new CompassTestObject(id:0, prop1:"prop1ValueForInstance1");
+        saveToCompass([savedCompassObject1]);
+
+        compass.close();
+        WrapperIndexDeletionPolicy.clearPolicies();
+        compass = TestCompassFactory.getCompass([CompassTestObject], [], true);
+
+        BackupAction action = new BackupAction(compass, [CompassTestObject], destDir.getPath());
+        WrapperIndexDeletionPolicy.takeGlobalSnapshot(action);
+        def compassObjectIndexDir = new File("${destDir.getPath()}/${CompassTestObject.simpleName.toLowerCase()}");
+        assertTrue (compassObjectIndexDir.exists())
+
+        compass.close();
+
+        FileUtils.copyDirectory (destDir, new File(TestCompassFactory.indexDirectory+"/index"));
+        compass = TestCompassFactory.getCompass([CompassTestObject], [], true);
+        CompassTestObject obj1 = loadFromCompass(CompassTestObject, savedCompassObject1.id)
+        assertNotNull (obj1);
+
+
+
+
+
 
     }
 }

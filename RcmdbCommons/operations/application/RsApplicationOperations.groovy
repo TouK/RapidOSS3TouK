@@ -33,6 +33,7 @@ import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.compass.core.spi.InternalCompass
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 
 /**
@@ -111,7 +112,8 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     public static void backup(String directory)
     {
         InternalCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
-        BackupAction action = new BackupAction(c, directory);
+        List domainClasses = ApplicationHolder.application.getDomainClasses().clazz;
+        BackupAction action = new BackupAction(c, domainClasses, directory);
         WrapperIndexDeletionPolicy.takeGlobalSnapshot(action); 
     }
 

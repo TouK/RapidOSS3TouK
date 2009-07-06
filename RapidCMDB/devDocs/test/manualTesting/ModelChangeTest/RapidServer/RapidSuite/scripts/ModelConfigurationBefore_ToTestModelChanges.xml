@@ -226,7 +226,7 @@
   		<Model Name="Model34">
       		<Properties>
                 <Property Name='prop1' Type='string'/>
-                <Property Name='prop2' Type='string' />
+                <Property Name='prop22' Type='string' />
          	</Properties>
   		</Model>
 

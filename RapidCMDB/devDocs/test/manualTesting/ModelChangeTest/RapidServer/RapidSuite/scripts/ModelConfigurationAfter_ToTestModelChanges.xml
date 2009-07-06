@@ -212,7 +212,7 @@
   		<Model Name="Model34">
       		<Properties>
                 <Property Name='prop1' Type='string'/>
-                <Property Name='prop2' Type='number' />
+                <Property Name='prop22' Type='number' />
          	</Properties>
   		</Model>
 

@@ -99,7 +99,7 @@ def checkParentPropertyChangeWithProb(){
 		assert (it.reverse_from32To33 == null);
 	}
 	
-	m1 = Model35.search("prop2:*");
+	m1 = Model35.search("prop22:*");
 	assert (m1.total == 1);
 	m1.results.each{
 		assert (it.prop2 == 0)

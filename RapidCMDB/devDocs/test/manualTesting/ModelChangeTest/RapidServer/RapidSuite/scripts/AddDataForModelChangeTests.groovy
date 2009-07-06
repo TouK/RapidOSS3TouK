@@ -96,7 +96,7 @@ def addDataForParentPropertyTestsWithProb(){
 	m1.addRelation(from32To33:m2);
 	
 	// Change type of the property
-	m1 = Model35.add(prop1:"Model35 ToBeTypeChangedProp1", prop2:"Model35 Prop2 Instance1", prop35_1:"Model35 Prop35_1 Instance1");
+	m1 = Model35.add(prop1:"Model35 ToBeTypeChangedProp1", prop22:"Model35 Prop2 Instance1", prop35_1:"Model35 Prop35_1 Instance1");
 	m2 = Model36.add(prop1:"Model36 Prop1", prop2:"Model36 Prop2 Instance1");
 	m3 = Model36.add(prop1:"Model36 Prop1", prop2:"Model36 Prop2 Instance2");
 	m1.addRelation(from35To36:[m2,m3]);

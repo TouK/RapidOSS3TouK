@@ -104,7 +104,7 @@ def checkParentPropertyChangeWithProb(){
 	m1.results.each{
 		assert (it.prop2 == 0)
 	}
-	data = Model36.search("prop2:Model36 Prop2 Instance2");
+	data = Model36.search("prop2:\"Model36 Prop2 Instance2\"");
 	assert (data.total == 1);
 	assert (data.results[0].reverse_from35To36 == m1.results[0]);
 	
@@ -116,7 +116,7 @@ def checkParentPropertyChangeWithProb(){
 	props = Model38.getPropertiesList().name;
 	assert (!props.contains("prop1"))
 	
-	data = Model39.search("prop2:Model39 Prop2 Instance2");
+	data = Model39.search("prop2:\"Model39 Prop2 Instance2\"");
 	assert (data.total == 1);
 	assert (data.results[0].reverse_from38To39 == m1.results[0]);
 }

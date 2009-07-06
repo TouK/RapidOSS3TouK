@@ -310,7 +310,6 @@ class RrdUtils {
 
        Map rVariable = [:];
        rVariable[RRD_VARIABLE] = config.get(RRD_VARIABLE);
-       rVariable[Grapher.DESCRIPTION] = config.containsKey(Grapher.DESCRIPTION)?config.get(Grapher.DESCRIPTION):rrdvar.name;
        if(config.containsKey(Grapher.COLOR) ){
            rVariable[Grapher.COLOR] = config.get(Grapher.COLOR);
        }
@@ -326,6 +325,7 @@ class RrdUtils {
 
        config.remove (RRD_VARIABLE);
        if (config.containsKey(Grapher.DESCRIPTION) ){
+           rVariable[Grapher.DESCRIPTION] = config.get(Grapher.DESCRIPTION)
            config.remove (Grapher.DESCRIPTION);
        }
        def vlist = [];

@@ -24,7 +24,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 * Time: 2:01:28 PM
 * To change this template use File | Settings | File Templates.
 */
-class CompassExactPhraseQueryTest extends AbstractSearchableCompassTests {
+class CompassQueryTest extends AbstractSearchableCompassTests {
     Compass compass;
 
     public void setUp() {
@@ -94,6 +94,54 @@ class CompassExactPhraseQueryTest extends AbstractSearchableCompassTests {
             hits = query.hits();
             assertEquals (1, hits.length());
             assertEquals (instancesToBeSaved[4].id, hits.data(0).id);
+        });
+    }
+
+    public void testWithMultipleEmptySpace()
+    {
+        GrailsApplication application = TestCompassFactory.getGrailsApplication([CompassTestObject])
+        ApplicationHolder.application = application;
+        CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
+        Map mappings = [:];
+
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
+        def id = 0;
+        def instancesToBeSaved = [
+                new CompassTestObject(id: id++, prop2: "x"),
+                new CompassTestObject(id: id++, prop2: "x y"),
+                new CompassTestObject(id: id++, prop2: "x y z"),
+                new CompassTestObject(id: id++, prop2: "x y z t"),
+        ] as Object[];
+        TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
+
+
+        TestCompassUtils.withCompassQueryBuilder (compass, {CompassQueryBuilder builder->
+            String propQuery = "x"
+            CompassQuery query = builder.queryString ("prop2:x").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            CompassHits hits = query.hits();
+            assertEquals (4, hits.length());
+            assertEquals (instancesToBeSaved[0].id, hits.data(0).id);
+            assertEquals (instancesToBeSaved[1].id, hits.data(1).id);
+            assertEquals (instancesToBeSaved[2].id, hits.data(2).id);
+            assertEquals (instancesToBeSaved[3].id, hits.data(3).id);
+
+            query = builder.queryString ("prop2:\"x y\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals (3, hits.length());
+            assertEquals (instancesToBeSaved[1].id, hits.data(0).id);
+            assertEquals (instancesToBeSaved[2].id, hits.data(1).id);
+            assertEquals (instancesToBeSaved[3].id, hits.data(2).id);
+
+            query = builder.queryString ("prop2:\"x y z\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals (2, hits.length());
+            assertEquals (instancesToBeSaved[2].id, hits.data(0).id);
+            assertEquals (instancesToBeSaved[3].id, hits.data(1).id);
+
+            query = builder.queryString ("prop2:\"x y z t\"").toQuery().addSort("id", CompassQuery.SortDirection.AUTO);
+            hits = query.hits();
+            assertEquals (1, hits.length());
+            assertEquals (instancesToBeSaved[3].id, hits.data(0).id);
         });
     }
 

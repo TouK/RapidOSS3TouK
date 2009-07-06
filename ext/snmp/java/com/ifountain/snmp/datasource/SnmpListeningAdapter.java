@@ -101,8 +101,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
             try {
                 snmp.removeCommandResponder(this);
                 logger.debug(getLogPrefix() + "Closing snmp session.");
-                snmp.close();
-                System.out.println("Closed snmp session");
+                snmp.close();                
                 logger.info(getLogPrefix() + "Snmp session successfully closed.");
             } catch (IOException e) {
                 logger.warn(getLogPrefix() + "Error occured during snmp session _unsubscribe. Exception: " + e.getMessage());

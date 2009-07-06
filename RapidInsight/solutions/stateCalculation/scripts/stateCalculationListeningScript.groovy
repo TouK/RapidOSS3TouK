@@ -19,8 +19,7 @@ def getParameters() {
 def init() {}
 def cleanUp() {}
 
-def update(changeEvent) {
-    println "changeEvent in stateCalculationListeningScript ${changeEvent}"
+def update(changeEvent) {    
     def domainObject = changeEvent.domainObject;
     def eventName = changeEvent.eventName;
     if (domainObject instanceof RsEvent) {

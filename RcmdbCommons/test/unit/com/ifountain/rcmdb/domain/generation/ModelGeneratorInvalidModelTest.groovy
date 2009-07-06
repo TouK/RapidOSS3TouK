@@ -310,6 +310,28 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     }
 
 
+    public void testThrowsExceptionIfAnyTwoModelsHavePropertyWithSameNameAndDiffeentTypeDefined()
+    {
+        def prop1ForModel1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def prop1ForModel2 = [name:"prop1", type:ModelGenerator.NUMBER_TYPE, blank:false, defaultValue:"1"]
+        String model1Name = "Model1";
+        String model2Name = "Model2";
+        def model1Xml = createModel (model1Name, null, [prop1ForModel1], [prop1ForModel1], []);
+        def model2Xml = createModel (model2Name, null, [prop1ForModel2], [prop1ForModel2], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([model1Xml, model2Xml])
+            fail("Should throw exception since smae property is defined with different property type in different classes");
+        }catch(ModelGenerationException e)
+        {
+            e.printStackTrace()
+            def expectedMessage1 = ModelGenerationException.samePropertyWithDifferentType(model1Name, model2Name, prop1ForModel1.name).getMessage();
+            def expectedMessage2 = ModelGenerationException.samePropertyWithDifferentType(model2Name, model1Name, prop1ForModel1.name).getMessage();
+            assertTrue(expectedMessage1 == e.getMessage() || expectedMessage2 == e.getMessage());
+        }
+    }
+
+
     public void testThrowsExceptionIfModelNameIsInInvalidList()
     {
         ModelGenerator.getInstance().invalidNames = ["InvalidName"]

@@ -226,50 +226,21 @@ class ModelGenerator
 
     def validateSmaePropertyWithDifferentTypeExist(modelMetaDatas)
     {
-        def rootModels = getRootModels(modelMetaDatas);
-        def allPropertiesInHierachy = [:];
-        rootModels.each{ModelMetaData rootModelMetaData->
-            def childModels = getChildModels(modelMetaDatas, rootModelMetaData.modelName);
-            childModels.each{ModelMetaData childModelMetaData->
-                childModelMetaData.propertyList.each{propConfig->
-                    def propName = propConfig.name;
-                    if(!childModelMetaData.relations.containsKey(propName))
+        def allPropertyTypes = [:];
+        modelMetaDatas.each{String modelName, ModelMetaData modelMetaData->
+            modelMetaData.propertyList.each{propConfig->
+                def propName = propConfig.name;
+                if(!modelMetaData.relations.containsKey(propName))
+                {
+                    def previousPropConfig = allPropertyTypes.get(propName);
+                    if(previousPropConfig != null && previousPropConfig.type != propConfig.type)
                     {
-                        def previousPropConfig = allPropertiesInHierachy.get(propName);
-                        if(previousPropConfig != null && previousPropConfig.type != propConfig.type)
-                        {
-                            throw ModelGenerationException.samePropertyWithDifferentType(childModelMetaData.modelName, previousPropConfig.modelName, propName)
-                        }
-                        allPropertiesInHierachy[propName] = [modelName:childModelMetaData.modelName, type:propConfig.type];
+                        throw ModelGenerationException.samePropertyWithDifferentType(modelMetaData.modelName, previousPropConfig.modelName, propName)
                     }
+                    allPropertyTypes[propName] = [modelName:modelMetaData.modelName, type:propConfig.type];
                 }
             }
         }
-    }
-
-    def getRootModels(modelMetaDatas)
-    {
-        def rootModels = [];
-        modelMetaDatas.each{String modelName, ModelMetaData modelMetaData->
-            if(modelMetaData.parentModelName == null)
-            {
-                rootModels.add(modelMetaData);    
-            }
-        }
-        return rootModels;
-    }
-
-    def getChildModels(modelMetaDatas, String parentModelName)
-    {
-        def childModels = [];
-        modelMetaDatas.each{String modelName, ModelMetaData modelMetaData->
-            if(modelMetaData.parentModelName == parentModelName)
-            {
-                childModels.add(modelMetaData);
-                childModels.addAll (getChildModels(modelMetaDatas, modelMetaData.modelName));
-            }
-        }
-        return childModels;
     }
 
     def checkInvalidProperty(modelName, propName, isRelation)

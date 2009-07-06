@@ -15,6 +15,7 @@ import script.CmdbScript
 import script.CmdbScriptOperations
 import search.SearchQuery
 import search.SearchQueryGroup
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
 /**
 * Created by IntelliJ IDEA.
@@ -37,6 +38,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
         initializeScriptManager();
         initializeClasses();
+        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsLookupClass, rsEventJournalClass])
     }
     void tearDown() {
         SessionManager.destroyInstance();
@@ -56,6 +58,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RsMessage, RsMessageOperations);
         CompassForTests.addOperationSupport(RsMessageRule, RsMessageRuleOperations);
         CompassForTests.addOperationSupport(RsUser, RsUserOperations);
+        CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(rsEventClass, rsEventOperationsClass);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
     }

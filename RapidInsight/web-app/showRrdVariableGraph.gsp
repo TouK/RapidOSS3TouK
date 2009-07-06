@@ -45,8 +45,8 @@
                 YAHOO.rapidjs.Components[this.componentId].events['bodyCleared'].unsubscribe(this.destroy, this);
                 this.hideMaskTask.cancel();
             },
-            redrawObjectGraph: function(id, zoomLevel, end){
-                var params = {id:id, zoomLevel:zoomLevel, end:end};
+            redrawObjectGraph: function(name, zoomLevel, end){
+                var params = {name:name, zoomLevel:zoomLevel, end:end};
                 var url = createURL('showRrdVariableGraph.gsp', params);
                 YAHOO.rapidjs.Components[this.componentId].show(url);
             }

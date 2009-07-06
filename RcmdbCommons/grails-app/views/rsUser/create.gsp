@@ -23,7 +23,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rsUser,field:'username','errors')}">
-                                    <input type="text" id="username" name="username" value="${fieldValue(bean:rsUser,field:'username')}"/>
+                                    <input type="text" id="username" name="username" value="${fieldValue(bean:rsUser,field:'username')}" autocomplete="off" />
                                 </td>
                             </tr> 
                         
@@ -31,8 +31,8 @@
                                 <td valign="top" class="name">
                                     <label for="password1">Password:</label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}">
-                                    <input type="password" id="password1" name="password1" value=""/>
+                                <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}" >
+                                    <input type="password" id="password1" name="password1" value="" autocomplete="off" />
                                 </td>
                             </tr> 
                             
@@ -41,7 +41,7 @@
                                     <label for="password2">Confirm Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rsUser,field:'passwordHash','errors')}">
-                                    <input type="password" id="password2" name="password2" value=""/>
+                                    <input type="password" id="password2" name="password2" value="" autocomplete="off" />
                                 </td>
                             </tr>
 

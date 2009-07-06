@@ -53,19 +53,17 @@ class RrdVariableController {
 
     	try {
             def variable=RrdVariable.get(name:params.name);
-            variable.graph(config);
+            if(variable != null )
+            {
+                variable.graph(config);
+            }
+            else{
+                throw new Exception("RrdVariable ${params.name} does not exist");
+            }
 
-            /*byte[] rowData = variable.graph(config);
-		    if (rowData != null) {
-	            InputStream inn = new ByteArrayInputStream(rowData);
-	            def image =  ImageIO.read(inn);
-	            String contentType = "image/png";
-	            ControllerUtils.drawImageToWeb(image,contentType,response);
-	        }*/
             
         }
         catch(Exception e) {
-            e.printStackTrace();
             def image = new BufferedImage(500, 250, BufferedImage.TYPE_INT_RGB);
             Graphics g = image.getGraphics();
             g.setColor(new Color(255, 204, 204));

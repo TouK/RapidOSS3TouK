@@ -187,6 +187,13 @@ class ScriptController {
                 def scriptParams = ["web": this, "params": params];
                 def result = CmdbScript.runScript(script, scriptParams);
                 if (controllerDelegateMetaClass.isRendered) return;
+                if(response.contentType != null)
+                {
+                    if(response.contentType.indexOf("image")>=0)
+                    {
+                        return;
+                    }
+                }
                 if (result == null) {
                     result = "";
                 }

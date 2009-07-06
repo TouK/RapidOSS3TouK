@@ -261,7 +261,13 @@ class RrdUtils {
            }
            def typeMap = [:];
            typeMap[Grapher.NAME] = rrdVariables[i].containsKey(Grapher.RPN) ? rrdVariables[i][Grapher.RPN] : rrdVar.name
-           typeMap[Grapher.DESCRIPTION] = rrdVariables[i].containsKey(Grapher.DESCRIPTION)?rrdVariables[i][Grapher.DESCRIPTION]:rrdVar.name;
+
+           if(config.containsKey(Grapher.DESCRIPTION) && rrdVariables.size() == 1)
+                typeMap[Grapher.DESCRIPTION] = config[Grapher.DESCRIPTION]
+           else
+                typeMap[Grapher.DESCRIPTION] = rrdVariables[i].containsKey(Grapher.DESCRIPTION)?rrdVariables[i][Grapher.DESCRIPTION]:rrdVar.name;
+
+
            typeMap[Grapher.COLOR] = rrdVariables[i].containsKey(Grapher.COLOR)?rrdVariables[i][Grapher.COLOR]:colorVar;
            typeMap[Grapher.THICKNESS] = rrdVariables[i].containsKey(Grapher.THICKNESS) ? rrdVariables[i][Grapher.THICKNESS]:2;
 

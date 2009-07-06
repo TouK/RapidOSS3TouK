@@ -1,15 +1,5 @@
 package com.ifountain.rcmdb.rrd
-
-import com.ifountain.core.test.util.RapidCoreTestCase
-import com.ifountain.comp.test.util.file.TestFile
-import org.jrobin.core.FetchRequest
-import org.jrobin.core.FetchData
-import org.jrobin.core.RrdDb
-import java.text.DecimalFormat
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-
-import com.ifountain.comp.test.util.file.TestFile
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
@@ -21,8 +11,9 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 */
 class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
-    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-    String testImageFile = TestFile.TESTOUTPUT_DIR + "/testImage.png" 
+    String fileDirectory = "rrdFiles"
+    String rrdFileName = "testRrd.rrd";
+    String testImageFile = "testImage.png"
     def classes=[:];
 
     public void setUp() {
@@ -35,15 +26,30 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         initialize([classes.RrdVariable,classes.RrdArchive,classes.RrdGraphTemplate], []);
         CompassForTests.addOperationSupport(classes.RrdVariable, loadClass("RrdVariableOperations"));
 
-        new File(rrdFileName).delete();
-        new File(testImageFile).delete();
+        new File(fileDirectory).mkdirs()
+        new File(fileDirectory + "/" + rrdFileName).delete();
+        new File(fileDirectory + "/" + testImageFile).delete();
     }
 
     public void tearDown() {
-        new File(rrdFileName).delete();
-        new File(testImageFile).delete();
+        new File(fileDirectory + "/" + rrdFileName).delete();
+        new File(fileDirectory + "/" + testImageFile).delete();
+        deleteDirectory(new File(fileDirectory))
         clearMetaClasses();
         super.tearDown();
+    }
+
+    private void deleteDirectory(File directory){
+        if( directory.exists() ) {
+            File[] files = directory.listFiles()
+            files.each{
+                if(it.isDirectory())
+                    deleteDirectory(it)
+                else
+                    it.delete()
+            }
+         }
+         directory.delete()
     }
 
     private void clearMetaClasses(){
@@ -111,12 +117,12 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[RrdUtils.RRD_VARIABLES] = rrdList;
         map[Grapher.START_TIME] = 978301200000
         map[Grapher.END_TIME] = 978303900000;
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testMultipleDatasourceGraphDatasourcesSuccessfully.png";
+        map["destination"]="testMultipleDatasourceGraphDatasourcesSuccessfully.png";
 
         byte[] bytes = RrdUtils.graph(map);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
 
@@ -179,11 +185,11 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         map[Grapher.TITLE] = "Rrd Graph Utilities";
         map[Grapher.VERTICAL_LABEL] = "rate";
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully.png";
+        map['destination']="testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully.png";
 
         byte[] bytes = RrdUtils.graph(map);
         assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
 
@@ -240,14 +246,14 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         map[Grapher.TYPE] = "area";
         map[Grapher.COLOR] = "5566ff";
         map[Grapher.MAX] = 10;
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testOneDatasourceGraphSuccessfully.png";
+        map['destination']="testOneDatasourceGraphSuccessfully.png";
 
 
         byte[] bytes = RrdUtils.graph(map);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
         
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
     public void testOneDatasourceWithOneParameterGraphSuccessfully() throws Exception{
@@ -296,14 +302,14 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         def map = [:];
         map[RrdUtils.RRD_VARIABLE] = "testDs2";
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testOneDatasourceWithOneParameterGraphSuccessfully.png";
+        map['destination']="testOneDatasourceWithOneParameterGraphSuccessfully.png";
         //Optional properties:
 
 
         byte[] bytes = RrdUtils.graph(map);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
 
@@ -361,13 +367,13 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         //Optional properties:
         map[Grapher.END_TIME] = 978303900000;
         map[RrdUtils.GRAPH_TEMPLATE] = "tName";
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testOneDatasourceGraphSuccessfullyWithTemplate.png";
+        map['destination']="testOneDatasourceGraphSuccessfullyWithTemplate.png";
 
 
         byte[] bytes = RrdUtils.graph(map);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
     public void testGraphThrowsExceptionIfNoWebResponseIsDefined(){
@@ -447,11 +453,11 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         map[Grapher.TITLE] = "Rrd Graph Utilities";
         map[Grapher.VERTICAL_LABEL] = "rate";
-        map['destination']="${TestFile.TESTOUTPUT_DIR}/testOneDatasourceGraphWithRpnSuccessfully.png";
+        map['destination']="testOneDatasourceGraphWithRpnSuccessfully.png";
 
         byte[] bytes = RrdUtils.graph(map);
         assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(map['destination']);
+        File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
     }
 

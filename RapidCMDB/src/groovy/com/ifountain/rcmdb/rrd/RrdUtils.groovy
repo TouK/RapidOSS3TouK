@@ -18,10 +18,15 @@ class RrdUtils {
     public static final  String RRD_VARIABLE = "rrdVariable";
     public static final  String GRAPH_TEMPLATE = "template";
 
+    public static final String RRD_FOLDER = "rrdFiles/"
+
     /**
     * create a Round Robin database according to the given configuration map
     */
     public static void createDatabase(Map config) {
+        config[DbUtils.DATABASE_NAME] = RRD_FOLDER + config[DbUtils.DATABASE_NAME]
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
         DbUtils.createDatabase(config);
     }
 
@@ -29,14 +34,20 @@ class RrdUtils {
     * removes database specified with its path from the system
     */
     public static void removeDatabase(String fileName) {
-        DbUtils.removeDatabase( fileName) ;
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        String fname = RRD_FOLDER + fileName
+        DbUtils.removeDatabase(fname) ;
     }
 
     /**
     * checks whether the database file exists
     */
     public static boolean isDatabaseExists(String fileName) {
-        return DbUtils.isDatabaseExists(fileName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        String fname = RRD_FOLDER + fileName
+        return DbUtils.isDatabaseExists(fname);
     }
 
     /**
@@ -45,14 +56,20 @@ class RrdUtils {
     * e.g. : "978301200:200:1" or "978301200:200"
     */
     public static void updateData(String dbname, String data){
-        DbUtils.updateData( dbname,  data);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        String fname = RRD_FOLDER + dbname
+        DbUtils.updateData( fname,  data);
     }
 
     /**
     *  inserts an array of data to the database at a time
     */
     public static void updateData(String dbname, String[] data){
-        DbUtils.updateData( dbname, data);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        String fname = RRD_FOLDER + dbname
+        DbUtils.updateData( fname, data);
     }
 
     public static byte[] graph(Map config){
@@ -85,7 +102,10 @@ class RrdUtils {
                 ControllerUtils.drawImageToWeb (image,"image/png","png",webResponse);
            }
            else{
-              Grapher.toFile (bytes, destination);
+              String filename = RRD_FOLDER + destination
+              def rrdFile = new File(RRD_FOLDER);
+              rrdFile.mkdirs();
+              Grapher.toFile (bytes, filename);
            }
 
         }
@@ -100,11 +120,13 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     public static def fetchArchives(String dbName){
-        return DbUtils.fetchArchives( dbName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchArchives(RRD_FOLDER + dbName);
     }
 
     public static def fetchArchives(RrdDb rrdDb){
-        return fetchArchives(rrdDb);
+        return DbUtils.fetchArchives(rrdDb);
     }
 
     /**
@@ -114,7 +136,9 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     public static def fetchDatasources(String dbName){
-        return DbUtils.fetchDatasources(dbName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchDatasources(RRD_FOLDER + dbName);
     }
 
     public static def fetchDatasources(RrdDb rrdDb){
@@ -125,7 +149,9 @@ class RrdUtils {
     *  returns the configuration map of specified rrd database
     */
     public static Map getDatabaseInfo(String dbName){
-        return DbUtils.getDatabaseInfo(dbName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.getDatabaseInfo(RRD_FOLDER + dbName);
     }
 
     /**
@@ -133,21 +159,27 @@ class RrdUtils {
     *  it is the easiest call if the database has only one data source
     */
     public static double[] fetchData(String dbName){
-        return   DbUtils.fetchData(dbName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchData(RRD_FOLDER + dbName);
     }
 
     /**
     * returns the all datasources in the database according to the first archive method.
     */
     public static double[][] fetchAllData(String dbName){
-        return DbUtils.fetchAllData(dbName);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchAllData(RRD_FOLDER + dbName);
     }
 
     /**
     * returns time series of one data index specified with its datasource name
     */
     public static double[] fetchData(String dbName, String datasource){
-        return DbUtils.fetchData(dbName, datasource);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchData(RRD_FOLDER + dbName, datasource);
     }
 
     /**
@@ -156,13 +188,17 @@ class RrdUtils {
     */
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
-        return DbUtils.fetchData(dbName, datasource, function, startTime, endTime);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchData(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
     }
     /**
     *  returns time series of data indexes specified with its datasource names
     */
     public static double[][] fetchData(String dbName, String[] datasources){
-        return DbUtils.fetchData(dbName, datasources);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchData(RRD_FOLDER + dbName, datasources);
     }
 
     /**
@@ -171,7 +207,9 @@ class RrdUtils {
     */
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
-        return DbUtils.fetchData(dbName, datasources, function, startTime, endTime);
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchData(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
     }
 
     /**
@@ -210,6 +248,9 @@ class RrdUtils {
         return Grapher.class.classLoader.loadClass(className);
     }
     public static def graphMultipleDatasources(Map config){
+       def rrdFile = new File(RRD_FOLDER);
+       rrdFile.mkdirs();
+
        String typeVar = "line";
        String colorVar = "999999";
        Map fConfig = getGeneralSettingsMap(config);
@@ -238,7 +279,7 @@ class RrdUtils {
            if(rrdVariables[i].containsKey(Grapher.FUNCTION) ){
                def datasourceMap = [:];
                datasourceMap[Grapher.NAME] = rrdVar.name;
-               datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+               datasourceMap[Grapher.DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
                datasourceMap[Grapher.DSNAME] = rrdVar.name;
                datasourceMap[Grapher.FUNCTION] = rrdVariables[i][Grapher.FUNCTION];
                datasourceList.add(datasourceMap);
@@ -247,7 +288,7 @@ class RrdUtils {
                rrdVar.archives.each{
                    def datasourceMap = [:];
                    datasourceMap[Grapher.NAME] = rrdVar.name;
-                   datasourceMap[Grapher.DATABASE_NAME] = rrdVar.file;
+                   datasourceMap[Grapher.DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
                    datasourceMap[Grapher.DSNAME] = rrdVar.name;
                    datasourceMap[Grapher.FUNCTION] = it.function;
                    datasourceList.add(datasourceMap);
@@ -284,7 +325,7 @@ class RrdUtils {
                fConfig[typeVar].add(typeMap);
            }
        }
-       Map dbInfo = DbUtils.getDatabaseInfo(rrdVar.file);
+       Map dbInfo = DbUtils.getDatabaseInfo(RRD_FOLDER + rrdVar.file);
        if(!fConfig.containsKey (DbUtils.START_TIME)){
            fConfig[DbUtils.START_TIME] = dbInfo[DbUtils.START_TIME];
        }

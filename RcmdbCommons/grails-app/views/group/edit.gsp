@@ -13,12 +13,15 @@
       function segmentTypeChanged(){
            var segmentFilterTypeSelect = document.getElementById('segmentFilterType')
            var segmentFiltersEl = document.getElementById('segmentFilters')
+           var segmentFilterRow = document.getElementById('segmentFilterRow')
            var segmentFilterType = segmentFilterTypeSelect.options[segmentFilterTypeSelect.selectedIndex].value;
            if(segmentFilterType == '${Group.GLOBAL_FILTER}'){
                 segmentFiltersEl.style.display = 'none'
+                segmentFilterRow.style.display = ''
            }
            else{
                segmentFiltersEl.style.display = ''
+               segmentFilterRow.style.display = 'none'
            }
       }
 
@@ -76,7 +79,7 @@
                         </td>
                     </tr>
                     
-                    <tr class="prop">
+                    <tr class="prop" id="segmentFilterRow">
                         <td valign="top" class="name">
                             <label for="segmentFilter">Segment Filter:</label>
                         </td>

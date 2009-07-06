@@ -43,14 +43,14 @@
                     <td valign="top" class="value" id="segmentFilterType">${group.segmentFilterType}</td>
 
                 </tr>
+                <g:if test="${group.segmentFilterType == Group.GLOBAL_FILTER}">
+                    <tr class="prop">
+                        <td valign="top" class="name" id="segmentFilterLabel">Segment Filter:</td>
 
-                <tr class="prop">
-                    <td valign="top" class="name" id="segmentFilterLabel">Segment Filter:</td>
+                        <td valign="top" class="value" id="segmentFilter">${group.segmentFilter}</td>
 
-                    <td valign="top" class="value" id="segmentFilter">${group.segmentFilter}</td>
-
-                </tr>
-
+                    </tr>
+                </g:if>
                 <tr class="prop">
                     <td valign="top" class="name">Users:</td>
 
@@ -68,15 +68,15 @@
         </table>
     </div>
     <%
-        def filterDisplay = group.segmentFilterType == Group.GLOBAL_FILTER ? 'none': ''
+        def filterDisplay = group.segmentFilterType == Group.GLOBAL_FILTER ? 'none' : ''
     %>
-    <div style="margin-top:20px;display:${filterDisplay}" >
+    <div style="margin-top:20px;display:${filterDisplay}">
         <%
-            def currentUrl=request.request.uri.toString().replace("/RapidSuite","");
-            def startIndex=currentUrl.indexOf("group")
-            if(script>=0)
+            def currentUrl = request.request.uri.toString().replace("/RapidSuite", "");
+            def startIndex = currentUrl.indexOf("group")
+            if (script >= 0)
             {
-                currentUrl=currentUrl.substring(startIndex)
+                currentUrl = currentUrl.substring(startIndex)
             }
 
         %>

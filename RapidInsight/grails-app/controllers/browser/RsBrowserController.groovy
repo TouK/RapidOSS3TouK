@@ -15,7 +15,7 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 class RsBrowserController {
 
     def index = {
-        redirect(uri: "/index/browser.gsp")
+        redirect(uri: "/browser.gsp")
     }
 
     def classes = {

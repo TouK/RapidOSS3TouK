@@ -1,9 +1,16 @@
+<%@ page import="auth.Role" %>
+<jsec:lacksRole name="${Role.ADMINISTRATOR}">
+     <%
+         response.sendRedirect("/RapidSuite/auth/unauthorized");
+     %>
+</jsec:lacksRole>
 <html>
 <head>
     <g:render template="/layouts/layoutHeader"></g:render>
     <g:layoutHead/>
 </head>
-<body class=" yui-skin-sam rimain">
+<body class="yui-skin-sam">
+
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
@@ -13,22 +20,7 @@
             <div class="yui-navset">
                 <ul class="yui-nav" style="border-style: none">
                     
-                    <li class="${request.uri.toString().indexOf('index/events.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/events.gsp')}"><em>Events</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/eventSearch.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/eventSearch.gsp')}"><em>Event Search</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/historicalEvents.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/historicalEvents.gsp')}"><em>Historical Events</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/inventory.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/inventory.gsp')}"><em>Inventory</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/maps.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/maps.gsp')}"><em>Maps</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/serviceView.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/serviceView.gsp')}"><em>Service View</em></a></li>
-                    
-                    <li class="${request.uri.toString().indexOf('index/deviceView.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/deviceView.gsp')}"><em>Device View</em></a></li>
-
-                    <li class="${request.uri.toString().indexOf('index/notifications.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'index/notifications.gsp')}"><em>Notifications</em></a></li>
-
+                    <li class="${request.uri.toString().indexOf('browser/browser.gsp') > -1 ? "selected" : ""}"><a href="${createLinkTo(file: 'browser/browser.gsp')}"><em>Repository Browser</em></a></li>
                     
                 </ul>
             </div>
@@ -38,7 +30,7 @@
             <img src="/RapidSuite/images/network-offline.png"/>
         </td>
         <td width="0%">
-        	<a href="/RapidSuite/help/indexHelp.gsp" target="_blank">
+        	<a href="/RapidSuite/help/browserHelp.gsp" target="_blank">
             <img src="/RapidSuite/images/rapidjs/component/tools/help.png" border="0" style="margin-right:5px"/>
             </a>
         </td>

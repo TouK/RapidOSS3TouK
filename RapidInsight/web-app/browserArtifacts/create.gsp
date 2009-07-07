@@ -29,7 +29,7 @@
                             <label>${keyProp.name}:</label>
                         </td>
                         <td valign="top">
-                            <rui:include template="browser/browserEditor.gsp" model="${[property:keyProp, domainClass:domainClass, cp:domainClass.constrainedProperties[keyProp.name], domainObject:domainObject]}"></rui:include>
+                            <rui:include template="browserArtifacts/browserEditor.gsp" model="${[property:keyProp, domainClass:domainClass, cp:domainClass.constrainedProperties[keyProp.name], domainObject:domainObject]}"></rui:include>
                         </td>
                     </tr>
                 </g:if>
@@ -41,7 +41,7 @@
                             <label>${prop.name}:</label>
                         </td>
                         <td valign="top">
-                            <rui:include template="browser/browserEditor.gsp" model="${[property:prop, domainClass:domainClass, cp:domainClass.constrainedProperties[prop.name], domainObject:domainObject]}"></rui:include>
+                            <rui:include template="browserArtifacts/browserEditor.gsp" model="${[property:prop, domainClass:domainClass, cp:domainClass.constrainedProperties[prop.name], domainObject:domainObject]}"></rui:include>
                         </td>
                     </tr>
                 </g:if>

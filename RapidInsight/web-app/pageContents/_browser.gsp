@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'browser', file:'browser.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'browserArtifacts', file:'browser.css')}"/>
 <script>
     var classTree = YAHOO.rapidjs.Components["classTree"];
     classTree.poll();

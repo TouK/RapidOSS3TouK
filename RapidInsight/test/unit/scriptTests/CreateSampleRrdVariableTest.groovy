@@ -24,7 +24,7 @@ class CreateSampleRrdVariableTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
-        new File("sampleRrdDB.rrd").delete();
+        new File("rrdFiles/sampleRrdDB.rrd").delete();
         super.tearDown();
     }
 
@@ -45,7 +45,7 @@ class CreateSampleRrdVariableTest extends RapidCmdbWithCompassTestCase {
         def variable = rrdVariable.get(name:"sampleRrdVariable");
 
         assertTrue("Sample rrd variable is not created", variable!=null);
-        assertTrue("Sample rrd db file is not created", new File("sampleRrdDB.rrd").exists());
+        assertTrue("Sample rrd db file is not created", new File("rrdFiles/sampleRrdDB.rrd").exists());
     }
 
 }

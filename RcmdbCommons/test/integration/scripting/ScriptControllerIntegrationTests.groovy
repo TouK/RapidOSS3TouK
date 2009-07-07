@@ -360,6 +360,41 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             deleteSimpleScript (scriptName);
         }
     }
+    public void testRunWithScriptDrawingImageToWebResponse()
+    {
+        String scriptName = "script1"
+        def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
+        scriptFile.write ("""
+            def bufImage = new java.awt.image.BufferedImage(5, 5, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            java.awt.Graphics g = bufImage.getGraphics();
+            g.setColor(new java.awt.Color(255, 0, 0));
+            g.fillRect(0,0,5,5);
+            g.dispose();
+
+            org.apache.commons.io.output.ByteArrayOutputStream baos = new org.apache.commons.io.output.ByteArrayOutputStream();
+            javax.imageio.ImageIO.write(bufImage, 'png', baos);
+            byte[] bytesOut = baos.toByteArray();
+
+            def image = javax.imageio.ImageIO.read(new ByteArrayInputStream(bytesOut));
+            com.ifountain.rcmdb.domain.util.ControllerUtils.drawImageToWeb(image,"image/png","png",web.response);
+        """);
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["name"] = scriptName;
+            scriptController.save();
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.run();
+            //assertEquals("<Records/>", scriptController.response.contentAsString);
+            assertEquals("image/png", scriptController.response.contentType);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
 
     public void testRunReturnsErrorIfScriptContainsErrors()
     {

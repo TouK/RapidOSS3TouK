@@ -9,13 +9,14 @@
     def className = params.__rsBrowserClassName;
     def domainClass = grailsApplication.getDomainClass(className)
     def domainObject = domainClass.clazz.newInstance();
+    def logicalName = domainClass.logicalPropertyName;
     def properties = domainClass.clazz.getNonFederatedPropertyList();
     def keys = domainClass.clazz."keySet"();
 %>
 <div class="ri-browser-form">
     <script type="text/javascript">
         window.refreshObjectList = function(){
-            YAHOO.rapidjs.Components['objectList'].poll();
+            YAHOO.rapidjs.Components['objectList'].setQuery('', 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
         }
     </script>
     <rui:formRemote componentId="${params.componentId}" method="POST" action="rsBrowserCrud/save" onSuccess="window.refreshObjectList">

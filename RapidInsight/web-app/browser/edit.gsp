@@ -8,6 +8,7 @@
 <%
     def className = params.__rsBrowserClassName;
     def domainClass = grailsApplication.getDomainClass(className)
+    def logicalName = domainClass.logicalPropertyName;
     def domainObject = domainClass.clazz."get"(id: params.id);
 %>
 <g:if test="${domainObject}">
@@ -17,7 +18,7 @@
     %>
     <script type="text/javascript">
         window.refreshObjectList = function(){
-            YAHOO.rapidjs.Components['objectList'].poll();
+            YAHOO.rapidjs.Components['objectList'].setQuery('', 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
         }
     </script>
     <div class="ri-browser-form">

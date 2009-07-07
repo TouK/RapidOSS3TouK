@@ -157,10 +157,8 @@ class BootStrap {
         def userRole = Role.add(name: Role.USER);
         def adminRole = Role.add(name: Role.ADMINISTRATOR);
         def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
-        def adminUser = RsUser.get(username:RsUser.RSADMIN);
-        if(!adminUser){
-            adminUser=RsUser.addUser(username:RsUser.RSADMIN,password:"changeme",groups:[adminGroup])            
-        }
+        def adminUser=RsUser.addUniqueUser(username:RsUser.RSADMIN,password:"changeme",groups:[adminGroup])
+
 
 
     }

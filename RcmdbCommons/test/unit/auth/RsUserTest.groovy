@@ -48,19 +48,19 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(group1.id, user.groups[0].id)
         assertEquals(group2.id, user.groups[1].id)
     }
-    public void testAddUserHasErrorIfUserAlreadyExists()
+    public void testAddUniqueUserHasErrorIfUserAlreadyExists()
     {
         def group1 = Group.add(name:"group1");
         def group2 = Group.add(name:"group2");
 
 
         def userProps = [username:"user1", password:"password",groups:[group1,group2]];
-        RsUser user = RsUser.addUser(userProps);
+        RsUser user = RsUser.addUniqueUser(userProps);
         assertFalse(user.hasErrors());
         assertEquals (2, user.groups.size())
         assertEquals(1,RsUser.count());
 
-        RsUser user2 = RsUser.addUser(userProps);
+        RsUser user2 = RsUser.addUniqueUser(userProps);
         assertTrue(user2.hasErrors());
         assertEquals(1,RsUser.count());
 
@@ -70,10 +70,10 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         def group1 = Group.add(name:"group1");
         def group2 = Group.add(name:"group2");
 
-
-        def userProps = [username:"user1", password:"password"];
         def groupsToBeAdded = ["group1", group2]
-        RsUser user = RsUser.addUser(userProps, groupsToBeAdded);
+        def userProps = [username:"user1", password:"password",groups:groupsToBeAdded];
+        
+        RsUser user = RsUser.addUser(userProps);
         assertFalse(user.hasErrors());
 
         assertEquals(userProps.username,user.username);
@@ -130,8 +130,8 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
 
         try
         {
-            def userProps = [username:"user1", password:"password"];
-            RsUser.addUser(userProps,[]);
+            def userProps = [username:"user1", password:"password",groups:null];
+            RsUser.addUser(userProps);
             fail("Should throw exception");
         }
         catch(MessageSourceException e)

@@ -46,16 +46,35 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     }
     public static RsUser addUser(params)
     {
+        return _addUser(params,false);
+    }
+    public static RsUser addUniqueUser(params)
+    {
+        return _addUser(params,true);
+    }
+    private static RsUser _addUser(params,boolean addUnique)
+    {
         params.passwordHash = hashPassword(params.password);
 
         def rsUser = null;
+
 
         if (params.groups == null || params.groups.isEmpty())
         {
             throw new MessageSourceException("no.group.specified", [] as Object[]);
         }
 
-        rsUser = RsUser.addUnique(params);
+        params.groups = getGroupsFromRepository(params.groups)
+
+        if(addUnique)
+        {
+            rsUser = RsUser.addUnique(params);
+        }
+        else
+        {
+            rsUser = RsUser.add(params);
+        }
+
         if (!rsUser.hasErrors()) {
             rsUser.addEmail(params.email);
         }
@@ -63,13 +82,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         return rsUser;
     }
 
-    public static RsUser addUser(Map params, List groups)
-    {
-        List groupsToBeAssigned = getGroupsFromRepository(groups)
-        params["groups"] = groupsToBeAssigned;
-
-        return addUser(params);
-    }
 
     private static List getGroupsFromRepository(List groups)
     {

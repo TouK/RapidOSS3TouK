@@ -240,7 +240,7 @@ class RsUserController {
         {
             userProps.password= params["password1"];
             try{
-                rsUser=RsUser.addUser(userProps);
+                rsUser=RsUser.addUniqueUser(userProps);
             }
             catch(MessageSourceException e)
             {
@@ -288,7 +288,7 @@ class RsUserController {
         def group = Group.get(name: groupname);
         if (group) {
             def userProps=[username: params["username"],password:password1,groups:[group]]
-            def rsUser = RsUser.addUser(userProps);
+            def rsUser = RsUser.addUniqueUser(userProps);
             if (!rsUser.hasErrors()) {
                 render(text: ControllerUtils.convertSuccessToXml("User ${params['username']} created"), contentType: "text/xml")
             }

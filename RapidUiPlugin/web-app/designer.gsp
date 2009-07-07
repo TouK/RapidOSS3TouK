@@ -18,11 +18,11 @@
             keyAttribute : 'id',
             treeTypeAttribute : 'designerType',
             treeHideAttribute : 'designerHidden',
-            url : "uiDesigner/view",
-            saveUrl : "uiDesigner/save",
-            generateUrl : "uiDesigner/generate",
-            helpUrl : "uiDesigner/help",
-            metaDataUrl : "uiDesigner/metaData"
+            url : "uiDesigner/view?format=xml",
+            saveUrl : "uiDesigner/save?format=xml",
+            generateUrl : "uiDesigner/generate?format=xml",
+            helpUrl : "uiDesigner/help?format=xml",
+            metaDataUrl : "uiDesigner/metaData?format=xml"
         }
         var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);
     </script>

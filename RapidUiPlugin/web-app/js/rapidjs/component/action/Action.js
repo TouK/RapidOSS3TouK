@@ -40,20 +40,6 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
 };
 YAHOO.rapidjs.component.action.RequestAction.prototype = {
 
-    getPostData : function(params) {
-        var postData = "";
-        if (params) {
-            for (var paramName in params) {
-                var paramValue = params[paramName];
-                postData = postData + paramName + "=" + encodeURIComponent(paramValue) + "&";
-            }
-        }
-        if (postData != "")
-        {
-            postData = postData.substring(0, postData.length - 1);
-        }
-        return postData
-    },
     execute: function(params) {
         try {
             var conditionResult = true;
@@ -79,44 +65,31 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         {
             this.abort();
         }
-        var postData = this.getPostData(requestParams);
         var callback = {
             success:this.processSuccess,
             failure: this.processFailure,
             scope: this,
             timeout: this.timeout
         };
-        var tmpUrl = this.url;
+        var urlAndParams = parseURL(this.url);
+        var params = urlAndParams.params;
+        for(var param in requestParams){
+            params[param] = requestParams[param];
+        }
+        if(!params['format']){
+            params["format"] = "xml";
+        }
+        var postDataArray = [];
+        for(var param in params){
+            postDataArray[postDataArray.length] = param + "=" + encodeURIComponent(params[param]) 
+        }
         if (this.submitType == 'GET') {
 
-            if (postData && postData != "")
-            {
-                if (tmpUrl.indexOf("?") >= 0)
-                {
-                    tmpUrl = tmpUrl + "&" + postData;
-                }
-                else
-                {
-                    tmpUrl = tmpUrl + "?" + postData;
-                }
-            }
+            var tmpUrl = urlAndParams.url + "?" + postDataArray.join("&")
             this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
         }
         else {
-            var queryIndex = tmpUrl.indexOf("?");
-            if (queryIndex >= 0)
-            {
-                if (postData && postData != "")
-                {
-                    postData = postData + "&" + tmpUrl.substring(queryIndex + 1, tmpUrl.length)
-                }
-                else
-                {
-                    postData = tmpUrl.substring(queryIndex + 1, tmpUrl.length)
-                }
-                tmpUrl = tmpUrl.substring(0, queryIndex);
-            }
-            this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', tmpUrl, callback, postData);
+            this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', urlAndParams.url, callback, postDataArray.join("&"));
         }
     },
     processSuccess: function(response)

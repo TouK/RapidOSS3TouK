@@ -53,6 +53,28 @@ function createURL(url, params)
     return getUrlPrefix() + url;
 }
 
+function parseURL(completeUrl) {
+    var params = {};
+    var tmpUrl = completeUrl;
+    var postData = '';
+    var questionMarkIndex = completeUrl.indexOf("?")
+    if (questionMarkIndex >= 0)
+    {
+        tmpUrl = completeUrl.substring(0, questionMarkIndex)
+        postData = completeUrl.substring(questionMarkIndex + 1, completeUrl.length)
+    }
+    if (postData.length > 0) {
+        var keyValuePairs = postData.split("&");
+        for (var i = 0; i < keyValuePairs.length; i++) {
+            var keyValueArray = keyValuePairs[i].split("=")
+            if (keyValueArray.length == 2) {
+                params[keyValueArray[0]] = keyValueArray[1];
+            }
+        }
+    }
+    return {url:tmpUrl, params:params};
+}
+
 
 String.prototype.trim = function() {
     var a = this.replace(/^\s+/, '');

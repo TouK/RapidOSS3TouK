@@ -83,7 +83,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             scope: this,
             cache:false
         };
-        YAHOO.util.Connect.asyncRequest('GET', this.searchClassesUrl, cb);
+        var urlAndParams = parseURL(this.searchClassesUrl);
+        var params = urlAndParams.params
+        if(!params['format']){
+            params['format'] = this.format;
+        }
+        var paramsArray = [];
+        for(var param in params){
+            paramsArray[paramsArray.length] = param + "=" + encodeURIComponent(params[param])
+        }
+        var url = urlAndParams.url + "?" + paramsArray.join("&")
+        YAHOO.util.Connect.asyncRequest('GET', url, cb);
     },
     searchClassesSuccess:function(response) {
         var classes = response.responseXML.getElementsByTagName("Class");

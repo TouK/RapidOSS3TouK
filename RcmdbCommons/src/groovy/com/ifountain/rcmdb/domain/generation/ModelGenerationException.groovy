@@ -91,6 +91,11 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Parent model ${parentModelName} is not defined. Model ${modelName} could not be created.");
     }
+
+    public static ModelGenerationException unexpectedXmlProperty(String modelName, String propName)
+    {
+        return new ModelGenerationException("Unexpected property ${propName} exist in XML definition of ${modelName}");
+    }
     public static ModelGenerationException undefinedRelatedModel(String modelName, String relationName, String relatedModelName)
     {
         return new ModelGenerationException("Could not created model ${modelName}. Reason: Related model ${relatedModelName} for relation ${relationName} is not defined.");

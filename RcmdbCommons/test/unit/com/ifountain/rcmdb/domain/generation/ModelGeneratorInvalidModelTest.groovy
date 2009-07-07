@@ -43,6 +43,93 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
         }
          ModelGenerator.getInstance().invalidNames = [];
     }
+
+    public void testIfUnExpectedModelXmlPropertyOfModelPropertyExist()
+    {
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", unexpectedProp:"unexpectedPropvalue"]
+        String modelName = "ChildModel";
+        def modelXml = createModel (modelName, null, [prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since there is an unexpected property");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.unexpectedXmlProperty(modelName, "unexpectedProp").getMessage(), e.getMessage());
+        }
+
+    }
+
+    public void testIfUnExpectedModelXmlPropertyOfModelExist()
+    {
+        String modelName = "ChildModel";
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def modelMetaProps = [name:modelName, unexpectedModelProp:"unexpectedModelProp"]        
+        def modelXml = createModel (modelMetaProps, null, [prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since there is an unexpected property");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.unexpectedXmlProperty(modelName, "unexpectedModelProp").getMessage(), e.getMessage());
+        }
+    }
+    public void testIfUnExpectedModelXmlPropertyOfDatasourceExist()
+    {
+        String modelName = "ChildModel";
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def ds1 = [name:"ds1",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name]], unexpectedDsProp:"unexpectedDsProp"]
+        def modelMetaProps = [name:modelName]
+        def modelXml = createModel (modelMetaProps, [ds1], [prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since there is an unexpected property");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.unexpectedXmlProperty(modelName, "unexpectedDsProp").getMessage(), e.getMessage());
+        }
+    }
+
+    public void testIfUnExpectedModelXmlPropertyOfDatasourceKeyExist()
+    {
+        String modelName = "ChildModel";
+        def prop1 = [name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"]
+        def ds1 = [name:"ds1",keyMappings:[[propertyName:prop1.name, nameInDatasource:prop1.name, unexpectedDsKeyProp:"unexpectedDsProp"]]]
+        def modelMetaProps = [name:modelName]
+        def modelXml = createModel (modelMetaProps, [ds1], [prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml])
+            fail("Should throw exception since there is an unexpected property");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.unexpectedXmlProperty(modelName, "unexpectedDsKeyProp").getMessage(), e.getMessage());
+        }
+
+    }
+
+
+    public void testIfUnExpectedModelXmlPropertyOfRelationExist()
+    {
+        String modelName = "Model";
+        String relatedModelName = "RelatedModel";
+        def ds1 = [name:"RCMDB",keyMappings:[]]
+        def rel1 = [name:"rel1",  unexpectedRelationProp:"unexpectedRelationPropValue", reverseName:"revrel1", toModel:relatedModelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:true];
+        def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_ONE, isOwner:false];
+        def modelXml1 = createModel (modelName, null, [ds1], [], [], [rel1]);
+        def modelXml2 = createModel (relatedModelName, null, [ds1], [], [], [revrel1]);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1, modelXml2])
+            fail("Should throw exception since there is an unexpected property");
+        }catch(ModelGenerationException e)
+        {
+            assertEquals (ModelGenerationException.unexpectedXmlProperty(modelName, "unexpectedRelationProp").getMessage(), e.getMessage());
+        }
+
+    }
     
     public void testIfParentModelDoesNotExist()
     {
@@ -674,17 +761,20 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase{
     {
         return createModel(name, parentModel, [], modelProperties, keyProperties, relations);   
     }
-
     def createModel(String name, String parentModel, List modelDatasources,  List modelProperties, List keyProperties, List relations, String storageType = null)
+    {
+        def modelProps = [name:name]
+        if(parentModel)
+            modelProps.parentModel = parentModel;
+        if(storageType)
+            modelProps.storageType = storageType
+        createModel (modelProps, modelDatasources, modelProperties, keyProperties, relations);
+    }
+    def createModel(Map modelMetaProps, List modelDatasources,  List modelProperties, List keyProperties, List relations)
     {
         def model = new StringWriter();
         def modelbuilder = new MarkupBuilder(model);
-        def modelProps = [name:name];
-        if(parentModel)
-        modelProps["parentModel"] = parentModel;
-        if(storageType)
-        modelProps["storageType"] = storageType;
-        modelbuilder.Model(modelProps){
+        modelbuilder.Model(modelMetaProps){
             modelbuilder.Datasources(){
                 if(!keyProperties.isEmpty())
                 {

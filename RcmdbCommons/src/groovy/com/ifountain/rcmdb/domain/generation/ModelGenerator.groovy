@@ -30,9 +30,18 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
 import com.ifountain.rcmdb.converter.DateConverter
 import com.ifountain.compass.CompassConstants
+import javax.xml.transform.stream.StreamSource
+import javax.xml.XMLConstants
+import javax.xml.validation.SchemaFactory
 
 class ModelGenerator
 {
+
+    public static final List VALID_MODEL_XML_PROPERTIES = ["name", "parentModel", "indexName", "storageType"]
+    public static final List VALID_MODEL_PROPERTY_XML_PROPERTIES = ["name", "type", "defaultValue", "lazy", "blank", "nullable", "datasource", "datasourceProperty", "nameInDatasource"]
+    public static final List VALID_MODEL_DATASOURCE_XML_PROPERTIES = ["name", "mappedName", "mappedNameProperty"]
+    public static final List VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES = ["propertyName", "nameInDatasource"]
+    public static final List VALID_MODEL_RELATION_XML_PROPERTIES = ["name", "reverseName", "cardinality", "reverseCardinality", "toModel", "isOwner"]
     public static final String VALID_DIR_TYPES = [CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]
     public static final List VALID_PROPERTY_TYPE_CLASSES = [String, Double, Date, Boolean, Long]
     private static final String validModelNameExpression = "[A-Z][a-z_][A-Za-z_0-9]*"
@@ -361,6 +370,7 @@ class ModelMetaData
     {
         def xmlModel = new XmlSlurper().parseText(modelXml);
         modelName = xmlModel.@name.text()
+        validateXmlProperties(ModelGenerator.VALID_MODEL_XML_PROPERTIES, modelName, xmlModel);
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
         indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
         storageType = xmlModel.@storageType.text() == ""?null:xmlModel.@storageType.text()
@@ -369,9 +379,22 @@ class ModelMetaData
         processRelations(xmlModel);
     }
 
+    def validateXmlProperties(expectedProps, modelName, modelXmlNode)
+    {
+        def allAttributes = modelXmlNode.attributes();
+        def invalidProps = []
+        allAttributes.each{attrName, attrValue->
+            if(!expectedProps.contains(attrName))
+            {
+                throw ModelGenerationException.unexpectedXmlProperty(modelName, attrName)
+            }
+        }
+    }
+
     def createDatasourceConfiguration(GPathResult model)
     {
         model.Datasources.Datasource.each{GPathResult datasource->
+            validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_XML_PROPERTIES, modelName, datasource);
             def dsConf = [:];
             def dsName = datasource.@name.text();
             def mappedName = datasource.@mappedName.text();
@@ -390,6 +413,7 @@ class ModelMetaData
             }
             def keys = [:];
             datasource.Key.each{GPathResult keyMapping->
+                validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES, modelName, keyMapping);
                 keys[keyMapping.@propertyName.text()] = ["nameInDs":keyMapping.@nameInDatasource != ""?keyMapping.@nameInDatasource.text():keyMapping.@propertyName.text()];
             }
             dsConf["keys"] =  keys;
@@ -414,6 +438,7 @@ class ModelMetaData
         def processedProperties = [:]
         def masterKeyPropName = null;
         model.Properties.Property.each{GPathResult property->
+            validateXmlProperties(ModelGenerator.VALID_MODEL_PROPERTY_XML_PROPERTIES, modelName, property);
             def generalPropConfig = [:];
             def propertyName = property.@name.text();
             if(propertyMap.containsKey(propertyName)){
@@ -541,6 +566,7 @@ class ModelMetaData
     def processRelations(xmlModel)
     {
         xmlModel.Relations.Relation.each{GPathResult relation->
+            validateXmlProperties(ModelGenerator.VALID_MODEL_RELATION_XML_PROPERTIES, modelName, relation);
             processRelation(relation.@cardinality.text(),relation.@reverseCardinality.text(),relation.@name.text(),relation.@reverseName.text(), relation.@toModel.text(), relation.@isOwner.text() == "true");
         }
     }

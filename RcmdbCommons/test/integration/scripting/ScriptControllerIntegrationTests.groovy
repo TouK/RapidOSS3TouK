@@ -26,6 +26,7 @@ import script.ScriptController
 import grails.util.GrailsWebUtil
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import auth.Group
+import com.ifountain.rcmdb.util.DataStore
 
 /**
 * Created by IntelliJ IDEA.
@@ -365,6 +366,8 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         String scriptName = "script1"
         def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("""
+            import com.ifountain.rcmdb.util.DataStore
+
             def bufImage = new java.awt.image.BufferedImage(5, 5, java.awt.image.BufferedImage.TYPE_INT_RGB);
             java.awt.Graphics g = bufImage.getGraphics();
             g.setColor(new java.awt.Color(255, 0, 0));
@@ -374,9 +377,11 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             org.apache.commons.io.output.ByteArrayOutputStream baos = new org.apache.commons.io.output.ByteArrayOutputStream();
             javax.imageio.ImageIO.write(bufImage, 'png', baos);
             byte[] bytesOut = baos.toByteArray();
+            DataStore.put("imageBytes",bytesOut);
 
-            def image = javax.imageio.ImageIO.read(new ByteArrayInputStream(bytesOut));
-            com.ifountain.rcmdb.domain.util.ControllerUtils.drawImageToWeb(image,"image/png","png",web.response);
+            com.ifountain.rcmdb.domain.util.ControllerUtils.drawImageToWeb(bufImage,"image/png","png",web.response);
+
+
         """);
         try
         {
@@ -387,8 +392,18 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             IntegrationTestUtils.resetController (scriptController);
             scriptController.params["id"] = scriptName;
             scriptController.run();
-            //assertEquals("<Records/>", scriptController.response.contentAsString);
+
             assertEquals("image/png", scriptController.response.contentType);
+
+
+            byte[] content = scriptController.response.getContentAsByteArray()
+            byte[] realData = DataStore.get("imageBytes");
+
+            assertEquals(realData.length, content.length)
+
+            for(int i = 0; i < realData.length; i++)
+                assertEquals(realData[i], content[i])
+
         }
         finally
         {

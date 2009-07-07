@@ -32,24 +32,26 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
             import java.awt.Color
             import org.apache.commons.io.output.ByteArrayOutputStream
             import com.ifountain.rcmdb.domain.util.ControllerUtils
+            import com.ifountain.rcmdb.util.DataStore
 
             public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
             {
                 def graph(Map config) {
-                    com.ifountain.rcmdb.util.DataStore.put("graphTestConfig",config);
+                    DataStore.put("graphTestConfig",config);
                     def bufImage = new BufferedImage(5, 5, BufferedImage.TYPE_INT_RGB);
                     Graphics g = bufImage.getGraphics();
                     g.setColor(new Color(255, 0, 0));
                     g.fillRect(0,0,5,5);
                     g.dispose();
 
+                    def webResponse=DataStore.get("webResponse");
+                    ControllerUtils.drawImageToWeb (bufImage,"image/png","png",webResponse);
+
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     ImageIO.write(bufImage, 'png', baos);
                     byte[] bytesOut = baos.toByteArray();
 
-                    def webResponse=ControllerUtils.getWebResponse();                    
-                    def image =  ImageIO.read(new ByteArrayInputStream(bytesOut));
-                    ControllerUtils.drawImageToWeb (image,"image/png","png",webResponse);
+                    DataStore.put("imageBytes",bytesOut);
 
                     return bytesOut;
                 }
@@ -68,36 +70,32 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
     public void testGraphDrawnSuccessfuly() {
         overrideOperation();
 
+
         def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, step:300)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def controller = new RrdVariableController();
+        DataStore.put("webResponse",controller.response);
         controller.params["name"] = "variable";
         controller.params["startTime"] = "920804400000"
         controller.params["endTime"] = "920806200000"
         controller.graph();
 
-        byte[] content = controller.response.getContentAsByteArray()
-        byte[] realData = variable.graph([startTime:920804400000L, endTime:920806200000L]);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(realData.size());
-        InputStream inn = new ByteArrayInputStream(realData);
-        def image =  ImageIO.read(inn);
-        ImageIO.write(image, "png", bos);
-        byte[] compressedData = bos.toByteArray();
-
         def graphMethodConfig = DataStore.get("graphTestConfig");
-        def expectedConfig = [:]
-        expectedConfig["startTime"] = 920804400000L
-        expectedConfig["endTime"] = 920806200000L
 
-        assertEquals(expectedConfig, graphMethodConfig)
+        assertEquals(920804400000L, graphMethodConfig.startTime)
+        assertEquals(920806200000L, graphMethodConfig.endTime)
+        assertEquals('web', graphMethodConfig.destination)
 
-        assertEquals(compressedData.length, content.length)
 
-        for(int i = 0; i < compressedData.length; i++)
-            assertEquals(compressedData[i], content[i])
+        byte[] content = controller.response.getContentAsByteArray()
+        byte[] realData = DataStore.get("imageBytes");
+
+        assertEquals(realData.length, content.length)
+
+        for(int i = 0; i < realData.length; i++)
+            assertEquals(realData[i], content[i])
 
     }
 
@@ -117,6 +115,8 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def controller = new RrdVariableController();
+        DataStore.put("webResponse",controller.response);
+        
         controller.params["name"] = "TestVariable"
         controller.params["template"] = "TestTemplate"
         controller.params["title"] = "TestTitle"

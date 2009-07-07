@@ -241,7 +241,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             }
         }
         this.refreshData();
-        this.hideMask();
     },
 
     refreshData: function() {

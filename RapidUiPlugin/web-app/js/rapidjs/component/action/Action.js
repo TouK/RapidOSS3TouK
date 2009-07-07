@@ -30,6 +30,7 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
         'error' : new YAHOO.util.CustomEvent('error'),
         'timeout' : new YAHOO.util.CustomEvent('timeout'),
         'unknownUrl' : new YAHOO.util.CustomEvent('unknownUrl'),
+        'internalServerError' : new YAHOO.util.CustomEvent('internalServerError'),
         'serverDown' : new YAHOO.util.CustomEvent('serverDown')
     };
     this.lastConnection = null;
@@ -154,6 +155,10 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         else if (st == 404) {
             this._fireErrors(response, ['Specified url cannot be found.']);
             this.events['unknownUrl'].fireDirect();
+        }
+         else if (st == 500) {
+            this._fireErrors(response, ['Internal Server Error. Please see the log files.']);
+            this.events['internalServerError'].fireDirect();
         }
         else if (st == 0) {
             YAHOO.rapidjs.ErrorManager.serverDown();

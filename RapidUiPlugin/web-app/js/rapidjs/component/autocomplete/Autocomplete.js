@@ -115,6 +115,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
                 this.events["error"].fireDirect(this, ['Specified url cannot be found.']);
                 YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
             }
+            else if (st == 500) {
+                this.events["error"].fireDirect(this, ['Internal Server Error. Please see the log files.']);
+                YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Internal Server Error. Please see the log files.']);
+            }
             else if (st == 0) {
                 YAHOO.rapidjs.ErrorManager.serverDown();
             }

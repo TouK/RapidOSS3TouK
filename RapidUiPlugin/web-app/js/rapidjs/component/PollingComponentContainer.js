@@ -113,6 +113,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         this.events["error"].fireDirect(this,  ['Request received timeout.']);
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
     },
+    handleInternalServerError: function(response){
+        this.events["error"].fireDirect(this,  ["Internal Server Error. Please see the log files."]);
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ["Internal Server Error. Please see the log files."]);
+    },
     handleUnknownUrl: function(response)
     {
         this.events["error"].fireDirect(this,  ['Specified url cannot be found.']);
@@ -138,7 +142,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 		else if(st == 404){
 			this.handleUnknownUrl(response);
 		}
-		else if(st == 0){
+        else if(st == 500){
+			this.handleInternalServerError(response);
+		}
+        else if(st == 0){
                this.handleServerDown(response);
 		}
         if(this.pollingInterval > 0)

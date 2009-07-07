@@ -96,6 +96,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.compo
             this.component.events["error"].fireDirect(this.component, ['Specified url cannot be found.']);
             YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, ['Specified url cannot be found.']);
         }
+        else if (st == 500) {
+            this.component.events["error"].fireDirect(this.component, ['Internal Server Error. Please see the log files.']);
+            YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, ['Internal Server Error. Please see the log files.']);
+        }
         else if (st == 0) {
             YAHOO.rapidjs.ErrorManager.serverDown();
         }

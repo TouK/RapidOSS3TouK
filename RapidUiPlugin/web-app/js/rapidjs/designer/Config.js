@@ -46,9 +46,9 @@ YAHOO.rapidjs.designer.Config = new function() {
         }
         this.config = config;
     };
-    this.loadHelp = function(response){
+    this.loadHelp = function(response) {
         var helpNodes = response.responseXML.getElementsByTagName("Help");
-        for(var i = 0; i< helpNodes.length; i++){
+        for (var i = 0; i < helpNodes.length; i++) {
             var helpNode = helpNodes[i]
             var helpId = helpNode.getAttribute("id");
             var helpText = helpNode.firstChild.nodeValue;
@@ -58,9 +58,9 @@ YAHOO.rapidjs.designer.Config = new function() {
     this.get = function(itemType) {
         return this.config[itemType];
     };
-    this.getHelp = function(itemType){
+    this.getHelp = function(itemType) {
         var helpId = this.get(itemType)["help"];
-        if(helpId){
+        if (helpId) {
             return this.helpConfig[helpId] || "";
         }
         return "";
@@ -614,6 +614,10 @@ YAHOO.rapidjs.designer.Config = new function() {
                 descr:"Fired when action's url is not available.",
                 params:{}
             },
+            "internalServerError":{
+                descr:"Fired when an internal server error occurred.",
+                params:{}
+            },
             "serverDown":{
                 descr:"Fired when server does not response to the AJAX call.",
                 params:{}
@@ -638,6 +642,10 @@ YAHOO.rapidjs.designer.Config = new function() {
             },
             "unknownUrl":{
                 descr:"Fired when action's url is not available.",
+                params:{}
+            },
+            "internalServerError":{
+                descr:"Fired when an internal server error occurred.",
                 params:{}
             },
             "serverDown":{

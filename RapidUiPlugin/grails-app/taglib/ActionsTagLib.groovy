@@ -74,10 +74,12 @@ class ActionsTagLib {
         else if (actionType == "request" || actionType == "merge") {
             def timeoutJs = "";
             def unknownUrlJs = "";
+            def internalServerErrorJs = "";
             def serverDownJs = "";
             def onTimeout = attrs["onTimeout"];
             def onUnknownUrl = attrs["onUnknownUrl"];
             def onServerDown = attrs["onServerDown"];
+            def onInternalServerError = attrs["onInternalServerError"];
             if (onTimeout) {
                 getActionsArray(onTimeout).each {actionName ->
                     timeoutJs += """
@@ -92,6 +94,16 @@ class ActionsTagLib {
                 getActionsArray(onUnknownUrl).each {actionName ->
                     unknownUrlJs += """
                        ${actionId}action.events['unknownUrl'].subscribe(function(){
+                           var params = {}
+                           YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                        }, this, true);
+                    """
+                }
+            }
+            if (onUnknownUrl) {
+                getActionsArray(onInternalServerError).each {actionName ->
+                    internalServerErrorJs += """
+                       ${actionId}action.events['internalServerError'].subscribe(function(){
                            var params = {}
                            YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                         }, this, true);
@@ -136,6 +148,7 @@ class ActionsTagLib {
                        ${serverDownJs}
                        ${timeoutJs}
                        ${unknownUrlJs}
+                       ${internalServerErrorJs}
                    </script>
                 """;
             }

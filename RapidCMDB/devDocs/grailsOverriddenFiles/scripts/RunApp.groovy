@@ -151,6 +151,7 @@ target( watchContext: "Watches the WEB-INF/classes directory for changes and res
                 grailsServer.setHandler( webContext )
                 grailsServer.start()
                 System.setProperty("restart.application", "false")
+                event("StatusFinal", ["Server running. Browse to http://localhost:$serverPort$serverContextPath"])
             } catch (Throwable e) {
                 GrailsUtil.sanitizeStackTrace(e)
                 e.printStackTrace()

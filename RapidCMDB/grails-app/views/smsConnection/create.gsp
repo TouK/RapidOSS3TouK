@@ -59,7 +59,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smsConnection,field:'username','errors')}">
-                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:smsConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:smsConnection,field:'username')}"  autocomplete="off" />
                                 </td>
                             </tr>
 
@@ -68,7 +68,7 @@
                                     <label for="userPassword">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:smsConnection,field:'userPassword','errors')}">
-                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:smsConnection,field:'userPassword')}"/>
+                                    <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:smsConnection,field:'userPassword')}" autocomplete="off" />
                                 </td>
                             </tr>
 

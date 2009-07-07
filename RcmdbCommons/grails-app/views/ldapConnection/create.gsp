@@ -58,7 +58,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:ldapConnection,field:'username','errors')}">
-                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:ldapConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:ldapConnection,field:'username')}" autocomplete="off" />
                                 </td>
                             </tr>
 
@@ -67,7 +67,7 @@
                                     <label for="userPassword">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:ldapConnection,field:'userPassword','errors')}">
-                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:ldapConnection,field:'userPassword')}"/>
+                                    <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:ldapConnection,field:'userPassword')}" autocomplete="off" />
                                 </td>
                             </tr>
 

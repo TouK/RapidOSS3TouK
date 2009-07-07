@@ -60,7 +60,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'username','errors')}">
-                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:rapidInsightConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:rapidInsightConnection,field:'username')}" autocomplete="off" />
                                 </td>
                             </tr> 
                         
@@ -69,7 +69,7 @@
                                     <label for="password">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:rapidInsightConnection,field:'userPassword','errors')}">
-                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:rapidInsightConnection,field:'userPassword')}"/>
+                                    <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:rapidInsightConnection,field:'userPassword')}" autocomplete="off" />
                                 </td>
                             </tr>
                             <tr class="prop">

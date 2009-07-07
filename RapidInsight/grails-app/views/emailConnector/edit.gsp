@@ -85,7 +85,7 @@
                             <label for="username">Username:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:emailConnection,field:'username','errors')}">
-                            <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:emailConnection,field:'username')}"/>
+                            <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:emailConnection,field:'username')}" autocomplete="off" />
                         </td>
                     </tr>
 
@@ -94,7 +94,7 @@
                             <label for="userPassword">Password:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:emailConnection,field:'userPassword','errors')}">
-                            <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:emailConnection,field:'userPassword')}"/>
+                            <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:emailConnection,field:'userPassword')}" autocomplete="off" />
                         </td>
                     </tr>
 

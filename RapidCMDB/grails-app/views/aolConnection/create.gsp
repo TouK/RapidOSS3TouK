@@ -59,7 +59,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:aolConnection,field:'username','errors')}">
-                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:aolConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:aolConnection,field:'username')}" autocomplete="off" />
                                 </td>
                             </tr>
 
@@ -68,7 +68,7 @@
                                     <label for="userPassword">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:aolConnection,field:'userPassword','errors')}">
-                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:aolConnection,field:'userPassword')}"/>
+                                    <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:aolConnection,field:'userPassword')}" autocomplete="off" />
                                 </td>
                             </tr>
 

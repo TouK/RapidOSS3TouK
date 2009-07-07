@@ -69,7 +69,7 @@
                                     <label for="username">Username:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:databaseConnection,field:'username','errors')}">
-                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:databaseConnection,field:'username')}"/>
+                                    <input type="text" class="inputtextfield" id="username" name="username" value="${fieldValue(bean:databaseConnection,field:'username')}"  autocomplete="off" />
                                 </td>
                             </tr> 
                         
@@ -78,7 +78,7 @@
                                     <label for="password">Password:</label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean:databaseConnection,field:'userPassword','errors')}">
-                                    <input type="password" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:databaseConnection,field:'userPassword')}"/>
+                                    <input type="text" class="inputtextfield" id="userPassword" name="userPassword" value="${fieldValue(bean:databaseConnection,field:'userPassword')}" autocomplete="off" />
                                 </td>
                             </tr>
                             <tr class="prop">

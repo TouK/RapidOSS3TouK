@@ -1,3 +1,4 @@
+import com.ifountain.rcmdb.domain.generation.ModelGenerationUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import groovy.xml.MarkupBuilder
 import org.apache.commons.io.FileUtils
@@ -29,6 +30,12 @@ import org.apache.commons.io.filefilter.SuffixFileFilter
 * Time: 11:44:46 AM
 * To change this template use File | Settings | File Templates.
 */
+
+VALID_MODEL_XML_PROPERTIES = ["Name", "ParentModel", "IndexName", "StorageType"]
+VALID_MODEL_PROPERTY_XML_PROPERTIES = ["Name", "Type", "Default", "IsKey", "Lazy", "Datasource", "DatasourceProperty", "NameInDatasource"]
+VALID_MODEL_DATASOURCE_XML_PROPERTIES = ["Definition", "Name", "NameProperty"]
+VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES = ["Name", "NameInDatasource"]
+VALID_MODEL_RELATION_XML_PROPERTIES = ["From", "To", "Name", "reverseName", "Type"]
 logger.info("Model creator started");
 def baseDir = System.getProperty("base.dir");
 confDir = new File("${baseDir}/grails-app/conf");
@@ -66,6 +73,7 @@ def getModelXmls()
         relations.each {relation ->
             def fromClass = relation.@From.text()
             def toClass = relation.@To.text()
+            ModelGenerationUtils.validateXmlProperties (VALID_MODEL_RELATION_XML_PROPERTIES, fromClass, relation);
             def name = relation.@Name.text()
             def reverseName = relation.@ReverseName.text()
             String type = relation.@Type.text()
@@ -99,6 +107,7 @@ def getModelXmls()
             def modelProperties = modelXml.Properties.Property;
             def modelDatasources = modelXml.Datasources.Datasource;
             def modelName = modelXml.@Name.text();
+            ModelGenerationUtils.validateXmlProperties (VALID_MODEL_XML_PROPERTIES, modelName, modelXml);
             def parentName = modelXml.@Parent.text();
             def storageType = modelXml.@StorageType.text();
             def indexName = modelXml.@IndexName.text();
@@ -120,7 +129,7 @@ def getModelXmls()
                 def keys = [];
                 modelBuilder.Properties() {
                     modelProperties.each {field ->
-
+                        ModelGenerationUtils.validateXmlProperties (VALID_MODEL_PROPERTY_XML_PROPERTIES, modelMetaProps.name, field);
                         def localName = field.@Name.text();
                         def datasource = field.@Datasource.text();
                         def nameInDatasource = field.@NameInDatasource.text();
@@ -128,9 +137,11 @@ def getModelXmls()
                         def type = field.@Type.text();
                         def defaultValue = field.@Default.text();
                         def isKey = field.@IsKey.text();
+                        def isLazy = field.@Lazy.text();
                         isKey = isKey == "true";
+                        isLazy = isLazy == "true";
 
-                        def modelPropertyConfig = [name: localName, type: type, defaultValue: defaultValue, lazy: false]
+                        def modelPropertyConfig = [name: localName, type: type, defaultValue: defaultValue, lazy: isLazy]
                         if (datasourceProperty != null && datasourceProperty != "")
                         {
                             modelPropertyConfig["datasourceProperty"] = datasourceProperty;
@@ -155,11 +166,11 @@ def getModelXmls()
                         logger.info("Creating property ${localName}");
                         if (type == "number")
                         {
-                            modelPropertyConfig["defaultvalue"] = "0";
+                            modelPropertyConfig["defaultValue"] = "0";
                         }
                         else
                         {
-                            modelPropertyConfig["defaultvalue"] = "";
+                            modelPropertyConfig["defaultValue"] = "";
                         }
 
                         modelBuilder.Property(modelPropertyConfig);
@@ -181,6 +192,7 @@ def getModelXmls()
                                 }
                     }
                     modelDatasources.each {modelDatasource ->
+                        ModelGenerationUtils.validateXmlProperties (VALID_MODEL_DATASOURCE_XML_PROPERTIES, modelName, modelDatasource);
                         def dsName = modelDatasource.@Definition.text();
                         def mappedName = modelDatasource.@Name.text();
                         def mappedNameProperty = modelDatasource.@NameProperty.text();
@@ -197,6 +209,7 @@ def getModelXmls()
                         modelBuilder.Datasource(dsConf)
                                 {
                                     datasourceKeys.each {modelDatasourceKey ->
+                                        ModelGenerationUtils.validateXmlProperties (VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES, modelName, modelDatasourceKey);
                                         def keyPropName = modelDatasourceKey.@Name.text();
                                         def keyPropNameInDatasource = modelDatasourceKey.@NameInDatasource.text();
                                         if (keyPropNameInDatasource == null || keyPropNameInDatasource == "")

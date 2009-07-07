@@ -65,6 +65,14 @@ class ModelGenerationException extends Exception{
     {
         return new ModelGenerationException("Duplicate datasource definition in model ${modelName} and parent model for datasource ${dsName}")
     }
+    public static ModelGenerationException invalidModelpropertyType(String modelName, String propertyName, String type)
+    {
+        return new ModelGenerationException("Invalid model property type ${type} for property ${propertyName} in model ${modelName}")
+    }
+    public static ModelGenerationException invalidModelRelationType(String modelName, String relationName, String type)
+    {
+        return new ModelGenerationException("Invalid model relation type ${type} for relation ${relationName} in model ${modelName}")
+    }
     public static ModelGenerationException duplicateDatasource(String dsName, String modelName)
     {
         return new ModelGenerationException("Duplicate datasource definition in model ${modelName} for datasource ${dsName}")

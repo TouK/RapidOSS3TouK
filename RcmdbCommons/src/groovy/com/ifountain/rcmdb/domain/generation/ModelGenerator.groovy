@@ -53,6 +53,7 @@ class ModelGenerator
     public static final String BOOLEAN_TYPE = "boolean"
     public static final String RELATION_TYPE_ONE = "One"
     public static final String RELATION_TYPE_MANY = "Many"
+    public static final List VALID_RELATION_CARDINALITIES = [RELATION_TYPE_MANY, RELATION_TYPE_ONE]
     public static final String MODEL_FILE_DIR = "grails-app/domain";
     public static final String TEMPLATES_FILE_DIR = "grails-app/templates/groovy";
     public static final List DEFAULT_IMPORTS = ["com.ifountain.core.domain.annotations.*"];
@@ -370,7 +371,7 @@ class ModelMetaData
     {
         def xmlModel = new XmlSlurper().parseText(modelXml);
         modelName = xmlModel.@name.text()
-        validateXmlProperties(ModelGenerator.VALID_MODEL_XML_PROPERTIES, modelName, xmlModel);
+        ModelGenerationUtils.validateXmlProperties(ModelGenerator.VALID_MODEL_XML_PROPERTIES, modelName, xmlModel);
         parentModelName = xmlModel.@parentModel == ""?null:xmlModel.@parentModel.text()
         indexName = xmlModel.@indexName.text() == ""?null:xmlModel.@indexName.text()
         storageType = xmlModel.@storageType.text() == ""?null:xmlModel.@storageType.text()
@@ -379,22 +380,12 @@ class ModelMetaData
         processRelations(xmlModel);
     }
 
-    def validateXmlProperties(expectedProps, modelName, modelXmlNode)
-    {
-        def allAttributes = modelXmlNode.attributes();
-        def invalidProps = []
-        allAttributes.each{attrName, attrValue->
-            if(!expectedProps.contains(attrName))
-            {
-                throw ModelGenerationException.unexpectedXmlProperty(modelName, attrName)
-            }
-        }
-    }
+
 
     def createDatasourceConfiguration(GPathResult model)
     {
         model.Datasources.Datasource.each{GPathResult datasource->
-            validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_XML_PROPERTIES, modelName, datasource);
+            ModelGenerationUtils.validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_XML_PROPERTIES, modelName, datasource);
             def dsConf = [:];
             def dsName = datasource.@name.text();
             def mappedName = datasource.@mappedName.text();
@@ -413,7 +404,7 @@ class ModelMetaData
             }
             def keys = [:];
             datasource.Key.each{GPathResult keyMapping->
-                validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES, modelName, keyMapping);
+                ModelGenerationUtils.validateXmlProperties(ModelGenerator.VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES, modelName, keyMapping);
                 keys[keyMapping.@propertyName.text()] = ["nameInDs":keyMapping.@nameInDatasource != ""?keyMapping.@nameInDatasource.text():keyMapping.@propertyName.text()];
             }
             dsConf["keys"] =  keys;
@@ -438,13 +429,13 @@ class ModelMetaData
         def processedProperties = [:]
         def masterKeyPropName = null;
         model.Properties.Property.each{GPathResult property->
-            validateXmlProperties(ModelGenerator.VALID_MODEL_PROPERTY_XML_PROPERTIES, modelName, property);
+            ModelGenerationUtils.validateXmlProperties(ModelGenerator.VALID_MODEL_PROPERTY_XML_PROPERTIES, modelName, property);
             def generalPropConfig = [:];
             def propertyName = property.@name.text();
             if(propertyMap.containsKey(propertyName)){
                 throw ModelGenerationException.duplicateProperty(modelName, propertyName);
             }
-            generalPropConfig["type"] =getRealType(property.@type.text());
+            generalPropConfig["type"] =getRealType(propertyName, property.@type.text());
             generalPropConfig["name"] = propertyName;
             propertyMap[propertyName] = generalPropConfig;
             propertyList += generalPropConfig;
@@ -523,6 +514,10 @@ class ModelMetaData
     {
         transientProps += name;
         def relationConfig = [:]
+        if(!ModelGenerator.VALID_RELATION_CARDINALITIES.contains(cardinality))
+        {
+            throw ModelGenerationException.invalidModelRelationType(modelName, name, cardinality);
+        }
         if(cardinality == ModelGenerator.RELATION_TYPE_ONE && oppositeCardinality == ModelGenerator.RELATION_TYPE_MANY)
         {
             relationConfig["isMany"] = true;
@@ -566,12 +561,12 @@ class ModelMetaData
     def processRelations(xmlModel)
     {
         xmlModel.Relations.Relation.each{GPathResult relation->
-            validateXmlProperties(ModelGenerator.VALID_MODEL_RELATION_XML_PROPERTIES, modelName, relation);
+            ModelGenerationUtils.validateXmlProperties(ModelGenerator.VALID_MODEL_RELATION_XML_PROPERTIES, modelName, relation);
             processRelation(relation.@cardinality.text(),relation.@reverseCardinality.text(),relation.@name.text(),relation.@reverseName.text(), relation.@toModel.text(), relation.@isOwner.text() == "true");
         }
     }
 
-    def getRealType(String type)
+    def getRealType(String propName, String type)
     {
         if(type == ModelGenerator.STRING_TYPE)
         {
@@ -595,7 +590,7 @@ class ModelMetaData
         }
         else
         {
-            return Object.simpleName;
+            throw ModelGenerationException.invalidModelpropertyType(modelName, propName,  type);
         }
     }
 

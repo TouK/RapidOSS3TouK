@@ -47,7 +47,20 @@ public class DatabaseConnection extends Connection{
         url(blank:false)
         userPassword(blank:true,  nullable:true)
         username(blank:false)
-        driver(blank:false)
+        driver(blank:false,nullable:false, validator:{val, obj ->            
+            if(val!=null )
+            {
+                try
+                {
+                    Class.forName(val)
+                }
+                catch(ClassNotFoundException e)
+                {
+                    org.apache.log4j.Logger.getRootLogger().warn("[DatabaseConnection]: Error in  domain constraint, database driver does not exist");
+                    return 'database.driver.does.not.exist';
+                }
+            }
+        })
     }
 
     static transients = [];

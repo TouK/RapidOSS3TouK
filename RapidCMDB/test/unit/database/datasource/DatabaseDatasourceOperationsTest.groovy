@@ -35,7 +35,7 @@ class DatabaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
          CompassForTests.addOperationSupport (DatabaseDatasource,DatabaseDatasourceOperations);
 
 
-         def con=DatabaseConnection.add(name:"testcon",url:"u",username:"u",driver:"d");
+         def con=DatabaseConnection.add(name:"testcon",url:"u",username:"u",driver:"com.mysql.jdbc.Driver");
          assertFalse(con.errors.toString(),con.hasErrors());
 
          def newDs=DatabaseDatasource.add(name:"testds",connection:con);

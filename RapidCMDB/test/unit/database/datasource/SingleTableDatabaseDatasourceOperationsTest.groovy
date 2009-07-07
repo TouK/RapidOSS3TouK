@@ -35,7 +35,7 @@ class SingleTableDatabaseDatasourceOperationsTest extends RapidCmdbWithCompassTe
          CompassForTests.addOperationSupport (SingleTableDatabaseDatasource,SingleTableDatabaseDatasourceOperations);
 
 
-         def con=DatabaseConnection.add(name:"testcon",url:"u",username:"u",driver:"d");
+         def con=DatabaseConnection.add(name:"testcon",url:"u",username:"u",driver:"com.mysql.jdbc.Driver");
          assertFalse(con.errors.toString(),con.hasErrors());
 
          def newDs=SingleTableDatabaseDatasource.add(name:"testds",connection:con,tableName:"t",tableKeys:"k");

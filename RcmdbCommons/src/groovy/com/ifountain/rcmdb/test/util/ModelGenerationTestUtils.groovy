@@ -86,7 +86,7 @@ class ModelGenerationTestUtils {
                     def keys = dsProps.remove("keys")
                     modelbuilder.Datasource(dsProps){
                         keys.each{keyPropConfig->
-                            modelbuilder.Key(propertyName:keyPropConfig.propertyName, nameInDs:keyPropConfig.nameInDatasource)
+                            modelbuilder.Key(propertyName:keyPropConfig.propertyName, nameInDatasource:keyPropConfig.nameInDatasource)
                         }
                     }
                 }

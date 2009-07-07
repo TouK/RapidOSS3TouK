@@ -55,22 +55,22 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
+        DbUtils.createDatabase(config)
 
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
     }
 
     public void testGraphWithArea() throws Exception{
-         createDatabase();
+        createDatabase();
 
         Map config = [:]
 

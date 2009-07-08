@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.log4j.Logger
 import script.CmdbScript
 import script.CmdbScriptOperations
+import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -33,6 +34,7 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         initializeScriptManager();
         initialize([CmdbScript], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
+        DatasourceConversionUtils.registerDefaultConverters();
 
     }
     public void tearDown() {
@@ -148,13 +150,18 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         ds.listeningAdapter = new BaseListeningAdapterMock();
         runner.start(ds);
         assertEquals(AdapterStateProvider.STARTED, runner.getState());
-        def data = ["param1": "value1"]
+        def data = ["param1": "value1", "param2": new BigDecimal(1)];
         ds.listeningAdapter.update(ds.listeningAdapter, data);
         def receivedObjects = DataStore.get("receivedObjects");
         assertNotNull(receivedObjects);
         assertEquals(1, receivedObjects.size());
         def receivedData = receivedObjects.get(0);
         assertEquals("value1", receivedData["param1"]);
+
+        //conversion
+        assertEquals(Double.class, receivedData["param2"].class);
+        assertEquals(new Double(1), receivedData["param2"]);
+        
         runner.stop();
         runner.cleanUp();
         def logger  = CmdbScript.getScriptLogger(ds.listeningScript);

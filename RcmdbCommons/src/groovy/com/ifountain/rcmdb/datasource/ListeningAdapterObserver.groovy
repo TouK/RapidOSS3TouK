@@ -1,5 +1,7 @@
 package com.ifountain.rcmdb.datasource
 
+import com.ifountain.comp.converter.ConverterRegistry
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -32,7 +34,7 @@ class ListeningAdapterObserver implements Observer{
     }
     public void update(Observable o, Object arg) {
         try{
-             scriptInstance.update(arg);
+             scriptInstance.update(ConverterRegistry.getInstance().convert(arg));
         }
         catch(e){
             logger.warn("Error occurred in update method of script " + scriptInstance + ". Reason: " + e.getMessage(), e)

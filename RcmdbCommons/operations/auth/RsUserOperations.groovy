@@ -40,7 +40,9 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
 
         user.update(params);
-        user.addEmail(params.email);
+        if (!user.hasErrors()) {
+            user.addEmail(params.email);
+        }
 
         return user;
     }

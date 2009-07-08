@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.exception.MessageSourceException
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,7 +25,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         return passwordHash == hashPassword(passwordParam);
     }
-    public static RsUser updateUser(user, params)
+    public static def updateUser(user, params,returnAllModels=false)
     {
         if (params.password != null)
         {
@@ -39,27 +40,51 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             }
         }
 
+        def emailInformation=user.retrieveEmailInformation();
+
+        def oldProperties=[:];
+        oldProperties[user] = ControllerUtils.backupOldData(user, params);
+        
         user.update(params);
+
+
         if (!user.hasErrors()) {
-            user.addEmail(params.email);
+            emailInformation=user.addEmail(params.email);
+            if(emailInformation.hasErrors())
+            {
+                restoreOldData(oldProperties);
+            }
         }
 
-        return user;
+        if(returnAllModels)
+        {
+            return [rsUser:user,emailInformation:emailInformation]
+        }
+        else
+        {
+            return user;
+        }
     }
-    public static RsUser addUser(params)
+    private static void restoreOldData(oldProperties)
     {
-        return _addUser(params,false);
+        oldProperties.each {object, oldObjectProperties ->
+            object.update(oldObjectProperties);
+        }
     }
-    public static RsUser addUniqueUser(params)
+    public static def addUser(params,returnAllModels=false)
     {
-        return _addUser(params,true);
+        return _addUser(params,false,returnAllModels);
     }
-    private static RsUser _addUser(params,boolean addUnique)
+    public static def addUniqueUser(params,returnAllModels=false)
+    {
+        return _addUser(params,true,returnAllModels);
+    }
+    private static def _addUser(params,boolean addUnique,boolean returnAllModels)
     {
         params.passwordHash = hashPassword(params.password);
 
         def rsUser = null;
-
+        def emailInformation=null;
 
         if (params.groups == null || params.groups.isEmpty())
         {
@@ -78,10 +103,26 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
 
         if (!rsUser.hasErrors()) {
-            rsUser.addEmail(params.email);
+            emailInformation=rsUser.addEmail(params.email);
+            if(emailInformation.hasErrors())
+            {
+                rsUser.remove();
+            }
         }
 
-        return rsUser;
+        if(returnAllModels)
+        {
+            if(emailInformation==null)
+            {
+               emailInformation=new ChannelUserInformation();
+               emailInformation.setPropertyWithoutUpdate("destination",params.email);
+            }
+            return [rsUser:rsUser,emailInformation:emailInformation]
+        }
+        else
+        {
+            return rsUser;
+        }
     }
 
 
@@ -142,21 +183,31 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         params.userId = id;
         params.type = "ldap"
         def ldapInformation = LdapUserInformation.add(params)
-        addRelation(userInformations: ldapInformation);
+        if(!ldapInformation.hasErrors())
+        {
+            addRelation(userInformations: ldapInformation);
+        }
         return ldapInformation;
     }
 
     def addEmail(email) {
         def emailInformation = ChannelUserInformation.add(userId: id, type: "email", destination: email)
-        addRelation(userInformations: emailInformation);
+        if(!emailInformation.hasErrors())
+        {
+            addRelation(userInformations: emailInformation);
+        }
         return emailInformation;
     }
 
     def retrieveEmail() {
-        def emailInformation = ChannelUserInformation.get(userId: id, type: "email");
+        def emailInformation = retrieveEmailInformation();
         if (emailInformation != null) {
             return emailInformation.destination;
         }
         return "";
+    }
+
+    def retrieveEmailInformation() {
+        return ChannelUserInformation.get(userId: id, type: "email");
     }
 }

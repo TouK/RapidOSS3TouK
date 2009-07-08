@@ -12,7 +12,7 @@
 </div>
 <div class="body">
     <h1>Edit User</h1>
-    <g:render template="/common/messages" model="[flash:flash, beans:[rsUser]]"></g:render>
+    <g:render template="/common/messages" model="[flash:flash, beans:[rsUser,emailInformation]]"></g:render>
     <g:form method="post">
         <input type="hidden" name="id" value="${rsUser?.id}"/>
         <div class="dialog">
@@ -51,7 +51,7 @@
                             <label for="email">Email:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: rsUser, field: 'email', 'errors')}">
-                            <input type="text" id="email" name="email" value="${fieldValue(bean: rsUser, field: 'email')}"/>
+                            <input type="text" id="email" name="email" value="${fieldValue(bean: emailInformation, field: 'destination')}"/>
                         </td>
                     </tr>
 

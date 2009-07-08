@@ -18,7 +18,6 @@
 */
 package auth
 
-import org.jsecurity.SecurityUtils
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.exception.MessageSourceException
 
@@ -77,7 +76,7 @@ class RsUserController {
         }
         else {
             def availableGroups = availableGroupsForUserGroups(rsUser.groups);
-            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:rsUser.groups]
+            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:rsUser.groups,emailInformation:rsUser.retrieveEmailInformation()]
         }
     }
 
@@ -92,29 +91,6 @@ class RsUserController {
         return availableGroups.findAll {!userGroupNames.containsKey(it.name)}
     }
 
-
-    def changeProfileData = {
-        def rsUser = RsUser.get(username: params.username)
-        if (rsUser) {
-
-            withFormat {
-                xml {
-                    render(contentType: "text/xml") {
-                        Edit {
-                            email(rsUser.email)
-                        }
-                    }
-
-                }
-            }
-        }
-        else {
-            addError("default.object.not.found", [RsUser.class.name, params.username]);
-            withFormat {
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-        }
-    }
     def changeProfile = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
@@ -144,15 +120,26 @@ class RsUserController {
 
 
             updateParams.email = params["email"]
-            RsUser.updateUser(rsUser,updateParams)
-            if (!rsUser.hasErrors()) {
+            
+            def updatedObjects=RsUser.updateUser(rsUser,updateParams,true);
+            rsUser=updatedObjects.rsUser;
+            def emailInformation=updatedObjects.emailInformation;
+
+            if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
                 withFormat {
                     xml {render(text: ControllerUtils.convertSuccessToXml("Profile changed."), contentType: "text/xml")}
                 }
             }
             else {
                 withFormat {
-                    xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
+                    if(rsUser.hasErrors())
+                    {
+                        xml {render(text: errorsToXml(rsUser.errors), contentType: "text/xml")}
+                    }
+                    else if(emailInformation.hasErrors())
+                    {
+                       xml {render(text: errorsToXml(emailInformation.errors), contentType: "text/xml")}
+                    }
                 }
             }
         }
@@ -166,7 +153,7 @@ class RsUserController {
 
     def update = {
         def rsUser = RsUser.get(id: params.id)
-
+        def emailInformation=rsUser.retrieveEmailInformation();
         if (rsUser) {
             def exception=null;
 
@@ -179,8 +166,11 @@ class RsUserController {
             if(exception==null)
             {
                 userProps.password= params["password1"];
+                userProps.email = params["email"]
                 try{
-                    rsUser=RsUser.updateUser(rsUser,userProps);
+                    def updatedObjects=RsUser.updateUser(rsUser,userProps,true);
+                    rsUser=updatedObjects.rsUser;
+                    emailInformation=updatedObjects.emailInformation;
                 }
                 catch(MessageSourceException e)
                 {
@@ -198,17 +188,17 @@ class RsUserController {
                 userProps.each {String propName, value ->
                     rsUser.setProperty(propName, value, false);
                 }
-                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups])
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
                 return;
             }
             else
             {
-                if (!rsUser.hasErrors()) {
+                if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
                     flash.message = "User ${params.id} updated"
                     redirect(action: show, id: rsUser.id)
                 }
                 else {
-                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups])
+                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
                 }
             }
 
@@ -222,7 +212,7 @@ class RsUserController {
     def create = {
         def rsUser = new RsUser()
         rsUser.properties = params
-        return ['rsUser': rsUser, availableGroups: Group.list(),userGroups:[]]
+        return ['rsUser': rsUser, availableGroups: Group.list(),userGroups:[],'emailInformation':new ChannelUserInformation()]
     }
 
     def save = {
@@ -234,13 +224,16 @@ class RsUserController {
         }
 
 
-        def rsUser=null;
+        def createdObjects=null;
+
+
 
         if(exception==null)
         {
             userProps.password= params["password1"];
+            userProps.email = params["email"]
             try{
-                rsUser=RsUser.addUniqueUser(userProps);
+                createdObjects=RsUser.addUniqueUser(userProps,true);
             }
             catch(MessageSourceException e)
             {
@@ -256,17 +249,22 @@ class RsUserController {
             flash.errors = this.errors;
             userProps.remove("id");
             def tmpUser = new RsUser(userProps);
-            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups])
+            def tmpEmailInformation=new ChannelUserInformation();
+            tmpEmailInformation.setPropertyWithoutUpdate("destination",params.email);
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:tmpEmailInformation])
             return;
         }
         else
         {
-            if (!rsUser.hasErrors()) {
+            def rsUser=createdObjects.rsUser;
+            def emailInformation=createdObjects.emailInformation;
+
+            if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
                flash.message = "User ${rsUser.id} created"
                redirect(action: show, id: rsUser.id)
             }
             else {
-                render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups])
+                render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
             }
         }
     }

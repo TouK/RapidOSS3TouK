@@ -6,6 +6,8 @@ import org.codehaus.groovy.runtime.InvokerHelper
 import org.codehaus.groovy.reflection.CachedMethod
 import com.ifountain.annotations.Description
 import java.lang.reflect.Modifier
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import org.codehaus.groovy.reflection.CachedClass
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,12 +33,12 @@ public class GetOperationsMethod {
         if(operationClass != null)
         {
             def domainMethods = [:]
-            mc.getMethods().each{
-                domainMethods[it.name] = it.name;
+            mc.getMethods().each{MetaMethod method->
+                domainMethods[method.name] = method.name;
             }
 
             operationClass.getMethods().each{Method method->
-                if(!domainMethods.containsKey(method.name))
+                if(!domainMethods.containsKey(method.name) && AbstractDomainOperation.metaClass.getMetaMethod(method.name, method.getParameterTypes()) == null)
                 {
                     Description annotation = method.getAnnotation(Description);
                     operationList.add(new OperationMethod(name:method.name, parameters:method.getParameterTypes(), isStatic:Modifier.isStatic(method.modifiers), isPublic:!Modifier.isPrivate(method.modifiers),returnType:method.getReturnType(), description:annotation?annotation.value():""));

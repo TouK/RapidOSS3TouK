@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,7 +37,7 @@ class GetOperationsMethodTest extends RapidCmdbTestCase{
 
         }
         def operationsClassText = """
-        class ${operationClassName}{
+        class ${operationClassName} extends ${AbstractDomainOperation.class.name}{
             ${methodText}
         }
         """

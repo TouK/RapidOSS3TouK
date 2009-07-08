@@ -22,7 +22,7 @@ class RsUser {
     def static final String RSADMIN = "rsadmin";
     def static final String DEFAULT_PASSWORD = "changeme";
     static searchable = {
-        except: ["groups", "permissionRelations", "userInformations"]
+        except= ["groups", "permissionRelations", "userInformations"]
     };
     Long id;
     Long version;

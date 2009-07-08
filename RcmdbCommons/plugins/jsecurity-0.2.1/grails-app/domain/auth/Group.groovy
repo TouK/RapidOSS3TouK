@@ -47,7 +47,7 @@ class Group
     static relations = [
             users: [type: RsUser, reverseName: "groups", isMany: true],
             role: [type: Role, reverseName: "groups", isMany: false],
-            filters: [type: SegmentFilter, reverseName: "groups", isMany: true]
+            filters: [type: SegmentFilter, reverseName: "group", isMany: true]
     ]
     static constraints = {
         name(key:[],blank: false, nullable: false)

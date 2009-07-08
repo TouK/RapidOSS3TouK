@@ -42,7 +42,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
             class ${domainClassName1}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
                 static searchable = {
-                    except:["rel1"]
+                    except=["rel1"]
                 }
                 Long id;
                 Long version;
@@ -53,7 +53,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
             class ${domainClassName2}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
                 static searchable = {
-                    except:["revRel1"]
+                    except=["revRel1"]
                 }
                 Long id;
                 Long version;

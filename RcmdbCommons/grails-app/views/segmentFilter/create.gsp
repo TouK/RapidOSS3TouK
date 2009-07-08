@@ -44,6 +44,7 @@
             </table>
         </div>
         <div class="buttons">
+            <input type="hidden" name="group.id" value="${fieldValue(bean: segmentFilter, field: 'groupId')}"/>
             <input type="hidden" name="groupId" value="${fieldValue(bean: segmentFilter, field: 'groupId')}"/>
             <input type="hidden" name="targetURI" value="${params['targetURI']}"/>
             <span class="button"><input class="save" type="submit" value="Create"/></span>

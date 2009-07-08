@@ -138,7 +138,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
     public void testClassBasedSegmentationWithNoParent() {
         userGroup.update(segmentFilterType: Group.CLASS_BASED_FILTER);
         def classFilter = "rootProp:a*"
-        SegmentFilter.add(className: rootClass.name, filter: classFilter, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: rootClass.name, filter: classFilter, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "bb")
@@ -153,7 +153,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
     public void testChildClassHavingSegmentFilter() {
         userGroup.update(segmentFilterType: Group.CLASS_BASED_FILTER);
         def classFilter = "parentProp1:a*"
-        SegmentFilter.add(className: parentClass1.name, filter: classFilter, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass1.name, filter: classFilter, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def parent1Object1 = parentClass1.add(keyProp: "key2", parentProp1: "aa")
@@ -193,7 +193,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
     public void testParentClassHavingSegmentFilter() {
         userGroup.update(segmentFilterType: Group.CLASS_BASED_FILTER);
         def classFilter = "rootProp:a*"
-        SegmentFilter.add(className: rootClass.name, filter: classFilter, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: rootClass.name, filter: classFilter, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "bb")
@@ -233,8 +233,8 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         userGroup.update(segmentFilterType: Group.CLASS_BASED_FILTER);
         def parentClassFilter = "parentProp1:a*"
         def leafClassFilter = "rootProp:a*"
-        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "bb")
@@ -293,9 +293,9 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def parentClassFilter = "rootProp:aa*"
         def leafClassFilter = "rootProp:aaa*"
 
-        SegmentFilter.add(className: rootClass.name, filter: rootClassFilter, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: rootClass.name, filter: rootClassFilter, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "bb")
@@ -374,9 +374,9 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def parentClassFilter1 = "rootProp:aa*"
         def parentClassFilter2 = "rootProp:ab*"
 
-        SegmentFilter.add(className: rootClass.name, filter: rootClassFilter, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter1, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: parentClass2.name, filter: parentClassFilter2, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: rootClass.name, filter: rootClassFilter, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter1, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass2.name, filter: parentClassFilter2, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "aa")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "bb")
@@ -443,9 +443,9 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def leafClassFilter1 = "rootProp:aa*"
         def leafClassFilter2 = "rootProp:ab*"
 
-        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter1, groups: [userGroup], groupId: userGroup.id);
-        SegmentFilter.add(className: leafClass2.name, filter: leafClassFilter2, groups: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: parentClass1.name, filter: parentClassFilter, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: leafClass1.name, filter: leafClassFilter1, group: [userGroup], groupId: userGroup.id);
+        SegmentFilter.add(className: leafClass2.name, filter: leafClassFilter2, group: [userGroup], groupId: userGroup.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "b")
 
@@ -502,8 +502,8 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         user.addToGroups([group2, group3]);
 
         userGroup.update(segmentFilter:segmentFilter1);
-        SegmentFilter.add(className: rootClass.name, filter: segmentFilter2, groups: [group2], groupId: group2.id);
-        SegmentFilter.add(className: rootClass.name, filter: segmentFilter3, groups: [group3], groupId: group3.id);
+        SegmentFilter.add(className: rootClass.name, filter: segmentFilter2, group: [group2], groupId: group2.id);
+        SegmentFilter.add(className: rootClass.name, filter: segmentFilter3, group: [group3], groupId: group3.id);
 
         def rootObject1 = rootClass.add(keyProp: "key1", rootProp: "a")
         def rootObject2 = rootClass.add(keyProp: "key2", rootProp: "b")

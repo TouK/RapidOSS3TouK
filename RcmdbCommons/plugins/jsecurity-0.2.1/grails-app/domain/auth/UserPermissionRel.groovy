@@ -19,7 +19,7 @@
 package auth;
 class UserPermissionRel {
     static searchable = {
-        except:["permission", "rsUser", "errors", "__operation_class__"]
+        except=["permission", "rsUser", "errors", "__operation_class__"]
      };
     RsUser rsUser
     Permission permission

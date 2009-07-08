@@ -26,7 +26,7 @@ package application
  */
 class ObjectId {
     static searchable = {
-        except:["errors", "__operation_class__"]
+        except=["errors", "__operation_class__"]
     };
     Long id;
     String rsOwner = "p"

@@ -21,7 +21,7 @@ package model
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 class ModelDatasourceKeyMapping {
     static searchable = {
-        except:["datasource", "property", "__operation_class__", "errors"]
+        except=["datasource", "property", "__operation_class__", "errors"]
     };
     ModelProperty property;
     String rsOwner = "p"

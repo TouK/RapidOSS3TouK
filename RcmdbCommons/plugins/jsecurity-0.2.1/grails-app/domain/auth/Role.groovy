@@ -22,7 +22,7 @@ class Role {
     def static final String USER = "User";
 
     static searchable = {
-        except:["permissionRelations", "groups", "errors", "__operation_class__"]
+        except=["permissionRelations", "groups", "errors", "__operation_class__"]
      };
     Long id; 
     Long version;

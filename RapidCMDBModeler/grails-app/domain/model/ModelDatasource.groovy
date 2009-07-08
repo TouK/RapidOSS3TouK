@@ -20,7 +20,7 @@ package model
 
 class ModelDatasource {
     static searchable = {
-        except:["model","keyMappings","datasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
+        except=["model","keyMappings","datasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
     };
     Long id;
     Long version;

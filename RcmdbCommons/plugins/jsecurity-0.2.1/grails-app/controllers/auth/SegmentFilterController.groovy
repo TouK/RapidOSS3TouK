@@ -103,10 +103,6 @@ class SegmentFilterController {
 
     def save = {
         def addParams = ControllerUtils.getClassProperties(params, SegmentFilter)
-        def group = Group.get(id:params.groupId);
-        if(group){
-            addParams['groups'] = [group]
-        }
         def segmentFilter = SegmentFilter.add(addParams)
         if (!segmentFilter.hasErrors()) {
             flash.message = "SegmentFilter ${segmentFilter.id} created"

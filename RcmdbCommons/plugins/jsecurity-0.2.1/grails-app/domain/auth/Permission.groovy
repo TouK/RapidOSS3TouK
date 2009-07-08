@@ -19,7 +19,7 @@
 package auth;
 class Permission {
      static searchable = {
-        except:["userRelations", "roleRelations", "errors", "__operation_class__"]    
+        except=["userRelations", "roleRelations", "errors", "__operation_class__"]    
      };
     String type
     String rsOwner = "p"

@@ -22,7 +22,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelRelation {
      static searchable = {
-         except:["firstModel", "secondModel", "errors", "__operation_class__"]
+         except=["firstModel", "secondModel", "errors", "__operation_class__"]
      };
      public static String ONE = "One";
      public static String MANY = "Many";

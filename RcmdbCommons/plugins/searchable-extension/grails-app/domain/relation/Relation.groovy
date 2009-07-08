@@ -26,7 +26,7 @@ package relation
  */
 class Relation {
     static searchable = {
-        except:["errors", "__operation_class__"]
+        except=["errors", "__operation_class__"]
     };
     Long id;
     Long version;

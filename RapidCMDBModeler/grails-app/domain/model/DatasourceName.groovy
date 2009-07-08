@@ -19,7 +19,7 @@
 package model;
 class DatasourceName {
      static searchable = {
-         except:["modelDatasources", "__operation_class__", "errors"]
+         except=["modelDatasources", "__operation_class__", "errors"]
      };
      static cascaded = [modelDatasources:true]
      static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]

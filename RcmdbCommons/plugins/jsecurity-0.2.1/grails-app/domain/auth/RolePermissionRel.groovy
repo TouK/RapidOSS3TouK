@@ -19,7 +19,7 @@
 package auth;
 class RolePermissionRel {
    static searchable = {
-        except:["permission", "role", "errors", "__operation_class__"]
+        except=["permission", "role", "errors", "__operation_class__"]
      };
     Role role
     Permission permission

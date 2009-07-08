@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelProperty {
     static searchable = {
-        except:["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource", "errors", "__operation_class__"]
+        except=["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource", "errors", "__operation_class__"]
     };
     def static final String stringType = "string";
     def static final String numberType = "number";

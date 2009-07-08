@@ -9,7 +9,7 @@ package auth
 class SegmentFilter {
     
     static searchable = {
-        except:["errors", "__operation_class__", "__is_federated_properties_loaded__", "groups"]
+        except=["errors", "__operation_class__", "__is_federated_properties_loaded__", "group"]
      };
     static datasources = ["RCMDB": ["keys": ["className": ["nameInDs": "className"], "groupId": ["nameInDs": "groupId"]]]]
     Long id;
@@ -18,21 +18,22 @@ class SegmentFilter {
     String className = ""
     String filter = "";
     Long groupId = 0;
-    List groups = [];
+    Group group;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
     static relations = [
-        groups: [type: Group, reverseName: "filters", isMany: true]
+        group: [type: Group, reverseName: "filters", isMany: false]
     ]
     static constraints = {
         className(key: ["groupId"], nullable: false, blank: false)
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)
         errors(nullable:true)
+        group(nullable:true)
         filter(blank:true, nullable:false);
     }
-     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "groups"];
+     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "group"];
 
     String toString(){
         return "$className";

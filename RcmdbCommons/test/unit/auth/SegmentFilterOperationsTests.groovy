@@ -29,7 +29,7 @@ class SegmentFilterOperationsTests extends RapidCmdbWithCompassTestCase {
 
         SegmentQueryHelper.getInstance().removeGroupFilters(groupName);
 
-        def segmentFilter = SegmentFilter.add(className:"RsEvent", filter:"alias:*", groups:[group], groupId:group.id);
+        def segmentFilter = SegmentFilter.add(className:"RsEvent", filter:"alias:*", group:group, groupId:group.id);
 
         assertNotNull(SegmentQueryHelper.getInstance().getGroupFilters(groupName))
 

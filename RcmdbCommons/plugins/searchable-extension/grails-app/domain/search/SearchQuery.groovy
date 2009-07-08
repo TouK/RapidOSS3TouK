@@ -28,7 +28,7 @@ import auth.RsUser;
 */
 class SearchQuery {
     static searchable = {
-        except: ["group", "errors","__operation_class__"]
+        except=["group", "errors","__operation_class__"]
     };
     Long id;
     Long version;

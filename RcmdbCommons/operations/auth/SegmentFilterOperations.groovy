@@ -23,11 +23,11 @@ class SegmentFilterOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     def calculateGroupFilters() {
         def segmentGroup = null;
-        if (groups.size() == 0) {
+        if (group == null) {
             segmentGroup = Group.get(id: groupId)
         }
         else{
-            segmentGroup = groups[0]
+            segmentGroup = group
         }
         if (segmentGroup != null) {
             SegmentQueryHelper.getInstance().calculateGroupFilters(segmentGroup.name)

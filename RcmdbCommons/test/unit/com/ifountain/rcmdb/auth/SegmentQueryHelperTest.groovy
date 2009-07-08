@@ -36,9 +36,9 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
 
         def segmentFilter = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.GLOBAL_FILTER, segmentFilter: segmentFilter);
-        def filter1 = SegmentFilter.add(className: RapidCmdbWithCompassTestCase.class.name, groupId: group.id, filter: "alias:*", groups: [group])
+        def filter1 = SegmentFilter.add(className: RapidCmdbWithCompassTestCase.class.name, groupId: group.id, filter: "alias:*", group: [group])
         assertFalse(filter1.hasErrors());
-        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", groups: [group])
+        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", group: [group])
         assertFalse(filter2.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -58,9 +58,9 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
 
         def segmentFilter = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER, segmentFilter: segmentFilter);
-        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: "alias:*", groups: [group])
+        def filter1 = SegmentFilter.add(className: SegmentQueryHelper.class.name, groupId: group.id, filter: "alias:*", group: [group])
         assertFalse(filter1.hasErrors());
-        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", groups: [group])
+        def filter2 = SegmentFilter.add(className: SegmentQueryHelperTest.class.name, groupId: group.id, filter: "alias:*", group: [group])
         assertFalse(filter2.hasErrors());
 
         def filter3 = SegmentFilter.add(className: Date.class.name, groupId: group.id, filter: "alias:*", group: group)
@@ -90,7 +90,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def query = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: query, groups: [group])
+        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: query, group: [group])
         assertFalse(filter1.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -113,7 +113,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def query = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: query, groups: [group])
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: query, group: [group])
         assertFalse(filter1.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -135,11 +135,11 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def parentQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: parentQuery, groups: [group])
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: parentQuery, group: [group])
         assertFalse(filter1.hasErrors());
 
         def childQuery = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: childQuery, groups: [group])
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: childQuery, group: [group])
         assertFalse(filter2.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -161,15 +161,15 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def rootQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, groups: [group])
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, group: [group])
         assertFalse(filter1.hasErrors());
 
         def parentQuery = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, groups: [group])
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, group: [group])
         assertFalse(filter2.hasErrors());
 
         def childQuery = "description:b*";
-        def filter3 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: childQuery, groups: [group])
+        def filter3 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: childQuery, group: [group])
         assertFalse(filter3.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -201,15 +201,15 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def rootQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, groups: [group])
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: rootQuery, group: [group])
         assertFalse(filter1.hasErrors());
 
         def parentQuery1 = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery1, groups: [group])
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery1, group: [group])
         assertFalse(filter2.hasErrors());
 
         def parentQuery2 = "description:b*";
-        def filter3 = SegmentFilter.add(className: IOException.class.name, groupId: group.id, filter: parentQuery2, groups: [group])
+        def filter3 = SegmentFilter.add(className: IOException.class.name, groupId: group.id, filter: parentQuery2, group: [group])
         assertFalse(filter3.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
@@ -241,15 +241,15 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def groupName = "group1"
         def parentQuery = "name:a*";
         def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER);
-        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, groups: [group])
+        def filter1 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: parentQuery, group: [group])
         assertFalse(filter1.hasErrors());
 
         def leafQuery1 = "displayName:b*";
-        def filter2 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: leafQuery1, groups: [group])
+        def filter2 = SegmentFilter.add(className: ConcurrentModificationException.class.name, groupId: group.id, filter: leafQuery1, group: [group])
         assertFalse(filter2.hasErrors());
 
         def leafQuery2 = "description:b*";
-        def filter3 = SegmentFilter.add(className: IllegalArgumentException.class.name, groupId: group.id, filter: leafQuery2, groups: [group])
+        def filter3 = SegmentFilter.add(className: IllegalArgumentException.class.name, groupId: group.id, filter: leafQuery2, group: [group])
         assertFalse(filter3.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);

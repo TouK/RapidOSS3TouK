@@ -31,7 +31,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter
 * To change this template use File | Settings | File Templates.
 */
 
-VALID_MODEL_XML_PROPERTIES = ["Name", "ParentModel", "IndexName", "StorageType"]
+VALID_MODEL_XML_PROPERTIES = ["Name", "Parent", "IndexName", "StorageType"]
 VALID_MODEL_PROPERTY_XML_PROPERTIES = ["Name", "Type", "Default", "IsKey", "Lazy", "Datasource", "DatasourceProperty", "NameInDatasource"]
 VALID_MODEL_DATASOURCE_XML_PROPERTIES = ["Definition", "Name", "NameProperty"]
 VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES = ["Name", "NameInDatasource"]

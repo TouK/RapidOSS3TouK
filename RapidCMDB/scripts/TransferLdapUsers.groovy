@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -17,20 +17,9 @@
 * USA.
 */
 
-import javax.naming.AuthenticationException
-import javax.naming.Context
 import javax.naming.NamingException
-import javax.naming.directory.BasicAttribute
-import javax.naming.directory.BasicAttributes
-import javax.naming.directory.InitialDirContext
-
-import javax.naming.directory.DirContext
-import javax.naming.NameNotFoundException
-
 import connection.LdapConnection
 import auth.RsUser
-import auth.LdapUserInformation
-import auth.RsUserInformation
 
 
 

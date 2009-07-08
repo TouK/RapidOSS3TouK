@@ -140,6 +140,8 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def expectedDatasources = []
         for (i in 0..9) {
             BaseDatasource ds = BaseDatasource.add(name: "ds${i}");
+            //prop to be escaped;
+            ds.rsOwner = "\"p";
             expectedDatasources.add([id:ds.id.toString(), rsAlias:BaseDatasource.class.name, rsOwner:ds.rsOwner, name:ds.name])
         }
         expectedDatasources = expectedDatasources.sort{it.name}.reverse()
@@ -224,7 +226,8 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             assertEquals(expectedProperties.size(), obj.size())
             def baseDsProps = expectedObjectPropValues[i];
             baseDsProps.each{String propName, Object value->
-                assertEquals(obj.toString(), "\"${value}\"".toString(), obj["\"${propName}\""]);
+                String escapedValue = value.toString().replaceAll("\"", "\"\"");
+                assertEquals(obj.toString(), "\"${escapedValue}\"".toString(), obj["\"${propName}\""]);
             }
         }
     }

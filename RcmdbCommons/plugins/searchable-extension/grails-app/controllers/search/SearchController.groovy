@@ -127,7 +127,8 @@ class SearchController {
                 def properties = [:]
                 propertyMap.each{key, value ->
                     if(props.containsKey(key)){
-                        properties.put(key, "\"${props.get(key)}\"");
+                        String escapedProperty = props.get(key).toString().replaceAll("\"", "\"\"");
+                        properties.put(key, "\"${escapedProperty}\"");
                     }
                     else{
                         properties.put(key, "\"\"");

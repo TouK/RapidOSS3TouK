@@ -75,9 +75,22 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         }
 
         Class mappedClass = grailsDomainClass.getClazz();
+        GrailsDomainClass parentDomainClass = null;
+        for(Iterator it=searchableGrailsDomainClasses.iterator();it.hasNext();)
+        {
+            GrailsDomainClass tmpParentDomainClass = (GrailsDomainClass)it.next();
+            if(tmpParentDomainClass.getClazz().getName().equals(grailsDomainClass.getClazz().getSuperclass().getName()))
+            {
+                parentDomainClass = tmpParentDomainClass;
+                break;
+            }
+        }
+        //TODO:except in parent classes had no effect on child. It is fixed by just only mapping self properties parent props are being merged
+        //TODO:in another method
+        List selfProps = getSelfPropertyList(grailsDomainClass, parentDomainClass);
         List properties = new ArrayList();
-        for (int i = 0, max = grailsDomainClass.getProperties().length; i < max; i++) {
-            GrailsDomainClassProperty property = grailsDomainClass.getProperties()[i];
+        for (int i = 0, max = selfProps.size(); i < max; i++) {
+            GrailsDomainClassProperty property = (GrailsDomainClassProperty)selfProps.get(i);
             String propertyName = property.getName();
             if (propertyName.equals("id")) { // TODO refactor with specific id mapping
                 continue;
@@ -97,6 +110,37 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
             properties.add(property);
         }
         return (GrailsDomainClassProperty[]) properties.toArray(new GrailsDomainClassProperty[properties.size()]);
+    }
+
+
+    private static List getSelfPropertyList(GrailsDomainClass domainClass, GrailsDomainClass parentClass)
+    {
+        GrailsDomainClassProperty[] properties = domainClass.getProperties();
+        List parentProperties = new ArrayList();
+        if(parentClass != null)
+        {
+            parentProperties.addAll(Arrays.asList(parentClass.getProperties()));
+        }
+        List selfDomainClassProperties = new ArrayList();
+        for(int i=0; i < properties.length; i++)
+        {
+            GrailsDomainClassProperty prop = properties[i];
+            boolean found = false;
+            for(int j=0; j < parentProperties.size(); j++)
+            {
+                GrailsDomainClassProperty parentProp = (GrailsDomainClassProperty)parentProperties.get(j);
+                if(parentProp.getName().equals(prop.getName()))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                selfDomainClassProperties.add(prop);
+            }
+        }
+        return selfDomainClassProperties;
     }
 
     /**

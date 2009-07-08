@@ -6,6 +6,7 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
+import java.text.NumberFormat
 
 /**
 * Created by IntelliJ IDEA.
@@ -21,6 +22,7 @@ class DbUtilsTests extends RapidCoreTestCase {
     protected void setUp() {
         super.setUp();
         new File(rrdFileName).delete();
+        new File(rrdFileName+".xml").delete();
     }
 
     protected void tearDown() {
@@ -475,7 +477,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:100,
+                                            rows:30,
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -493,6 +495,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         RrdDb rrdDb = new RrdDb(rrdFileName);
+        rrdDb.exportXml (rrdFileName+".xml");
         /* note that Jrobin works with time in seconds not milliseconds as java do */
         FetchRequest fetchRequest = rrdDb.createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
@@ -621,6 +624,12 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             xff:0.5,
                                             steps:1,
                                             rows:30,
+                                        ],
+                                        [
+                                            function:"MIN",
+                                            xff:0.5,
+                                            steps:2,
+                                            rows:30,
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -637,7 +646,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303600000:2900:4");
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
-        DbUtils.fetchAllData(rrdFileName);
+        DbUtils.fetchAllDataToXml(rrdFileName,rrdFileName+"fetcdata2.xml");
     }
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
@@ -676,4 +685,125 @@ class DbUtilsTests extends RapidCoreTestCase {
 
     }
 
+    public void testFetchhOneDatasourceToXml() throws Exception{
+
+        new File(rrdFileName+".xml").delete();
+
+        createDatabase();
+
+        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
+        String xmlFile = rrdFileName+".xml";
+        DbUtils.fetchDataToXml (rrdFileName, "b", "AVERAGE", 978300900000L, 978360900000L, xmlFile);
+        assertTrue(new File(xmlFile).exists());
+        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000));
+        assertEquals ("Values in xml file are not proper", 2.0d, actualData);
+    }
+
+    public void testWriteMultipleDatasourceToXml() throws Exception{
+        createDatabase();
+
+        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
+        String xmlFile = rrdFileName+".xml"
+        String[] dataPoints = new String[2];
+        dataPoints[0] = "a";
+        dataPoints[1] = "b";
+        DbUtils.fetchDataToXml (rrdFileName, dataPoints, "AVERAGE", 978300900000L, 978303900000L, xmlFile);
+        assertTrue(new File(xmlFile).exists());
+        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000));
+        DecimalFormat formatter = new DecimalFormat("#.#");
+        actualData = Double.parseDouble(formatter.format(actualData));
+        assertEquals ("Values in xml file are not proper", 1.3d, actualData);
+    }
+
+    public void testConvertingXml() throws Exception{
+        createDatabase();
+
+        RrdDb rrdDb = new RrdDb(rrdFileName);
+        FetchRequest fr = rrdDb.createFetchRequest("AVERAGE",978301200L,978303900L);
+        String xmlFile = rrdFileName+".xml";
+        fr.fetchData().exportXml(xmlFile);
+        DbUtils.convertXmlFile(xmlFile);
+        assertTrue("Xml file can not be created", new File(xmlFile).exists());
+        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000L));
+        DecimalFormat formatter = new DecimalFormat("#.#");
+        actualData = Double.parseDouble(formatter.format(actualData));
+        assertEquals ("Values in xml file are not proper", 1.3d, actualData);
+    }
+
+    private void createDatabase(){
+
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [
+                                            [
+                                                name:"a",
+                                                type:"COUNTER",
+                                                heartbeat:600,
+                                            ],
+                                            [
+                                                name:"b",
+                                                type:"GAUGE",
+                                                heartbeat:600
+                                            ]
+                                      ]
+
+        config[DbUtils.ARCHIVE] = [
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:1,
+                                            rows:30,
+                                        ]
+                                   ]
+        config[DbUtils.START_TIME] = 978300900000;
+        DbUtils.createDatabase(config);
+
+        DbUtils.updateData(rrdFileName,"978301200000:200:1");
+        DbUtils.updateData(rrdFileName,"978301500000:400:4");
+        DbUtils.updateData(rrdFileName,"978301800000:900:5");
+        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
+        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
+        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
+        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
+        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
+        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
+        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
+    }
+
+    public void testArchiveLastUpdateTimes() throws Exception{
+        createDatabase();
+        long lastUpdate = DbUtils.getLastArchiveUpdate (rrdFileName);
+        assertEquals("Last update time is not true",978303900000L,lastUpdate);
+    }
+
+    public void testFetchDataAsMapForOneDataSource() throws Exception{
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
+        assertEquals("Result map is not true ",result["978303300"],6d);
+
+    }
+
+    public void testFetchDataAsMapForMultipleDataSources() throws Exception{
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName);
+        Map b = result.get("b");
+        assertEquals("Result map is not true ",b["978303300"],6d);
+    }
+
+    public void testCreateXmlForOneDataSource() throws Exception{
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
+        assertEquals("Result map is not true ",result["978303300"],6d);
+        String xmlFile = rrdFileName+".xml";
+        DbUtils.createXml(result,xmlFile);
+    }
+
+    public void testCreateXmlForMultipleDataSources() throws Exception{
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName);
+
+        String xmlFile = rrdFileName+".xml";
+        DbUtils.createXml(result,xmlFile);
+        assertTrue("Xml file is not created", new File(xmlFile).exists() );
+    }
 }

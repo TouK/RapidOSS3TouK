@@ -174,6 +174,10 @@ class ControllerUtils {
             }
             else
             {
+                if(domainProperties[it] != null && domainProperties[it].type.name == String.name && propValue == null)
+                {
+                    propValue = "";    
+                }
                 returnedParams[it] = propValue
             }
         }

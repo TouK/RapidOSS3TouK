@@ -61,6 +61,16 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         assertEquals (true, classProperties.prop1);
         assertEquals (params.prop2, classProperties.prop2);
 
+
+        //Test with empty string
+        assertFalse (relatedModelInstance1.hasErrors());
+        assertFalse (relatedModelInstance2.hasErrors());
+        params = [_prop1:"", prop1:"on", prop2:""]
+        classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);
+        assertEquals(2, classProperties.size());
+        assertEquals (true, classProperties.prop1);
+        assertEquals (params.prop2, classProperties.prop2);
+
         //Test with false boolean
         params = [_prop1:"", prop2:"stringValue"]
         classProperties = controllerUtilsClass.'getClassProperties' (params, modelClass);

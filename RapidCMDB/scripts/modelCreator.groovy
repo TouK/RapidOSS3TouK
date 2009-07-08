@@ -35,7 +35,7 @@ VALID_MODEL_XML_PROPERTIES = ["Name", "ParentModel", "IndexName", "StorageType"]
 VALID_MODEL_PROPERTY_XML_PROPERTIES = ["Name", "Type", "Default", "IsKey", "Lazy", "Datasource", "DatasourceProperty", "NameInDatasource"]
 VALID_MODEL_DATASOURCE_XML_PROPERTIES = ["Definition", "Name", "NameProperty"]
 VALID_MODEL_DATASOURCE_KEY_XML_PROPERTIES = ["Name", "NameInDatasource"]
-VALID_MODEL_RELATION_XML_PROPERTIES = ["From", "To", "Name", "reverseName", "Type"]
+VALID_MODEL_RELATION_XML_PROPERTIES = ["From", "To", "Name", "ReverseName", "Type"]
 logger.info("Model creator started");
 def baseDir = System.getProperty("base.dir");
 confDir = new File("${baseDir}/grails-app/conf");

@@ -79,6 +79,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
     {
         this.htmlComp.handleErrors(response);
     },
+    handleTimeout: function(response)
+    {
+       this.htmlComp.handleTimeout(response)
+    },
+    handleInternalServerError: function(response) {
+        this.htmlComp.handleInternalServerError(response)
+    },
+    handleUnknownUrl: function(response)
+    {
+         this.htmlComp.handleUnknownUrl(response)
+    },
 
     destroy: function() {
         delete YAHOO.rapidjs.Components[this.id];

@@ -49,7 +49,7 @@
                             <%
                                 if (cmdbScript.type != CmdbScript.LISTENING) {
                             %>
-                            <g:link action="run" id="${cmdbScript.name}" targetURI="cmdbScript">Run</g:link>
+                            <g:link url="run?id=${cmdbScript.name}">Run</g:link>
                             <%
                                 }
                             %>

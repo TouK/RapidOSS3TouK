@@ -99,6 +99,13 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         FieldError error = instance.errors.allErrors[0]
         assertEquals ("default.federation.property.conversion.exception", error.getCode());
         assertEquals ("prop4", error.getField());
+
+        instance = domainClass.newInstance();
+        assertEquals (new Long(1), interceptor.getDomainClassProperty(instance, "prop4"));
+        assertEquals(1, instance.errors.allErrors.size());
+        error = instance.errors.allErrors[0]
+        assertEquals ("default.federation.property.conversion.exception", error.getCode());
+        assertEquals ("prop4", error.getField());
     }
     
     public void testInterceptorWithFederatedProperties()
@@ -147,6 +154,27 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
         assertNull (instance.errors);
     }
+
+
+    public void testInterceptorWithFederatedPropertiesReturningNullPropertyvalue()
+    {
+        def modelName = "Model1"
+        def datasources = [
+                [name:"RCMDB", keyProperties:[[name:"prop1"]]],
+                [name:"ds1", keyProperties:[[name:"prop1"]]]
+        ]
+        def properties = [[name:"prop1", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1"],
+        [name:"prop2", type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:"1", datasource:"ds1", nameInDatasource:"prop2SeverName"]]
+
+        Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
+        def instance = domainClass.newInstance();
+        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+
+        DataStore.put("result", [prop2SeverName:null]);
+
+        assertEquals (instance.prop2, interceptor.getDomainClassProperty(instance, "prop2"));
+    }
+
 
     public void testInterceptorWithLazyFederatedProperties()
     {

@@ -29,6 +29,7 @@ import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.BindingResult
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,15 +60,8 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
         {
             if (propValue != null)
             {
-                def converter = ConvertUtils.lookup(fieldType);
-                //IF a new instance is not created then converter assigns default values for invalid castings
-                //by using a new instance of converter we guarantee that a conversion exception will by thrown 
-                converter = converter.class.newInstance();
+                def converter = RapidConvertUtils.getInstance().lookup(fieldType);
                 super.setDomainClassProperty(domainObject, propName, converter.convert(fieldType, propValue));
-            }
-            else
-            {
-                super.setDomainClassProperty(domainObject, propName, propValue);
             }
         }
         catch (ConversionException t)

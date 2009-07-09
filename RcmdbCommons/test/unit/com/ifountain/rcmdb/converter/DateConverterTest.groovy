@@ -92,8 +92,13 @@ class DateConverterTest extends RapidCmdbTestCase{
     {
         String formatString = "yyyy-dd-MM";
         DateConverter converter = new DateConverter(formatString);
-        def returnedDate = converter.convert (Date, "");
-        assertNull (returnedDate);
+        try{
+            converter.convert (Date, "");
+            fail("Should throw exception");
+        }catch(org.apache.commons.beanutils.ConversionException ex)
+        {
+
+        }
     }
 
     public void testConvertWithInvalidFormat()

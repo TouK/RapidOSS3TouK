@@ -39,8 +39,12 @@ class LongConverterTest extends RapidCmdbTestCase{
     public void testConvertWithEmptyString()
     {
         LongConverter converter = new LongConverter();
-        def returnedLong = converter.convert (Long, "");
-        assertNull (returnedLong);
+        try{
+            converter.convert (Long, "");
+            fail("Should throw exception");
+        }catch(Exception e)
+        {
+        }
     }
 
     public void testIfInstanceOfLongReturnThatInstance()

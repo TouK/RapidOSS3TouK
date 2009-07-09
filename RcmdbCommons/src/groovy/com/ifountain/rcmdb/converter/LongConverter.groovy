@@ -34,7 +34,6 @@ class LongConverter implements Converter{
          converter = new org.apache.commons.beanutils.converters.LongConverter();        
     }
     public Object convert(Class aClass, Object o) {
-        if(String.valueOf(o) == "") return null;
         return converter.convert(aClass, o);
     }
     

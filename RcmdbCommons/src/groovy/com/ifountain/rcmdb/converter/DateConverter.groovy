@@ -47,7 +47,6 @@ class DateConverter implements Converter{
         else
         {
             if(o instanceof Date) return o;
-            if(String.valueOf(o) == "") return null;
             try
             {
                 return formater.parse(o); //To change body of implemented methods use File | Settings | File Templates.

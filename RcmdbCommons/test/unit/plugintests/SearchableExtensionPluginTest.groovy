@@ -43,6 +43,35 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertFalse(addedObject.hasErrors());
     }
 
+    public void testAddMethodWithInvalidPropertyValue()
+    {
+        Map classes = initializePluginAndClasses([:], true);
+        def addedObjectProps = [dateProp:""]
+        def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
+        assertTrue(addedObject.hasErrors());
+        assertEquals (1, addedObject.errors.allErrors.size());
+        assertEquals ("rapidcmdb.invalid.property.type", addedObject.errors.allErrors[0].code);
+    }
+
+    public void testUpdateMethodWithInvalidPropertyValue()
+    {
+        Map classes = initializePluginAndClasses([:], true);
+        def datePropValue = new Date();
+        def addedObjectProps = [dateProp:datePropValue]
+        def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
+        assertFalse(addedObject.hasErrors());
+
+
+        def updateProps = [dateProp:""]
+        def updatedObject = addedObject.update(updateProps);
+        assertTrue(updatedObject.hasErrors());
+        assertEquals (1, updatedObject.errors.allErrors.size());
+        assertEquals ("rapidcmdb.invalid.property.type", updatedObject.errors.allErrors[0].code);
+
+        assertEquals(1, classes.modelWithDateKeyProp.count());
+        assertNotNull(classes.modelWithDateKeyProp.get(dateProp:datePropValue));
+    }
+
 
     public void testAddMethodWithFederatedProperty()
     {

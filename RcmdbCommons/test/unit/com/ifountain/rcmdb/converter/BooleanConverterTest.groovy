@@ -39,8 +39,13 @@ class BooleanConverterTest extends RapidCmdbTestCase{
     public void testConvertWithEmptyString()
     {
         BooleanConverter converter = new BooleanConverter();
-        def returnedBoolean = converter.convert (Boolean, "");
-        assertNull (returnedBoolean);
+        try{
+            converter.convert (Boolean, "");
+            fail("Should throw exception");
+        }catch(org.apache.commons.beanutils.ConversionException ex)
+        {
+
+        }
     }
 
     public void testIfInstanceOfBooleanReturnThatInstance()

@@ -38,8 +38,13 @@ class DoubleConverterTest extends RapidCmdbTestCase{
     public void testConvertWithEmptyString()
     {
         DoubleConverter converter = new DoubleConverter();
-        def returnedDouble = converter.convert (Double, "");
-        assertNull (returnedDouble);
+        try{
+            converter.convert (Double, "");
+            fail("Should throw exception");
+        }catch(org.apache.commons.beanutils.ConversionException ex)
+        {
+
+        }
     }
 
     public void testIfInstanceOfLongReturnThatInstance()

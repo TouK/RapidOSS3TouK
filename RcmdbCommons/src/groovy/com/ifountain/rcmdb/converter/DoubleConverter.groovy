@@ -34,7 +34,6 @@ class DoubleConverter  implements Converter{
          converter = new org.apache.commons.beanutils.converters.DoubleConverter();
     }
     public Object convert(Class aClass, Object o) {
-        if(String.valueOf(o) == "") return null;
         return converter.convert(aClass, o);
     }
 

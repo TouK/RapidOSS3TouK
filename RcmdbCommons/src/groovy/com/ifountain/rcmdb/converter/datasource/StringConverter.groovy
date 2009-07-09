@@ -15,7 +15,7 @@ class StringConverter implements Converter{
     public Object convert(Object value) {
         if(value == null)
         {
-            value = "";
+            return null;
         }
         else
         {

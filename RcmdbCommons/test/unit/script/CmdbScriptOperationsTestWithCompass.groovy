@@ -635,6 +635,39 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(logger.getLevel(), Level.INFO);
         assertTrue(logger.getAllAppenders().hasMoreElements());
     }
+    void testRemovingScriptObjectDestroysLogger()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        def logLevel = Level.DEBUG;
+        def scriptParams = [:]
+        scriptParams["name"] = "testscript";
+        scriptParams["logFile"] = "testscript";
+        scriptParams["logLevel"] = logLevel.toString();
+        scriptParams["logFileOwn"] = true;
+
+
+        CmdbScript script = CmdbScript.add(name: scriptParams.name, scriptFile: simpleScriptFile, logFile: scriptParams.logFile, logFileOwn: scriptParams.logFileOwn, logLevel: scriptParams.logLevel);
+        assertFalse(script.hasErrors())
+
+        def logger = null;
+
+        CmdbScript.configureScriptLogger(script);
+        logger = CmdbScript.getScriptLogger(script);
+        assertFalse(logger.getAdditivity());
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+
+        script.remove();
+
+        assertEquals(0,CmdbScript.count());
+
+        def modifiedLogger=CmdbScript.getScriptLogger(script);
+
+        assertTrue(logger.getAdditivity());
+        assertFalse(logger.getAllAppenders().hasMoreElements());
+
+    }
     void testGetScriptObject()
     {
         initialize([CmdbScript, Group], []);

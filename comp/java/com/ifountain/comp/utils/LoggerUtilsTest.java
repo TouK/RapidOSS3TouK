@@ -55,6 +55,22 @@ public class LoggerUtilsTest extends RCompTestCase {
         assertEquals(logger.getAllAppenders().nextElement().getClass(),(new DailyRollingFileAppender()).getClass());
 
     }
+    public void testDestroyLogger()
+    {
+        Logger logger=Logger.getLogger("testlogger");
+        String logFile="testlogfile";
+
+        LoggerUtils.configureLogger(logger,Level.INFO,logFile,true);
+
+        assertFalse(logger.getAdditivity());
+        assertTrue(logger.getAllAppenders().hasMoreElements());
+        
+        LoggerUtils.destroyLogger(logger);
+
+        assertTrue(logger.getAdditivity());
+        assertFalse(logger.getAllAppenders().hasMoreElements());
+
+    }
     
     
 }

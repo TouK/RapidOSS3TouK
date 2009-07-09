@@ -37,7 +37,9 @@ import connection.RepositoryConnection
 */
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-
+    def afterDelete(){
+        destroyScriptLogger (this.domainObject);     
+    }
     def reload() throws ScriptingException
     {
         ScriptManager.getInstance().reloadScript(scriptFile);
@@ -245,15 +247,15 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         }
     }
 
-    static def configureScriptLogger(CmdbScript script)
+    public static def configureScriptLogger(CmdbScript script)
     {
         def scriptLogger = getScriptLogger(script);
         LoggerUtils.configureLogger(scriptLogger, Level.toLevel(script.logLevel), script.logFile, script.logFileOwn);
 
     }
-    static def stopScriptLogger(CmdbScript script)
+    private static def destroyScriptLogger(CmdbScript script)
     {
-        //getScriptLogger(script).removeAllAppenders();
+        LoggerUtils.destroyLogger(getScriptLogger(script));
     }
     static def getScriptLogger(CmdbScript script)
     {

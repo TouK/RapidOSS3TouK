@@ -78,6 +78,12 @@ public class LoggerUtils
         }        
 
     }
+    //log file can be deleted and log messages will go to root logger
+    public static void destroyLogger(Logger aLogger)
+    {
+        aLogger.removeAllAppenders();
+        aLogger.setAdditivity(true);
+    }
     
     public static void addConsoleAppender(Logger aLogger, String layoutPattern)
     {       	

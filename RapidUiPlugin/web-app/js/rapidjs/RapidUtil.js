@@ -335,7 +335,7 @@ YAHOO.rapidjs.Connect = new function()
             {
                 location = location + "?" + window.location.search;
             }
-            window.location = "auth/login?targetUri=" + encodeURI(location);
+            window.location = getUrlPrefix()+"auth/login?targetUri=" + encodeURI(location);
             return false;
         }
         else

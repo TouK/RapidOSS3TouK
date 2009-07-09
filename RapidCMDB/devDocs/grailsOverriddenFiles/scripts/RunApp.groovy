@@ -74,10 +74,30 @@ target ('default': "Run's a Grails application in Jetty") {
 target ( runApp : "Main implementation that executes a Grails application") {
 	System.setProperty('org.mortbay.xml.XmlParser.NotValidating', 'true')
     try {
-		println "Running Grails application.."
+		print "Running Grails application.."
+		boolean stopNotificationThread = false;
+		Thread t = Thread.start{
+            def dotCount = 1;
+            while(!stopNotificationThread)
+            {
+                print "."
+                if(dotCount % 175 == 0)
+                {
+                    println "";
+                }
+                dotCount++;
+                Thread.sleep(100);
+            }
+        }
         def server = configureHttpServer()
-        profile("start server") {
-            server.start()
+        try{
+            profile("start server") {
+                server.start()
+            }
+        }finally{
+            stopNotificationThread = true;
+            t.join();
+            println "";
         }
         event("StatusFinal", ["Server running. Browse to http://localhost:$serverPort$serverContextPath"])
     } catch(Throwable t) {
@@ -149,7 +169,28 @@ target( watchContext: "Watches the WEB-INF/classes directory for changes and res
                 loadPlugins()
                 setupWebContext()
                 grailsServer.setHandler( webContext )
-                grailsServer.start()
+                print "Reloading Grails application.."
+                boolean stopNotificationThread = false;
+                Thread t = Thread.start{
+                    def dotCount = 1;
+                    while(!stopNotificationThread)
+                    {
+                        print "."
+                        if(dotCount % 175 == 0)
+                        {
+                            println "";    
+                        }
+                        dotCount++;
+                        Thread.sleep(100);
+                    }
+                }
+                try{
+                    grailsServer.start()
+                }finally{
+                    stopNotificationThread = true;
+                    t.join();
+                    println "";
+                }
                 System.setProperty("restart.application", "false")
                 event("StatusFinal", ["Server running. Browse to http://localhost:$serverPort$serverContextPath"])
             } catch (Throwable e) {

@@ -167,8 +167,8 @@ protect pages based on a user's roles and/or permissions.
                     authToken.rememberMe = true
                 }
                 try {
-                    mgr.login(authToken)
-                    session.username = params.login;
+                    def delagateObject = mgr.login(authToken)
+                    session.username = delagateObject.principal;
                 }
                 catch (AuthenticationException ex) {}
 

@@ -37,14 +37,14 @@ class AuthController {
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the
             // password is incorrect.
-            this.jsecSecurityManager.login(authToken)
+            def delagteObject = this.jsecSecurityManager.login(authToken)
 
             // If a controller redirected to this page, redirect back
             // to it. Otherwise redirect to the root URI.
             def targetUri = params.targetUri ?: "/"
 
             log.info "Redirecting to '${targetUri}'."
-            session.username = params.login;
+            session.username = delagteObject.principal;
 
             ExecutionContextManagerUtils.addUsernameToCurrentContext (session.username)
             def statClass=this.class.classLoader.loadClass("Statistics");

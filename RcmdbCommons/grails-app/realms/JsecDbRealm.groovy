@@ -51,7 +51,7 @@ class JsecDbRealm {
         if (!user) {
             throw new UnknownAccountException("No account found for user [${username}]")
         }
-
+        username = user.username;
         log.info "Found user '${user.username}' in DB"
 
         def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm")

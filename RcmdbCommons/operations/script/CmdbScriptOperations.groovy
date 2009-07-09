@@ -38,7 +38,7 @@ import connection.RepositoryConnection
 class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     def afterDelete(){
-        destroyScriptLogger (this.domainObject);     
+        destroyScriptLogger (getScriptLogger(this.domainObject));
     }
     def reload() throws ScriptingException
     {
@@ -131,6 +131,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def updateScript(CmdbScript script, Map params, boolean fromController) throws Exception {
         def scriptFileBeforeUpdate = script.scriptFile;
         def scriptNameBeforeUpdate = script.name;
+        def logFileBeforeUpdate = script.logFile;
+        def oldLogger=getScriptLogger(script);
+
         params["logFile"] = params.name ? params.name : script.name;
 
         script.update(params);
@@ -144,6 +147,10 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                     ScriptManager.getInstance().removeScript(scriptFileBeforeUpdate);
                 }
                 ScriptManager.getInstance().addScript(script.scriptFile);
+            }
+            if(logFileBeforeUpdate != script.logFile)
+            {
+                destroyScriptLogger(oldLogger);
             }
             manageRepositoryDatasource(script, params["listenToRepository"] == true)
             ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
@@ -253,9 +260,9 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         LoggerUtils.configureLogger(scriptLogger, Level.toLevel(script.logLevel), script.logFile, script.logFileOwn);
 
     }
-    private static def destroyScriptLogger(CmdbScript script)
+    private static def destroyScriptLogger(Logger scriptLogger)
     {
-        LoggerUtils.destroyLogger(getScriptLogger(script));
+        LoggerUtils.destroyLogger(scriptLogger);
     }
     static def getScriptLogger(CmdbScript script)
     {

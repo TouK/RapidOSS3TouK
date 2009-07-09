@@ -13,13 +13,15 @@ import com.ifountain.rcmdb.scripting.ScriptStateManager
 import com.ifountain.rcmdb.test.util.TestDatastore
 import datasource.RepositoryDatasource
 import connection.RepositoryConnection
+import org.apache.log4j.Logger
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Jan 15, 2009
- * Time: 1:11:52 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Jan 15, 2009
+* Time: 1:11:52 PM
+* To change this template use File | Settings | File Templates.
+*/
 
 
 class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
@@ -662,11 +664,59 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         assertEquals(0,CmdbScript.count());
 
-        def modifiedLogger=CmdbScript.getScriptLogger(script);
-
         assertTrue(logger.getAdditivity());
         assertFalse(logger.getAllAppenders().hasMoreElements());
 
+        def modifiedLogger=CmdbScript.getScriptLogger(script);
+        assertTrue(modifiedLogger.getAdditivity());
+        assertFalse(modifiedLogger.getAllAppenders().hasMoreElements());
+
+    }
+    void testRenamingScriptObjectDestroysOldLogger()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+        ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->
+            
+        }
+
+        def logLevel = Level.DEBUG;
+        def scriptParams = [:]
+        scriptParams["name"] = "testscript";
+        scriptParams["logFile"] = "testscript";
+        scriptParams["logLevel"] = logLevel.toString();
+        scriptParams["logFileOwn"] = true;
+
+
+        CmdbScript script = CmdbScript.add(name: scriptParams.name, scriptFile: simpleScriptFile, logFile: scriptParams.logFile, logFileOwn: scriptParams.logFileOwn, logLevel: scriptParams.logLevel);
+        assertFalse(script.hasErrors())
+
+        CmdbScript.configureScriptLogger(script);
+        def oldLogger = CmdbScript.getScriptLogger(script);
+        assertEquals("scripting.OnDemand.testscript",oldLogger.name)
+        assertFalse(oldLogger.getAdditivity());
+        assertTrue(oldLogger.getAllAppenders().hasMoreElements());
+
+        def updateParams=[:]
+        updateParams["name"] = "testscript2";
+
+        def updatedScript = CmdbScript.updateScript(script, updateParams, false);
+        assertFalse(updatedScript.hasErrors());
+
+        assertEquals("scripting.OnDemand.testscript",oldLogger.name)
+        assertTrue(oldLogger.getAdditivity());
+        assertFalse(oldLogger.getAllAppenders().hasMoreElements());
+        
+        def oldLoggerModified=Logger.getLogger(oldLogger.name);
+        assertEquals("scripting.OnDemand.testscript",oldLoggerModified.name)
+        assertTrue(oldLoggerModified.getAdditivity());
+        assertFalse(oldLoggerModified.getAllAppenders().hasMoreElements());
+
+        def newLogger=CmdbScript.getScriptLogger(updatedScript);
+        assertEquals("scripting.OnDemand.testscript2",newLogger.name)
+        assertFalse(newLogger.getAdditivity());
+        assertTrue(newLogger.getAllAppenders().hasMoreElements());
     }
     void testGetScriptObject()
     {

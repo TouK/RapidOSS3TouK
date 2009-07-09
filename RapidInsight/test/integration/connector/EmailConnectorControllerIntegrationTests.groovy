@@ -87,7 +87,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
     void testIfConnectorHasErrorsConnectorIsNotAdded(){
         def params=[:]
         params.putAll(connectorParams)
-        params["name"] =null;
+        params["name"] ="";
 
         def controller = new EmailConnectorController();
         params.each{ key , val ->
@@ -103,12 +103,12 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def model = controller.modelAndView.model;
         def conn = model.emailConnector;
         assertTrue(conn.hasErrors())
-        assertEquals("nullable", conn.errors.allErrors[0].code)
+        assertEquals("blank", conn.errors.allErrors[0].code)
     }
     void testIfConnectionHasErrorsConnectorIsNotAdded(){
         def params=[:]
         params.putAll(connectorParams)
-        params["smtpHost"] =null;
+        params["smtpHost"] ="";
 
         def controller = new EmailConnectorController();
         params.each{ key , val ->
@@ -124,7 +124,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def model = controller.modelAndView.model;
         def conn = model.emailConnection;
         assertTrue(conn.hasErrors())
-        assertEquals("nullable", conn.errors.allErrors[0].code)
+        assertEquals("blank", conn.errors.allErrors[0].code)
     }
     void testIfDatasourceHasErrorsConnectorIsNotAdded(){
         def params=[:]
@@ -346,7 +346,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         updateParams["username"] = "testaccoun2t";
         updateParams["userPassword"] = "13600";
         updateParams["protocol"] = EmailConnection.SMTPS;        
-        updateParams["name"]=null        
+        updateParams["name"]=""
         updateParams["id"]=EmailConnector.list()[0].id
 
         IntegrationTestUtils.resetController(controller);
@@ -364,7 +364,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def model = controller.modelAndView.model;
         def modelItem = model.emailConnector;
         assertTrue(modelItem.hasErrors())
-        assertEquals("nullable", modelItem.errors.allErrors[0].code)
+        assertEquals("blank", modelItem.errors.allErrors[0].code)
 
         def emailConnector=EmailConnector.list()[0]
         assertEquals(emailConnector.name,params.name)

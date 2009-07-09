@@ -41,7 +41,7 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         DatabaseConnectionImplTestUtils.addRecordIntoConnectionTrialsTable(1, "Switch", "eraaswiad");
         results = adapter.getRecords();
         assertEquals(1, results.size());
-        assertEquals(4, results[0].size())
+        assertEquals(5, results[0].size())
         assertEquals(new BigDecimal(1), results[0]["id"])
         assertEquals(new BigDecimal(1), results[0]["ID"])
         assertEquals("Switch", results[0]["CLASSNAME"])
@@ -93,7 +93,7 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         results = adapter.getRecords("classname = 'Switch'");
         assertEquals(1, results.size());
         def result = results[0];
-        assertEquals(4, result.size())
+        assertEquals(5, result.size())
         assertEquals("Switch", result["classname"]);
         assertEquals(new BigDecimal(1), result["id"]);
         assertEquals("eraaswiad", result["instancename"]);
@@ -141,7 +141,7 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         DatabaseConnectionImplTestUtils.addRecordIntoConnectionTrialsTable(2, "Router", "errouter");
 
         result = adapter.getMultiKeyRecord(["id": 1])
-        assertEquals(4, result.size())
+        assertEquals(5, result.size())
         assertEquals("Switch", result["classname"]);
         assertEquals(new BigDecimal(1), result["id"]);
         assertEquals("eraaswiad", result["instancename"]);
@@ -152,7 +152,7 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         assertEquals(new BigDecimal(1), result["id"]);
 
         result = adapter.getMultiKeyRecord(["id": "1"])
-        assertEquals(4, result.size())
+        assertEquals(5, result.size())
     }
 
     void testGetMultiKeyRecordWithMultipleKey() {
@@ -191,7 +191,7 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         }
 
         DatabaseConnectionImplTestUtils.addRecordIntoConnectionTrialsTable(1, "Switch", "eraaswiad");
-        assertEquals(4, adapter.getMultiKeyRecord([id: 1]).size())
+        assertEquals(5, adapter.getMultiKeyRecord([id: 1]).size())
 
         assertTrue(adapter.removeMultiKeyRecord([id: 1]));
         assertEquals(0, adapter.getMultiKeyRecord([id: 1]).size())
@@ -240,13 +240,13 @@ class SingleTableDatabaseAdapterTests extends RapidCoreTestCase {
         }
 
         adapter.addRecord([id:1, classname:"Switch", instancename:"eraaswiad"]);
-        assertEquals(4, adapter.getMultiKeyRecord([id:1]).size());
+        assertEquals(5, adapter.getMultiKeyRecord([id:1]).size());
 
         //updates if record exists
         adapter.addRecord([id:1, classname:"Router", instancename:"eraaswiad"]);
         assertEquals(1, adapter.getRecords().size())
         def record = adapter.getMultiKeyRecord([id:1]);
-        assertEquals(4, record.size());
+        assertEquals(5, record.size());
         assertEquals("Router", record["classname"]);
     }
 

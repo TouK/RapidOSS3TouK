@@ -25,7 +25,7 @@ import java.sql.*
 import org.apache.log4j.Logger
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-public class DatabaseConnectionImpl extends BaseConnection{
+public class DatabaseConnectionImpl extends BaseConnection {
 
     public static final String DRIVER = "Driver";
     public static final String URL = "Url";
@@ -38,41 +38,41 @@ public class DatabaseConnectionImpl extends BaseConnection{
     private java.sql.Connection connection;
 
     protected void connect() throws Exception {
-        DriverManager.setLoginTimeout ((int)(getTimeout()/1000));
-        connection = DriverManager.getConnection(url,createConnectionProperties());
+        DriverManager.setLoginTimeout((int) (getTimeout() / 1000));
+        connection = DriverManager.getConnection(url, createConnectionProperties());
     }
     protected Properties createConnectionProperties()
     {
         Properties info = new Properties();
         info.put("user", username);
-	    info.put("password", password);
-	    String timeoutStringValue=((int)getTimeout()).toString();
+        info.put("password", password);
+        String timeoutStringValue = ((int) getTimeout()).toString();
 
-	    if(this.driver.indexOf("mysql")>=0)
+        if (this.driver.indexOf("mysql") >= 0)
         {
-            info.put("connectTimeout",timeoutStringValue);
-            info.put("socketTimeout",timeoutStringValue);
+            info.put("connectTimeout", timeoutStringValue);
+            info.put("socketTimeout", timeoutStringValue);
         }
-        else if(this.driver.indexOf("sybase")>=0)
+        else if (this.driver.indexOf("sybase") >= 0)
         {
-            info.put("SESSION_TIMEOUT",timeoutStringValue);
+            info.put("SESSION_TIMEOUT", timeoutStringValue);
         }
-        else if(this.driver.indexOf("oracle")>=0)
+        else if (this.driver.indexOf("oracle") >= 0)
         {
-             info.put("oracle.net.CONNECT_TIMEOUT",timeoutStringValue);
-             info.put("oracle.jdbc.ReadTimeout",timeoutStringValue);
+            info.put("oracle.net.CONNECT_TIMEOUT", timeoutStringValue);
+            info.put("oracle.jdbc.ReadTimeout", timeoutStringValue);
         }
 
         return info;
     }
     protected void disconnect() {
-        if(connection == null) return;
+        if (connection == null) return;
         try {
             connection.close();
         } catch (SQLException e) {
         }
     }
-    public void init(ConnectionParam param) throws Exception{
+    public void init(ConnectionParam param) throws Exception {
         super.init(param)
         this.driver = checkParam(DRIVER);
         this.url = checkParam(URL);
@@ -82,42 +82,42 @@ public class DatabaseConnectionImpl extends BaseConnection{
     }
 
     private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!params.getOtherParams().containsKey(parameterName)){
+        if (!params.getOtherParams().containsKey(parameterName)) {
             throw new UndefinedConnectionParameterException(parameterName);
         }
         return (String) params.getOtherParams().get(parameterName);
     }
 
     public boolean checkConnection() {
-        if(connection == null) return false;
+        if (connection == null) return false;
         DatabaseMetaData metaData = null;
         ResultSet set = null;
-        try 
+        try
         {
-           metaData= connection.getMetaData();
-           set = metaData.getCatalogs();
-           return true;
-        } 
-        catch (SQLException e) 
+            metaData = connection.getMetaData();
+            set = metaData.getCatalogs();
+            return true;
+        }
+        catch (SQLException e)
         {
-            Logger errorLogger=Logger.getRootLogger();
-            if(errorLogger.isDebugEnabled())
+            Logger errorLogger = Logger.getRootLogger();
+            if (errorLogger.isDebugEnabled())
             {
-                errorLogger.debug("[DatabaseConnectionImpl]: Disconnect detected during checkConnection. Reason :"+e.toString());
+                errorLogger.debug("[DatabaseConnectionImpl]: Disconnect detected during checkConnection. Reason :" + e.toString());
             }
-            
+
             return false;
-        } 
-        finally{
-            if(set != null){
+        }
+        finally {
+            if (set != null) {
                 try {
                     set.close();
                 }
                 catch (SQLException e) {
-                    Logger errorLogger=Logger.getRootLogger();
-                    if(errorLogger.isDebugEnabled())
+                    Logger errorLogger = Logger.getRootLogger();
+                    if (errorLogger.isDebugEnabled())
                     {
-                        errorLogger.debug("[DatabaseConnectionImpl]: Error during closing set used in checkConnection. Reason :"+e.toString());
+                        errorLogger.debug("[DatabaseConnectionImpl]: Error during closing set used in checkConnection. Reason :" + e.toString());
                     }
                 }
             }
@@ -139,34 +139,34 @@ public class DatabaseConnectionImpl extends BaseConnection{
             parameterMetaData = stmt.getParameterMetaData();
             parameterMetaData.getParameterType(1);
         }
-        catch(Throwable ignored)
+        catch (Throwable ignored)
         {
-            parameterMetaData=null;
+            parameterMetaData = null;
         }
 
-        for(int i = 0; i < queryParams.length; i++)
+        for (int i = 0; i < queryParams.length; i++)
         {
-            if(parameterMetaData != null)
+            if (parameterMetaData != null)
             {
-                if(parameterMetaData.getParameterType(i + 1) == Types.CHAR || parameterMetaData.getParameterType(i + 1) == Types.VARCHAR)
+                if (parameterMetaData.getParameterType(i + 1) == Types.CHAR || parameterMetaData.getParameterType(i + 1) == Types.VARCHAR)
                 {
-                    stmt.setObject( i + 1, queryParams[ i ]);
+                    stmt.setObject(i + 1, queryParams[i]);
                 }
                 else
                 {
-                    if(queryParams[i] == null || queryParams[i].toString().length() == 0)
+                    if (queryParams[i] == null || queryParams[i].toString().length() == 0)
                     {
                         stmt.setNull(i + 1, parameterMetaData.getParameterType(i + 1));
                     }
                     else
                     {
-                        stmt.setObject( i + 1, queryParams[ i ]);
+                        stmt.setObject(i + 1, queryParams[i]);
                     }
                 }
             }
             else
             {
-                stmt.setObject( i + 1, queryParams[ i ]);
+               stmt.setObject(i + 1, queryParams[i]); 
             }
         }
 

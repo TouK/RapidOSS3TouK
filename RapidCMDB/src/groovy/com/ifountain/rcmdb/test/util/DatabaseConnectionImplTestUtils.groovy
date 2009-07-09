@@ -32,8 +32,9 @@ import java.sql.SQLException;
 
 public class DatabaseConnectionImplTestUtils {
     public static final String DATABASE_CONN_NAME = "dbConn";
+    public static String DEFAULT_DB_TYPE = DatabaseTestConstants.ORACLE
     public static DatabaseConnectionParams getConnectionParams(String type) {
-        if (type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)) {
+        if (type.equals(DatabaseTestConstants.MYSQL) || type.equals(DatabaseTestConstants.ORACLE) || type.equals(DatabaseTestConstants.SYBASE)|| type.equals(DatabaseTestConstants.MSSQL)) {
             return new DatabaseConnectionParams(CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_DRIVER),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_URL),
                     CommonTestUtils.getTestProperty(type + "." + DatabaseTestConstants.DATABASE_USER),
@@ -43,7 +44,7 @@ public class DatabaseConnectionImplTestUtils {
         return null;
     }
     public static DatabaseConnectionParams getConnectionParams() {
-        return getConnectionParams(DatabaseTestConstants.ORACLE);
+        return getConnectionParams(DEFAULT_DB_TYPE);
     }
 
     public static ConnectionParam getConnectionParam(String type) {
@@ -59,11 +60,11 @@ public class DatabaseConnectionImplTestUtils {
         return connectionParam;
     }
     public static ConnectionParam getConnectionParam() {
-        return getConnectionParam(DatabaseTestConstants.ORACLE);
+        return getConnectionParam(DEFAULT_DB_TYPE);
     }
 
     public static void createTableConnectionTrials() throws ClassNotFoundException {
-        createTable("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL,severity int)");
+        createTable("create table connectiontrials (id int NOT NULL,classname varchar(50) NOT NULL,instancename varchar(50) NOT NULL,severity int, eventtext varchar(50))");
     }
 
     public static void createTable(String sql) throws ClassNotFoundException {

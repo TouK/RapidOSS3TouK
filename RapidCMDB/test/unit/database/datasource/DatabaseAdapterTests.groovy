@@ -56,7 +56,7 @@ class DatabaseAdapterTests extends RapidCoreTestCase {
        def iterCount = 0;
        DatabaseAdapter adapter = new DatabaseAdapter(DatabaseConnectionImplTestUtils.DATABASE_CONN_NAME, 0, TestLogUtils.log)
        adapter.executeQuery("select * from connectiontrials order by id", new Object[0], 2){Map record ->
-           assertEquals(4, record.size())
+           assertEquals(5, record.size())
            iterCount++;
            assertEquals(new BigDecimal(iterCount), record["ID"])           
            assertEquals("eraaswiad${iterCount}", record["INSTANCENAME"])

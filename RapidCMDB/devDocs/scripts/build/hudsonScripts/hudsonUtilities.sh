@@ -171,7 +171,13 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+
+    xmlCount=`ls test/reports -l | grep xml -c`
+    if [ $xmlCount != "0"  ]
+      then
+        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    fi
+
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
     rm -rf $WORKSPACE/Distribution/RapidServer/temp
     rm -rf $WORKSPACE/Distribution/RapidServer/RapidSuite/test/unit/*
@@ -181,7 +187,13 @@ runGrailsTests() {
       then
         mkdir $WORKSPACE/TestResults/RapidSuite
     fi
-    mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+
+    xmlCount=`ls test/reports -l | grep xml -c`
+    if [ $xmlCount != "0"  ]
+      then
+        mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
+    fi
+
     cd $WORKSPACE
 }
 
@@ -242,7 +254,11 @@ generateTestDomainClasses() {
 
     if [ -d test/reports ]
      then
-       mv test/reports/*.xml $WORKSPACE/TestResults
+        xmlCount=`ls test/reports -l | grep xml -c`
+        if [ $xmlCount != "0"  ]
+          then
+            mv test/reports/*.xml $WORKSPACE/TestResults
+        fi
     fi
 
     cd ..

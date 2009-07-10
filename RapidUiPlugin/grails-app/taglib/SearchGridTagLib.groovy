@@ -204,12 +204,17 @@ class SearchGridTagLib {
             def sortOrder = column.@sortOrder.toString().trim();
             def sortBy = column.@sortBy.toString().trim();
             def type = column.@type.toString().trim();
+            def columnImages = [];
+            if (type == 'image') {
+                columnImages = getColumnImages(column);
+            }
             columnArray.add("""{
                     attributeName:'${column.@attributeName}',
                     colLabel:'${column.@colLabel}',
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
+                    ${columnImages.size() > 0 ? "images:[${columnImages.join(',\n')}]," : ""}
                     width:${column.@width}
                 }""")
         }
@@ -229,6 +234,26 @@ class SearchGridTagLib {
             cArray.add("rowColors:[${rowColorsArray.join(',\n')}]")
         }
         return "{${cArray.join(',\n')}}"
+    }
+
+    static def getColumnImages(columnNode) {
+        def imagesArray = [];
+        def images = columnNode.Images?.Image;
+        images.each {image ->
+            def imageArray = [];
+            def src = image.@src.toString().trim();
+            def visible = image.@visible.toString().trim();
+            def align = image.@align.toString().trim();
+            imageArray.add("src:'${src}'");
+            if (visible != "") {
+                imageArray.add("visible:\"${visible.encodeAsJavaScript()}\"")
+            }
+            if (align != "") {
+                imageArray.add("align:'${align}'")
+            }
+            imagesArray.add("{${imageArray.join(',')}}")
+        }
+        return imagesArray;
     }
 
     static def processMenuItem(menuItem, eventMap, subMenuEvents) {
@@ -337,10 +362,24 @@ class SearchGridTagLib {
     }
     static def fSgColumn(attrs, bodyString) {
         def validAttrs = ["attributeName", "colLabel", "sortBy", "sortOrder", "width", "type"];
-        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs)
+        return TagLibUtils.getConfigAsXml("Column", attrs, validAttrs, bodyString)
     }
     def sgColumn = {attrs, body ->
-        out << fSgColumn(attrs, "")
+        out << fSgColumn(attrs, body())
+    }
+    static def fSgColumnImages(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Images", attrs, [], bodyString)
+    }
+    def sgColumnImages = {attrs, body ->
+        out << fSgColumnImages(attrs, body());
+    }
+    static def fSgColumnImage(attrs, bodyString) {
+        def validAttrs = ["visible", "src", "align"];
+        return TagLibUtils.getConfigAsXml("Image", attrs, validAttrs)
+    }
+
+    def sgColumnImage = {attrs, body ->
+        out << fSgColumnImage(attrs, "");
     }
 
     static def fSgRowColors(attrs, bodyString) {

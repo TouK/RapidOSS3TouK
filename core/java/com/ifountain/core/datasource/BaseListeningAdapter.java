@@ -87,6 +87,10 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         }
     }
 
+    public boolean isConversionEnabledForUpdate()
+    {
+        return true;
+    }
 
     public abstract Object _update(Observable o, Object arg);
 

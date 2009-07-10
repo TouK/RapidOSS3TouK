@@ -28,13 +28,23 @@ import com.ifountain.comp.converter.ConverterRegistry
 class ListeningAdapterObserver implements Observer{
     def scriptInstance;
     def logger;
-    public ListeningAdapterObserver(scriptInstance, logger){
+    def isConversionEnabledForUpdate;
+
+    public ListeningAdapterObserver(scriptInstance, logger,isConversionEnabledForUpdate){
         this.scriptInstance = scriptInstance;
         this.logger = logger;
+        this.isConversionEnabledForUpdate=isConversionEnabledForUpdate;
     }
     public void update(Observable o, Object arg) {
         try{
-             scriptInstance.update(ConverterRegistry.getInstance().convert(arg));
+             if(isConversionEnabledForUpdate)
+             {
+                scriptInstance.update(ConverterRegistry.getInstance().convert(arg));
+             }
+             else
+             {
+                scriptInstance.update(arg);
+             }
         }
         catch(e){
             logger.warn("Error occurred in update method of script " + scriptInstance + ". Reason: " + e.getMessage(), e)

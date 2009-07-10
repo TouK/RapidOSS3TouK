@@ -171,6 +171,66 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         assertEquals(logger, DataStore.get ("cleanUpContext")[RapidCMDBConstants.LOGGER]);
     }
 
+    public void testUpdateConvertsParametersIfAdapterEnabledUpdateConversion()
+    {
+        //test conversion applied when adapter enable update  conversion is true
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
+        ds.listeningScript = createScriptObject();
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        runner.start(ds);
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+
+        def data = ["param1": "value1", "param2": new BigDecimal(1)];
+        ds.listeningAdapter.update(ds.listeningAdapter, data);
+        def receivedObjects = DataStore.get("receivedObjects");
+        assertNotNull(receivedObjects);
+        assertEquals(1, receivedObjects.size());
+        def receivedData = receivedObjects.get(0);
+        assertEquals("value1", receivedData["param1"]);
+
+        //conversion
+        assertEquals(Double.class, receivedData["param2"].class);
+        assertEquals(new Double(1), receivedData["param2"]);
+
+        runner.stop();
+        runner.cleanUp();
+
+
+        //test conversion is not applied when adapter enable update conversion is false
+        ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        runner = new ListeningAdapterRunner(ds.id);
+        ds.listeningScript = createScriptObject();
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+        ds.listeningAdapter.enableUpdateConversion=false;
+
+        DataStore.put("receivedObjects",null);
+        
+        runner.start(ds);
+
+        assertEquals(AdapterStateProvider.STARTED, runner.getState());
+        
+
+
+        data = ["param1": "value1", "param2": new BigDecimal(1)];
+        ds.listeningAdapter.update(ds.listeningAdapter, data);
+        receivedObjects = DataStore.get("receivedObjects");
+        assertNotNull(receivedObjects);
+        assertEquals(1, receivedObjects.size());
+        receivedData = receivedObjects.get(0);
+        assertEquals("value1", receivedData["param1"]);
+
+        //conversion not applied
+        assertEquals(BigDecimal.class, receivedData["param2"].class);
+        assertEquals(new BigDecimal(1), receivedData["param2"]);
+
+        runner.stop();
+        runner.cleanUp();
+
+    }
+
+
+
     public void testGetLastStateChangeTime()
     {
         def firstTime = new Date();

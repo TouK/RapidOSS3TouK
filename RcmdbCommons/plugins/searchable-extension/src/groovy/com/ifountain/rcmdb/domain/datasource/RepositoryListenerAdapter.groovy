@@ -40,6 +40,10 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
     public void update(Observable o, Object arg) {
         addChangeEventToQueue(arg);
     }
+    public boolean isConversionEnabledForUpdate()
+    {
+        return false;
+    }
 
     private void addChangeEventToQueue(Map changeEvent) {
         def domainObject = changeEvent[ObjectProcessor.DOMAIN_OBJECT];

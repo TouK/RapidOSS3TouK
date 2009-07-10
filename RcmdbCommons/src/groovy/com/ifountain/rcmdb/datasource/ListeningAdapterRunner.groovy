@@ -108,7 +108,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
                 setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
                 throw ListeningAdapterException.noAdapterDefined(datasourceId)
             }
-            observer = new ListeningAdapterObserver(scriptObject, scriptLogger);
+            observer = new ListeningAdapterObserver(scriptObject, scriptLogger,adapter.isConversionEnabledForUpdate());
             adapter.addObserver(observer);
         }
         else {

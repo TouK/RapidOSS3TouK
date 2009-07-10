@@ -777,6 +777,9 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
     def unsubscribeCalled = false;
     def unsubscribeException = null;
     def waitLock = null;
+    def enableUpdateConversion=true;
+
+
 
     public BaseListeningAdapterMock()
     {
@@ -785,6 +788,10 @@ class BaseListeningAdapterMock extends BaseListeningAdapter
     public Object _update(Observable o, Object arg)
     {
         return arg;
+    }
+    public boolean isConversionEnabledForUpdate()
+    {
+        return enableUpdateConversion;
     }
     protected void _subscribe() throws Exception
     {

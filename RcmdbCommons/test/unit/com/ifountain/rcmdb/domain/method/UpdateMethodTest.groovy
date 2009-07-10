@@ -548,7 +548,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
             AddMethodDomainObject1.indexList.clear();
             AddMethodDomainObject1.getCacheEntry(object).setProperties (AddMethodDomainObject1.class, object.id);
-            props = [prop1: object.prop1, prop2: "", prop4: "", prop5: "", doubleProp: "", booleanProp: ""];
+            props = [prop1: object.prop1, prop2: "", prop4: null, prop5: null, doubleProp: null, booleanProp: null];
             update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, [:]);
             updatedObject = update.invoke(object, [props] as Object[]);
 

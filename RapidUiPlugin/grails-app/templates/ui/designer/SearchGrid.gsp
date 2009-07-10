@@ -66,7 +66,27 @@
         def sortByString = column.sortBy ? "sortBy=\"${column.sortBy}\"":""
         def sortOrderString = column.sortBy ? "sortOrder=\"${column.sortOrder}\"":""
     %>
-        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString} type="${column.type}"></rui:sgColumn>
+        <rui:sgColumn attributeName="${column.attributeName}" colLabel="${column.colLabel}" width="${column.width}" ${sortByString} ${sortOrderString} type="${column.type}">
+            <%
+                if(column.type == 'image')
+                {
+            %>
+            <rui:sgColumnImages>
+                <%
+                    column.images.each{colImage->
+                        def colImageMenuItemVisiblePropertyName = "image"+colImage.id+ "Visible";
+                        println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(colImageMenuItemVisiblePropertyName, colImage.visible, true);
+                %>
+                <rui:sgColumnImage src="../${colImage.src}" visible="\${${colImageMenuItemVisiblePropertyName}}" align="${colImage.align}"></rui:sgColumnImage>
+                <%
+                    }
+                %>
+            </rui:sgColumnImages>
+            <%
+                }
+            %>
+
+        </rui:sgColumn>
     <%
         }
     %>

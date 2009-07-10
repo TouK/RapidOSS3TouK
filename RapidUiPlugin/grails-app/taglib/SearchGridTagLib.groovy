@@ -204,7 +204,7 @@ class SearchGridTagLib {
             def sortOrder = column.@sortOrder.toString().trim();
             def sortBy = column.@sortBy.toString().trim();
             def type = column.@type.toString().trim();
-            def columnImages = [];
+            def columnImages = null;
             if (type == 'image') {
                 columnImages = getColumnImages(column);
             }
@@ -214,7 +214,7 @@ class SearchGridTagLib {
                     ${sortBy != "" ? "sortBy:${sortBy}," : ""}
                     ${sortOrder != "" ? "sortOrder:'${sortOrder}'," : ""}
                     ${type != "" ? "type:'${type}'," : ""}
-                    ${columnImages.size() > 0 ? "images:[${columnImages.join(',\n')}]," : ""}
+                    ${columnImages != null ? "images:[${columnImages.join(',\n')}]," : ""}
                     width:${column.@width}
                 }""")
         }

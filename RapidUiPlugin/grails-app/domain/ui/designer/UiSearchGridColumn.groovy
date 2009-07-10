@@ -16,7 +16,7 @@ class UiSearchGridColumn extends UiColumn{
     static datasources = [:]
     static relations = [:]
     static constraints={
-        type(nullable:false, blank:false, inList:["text", "link"])
+        type(nullable:false, blank:false, inList:["text", "link", "image"])
     }
 
     static propertyConfiguration= [:]

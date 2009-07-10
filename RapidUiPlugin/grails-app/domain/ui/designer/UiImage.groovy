@@ -26,10 +26,10 @@ class UiImage {
     Object __operation_class__;
     Object __is_federated_properties_loaded__;
     UiComponent component;
-    UiTreeGridColumn column;
+    UiColumn column;
     static relations = [
             component: [type: UiComponent, reverseName: "images", isMany: false]
-            ,column: [type: UiTreeGridColumn, reverseName: "images", isMany: false]
+            ,column: [type: UiColumn, reverseName: "images", isMany: false]
     ]
 
     static constraints = {

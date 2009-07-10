@@ -23,7 +23,24 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
                 propertyConfiguration: [
                     type:[descr:"Column type.", required:false]
                 ],
-                childrenConfiguration: []
+                childrenConfiguration: [
+                    [
+                                help:"TreeGridColumn Images.html",
+                                designerType: "SearchGridColumnImages",
+                                metaData: [
+                                        designerType: "SearchGridColumnImages",
+                                        display: "Images",
+                                        imageExpanded: "images/rapidjs/designer/images.png",
+                                        imageCollapsed: "images/rapidjs/designer/images.png",
+                                        canBeDeleted: false,
+                                        propertyConfiguration: [:],
+                                        childrenConfiguration: [
+                                                [designerType: "Image", isMultiple: true, propertyName: "images"]
+                                        ]
+                                ],
+                                isMultiple: false
+                        ]
+                ]
         ];
         def parentMetaData = UiColumnOperations.metaData();
         metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
@@ -37,6 +54,12 @@ class UiSearchGridColumnOperations extends UiColumnOperations{
         attributes.component = parentElement
         attributes.componentId = parentElement.id
         def searchGridColumn = DesignerUtils.addUiObject(UiSearchGridColumn, attributes, xmlNode);
+        if(attributes.type == "image"){
+            def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumnImages"};
+            imagesNode.UiElement.each {
+                UiImage.addUiElement(it, searchGridColumn);
+            }
+        }
         return searchGridColumn;
     }
 }

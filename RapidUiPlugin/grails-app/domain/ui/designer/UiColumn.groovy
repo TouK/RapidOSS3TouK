@@ -10,7 +10,7 @@ class UiColumn {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "images"];
         storageType "FileAndMemory"
 
     };
@@ -23,6 +23,7 @@ class UiColumn {
     Long columnIndex = 0;
     Boolean sortBy = false;
     String sortOrder = "asc";
+    List images = [];
 
     Long id;
     Long componentId;
@@ -37,7 +38,8 @@ class UiColumn {
 
     UiComponent component;
     static relations = [
-            component: [type: UiComponent, reverseName: "columns", isMany: false]
+            component: [type: UiComponent, reverseName: "columns", isMany: false],
+            images: [type: UiImage, reverseName: "column", isMany: true]
     ]
 
     static constraints = {
@@ -51,7 +53,7 @@ class UiColumn {
     }
 
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "images"];
 
     public String toString()
     {

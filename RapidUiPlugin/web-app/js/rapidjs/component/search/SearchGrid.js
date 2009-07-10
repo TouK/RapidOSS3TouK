@@ -155,11 +155,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder.events['success'].subscribe(this.viewBuilderSuccess, this, true);
         this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
 
-        if(this.queryEnabled){
+        if (this.queryEnabled) {
             this.retrieveSearchClasses();
         }
-        else{
-           SelectUtils.addOption(this.classesInput, this.defaultSearchClass, this.defaultSearchClass);
+        else {
+            SelectUtils.addOption(this.classesInput, this.defaultSearchClass, this.defaultSearchClass);
         }
     },
 
@@ -281,10 +281,39 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var cell = rowEl.cells[colIndex];
             var valueEl = cell.firstChild;
             var value = dataNode.getAttribute(att);
-            var innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
+            var innerHTML = "";
+            if (colConfig['type'] == 'image') {
+                this.setImageSource(colConfig, dataNode, cell);
+            }
+            else {
+                innerHTML = (this.renderCellFunction ? this.renderCellFunction(att, value, dataNode) || "" : value || "");
+            }
             valueEl.innerHTML = colIndex == nOfColumns - 1 ? innerHTML + '<br>' : innerHTML + '&nbsp'
             cell.propKey = att;
             cell.propValue = value;
+        }
+    },
+
+    setImageSource: function(columnConfig, dataNode, htmlEl) {
+        var expressionsArray = columnConfig['images'];
+        var isImageSet = false;
+        for (var i = 0; i < expressionsArray.length; i++)
+        {
+            var currentExpressionStr = expressionsArray[i]['visible'];
+            var params = {data: dataNode.getAttributes()}
+            var evaluationResult = eval(currentExpressionStr);
+            if (evaluationResult == true)
+            {
+                isImageSet = true
+                var imageSrc = expressionsArray[i]['src'];
+                var align = expressionsArray[i]['align'] ? 'center ' + expressionsArray[i]['align'] : 'center left'
+                var backgroundImage = 'url("' + imageSrc + '")';
+                YAHOO.util.Dom.setStyle(htmlEl, "background", backgroundImage + ' no-repeat ' + align)
+                break;
+            }
+        }
+        if (!isImageSet) {
+            YAHOO.util.Dom.setStyle(htmlEl, "background", '')
         }
     },
 
@@ -356,6 +385,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     setCssHyperlink: function(colIndex, isHyperlink) {
         var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
+        YAHOO.ext.util.CSS.updateRule(selector, 'background', '');
         if (isHyperlink) {
             YAHOO.ext.util.CSS.updateRule(selector, 'cursor', 'pointer');
             YAHOO.ext.util.CSS.updateRule(selector, 'text-decoration', 'underline');
@@ -444,13 +474,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
     viewAdded: function(viewNode) {
         var view = viewNode.getAttribute('name');
-        for(var i = 0 ; i < this.viewInput.options.length ; i++)
-		{
-			if(this.viewInput.options[i].value.toLowerCase() == view.toLowerCase())
-			{
-				this.viewInput.remove(i);
-			}
-		}
+        for (var i = 0; i < this.viewInput.options.length; i++)
+        {
+            if (this.viewInput.options[i].value.toLowerCase() == view.toLowerCase())
+            {
+                this.viewInput.remove(i);
+            }
+        }
         SelectUtils.addOption(this.viewInput, view, view);
         SelectUtils.selectTheValue(this.viewInput, view, 0);
         this.viewChanged();
@@ -480,8 +510,22 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         this.activateView(view, newQuery, willSaveHistory);
     },
+    _clearBackgroundImages:function() {
+        for (var i = 0; i < this.columns.length; i++) {
+            var colConfig = this.columns[i]
+            if (colConfig['type'] == 'image') {
+                var rowCount = this.bufferView.rowEls.length;
+                for (var index = 0; index < rowCount; index++) {
+                    var rowEl = this.bufferView.rowEls[index]
+                    var cell = rowEl.cells[i];
+                    YAHOO.util.Dom.setStyle(cell, "background", '');
+                }
+            }
+        }
+    },
     activateView : function(view, newQuery, willSaveHistory) {
         this.showMask();
+        this._clearBackgroundImages();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         var columns;
         if (viewNode) {
@@ -537,10 +581,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
+            var columnConfig = this.columns[index]
             var header = this.headers[index];
-            header.textNode.innerHTML = this.columns[index].colLabel;
-            var defaultColumnConfig = this.defaultColumnMap[this.columns[index]['attributeName']]
-            var isHyperlink = defaultColumnConfig ? defaultColumnConfig['type'] == 'link' : false
+            header.textNode.innerHTML = columnConfig.colLabel;
+            var defaultColumnConfig = this.defaultColumnMap[columnConfig['attributeName']]
+            var isHyperlink = false
+            if (defaultColumnConfig) {
+                isHyperlink = defaultColumnConfig['type'] == 'link'
+                if (defaultColumnConfig['type'] == 'image') {
+                    columnConfig['images'] = YAHOO.rapidjs.ObjectUtils.clone(defaultColumnConfig['images'], true)
+                    columnConfig['type'] = 'image';
+                }
+            }
             this.setCssHyperlink(index, isHyperlink);
         }
         this.updateColumns();
@@ -631,8 +683,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.setTitle(title);
         }
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
-        if(this.searchClassesLoaded){
-            SelectUtils.selectTheValue(this.classesInput, searchIn, 0);    
+        if (this.searchClassesLoaded) {
+            SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
@@ -668,8 +720,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var searchClass = params[1]
             var view = params[2]
             SelectUtils.selectTheValue(this.viewInput, view, 0);
-            if(this.searchClassesLoaded){
-                SelectUtils.selectTheValue(this.classesInput, searchClass, 0);    
+            if (this.searchClassesLoaded) {
+                SelectUtils.selectTheValue(this.classesInput, searchClass, 0);
             }
             this.viewChanged(queryString, false);
         }

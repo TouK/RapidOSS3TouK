@@ -37,4 +37,39 @@ class MapConverterTest extends RapidCmdbTestCase
         assertEquals ([key1:new Long(100), key2:new Double(100)], returnedMap);
         assertSame (mapToBeConverted, returnedMap);
     }
+
+    public void testConvertWithUnModifyableMap()
+    {
+        ConverterRegistry.getInstance().register (Integer, new DefaultConverter(Integer, Long));
+        ConverterRegistry.getInstance().register (Float, new DefaultConverter(Float, Double));
+        def mapToBeConverted = Collections.unmodifiableMap([:]);
+        MapConverter conv = new MapConverter();
+        def returnedMap = conv.convert(mapToBeConverted);
+        assertEquals (mapToBeConverted, returnedMap);
+        assertTrue(returnedMap.getClass().name.indexOf("UnmodifiableMap") >= 0);
+
+        mapToBeConverted = Collections.unmodifiableMap([key1:new Integer(100), key2:new Float(100)]);
+        returnedMap = conv.convert(mapToBeConverted);
+        assertEquals ([key1:new Long(100), key2:new Double(100)], returnedMap);
+        assertTrue(returnedMap.getClass().name.indexOf("UnmodifiableMap") >= 0);
+    }
+
+    public void testConvertWithUnModifyableSortedMap()
+    {
+        ConverterRegistry.getInstance().register (Integer, new DefaultConverter(Integer, Long));
+        ConverterRegistry.getInstance().register (Float, new DefaultConverter(Float, Double));
+        def map = new TreeMap();
+        def mapToBeConverted = Collections.unmodifiableSortedMap(map);
+        MapConverter conv = new MapConverter();
+        def returnedMap = conv.convert(mapToBeConverted);
+        assertEquals (mapToBeConverted, returnedMap);
+        assertTrue(returnedMap.getClass().name.indexOf("UnmodifiableMap") >= 0);
+        map = new TreeMap();
+        map.key1 = new Integer(100)
+        map.key2 = new Float(100)
+        mapToBeConverted = Collections.unmodifiableSortedMap(map);
+        returnedMap = conv.convert(mapToBeConverted);
+        assertEquals ([key1:new Long(100), key2:new Double(100)], returnedMap);
+        assertTrue(returnedMap.getClass().name.indexOf("UnmodifiableMap") >= 0);
+    }
 }

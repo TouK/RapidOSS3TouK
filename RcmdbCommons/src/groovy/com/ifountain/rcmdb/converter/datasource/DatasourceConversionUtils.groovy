@@ -24,6 +24,7 @@ public class DatasourceConversionUtils
         registerDefaultConverters([Boolean, boolean], Boolean);
         register (Date, new NotConvertingConverter());
         register (List, new ListConverter());
+        register (Collection, new ListConverter());
         register (Object[].class, new ListConverter());
         register (Map, new MapConverter());
 

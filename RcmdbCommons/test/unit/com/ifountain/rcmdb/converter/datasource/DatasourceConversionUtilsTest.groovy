@@ -51,6 +51,7 @@ public class DatasourceConversionUtilsTest extends RapidCmdbTestCase
         checkConversion(objectsToBeConvertedDate, expectedDateValues, com.ifountain.rcmdb.converter.datasource.NotConvertingConverter);
 
         assertEquals(ListConverter, ConverterRegistry.getInstance().lookup(List).class);
+        assertEquals(ListConverter, ConverterRegistry.getInstance().lookup(Collection).class);
         assertEquals(ListConverter, ConverterRegistry.getInstance().lookup(int[]).class);
         assertEquals(ListConverter, ConverterRegistry.getInstance().lookup(byte[]).class);
         assertEquals(MapConverter, ConverterRegistry.getInstance().lookup(Map).class);

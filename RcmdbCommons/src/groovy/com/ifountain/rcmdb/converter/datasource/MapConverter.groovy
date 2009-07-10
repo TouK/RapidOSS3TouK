@@ -14,9 +14,20 @@ import java.util.Map.Entry
 class MapConverter implements Converter{
 
     public Object convert(Object map) {
-        Set entries = ((Map)map).entrySet();
-        entries.each{Entry entry->
-            entry.setValue(ConverterRegistry.getInstance().convert(entry.getValue()));
+        if(map.getClass().getSimpleName() == "UnmodifiableMap" || map.getClass().getSimpleName() == "UnmodifiableSortedMap")
+        {
+            def tmpMap = [:]
+            map.each{key,value->
+                tmpMap.put (key, ConverterRegistry.getInstance().convert(value));
+            }
+            map = Collections.unmodifiableMap(tmpMap)
+        }
+        else
+        {
+            Set entries = ((Map)map).entrySet();
+            entries.each{Entry entry->
+                entry.setValue(ConverterRegistry.getInstance().convert(entry.getValue()));
+            }
         }
         return map;
     }

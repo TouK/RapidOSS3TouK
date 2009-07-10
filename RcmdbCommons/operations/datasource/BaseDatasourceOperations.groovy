@@ -36,7 +36,7 @@ class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.Abst
     public static Object convertWithDefault(Object value,Object nullValue)
     {
         def result= ConverterRegistry.getInstance().convert(value);
-        if(result == "")
+        if(result == null)
         {
             result = nullValue;
         }

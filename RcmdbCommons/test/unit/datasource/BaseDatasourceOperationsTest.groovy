@@ -116,23 +116,25 @@ class BaseDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
          def ds=BaseDatasource.add(name:"testds");
          assertFalse(ds.hasErrors())
 
-         assertEquals(ds.convert(null),"") ;
-         assertEquals(ds.convert("abc"),"abc") ;
-         assertEquals(ds.convert(5),5) ;
+         assertEquals(null,ds.convert(null)) ;
+         assertEquals("",ds.convert("")) ;
+         assertEquals("abc",ds.convert("abc")) ;
+         assertEquals(5,ds.convert(5)) ;
      }
      public void testConvertWithDefault()
      {
          def ds=BaseDatasource.add(name:"testds");
          assertFalse(ds.hasErrors())
 
-         assertEquals(ds.convertWithDefault(null,""),"") ;
-         assertEquals(ds.convertWithDefault(null,"x"),"x") ;
-         assertEquals(ds.convertWithDefault(null,[:]),[:]) ;
-         assertEquals(ds.convertWithDefault(null,[]),[]) ;
-         assertEquals(ds.convertWithDefault(null,["x":5]),["x":5]) ;
-         
-         assertEquals(ds.convertWithDefault("abc",""),"abc") ;
-         assertEquals(ds.convertWithDefault(5,""),5) ;
+         assertEquals("",ds.convertWithDefault(null,"")) ;
+         assertEquals("x",ds.convertWithDefault(null,"x")) ;
+         assertEquals([:],ds.convertWithDefault(null,[:])) ;
+         assertEquals([],ds.convertWithDefault(null,[])) ;
+         assertEquals(["x":5],ds.convertWithDefault(null,["x":5])) ;
+         assertEquals(null,ds.convertWithDefault(null,null)) ;
+
+         assertEquals("abc",ds.convertWithDefault("abc","")) ;
+         assertEquals(5,ds.convertWithDefault(5,"")) ;
      }
 
 }

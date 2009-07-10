@@ -4,7 +4,7 @@
     <facet type="Spring" name="Spring">
       <configuration>
         <options>
-          <option name="enableValidation" value="true" />
+          <option name="enableValidation" value="false" />
           <option name="reportErrorsAsWarnings" value="true" />
         </options>
         <customNs />
@@ -34,7 +34,7 @@
     </content>
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="library" name="GROOVY" level="application" />
-    <orderEntry type="library" exported="" name="ThirdParty" level="project" />
+    <orderEntry type="library" name="ThirdParty" level="project" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="comp" />

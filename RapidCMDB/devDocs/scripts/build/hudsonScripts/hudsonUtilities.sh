@@ -174,7 +174,7 @@ runGrailsTests() {
 
     xmlCount=`ls test/reports -l | grep xml -c`
     echo "xmlCount: $xmlCount"
-    if [ $xmlCount != "0"  ]
+    if [ "$xmlCount" != "0"  ]
       then
         mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     fi
@@ -191,7 +191,7 @@ runGrailsTests() {
 
     xmlCount=`ls test/reports -l | grep xml -c`
     echo "xmlCount: $xmlCount"
-    if [ $xmlCount != "0"  ]
+    if [ "$xmlCount" != "0"  ]
       then
         mv test/reports/*.xml  $WORKSPACE/TestResults/RapidSuite
     fi
@@ -258,7 +258,7 @@ generateTestDomainClasses() {
      then
         xmlCount=`ls test/reports -l | grep xml -c`
         echo "xmlCount: $xmlCount"
-        if [ $xmlCount != "0"  ]
+        if [ "$xmlCount" != "0"  ]
           then
             mv test/reports/*.xml $WORKSPACE/TestResults
         fi

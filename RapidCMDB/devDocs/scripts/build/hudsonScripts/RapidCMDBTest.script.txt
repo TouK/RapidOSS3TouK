@@ -94,7 +94,7 @@ if [ -d test/reports ]
  then
     xmlCount=`ls test/reports -l | grep xml -c`
     echo "xmlCount: $xmlCount"
-    if [ $xmlCount != "0"  ]
+    if [ "$xmlCount" != "0"  ]
       then
         mv test/reports/*.xml ../../../TestResults
     fi
@@ -128,7 +128,7 @@ fi
 
 xmlCount=`ls test/reports -l | grep xml -c`
 echo "xmlCount: $xmlCount"
-if [ $xmlCount != "0"  ]
+if [ "$xmlCount" != "0"  ]
   then
     mv test/reports/*.xml ../../../TestResults/Modeler
 fi
@@ -148,7 +148,7 @@ fi
 
 xmlCount=`ls test/reports -l | grep xml -c`
 echo "xmlCount: $xmlCount"
-if [ $xmlCount != "0"  ]
+if [ "$xmlCount" != "0"  ]
   then
     mv test/reports/*.xml  ../../../TestResults/RapidSuite
 fi

@@ -1,5 +1,4 @@
 netcool.conversion.NetcoolRuleFunctionsTest
-plugintests.SearchableExtensionPluginBulkOperationTest
 com.ifountain.rcmdb.domain.util.ControllerUtilsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests
 com.ifountain.compass.integration.CompassTransactionTest

@@ -92,12 +92,7 @@ sleep 2
 
 if [ -d test/reports ]
  then
-    xmlCount=`ls test/reports -l | grep xml -c`
-    echo "xmlCount: $xmlCount"
-    if [ "$xmlCount" != "0"  ]
-      then
-        mv test/reports/*.xml ../../../TestResults
-    fi
+     mv test/reports/*.xml ../../../TestResults
 fi
 
 
@@ -126,12 +121,7 @@ if [ ! -d ../../../TestResults/Modeler ]
     mkdir ../../../TestResults/Modeler
 fi
 
-xmlCount=`ls test/reports -l | grep xml -c`
-echo "xmlCount: $xmlCount"
-if [ "$xmlCount" != "0"  ]
-  then
-    mv test/reports/*.xml ../../../TestResults/Modeler
-fi
+mv test/reports/*.xml ../../../TestResults/Modeler
 
 
 
@@ -146,9 +136,5 @@ if [ ! -d ../../../TestResults/RapidSuite ]
 fi
 
 
-xmlCount=`ls test/reports -l | grep xml -c`
-echo "xmlCount: $xmlCount"
-if [ "$xmlCount" != "0"  ]
-  then
-    mv test/reports/*.xml  ../../../TestResults/RapidSuite
-fi
+
+mv test/reports/*.xml  ../../../TestResults/RapidSuite

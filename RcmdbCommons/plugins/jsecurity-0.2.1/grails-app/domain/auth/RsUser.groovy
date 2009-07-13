@@ -20,6 +20,7 @@ package auth
 
 class RsUser {
     def static final String RSADMIN = "rsadmin";
+    def static final String RSUSER = "rsuser";
     def static final String DEFAULT_PASSWORD = "changeme";
     static searchable = {
         except= ["groups", "permissionRelations", "userInformations"]

@@ -92,8 +92,15 @@ sleep 2
 
 if [ -d test/reports ]
  then
-   mv test/reports/*.xml ../../../TestResults
+    xmlCount=`ls test/reports -l | grep xml -c`
+    echo "xmlCount: $xmlCount"
+    if [ $xmlCount != "0"  ]
+      then
+        mv test/reports/*.xml ../../../TestResults
+    fi
 fi
+
+
 
 cd ..
 generatedModelsDir=RapidSuite/generatedModels
@@ -118,7 +125,15 @@ if [ ! -d ../../../TestResults/Modeler ]
   then
     mkdir ../../../TestResults/Modeler
 fi
-mv test/reports/*.xml ../../../TestResults/Modeler
+
+xmlCount=`ls test/reports -l | grep xml -c`
+echo "xmlCount: $xmlCount"
+if [ $xmlCount != "0"  ]
+  then
+    mv test/reports/*.xml ../../../TestResults/Modeler
+fi
+
+
 
 cd ../RapidSuite
 cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
@@ -129,4 +144,11 @@ if [ ! -d ../../../TestResults/RapidSuite ]
   then
     mkdir ../../../TestResults/RapidSuite
 fi
-mv test/reports/*.xml  ../../../TestResults/RapidSuite
+
+
+xmlCount=`ls test/reports -l | grep xml -c`
+echo "xmlCount: $xmlCount"
+if [ $xmlCount != "0"  ]
+  then
+    mv test/reports/*.xml  ../../../TestResults/RapidSuite
+fi

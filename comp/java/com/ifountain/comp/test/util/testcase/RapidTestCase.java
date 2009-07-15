@@ -32,7 +32,7 @@ import junit.framework.TestSuite;
 import org.xml.sax.SAXParseException;
 
 import com.ifountain.comp.test.util.file.FileTestUtils;
-import com.ifountain.comp.utils.Timer;
+import com.ifountain.comp.utils.RsTimer;
 import com.ifountain.comp.utils.XMLTestUtils;
 
 
@@ -42,7 +42,7 @@ import com.ifountain.comp.utils.XMLTestUtils;
 public class RapidTestCase extends TestCase
 {
 	private static ArrayList testRuntimes = new ArrayList();
-	private Timer timer;
+	private RsTimer timer;
 	private boolean isSetupCompleted = false;
 	public RapidTestCase()
 	{
@@ -97,7 +97,7 @@ public class RapidTestCase extends TestCase
     protected void setUp() throws Exception
     {
     	super.setUp();
-    	timer = new Timer();
+    	timer = new RsTimer();
         System.out.println("Test " + this.getName() + " started at " + new Date());
     }
     

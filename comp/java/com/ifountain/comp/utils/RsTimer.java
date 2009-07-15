@@ -24,10 +24,10 @@ package com.ifountain.comp.utils;
  * Time: 5:19:25 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Timer {
+public class RsTimer {
     private long snapshot;
 
-    public Timer() {
+    public RsTimer() {
         start();
     }
     public void start(){

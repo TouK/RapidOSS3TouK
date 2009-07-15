@@ -547,6 +547,43 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(1,RsUser.count());
     }
 
+    public void testUserCannotDeleteOwnAccountAndRsAdminUser()
+    {
+        def user=RsUser.add(username:RsUser.RSADMIN,passwordHash:"aaa");
+        assertFalse(user.errors.toString(),user.hasErrors());
+        try{
+            user.remove();
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertEquals("wrong exception ${e}","Can not delete user ${RsUser.RSADMIN}",e.getMessage());
+        }
 
+        assertEquals(1,RsUser.count());
+
+        user=RsUser.add(username:"system",passwordHash:"aaa");
+        assertFalse(user.errors.toString(),user.hasErrors());
+        try{
+            user.remove();
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertEquals("wrong exception ${e}","Can not delete your own account",e.getMessage());
+        }
+
+        assertEquals(2,RsUser.count());
+        
+        //test a successfull remove
+        user=RsUser.add(username:"testuser",passwordHash:"aaa");
+        assertFalse(user.errors.toString(),user.hasErrors());
+
+        assertEquals(3,RsUser.count());
+
+        user.remove();
+
+        assertEquals(2,RsUser.count());
+    }
 
 }

@@ -29,13 +29,11 @@ class RsUserController {
     def allowedMethods = []
 
     def list = {
-        flash.errors = null;
         if (!params.max) params.max = 100
         [userList: RsUser.list(params)]
     }
 
     def show = {
-        flash.errors = null;
         def rsUser = RsUser.get(id: params.id)
 
         if (!rsUser) {
@@ -48,14 +46,14 @@ class RsUserController {
     def delete = {
         def rsUser = RsUser.get(id: params.id)
         if (rsUser) {
-            if (session.username != rsUser.username)
+            try
             {
                 rsUser.remove()
                 flash.message = "User ${params.id} deleted"
                 redirect(action: list)
             }
-            else {
-                addError("default.custom.error", ["Can not delete your own account"])
+            catch(e){
+                addError("default.custom.error", [e.getMessage()])
                 flash.errors = this.errors;
                 redirect(action: list)
             }

@@ -69,9 +69,16 @@ class GroupController {
     def delete = {
         def group = Group.get([id: params.id])
         if (group) {
-            group.remove()
-            flash.message = "Group ${params.id} deleted"
-            redirect(action: list)
+            try{
+                group.remove()
+                flash.message = "Group ${params.id} deleted"
+                redirect(action: list)
+            }
+            catch(e){
+                addError("default.custom.error", [e.getMessage()])
+                flash.errors = this.errors;
+                redirect(action: list)
+            }
         }
         else {
             flash.message = "Group not found with id ${params.id}"

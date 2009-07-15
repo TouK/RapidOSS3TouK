@@ -11,6 +11,14 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 */
 class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation 
 {
+    def beforeDelete()
+    {
+       if(name.equalsIgnoreCase(RsUser.RSADMIN))
+       {
+           throw new Exception("Can not delete group ${RsUser.RSADMIN}");
+       }
+    }
+
     def afterDelete(){
         SegmentQueryHelper.getInstance().removeGroupFilters(name);
     }

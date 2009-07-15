@@ -11,7 +11,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * Time: 10:48:47 AM
 * To change this template use File | Settings | File Templates.
 */
-class GroupOperationsWithCompassTests extends RapidCmdbWithCompassTestCase {
+class GroupTest extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
@@ -170,6 +170,45 @@ class GroupOperationsWithCompassTests extends RapidCmdbWithCompassTestCase {
         groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
         assertNotNull(groupFilters);
 
+    }
+
+    public void testRsAdminGroupCannotBeDeleted()
+    {
+        def group=Group.add(name:RsUser.RSADMIN);
+        assertFalse(group.errors.toString(),group.hasErrors());
+        try{
+            group.remove();
+            fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertEquals("wrong exception ${e}","Can not delete group ${RsUser.RSADMIN}",e.getMessage());
+        }
+
+        assertEquals(1,Group.count());
+
+//        user=RsUser.add(username:"system",passwordHash:"aaa");
+//        assertFalse(user.errors.toString(),user.hasErrors());
+//        try{
+//            user.remove();
+//            fail("should throw exception");
+//        }
+//        catch(e)
+//        {
+//            assertEquals("wrong exception ${e}","Can not delete your own account",e.getMessage());
+//        }
+//
+//        assertEquals(2,RsUser.count());
+
+        //test a successfull remove
+        group=Group.add(name:"testgroup");
+        assertFalse(group.errors.toString(),group.hasErrors());
+
+        assertEquals(2,Group.count());
+
+        group.remove();
+
+        assertEquals(1,Group.count());
     }
 
 }

@@ -17,6 +17,17 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
 
+    def beforeDelete()
+    {
+       if(username.equalsIgnoreCase(getCurrentUserName()))
+       {
+           throw new Exception("Can not delete your own account");
+       }
+       if(username.equalsIgnoreCase(RsUser.RSADMIN))
+       {
+           throw new Exception("Can not delete user ${RsUser.RSADMIN}");
+       }
+    }
     public static String hashPassword(password)
     {
         return new Sha1Hash(password).toHex();

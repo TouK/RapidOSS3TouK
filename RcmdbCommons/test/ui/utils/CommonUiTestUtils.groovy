@@ -95,8 +95,7 @@ class CommonUiTestUtils {
     {
         nameValues.each{fieldName, fieldValue->
             def type = selenium.getEval ("this.browserbot.getCurrentWindow().document.getElementsByName('${fieldName}')[0].type");
-            println type;
-            if(type == "text")
+            if(type == "text" || type=="password")
             {
                 selenium.type (fieldName, fieldValue);
             }

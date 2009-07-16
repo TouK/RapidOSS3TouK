@@ -1,5 +1,7 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
+import junit.framework.AssertionFailedError
+import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,6 +17,9 @@ class AdminUiUsersTabTest extends SeleniumTestCase
     {
         super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/",
                 SeleniumTestUtils.getSeleniumBrowser());
+        selenium.login("rsadmin", "changeme");        
+        selenium.deleteAllUsers();
+        selenium.deleteAllGroups();
     }
 
 
@@ -25,194 +30,51 @@ class AdminUiUsersTabTest extends SeleniumTestCase
     }
 
 
-    private void logout()
-    {
-        selenium.click("link=Logout");
-    }
-
-    private void login()
-    {
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("login", "rsadmin");
-        selenium.type("password", "changeme");
-        selenium.click("//input[@value='Sign in']");
-        selenium.waitForPageToLoad("30000");
-    }
-
-
-
-    private String createNewGroup(String name)
-    {
-        selenium.click("link=Groups");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Group");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("name", name);
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        return selenium.getText("document.getElementById('id')")
-    }
-
-    private void deleteGroup(String groupId)
-    {
-        selenium.open("/RapidSuite/group/show/" + groupId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Delete");
-        selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-        selenium.waitForPageToLoad("30000");
-    }
-
-    private void deleteUser(String userId)
-    {
-        selenium.open("/RapidSuite/rsUser/show/" + userId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Delete");
-        selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-        selenium.waitForPageToLoad("30000");
-    }
-
-    public String userId()
-    {
-        def line = selenium.getLocation()
-        def splitted = new String[3]
-        splitted = line.split("RapidSuite/rsUser/show/")
-        return splitted[1]
-    }
-
-
-    public String groupId()
-    {
-        return selenium.getText("document.getElementById('id')")
-    }
-
-
-    public void newGroup()
-    {
-        selenium.click("link=Groups");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Group");
-        selenium.waitForPageToLoad("30000");
-    }
-
-    public void newUser()
-    {
-        selenium.click("link=Users");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New User");
-        selenium.waitForPageToLoad("30000");
-    }
-
-
 
     public void testCreateANewUser()
     {
-        login()
+        selenium.login("rsadmin", "changeme")
 
-        def firstGroupsId = createNewGroup("nmd1Group");
-        assertEquals("Group " + firstGroupsId + " created", selenium.getText("pageMessage"))
-        def secondGroupsId = createNewGroup("nmd2Group");
-        assertEquals("Group " + secondGroupsId + " created", selenium.getText("pageMessage"))
-
-        newUser()
-        selenium.type("username", "nmd1User");
-        selenium.type("password1", "pass");
-        selenium.type("password2", "pass");
-        selenium.addSelection("availablegroupsSelect", "label=nmd1Group");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def firstUsersId = userId()
-        assertEquals("User " + firstUsersId + " created", selenium.getText("pageMessage"))
-
-        newUser()
-        selenium.type("username", "nmd2User");
-        selenium.type("password1", "123");
-        selenium.type("password2", "123");
-        selenium.addSelection("availablegroupsSelect", "label=nmd2Group");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def secondUsersId = userId()
-        assertEquals("User " + secondUsersId + " created", selenium.getText("pageMessage"))
-
-        deleteGroup(firstGroupsId);
-        deleteGroup(secondGroupsId);
-        deleteUser(firstUsersId);
-        deleteUser(secondUsersId);
-
+        def firstGroupsId = selenium.createGroup("nmd1Group", "User", [], true);
+        def secondGroupsId = selenium.createGroup("nmd2Group", "User", [], true);
+        def firstUsersId = selenium.createUser("nmd1User", "pass", ["nmd1Group"], [:], true);
+        def secondUsersId = selenium.createUser("nmd2User", "123", ["nmd2Group"], [:], true);
+        selenium.login("nmd1User", "pass")
+        selenium.login("nmd2User", "123")
     }
 
 
 
     public void testCreateANewUserCreateWithAnExistingUsername()
     {
-        login()
-        newGroup()
-        selenium.type("name", "nmd1Group");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def groupsId = groupId()
-
-        newUser()
-        selenium.type("username", "nmd1User");
-        selenium.addSelection("availablegroupsSelect", "label=nmd1Group");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def usersId = userId()
-
-        newUser()
-        selenium.type("username", "nmd1User");
-        selenium.addSelection("availablegroupsSelect", "label=nmd1Group");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Object with entered keys already exists"));
-
-        deleteGroup(groupsId)
-        deleteUser(usersId)
-
+        def groupId = selenium.createGroup("nmd1Group", null, [], true);
+        def userId = selenium.createUser("nmd1User", "pass", ["nmd1Group"], [:], true);
+        selenium.createUser("nmd1User", "pass", ["nmd1Group"], [:], false);
+        assertTrue(selenium.isTextPresent("Object with entered keys already exists"));
     }
 
 
     public void testUpdateUserInfo()
     {
-        login()
-        newGroup()
-        selenium.type("name", "nmd1Group");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def groupsId = groupId()
-
-        newUser()
-        selenium.type("username", "nmd1User");
-        selenium.type("password1", "pass");
-        selenium.type("password2", "pass");
-        selenium.addSelection("availablegroupsSelect", "label=nmd1Group");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def usersId = userId()
-
-
-        selenium.click("link=Users");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=nmd1User");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("password1", "123");
-        selenium.type("password2", "123");
-        selenium.type("email", "nmd1@ifountain.com");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
-        assertEquals("User " + usersId + " updated", selenium.getText("pageMessage"))
-
-        deleteGroup(groupsId)
-        deleteUser(usersId)
+        selenium.login("rsadmin", "changeme")
+        def groupId = selenium.createGroup("nmd1Group", "User", [], true);
+        def userId = selenium.createUser("nmd1User", "pass", ["nmd1Group"], [:], true);
+        selenium.login("nmd1User", "pass");
+        selenium.login("rsadmin", "changeme");
+        def updatedFields =  [password1:"123", password2:"123", email:"nmd1@ifountain.com"]
+        selenium.updateUserById(userId,updatedFields);
+        try{
+            selenium.login("nmd1User", "pass");
+            fail("Should throw exception since");
+        }catch(AssertionFailedError e)
+        {
+            assertTrue (e.getMessage().indexOf("Expected to end with") >= 0);
+        }
+        selenium.login("nmd1User", "123");
+        selenium.login("rsadmin", "changeme");
+        selenium.openAndWait("/RapidSuite/rsUser/show/${userId}");
+        selenium.clickAndWait("_action_Edit");
+        assertEquals(updatedFields.email, selenium.getValue("email"));
 
     }
 

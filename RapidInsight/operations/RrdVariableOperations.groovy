@@ -1,5 +1,6 @@
 
-import com.ifountain.rcmdb.rrd.RrdUtils;
+import com.ifountain.rcmdb.rrd.RrdUtils
+import com.ifountain.rcmdb.rrd.DbUtils;
 
 public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
@@ -36,6 +37,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String XFF = "xff"
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
+    public static final  String RRD_VARIABLES = "rrdVariables";
+    public static final  String RRD_VARIABLE = "rrdVariable";
+    public static final  String GRAPH_TEMPLATE = "template";
+    public static final String RRD_FOLDER = "rrdFiles/"
+    public static final String DESTINATION = "destination"
 
     def createDB() {
         RrdUtils.createDatabase (createDBConfig())
@@ -60,8 +66,193 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     def graph(Map config) {
-        config[RrdUtils.RRD_VARIABLE] = name
-        return RrdUtils.graph(config)
+
+        Map rVariable = [:];
+        rVariable[RRD_VARIABLE] = name;
+        if(config.containsKey(COLOR) ){
+            rVariable[COLOR] = config.get(COLOR);
+        }
+        if(config.containsKey(THICKNESS)){
+            rVariable[THICKNESS] = config.get(THICKNESS)
+        }
+        if(config.containsKey(TYPE)) {
+            rVariable[TYPE] = config.get(TYPE);
+        }
+        if(config.containsKey(RPN)) {
+            rVariable[RPN] = config.get(RPN);
+        }
+        if (config.containsKey(DESCRIPTION) ){
+           rVariable[DESCRIPTION] = config.get(DESCRIPTION)
+           config.remove (DESCRIPTION);
+       }
+
+       def vlist = [];
+       vlist.add(rVariable);
+       config[RRD_VARIABLES] = vlist;
+
+       return graphMultiple(config);
+    }
+
+    static def graphMultiple(Map config){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+
+        String typeVar = "line";
+        String colorVar = "999999";
+
+        Map fConfig = getGeneralSettingsMap(config);
+
+        if(config.containsKey(TYPE) ){
+          typeVar = config.get(TYPE);
+       }
+
+       if(config.containsKey(COLOR) ){
+          colorVar = config.get(COLOR);
+       }
+
+       if(!config.containsKey(RRD_VARIABLES) ){
+           throw new Exception("No rrd variable is specified");
+       }
+       def rrdVariables = config.get(RRD_VARIABLES);
+
+       def datasourceList = [];
+       fConfig[AREA] = [];
+       fConfig[LINE] = [];
+       fConfig[STACK] = [];
+       def typeList = [];
+       def rrdVar;
+       for(int i=0; i<rrdVariables.size(); i++){
+           rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
+           if(rrdVariables[i].containsKey(FUNCTION) ){
+               def datasourceMap = [:];
+               datasourceMap[NAME] = rrdVar.name;
+               datasourceMap[DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
+               datasourceMap[DSNAME] = rrdVar.name;
+               datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
+               datasourceList.add(datasourceMap);
+
+           }else{
+               rrdVar.archives.each{
+                   def datasourceMap = [:];
+                   datasourceMap[NAME] = rrdVar.name;
+                   datasourceMap[DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
+                   datasourceMap[DSNAME] = rrdVar.name;
+                   datasourceMap[FUNCTION] = it.function;
+                   datasourceList.add(datasourceMap);
+               }
+           }
+           if(rrdVariables[i].containsKey(RPN) ){
+               def datasourceMap = [:];
+               datasourceMap[NAME] = rrdVariables[i][RPN];
+               datasourceMap[RPN] = rrdVariables[i][RPN];
+               datasourceList.add(datasourceMap);
+           }
+           def typeMap = [:];
+           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
+
+           if(rrdVariables[i].containsKey(DESCRIPTION))
+                typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION]
+           else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
+                typeMap[DESCRIPTION] = config[DESCRIPTION]
+           else
+                typeMap[DESCRIPTION] = rrdVar.name;
+
+
+           typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
+           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
+
+           if(rrdVariables[i].containsKey(TYPE) ){
+               try{
+                    fConfig[rrdVariables[i][TYPE]].add(typeMap)
+               }catch (Exception ex){
+                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
+               }
+           }
+           else{
+               fConfig[typeVar].add(typeMap);
+           }
+       }
+       Map dbInfo = DbUtils.getDatabaseInfo(RRD_FOLDER + rrdVar.file);
+       if(!fConfig.containsKey (START_TIME)){
+           fConfig[START_TIME] = dbInfo[START_TIME];
+       }
+       if(!fConfig.containsKey (END_TIME)){
+           fConfig[END_TIME] = dbInfo[END_TIME];
+       }
+       fConfig[DATASOURCE] = datasourceList;
+
+       byte[] bytes = RrdUtils.graph(fConfig);
+
+       return bytes
+    }
+
+    private static Map getGeneralSettingsMap(Map config){
+
+       Map fConfig = [:];
+       if(config.containsKey(RrdUtils.GRAPH_TEMPLATE)){
+           fConfig = getGeneralSettingsMapWithTemplate(config);
+       }
+
+       if(config.containsKey(START_TIME) ){
+           fConfig[START_TIME] = config.get(START_TIME);
+       }
+       if(config.containsKey(DESTINATION) ){
+           fConfig[DESTINATION] = config.get(DESTINATION);
+       }
+       if(config.containsKey(END_TIME) ){
+           fConfig[END_TIME] = config.get(END_TIME);
+       }
+       if(config.containsKey(MAX) ){
+          fConfig[MAX] = config.get(MAX);
+       }
+       if(config.containsKey(MIN) ){
+          fConfig[MIN] = config.get(MIN);
+       }
+       if(config.containsKey(HEIGHT) ){
+          fConfig[HEIGHT] = config.get(HEIGHT);
+       }
+       if(config.containsKey(WIDTH) ){
+          fConfig[WIDTH] = config.get(WIDTH);
+       }
+       if(config.containsKey(TITLE) ){
+          fConfig[TITLE] = config.get(TITLE);
+       }
+       if(config.containsKey(VERTICAL_LABEL) ){
+          fConfig[VERTICAL_LABEL] = config.get(VERTICAL_LABEL);
+       }
+       return fConfig;
+    }
+    private static Map getGeneralSettingsMapWithTemplate(Map config){
+       Map fConfig = [:];
+
+       def template = RrdGraphTemplate.get(name:config.get(GRAPH_TEMPLATE));
+
+       if(template.max != Double.NaN )
+          fConfig[MAX] = template.max;
+
+       if(template.min != Double.NaN )
+          fConfig[MIN] = template.min;
+
+       fConfig[HEIGHT] = (int)template.height;
+       fConfig[WIDTH] = (int)template.width;
+
+       if(template.title.length()>0 )
+          fConfig[TITLE] = template.title;
+
+       if(template.verticalLabel.length()>0 )
+          fConfig[VERTICAL_LABEL] = template.verticalLabel ;
+
+       //note that they are not fConfig
+       if(template.description.length()>0 )
+          config[DESCRIPTION] = template.description ;
+
+       if(template.color.length()>0 )
+          config[COLOR] = template.color ;
+
+       if(template.type.length()>0 )
+          config[TYPE] = template.type ;
+
+       return fConfig;
     }
 
     def graphLastHour(Map config) {

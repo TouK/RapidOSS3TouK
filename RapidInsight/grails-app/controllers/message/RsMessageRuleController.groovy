@@ -20,12 +20,8 @@ package message
 */
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import com.ifountain.rcmdb.domain.util.DomainClassUtils
-import org.codehaus.groovy.grails.web.metaclass.RenderDynamicMethod
 import groovy.xml.MarkupBuilder
 import auth.ChannelUserInformation
-import org.jsecurity.SecurityUtils
-import auth.Role;
 
 
 class RsMessageRuleController {
@@ -79,11 +75,6 @@ class RsMessageRuleController {
         render(contentType: "text/xml", text: sw.toString())
 
     }
-    def getRuleXml(rule)
-    {
-
-    }
-
 
     def delete = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
@@ -99,26 +90,25 @@ class RsMessageRuleController {
 
 
 
-
     def update = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {
-            def user = auth.RsUser.get(username: session.username)
-            def destination = getDestination(user, params.destinationType)
-            def isAdmin = SecurityUtils.subject.hasRole(Role.ADMINISTRATOR)
-            if (!isAdmin && (destination == null ||destination == ""))
+            try{
+                def ruleParams=ControllerUtils.getClassProperties(params, RsMessageRule);
+                RsMessageRule.updateMessageRuleForUser(rsMessageRule,ruleParams,session.username)
+
+                if (!rsMessageRule.hasErrors()) {
+                    render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                }
+                else {
+                    render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                }
+            }
+            catch(e)
             {
-                addError("default.couldnot.create", [RsMessageRule, "Your destination for ${params.destinationType} is not defined"])
+                addError("default.couldnot.create", [RsMessageRule, e.getMessage()])
                 render(text: errorsToXml(this.errors), contentType: "text/xml")
                 return;
-            }
-
-            rsMessageRule.update(ControllerUtils.getClassProperties(params, RsMessageRule));
-            if (!rsMessageRule.hasErrors()) {
-                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
-            }
-            else {
-                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
             }
         }
         else {
@@ -129,40 +119,25 @@ class RsMessageRuleController {
 
 
     def save = {
-        def user = auth.RsUser.get(username: session.username)
-        def destination = getDestination(user, params.destinationType)
-        def isAdmin = SecurityUtils.subject.hasRole(Role.ADMINISTRATOR)
-        if (!isAdmin && (destination == null ||destination == ""))
+        try{
+            def ruleParams=ControllerUtils.getClassProperties(params, RsMessageRule);
+            def rsMessageRule = RsMessageRule.addMessageRuleForUser(ruleParams,session.username)
+
+            if (!rsMessageRule.hasErrors()) {
+                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
+            }
+            else {
+                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+            }
+        }
+        catch(e)
         {
-            addError("default.couldnot.create", [RsMessageRule, "Your destination for ${params.destinationType} is not defined"])
+            addError("default.couldnot.create", [RsMessageRule, e.getMessage()])
             render(text: errorsToXml(this.errors), contentType: "text/xml")
             return;
         }
-        params.userId = user.id
-        if (params.userId != null)
-        {
-            params.userId = String.valueOf(params.userId)
-        }
-
-        def rsMessageRule = RsMessageRule.add(ControllerUtils.getClassProperties(params, RsMessageRule))
-        if (!rsMessageRule.hasErrors()) {
-
-            render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
-
-        }
-        else {
-            render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")
-
-        }
     }
 
-    def getDestination(user, destinationType) {
-        def userChannelInfoType = RsMessageRule.getDestinationConfig()[destinationType];
-        if (userChannelInfoType) {
-            return ChannelUserInformation.get(userId: user.id, type: userChannelInfoType)?.destination
-        }
-        return null;
-    }
     def enableRule = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {

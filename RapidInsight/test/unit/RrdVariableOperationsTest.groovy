@@ -10,8 +10,8 @@ import com.ifountain.rcmdb.rrd.RrdUtils;
 */
 class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
-    String fileName = "vartest.rrd";
-    String fileNameExt = "vartest2.rrd";
+    String fileName = "variable.rrd";
+    String fileNameExt = "variable2.rrd";
     String imageFileName = "imageOutput.png"
     String fileDirectory = "rrdFiles"
     String rrdFileName = "testRrd.rrd";
@@ -34,6 +34,17 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 //        new File(fileDirectory).delete()
         super.tearDown();
     }
+//
+//    public void testAddRrdVariableSuccessfully() {
+//        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
+//        def variable = RrdVariable.add(name:"variable", resource:"resource",
+//                                       type:"GAUGE", heartbeat:300,
+//                                       startTime:9000L, step:300L, archives: archive);
+//        variable = RrdVariable.get(name:"variable");
+//        println new File(fileName).getAbsolutePath();
+//        assertEquals("Rrd file path is not proper",
+//                RrdVariableOperations.RRD_FOLDER+"vartest.rrd",variable.getFilePath());
+//    }
 
     public void testCreateDBConfigSuccessfulWithOneArchive() {
 
@@ -42,7 +53,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file:fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000L, step:300L, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -88,7 +99,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive3.errors.toString(), archive3.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file:fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000L, step:300L,
                                        archives: [archive1, archive2, archive3])
         assertFalse(variable.errors.toString(), variable.hasErrors())
@@ -154,7 +165,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, /*file: fileName,*/
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -198,7 +209,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -219,7 +230,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -236,7 +247,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -252,7 +263,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300, file: fileName,
+                                       type:"GAUGE", heartbeat:300,
                                        startTime:9000000, step:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -272,7 +283,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -309,7 +320,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -346,7 +357,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, step:300, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -380,12 +391,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600, file: fileName,
+                                       type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
         def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600, file:fileNameExt,
+                                        type:"COUNTER", heartbeat:600,
                                         startTime:978300900000L, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -438,7 +449,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, step:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
@@ -486,7 +497,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
         def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, file: fileName,
+                                       type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, step:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
@@ -589,7 +600,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def variable2 = RrdVariable.add(name:"variable2", file:"explicitDef")
         fileName = variable2.fileSource()
         
-        assertEquals("explicitDef", fileName)
+        assertEquals(fileNameExt, fileName)
 
     }
 
@@ -634,9 +645,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
+
+        rrdvariable.createDB();
 
         def map = [:];
         map[RrdVariableOperations.START_TIME] = 978301200000;
@@ -698,13 +711,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs1", resource:"resource",
-                           type:"COUNTER", heartbeat:600, file: rrdFileName,
+        def rrdvariable1 = RrdVariable.add(name:"testDs1", resource:"resource",
+                           type:"COUNTER", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable2 = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
+
+        rrdvariable1.createDB();
+        rrdvariable2.createDB();
 
         def rrdList = [
                             [rrdVariable:"testDs1", color:"123456", description:"cpu"],
@@ -764,13 +780,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs1", resource:"resource",
-                           type:"COUNTER", heartbeat:600, file: rrdFileName,
+        def rrdvariable1 = RrdVariable.add(name:"testDs1", resource:"resource",
+                           type:"COUNTER", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable2 = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
+
+        rrdvariable1.createDB();
+        rrdvariable2.createDB();
 
         def rrdList = [
                             [rrdVariable:"testDs1", color:"123456", description:"cpu", rpn:"testDs1,2,*"],
@@ -831,9 +850,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
+
+        rrdvariable.createDB();
 
         def map = [:];
         map[RrdVariableOperations.RRD_VARIABLE] = "testDs2";
@@ -889,13 +910,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
         RrdGraphTemplate.add(["name":"tName", "description":"desc",
                     "title":"title", "verticalLabel":"kmh", "width":100,
                     "type":"area","color":"234231"]);
 
+        rrdvariable.createDB();
 
         def map = [:];
         map[RrdVariableOperations.START_TIME] = 978301200000;
@@ -953,9 +975,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:24)
 
-        RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600, file: rrdFileName,
+        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
+                           type:"GAUGE", heartbeat:600,
                            startTime:978300900000, archives: [archive1])
+
+        rrdvariable.createDB();
 
         def map = [:];
         map[RrdVariableOperations.START_TIME] = 978301200000;

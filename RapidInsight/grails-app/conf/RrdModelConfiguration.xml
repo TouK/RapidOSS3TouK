@@ -8,7 +8,6 @@
                 <Property Name="heartbeat" Type="number" Default="600"/>
                 <Property Name="min" Type="float" Default="Double.NaN"/>
                 <Property Name="max" Type="float" Default="Double.NaN"/>
-                <Property Name="file" Type="string"/>
                 <Property Name="startTime" Type="number"/>
                 <Property Name="step" Type="number" Default="300"/>
             </Properties>

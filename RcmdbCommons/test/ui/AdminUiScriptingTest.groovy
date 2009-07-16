@@ -28,9 +28,10 @@ class AdminUiScriptingTest extends SeleniumTestCase
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         selenium.runScriptByName(logLevelModifier, [loggerName:"root", level:"WARN"])
-        selenium.logout()
         selenium.deleteScriptByName(logValidatorName, false);
         selenium.deleteScriptByName(logLevelModifier, false);
+        selenium.logout()
+
     }
 
 
@@ -39,11 +40,11 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testCreateAnOnDemandScriptByScriptFileName()
     {
-        selenium.deleteScriptByName("aScript", false);
+        selenium.deleteScriptByName("ondemand2", false);
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
              def resp ="";
-             res = CmdbScript.search("scriptFile:aScript")
+             res = CmdbScript.search("name:ondemand2")
              res.results.each{
             resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
             }
@@ -62,7 +63,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             assertEquals("false", selenium.getText("identifier=logFileOwn"));
             assertEquals("OnDemand", selenium.getText("identifier=type"));
         } finally {
-            SeleniumTestUtils.deleteScriptFile("aScript")
+            SeleniumTestUtils.deleteScriptFile("ondemand2")
         }
     }
 
@@ -73,7 +74,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
              def resp ="";
-             res = CmdbScript.search("scriptFile:aScript")
+             res = CmdbScript.search("name:aScript")
              res.results.each{
                 resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
              }
@@ -106,7 +107,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             //creates cron.groovy in RS_HOME/RapidSuite/scripts folder with the following content
             String cronScriptContent = """import script.*
                     def resp ="";
-                    res = CmdbScript.search("scriptFile:cron")
+                    res = CmdbScript.search("name:scheduled2")
                     res.results.each{
                     resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
                     }
@@ -180,7 +181,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             def scriptContent = """import script.*
 
             def resp ="";
-            res = CmdbScript.search("scriptFile:periodic")
+            res = CmdbScript.search("name:scheduled1")
             res.results.each{
             resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
             }
@@ -196,7 +197,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             verifyEquals("periodic", selenium.getText("scriptFile"));
             verifyEquals("WARN", selenium.getText("logLevel"));
             verifyEquals("false", selenium.getText("logFileOwn"));
-            verifyEquals("Hello from periodic", selenium.getText("staticParam"));
+            verifyEquals(expectedMessage, selenium.getText("staticParam"));
             verifyEquals("Scheduled", selenium.getText("type"));
             verifyEquals("Periodic", selenium.getText("scheduleType"));
             verifyEquals("0", selenium.getText("startDelay"));
@@ -238,7 +239,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
             def scriptContent = """import script.*
 
                 def resp ="${messagePrefix}";
-                res = CmdbScript.search("scriptFile:aScript")
+                res = CmdbScript.search("name:aScript")
                 res.results.each{
                   resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
                 }

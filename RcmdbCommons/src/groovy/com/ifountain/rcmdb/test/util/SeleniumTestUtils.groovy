@@ -9,9 +9,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * Time: 11:48:31 AM
 * To change this template use File | Settings | File Templates.
 */
-class SeleniumTestUtils  {
-
-
+class SeleniumTestUtils {
 
     public static String getRsHome()
     {
@@ -27,22 +25,29 @@ class SeleniumTestUtils  {
     {
         return CommonTestUtils.getTestProperty("Selenium.ServerPort");
     }
-     public static String getRIHost()
+    public static String getRIHost()
     {
         return CommonTestUtils.getTestProperty("Selenium.RIHost");
     }
-     public static String getRIPort()
+    public static String getRIPort()
     {
         return CommonTestUtils.getTestProperty("Selenium.RIPort");
     }
-      public static String  getSeleniumBrowser()
+    public static String getSeleniumBrowser()
     {
         return CommonTestUtils.getTestProperty("Selenium.browser");
     }
-     public static void createScript(String path,String scriptContent)
-     {
-          File file = new File(path)
-          file.setText(scriptContent)
-     }
+    
+    public static void createScriptFile(String scriptFileName, String scriptContent)
+    {
+        File file = new File("${getRsHome()}/RapidSuite/scripts/${scriptFileName}.groovy")
+        file.setText(scriptContent)
+    }
+
+    public static void deleteScriptFile(String scriptFileName)
+    {
+        File file = new File("${getRsHome()}/RapidSuite/scripts/${scriptFileName}.groovy")
+        file.delete()
+    }
 
 }

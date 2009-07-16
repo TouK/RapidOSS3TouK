@@ -3,6 +3,10 @@ package com.ifountain.rcmdb.test.util
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.DefaultSelenium
 import com.ifountain.comp.test.util.CommonTestUtils
+import com.thoughtworks.selenium.Selenium
+import utils.UserGroupUiTestUtilities
+import org.codehaus.groovy.runtime.InvokerHelper
+import utils.ScriptUiUtilities
 
 
 /**
@@ -18,6 +22,53 @@ class SeleniumTestCase extends SeleneseTestCase {
     private static boolean start = true;
     static{
         CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        registerDynamicMethodsToSelenium();
+    }
+
+    public static void registerDynamicMethodsToSelenium()
+    {
+        def utilityClassesToBeTried = [UserGroupUiTestUtilities, ScriptUiUtilities]
+        DefaultSelenium.metaClass.clickAndWait = {String url->
+            delegate.clickAndWait(url, "30000");
+        }
+        DefaultSelenium.metaClass.clickAndWait = {String url, String time->
+            delegate.click(url);
+            delegate.waitForPageToLoad(time);
+        }
+        DefaultSelenium.metaClass.openAndWait = {String url->
+            delegate.openAndWait(url, "30000");
+        }
+        DefaultSelenium.metaClass.getPageText = {->
+            return selenium.getEval("new XMLSerializer().serializeToString(this.browserbot.getCurrentWindow().document)")
+        }
+        DefaultSelenium.metaClass.openAndWait = {String url, String time->
+            delegate.setTimeout (time);
+            try{
+                delegate.open(url);
+            }finally{
+                delegate.setTimeout ("30000");
+            }
+        }
+
+        DefaultSelenium.metaClass.methodMissing = {String methodName, params ->
+            def newParams = new ArrayList(InvokerHelper.asList(params));
+            newParams.add(0, delegate);
+            for(int i=0; i < utilityClassesToBeTried.size(); i++){
+                Class utilityClass = utilityClassesToBeTried[i];
+                try{
+                    def res = utilityClass.metaClass.invokeStaticMethod(utilityClass, methodName, newParams as Object[]);
+                    return res;
+                }
+                catch(MissingMethodException ex)
+                {
+                    if(ex.getMethod() != methodName || ex.getType().name != utilityClass.name)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+            throw new MissingMethodException(methodName, Selenium, params);
+        }
     }
 
     public static void suiteSetUp(url, browser) {

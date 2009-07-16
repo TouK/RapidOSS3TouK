@@ -82,10 +82,10 @@
                 </td>
                 <td>
                     <div>
-                        <span><span><button type="button" onclick="addToSelect${id}()"> >> </button></span></span>
+                        <span><span><button id="${id}ListsAdd" type="button" onclick="addToSelect${id}()"> >> </button></span></span>
                     </div>
                     <div>
-                        <span><span><button type="button" onclick="removeFromSelect${id}()"> << </button></span></span>
+                        <span><span><button id="${id}ListsRemove" type="button" onclick="removeFromSelect${id}()"> << </button></span></span>
                     </div>
                 </td>
                 <td>

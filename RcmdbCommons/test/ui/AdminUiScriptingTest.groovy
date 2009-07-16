@@ -75,7 +75,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         File file = new File(path)
         if (file.exists())
             file.delete();
-        SeleniumTestUtils.createScript(path, scriptContent)
+        SeleniumTestUtils.createScriptFile(path, scriptContent)
     }
 
 

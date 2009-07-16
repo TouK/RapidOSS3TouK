@@ -33,19 +33,7 @@
 </div>
 <div class="body">
     <h1>Edit Group</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${group}">
-        <div class="errors">
-            <g:renderErrors bean="${group}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[group]]"></g:render>
     <g:form method="post" >
         <input type="hidden" name="id" value="${group?.id}"/>
         <div class="dialog">

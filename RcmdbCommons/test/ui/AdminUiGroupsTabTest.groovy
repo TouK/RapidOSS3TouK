@@ -1,5 +1,6 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
+import utils.CommonUiTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,287 +16,100 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
     {
         super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/",
                 SeleniumTestUtils.getSeleniumBrowser());
+        selenium.logout()
+        selenium.login("rsadmin", "changeme");
+        selenium.runScriptByName("removeAll")
+        selenium.deleteAllGroups();
+        selenium.deleteAllUsers();
+        deleteSnmpConnectors();
     }
 
 
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        logout()
+        selenium.login("rsadmin", "changeme");
+        deleteSnmpConnectors();
+        selenium.logout()
     }
 
-
-    private void logout()
-    {
-        selenium.click("link=Logout");
-    }
-
-    private void login(String name, String passWord)
-    {
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("login", name);
-        selenium.type("password", passWord);
-        selenium.click("//input[@value='Sign in']");
-        selenium.waitForPageToLoad("30000");
-    }
-
-
-
-    private String createNewGroup(String name)
-    {
-        selenium.click("link=Groups");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Group");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("name", name);
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        return selenium.getText("document.getElementById('id')")
-    }
-
-    private void deleteGroup(String groupId)
-    {
-        selenium.open("/RapidSuite/group/show/" + groupId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Delete");
-        selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-        selenium.waitForPageToLoad("30000");
-    }
-
-    private void deleteUser(String userId)
-    {
-        selenium.open("/RapidSuite/rsUser/show/" + userId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Delete");
-        selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-        selenium.waitForPageToLoad("30000");
-    }
-
-    public void newGroup()
-    {
-        selenium.click("link=Groups");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Group");
-        selenium.waitForPageToLoad("30000");
-    }
-
-    public void newUser()
-    {
-        selenium.click("link=Users");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New User");
-        selenium.waitForPageToLoad("30000");
-    }
-
-    private void deleteSNMPConnector(String snmpId)
-    {
-        selenium.open("/RapidSuite/snmpConnector/show/" + snmpId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Delete");
-        selenium.waitForPageToLoad("30000");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-        selenium.waitForPageToLoad("30000");
-    }
 
     public void testCreateAGroup()
     {
-        login("rsadmin", "changeme")
-        newGroup()
-
-        selenium.type("name", "nmd1Group");
-        selenium.select("role.id", "label=User");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        String firstGroupsUd = selenium.getText("document.getElementById('id')")
+        selenium.login("rsadmin", "changeme")
+        String firstGroupsUd = selenium.createGroup("nmd1Group", "User", []);
         assertEquals("Group " + firstGroupsUd + " created", selenium.getText("pageMessage"))
 
-        newGroup()
-        selenium.type("name", "nmd2Group");
-        selenium.select("role.id", "label=User");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        String secondGroupsUd = selenium.getText("document.getElementById('id')")
+        String secondGroupsUd = selenium.createGroup("nmd2Group", "User", []);
         assertEquals("Group " + secondGroupsUd + " created", selenium.getText("pageMessage"))
-
-        deleteGroup(firstGroupsUd)
-        deleteGroup(secondGroupsUd)
-    }
-
-    private void deleteScript(String id) {
-        selenium.open("/RapidSuite/script/show/" + id);
-        selenium.click("_action_Delete");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-    }
-
-    public String userId()
-    {
-        def line = selenium.getLocation()
-        def splitted = new String[3]
-        splitted = line.split("RapidSuite/rsUser/show/")
-        return splitted[1]
-    }
-
-    private void deleteScriptFile(String name)
-    {
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/" + name)
-        if (file.exists())
-            file.delete();
     }
 
 
-    public String groupId()
-    {
-        return selenium.getText("document.getElementById('id')")
-    }
+
 
     public void testScriptAuthorizationMechanism()
     {
+        def stringToBeReturned = "HelloWorld"
+        def scriptContent = "return '${stringToBeReturned}'"
+        selenium.deleteScriptByName ("HelloWorld", false);
+        SeleniumTestUtils.createScriptFile ("HelloWorld", scriptContent);
+        selenium.deleteAllUsers();
+        selenium.login("rsadmin", "changeme")
 
-        login("rsadmin", "changeme")
-
-        newGroup()
-        selenium.type("name", "default");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def defaultGroupId = groupId()
-
-        newUser()
-        selenium.type("username", "user1");
-        selenium.type("password1", "user1");
-        selenium.type("password2", "user1");
-        selenium.addSelection("availablegroupsSelect", "label=default");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def user1Id = userId()
+        def defaultGroupId  = selenium.createGroup("default", null, []);
+        def user1Id  = selenium.createUser("user1", "user1", ["default"]);
+        def group1Id = selenium.createGroup("group1", "User", ["user1"]);
+        def user2Id  = selenium.createUser("user2", "user2", ["default"]);
+        def group2Id = selenium.createGroup("group2", "User", ["user2"]);
 
 
-        newGroup()
-        selenium.type("name", "group1");
-        selenium.select("role.id", "label=User");
-        selenium.addSelection("availableusersSelect", "label=user1");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def group1Id = groupId()
+        def scriptId = selenium.createOnDemandScript("HelloWorld", [:], ["group1"]);
+        selenium.runScriptByName ("HelloWorld");
+        assertTrue(selenium.isTextPresent(stringToBeReturned));
 
+        selenium.login("user1", "user1")
+        selenium.runScriptByName("HelloWorld");
+        assertTrue(selenium.isTextPresent(stringToBeReturned));
 
-        newUser()
-        selenium.type("username", "user2");
-        selenium.type("password1", "user2");
-        selenium.type("password2", "user2");
-        selenium.addSelection("availablegroupsSelect", "label=default");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def user2Id = userId()
-
-        newGroup()
-        selenium.type("name", "group2");
-        selenium.select("role.id", "label=User");
-        selenium.addSelection("availableusersSelect", "label=user2");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def group2Id = groupId()
-
-        selenium.click("link=Scripts");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Script");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("name", "HelloWorld");
-        selenium.addSelection("availableallowedGroupsSelect", "label=group1");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def scriptId = selenium.getText("document.getElementById('id')")
-
-        selenium.click("_action_Run");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Hello World!"));
-
-
-        login("user1", "user1")
-        selenium.open("/RapidSuite/script/run/HelloWorld");
-        verifyTrue(selenium.isTextPresent("Hello World!"));
-
-
-        login("user2", "user2")
-        selenium.open("/RapidSuite/script/run/HelloWorld");
+        selenium.login("user2", "user2")
+        selenium.runScriptByName("HelloWorld");
         def line = selenium.getLocation()
-        def splitted = new String[3]
-        splitted = line.split("RapidSuite")
-        assertEquals("/auth/unauthorized", splitted[1]);
+        assertTrue (selenium.getLocation().indexOf("/auth/unauthorized") >= 0);
 
 
-        login("rsadmin", "changeme")
-        selenium.open("/RapidSuite/script/list");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=Scripts");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=HelloWorld");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("//input[@id='enabledForAllGroups']");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
+        selenium.login("rsadmin", "changeme")
+        selenium.updateScript("HelloWorld", [enabledForAllGroups:true], []);
 
-        selenium.click("_action_Run");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Hello World!"));
-
-        selenium.open("/RapidSuite/script/list");
-        logout()
-        selenium.waitForPageToLoad("30000");
+        selenium.runScriptByName("HelloWorld")
+        verifyTrue(selenium.isTextPresent(stringToBeReturned));
+        selenium.logout()
 
 
-        login("user1", "user1")
-        selenium.open("/RapidSuite/script/run/HelloWorld");
-        verifyTrue(selenium.isTextPresent("Hello World!"));
+        selenium.login("user1", "user1")
+        selenium.runScriptByName("HelloWorld")
+        assertTrue(selenium.isTextPresent(stringToBeReturned));
+        selenium.logout()
 
-        login("user2", "user2")
-        selenium.open("/RapidSuite/script/run/HelloWorld");
-        verifyTrue(selenium.isTextPresent("Hello World!"));
-
-
-        login("rsadmin", "changeme");
-        deleteGroup(defaultGroupId)
-        deleteGroup(group1Id)
-        deleteGroup(group2Id)
-        deleteUser(user1Id)
-        deleteUser(user2Id)
-        deleteScript(scriptId)
-
-    }
-    public String findId(String parser)
-    {
-        def line = selenium.getLocation()
-        def splitted = new String[3]
-        splitted = line.split(parser)
-        return splitted[1]
-    }
-    private void createScriptFile(String path, String scriptContent)
-    {
-        File file = new File(path)
-        if (file.exists())
-            file.delete();
-        SeleniumTestUtils.createScript(path, scriptContent)
+        selenium.login("user2", "user2")
+        selenium.runScriptByName("HelloWorld")
+        assertTrue(selenium.isTextPresent(stringToBeReturned));
+        selenium.logout()
+        selenium.login("rsadmin", "changeme")
+        selenium.deleteScriptById(scriptId)
     }
 
 
     public void testUpdateAGroupWithSegmentFilter()
     {
+        selenium.deleteScriptByName("GenerateSnmpTraps", false);
+        
 
-        def testScriptContent = generateSnmpScriptContent()
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/GenerateSnmpTraps.groovy", testScriptContent);
-        def scriptContent = eventSnmpContent()
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/EventSnmpListener.groovy", scriptContent);
+        def generateSnmpTrapScriptContent = generateSnmpScriptContent()
+        SeleniumTestUtils.createScriptFile ("GenerateSnmpTraps", generateSnmpTrapScriptContent);
+        def eventSnmpScriptContent = eventSnmpContent()
+        SeleniumTestUtils.createScriptFile ("EventSnmpListener", eventSnmpScriptContent);
 
-        login("rsadmin", "changeme");
+        selenium.login("rsadmin", "changeme", "/script/list");
 
         selenium.click("link=SNMP");
         selenium.waitForPageToLoad("30000");
@@ -303,107 +117,53 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
         selenium.waitForPageToLoad("30000");
         selenium.type("name", "snmp1");
         selenium.type("scriptFile", "EventSnmpListener");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def snmpId = findId("RapidSuite/snmpConnector/show/")
-        selenium.click("link=SNMP");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/snmpConnector/show/" + snmpId)
-        selenium.click("_action_StartConnector");
-        selenium.waitForPageToLoad("30000");
+        selenium.clickAndWait("//input[@value='Create']");
+        assertTrue ("expected show view but was ${selenium.getLocation()}", selenium.getLocation().indexOf("snmpConnector/show") >= 0);
+        def snmpId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation())
+        selenium.clickAndWait("link=SNMP");
+        selenium.openAndWait("/RapidSuite/snmpConnector/show/" + snmpId)
+        selenium.clickAndWait("_action_StartConnector");
 
-        selenium.click("link=Scripts");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Script");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("name", "GenerateSnmpTraps");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def GenerateSnmpTrapsIdValue = findId("RapidSuite/script/show/")
-        selenium.click("_action_Run");
-        Thread.sleep(180000);
+        selenium.createOnDemandScript("GenerateSnmpTraps", [:], []);
+        selenium.runScriptByName("GenerateSnmpTraps", "120000");
 
+        def nmd1GroupId  = selenium.createGroup("nmd1Users", "User", []);
+        def nmd2GroupId  = selenium.createGroup("nmd2Users", "User", []);
+        def nmd1UserId  = selenium.createUser("nmd1User", "nmd1User", ["nmd1Users"]);
+        def nmd2UserId  = selenium.createUser("nmd2User", "nmd2User", ["nmd2Users"]);
 
-        selenium.open("/RapidSuite/script/list");
-        newGroup()
-        selenium.type("name", "nmd1Users");
-        selenium.select("role.id", "label=User");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def nmd1GroupId = groupId()
-
-        newGroup()
-        selenium.type("name", "nmd2Users");
-        selenium.select("role.id", "label=User");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def nmd2GroupId = groupId()
-
-        newUser()
-        selenium.type("username", "nmd1User");
-        selenium.addSelection("availablegroupsSelect", "label=nmd1Users");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def nmd1UserId = userId()
-
-        newUser()
-        selenium.type("username", "nmd2User");
-        selenium.addSelection("availablegroupsSelect", "label=nmd2Users");
-        selenium.click("//button[@type='button']");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        def nmd2UserId = userId()
-
-        selenium.open("/RapidSuite/group/show/" + nmd1GroupId);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("segmentFilter", "NMD1");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
+        selenium.updateGroupById(nmd1GroupId, [segmentFilter:"NMD1"]);
         assertEquals("Group " + nmd1GroupId + " updated", selenium.getText("pageMessage"))
 
-        selenium.open("/RapidSuite/group/show/" + nmd2GroupId);
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("segmentFilter", "NMD2");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
+        selenium.updateGroupById(nmd2GroupId, [segmentFilter:"NMD2"]);
         assertEquals("Group " + nmd2GroupId + " updated", selenium.getText("pageMessage"))
 
 
-        logout()
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("login", "nmd1User");
-        selenium.click("//input[@value='Sign in']");
-        Thread.sleep(15000);
-        verifyTrue(selenium.isTextPresent("NMD1"));
-        verifyFalse(selenium.isTextPresent("NMD2"));
-        selenium.click("link=Logout");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Findex.gsp&format=html");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("login", "nmd2User");
-        selenium.click("//input[@value='Sign in']");
-        Thread.sleep(15000);
-        verifyTrue(selenium.isTextPresent("NMD2"));
-        verifyFalse(selenium.isTextPresent("NMD1"));
-        selenium.click("link=Logout");
-        selenium.waitForPageToLoad("30000");
-        login("rsadmin", "changeme");
+        selenium.logout()
+        selenium.login("nmd1User", "nmd1User")
+        Thread.sleep(5000);
+        assertTrue(selenium.isTextPresent("NMD1"));
+        assertFalse(selenium.isTextPresent("NMD2"));
+        selenium.logout()
+        selenium.login("nmd2User", "nmd2User")
+        Thread.sleep(5000);
+        assertTrue(selenium.isTextPresent("NMD2"));
+        assertFalse(selenium.isTextPresent("NMD1"));
+        selenium.logout()
+        selenium.login("rsadmin", "changeme");
 
+        selenium.deleteScriptByName("GenerateSnmpTraps");
+        SeleniumTestUtils.deleteScriptFile("EventSnmpListener")
+        SeleniumTestUtils.deleteScriptFile("GenerateSnmpTraps.groovy")
 
-        deleteGroup(nmd1GroupId)
-        deleteGroup(nmd2GroupId)
-        deleteUser(nmd1UserId)
-        deleteUser(nmd2UserId)
-        deleteSNMPConnector(snmpId)
-        deleteScriptFile("EventSnmpListener.groovy")
-        deleteScript(GenerateSnmpTrapsIdValue)
-        deleteScriptFile("GenerateSnmpTraps.groovy")
+    }
 
+    private deleteSnmpConnectors()
+    {
+        def res = CommonUiTestUtils.search(selenium, "connector.SnmpConnector", "alias:*");
+        res.each{
+            CommonUiTestUtils.deleteInstance (selenium, "/RapidSuite/snmpConnector/show/" + it.id);
+        }
     }
 
 
@@ -459,35 +219,25 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
                 import snmp.SnmpUtils
                 long sec = (System.currentTimeMillis())/1000;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"41"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Up"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"0"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"5"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"10"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"5"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Up"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"0"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"10"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"HardDown"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"30"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"27"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"HardDown"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"33"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"30"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"HardDown"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
-                sleep(15000)
-                sec = (System.currentTimeMillis())/1000;
+                sec++;
                 SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"8"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
                 return "Completed event trap generation"
             """

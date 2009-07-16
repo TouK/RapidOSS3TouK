@@ -13,7 +13,7 @@ import org.jrobin.core.RrdDb
 * Time: 9:24:26 AM
 */
 class Grapher {
-    public static final String DATABASE_NAME = "dbname";
+    public static final String DATABASE_NAME = "databaseName";
     public static final String DATASOURCE = "datasource";
     public static final String START_TIME = "startTime";
     public static final String END_TIME = "endTime";
@@ -228,5 +228,5 @@ class Grapher {
         outputStream.flush()
         outputStream.close()
     }
-    
+
 }

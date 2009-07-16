@@ -153,6 +153,9 @@ class DbUtils {
     * e.g. : "978301200:200:1" or "978301200:200"
     */
     public static void updateData(String dbname, String data){
+        if(!new File(dbname).exists()){
+            throw new Exception("database file is not existent: "+dbname)
+        }
         RrdDb rrdDb = new RrdDb(dbname);
 
         Sample sample = rrdDb.createSample();
@@ -175,6 +178,9 @@ class DbUtils {
     *  inserts an array of data to the database at a time
     */
     public static void updateData(String dbname, String[] data){
+        if(!(new File(dbname).exists())){
+            throw new Exception("database file is not existent.")
+        }
         RrdDb rrdDb = new RrdDb(dbname);
 
         Sample sample = rrdDb.createSample();

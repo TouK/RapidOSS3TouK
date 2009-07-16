@@ -19,6 +19,8 @@ class RrdUtils {
     public static final  String GRAPH_TEMPLATE = "template";
 
     public static final String RRD_FOLDER = "rrdFiles/"
+    public static final String DATABASE_NAME = "databaseName";
+    public static final String DATASOURCE = "datasource";
 
     /**
     * create a Round Robin database according to the given configuration map
@@ -73,7 +75,18 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
+        def rrdFileGraph = new File(RRD_FOLDER);
+        rrdFileGraph.mkdirs();
+
         def bytes=null;
+
+        if(!config.containsKey(DATASOURCE)){
+            throw new Exception("no datasource specified.")
+        }
+        def datasourceList = config[DATASOURCE];
+        datasourceList.each{
+            it[DATABASE_NAME] = RRD_FOLDER + it[DATABASE_NAME];
+        }
 
         bytes=Grapher.graph(config);
 
@@ -236,8 +249,5 @@ class RrdUtils {
     private long getCurrentTime(){
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
-    }
-    private static def loadClass(String className){
-        return Grapher.class.classLoader.loadClass(className);
     }
 }

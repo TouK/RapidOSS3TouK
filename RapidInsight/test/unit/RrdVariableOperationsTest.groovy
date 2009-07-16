@@ -34,17 +34,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 //        new File(fileDirectory).delete()
         super.tearDown();
     }
-//
-//    public void testAddRrdVariableSuccessfully() {
-//        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, row:10)
-//        def variable = RrdVariable.add(name:"variable", resource:"resource",
-//                                       type:"GAUGE", heartbeat:300,
-//                                       startTime:9000L, step:300L, archives: archive);
-//        variable = RrdVariable.get(name:"variable");
-//        println new File(fileName).getAbsolutePath();
-//        assertEquals("Rrd file path is not proper",
-//                RrdVariableOperations.RRD_FOLDER+"vartest.rrd",variable.getFilePath());
-//    }
 
     public void testCreateDBConfigSuccessfulWithOneArchive() {
 
@@ -604,7 +593,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-
     public void testOneDatasourceGraphSuccessfully() throws Exception{
         Map config = [:]
         config[RrdVariableOperations.DATABASE_NAME] = rrdFileName;
@@ -998,6 +986,202 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue("Grapher returns no graph info",bytes!=null);
         File f=new File(fileDirectory + "/" + map['destination']);
         assertTrue(f.exists());
+    }
+
+    public void testFetchData() throws Exception{
+
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, archives: [archive])
+       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        variable1.createDB()
+
+        variable1.updateDB(time:978301200000, value:1)
+        variable1.updateDB(time:978301500000, value:3)
+        variable1.updateDB(time:978301800000, value:5)
+        variable1.updateDB(time:978302100000, value:3)
+        variable1.updateDB(time:978302400000, value:1)
+        variable1.updateDB(time:978302700000, value:2)
+        variable1.updateDB(time:978303000000, value:4)
+        variable1.updateDB(time:978303300000, value:6)
+        variable1.updateDB(time:978303600000, value:4)
+        variable1.updateDB(time:978303900000, value:2)
+
+        double[] data = variable1.fetchData();
+//        println data;
+        assertEquals(data[0].toString(),"1.0");
+        assertEquals(data[1].toString(),"3.0");
+        assertEquals(data[2].toString(),"5.0");
+        assertEquals(data[3].toString(),"3.0");
+        assertEquals(data[4].toString(),"1.0");
+        assertEquals(data[5].toString(),"2.0");
+        assertEquals(data[6].toString(),"4.0");
+        assertEquals(data[7].toString(),"6.0");
+        assertEquals(data[8].toString(),"4.0");
+        assertEquals(data[9].toString(),"2.0");
+    }
+    public void testMultipleFetchData() throws Exception{
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, archives: [archive])
+       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
+                                        type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L, archives: [archive])
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        variable1.updateDB(time:978301200000, value:1)
+        variable1.updateDB(time:978301500000, value:3)
+        variable1.updateDB(time:978301800000, value:5)
+        variable1.updateDB(time:978302100000, value:3)
+        variable1.updateDB(time:978302400000, value:1)
+        variable1.updateDB(time:978302700000, value:2)
+        variable1.updateDB(time:978303000000, value:4)
+        variable1.updateDB(time:978303300000, value:6)
+        variable1.updateDB(time:978303600000, value:4)
+        variable1.updateDB(time:978303900000, value:2)
+
+        variable2.updateDB(time:978301200000, value:300)
+        variable2.updateDB(time:978301500000, value:600)
+        variable2.updateDB(time:978301800000, value:900)
+        variable2.updateDB(time:978302100000, value:1200)
+        variable2.updateDB(time:978302400000, value:1500)
+        variable2.updateDB(time:978302700000, value:1800)
+        variable2.updateDB(time:978303000000, value:2100)
+        variable2.updateDB(time:978303300000, value:2400)
+        variable2.updateDB(time:978303600000, value:2700)
+        variable2.updateDB(time:978303900000, value:3000)
+
+        String[] datasources = new String[2];
+        datasources[0] = variable1.name; datasources[1] = variable2.name;
+        double[][] data = RrdVariable.fetchData(datasources);
+
+//        println data;
+        assertEquals(data[0][0].toString(),"1.0");
+        assertEquals(data[0][1].toString(),"3.0");
+        assertEquals(data[0][2].toString(),"5.0");
+        assertEquals(data[0][3].toString(),"3.0");
+        assertEquals(data[0][4].toString(),"1.0");
+        assertEquals(data[0][5].toString(),"2.0");
+        assertEquals(data[0][6].toString(),"4.0");
+        assertEquals(data[0][7].toString(),"6.0");
+        assertEquals(data[0][8].toString(),"4.0");
+        assertEquals(data[0][9].toString(),"2.0");
+
+        assertEquals(data[1][0].toString(),"NaN");
+        for(int i=1; i<data[0].length; i++)
+            assertEquals(data[1][i].toString(),"1.0");
+
+    }
+
+    public void testFetchDataAsMap() throws Exception{
+
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, archives: [archive])
+       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        variable1.createDB()
+
+        variable1.updateDB(time:978301200000, value:1)
+        variable1.updateDB(time:978301500000, value:3)
+        variable1.updateDB(time:978301800000, value:5)
+        variable1.updateDB(time:978302100000, value:3)
+        variable1.updateDB(time:978302400000, value:1)
+        variable1.updateDB(time:978302700000, value:2)
+        variable1.updateDB(time:978303000000, value:4)
+        variable1.updateDB(time:978303300000, value:6)
+        variable1.updateDB(time:978303600000, value:4)
+        variable1.updateDB(time:978303900000, value:2)
+
+        Map data = variable1.fetchDataAsMap();
+//        println data;
+        assertEquals(data["978301200"].toString(),"1.0");
+        assertEquals(data["978301500"].toString(),"3.0");
+        assertEquals(data["978301800"].toString(),"5.0");
+        assertEquals(data["978302100"].toString(),"3.0");
+        assertEquals(data["978302400"].toString(),"1.0");
+        assertEquals(data["978302700"].toString(),"2.0");
+        assertEquals(data["978303000"].toString(),"4.0");
+        assertEquals(data["978303300"].toString(),"6.0");
+        assertEquals(data["978303600"].toString(),"4.0");
+        assertEquals(data["978303900"].toString(),"2.0");
+    }
+    public void testMultipleFetchDataAsMap() throws Exception{
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, archives: [archive])
+       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
+                                        type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L, archives: [archive])
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        variable1.updateDB(time:978301200000, value:1)
+        variable1.updateDB(time:978301500000, value:3)
+        variable1.updateDB(time:978301800000, value:5)
+        variable1.updateDB(time:978302100000, value:3)
+        variable1.updateDB(time:978302400000, value:1)
+        variable1.updateDB(time:978302700000, value:2)
+        variable1.updateDB(time:978303000000, value:4)
+        variable1.updateDB(time:978303300000, value:6)
+        variable1.updateDB(time:978303600000, value:4)
+        variable1.updateDB(time:978303900000, value:2)
+
+        variable2.updateDB(time:978301200000, value:300)
+        variable2.updateDB(time:978301500000, value:600)
+        variable2.updateDB(time:978301800000, value:900)
+        variable2.updateDB(time:978302100000, value:1200)
+        variable2.updateDB(time:978302400000, value:1500)
+        variable2.updateDB(time:978302700000, value:1800)
+        variable2.updateDB(time:978303000000, value:2100)
+        variable2.updateDB(time:978303300000, value:2400)
+        variable2.updateDB(time:978303600000, value:2700)
+        variable2.updateDB(time:978303900000, value:3000)
+
+        String[] datasources = new String[2];
+        datasources[0] = variable1.name; datasources[1] = variable2.name;
+        Map data = RrdVariable.fetchDataAsMap(datasources);
+
+//        println data;
+        assertEquals(data["variable1"]["978301200"].toString(),"1.0");
+        assertEquals(data["variable1"]["978301500"].toString(),"3.0");
+        assertEquals(data["variable1"]["978301800"].toString(),"5.0");
+        assertEquals(data["variable1"]["978302100"].toString(),"3.0");
+        assertEquals(data["variable1"]["978302400"].toString(),"1.0");
+        assertEquals(data["variable1"]["978302700"].toString(),"2.0");
+        assertEquals(data["variable1"]["978303000"].toString(),"4.0");
+        assertEquals(data["variable1"]["978303300"].toString(),"6.0");
+        assertEquals(data["variable1"]["978303600"].toString(),"4.0");
+        assertEquals(data["variable1"]["978303900"].toString(),"2.0");
+        assertEquals(data["variable2"]["978301200"].toString(),"NaN");
+
+        for(int i=1; i<data["variable2"].size(); i++) {
+            String timeString =  978301200L + i*300;
+            assertEquals(data["variable2"][timeString].toString(),"1.0");
+        }
+
     }
 
 }

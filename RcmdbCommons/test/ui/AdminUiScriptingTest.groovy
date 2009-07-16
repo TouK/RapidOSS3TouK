@@ -11,92 +11,35 @@ import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
 class AdminUiScriptingTest extends SeleniumTestCase
 {
-
+    public static final String logValidatorName = "logValidator"
+    public static final String logLevelModifier = "logLevelModifier"
     void setUp() throws Exception
     {
         super.setUp("http://${SeleniumTestUtils.getRIHost()}:${SeleniumTestUtils.getRIPort()}/RapidSuite/",
                 SeleniumTestUtils.getSeleniumBrowser());
+        selenium.login("rsadmin", "changeme");
+        selenium.runScript("removeAll");
+        createLogValidator()
+        createLogLevelModifier()
     }
 
 
 
     public void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        logout()
+        selenium.runScriptByName(logLevelModifier, [loggerName:"root", level:"WARN"])
+        selenium.logout()
+        selenium.deleteScriptByName(logValidatorName, false);
+        selenium.deleteScriptByName(logLevelModifier, false);
     }
 
 
-
-    private void logout()
-    {
-        selenium.click("link=Logout");
-    }
-
-
-
-    private void login()
-    {
-        selenium.open("/RapidSuite/auth/login?targetUri=%2Fadmin.gsp&format=html");
-        selenium.waitForPageToLoad("30000");
-        selenium.type("login", "rsadmin");
-        selenium.type("password", "changeme");
-        selenium.click("//input[@value='Sign in']");
-        selenium.waitForPageToLoad("30000");
-    }
-
-
-
-    private String newLogValidatorScript()
-    {
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
-        return selenium.getText("//body");
-    }
-
-
-
-    private void newScript()
-    {
-        selenium.open("/RapidSuite/script/list");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=Scripts");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=New Script");
-        selenium.waitForPageToLoad("30000");
-    }
-
-
-
-    private void createScriptFile(String path, String scriptContent)
-    {
-        File file = new File(path)
-        if (file.exists())
-            file.delete();
-        SeleniumTestUtils.createScriptFile(path, scriptContent)
-    }
-
-
-    private void deleteScriptFile(String name)
-    {
-        File file = new File("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/" + name)
-        if (file.exists())
-            file.delete();
-    }
-
-
-    private void deleteScript(String id) {
-        selenium.open("/RapidSuite/script/show/" + id);
-        selenium.click("_action_Delete");
-        assertTrue(selenium.getConfirmation().matches("^Are you sure[\\s\\S]\$"));
-    }
 
 
 
     public void testCreateAnOnDemandScriptByScriptFileName()
     {
+        selenium.deleteScriptByName("aScript", false);
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
              def resp ="";
@@ -108,435 +51,276 @@ class AdminUiScriptingTest extends SeleniumTestCase
              return resp """;
 
         //checkes a script named aScript.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy", scriptContent);
+        SeleniumTestUtils.createScriptFile("aScript", scriptContent);
+        try {
+            selenium.login("rsadmin", "changeme");
+            selenium.createOnDemandScript("ondemand2", [scriptFile: "aScript"]);
 
-        login();
-        newScript();
-        selenium.type("name", "ondemand2");
-        selenium.type("scriptFile", "aScript");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Script created"));
-        verifyEquals("ondemand2", selenium.getText("name"));
-        verifyEquals("aScript", selenium.getText("scriptFile"));
-        verifyEquals("WARN", selenium.getText("logLevel"));
-        verifyEquals("false", selenium.getText("identifier=logFileOwn"));
-        verifyEquals("OnDemand", selenium.getText("identifier=type"));
-        String idValue = selenium.getText("document.getElementById('id')");
-
-        deleteScript(idValue)
-        deleteScriptFile("aScript.groovy")
+            assertEquals("ondemand2", selenium.getText("name"));
+            assertEquals("aScript", selenium.getText("scriptFile"));
+            assertEquals("WARN", selenium.getText("logLevel"));
+            assertEquals("false", selenium.getText("identifier=logFileOwn"));
+            assertEquals("OnDemand", selenium.getText("identifier=type"));
+        } finally {
+            SeleniumTestUtils.deleteScriptFile("aScript")
+        }
     }
 
 
     public void testCreateAnOnDemandscriptByName()
     {
+        selenium.deleteScriptByName("aScript", false);
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
              def resp ="";
              res = CmdbScript.search("scriptFile:aScript")
              res.results.each{
-             resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+                resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
              }
              logger.warn(resp)
              return resp """;
 
         //checkes a script named aScript.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy", scriptContent);
+        SeleniumTestUtils.createScriptFile("aScript", scriptContent);
+        try {
+            selenium.login("rsadmin", "changeme");
+            selenium.createOnDemandScript("aScript", [:]);
 
-        login();
-        newScript();
-        selenium.type("name", "aScript");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Script created"));
-        verifyEquals("aScript", selenium.getText("name"));
-        verifyEquals("aScript", selenium.getText("scriptFile"));
-        verifyEquals("WARN", selenium.getText("logLevel"));
-        verifyEquals("false", selenium.getText("logFileOwn"));
-        verifyEquals("", selenium.getText("identifier=staticParam"));
-        verifyEquals("OnDemand", selenium.getText("identifier=type"));
-        String idValue = selenium.getText("document.getElementById('id')");
-
-        deleteScript(idValue)
-        deleteScriptFile("aScript.groovy")
+            verifyEquals("aScript", selenium.getText("name"));
+            verifyEquals("aScript", selenium.getText("scriptFile"));
+            verifyEquals("WARN", selenium.getText("logLevel"));
+            verifyEquals("false", selenium.getText("logFileOwn"));
+            verifyEquals("", selenium.getText("identifier=staticParam"));
+            verifyEquals("OnDemand", selenium.getText("identifier=type"));
+        } finally {
+            SeleniumTestUtils.deleteScriptFile("aScript")
+        }
     }
 
 
     public void testTestAScheduledCronScriptFilesSelTest()
     {
-        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-        String scriptContent = """ import script.*
-              import org.apache.commons.lang.StringUtils
-              def logFile = new File(params.file);
-              def log = logFile.getText();
-              return StringUtils.countMatches (log, "Hello from cron")
-               """;
+        selenium.deleteScriptByName("scheduled2", false);
+        try {
+            String expectedMessage = "${System.currentTimeMillis()}${Math.random()}Hello from cron"
+            //creates cron.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+            String cronScriptContent = """import script.*
+                    def resp ="";
+                    res = CmdbScript.search("scriptFile:cron")
+                    res.results.each{
+                    resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+                    }
+                    logger.warn("${expectedMessage}")
+                    return resp
+                     """;
 
-        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy", scriptContent);
+            //checkes a script named cron.groovy exists, if not creates a new one with specified content
+            SeleniumTestUtils.createScriptFile("cron", cronScriptContent);
 
+            // looks RapidServer.log file for old "Hello from cron" entries
+            String numberOfMessagesInLogFile = getLogValidatorResult("logs/RapidServer.log", expectedMessage);
 
-        //creates cron.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-        String scriptContentTwo = """import script.*
-                def resp ="";
-                res = CmdbScript.search("scriptFile:cron")
-                res.results.each{
-                resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
-                }
-                logger.warn("Hello from cron")
-                return resp
-                 """;
+            // Creates a scheduled script with attributes
+            def cronScriptId = selenium.createCronScript("scheduled2", [cronExpression: "* * * * * ?", enabled: true, scriptFile: "cron", staticParam: "Hello from cron"]);
 
-        //checkes a script named cron.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/cron.groovy", scriptContentTwo);
+            // scheduled script attributes will be cheched if it has the right attributes
+            assertEquals("scheduled2", selenium.getText("name"));
+            assertEquals("cron", selenium.getText("scriptFile"));
+            assertEquals("WARN", selenium.getText("logLevel"));
+            assertEquals("false", selenium.getText("logFileOwn"));
+            assertEquals("Hello from cron", selenium.getText("staticParam"));
+            assertEquals("Scheduled", selenium.getText("type"));
+            assertEquals("Cron", selenium.getText("scheduleType"));
+            assertEquals("0", selenium.getText("startDelay"));
+            assertEquals("* * * * * ?", selenium.getText("cronExpression"));
+            assertEquals("true", selenium.getText("enabled"));
+            Thread.sleep(3000);
 
-        // test a scheduled cron script
-        login();
+            // RapidServer.log file be looked if there is new "Hello from cron" entries
+            def numberOfMessagesInFileAfterCronScript = getLogValidatorResult("logs/RapidServer.log", expectedMessage);
+            // if the "Hello from cron" number has changed means not equal to the value in 'stored', test will pass
+            assertNotEquals(numberOfMessagesInLogFile, numberOfMessagesInFileAfterCronScript);
 
-        // looks RapidServer.log file for old "Hello from cron" entries
-        String stored = newLogValidatorScript();
+            selenium.updateScript("scheduled2", [logFileOwn: true]);
 
-        // Creates a scheduled script with attributes
-        newScript();
-        selenium.type("name", "scheduled2");
-        selenium.type("scriptFile", "cron");
-        selenium.select("type", "label=Scheduled");
-        selenium.select("scheduleType", "label=Cron");
-        selenium.type("cronExpression", "* * * * * ?");
-        selenium.click("enabled");
-        selenium.type("staticParam", "Hello from cron");
-
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-
-        // scheduled script attributes will be cheched if it has the right attributes
-        verifyTrue(selenium.isTextPresent("Script created"));
-        verifyEquals("scheduled2", selenium.getText("name"));
-        verifyEquals("cron", selenium.getText("scriptFile"));
-        verifyEquals("WARN", selenium.getText("logLevel"));
-        verifyEquals("false", selenium.getText("logFileOwn"));
-        verifyEquals("Hello from cron", selenium.getText("staticParam"));
-        verifyEquals("Scheduled", selenium.getText("type"));
-        verifyEquals("Cron", selenium.getText("scheduleType"));
-        verifyEquals("0", selenium.getText("startDelay"));
-        assertEquals("* * * * * ?", selenium.getText("cronExpression"));
-        verifyEquals("true", selenium.getText("enabled"));
-
-        // the script id will be stored
-        String idValue = selenium.getText("document.getElementById('id')");
-
-        // RapidServer.log file be looked if there is new "Hello from cron" entries
-        newScript();
-        stored = newLogValidatorScript();
-
-        // if the "Hello from cron" number has changed means not equal to the value in 'stored', test will pass
-        assertNotEquals(stored, selenium.isTextPresent(stored));
-
-        // the script will be updated
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("logFileOwn");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
-        assertEquals("Script " + idValue + " updated", selenium.getText("pageMessage"))
-
-        // after update the use own log will be checked if it is true test will pass
-        verifyEquals("true", selenium.getText("logFileOwn"));
+            // after update the use own log will be checked if it is true test will pass
+            assertEquals("true", selenium.getText("logFileOwn"));
 
 
-        // file scheduled2.log  will be looked if it has "Hello from cron" entries
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        String idValueLog = selenium.getText("document.getElementById('id')");
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/scheduled2.log");
+            // file scheduled2.log  will be looked if it has "Hello from cron" entries
+            def numberOfMessagesInFileAfterCronOwnLogFile = getLogValidatorResult("logs/scheduled2.log", expectedMessage);
+            // file scheduled2.log must have some entries
+            assertNotEquals("0", numberOfMessagesInFileAfterCronOwnLogFile);
 
-        // file scheduled2.log must have some entries
-        assertNotEquals("0", selenium.getText("//body"));
+            // the script will be updated again
+            selenium.updateScript("scheduled2", [enabled: false]);
 
-        // the "Hello from cron" entry number will be stored
-        stored = newLogValidatorScript();
-        selenium.open("/RapidSuite/script/show/" + idValue);
+            // after update the enable attribute will be checked if it is false test will pass
+            assertEquals("false", selenium.getText("enabled"));
+            Thread.sleep(1100);
+            def numberOfMessagesInFileAfterDisabling = getLogValidatorResult("logs/scheduled2.log", expectedMessage)
 
-        // the script will be updated again
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("enabled");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
-        verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
+            Thread.sleep(3000);
 
-        // after update the enable attribute will be checked if it is false test will pass
-        verifyEquals("false", selenium.getText("enabled"));
-        Thread.sleep(3000);
-
-        // file RapidServer.log must have some entries
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
-
-        // if RapidServer.log has no new entries test will pass
-        assertTrue(selenium.isTextPresent(stored));
-
-        deleteScript(idValue)
-        deleteScript(idValueLog)
-
-        deleteScriptFile("cron.groovy")
-        deleteScriptFile("logValidator.groovy")
+            // if RapidServer.log has no new entries test will pass
+            assertEquals(numberOfMessagesInFileAfterDisabling, getLogValidatorResult("logs/scheduled2.log", expectedMessage));
+        } finally {
+            selenium.deleteScriptByName("scheduled2", false);
+        }
     }
 
 
 
     public void testAScheduledPeriodicScript()
     {
-        //creates periodic.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-        def scriptContent = """import script.*
+        selenium.deleteScriptByName("scheduled1", false);
+        try{
+            String expectedMessage = "${System.currentTimeMillis()}${Math.random()}Hello from periodic"
+            //creates periodic.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+            def scriptContent = """import script.*
 
-        def resp ="";
-        res = CmdbScript.search("scriptFile:periodic")
-        res.results.each{
-        resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+            def resp ="";
+            res = CmdbScript.search("scriptFile:periodic")
+            res.results.each{
+            resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+            }
+            logger.warn("${expectedMessage}")
+            return resp """;
+
+            //checkes a script named periodic.groovy exists, if not creates a new one with specified content
+            SeleniumTestUtils.createScriptFile("periodic", scriptContent);
+
+
+            String idValue = selenium.createPeriodicScript("scheduled1", [period: "1", staticParam: expectedMessage, enabled: true, scriptFile: "periodic"]);
+            verifyEquals("scheduled1", selenium.getText("name"));
+            verifyEquals("periodic", selenium.getText("scriptFile"));
+            verifyEquals("WARN", selenium.getText("logLevel"));
+            verifyEquals("false", selenium.getText("logFileOwn"));
+            verifyEquals("Hello from periodic", selenium.getText("staticParam"));
+            verifyEquals("Scheduled", selenium.getText("type"));
+            verifyEquals("Periodic", selenium.getText("scheduleType"));
+            verifyEquals("0", selenium.getText("startDelay"));
+            verifyEquals("1", selenium.getText("period"));
+            verifyEquals("true", selenium.getText("enabled"));
+
+            def numberOfLogMessages = Integer.parseInt(getLogValidatorResult("logs/RapidServer.log", expectedMessage))
+            Thread.sleep(5100);
+            def numberOfLogMessagesAfterWaitTime = Integer.parseInt(getLogValidatorResult("logs/RapidServer.log", expectedMessage))
+
+            def diff = numberOfLogMessagesAfterWaitTime - numberOfLogMessages
+            assertTrue(diff >= 5 && diff <= 7);
+
+            Thread.sleep(3100);
+            numberOfLogMessagesAfterWaitTime = Integer.parseInt(getLogValidatorResult("logs/RapidServer.log", expectedMessage))
+            diff = numberOfLogMessagesAfterWaitTime - numberOfLogMessages
+            assertTrue(diff >= 8 && diff <= 10);
+
+            //disable script
+            selenium.updateScript("scheduled1", [enabled: false]);
+            assertEquals("false", selenium.getText("enabled"));
+            Thread.sleep(1100);
+            def numberOfMessagesAfterDisabling = getLogValidatorResult("logs/RapidServer.log", expectedMessage)
+            Thread.sleep(3000);
+            assertEquals(numberOfMessagesAfterDisabling, getLogValidatorResult("logs/RapidServer.log", expectedMessage));
         }
-        logger.warn("Hello from periodic")
-        return resp """;
-
-        //checkes a script named periodic.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/periodic.groovy", scriptContent);
-
-
-        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
-        def scriptContentLog = """ import org.apache.commons.lang.StringUtils
-
-          def logFile = new File(params.file);
-          def log = logFile.getText();
-          return StringUtils.countMatches (log, "WARN: Hello from periodic")""";
-
-        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy", scriptContentLog);
-
-
-        def scriptContentTime = """      import java.text.SimpleDateFormat;
-
-                 import org.apache.commons.lang.StringUtils
-
-                 def arrayL = new ArrayList();
-
-                 def  br=new BufferedReader(new FileReader(params.file));
-                 String line=null;
-                 while((line=br.readLine())!=null){
-                     if (line.endsWith("Hello from periodic"))
-                         arrayL.add(line)
-                 }
-                 arrayL.trimToSize()
-                 def arrayListSize = arrayL.size()-1
-                 def splitted = new String[3]
-                 splitted = StringUtils.split(arrayL.get(arrayListSize--),' ')
-                 def secondTime=splitted[1]
-                 splitted = StringUtils.split(arrayL.get(arrayListSize--),' ')
-                 def firstTime =splitted[1]
-                 SimpleDateFormat   formatter = new SimpleDateFormat("HH:mm:ss.SSS")
-                 Date date = (Date)formatter.parse(firstTime);
-                 long FlongDate=date.getTime();
-                 date = (Date)formatter.parse(secondTime);
-                 long SlongDate=date.getTime();
-
-              return (SlongDate-FlongDate) """;
-
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/timeController.groovy", scriptContentTime);
-
-        login();
-        newScript();
-
-        selenium.type("name", "scheduled1");
-        selenium.type("scriptFile", "periodic");
-        selenium.select("type", "label=Scheduled");
-        selenium.type("period", "10");
-        selenium.type("staticParam", "Hello from periodic");
-        selenium.click("enabled");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-
-        verifyTrue(selenium.isTextPresent("Script created"));
-        verifyEquals("scheduled1", selenium.getText("name"));
-        verifyEquals("periodic", selenium.getText("scriptFile"));
-        verifyEquals("WARN", selenium.getText("logLevel"));
-        verifyEquals("false", selenium.getText("logFileOwn"));
-        verifyEquals("Hello from periodic", selenium.getText("staticParam"));
-        verifyEquals("Scheduled", selenium.getText("type"));
-        verifyEquals("Periodic", selenium.getText("scheduleType"));
-        verifyEquals("0", selenium.getText("startDelay"));
-        verifyEquals("10", selenium.getText("period"));
-        verifyEquals("true", selenium.getText("enabled"));
-        String idValue = selenium.getText("document.getElementById('id')");
-
-
-        int store = Integer.parseInt(newLogValidatorScript()) + 2
-        String stored = store.toString()
-
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        String idValueLog = selenium.getText("document.getElementById('id')");
-
-        Thread.sleep(20000);
-
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
-        String str = selenium.getText("//body");
-
-        String idValueTime = "*"
-        if (str != stored)
-        {
-            newScript();
-            selenium.type("name", "timeController");
-            selenium.click("//input[@value='Create']");
-            selenium.waitForPageToLoad("30000");
-            idValueTime = selenium.getText("document.getElementById('id')")
-            selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyEquals("10000", selenium.getText("//body"));
+        finally{
+            selenium.deleteScriptByName("scheduled1", false);   
         }
-
-
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.waitForPageToLoad("30000");
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("enabled");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
-
-        verifyEquals("Script " + idValue + " updated", selenium.getText("pageMessage"));
-        verifyTrue(selenium.isTextPresent("Script " + idValue + " updated"));
-        verifyEquals("false", selenium.getText("enabled"));
-
-        stored = newLogValidatorScript()
-
-        newScript();
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-
-        Thread.sleep(20000);
-
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log");
-        str = selenium.getText("//body");
-
-        if (str != stored)
-        {
-            newScript();
-            selenium.type("name", "timeController");
-            selenium.click("//input[@value='Create']");
-            selenium.waitForPageToLoad("30000");
-            idValueTime = selenium.getText("document.getElementById('id')")
-            selenium.open("/RapidSuite/script/run/timeController?file=logs/RapidServer.log");
-            verifyNotEquals("10000", selenium.getText("//body"));
-        }
-
-        deleteScript(idValue)
-        deleteScript(idValueLog)
-        if (!idValueTime.equals("*"))
-            deleteScript(idValueTime)
-
-        deleteScriptFile("timeController.groovy")
-        deleteScriptFile("periodic.groovy")
-        deleteScriptFile("logValidator.groovy")
     }
 
 
     public void testLoggerParameters()
     {
-        def scriptContent = """import script.*
+        selenium.deleteScriptByName("aScript", false);
+        try{
+            selenium.runScriptByName(logLevelModifier, [loggerName:"root", level:"DEBUG"])
+            def messagePrefix = "${System.currentTimeMillis()}${Math.random()}"
+            def scriptContent = """import script.*
 
-            def resp ="";
-            res = CmdbScript.search("scriptFile:aScript")
-            res.results.each{
-              resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
-            }
-            logger.warn(resp)
-            return resp""";
+                def resp ="${messagePrefix}";
+                res = CmdbScript.search("scriptFile:aScript")
+                res.results.each{
+                  resp = resp+"scriptName:\${it.name} loglevel: \${it.logLevel} useOwnLogger: \${it.logFileOwn} staticParameter:\${it.staticParam}"
+                }
+                logger.warn(resp)
+                return resp""";
 
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/aScript.groovy", scriptContent);
+            SeleniumTestUtils.createScriptFile("aScript", scriptContent);
 
+            String idValue = selenium.createOnDemandScript("aScript");
+            selenium.updateScript("aScript", [logLevel: "DEBUG", logFileOwn: true]);
+            assertEquals("aScript", selenium.getText("name"));
+            assertEquals("aScript", selenium.getText("scriptFile"));
+            assertEquals("DEBUG", selenium.getText("logLevel"));
+            assertEquals("true", selenium.getText("logFileOwn"));
+            assertEquals("OnDemand", selenium.getText("type"));
 
-        def scriptContentLog = """
-                 import org.apache.commons.lang.StringUtils
-                  def logFile = new File(params.file);
-                  def log = logFile.getText();
-                  return StringUtils.countMatches(log,"scriptName:aScript loglevel: DEBUG useOwnLogger: \${params.content} staticParameter:" )
-                  """;
+            selenium.runScriptByName("aScript");
 
-        createScriptFile("${SeleniumTestUtils.getRsHome()}/RapidSuite/scripts/logValidator.groovy", scriptContentLog);
+            def numberOfMessages = getLogValidatorResult("logs/aScript.log", "${messagePrefix}scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:")
+            def numberOfMessagesInRapidServerLog = getLogValidatorResult("logs/RapidServer.log", "${messagePrefix}scriptName:aScript loglevel: DEBUG useOwnLogger: true staticParameter:")
+            assertNotEquals("0", numberOfMessages);
+            assertEquals("0", numberOfMessagesInRapidServerLog);
 
-        login()
-        newScript()
+            selenium.updateScript("aScript", [logFileOwn: false]);
 
-        selenium.type("name", "aScript");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
+            assertEquals("aScript", selenium.getText("name"));
+            assertEquals("aScript", selenium.getText("scriptFile"));
+            assertEquals("DEBUG", selenium.getText("logLevel"));
+            assertEquals("false", selenium.getText("logFileOwn"));
+            assertEquals("OnDemand", selenium.getText("type"));
 
-        selenium.click("link=Script List");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("link=aScript");
-        selenium.waitForPageToLoad("30000");
+            selenium.runScriptByName("aScript");
 
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.select("logLevel", "label=DEBUG");
-        selenium.click("logFileOwn");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
+            numberOfMessagesInRapidServerLog = getLogValidatorResult("logs/RapidServer.log", "${messagePrefix}scriptName:aScript loglevel: DEBUG useOwnLogger: false staticParameter:")
+            assertNotEquals("0", numberOfMessagesInRapidServerLog);
+        }finally{
+            selenium.deleteScriptByName("aScript", false);
+        }
+    }
 
-        verifyEquals("aScript", selenium.getText("name"));
-        verifyEquals("aScript", selenium.getText("scriptFile"));
-        verifyEquals("DEBUG", selenium.getText("logLevel"));
-        verifyEquals("true", selenium.getText("logFileOwn"));
-        verifyEquals("OnDemand", selenium.getText("type"));
-        String idValue = selenium.getText("document.getElementById('id')");
+    private getLogValidatorResult(String logFile, expectedMessage)
+    {
+        selenium.runScriptByName(logValidatorName, [file: logFile, expectedMessage: expectedMessage]);
+        String numberOfMessagesInLogFile = selenium.getText("//body")
+        return numberOfMessagesInLogFile
+    }
 
-        selenium.click("_action_Run");
-        selenium.waitForPageToLoad("30000");
+    private void createLogLevelModifier()
+    {
+        selenium.deleteScriptByName(logLevelModifier, false);
+        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+        String scriptContent = """
+              import org.apache.log4j.*;
+              if(params.loggerName == "root")
+                {
+                    Logger.getRootLogger().setLevel(Level.toLevel(params.level));
+                }
+                else{
+                        Logger.getLogger(params.loggerName).setLevel(Level.toLevel(params.level));
+                }
+               """;
 
-        newScript()
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        String idValueLog = selenium.getText("document.getElementById('id')");
+        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
+        SeleniumTestUtils.createScriptFile(logLevelModifier, scriptContent);
+        selenium.createOnDemandScript(logLevelModifier);
 
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/aScript.log&content=true");
-        assertNotEquals("0", selenium.getText("//body"));
+    }
 
-        selenium.open("/RapidSuite/script/show/" + idValue);
-        selenium.click("_action_Edit");
-        selenium.waitForPageToLoad("30000");
-        selenium.click("logFileOwn");
-        selenium.click("_action_Update");
-        selenium.waitForPageToLoad("30000");
+    private void createLogValidator()
+    {
+        selenium.deleteScriptByName(logValidatorName, false);
+        //creates logValidator.groovy in RS_HOME/RapidSuite/scripts folder with the following content
+        String scriptContent = """ import script.*
+              import org.apache.commons.lang.StringUtils
+              def logFile = new File(params.file);
+              def log = logFile.getText();
+              return StringUtils.countMatches (log, params.expectedMessage)
+               """;
 
-        verifyEquals("aScript", selenium.getText("name"));
-        verifyEquals("aScript", selenium.getText("scriptFile"));
-        verifyEquals("DEBUG", selenium.getText("logLevel"));
-        verifyEquals("false", selenium.getText("logFileOwn"));
-        verifyEquals("OnDemand", selenium.getText("type"));
-
-        selenium.click("_action_Run");
-        selenium.waitForPageToLoad("30000");
-
-        newScript()
-        selenium.type("name", "logValidator");
-        selenium.click("//input[@value='Create']");
-        selenium.waitForPageToLoad("30000");
-        selenium.open("/RapidSuite/script/run/logValidator?file=logs/RapidServer.log&content=false");
-        assertNotEquals("0", selenium.getText("//body"));
-
-        deleteScript(idValue)
-        deleteScript(idValueLog)
-        deleteScriptFile("aScript.groovy")
-        deleteScriptFile("logValidator.groovy")
+        //checkes a script named logValidator.groovy exists, if not creates a new one with specified content
+        SeleniumTestUtils.createScriptFile(logValidatorName, scriptContent);
+        selenium.createOnDemandScript(logValidatorName);
 
     }
 

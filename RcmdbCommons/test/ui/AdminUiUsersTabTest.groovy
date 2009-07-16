@@ -1,7 +1,6 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 import junit.framework.AssertionFailedError
-import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.

@@ -2,7 +2,6 @@ package utils
 
 import com.thoughtworks.selenium.Selenium
 import junit.framework.Assert
-import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -12,7 +11,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 * To change this template use File | Settings | File Templates.
 */
 class ScriptUiUtilities {
-    public static createOnDemandScript(Selenium selenium, String scriptName, Map otherParams, List allowedGroups = [], boolean validate = true)
+    public static createOnDemandScript(Selenium selenium, String scriptName, Map otherParams = [:], List allowedGroups = [], boolean validate = true)
     {
         selenium.openAndWait("/RapidSuite/script/list")
         selenium.clickAndWait("link=Scripts");
@@ -22,6 +21,42 @@ class ScriptUiUtilities {
             selenium.addSelection("availableallowedGroupsSelect", "label=${groupName}");
             selenium.click("allowedGroupsListsAdd");
         }
+        CommonUiTestUtils.setAccordingToTypes (selenium, otherParams)
+        selenium.clickAndWait("//input[@value='Create']");
+        def scriptId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation());
+        if (validate)
+        {
+            CommonUiTestUtils.assertPageMessage (selenium, "Script created")
+        }
+        return scriptId;
+    }
+
+    public static createPeriodicScript(Selenium selenium, String scriptName, Map otherParams,  boolean validate = true)
+    {
+        selenium.openAndWait("/RapidSuite/script/list")
+        selenium.clickAndWait("link=Scripts");
+        selenium.clickAndWait("link=New Script");
+        selenium.type("name", scriptName);
+        selenium.select("type", "label=Scheduled");
+        selenium.select("scheduleType", "label=Periodic");
+        CommonUiTestUtils.setAccordingToTypes (selenium, otherParams)
+        selenium.clickAndWait("//input[@value='Create']");
+        def scriptId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation());
+        if (validate)
+        {
+            CommonUiTestUtils.assertPageMessage (selenium, "Script created")
+        }
+        return scriptId;
+    }
+
+    public static createCronScript(Selenium selenium, String scriptName, Map otherParams, List allowedGroups = [], boolean validate = true)
+    {
+        selenium.openAndWait("/RapidSuite/script/list")
+        selenium.clickAndWait("link=Scripts");
+        selenium.clickAndWait("link=New Script");
+        selenium.type("name", scriptName);
+        selenium.select("type", "label=Scheduled");
+        selenium.select("scheduleType", "label=Cron");
         CommonUiTestUtils.setAccordingToTypes (selenium, otherParams)
         selenium.clickAndWait("//input[@value='Create']");
         def scriptId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation());
@@ -78,12 +113,12 @@ class ScriptUiUtilities {
         }
     }
 
-    public static runScriptById(Selenium selenium, String scriptId)
+    public static runScriptById(Selenium selenium, String scriptId,  Map params=[:], String timeout = "30000")
     {
         def res = CommonUiTestUtils.search(selenium, "script.CmdbScript", "id:${scriptId}")
         if (res.size() == 1)
         {
-            runScriptById(selenium, res[0].name)
+            runScriptByName(selenium, res[0].name, params, timeout)
         }
         else
         {
@@ -91,9 +126,19 @@ class ScriptUiUtilities {
         }
     }
 
-    public static runScriptByName(Selenium selenium, String scriptName, String timeout = "30000")
+    public static runScriptByName(Selenium selenium, String scriptName, Map params = [:],String timeout = "30000")
     {
-        selenium.openAndWait("/RapidSuite/script/run/" + scriptName, timeout);
+        def url = "/RapidSuite/script/run/" + scriptName
+        if(params)
+        {
+            url+="?"
+            def nameValuePairs = [];
+            params.each{paramName, paramValue->
+                nameValuePairs <<"${paramName}=${paramValue}"                
+            }
+            url += nameValuePairs.join("&");
+        }
+        selenium.openAndWait(url, timeout);
         Assert.assertTrue ("Script ${scriptName} does not exist".toString(), selenium.getLocation().indexOf("/script/list") < 0);
     }
 }

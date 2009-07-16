@@ -125,7 +125,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
         selenium.clickAndWait("_action_StartConnector");
 
         selenium.createOnDemandScript("GenerateSnmpTraps", [:], []);
-        selenium.runScriptByName("GenerateSnmpTraps", "120000");
+        selenium.runScriptByName("GenerateSnmpTraps", [:], "120000");
 
         def nmd1GroupId  = selenium.createGroup("nmd1Users", "User", []);
         def nmd2GroupId  = selenium.createGroup("nmd2Users", "User", []);

@@ -77,8 +77,11 @@ class CommonUiTestUtils {
     {
         def removeButtonId = elementId.substring(0, elementId.indexOf("Select"))+"ListsRemove";
         selenium.getSelectOptions (elementId).each{labelName->
-            selenium.select(elementId, "label=${labelName}");
-            selenium.click(removeButtonId);
+            if(labelName != "")
+            {
+                selenium.select(elementId, "label=${labelName}");
+                selenium.click(removeButtonId);
+            }
         }
     }
 

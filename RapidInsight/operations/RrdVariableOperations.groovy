@@ -1,6 +1,5 @@
 
-import com.ifountain.rcmdb.rrd.RrdUtils
-import com.ifountain.rcmdb.rrd.DbUtils;
+import com.ifountain.rcmdb.rrd.RrdUtils;
 
 public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
@@ -40,7 +39,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final  String RRD_VARIABLES = "rrdVariables";
     public static final  String RRD_VARIABLE = "rrdVariable";
     public static final  String GRAPH_TEMPLATE = "template";
-    public static final String RRD_FOLDER = "rrdFiles/"
     public static final String DESTINATION = "destination"
 
     def createDB() {
@@ -53,7 +51,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     def updateDB(Map config) {
         String data = createUpdateData(config)
-        RrdUtils.updateData(file, data)
+        RrdUtils.updateData(fileSource(), data)
     }
 
     def updateDB(List config) {
@@ -62,7 +60,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         {
             dataList[i] = createUpdateData(config.get(i))
         }
-        RrdUtils.updateData(file, dataList)
+        RrdUtils.updateData(fileSource(), dataList)
     }
 
     def graph(Map config) {
@@ -94,9 +92,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     static def graphMultiple(Map config){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
-
         String typeVar = "line";
         String colorVar = "999999";
 
@@ -126,7 +121,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
            if(rrdVariables[i].containsKey(FUNCTION) ){
                def datasourceMap = [:];
                datasourceMap[NAME] = rrdVar.name;
-               datasourceMap[DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
+               datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
                datasourceMap[DSNAME] = rrdVar.name;
                datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
                datasourceList.add(datasourceMap);
@@ -135,7 +130,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
                rrdVar.archives.each{
                    def datasourceMap = [:];
                    datasourceMap[NAME] = rrdVar.name;
-                   datasourceMap[DATABASE_NAME] = RRD_FOLDER + rrdVar.file;
+                   datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
                    datasourceMap[DSNAME] = rrdVar.name;
                    datasourceMap[FUNCTION] = it.function;
                    datasourceList.add(datasourceMap);
@@ -172,7 +167,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
                fConfig[typeVar].add(typeMap);
            }
        }
-       Map dbInfo = DbUtils.getDatabaseInfo(RRD_FOLDER + rrdVar.file);
+       Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
        if(!fConfig.containsKey (START_TIME)){
            fConfig[START_TIME] = dbInfo[START_TIME];
        }
@@ -317,10 +312,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return "" + timestamp + ":" + value
     }
 
-    private def fileSource() {
-        if(file == "" || file == null)
-            file = name + ".rrd"
-        return file
+    private String fileSource() {
+        return name + ".rrd";
     }
 
 }

@@ -221,4 +221,29 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     def retrieveEmailInformation() {
         return ChannelUserInformation.get(userId: id, type: "email");
     }
+
+    def hasRole(roleName) {
+        def res = groups.findAll {it.role?.name == roleName};
+        return res.size() > 0
+    }
+
+    def hasAllRoles(roles)
+    {           
+        int numberOfFoundRoles = 0;
+        def groupList=groups;
+
+        roles.each {String role ->
+            boolean found=false;
+            groupList.each {group ->
+                if (role == group.role?.name && !found)
+                {
+                    numberOfFoundRoles++;
+                    found=true;
+                }
+            }
+
+        }
+
+        return numberOfFoundRoles == roles.size()        
+    }
 }

@@ -21,7 +21,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         clearMetaClasses();
 
-        initialize([RsUser,Group, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation], []);
+        initialize([RsUser,Group,Role, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation], []);
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
@@ -584,6 +584,73 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         user.remove();
 
         assertEquals(2,RsUser.count());
+    }
+
+    public void testHasRole()
+    {
+        def role=Role.add(name:Role.ADMINISTRATOR);
+        assertFalse(role.hasErrors());
+        def group = Group.add(name:"group1",role:role);
+        assertFalse(group.hasErrors());
+
+        def userProps = [username:"user1", passwordHash:"password",groups:[group]];
+        def user= RsUser.add(userProps);
+        assertFalse(user.hasErrors());
+
+
+        assertTrue(user.hasRole(Role.ADMINISTRATOR));
+        assertFalse(user.hasRole(Role.USER));
+        assertFalse(user.hasRole("abc"));
+        
+        user.removeRelation(groups:group);
+        assertFalse(user.hasErrors());
+
+        assertEquals(0,user.groups.size());
+        assertFalse(user.hasRole(Role.ADMINISTRATOR));
+        assertFalse(user.hasRole(Role.USER));
+        assertFalse(user.hasRole("abc"));
+    }
+
+    public void testHasAllRoles()
+    {
+        def adminRole=Role.add(name:Role.ADMINISTRATOR);
+        assertFalse(adminRole.hasErrors());
+        def adminGroup = Group.add(name:"group1",role:adminRole);
+        assertFalse(adminGroup.hasErrors());
+
+        def userRole=Role.add(name:Role.USER);
+        assertFalse(userRole.hasErrors());
+        def userGroup = Group.add(name:"group2",role:userRole);
+        assertFalse(userGroup.hasErrors());
+
+
+        def userProps = [username:"user1", passwordHash:"password",groups:[adminGroup]];
+        def user= RsUser.add(userProps);
+        assertFalse(user.hasErrors());
+
+
+        assertTrue(user.hasAllRoles([]));
+        assertFalse(user.hasAllRoles([Role.USER]));
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER]));
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER,"abc"]));
+
+        user.addRelation(groups:userGroup);
+        assertFalse(user.hasErrors());
+        assertEquals(2,user.groups.size());
+
+        assertTrue(user.hasAllRoles([Role.ADMINISTRATOR]));
+        assertTrue(user.hasAllRoles([Role.USER]));
+        assertTrue(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER]));
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER,"abc"]));
+
+        user.update(groups:[]);
+        assertFalse(user.hasErrors());
+        assertEquals(0,user.groups.size());
+
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR]));
+        assertFalse(user.hasAllRoles([Role.USER]));
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER]));
+        assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER,"abc"]));
     }
 
 }

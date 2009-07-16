@@ -92,25 +92,12 @@ class JsecDbRealm {
     }
     def hasRole(principal, roleName) {
         def user = RsUser.get(username: principal);
-        def res = user.groups.findAll {it.role?.name == roleName};
-        return res.size() > 0
+        return user.hasRole(roleName);
     }
 
     def hasAllRoles(principal, roles) {
         def user = RsUser.get(username: principal);
-        int numberOfFoundRoles = 0;
-        roles.each {Role role ->
-            user.groups.each {group ->
-                if (role.name == group.role?.name)
-                {
-                    numberOfFoundRoles++;
-                    return;
-                }
-            }
-
-        }
-
-        return numberOfFoundRoles == roles.size()
+        return user.hasAllRoles(roles);
     }
 
     def isPermitted(principal, requiredPermission) {

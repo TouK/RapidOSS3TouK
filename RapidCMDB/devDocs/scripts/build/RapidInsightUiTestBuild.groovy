@@ -182,6 +182,8 @@ class RapidInsightUiTestBuild extends Build {
 
         ant.copy(file: "${env.rapid_comp_src}/com/ifountain/comp/test/util/CommonTestUtils.java",
                 todir: "${env.distribution}/tmpSourceDir/com/ifountain/comp/test/util")
+        ant.copy(file: "${env.rapid_comp_src}/test/ui/utils",
+                todir: "${env.distribution}/tmpSourceDir/utils")
 
         ant.groovyc(destdir: "${env.distribution}/uiTestClasses/testUtils",
                 classpathref: "classpath",

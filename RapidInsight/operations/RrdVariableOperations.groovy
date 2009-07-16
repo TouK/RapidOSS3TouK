@@ -263,6 +263,51 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         config[END_TIME] =  currentTime()
         return RrdUtils.graph(config)
     }
+    def fetchData(){
+        String dbname = fileSource();
+        return RrdUtils.fetchData (dbname, name);
+    }
+    def fetchData(String function, long startTime, long endTime){
+        String dbname = fileSource();
+        return RrdUtils.fetchData (dbname, name, function, startTime, endTime);
+    }
+    def fetchDataAsMap(){
+        String dbname = fileSource();
+        return RrdUtils.fetchDataAsMap (dbname, name);
+    }
+    def fetchDataAsMap(String function, long startTime, long endTime){
+        String dbname = fileSource();
+        return RrdUtils.fetchDataAsMap (dbname, name, function, startTime, endTime);
+    }
+    static def fetchData(String[] datasources, String function, long startTime, long endTime){
+        String[] filesources = new String[datasources.length];
+        for(int i=0; i<datasources.length; i++){
+            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+        }
+        RrdUtils.fetchData (filesources, datasources, function, startTime, endTime);
+    }
+    static def fetchData(String[] datasources){
+        String[] filesources = new String[datasources.length];
+        for(int i=0; i<datasources.length; i++){
+            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+        }
+        RrdUtils.fetchData (filesources, datasources);
+    }
+    static def fetchDataAsMap(String[] datasources, long[] startTime, long[] endTime){
+        String[] filesources = new String[datasources.length];
+        String function = RrdVariable.get(name:datasources[0]).archives[0].function ;
+        for(int i=0; i<datasources.length; i++){
+            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+        }
+        RrdUtils.fetchDataAsMap(filesources, datasources, function, startTime, endTime);
+    }
+    static def fetchDataAsMap(String[] datasources){
+        String[] filesources = new String[datasources.length];
+        for(int i=0; i<datasources.length; i++){
+            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+        }
+        RrdUtils.fetchDataAsMap (filesources, datasources);
+    }
 
     private def currentTime() {
         System.currentTimeMillis();

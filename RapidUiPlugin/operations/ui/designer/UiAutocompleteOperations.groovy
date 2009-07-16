@@ -13,7 +13,7 @@ class UiAutocompleteOperations extends UiComponentOperations {
     public static Map metaData()
     {
         Map metaData = [
-                help: "FlexPieChart Component.html",
+                help: "Autocomplete Component.html",
                 designerType: "Autocomplete",
                 canBeDeleted: true,
                 displayFromProperty: "name",

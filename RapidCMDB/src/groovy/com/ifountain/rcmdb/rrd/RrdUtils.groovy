@@ -206,6 +206,17 @@ class RrdUtils {
         rrdFile.mkdirs();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources);
     }
+    //this method is more useful for models
+    public static double[][] fetchData(String[] dbName, String[] datasources){
+        if(dbName.length != datasources.length) {
+            throw new Exception("number of database and number of datasources are not equal");
+        }
+        double[][] result = new double[dbName.length][];
+        for(int i=0; i<dbName.length; i++){
+            result[i] = DbUtils.fetchData(RRD_FOLDER + dbName[i], datasources[i]);
+        }
+        return result;
+    }
 
     /**
     *  returns time series of data indexes specified with its datasource names,
@@ -216,6 +227,69 @@ class RrdUtils {
         def rrdFile = new File(RRD_FOLDER);
         rrdFile.mkdirs();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
+    }
+    //this method is more useful for models
+    public static double[][] fetchData(String[] dbName, String[] datasources, String function,
+                                   long startTime, long endTime){
+        if(dbName.length != datasources.length) {
+            throw new Exception("number of database and number of datasources are not equal");
+        }
+        double[][] result = new double[dbName.length][];
+        for(int i=0; i<dbName.length; i++){
+            result[i] = DbUtils.fetchData(RRD_FOLDER + dbName[i], datasources[i], function, startTime, endTime);
+        }
+        return result;
+    }
+    //====following fetch data methods return map[timestamp:value] as result====//
+    public static Map fetchDataAsMap(String dbName){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName)
+    }
+    public static Map fetchDataAsMap(String dbName, String datasource){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource);
+    }
+    public static Map fetchDataAsMap(String dbName, String datasource, String function,
+                                   long[] startTime, long[] endTime){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
+
+    }
+    public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
+                                   long[] startTime, long[] endTime){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
+    }
+    //this method is more useful for models
+    public static Map fetchDataAsMap(String[] dbName, String[] datasources){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        if(dbName.length != datasources.length) {
+            throw new Exception("number of database and number of datasources are not equal");
+        }
+        Map result = [:];
+        for(int i=0; i<dbName.length; i++){
+            result[datasources[i]] = DbUtils.fetchDataAsMap(RRD_FOLDER + dbName[i], datasources[i]);
+        }
+        return result;
+    }
+    //this method is more useful for models
+    public static Map fetchDataAsMap(String[] dbName, String[] datasources, String function, long[] startTime, long[] endTime){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
+        if(dbName.length != datasources.length) {
+            throw new Exception("number of database and number of datasources are not equal");
+        }
+        Map result = [:];
+        for(int i=0; i<dbName.length; i++){
+            result[datasources[i]] = DbUtils.fetchDataAsMap(RRD_FOLDER + dbName[i],
+                    datasources[i], function, startTime[i], endTime[i]);
+        }
+        return result;
     }
 
     /**

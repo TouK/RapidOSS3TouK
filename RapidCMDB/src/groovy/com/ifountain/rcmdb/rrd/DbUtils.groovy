@@ -713,6 +713,25 @@ class DbUtils {
         rrdDb.close();
         return values;
     }
+    public static Map fetchDataAsMap(String dbName, String datasource, String function,
+                                   long startTime, long endTime){
+        RrdDb rrdDb = new RrdDb(dbName);
+        FetchRequest fetchRequest;
+        FetchData fd;
+        Map values = [:];
+        long nstarttime = (long)(startTime / 1000)
+        long nendtime = (long)(endTime / 1000)
+        fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
+        fetchRequest.setFilter (datasource);
+        fd = fetchRequest.fetchData();
+        long[] timeStamps = fd.getTimestamps();
+        double[] dataValues = fd.getValues(0);
+        for(int j=0; j<timeStamps.length; j++){
+            values[timeStamps[j]+""] =dataValues[j];
+        }
+        rrdDb.close();
+        return values;
+    }
     /*
     * creates an xml file compatible with flex chart application according to the given map
     * map's keys comprise of timestamps (as String) and values are data.

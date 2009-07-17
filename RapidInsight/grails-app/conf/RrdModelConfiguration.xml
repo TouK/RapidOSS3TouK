@@ -4,12 +4,12 @@
             <Properties>
                 <Property Name="name" Type="string" IsKey="true"/>
                 <Property Name="resource" Type="string"/>
-                <Property Name="type" Type="string" Default="COUNTER"/>
-                <Property Name="heartbeat" Type="number" Default="600"/>
+                <Property Name="type" Type="string" Default="GAUGE"/>
+                <Property Name="heartbeat" Type="number" Default="120"/>
                 <Property Name="min" Type="float" Default="Double.NaN"/>
                 <Property Name="max" Type="float" Default="Double.NaN"/>
                 <Property Name="startTime" Type="number"/>
-                <Property Name="step" Type="number" Default="300"/>
+                <Property Name="frequency" Type="number" Default="60"/>
             </Properties>
         </Model>
         <Model Name="RrdArchive">
@@ -18,7 +18,7 @@
                 <Property Name="function" Type="string" Default="AVERAGE"/>
                 <Property Name="xff" Type="float" Default="0.5"/>
                 <Property Name="step" Type="number" Default="1"/>
-                <Property Name="row" Type="number" Default="100"/>
+                <Property Name="numberOfDatapoints" Type="number" Default="100"/>
             </Properties>
         </Model>
         <Model Name="RrdGraphTemplate">

@@ -1,0 +1,43 @@
+AudioPlayer component provides the functionality to play the specified sound file, both triggered from browser events and when the specified condition evaluated on server side data occurs.</p>
+
+<h4><a name="AudioPlayerComponent-AvailableProperties"></a>Available Properties</h4>
+
+<p><b>name</b> (Required): Name of the component. Default is AudioPlayer<br/>
+<b>soundFile</b>(Required): The URL of the sound file to be played.</p>
+
+<h4><a name="AudioPlayerComponent-AdditionalProperties"></a>Additional Properties</h4>
+
+<p><b>url</b> (Optional): The default URL to be used for requests to the server to retrieve the data.<br/>
+
+<b>playCondition</b> (Optional): The javascript expression evaluated on received data to determine whether the sound file will be played or not. Default is "true".</p>
+
+<p><div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td> To write playCondition expression following javascript objects are available
+<ul>
+	<li>&nbsp;<b>params.response:</b> Javascript object which represents the server side response object</li>
+	<li>&nbsp;<b>params.xmlObject:</b> Root node of the javascript xml dom object if the server side response is in XML format</li>
+
+</ul>
+</td></tr></table></div>&nbsp;Following playConditions evaluate to "true" for the following server side response:</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"> params.xmlObject.getAttribute('shouldPlay') == '<span class="code-keyword">true</span>'
+ params.xmlObject.getElementsByTagName('ChildTag') == 3</pre>
+</div></div>
+<p>&nbsp;</p>
+<div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
+<pre class="code-java"> &lt;Response shouldPlay=<span class="code-quote">"<span class="code-keyword">true</span>"</span>&gt;
+
+    &lt;ChildTag name=<span class="code-quote">"child1"</span>/&gt;
+    &lt;ChildTag name=<span class="code-quote">"child2"</span>/&gt;
+    &lt;ChildTag name=<span class="code-quote">"child3"</span>/&gt;
+&lt;/Response&gt;</pre>
+
+</div></div>
+<p><b>volume</b>(Optional): The percentage of the sound volume. Default is 100.<br/>
+<b>pollingInterval</b>(Optional): Time delay between two server requests.<br/>
+<b>timeout</b> (Optional):The time interval in seconds to wait the server request completes successfully before aborting.</p>
+
+<h4><a name="AudioPlayerComponent-AvailableActions"></a>Available Actions</h4>
+
+<p><b>Clone</b>: Creates a copy of the component with same properties<br/>
+
+<b>Delete</b>: Deletes the component</p>

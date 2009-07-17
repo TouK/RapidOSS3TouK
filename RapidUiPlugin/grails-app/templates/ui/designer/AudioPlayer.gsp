@@ -8,5 +8,5 @@
     }
 %>
 <rui:audioPlayer id="${uiElement.name}" url="../${uiElement.url}" volume="${uiElement.volume}" pollingInterval="${uiElement.pollingInterval}"
-        title="${uiElement.title}" soundFile="../${uiElement.soundFile}" timeout="${uiElement.timeout}" ${playConditionString}>
+        soundFile="../${uiElement.soundFile}" timeout="${uiElement.timeout}" ${playConditionString}>
 </rui:audioPlayer>

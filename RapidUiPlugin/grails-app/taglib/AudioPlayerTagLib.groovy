@@ -24,10 +24,8 @@ class AudioPlayerTagLib {
     static def getConfig(attrs) {
         return """{
             id:'${attrs["id"]}',
-            title:'${attrs["title"]}',
-            url:'${attrs["url"]}',
-            contentPath:'${attrs["contentPath"]}',
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["url"] ? "url:'${attrs["url"]}'," : ""}
             ${attrs["playCondition"] ? "playCondition:\"${attrs["playCondition"].encodeAsJavaScript()}\"," : ""}
             ${attrs["volume"] ? "volume:${attrs["volume"]}," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}

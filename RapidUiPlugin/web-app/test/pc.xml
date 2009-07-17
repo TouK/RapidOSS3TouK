@@ -1,7 +1,6 @@
-<?xml version="1.0"?>
-<ResultSet >
-    <Item name="foo" count="2" />
-    <Item name="boo" count="4" />
-    <Item name="goo" count="10" />
-    <Item name="loo" count="10" />
-</ResultSet>
+
+<Response shouldPlay="true">
+    <ChildTag name="child1"/>
+    <ChildTag name="child2"/>
+    <ChildTag name="child3"/>
+</Response>

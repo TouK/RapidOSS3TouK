@@ -20,8 +20,8 @@ class UiAudioPlayerOperations extends UiComponentOperations{
                 imageExpanded: "images/rapidjs/designer/music.png",
                 imageCollapsed: "images/rapidjs/designer/music.png",
                 propertyConfiguration: [
-                        url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         soundFile: [descr: "The URL of the sound file to be played."],
+                        url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         playCondition: [descr: "The javascript expression evaluated on received data to determine whether the sound file will be played or not.",type: "Expression"],
                         volume: [descr: "The percentage of the sound volume."],
                         pollingInterval: [descr: "Time delay between two server requests."],
@@ -32,6 +32,7 @@ class UiAudioPlayerOperations extends UiComponentOperations{
         def parentMetaData = UiComponentOperations.metaData();
         def propConfig = [:]
         propConfig.putAll(parentMetaData.propertyConfiguration)
+        propConfig.remove("title")
         propConfig.putAll(metaData.propertyConfiguration)
         metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);

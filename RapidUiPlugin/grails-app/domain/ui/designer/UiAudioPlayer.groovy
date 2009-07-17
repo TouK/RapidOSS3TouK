@@ -12,7 +12,7 @@ class UiAudioPlayer extends UiComponent{
     };
     String url = "";
     String soundFile = "";
-    String playCondition = "";
+    String playCondition = "true";
     String suggestionAttribute = "";
     Long volume = 100;
     Long timeout = 0;
@@ -24,6 +24,7 @@ class UiAudioPlayer extends UiComponent{
         url(nullable:true, blank:true)
         volume(nullable:true)
         playCondition(nullable:true, blank:true)
+        pollingInterval(nullable:true)
         soundFile(nullable:false, blank:false)
         timeout(nullable:true)
     }

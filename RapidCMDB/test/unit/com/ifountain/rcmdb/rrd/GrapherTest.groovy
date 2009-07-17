@@ -77,7 +77,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -123,7 +123,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -168,7 +168,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -210,7 +210,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -257,7 +257,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -296,7 +296,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -336,7 +336,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -378,7 +378,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -413,7 +413,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],
@@ -453,7 +453,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 like:
                                                 [
                                                     name:"myspeed",
-                                                    dbname: rrdFileName,
+                                                    databaseName: rrdFileName,
                                                     dsname: "b",
                                                     function:"AVERAGE"
                                                 ]
@@ -485,7 +485,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
-                                                dbname: rrdFileName,
+                                                databaseName: rrdFileName,
                                                 dsname: "b",
                                                 function:"AVERAGE"
                                             ],

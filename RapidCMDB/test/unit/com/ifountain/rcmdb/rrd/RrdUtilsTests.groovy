@@ -59,19 +59,19 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         }
 
         def graphConfig=[destination:'web'];
+        graphConfig[RrdUtils.DATASOURCE]=[];
 
         try{
             RrdUtils.graph(graphConfig);
-            fail("should throw 'Web response is not avaliable' Exception");
+            fail("should throw Exception");
         }
         catch(e)
         {
             assertTrue("wrong exception ${e}",e.getMessage().indexOf("Web response is not avaliable")>=0)
         }
-        finally
-        {
-            assertSame(graphConfig,graphCallConfig);
-        }
+
+        assertSame(graphConfig,graphCallConfig);
+
     }
 
 }

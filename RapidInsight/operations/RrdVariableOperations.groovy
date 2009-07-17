@@ -40,7 +40,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String RRD_VARIABLES = "rrdVariables";
     public static final String RRD_VARIABLE = "rrdVariable";
     public static final String GRAPH_TEMPLATE = "template";
-    public static final String DESTINATION = "destination"
+    public static final String DESTINATION = "destination";
+    public static final String NUMBER_OF_DATAPOINTS = "numberOfDatapoints";
 
     def createDB() {
         RrdUtils.createDatabase (createDBConfig())
@@ -331,20 +332,20 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             week:120,
     ]
     private def addDefaultArchive(String archiveName,long duration,long stepDuration){
-        long volume = duration/step;
+        long volume = duration/frequency;
         int arcStep;
         int arcRows;
         if(volume<1) return;
-        if(stepDuration<step){
+        if(stepDuration<frequency){
             arcStep = 1;
-            arcRows = volume + ((duration%step==0)?0:1);
+            arcRows = volume + ((duration%frequency==0)?0:1);
         }
         else{
-             arcStep = stepDuration/step + ((stepDuration%step==0)?0:1);
+             arcStep = stepDuration/frequency + ((stepDuration%frequency==0)?0:1);
              arcRows = volume/arcStep + ((volume%arcStep==0)?0:1);
         }
         def archive = RrdArchive.add(name:name+archiveName,
-                function:"AVERAGE", xff:0.5, step:arcStep, row:arcRows);
+                function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
         addRelation(archives:archive);
 
     }
@@ -401,6 +402,24 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[ARCHIVE] = archiveList
 
         return dbConfig
+    }
+
+    public def addArchive(Map config){
+        if(!config.containsKey(NAME) ){
+            throw new Exception("archive name must be specified.");
+        }
+        Map archiveMap = [:];
+        archiveMap[NAME] = config.get(NAME);
+        if(config.containsKey(FUNCTION))
+            archiveMap[FUNCTION] = config.get(FUNCTION);
+        if(config.containsKey(XFF))
+            archiveMap[XFF] = config.get(XFF);
+        if(config.containsKey(STEP))
+            archiveMap[STEP] = config.get(STEP);
+        if(config.containsKey(NUMBER_OF_DATAPOINTS))
+            archiveMap[NUMBER_OF_DATAPOINTS] = config.get(NUMBER_OF_DATAPOINTS);
+        def archive = RrdArchive.add(archiveMap);
+        addRelation(archives:archive);
     }
 
     private String fileSource() {

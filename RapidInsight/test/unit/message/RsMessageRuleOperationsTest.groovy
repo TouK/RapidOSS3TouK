@@ -21,7 +21,6 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 */
 class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
-
     public void setUp()
     {
         super.setUp();
@@ -49,12 +48,12 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.enableGlobally();
     }
 
-    public void testGetDestinationConfig()
+    public void testGetDestinations()
     {
-        def config=RsMessageRuleOperations.getDestinationConfig();
+        def config=RsMessageRuleOperations.getDestinations();
         assertEquals(1,config.size());
-        //assertEquals("email",config["email"].channelInformationType);
-        assertEquals("email",config["email"]);
+        assertEquals("email",config[0]["name"]);
+        assertEquals("email",config[0]["channelType"]);
     }
     public void testGetDestinationNames()
     {
@@ -62,14 +61,11 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(1,defaultNames.size());
         assertEquals("email",defaultNames[0]);
 
-//        RsMessageRuleOperations.metaClass.'static'.getDestinationConfig = { ->
-//            return ["email":[channelInformationType:"email"],
-//                    "dest2":[:]];
-//        }
-
-        RsMessageRuleOperations.metaClass.'static'.getDestinationConfig = { ->
-            return ["email":"email",
-                    "dest2":""];
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
         }
 
         def names=RsMessageRuleOperations.getDestinationNames();
@@ -77,16 +73,34 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals("email",names[0]);
         assertEquals("dest2",names[1]);
 
-        assertTrue(RsMessageRuleOperations.isChannelDestination("email"))
-        assertFalse(RsMessageRuleOperations.isChannelDestination("dest2"))
+        assertTrue(RsMessageRuleOperations.isChannelType(RsMessageRuleOperations.getDestinationChannelType("email")))
+        assertFalse(RsMessageRuleOperations.isChannelType(RsMessageRuleOperations.getDestinationChannelType("dest2")))
 
-        def channelDestinationNames=RsMessageRuleOperations.getChannelDestinationNames();
+        def channelDestinationNames=RsMessageRuleOperations.getChannelDestinationNames();        
         assertEquals(1,channelDestinationNames.size());
         assertEquals("email",channelDestinationNames[0]);
         
         def nonChannelDestinationNames=RsMessageRuleOperations.getNonChannelDestinationNames();
         assertEquals(1,nonChannelDestinationNames.size());
         assertEquals("dest2",nonChannelDestinationNames[0]);
+    }
+
+    public void testGetUserDestinationForChannel()
+    {
+        initializeModels();
+
+        def userEmail="useremail";
+
+        def user=RsUser.add(username:"testuser",passwordHash:"aaa");
+        assertFalse(user.hasErrors());
+        user.addEmail(userEmail); 
+
+        assertEquals(userEmail,RsMessageRule.getUserDestinationForChannel(user,"email"));
+        assertEquals(null,RsMessageRule.getUserDestinationForChannel(user,null));
+
+        ChannelUserInformation.removeAll();
+
+        assertEquals(null,RsMessageRule.getUserDestinationForChannel(user,"email"));
 
 
     }
@@ -170,15 +184,12 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
     {
         initializeModels();
 
-//        RsMessageRule.metaClass.'static'.getDestinationConfig = { ->
-//           return ["email":[channelInformationType:"email"],
-//                   "dest2":[:]];
-//       }
-
-        RsMessageRule.metaClass.'static'.getDestinationConfig = { ->
-           return ["email":"email",
-                   "dest2":""];
-       }
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
+        }
 
         def params=[:]
         params.destinationType="dest2";
@@ -263,23 +274,17 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(updateParams.delay,messageRule.delay);
         assertEquals(updateParams.clearAction,messageRule.clearAction);
         assertEquals(updateParams.enabled,messageRule.enabled);
-
-
     }
 
     public void testAddAndUpdateMessageRuleForUserWithNonChannelDestination()
     {
         initializeModels();
 
-//        RsMessageRule.metaClass.'static'.getDestinationConfig = { ->
-//           return ["email":[channelInformationType:"email"],
-//                   "dest2":[:]];
-//        }
-
-
-        RsMessageRule.metaClass.'static'.getDestinationConfig = { ->
-           return ["email":"email",
-                   "dest2":""];
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
         }
 
         def params=[:]

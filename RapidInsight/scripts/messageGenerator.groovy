@@ -14,7 +14,7 @@ import search.SearchQuery
 */
 
 
-DESTINATION_CONFIG = RsMessageRule.getDestinationConfig();
+DESTINATIONS = RsMessageRule.getDestinations();
 
 def createIdLookup = RsLookup.get(name: "messageGeneratorMaxEventCreateId")
 if (createIdLookup == null)
@@ -50,9 +50,11 @@ users.each {user ->
     def isAdmin = isAdmin(user);
     withSession(user.username) {
         def userId = user.id;
-        DESTINATION_CONFIG.each {destinationType, userChannelInfoType ->
-            def userChannelInfo = ChannelUserInformation.get(userId: userId, type: userChannelInfoType);
-            def destination = userChannelInfo?.destination;
+        DESTINATIONS.each {destinationInfo ->
+            def destinationType=destinationInfo.name;
+            def channelType=destinationInfo.channelType;
+
+            def destination = RsMessageRule.getUserDestinationForChannel(user,channelType);
             logger.debug("Going to search RsMessageRule for userId:${userId}");
             if (isAdmin || (destination != null && destination != ""))
             {

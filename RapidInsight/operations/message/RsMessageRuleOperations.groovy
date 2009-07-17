@@ -12,30 +12,50 @@ import auth.ChannelUserInformation
 * To change this template use File | Settings | File Templates.
 */
 class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
-    public static Map getDestinationConfig() {
-        ////////////////////////// Match destination type with user channel information type where user destination is stored ////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //return ["email": [channelInformationType:"email"]]
-        return ["email": "email"]
+    public static List getDestinations() {
+        //// Match destination type with user channel information type where user destination is stored ////
+        return [[name:"email",channelType:"email"]]
+    }
+
+    public static def getDestination(destinationType)
+    {
+        return getDestinations().find{it.name==destinationType};
+    }
+    public static def getDestinationChannelType(destinationType)
+    {
+        return getDestination(destinationType)?.channelType;
     }
 
     public static List getDestinationNames() {
-        def destinationConfig = getDestinationConfig();
-        return new ArrayList(destinationConfig.keySet());
+        def destinationConfig = getDestinations();
+        return destinationConfig.name;
     }
 
+
     public static List getChannelDestinationNames(){
-        return new ArrayList(RsMessageRuleOperations.getDestinationConfig().findAll{it.value != null && it.value != ""}.keySet());
-       //return new ArrayList(RsMessageRuleOperations.getDestinationConfig().findAll{it.value.channelInformationType != null}.keySet());
+       return RsMessageRuleOperations.getDestinations().findAll{isChannelType(it.channelType)}.name;
     }
     public static List getNonChannelDestinationNames()
     {
-        return new ArrayList(RsMessageRuleOperations.getDestinationConfig().findAll{it.value == null || it.value == ""}.keySet());
-       //return new ArrayList(RsMessageRuleOperations.getDestinationConfig().findAll{it.value.channelInformationType == null}.keySet());
+       return RsMessageRuleOperations.getDestinations().findAll{!isChannelType(it.channelType)}.name;
     }
 
+    private static boolean isChannelType(channelType)
+    {
+        if(channelType != null && channelType != "")
+        {
+            return true;
+        }
+        return false;
+    }
 
-
+    public static def getUserDestinationForChannel(user,channelType)
+    {
+        if (channelType) {
+            return ChannelUserInformation.get(userId: user.id, type: channelType)?.destination
+        }
+        return null;
+    }
 
     public static RsMessageRule addMessageRuleForUser(params,username)
     {
@@ -65,10 +85,11 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
         params.userId = user.id
 
-        def destination = getUserDestination(user, params.destinationType);
+        def channelType=getDestinationChannelType(params.destinationType)
+        def destination = getUserDestinationForChannel(user, channelType);
         def isAdmin = user.hasRole(Role.ADMINISTRATOR);
 
-        if(isChannelDestination(params.destinationType))
+        if(isChannelType(channelType))
         {
             if(destination == null ||destination == "")
             {
@@ -86,24 +107,4 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return params;
     }
 
-    private static def getUserDestination(user,destinationType)
-    {
-        //def userChannelInfoType = RsMessageRule.getDestinationConfig()[destinationType]?.channelInformationType;
-        def userChannelInfoType = RsMessageRule.getDestinationConfig()[destinationType];
-        if (userChannelInfoType) {
-            return ChannelUserInformation.get(userId: user.id, type: userChannelInfoType)?.destination
-        }
-        return null;
-    }
-
-    private static boolean isChannelDestination(destinationType)
-    {
-        //def channelInformationType=getDestinationConfig()[destinationType]?.channelInformationType;
-        def channelInformationType=getDestinationConfig()[destinationType];
-        if(channelInformationType != null && channelInformationType != "")
-        {
-            return true;
-        }
-        return false;
-    }
 }

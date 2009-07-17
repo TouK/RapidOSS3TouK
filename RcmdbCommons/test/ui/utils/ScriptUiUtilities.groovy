@@ -126,6 +126,39 @@ class ScriptUiUtilities {
         }
     }
 
+    public static reloadScriptByName(Selenium selenium, String scriptName, boolean validate=true)
+    {
+        def res = CommonUiTestUtils.search(selenium, "script.CmdbScript", "name:${scriptName}")
+        if (res.size() == 1)
+        {
+            reloadScriptById(selenium, res[0].id, validate)
+        }
+        else
+        {
+            if (validate)
+            {
+                Assert.fail("No scripts found with name ${scriptName}");
+            }
+        }
+    }
+    public static reloadScriptById(Selenium selenium, String scriptId, boolean validate=true)
+    {
+        selenium.openAndWait("/RapidSuite/script/show/" + scriptId);
+        Assert.assertTrue ("Script ${scriptId} does not exist".toString(), selenium.getLocation().indexOf("/script/show") >= 0);
+        selenium.clickAndWait("_action_Reload");
+        if(validate)
+        {
+            CommonUiTestUtils.assertPageMessage (selenium, "Script reloaded successfully.")
+        }
+    }
+
+    public static deleteScriptsByFileName(Selenium selenium, String fileName)
+    {
+        CommonUiTestUtils.search (selenium, "script.CmdbScript", "scriptFile:${fileName}").each{
+            deleteScriptById(it.id);
+        }
+    }
+
     public static runScriptByName(Selenium selenium, String scriptName, Map params = [:],String timeout = "30000")
     {
         def url = "/RapidSuite/script/run/" + scriptName

@@ -41,7 +41,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testCreateAnOnDemandScriptByScriptFileName()
     {
-        deleteScriptsByFileName("aScript");
+        selenium.deleteScriptsByFileName("aScript");
         selenium.deleteScriptByName("ondemand2", false);
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         def scriptContent = """import script.*
@@ -72,7 +72,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testCreateAnOnDemandscriptByName()
     {
-        deleteScriptsByFileName("aScript");
+        selenium.deleteScriptsByFileName("aScript");
         selenium.deleteScriptByName("aScript", false);
         //creates aScript.groovy in RS_HOME/RapidSuite/scripts folder with the following content
         String scriptContent = """import script.*
@@ -104,7 +104,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testTestAScheduledCronScriptFilesSelTest()
     {
-        deleteScriptsByFileName("cron");
+        selenium.deleteScriptsByFileName("cron");
         selenium.deleteScriptByName("scheduled2", false);
         try {
             String expectedMessage = "${System.currentTimeMillis()}${Math.random()}Hello from cron"
@@ -178,7 +178,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testAScheduledPeriodicScript()
     {
-        deleteScriptsByFileName("periodic");
+        selenium.deleteScriptsByFileName("periodic");
         selenium.deleteScriptByName("scheduled1", false);
         try{
             String expectedMessage = "${System.currentTimeMillis()}${Math.random()}Hello from periodic"
@@ -237,7 +237,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
     public void testLoggerParameters()
     {
-        deleteScriptsByFileName("aScript");
+        selenium.deleteScriptsByFileName("aScript");
         selenium.deleteScriptByName("aScript", false);
         try{
             selenium.runScriptByName(logLevelModifier, [loggerName:"root", level:"DEBUG"])
@@ -293,12 +293,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
         return numberOfMessagesInLogFile
     }
 
-    private deleteScriptsByFileName(String fileName)
-    {
-        CommonUiTestUtils.search (selenium, "script.CmdbScript", "scriptFile:${fileName}").each{
-            selenium.deleteScriptById(it.id);
-        }
-    }
+
 
     private void createLogLevelModifier()
     {

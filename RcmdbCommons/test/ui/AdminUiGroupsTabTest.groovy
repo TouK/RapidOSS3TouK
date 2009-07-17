@@ -49,6 +49,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
     public void testScriptAuthorizationMechanism()
     {
+        selenium.deleteScriptsByFileName("HelloWorld");
         def stringToBeReturned = "HelloWorld"
         def scriptContent = "return '${stringToBeReturned}'"
         selenium.deleteScriptByName ("HelloWorld", false);
@@ -64,6 +65,7 @@ class AdminUiGroupsTabTest extends SeleniumTestCase
 
 
         def scriptId = selenium.createOnDemandScript("HelloWorld", [:], ["group1"]);
+        selenium.reloadScriptByName("HelloWorld");
         selenium.runScriptByName ("HelloWorld");
         assertTrue(selenium.isTextPresent(stringToBeReturned));
 

@@ -22,7 +22,7 @@ class RrdArchive
     
     Long step =1;
     
-    Long row =100;
+    Long numberOfDatapoints =100;
     
     org.springframework.validation.Errors errors ;
     
@@ -52,7 +52,7 @@ class RrdArchive
         
      step(nullable:true)
         
-     row(nullable:true)
+     numberOfDatapoints(nullable:true)
         
      errors(nullable:true)
         

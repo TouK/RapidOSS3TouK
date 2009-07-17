@@ -23,14 +23,13 @@ def sampleRrdVariable = RrdVariable.add(
 								type:"GAUGE",								//Type of this variable. See documentation for further understanding
 								heartbeat:600,								//heartbeat of this variable. See documentation for further understanding
 								startTime: ntime,							//start time of this variable
-								step:300,									//step interval between data updating points
+								frequency:300,								//step interval between data updating points
 								archives: [oneHour, twelveHours, oneDay],	//archives of this variable
-						        file: "sampleRrdDB.rrd"                     //file name of rrd db
                         )
 
 sampleRrdVariable.createDB()
 
 50.times
 {
-	sampleRrdVariable.updateDB(time: (ntime + (it+1) * 300000) , value : new Random().nextInt(1000))
+	sampleRrdVariable.updateDB(new Random().nextInt(1000), (ntime + (it+1) * 300000))
 }

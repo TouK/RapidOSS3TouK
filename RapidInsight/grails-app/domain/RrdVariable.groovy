@@ -18,19 +18,17 @@ class RrdVariable
     
     String resource ="";
     
-    String type ="COUNTER";
+    String type ="GAUGE";
     
-    Long heartbeat =600;
+    Long heartbeat =120;
     
     Double min =Double.NaN;
     
     Double max =Double.NaN;
-    
-    String file ="";
-    
+
     Long startTime =0;
     
-    Long step =300;
+    Long frequency =60;
     
     org.springframework.validation.Errors errors ;
     
@@ -63,12 +61,10 @@ class RrdVariable
      min(nullable:true)
         
      max(nullable:true)
-        
-     file(blank:true,nullable:true)
-        
+
      startTime(nullable:true)
         
-     step(nullable:true)
+     frequency(nullable:true)
         
      errors(nullable:true)
         

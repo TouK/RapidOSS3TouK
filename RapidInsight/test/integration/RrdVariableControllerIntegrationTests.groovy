@@ -72,7 +72,7 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
 
 
         def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
-                                       startTime:920804400000L, step:300)
+                                       startTime:920804400000L, frequency:300)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def controller = new RrdVariableController();
@@ -111,7 +111,7 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
         overrideOperation();
 
         def variable = RrdVariable.add(name:"TestVariable", resource:"resource", type:"COUNTER", heartbeat:600,
-                                       startTime:920804400000L, step:300)
+                                       startTime:920804400000L, frequency:300)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def controller = new RrdVariableController();

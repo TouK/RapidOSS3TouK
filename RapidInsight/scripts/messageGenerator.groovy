@@ -47,20 +47,33 @@ def maxClearId = Long.valueOf(clearIdLookup.value)
 RsMessage.processDelayedMessages()
 def users = RsUser.list()
 users.each {user ->
-    def isAdmin = isAdmin(user);
     withSession(user.username) {
         def userId = user.id;
         DESTINATIONS.each {destinationInfo ->
+            logger.debug("Going to search RsMessageRule for userId:${userId}");
+
             def destinationType=destinationInfo.name;
             def channelType=destinationInfo.channelType;
 
-            def destination = RsMessageRule.getUserDestinationForChannel(user,channelType);
-            logger.debug("Going to search RsMessageRule for userId:${userId}");
-            if (isAdmin || (destination != null && destination != ""))
-            {
-                if (isAdmin && (destination == null || destination == "")) {
-                    destination = "admin_destination"
+            def destination=RsMessageRule.getUserDestinationForChannel(user,channelType);
+            try{
+                RsMessageRule.validateUserDestinationForChannel(user,destination,channelType);
+                if(!RsMessageRule.isChannelType(channelType))
+                {
+                     destination="admin_destination";
                 }
+                if(destination == null)
+                {
+                    throw new Exception("Critical Error can not find destination for ${destinationType}");
+                }
+            }
+            catch(e)
+            {
+               logger.warn("Skipping search RsMessageRule for userId:${userId}. Reason ${e.getMessage()}");
+            }
+
+            if (destination!=null)
+            {
                 logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
                 //processing for RsEvent creates
                 //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
@@ -134,21 +147,8 @@ users.each {user ->
                 }
 
             }
-            else
-            {
-                logger.warn("Skipping search RsMessageRule for userId:${userId}. User does not have a destination for destinationType ${destinationType}");
-            }
 
         }
     }
 }
 
-def isAdmin(RsUser user) {
-    def groups = user.groups;
-    for (group in groups) {
-        if (group.role?.name == Role.ADMINISTRATOR) {
-            return true;
-        }
-    }
-    return false;
-}

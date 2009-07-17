@@ -3,6 +3,7 @@ package message
 import org.jsecurity.SecurityUtils
 import auth.Role
 import auth.ChannelUserInformation
+import auth.RsUser
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,14 +15,16 @@ import auth.ChannelUserInformation
 class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
     public static List getDestinations() {
         //// Match destination type with user channel information type where user destination is stored ////
-        return [[name:"email",channelType:"email"]]
+        return [
+                [name:"email",channelType:"email"]
+               ]
     }
 
-    public static def getDestination(destinationType)
+    public static def getDestination(String destinationType)
     {
         return getDestinations().find{it.name==destinationType};
     }
-    public static def getDestinationChannelType(destinationType)
+    public static def getDestinationChannelType(String destinationType)
     {
         return getDestination(destinationType)?.channelType;
     }
@@ -31,6 +34,29 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return destinationConfig.name;
     }
 
+    public static List getDesnitationGroups()
+    {
+        return  [
+                 [name:"Channel",destinationNames:getChannelDestinationNames()],
+                 [name:"Non-Channel",destinationNames:getNonChannelDestinationNames()]
+                ]
+    }
+
+    public static List getDesnitationGroupsForUser(String username)
+    {
+        def groups=getDesnitationGroups();
+
+        def user = auth.RsUser.get(username: username)
+        if(user == null)
+            throw new Exception("No user defined with username '${username}'");
+
+        def isAdmin = user.hasRole(Role.ADMINISTRATOR);
+        if(!isAdmin)
+        {
+           groups.remove(1);
+        }
+        return groups;
+    }
 
     public static List getChannelDestinationNames(){
        return RsMessageRuleOperations.getDestinations().findAll{isChannelType(it.channelType)}.name;
@@ -40,7 +66,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
        return RsMessageRuleOperations.getDestinations().findAll{!isChannelType(it.channelType)}.name;
     }
 
-    private static boolean isChannelType(channelType)
+    private static boolean isChannelType(String channelType)
     {
         if(channelType != null && channelType != "")
         {
@@ -49,7 +75,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return false;
     }
 
-    public static def getUserDestinationForChannel(user,channelType)
+    public static def getUserDestinationForChannel(RsUser user,String channelType)
     {
         if (channelType) {
             return ChannelUserInformation.get(userId: user.id, type: channelType)?.destination
@@ -57,7 +83,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return null;
     }
 
-    public static RsMessageRule addMessageRuleForUser(params,username)
+    public static RsMessageRule addMessageRuleForUser(params,String username)
     {
         def createParams=prepareAndValidateParamsForUser(params,username);
 
@@ -66,7 +92,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     }
 
 
-    public static RsMessageRule updateMessageRuleForUser(messageRule,params,username)
+    public static RsMessageRule updateMessageRuleForUser(RsMessageRule messageRule,params,String username)
     {
         def updateParams=prepareAndValidateParamsForUser(params,username);
 
@@ -74,7 +100,27 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return messageRule;
     }
 
-    private static def prepareAndValidateParamsForUser(ruleParams,username)
+    public static void validateUserDestinationForChannel(RsUser user,String destination,String channelType)
+    {
+        def isAdmin = user.hasRole(Role.ADMINISTRATOR);
+
+        if(isChannelType(channelType))
+        {
+            if(destination == null ||destination == "")
+            {
+                throw new Exception("${user.username}'s destination for ${channelType} is not defined")
+            }
+        }
+        else
+        {
+            if(!isAdmin)
+            {
+                throw new Exception("${user.username} does not have permission to create rule with Non-Channel destination");
+            }
+        }
+
+    }
+    private static def prepareAndValidateParamsForUser(ruleParams,String username)
     {
         def params=[:];
         params.putAll(ruleParams);
@@ -87,22 +133,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
         def channelType=getDestinationChannelType(params.destinationType)
         def destination = getUserDestinationForChannel(user, channelType);
-        def isAdmin = user.hasRole(Role.ADMINISTRATOR);
-
-        if(isChannelType(channelType))
-        {
-            if(destination == null ||destination == "")
-            {
-                throw new Exception("${username}'s destination for ${params.destinationType} is not defined")
-            }
-        }
-        else
-        {
-            if(!isAdmin)
-            {
-                throw new Exception("${username} does not have permission to create rule with Non-Channel destination ${params.destinationType}");
-            }
-        }
+        validateUserDestinationForChannel(user,destination,channelType);
 
         return params;
     }

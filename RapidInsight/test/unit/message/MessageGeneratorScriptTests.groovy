@@ -16,6 +16,7 @@ import script.CmdbScriptOperations
 import search.SearchQuery
 import search.SearchQueryGroup
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,6 +36,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     String scriptName = "messageGenerator"
     void setUp() {
         super.setUp();
+        clearMetaClasses();
         base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
         initializeScriptManager();
         initializeClasses();
@@ -42,9 +44,15 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     }
     void tearDown() {
         SessionManager.destroyInstance();
+        clearMetaClasses();
         super.tearDown();
     }
-
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RsMessageRuleOperations)
+        ExpandoMetaClass.enableGlobally();
+    }
     private void initializeClasses() {
         rsEventClass = gcl.loadClass("RsEvent")
         rsHistoricalEventClass = gcl.loadClass("RsHistoricalEvent")
@@ -115,26 +123,36 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"), 0)
     }
 
-    void testMessageGeneratorDoesNotProcessIfUserDoesNotHaveDestination()
+    void testMessageGeneratorDoesNotProcessIfUserAndAdminDoesNotHaveDestination()
     {
-        def destintaionType = RsMessage.EMAIL
+        def destinationType = RsMessage.EMAIL
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
 
-        def adminUser = RsUser.RSADMIN;
-        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUser, isPublic: true, type: "event");
+        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
+        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa");
+        assertFalse(adminUser.hasErrors());
 
-        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
+        def adminUserName = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUserName, isPublic: true, type: "event");
+
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destintaionType, enabled: true, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
         assertFalse(rule.hasErrors())
-        assertEquals(RsMessageRule.countHits("alias:*"), 1)
+
+        def ruleForAdmin = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        assertFalse(ruleForAdmin.hasErrors())
+
+        assertEquals(RsMessageRule.countHits("alias:*"), 2)
 
         copyScript(scriptName)
         def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
         assertFalse(script.hasErrors())
 
+
+        
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 0)
 
@@ -146,27 +164,45 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"), 0)
     }
 
-    void testMessageGeneratorProcessIfUserIsAdminEvenIfItDoesNotHaveDestination()
+    void testMessageGeneratorProcessNonChannelDestinationsForAdminButNotForUser()
     {
-        def destintaionType = RsMessage.EMAIL
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"destwithnochannel"]
+                   ];
+        }
 
-        def adminUser = RsUser.RSADMIN;
-        def user = RsUser.add(username: adminUser, passwordHash:"changeme");
-        def role = Role.add(name:Role.ADMINISTRATOR)
-        def group = Group.add(name:RsUser.RSADMIN, role:role)
-        user.addRelation(groups:group);
-        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUser, isPublic: true, type: "event");
+        def destinationType = "destwithnochannel";
 
-        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
+        def adminUserName = RsUser.RSADMIN;
+
+        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
+        def adminUser = RsUser.add(username: "testadmin", passwordHash:"aaa",groups:[adminGroup]);
+        assertFalse(adminUser.hasErrors());
+
+        def user=RsUser.add(username:"testuser",passwordHash:"bbb");
+        assertFalse(user.hasErrors());
 
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destintaionType, enabled: true, clearAction: true)
-        assertFalse(rule.hasErrors())
-        assertEquals(RsMessageRule.countHits("alias:*"), 1)
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUserName, isPublic: true, type: "event");
+
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
+
+
+        def rule = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        assertFalse(rule.errors.toString(),rule.hasErrors())
+
+
+        def ruleForUser = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        assertFalse(ruleForUser.errors.toString(),ruleForUser.hasErrors())
+
+        assertEquals(RsMessageRule.countHits("alias:*"), 2)
 
         copyScript(scriptName)
         def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
         assertFalse(script.hasErrors())
+
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 0)
@@ -177,6 +213,9 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 4)
+        assertEquals(RsMessage.countHits("destination:admin_destination AND destinationType:${destinationType}"), 4)
+
+
     }
 
     void testMessageGeneratorDoesNotProcessClearEventsForClearDisabledRules()
@@ -440,4 +479,14 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         }
         return events;
     }
+
+     private def createGroupWithRole(groupName,roleName)
+     {
+        def role=Role.add(name:roleName);
+        assertFalse(role.hasErrors());
+        def group=Group.add(name:groupName,role:role);
+        assertFalse(group.hasErrors());
+
+        return group;
+     }
 }

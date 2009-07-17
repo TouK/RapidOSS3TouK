@@ -85,6 +85,47 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals("dest2",nonChannelDestinationNames[0]);
     }
 
+    public void testGetDestinationGroups()
+    {
+        initializeModels();
+
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
+        }
+        
+        def destinationGroups=RsMessageRule.getDesnitationGroups();
+        assertEquals(2,destinationGroups.size());
+        assertEquals("Channel",destinationGroups[0].name);
+        assertEquals(RsMessageRule.getChannelDestinationNames(),destinationGroups[0].destinationNames);
+
+        assertEquals("Non-Channel",destinationGroups[1].name);
+        assertEquals(RsMessageRule.getNonChannelDestinationNames(),destinationGroups[1].destinationNames);
+
+
+        def normalUser=RsUser.add(username:"normaluser",passwordHash:"aaa");
+
+        def groupsForUser=RsMessageRule.getDesnitationGroupsForUser(normalUser.username);
+        assertEquals(1,groupsForUser.size());
+        assertEquals("Channel",groupsForUser[0].name);
+        assertEquals(RsMessageRule.getChannelDestinationNames(),groupsForUser[0].destinationNames);
+        
+
+        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
+        def adminUser=RsUser.add(username:"admin",passwordHash:"aaa",groups:[adminGroup]);
+
+        def groupsForAdmin=RsMessageRule.getDesnitationGroupsForUser(adminUser.username);
+        assertEquals(2,groupsForAdmin.size());
+        assertEquals("Channel",groupsForAdmin[0].name);
+        assertEquals(RsMessageRule.getChannelDestinationNames(),groupsForAdmin[0].destinationNames);
+
+        assertEquals("Non-Channel",destinationGroups[1].name);
+        assertEquals(RsMessageRule.getNonChannelDestinationNames(),groupsForAdmin[1].destinationNames);
+
+    }
+
     public void testGetUserDestinationForChannel()
     {
         initializeModels();
@@ -101,6 +142,100 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         ChannelUserInformation.removeAll();
 
         assertEquals(null,RsMessageRule.getUserDestinationForChannel(user,"email"));
+    }
+    
+    public void testValidateUserDestinationForChannelThrowsExceptionIfChannelTypeAndUserDoesNotHaveDestination()
+    {
+         initializeModels();
+        
+         def username="testuser";
+
+         def user=RsUser.add(username:username,passwordHash:"aaa");
+         assertFalse(user.hasErrors());
+
+         try{
+             RsMessageRule.validateUserDestinationForChannel(user,"","email");
+             fail("should throw exception");
+         }
+         catch(e)
+         {
+             assertTrue("wrong exception ${e}",e.getMessage().indexOf("destination for email is not defined")>=0)
+         }
+
+        def group=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
+
+        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa",groups:[group]);
+        assertFalse(adminUser.hasErrors());
+        assertTrue(adminUser.hasRole(Role.ADMINISTRATOR));
+
+         try{
+             RsMessageRule.validateUserDestinationForChannel(adminUser,null,"email");
+             fail("should throw exception");
+         }
+         catch(e)
+         {
+             assertTrue("wrong exception ${e}",e.getMessage().indexOf("destination for email is not defined")>=0)
+         }
+    }
+    public void testValidateUserDestinationForChannelThrowsExceptionIfNonChannelTypeAndUserIsNotAdmin()
+    {
+        initializeModels();
+
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
+        }
+
+
+        def username="testuser";
+
+        def group=createGroupWithRole("testgroup",Role.USER);
+
+        def user=RsUser.add(username:username,passwordHash:"aaa",groups:[group]);
+        assertFalse(user.hasErrors());
+
+        try{
+             RsMessageRule.validateUserDestinationForChannel(user,"","");
+             fail("should throw exception");
+        }
+        catch(e)
+        {
+            assertTrue("wrong exception ${e}",e.getMessage().indexOf("does not have permission to create rule with Non-Channel destination")>=0)
+        }
+    }
+    public void testValidateUserDestinationDoesNotThrowExceptionOnValidCases()
+    {
+        initializeModels();
+
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"],
+                    [name:"dest2"]
+                   ];
+        }
+
+
+        def username="testuser";
+
+        def group=createGroupWithRole("testgroup",Role.USER);
+
+        def user=RsUser.add(username:username,passwordHash:"aaa",groups:[group]);
+        assertFalse(user.hasErrors());
+
+
+        RsMessageRule.validateUserDestinationForChannel(user,"user@com","email");
+
+
+        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
+
+        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa",groups:[adminGroup]);
+        assertFalse(adminUser.hasErrors());
+        assertTrue(adminUser.hasRole(Role.ADMINISTRATOR));
+
+        RsMessageRule.validateUserDestinationForChannel(adminUser,"admin@com","email");
+        RsMessageRule.validateUserDestinationForChannel(adminUser,"","");
 
 
     }

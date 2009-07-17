@@ -4,7 +4,8 @@
 <%@ page import="search.SearchQuery" %>
 
 <%
-    def destinationNames = RsMessageRule.getDestinationNames();
+    def destinationGroups = RsMessageRule.getDesnitationGroupsForUser(session.username);
+    
     def mode = params.mode;
     def componentId = params.componentId;
     def rsMessageRule=new RsMessageRule();
@@ -67,7 +68,20 @@
                 <tr>
                     <td ><label>Destination Type:</label></td>
                     <td >
-                        <g:select id="destinationType" name="destinationType" from="${destinationNames}" value="${fieldValue(bean:rsMessageRule,field:'destinationType')}" ></g:select>
+                        <select name="destinationType" class="inputtextfield1">
+                           <g:each in="${destinationGroups}" var="group">
+                                <optgroup label="${group.name}">
+                                  <g:each in="${group.destinationNames}" var="destinationName">
+                                     <g:if test="${rsMessageRule.destinationType==destinationName}">
+                                        <option value="${destinationName}" selected="selected">${destinationName}</option>
+                                     </g:if>
+                                      <g:else>
+                                          <option value="${destinationName}">${destinationName}</option>
+                                      </g:else>
+                                  </g:each>
+                                 </optgroup>
+                           </g:each>
+                        </select>
                     </td>
                 </tr>
                 <tr>

@@ -1,7 +1,7 @@
 package com.ifountain.rcmdb.test.util.scripting
 
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,98 +13,67 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 class ScriptManagerForTest {
 
     private static def groovyClassLoager;
-    private static def scriptRunParams;
     private static def scriptBaseDirectory;
     private static def scriptClasses;
 
-    public static final String SCRIPT_RUN_RESULT_KEY="SCRIPT_RUN_RESULT";
-    public static final String WEB_RENDER_PARAMS_KEY="WEB_RENDER_PARAMS";
-
-
     static def initialize(gcl)
     {
-        initialize(gcl,null);
+        initialize(gcl, null);
     }
-    static def initialize(gcl,scriptDirectory)
+    static def initialize(gcl, scriptDirectory)
     {
-        groovyClassLoager=gcl;
-        scriptRunParams=[:];
-        scriptClasses=[:];
-        scriptBaseDirectory=scriptDirectory;
+        groovyClassLoager = gcl;
+        scriptClasses = [:];
+        scriptBaseDirectory = scriptDirectory;
 
     }
 
     public static def runScriptWithWeb(String scriptFilePath, Map scriptParams, webMock)
     {
-        scriptParams.web=webMock;
-        return  runScript(scriptFilePath,scriptParams);
+        scriptParams.web = webMock;
+        return runScript(scriptFilePath, scriptParams);
     }
-    public static def runScript(String scriptFilePath, Map scriptParams)
+    public static def runScript(String scriptName, Map scriptParams)
     {
-        def scriptClass = scriptClasses[scriptFilePath];
-        if(scriptClass == null )
+        def scriptInstance = getScriptInstance(scriptName, scriptParams);
+        return scriptInstance.run();
+    }
+
+    public static def getScriptInstance(String scriptName, Map scriptParams)
+    {
+        def scriptClass = scriptClasses[scriptName];
+        if (scriptClass == null)
         {
-            throw new Exception("Script ${scriptFilePath} should be added first");
+            throw new Exception("Script ${scriptName} should be added first");
         }
 
         def scriptInstance = scriptClass.newInstance();
-        def params = new HashMap(scriptParams);
-        scriptParams.each{ propName, propVal ->
+        scriptInstance.setProperty(RapidCMDBConstants.LOGGER, TestLogUtils.log);
+        scriptInstance.setProperty("params", [:]);
+        scriptParams.each {propName, propVal ->
             scriptInstance.setProperty(propName, propVal);
         }
-        scriptInstance.setProperty(RapidCMDBConstants.LOGGER, TestLogUtils.log);
+        return scriptInstance;
+    }
 
-        def result=scriptInstance.run();
-        addEntryForScript(scriptFilePath,"runResult",result)
-        return result;
-    }
-    public static def getScriptRunResultForScript(scriptFilePath)
-    {
-        return scriptRunParams[scriptFilePath][SCRIPT_RUN_RESULT_KEY];
-    }
-    public static def getScriptWebRenderParamsForScript(scriptFilePath)
-    {
-        return scriptRunParams[scriptFilePath][WEB_RENDER_PARAMS_KEY]; 
-    }
-    private static void addEntryForScript(scriptFilePath,entry,value)
-        {
-           if(!scriptRunParams.containsKey(scriptFilePath))
-           {
-              scriptRunParams[scriptFilePath]=[:];
-           }
-           scriptRunParams[scriptFilePath][entry]=value;
-        }
-
-    public static def getDefaultWebForScripts(String scriptFilePath,username)
-    {
-        def web = [
-                    session: [username: username],
-                    render: {Map renderParams ->
-                        addEntryForScript(scriptFilePath,"webRenderParams",renderParams.clone())
-                    }
-        ]
-    }
 
     public static Class addScript(String scriptFilePath)
     {
-        def scriptRealPath=null;
+        def scriptRealPath = null;
         def scriptClassLoader = new GroovyClassLoader(groovyClassLoager);
-        if(scriptBaseDirectory == null)
+        if (scriptBaseDirectory == null)
         {
-           scriptRealPath="${scriptFilePath}.groovy";
+            scriptRealPath = "${scriptFilePath}.groovy";
         }
         else
         {
-           scriptRealPath="${scriptBaseDirectory}/${scriptFilePath}.groovy";
-           scriptClassLoader.addClasspath(scriptBaseDirectory);
+            scriptRealPath = "${scriptBaseDirectory}/${scriptFilePath}.groovy";
+            scriptClassLoader.addClasspath(scriptBaseDirectory);
         }
 
         def scriptClass = scriptClassLoader.parseClass(new File(scriptRealPath));
-        scriptClasses[scriptFilePath]=scriptClass;
+        scriptClasses[scriptFilePath] = scriptClass;
         return scriptClass;
     }
-
-
-
 
 }

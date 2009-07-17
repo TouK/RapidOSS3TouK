@@ -30,6 +30,8 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
         ModelGenerator.getInstance().invalidNames = [];
         FileUtils.deleteDirectory (confDir);
         confDir.mkdirs();
+        initializeScriptManager ("/RapidModules/RapidCMDB/scripts/")
+        addScript ("modelCreator");
     }
 
     public void tearDown() {
@@ -61,7 +63,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":tmpDir]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         script.run();
         def modelClass = gcl.parseClass(new File("${base_directory}/grails-app/domain/${modelName}.groovy"));
         def modelInstance = modelClass.newInstance();
@@ -89,7 +91,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":"${base_directory}/tmpDir"]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         try
         {
             script.run();
@@ -122,7 +124,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":"${base_directory}/tmpDir"]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         try
         {
             script.run();
@@ -162,7 +164,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":"${base_directory}/tmpDir"]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         try
         {
             script.run();
@@ -202,7 +204,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":"${base_directory}/tmpDir"]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         try
         {
             script.run();
@@ -246,7 +248,7 @@ class ModelCreatorTest extends RapidCmdbScriptTestCase
             return ["rapidCMDB.temp.dir":"${base_directory}/tmpDir"]
         }]]
         def props = [web:web]
-        def script  = loadScript("RapidModules/RapidCMDB/scripts/modelCreator.groovy", props)
+        def script  = loadScript("modelCreator", props)
         try
         {
             script.run();

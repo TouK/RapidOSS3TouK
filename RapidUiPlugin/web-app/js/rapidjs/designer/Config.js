@@ -406,6 +406,43 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             }
         },
+        "AudioPlayer":{
+            "poll":{
+                descr:"Refreshes component's data with its already saved request url and parameters.",
+                args:{}
+            },
+            "refresh":{
+                descr:"Refreshes component's data with the given request parameters and already saved url.",
+                args:{
+                    "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "play":{
+                descr:"Plays the specified sound file.",
+                args:{}
+            },
+            "stop":{
+                descr:"Stops the playing audio.",
+                args:{}
+            },
+            "resume":{
+                descr:"Resumes the paused audio.",
+                args:{}
+            },
+            "pause":{
+                descr:"Pauses the playing audio.",
+                args:{}
+            },
+            "mute":{
+                descr:"Mutes the audio.",
+                args:{}
+            },
+            "unmute":{
+                descr:"Unmutes the audio.",
+                args:{}
+            }
+        },
         "ObjectMap":{
             "poll":{
                 descr:"Refreshes component's data with its already saved request url and parameters.",
@@ -552,6 +589,9 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "PieChart":{
+
+        },
+        "AudioPlayer":{
 
         },
         "FlexPieChart":{

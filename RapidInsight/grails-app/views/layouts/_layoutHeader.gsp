@@ -11,6 +11,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/autocomplete', file:'autocomplete-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/button', file:'button-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/ext', file:'ext.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/soundmanager', file:'soundmanager2-nodebug-jsmin.js')}"></script>
 
 
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'RapidUtil.js')}"></script>
@@ -42,6 +43,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ViewBuilder.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchGrid.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/autocomplete', file:'Autocomplete.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/audioPlayer', file:'AudioPlayer.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'PieChart.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FABridge.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FlexPieChart.js')}"></script>

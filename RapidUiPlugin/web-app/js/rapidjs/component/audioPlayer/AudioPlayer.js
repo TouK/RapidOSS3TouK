@@ -1,7 +1,8 @@
 YAHOO.namespace('rapidjs', 'rapidjs.component');
 
 YAHOO.rapidjs.component.AudioPlayer = function(config) {
-    YAHOO.rapidjs.component.AudioPlayer.superclass.constructor.call(this, null, config);
+    var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+    YAHOO.rapidjs.component.AudioPlayer.superclass.constructor.call(this, container, config);
     this.volume = config.volume || 100;
     this.playCondition = config.playCondition;
     this.soundFile = config.soundFile;

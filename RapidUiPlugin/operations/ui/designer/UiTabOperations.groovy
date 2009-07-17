@@ -38,6 +38,7 @@ public class UiTabOperations extends AbstractDomainOperation
                                                 [designerType: "PieChart", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiPieChart"}],
                                                 [designerType: "ObjectMap", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiObjectMap"}],
                                                 [designerType: "Autocomplete", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiAutocomplete"}],
+                                                [designerType: "AudioPlayer", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiAudioPlayer"}],
                                                 [designerType: "GMap", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiGMap"}],
                                                 [designerType: "Timeline", propertyName: "components", isMultiple: true, isVisible: {component -> return component.class.simpleName == "UiTimeline"}]
                                         ]

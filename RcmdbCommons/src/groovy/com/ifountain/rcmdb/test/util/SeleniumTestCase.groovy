@@ -1,13 +1,10 @@
 package com.ifountain.rcmdb.test.util
 
-import com.thoughtworks.selenium.SeleneseTestCase
-import com.thoughtworks.selenium.DefaultSelenium
 import com.ifountain.comp.test.util.CommonTestUtils
+import com.thoughtworks.selenium.DefaultSelenium
+import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.Selenium
-import utils.UserGroupUiTestUtilities
 import org.codehaus.groovy.runtime.InvokerHelper
-import utils.ScriptUiUtilities
-
 
 /**
 * Created by IntelliJ IDEA.
@@ -27,7 +24,15 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static void registerDynamicMethodsToSelenium()
     {
-        def utilityClassesToBeTried = [UserGroupUiTestUtilities, ScriptUiUtilities]
+        def utilityClassNamesToBeTried = ["utils.UserGroupUiTestUtilities", "utils.ScriptUiUtilities"]
+        def utilityClassesToBeTried = []
+        utilityClassNamesToBeTried.each{
+            try{
+                utilityClassesToBeTried << SeleniumTestCase.class.classLoader.loadClass(it);
+            }catch(Throwable e)
+            {
+            }
+        }
         DefaultSelenium.metaClass.clickAndWait = {String url->
             delegate.clickAndWait(url, "30000");
         }

@@ -36,6 +36,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String XFF = "xff"
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
+    public static final String ROW = "row"
     public static final String RRD_VARIABLES = "rrdVariables";
     public static final String RRD_VARIABLE = "rrdVariable";
     public static final String GRAPH_TEMPLATE = "template";
@@ -324,6 +325,46 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     private def currentTime() {
         System.currentTimeMillis();
     }
+    def conf = [
+            year:24*3600,
+            month:3600,
+            week:120,
+    ]
+    private def addDefaultArchive(String archiveName,long duration,long stepDuration){
+        long volume = duration/step;
+        int arcStep;
+        int arcRows;
+        if(volume<1) return;
+        if(stepDuration<step){
+            arcStep = 1;
+            arcRows = volume + ((duration%step==0)?0:1);
+        }
+        else{
+             arcStep = stepDuration/step + ((stepDuration%step==0)?0:1);
+             arcRows = volume/arcStep + ((volume%arcStep==0)?0:1);
+        }
+        def archive = RrdArchive.add(name:name+archiveName,
+                function:"AVERAGE", xff:0.5, step:arcStep, row:arcRows);
+        addRelation(archives:archive);
+
+    }
+    private def createDefaultArchives(){
+        long oneMinute = 60L
+        long oneHour = oneMinute*60L;
+        long oneDay = oneHour*24L;
+        long oneWeek = oneDay*7L;
+        long oneMonth = oneDay*30L;
+        long oneYear = oneDay*365L;
+        int numberOfRows;
+
+//        println "onehour:"+oneHour+" oneday:"+oneDay+" oneweek:"+oneWeek+" onemonth:"+oneMonth+" oneyear:"+oneYear
+
+        addDefaultArchive("ArchiveForOneYear",oneYear,oneDay);
+        addDefaultArchive("ArchiveForOneMonth",oneMonth,oneHour*2);
+        addDefaultArchive("ArchiveForOneWeek",oneWeek,oneMinute*30);
+        addDefaultArchive("ArchiveForOneDay",oneDay,oneMinute*4);
+        addDefaultArchive("ArchiveForOneHour",oneHour,12);
+    }
 
     private def createDBConfig() {
         def dbConfig = [:]
@@ -367,4 +408,3 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
 }
-    

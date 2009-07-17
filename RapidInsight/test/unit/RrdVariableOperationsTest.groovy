@@ -513,6 +513,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
         byte[] data = RrdVariableOperations.graphMultiple(config)
+        
                                                                     
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
@@ -1034,7 +1035,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+                                       type:"GAUGE", heartbeat:600, step:300,
                                        startTime:978300900000L, frequency:300, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
@@ -1130,7 +1131,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+                                       type:"GAUGE", heartbeat:600, step:300,
                                        startTime:978300900000L,frequency:300, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
@@ -1165,12 +1166,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+                                       type:"GAUGE", heartbeat:600, step:300,
                                        startTime:978300900000L,frequency:300, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
         def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600,
+                                        type:"COUNTER", heartbeat:600,  step:300,
                                         startTime:978300900000L, frequency:300, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -1223,4 +1224,96 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+    public void testCreateDefaultArchives() throws Exception{
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:120, step:60,
+                                       startTime:978300900000L)
+        variable1.createDefaultArchives();
+        boolean oneHour=false, oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
+        variable1.archives.each{
+            println "RrdArchive[name:"+it.name+", step:"+it.step+", rows:"+it.row+"]";
+            if(it.name.equals("variable1ArchiveForOneYear")){
+                assertEquals("Step for one year is not proper",it.step.toString(),"1440");
+                assertEquals("Step for one year is not proper",it.row.toString(),"365");
+                oneYear = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneMonth")){
+                assertEquals("Step for one month is not proper",it.step.toString(),"120");
+                assertEquals("Step for one month is not proper",it.row.toString(),"360");
+                oneMonth = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneWeek")){
+                assertEquals("Step for one week is not proper",it.step.toString(),"30");
+                assertEquals("Step for one week is not proper",it.row.toString(),"336");
+                oneWeek = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneDay")){
+                assertEquals("Step for one day is not proper",it.step.toString(),"4");
+                assertEquals("Step for one day is not proper",it.row.toString(),"360");
+                oneDay = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneHour")){
+                assertEquals("Step for one hour is not proper",it.step.toString(),"1");
+                assertEquals("Step for one hour is not proper",it.row.toString(),"60");
+                oneHour = true;
+            }
+        }
+        assertTrue("at least one default archive is missing", (oneHour && oneDay && oneWeek && oneMonth && oneYear));
+
+    }
+
+    public void testCreateDefaultArchivesOneLessDefault() throws Exception{
+        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, row:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:120, step:7200,
+                                       startTime:978300900000L)
+        variable1.createDefaultArchives();
+        boolean oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
+        variable1.archives.each{
+            println "RrdArchive[name:"+it.name+", step:"+it.step+", rows:"+it.row+"]";
+
+            if(it.name.equals("variable1ArchiveForOneYear")){
+                assertEquals("Step for one year is not proper",it.step.toString(),"12");
+                assertEquals("Step for one year is not proper",it.row.toString(),"365");
+                oneYear = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneMonth")){
+                assertEquals("Step for one month is not proper",it.step.toString(),"1");
+                assertEquals("Step for one month is not proper",it.row.toString(),"360");
+                oneMonth = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneWeek")){
+                assertEquals("Step for one week is not proper",it.step.toString(),"1");
+                assertEquals("Step for one week is not proper",it.row.toString(),"84");
+                oneWeek = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneDay")){
+                assertEquals("Step for one day is not proper",it.step.toString(),"1");
+                assertEquals("Step for one day is not proper",it.row.toString(),"12");
+                oneDay = true;
+            }
+            else if(it.name.equals("variable1ArchiveForOneHour")){
+                throw new Exception("archive for one hour is not expected.")
+            }
+        }
+        assertTrue("at least one default archive is missing", (oneDay && oneWeek && oneMonth && oneYear));
+
+    }
+    public void testAddArchive() throws Exception{
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
+                                       type:"GAUGE", heartbeat:120, step:7200,
+                                       startTime:978300900000L)
+        variable1.addArchive([name:"testArchive",step:5,xff:0.5,row:12]);
+        variable1.archives.each{
+            assertEquals("archive name is not proper","variable1"+it.name,"variable1testArchive");
+            assertEquals("archive row is not proper",it.row.toString(),"12");
+            assertEquals("archive xff is not proper",it.xff.toString(),"0.5");
+            assertEquals("archive step is not proper",it.step.toString(),"5");
+        }
+    }
 }

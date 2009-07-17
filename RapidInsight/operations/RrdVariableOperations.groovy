@@ -36,9 +36,9 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String XFF = "xff"
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
-    public static final  String RRD_VARIABLES = "rrdVariables";
-    public static final  String RRD_VARIABLE = "rrdVariable";
-    public static final  String GRAPH_TEMPLATE = "template";
+    public static final String RRD_VARIABLES = "rrdVariables";
+    public static final String RRD_VARIABLE = "rrdVariable";
+    public static final String GRAPH_TEMPLATE = "template";
     public static final String DESTINATION = "destination"
 
     def createDB() {
@@ -49,11 +49,12 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         RrdUtils.removeDatabase(fileSource())
     }
 
-    def updateDB(Map config) {
-        String data = createUpdateData(config)
+    def updateDB(value, time=Date.now()){
+        def data = "" + time + ":" + value
         RrdUtils.updateData(fileSource(), data)
     }
 
+    /*
     def updateDB(List config) {
         String[] dataList = new String[config.size()]
         for(int i = 0; i < dataList.length; i++)
@@ -62,6 +63,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         }
         RrdUtils.updateData(fileSource(), dataList)
     }
+    */
 
     def graph(Map config) {
 
@@ -89,6 +91,16 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
        config[RRD_VARIABLES] = vlist;
 
        return graphMultiple(config);
+    }
+
+    static def graphMultiple(listOfVariables, config){
+        def variableList = []
+        listOfVariables.each{
+            variableList.add([rrdVariable:it.toString()])
+        }
+
+        config[RRD_VARIABLES] = variableList
+        graphMultiple(config)
     }
 
     static def graphMultiple(Map config){
@@ -320,7 +332,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[DATABASE_NAME] = fileSource()
 
         dbConfig[START_TIME] = startTime
-        dbConfig[STEP] = step
+        dbConfig[STEP] = frequency
 
         def datapoint = [:]
 
@@ -340,7 +352,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             archive[FUNCTION] = it.function
             archive[XFF] = it.xff
             archive[STEPS] = it.step
-            archive[ROWS] = it.row
+            archive[ROWS] = it.numberOfDatapoints
 
             archiveList.add(archive)
         }
@@ -348,13 +360,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[ARCHIVE] = archiveList
 
         return dbConfig
-    }
-
-    private def createUpdateData(Map config) {
-        def timestamp = config["time"] != null ? config["time"] : currentTime()
-        def value = config["value"] != null ? config["value"] : Double.NaN
-
-        return "" + timestamp + ":" + value
     }
 
     private String fileSource() {

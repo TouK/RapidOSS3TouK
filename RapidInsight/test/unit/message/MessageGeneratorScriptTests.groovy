@@ -32,7 +32,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
-    def destination = "abdurrahim"
+    
     String scriptName = "messageGenerator"
     void setUp() {
         super.setUp();
@@ -97,6 +97,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     void testMessageGeneratorDoesNotProcessDisabledRules()
     {
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
+        def destination = "abdurrahim"
         user.addEmail(destination)
         assertFalse(user.hasErrors())
 

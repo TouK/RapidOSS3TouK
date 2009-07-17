@@ -304,7 +304,7 @@ class RrdUtils {
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
     }
-    private createDirectory(){
+    private static void createDirectory(){
         def rrdFile = new File(RRD_FOLDER);
         rrdFile.mkdirs();
     }

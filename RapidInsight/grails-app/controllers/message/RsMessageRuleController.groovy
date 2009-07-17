@@ -46,6 +46,7 @@ class RsMessageRuleController {
             ruleProps.clearAction = rule.clearAction;
             ruleProps.enabled = rule.enabled;
             ruleProps.name = searchQuery ? searchQuery.name : rule.searchQueryId;
+            ruleProps.destinationType = rule.destinationType;
             ruleProps.nodeType = 'rule';
 
             if (rule.enabled)

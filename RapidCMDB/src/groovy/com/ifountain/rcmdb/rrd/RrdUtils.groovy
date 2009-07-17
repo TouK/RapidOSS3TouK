@@ -27,8 +27,7 @@ class RrdUtils {
     */
     public static void createDatabase(Map config) {
         config[DbUtils.DATABASE_NAME] = RRD_FOLDER + config[DbUtils.DATABASE_NAME]
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         DbUtils.createDatabase(config);
     }
 
@@ -36,8 +35,7 @@ class RrdUtils {
     * removes database specified with its path from the system
     */
     public static void removeDatabase(String fileName) {
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         String fname = RRD_FOLDER + fileName
         DbUtils.removeDatabase(fname) ;
     }
@@ -46,8 +44,7 @@ class RrdUtils {
     * checks whether the database file exists
     */
     public static boolean isDatabaseExists(String fileName) {
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         String fname = RRD_FOLDER + fileName
         return DbUtils.isDatabaseExists(fname);
     }
@@ -58,8 +55,7 @@ class RrdUtils {
     * e.g. : "978301200:200:1" or "978301200:200"
     */
     public static void updateData(String dbname, String data){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         String fname = RRD_FOLDER + dbname
         DbUtils.updateData( fname,  data);
     }
@@ -68,8 +64,7 @@ class RrdUtils {
     *  inserts an array of data to the database at a time
     */
     public static void updateData(String dbname, String[] data){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         String fname = RRD_FOLDER + dbname
         DbUtils.updateData( fname, data);
     }
@@ -89,6 +84,7 @@ class RrdUtils {
         }
 
         bytes=Grapher.graph(config);
+        println "destionation: "+config["destination"];
 
         println "destination: "+config.containsKey("destination")
         if(config.containsKey("destination")) {
@@ -108,9 +104,8 @@ class RrdUtils {
            }
            else{
               String filename = RRD_FOLDER + destination
-              def rrdFile = new File(RRD_FOLDER);
+              createDirectory();
               println "written file:"+new File(filename).getAbsolutePath();
-              rrdFile.mkdirs();
               Grapher.toFile (bytes, filename);
            }
 
@@ -126,8 +121,7 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     public static def fetchArchives(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchArchives(RRD_FOLDER + dbName);
     }
 
@@ -142,8 +136,7 @@ class RrdUtils {
     * an exception since it cannot read the database
     */
     public static def fetchDatasources(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchDatasources(RRD_FOLDER + dbName);
     }
 
@@ -155,8 +148,7 @@ class RrdUtils {
     *  returns the configuration map of specified rrd database
     */
     public static Map getDatabaseInfo(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.getDatabaseInfo(RRD_FOLDER + dbName);
     }
 
@@ -165,8 +157,7 @@ class RrdUtils {
     *  it is the easiest call if the database has only one data source
     */
     public static double[] fetchData(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName);
     }
 
@@ -174,8 +165,7 @@ class RrdUtils {
     * returns the all datasources in the database according to the first archive method.
     */
     public static double[][] fetchAllData(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchAllData(RRD_FOLDER + dbName);
     }
 
@@ -183,8 +173,7 @@ class RrdUtils {
     * returns time series of one data index specified with its datasource name
     */
     public static double[] fetchData(String dbName, String datasource){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasource);
     }
 
@@ -194,16 +183,14 @@ class RrdUtils {
     */
     public static double[] fetchData(String dbName, String datasource, String function,
                                    long startTime, long endTime){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
     }
     /**
     *  returns time series of data indexes specified with its datasource names
     */
     public static double[][] fetchData(String dbName, String[] datasources){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources);
     }
     //this method is more useful for models
@@ -224,8 +211,7 @@ class RrdUtils {
     */
     public static double[][] fetchData(String dbName, String[] datasources, String function,
                                    long startTime, long endTime){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
     }
     //this method is more useful for models
@@ -242,32 +228,27 @@ class RrdUtils {
     }
     //====following fetch data methods return map[timestamp:value] as result====//
     public static Map fetchDataAsMap(String dbName){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName)
     }
     public static Map fetchDataAsMap(String dbName, String datasource){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource);
     }
     public static Map fetchDataAsMap(String dbName, String datasource, String function,
                                    long[] startTime, long[] endTime){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
 
     }
     public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
                                    long[] startTime, long[] endTime){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
-        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
+        createDirectory();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
     }
     //this method is more useful for models
     public static Map fetchDataAsMap(String[] dbName, String[] datasources){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         if(dbName.length != datasources.length) {
             throw new Exception("number of database and number of datasources are not equal");
         }
@@ -279,8 +260,7 @@ class RrdUtils {
     }
     //this method is more useful for models
     public static Map fetchDataAsMap(String[] dbName, String[] datasources, String function, long[] startTime, long[] endTime){
-        def rrdFile = new File(RRD_FOLDER);
-        rrdFile.mkdirs();
+        createDirectory();
         if(dbName.length != datasources.length) {
             throw new Exception("number of database and number of datasources are not equal");
         }
@@ -323,5 +303,9 @@ class RrdUtils {
     private long getCurrentTime(){
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
+    }
+    private createDirectory(){
+        def rrdFile = new File(RRD_FOLDER);
+        rrdFile.mkdirs();
     }
 }

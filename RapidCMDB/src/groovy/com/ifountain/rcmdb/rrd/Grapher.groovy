@@ -71,6 +71,15 @@ class Grapher {
         {
              throw new Exception("Invalid timestamps specified")
         }
+        println "it is weird: " + config.containsKey(DbUtils.DATABASE_NAME);
+        if(config.containsKey(DbUtils.DATABASE_NAME)){
+            println "Database name is defined"
+            config.get(DATASOURCE).each{
+                if(!it.containsKey(DATABASE_NAME)){
+                    it[DATABASE_NAME] = config.get(DATABASE_NAME);
+                }
+            }
+        }
 
 
         addDataSource(graphDef,config.get(DATASOURCE));
@@ -106,8 +115,10 @@ class Grapher {
                 rdef.datasource(it.get(NAME),it.get(RPN) )
             }
             catch(Exception ex){
-                if(!(it.containsKey(DSNAME) &&
-                        it.containsKey(DATABASE_NAME) &&   it.containsKey(FUNCTION))){
+                println ""+it.containsKey(DSNAME) +" "+ it.containsKey(FUNCTION)+" "+
+                        it.containsKey(DATABASE_NAME)
+                if(!(it.containsKey(DSNAME) && it.containsKey(FUNCTION) &&
+                        it.containsKey(DATABASE_NAME)  )){
                     throw new Exception("Datasource distorted");
                 }
                 try{

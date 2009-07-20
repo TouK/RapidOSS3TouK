@@ -15,7 +15,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String DATASOURCE = "datasource";
     public static final String START_TIME = "startTime";
     public static final String END_TIME = "endTime";
-    public static final String FUNCTION = "function";
     public static final String VERTICAL_LABEL = "vlabel";
     public static final String HORIZONTAL_LABEL = "hlabel";
     public static final String LINE = "line";
@@ -36,9 +35,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String WIDTH = "width";
     public static final String TYPE = "type";
     public static final String ARCHIVE = "archive";
+    public static final String FUNCTION = "function";
     public static final String STEP = "step";
-    public static final String HEARTBEAT= "heartbeat";
+    public static final String NUMBER_OF_DATAPOINTS = "numberOfDatapoints";
     public static final String XFF = "xff"
+    public static final String HEARTBEAT= "heartbeat";
     public static final String STEPS = "steps"
     public static final String ROWS = "rows"
     public static final String ROW = "row"
@@ -46,7 +47,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String RRD_VARIABLE = "rrdVariable";
     public static final String GRAPH_TEMPLATE = "template";
     public static final String DESTINATION = "destination";
-    public static final String NUMBER_OF_DATAPOINTS = "numberOfDatapoints";
 
     def createDB() {
         createDefaultArchives();
@@ -335,6 +335,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     public def addDefaultArchive(long duration,long stepDuration){
+        Map archiveConf = [:];
         long volume = duration/frequency;
         int arcStep;
         int arcRows;
@@ -347,8 +348,13 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
              arcStep = stepDuration/frequency + ((stepDuration%frequency==0)?0:1);
              arcRows = volume/arcStep + ((volume%arcStep==0)?0:1);
         }
-        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
-        addRelation(archives:archive);
+        archiveConf[FUNCTION] = "AVERAGE";
+        archiveConf[XFF] = 0.5;
+        archiveConf[STEP] = arcStep;
+        archiveConf[NUMBER_OF_DATAPOINTS] = arcRows;
+        addArchive(archiveConf);
+//        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
+//        addRelation(archives:archive);
         return arcStep;
 
     }
@@ -407,6 +413,9 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     public def addArchive(Map config){
+        boolean isExists  = isStepExists(config);
+        if(isExists){ return; }
+        
         Map archiveMap = [:];
         if(config.containsKey(FUNCTION))
             archiveMap[FUNCTION] = config.get(FUNCTION);
@@ -418,6 +427,26 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             archiveMap[NUMBER_OF_DATAPOINTS] = config.get(NUMBER_OF_DATAPOINTS);
         def archive = RrdArchive.add(archiveMap);
         addRelation(archives:archive);
+    }
+    private boolean isStepExists(Map config){
+        boolean exist = false;
+        if (config.containsKey(STEP) && config.containsKey(NUMBER_OF_DATAPOINTS)){
+            archives.each{
+                if(it.step == config.get(STEP)){
+                    if(config.get(NUMBER_OF_DATAPOINTS)>it.numberOfDatapoints){
+                        it.numberOfDatapoints = config.get(NUMBER_OF_DATAPOINTS);
+                    }
+                    exist = true;
+                }
+            }
+        }else if(config.containsKey(STEP) ){
+            archives.each{
+                if(it.step == config.get(STEP)){
+                    exist = true;
+                }
+            }
+        }
+        return exist;
     }
 
     private String fileSource() {

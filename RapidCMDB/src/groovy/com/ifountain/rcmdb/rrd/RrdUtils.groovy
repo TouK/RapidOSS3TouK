@@ -63,10 +63,10 @@ class RrdUtils {
     /**
     *  inserts an array of data to the database at a time
     */
-    public static void updateData(String dbname, String[] data){
+    public static void updateData(dbname, data){
         createDirectory();
         String fname = RRD_FOLDER + dbname
-        DbUtils.updateData( fname, data);
+        DbUtils.updateData( fname, data as String[]);
     }
 
     public static byte[] graph(Map config){

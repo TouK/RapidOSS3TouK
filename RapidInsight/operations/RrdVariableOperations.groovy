@@ -5,6 +5,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 {
     static final long ONE_HOUR = 3600000L
     static final long ONE_DAY = 24 * ONE_HOUR
+    def conf = [
+            year:24*3600,
+            month:3600,
+            week:120,
+    ]
 
     public static final String DATABASE_NAME = "databaseName";
     public static final String DATASOURCE = "datasource";
@@ -51,21 +56,21 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         RrdUtils.removeDatabase(fileSource())
     }
 
-    def updateDB(value, time=Date.now()){
+    def updateDB(value, time=Date.now()) {
         def data = "" + time + ":" + value
         RrdUtils.updateData(fileSource(), data)
     }
 
-    /*
-    def updateDB(List config) {
-        String[] dataList = new String[config.size()]
-        for(int i = 0; i < dataList.length; i++)
+    static def updateDB(databaseName, values, times) {
+        if(values.size() == times.size())
         {
-            dataList[i] = createUpdateData(config.get(i))
+            def dataList = []
+            for(int i = 0; i < values.size(); i++) {
+                dataList.add("" + times[i] + ":" + values[i])
+            }
+            RrdUtils.updateData(databaseName, dataList)
         }
-        RrdUtils.updateData(fileSource(), dataList)
     }
-    */
 
     def graph(Map config) {
 
@@ -315,6 +320,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         }
         RrdUtils.fetchDataAsMap(filesources, datasources, function, startTime, endTime);
     }
+
     static def fetchDataAsMap(String[] datasources){
         String[] filesources = new String[datasources.length];
         for(int i=0; i<datasources.length; i++){
@@ -326,12 +332,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     private def currentTime() {
         System.currentTimeMillis();
     }
-    def conf = [
-            year:24*3600,
-            month:3600,
-            week:120,
-    ]
-    private def addDefaultArchive(String archiveName,long duration,long stepDuration){
+
+    private def addDefaultArchive(long duration,long stepDuration){
         long volume = duration/frequency;
         int arcStep;
         int arcRows;
@@ -344,11 +346,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
              arcStep = stepDuration/frequency + ((stepDuration%frequency==0)?0:1);
              arcRows = volume/arcStep + ((volume%arcStep==0)?0:1);
         }
-        def archive = RrdArchive.add(name:name+archiveName,
-                function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
         addRelation(archives:archive);
 
     }
+
     private def createDefaultArchives(){
         long oneMinute = 60L
         long oneHour = oneMinute*60L;
@@ -358,13 +360,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         long oneYear = oneDay*365L;
         int numberOfRows;
 
-//        println "onehour:"+oneHour+" oneday:"+oneDay+" oneweek:"+oneWeek+" onemonth:"+oneMonth+" oneyear:"+oneYear
-
-        addDefaultArchive("ArchiveForOneYear",oneYear,oneDay);
-        addDefaultArchive("ArchiveForOneMonth",oneMonth,oneHour*2);
-        addDefaultArchive("ArchiveForOneWeek",oneWeek,oneMinute*30);
-        addDefaultArchive("ArchiveForOneDay",oneDay,oneMinute*4);
-        addDefaultArchive("ArchiveForOneHour",oneHour,12);
+        addDefaultArchive(oneYear,oneDay);
+        addDefaultArchive(oneMonth,oneHour*2);
+        addDefaultArchive(oneWeek,oneMinute*30);
+        addDefaultArchive(oneDay,oneMinute*4);
+        addDefaultArchive(oneHour,12);
     }
 
     private def createDBConfig() {
@@ -405,11 +405,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     public def addArchive(Map config){
-        if(!config.containsKey(NAME) ){
-            throw new Exception("archive name must be specified.");
-        }
         Map archiveMap = [:];
-        archiveMap[NAME] = config.get(NAME);
         if(config.containsKey(FUNCTION))
             archiveMap[FUNCTION] = config.get(FUNCTION);
         if(config.containsKey(XFF))

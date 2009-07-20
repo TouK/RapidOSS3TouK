@@ -14,7 +14,6 @@
         </Model>
         <Model Name="RrdArchive">
             <Properties>
-                <Property Name="name" Type="string" IsKey="true"/>
                 <Property Name="function" Type="string" Default="AVERAGE"/>
                 <Property Name="xff" Type="float" Default="0.5"/>
                 <Property Name="step" Type="number" Default="1"/>

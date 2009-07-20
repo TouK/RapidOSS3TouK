@@ -1,5 +1,4 @@
 
-import com.ifountain.core.domain.annotations.*;
 
 class RrdArchive 
 {
@@ -13,9 +12,6 @@ class RrdArchive
     };
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
 
-    
-    String name ="";
-    
     String function ="AVERAGE";
     
     Double xff =0.5;
@@ -44,8 +40,7 @@ class RrdArchive
     ]
     
     static constraints={
-    name(blank:false,nullable:false,key:[])
-        
+
      function(blank:true,nullable:true)
         
      xff(nullable:true)

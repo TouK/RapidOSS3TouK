@@ -1,6 +1,5 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.comp.test.util.file.TestFile
 import com.ifountain.rcmdb.rrd.RrdUtils;
 
 /**
@@ -28,21 +27,19 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
-//        new File(fileDirectory + "/" + fileName).delete()
-//        new File(fileDirectory + "/" + fileNameExt).delete()
-//        new File(fileDirectory + "/" + imageFileName).delete()
-//        new File(fileDirectory).delete()
+        new File(fileDirectory + "/" + fileName).delete()
+        new File(fileDirectory + "/" + fileNameExt).delete()
+        new File(fileDirectory + "/" + imageFileName).delete()
+        new File(fileDirectory).delete()
         super.tearDown();
     }
 
     public void testCreateDBConfigSuccessfulWithOneArchive() {
 
-        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
-
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
                                        startTime:9000L, frequency:300L, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -53,7 +50,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(300L, config["step"])
 
         def datapointList = []
-
         def datapointConfig = [:]
         datapointConfig["name"] = "variable"
         datapointConfig["type"] = "GAUGE"
@@ -65,7 +61,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(datapointList, config["datasource"])
 
         def archiveList = []
-
         def archiveConfig = [:]
         archiveConfig["function"] = "AVERAGE"
         archiveConfig["steps"] = 1L
@@ -78,19 +73,17 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testCreateDBConfigSuccessfulWithMultipleArchive() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"MAX", xff:0.2, step:6, numberOfDatapoints:5)
+        def archive2 = RrdArchive.add(function:"MAX", xff:0.2, step:6, numberOfDatapoints:5)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def archive3 = RrdArchive.add(name:"archive3", function:"MIN", xff:0.7, step:3, numberOfDatapoints:15)
+        def archive3 = RrdArchive.add(function:"MIN", xff:0.7, step:3, numberOfDatapoints:15)
         assertFalse(archive3.errors.toString(), archive3.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
-                                       startTime:9000L, frequency:300L,
-                                       archives: [archive1, archive2, archive3])
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
+                                       startTime:9000L, frequency:300L, archives: [archive1, archive2, archive3])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         def config = variable.createDBConfig()
@@ -100,7 +93,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(300L, config["step"])
 
         def datapointList = []
-
         def datapointConfig = [:]
         datapointConfig["name"] = "variable"
         datapointConfig["type"] = "GAUGE"
@@ -119,14 +111,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         archiveConfig1["steps"] = 1L
         archiveConfig1["rows"] = 10L
         archiveList.add(archiveConfig1)
-
         def archiveConfig2 = [:]
         archiveConfig2["function"] = "MAX"
         archiveConfig2["xff"] = 0.2D
         archiveConfig2["steps"] = 6L
         archiveConfig2["rows"] = 5L
         archiveList.add(archiveConfig2)
-
         def archiveConfig3 = [:]
         archiveConfig3["function"] = "MIN"
         archiveConfig3["xff"] = 0.7D
@@ -139,20 +129,18 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testCreateDBSuccessful() {
 
-        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
                                        startTime:9000, frequency:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
-
         variable.createDB()
 
-        def dbConfig = RrdUtils.getDatabaseInfo("variable.rrd")
+        def dbConfig = RrdUtils.getDatabaseInfo(fileName)
 
-        assertEquals("rrdFiles/variable.rrd", dbConfig["databaseName"])
+        assertEquals(fileDirectory + "/" + fileName, dbConfig["databaseName"])
         assertEquals(300L, dbConfig["step"])
 
         def datapointList = []
@@ -166,7 +154,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertEquals(datapointList, dbConfig["datasource"])
 
-
         def archiveList = []
         def archiveConfig = [:]
         archiveConfig["function"] = "AVERAGE"
@@ -177,17 +164,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         dbConfig["archive"].get(0).remove("startTime")
         
         assertEquals(archiveList, dbConfig["archive"])
-
-        new File(fileDirectory + "/variable.rrd").delete()
     }
 
     public void testRemoveDBSuccessful() {
 
-        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
                                        startTime:9000, frequency:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -198,17 +182,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.removeDB()
 
         assertFalse(RrdUtils.isDatabaseExists(fileName))
-
     }
 
     public void testUpdateSingleTimeandValue() {
 
-        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
 
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
                                        startTime:9000000, frequency:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -221,11 +203,10 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testUpdateOnlyValue() {
 
-        def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
                                        startTime:9000, frequency:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -234,34 +215,32 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         //how to test date 'now'
         variable.updateDB(500)
     }
-    /*
+
     public void testUpdateMultipleTimeandValue() {
 
         def archive = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"GAUGE", heartbeat:300,
-                                       startTime:9000000, step:300, archives: archive)
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
+                                       startTime:9000000, frequency:300, archives: archive)
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
         variable.createDB()
 
-        variable.updateDB( [[time:9300000L, value:5], [time:9600000L, value:10], [time:9900000L, value:15]] )
+        RrdVariableOperations.updateDB(fileName, [5, 10, 15], [9300000L, 9600000L, 9900000L] )
 
         assertEquals([5D,10D,15D], RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300000, 9900000)[0,1,2])
-    }*/
+    }
 
     public void testGraphWithoutTemplate() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -283,22 +262,21 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12422,920808600000L)
         variable.updateDB(12423,920808900000L)
 
-        variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L,
-                       vlabel:"Vertical Label", color:"FF0000", type:"line", description:"Red Line", destination: imageFileName)
+        variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L, type:"line",
+                       vlabel:"Vertical Label", color:"FF0000", description:"Red Line", destination: imageFileName)
 
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
 
     public void testGraphWithDefaultProperties() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -328,14 +306,13 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     
     public void testGraphWithRPNSource() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, frequency:300, archives: [archive1, archive2])
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -365,16 +342,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testGraphWithMultipleSource() {
   
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L, archives: [archive])
-       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
-        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600,
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
                                         startTime:978300900000L, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -420,16 +395,14 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testGraphWithMultipleSourceByList() {
 
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L, archives: [archive])
-       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
-        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600,
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
                                         startTime:978300900000L, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -471,14 +444,13 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testGraphWithMultipleSourceandRPN() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, frequency:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
@@ -512,22 +484,20 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
-        byte[] data = RrdVariableOperations.graphMultiple(config)
-        
-                                                                    
+        RrdVariableOperations.graphMultiple(config)
+
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
 
     public void testGraphWithSingleSourceandTemplate() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600,
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, frequency:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
@@ -550,10 +520,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12422,920808600000L)
         variable.updateDB(12423,920808900000L)
 
-        def config = [:]
-
         def template = RrdGraphTemplate.add(name:"templateSample", title:"Graph With Template")
 
+        def config = [:]
         config["template"] = "templateSample"
         config["startTime"] = 920804400000L
         config["endTime"] = 920808000000L
@@ -564,22 +533,21 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
-        byte[] data = RrdVariableOperations.graphMultiple(config)
+        RrdVariableOperations.graphMultiple(config)
 
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
 
     public void testGraphWithMultipleSourceandTemplate() {
 
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
+        def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
         assertFalse(archive1.errors.toString(), archive1.hasErrors())
 
-        def archive2 = RrdArchive.add(name:"archive2", function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
+        def archive2 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:6, numberOfDatapoints:10)
         assertFalse(archive2.errors.toString(), archive2.hasErrors())
 
-        def variable = RrdVariable.add(name:"variable", resource:"resource",
-                                       type:"COUNTER", heartbeat:600, startTime:920804400000L,
-                                       frequency:300, archives: [archive1, archive2])
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
+                                       startTime:920804400000L, frequency:300, archives: [archive1, archive2])
 
         assertFalse(variable.errors.toString(), variable.hasErrors())
 
@@ -601,12 +569,10 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12422,920808600000L)
         variable.updateDB(12423,920808900000L)
 
+        def template = RrdGraphTemplate.add(name:"templateSample", title:"Graph With Template", color:"FF00FF",
+                                            verticalLabel:"vertical label", type:"area", description:"inside template")
+
         def config = [:]
-
-        def template = RrdGraphTemplate.add(name:"templateSample", title:"Graph With Template",
-                                            verticalLabel:"vertical label", type:"area", description:"inside template",
-                                            color:"FF00FF")
-
         config["vlabel"] = "overwritten label"
         config["template"] = "templateSample"
         config["startTime"] = 920804400000L
@@ -616,8 +582,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.graph(config)
 
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
-
-        new File(fileDirectory + "/variable.rrd").delete()
     }
 
     public void testFileSource() {
@@ -626,418 +590,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def fileName = variable1.fileSource()
 
         assertEquals("variable1.rrd", fileName)
-
-        def variable2 = RrdVariable.add(name:"variable2", file:"explicitDef")
-        fileName = variable2.fileSource()
-        
-        assertEquals(fileNameExt, fileName)
-
     }
 
-    public void testOneDatasourceGraphSuccessfully() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName;
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
+    public void testFetchData() {
 
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        rrdvariable.createDB();
-
-        def map = [:];
-        map[RrdVariableOperations.START_TIME] = 978301200000;
-        //Optional properties:
-        map[RrdVariableOperations.END_TIME] = 978303900000;
-        map[RrdVariableOperations.DESCRIPTION] = "cpu util";
-        map[RrdVariableOperations.TYPE] = "area";
-        map[RrdVariableOperations.COLOR] = "5566ff";
-        map[RrdVariableOperations.MAX] = 10;
-        map['destination']="testOneDatasourceGraphSuccessfully.png";
-
-        def rrdVar = RrdVariable.get(name:"testDs2");
-
-        byte[] bytes = rrdVar.graph(map);
-
-        assertTrue("Grapher returns no graph info",bytes!=null);
-
-        File f=new File(fileDirectory + "/" + map['destination']);
-        println f.getAbsolutePath();
-        assertTrue("image file does not exists.",f.exists());
-    }
-    public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable1 = RrdVariable.add(name:"testDs1", resource:"resource",
-                           type:"COUNTER", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        def rrdvariable2 = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        rrdvariable1.createDB();
-        rrdvariable2.createDB();
-
-        def rrdList = [
-                            [rrdVariable:"testDs1", color:"123456", description:"cpu"],
-                            [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE"]
-                        ];
-        Map map = [:];
-        map[RrdVariableOperations.RRD_VARIABLES] = rrdList;
-        map[RrdVariableOperations.START_TIME] = 978301200000
-        map[RrdVariableOperations.END_TIME] = 978303900000;
-        map["destination"]="testMultipleDatasourceGraphDatasourcesSuccessfully.png";
-
-        byte[] bytes = RrdVariableOperations.graphMultiple(map);
-
-        assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(fileDirectory + "/" + map['destination']);
-        println(f.getAbsolutePath());
-        assertTrue(f.exists());
-    }
-
-    public void testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable1 = RrdVariable.add(name:"testDs1", resource:"resource",
-                           type:"COUNTER", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        def rrdvariable2 = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        rrdvariable1.createDB();
-        rrdvariable2.createDB();
-
-        def rrdList = [
-                            [rrdVariable:"testDs1", color:"123456", description:"cpu", rpn:"testDs1,2,*"],
-                            [rrdVariable:"testDs2", color:"aabb22", description:"memory", function:"AVERAGE", type:"area"]
-                        ];
-        Map map = [:];
-        map[RrdVariableOperations.RRD_VARIABLES] = rrdList;
-        map[RrdVariableOperations.START_TIME] = 978301200000
-        map[RrdVariableOperations.END_TIME] = 978303900000;
-
-        map[RrdVariableOperations.TITLE] = "Rrd Graph Utilities";
-        map[RrdVariableOperations.VERTICAL_LABEL] = "rate";
-        map['destination']="testMultipleDatasourcesGraphWithDifferentDrawingTypeSuccessfully.png";
-
-        byte[] bytes = RrdVariableOperations.graphMultiple(map);
-        assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(fileDirectory + "/" + map['destination']);
-        assertTrue(f.exists());
-    }
-
-    public void testOneDatasourceWithOneParameterGraphSuccessfully() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName;
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        rrdvariable.createDB();
-
-        def map = [:];
-        map[RrdVariableOperations.RRD_VARIABLE] = "testDs2";
-        map['destination']="testOneDatasourceWithOneParameterGraphSuccessfully.png";
-        //Optional properties:
-
-        def rrdVar = RrdVariable.get(name:"testDs2");
-
-        byte[] bytes = rrdVar.graph(map);
-
-        assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(fileDirectory + "/" + map['destination']);
-        assertTrue(f.exists());
-    }
-
-    public void testOneDatasourceGraphSuccessfullyWithTemplate() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-        RrdGraphTemplate.add(["name":"tName", "description":"desc",
-                    "title":"title", "verticalLabel":"kmh", "width":100,
-                    "type":"area","color":"234231"]);
-
-        rrdvariable.createDB();
-
-        def map = [:];
-        map[RrdVariableOperations.START_TIME] = 978301200000;
-        map[RrdVariableOperations.RRD_VARIABLE] = "testDs2";
-        //Optional properties:
-        map[RrdVariableOperations.END_TIME] = 978303900000;
-        map[RrdVariableOperations.GRAPH_TEMPLATE] = "tName";
-        map['destination']="testOneDatasourceGraphSuccessfullyWithTemplate.png";
-
-
-        byte[] bytes = RrdVariable.get(name:"testDs2").graph(map);
-
-        assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(fileDirectory + "/" + map['destination']);
-        assertTrue(f.exists());
-    }
-
-    public void testOneDatasourceGraphWithRpnSuccessfully() throws Exception{
-        Map config = [:]
-        config[RrdVariableOperations.DATABASE_NAME] = rrdFileName
-        config[RrdVariableOperations.DATASOURCE] = [
-                                            [
-                                                name:"testDs1",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[RrdVariableOperations.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:24,
-                                        ]
-                                   ]
-        config[RrdVariableOperations.START_TIME] = 978300900000;
-        RrdUtils.createDatabase(config)
-
-        RrdUtils.updateData(rrdFileName,"978301200000:200:1");
-        RrdUtils.updateData(rrdFileName,"978301500000:400:4");
-        RrdUtils.updateData(rrdFileName,"978301800000:900:5");
-        RrdUtils.updateData(rrdFileName,"978302100000:1200:3");
-        RrdUtils.updateData(rrdFileName,"978302400000:1400:1");
-        RrdUtils.updateData(rrdFileName,"978302700000:1900:2");
-        RrdUtils.updateData(rrdFileName,"978303000000:2100:4");
-        RrdUtils.updateData(rrdFileName,"978303300000:2400:6");
-        RrdUtils.updateData(rrdFileName,"978303600000:2900:4");
-        RrdUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        def archive1 = RrdArchive.add(name:"archive1", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
-
-        def rrdvariable = RrdVariable.add(name:"testDs2", resource:"resource",
-                           type:"GAUGE", heartbeat:600,
-                           startTime:978300900000, archives: [archive1])
-
-        rrdvariable.createDB();
-
-        def map = [:];
-        map[RrdVariableOperations.START_TIME] = 978301200000;
-        map[RrdVariableOperations.RRD_VARIABLE] = "testDs2";
-        //Optional properties:
-        map[RrdVariableOperations.END_TIME] = 978303900000;
-        map[RrdVariableOperations.DESCRIPTION] = "my graph description";
-        map[RrdVariableOperations.TYPE] = "area";
-        map[RrdVariableOperations.RPN] = "testDs2,2,*";
-
-        map[RrdVariableOperations.TITLE] = "Rrd Graph Utilities";
-        map[RrdVariableOperations.VERTICAL_LABEL] = "rate";
-        map['destination']="testOneDatasourceGraphWithRpnSuccessfully.png";
-
-        byte[] bytes = RrdVariable.get(name:"testDs2").graph(map);
-        assertTrue("Grapher returns no graph info",bytes!=null);
-        File f=new File(fileDirectory + "/" + map['destination']);
-        assertTrue(f.exists());
-    }
-
-    public void testFetchData() throws Exception{
-
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L, frequency:300, archives: [archive])
-       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
         variable1.createDB()
 
@@ -1065,17 +627,17 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals("4.0",data[8].toString());
         assertEquals("2.0",data[9].toString());
     }
-    public void testMultipleFetchData() throws Exception{
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+
+    public void testMultipleFetchData() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L, frequency:300, archives: [archive])
-       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
-        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600,
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
                                         startTime:978300900000L,frequency:300, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -1122,18 +684,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(data[1][0].toString(),"NaN");
         for(int i=1; i<data[0].length; i++)
             assertEquals(data[1][i].toString(),"1.0");
-
     }
 
-    public void testFetchDataAsMap() throws Exception{
+    public void testFetchDataAsMap() {
 
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L,frequency:300, archives: [archive])
-       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
         variable1.createDB()
 
@@ -1161,17 +721,17 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(data["978303600"].toString(),"4.0");
         assertEquals(data["978303900"].toString(),"2.0");
     }
-    public void testMultipleFetchDataAsMap() throws Exception{
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+
+    public void testMultipleFetchDataAsMap() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:600,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                        startTime:978300900000L,frequency:300, archives: [archive])
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
 
-        def variable2 = RrdVariable.add(name:"variable2", resource:"resource",
-                                        type:"COUNTER", heartbeat:600,
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
                                         startTime:978300900000L, frequency:300, archives: [archive])
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
 
@@ -1204,7 +764,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         datasources[0] = variable1.name; datasources[1] = variable2.name;
         Map data = RrdVariable.fetchDataAsMap(datasources);
 
-//        println data;
         assertEquals(data["variable1"]["978301200"].toString(),"1.0");
         assertEquals(data["variable1"]["978301500"].toString(),"3.0");
         assertEquals(data["variable1"]["978301800"].toString(),"5.0");
@@ -1224,17 +783,19 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    public void testCreateDefaultArchives() throws Exception{
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+    public void testCreateDefaultArchives() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:120, frequency:60,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120, frequency:60,
                                        startTime:978300900000L)
         variable1.createDefaultArchives();
         boolean oneHour=false, oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
+        /*
+            todo:test archives
         variable1.archives.each{
-            println "RrdArchive[name:"+it.name+", step:"+it.step+", rows:"+it.numberOfDatapoints+"]";
+            println "RrdArchive[step:"+it.step+", rows:"+it.numberOfDatapoints+"]";
             if(it.name.equals("variable1ArchiveForOneYear")){
                 assertEquals("Step for one year is not proper",it.step.toString(),"1440");
                 assertEquals("Step for one year is not proper",it.numberOfDatapoints.toString(),"365");
@@ -1262,18 +823,20 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
             }
         }
         assertTrue("at least one default archive is missing", (oneHour && oneDay && oneWeek && oneMonth && oneYear));
-
+        */
     }
 
-    public void testCreateDefaultArchivesOneLessDefault() throws Exception{
-        def archive = RrdArchive.add(name:"archive", function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+    public void testCreateDefaultArchivesOneLessDefault() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:120, frequency:7200,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120, frequency:7200,
                                        startTime:978300900000L)
         variable1.createDefaultArchives();
         boolean oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
+        /*
+            todo: test archives
         variable1.archives.each{
             println "RrdArchive[name:"+it.name+", step:"+it.step+", rows:"+it.numberOfDatapoints+"]";
 
@@ -1302,15 +865,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
             }
         }
         assertTrue("at least one default archive is missing", (oneDay && oneWeek && oneMonth && oneYear));
-
+       */
     }
-    public void testAddArchive() throws Exception{
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource",
-                                       type:"GAUGE", heartbeat:120, frequency:7200,
-                                       startTime:978300900000L)
+
+    public void testAddArchive() {
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120,
+                                        frequency:7200, startTime:978300900000L)
+
         variable1.addArchive([name:"testArchive",step:5,xff:0.5, numberOfDatapoints:12]);
         variable1.archives.each{
-            assertEquals("archive name is not proper","variable1"+it.name,"variable1testArchive");
             assertEquals("archive row is not proper",it.numberOfDatapoints.toString(),"12");
             assertEquals("archive xff is not proper",it.xff.toString(),"0.5");
             assertEquals("archive step is not proper",it.step.toString(),"5");

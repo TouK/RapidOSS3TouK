@@ -108,6 +108,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        DataInputStream dis = new DataInputStream(new java.io.FileInputStream(expectedGraphFile));
        byte[] expectedBytes = new byte[expectedGraphFile.length()]
        dis.read(expectedBytes)
+       dis.close();
 
        assertEquals(expectedBytes.length, actualBytes.length)
        for(int i=0; i<expectedBytes.length; i++){
@@ -155,6 +156,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        DataInputStream dis = new DataInputStream(new java.io.FileInputStream(expectedGraphFile));
        byte[] expectedBytes = new byte[expectedGraphFile.length()]
        dis.read(expectedBytes)
+       dis.close();
 
        assertEquals(expectedBytes.length, actualBytes.length)
        for(int i=0; i<expectedBytes.length; i++){
@@ -165,9 +167,9 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
     public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
         createDatabase();
 
-        Map config = [:]
-        config[Grapher.DATABASE_NAME] = rrdFileName
-        config[Grapher.DATASOURCE] = [
+        Map fconfig = [:]
+        fconfig[Grapher.DATABASE_NAME] = rrdFileName
+        fconfig[Grapher.DATASOURCE] = [
                                             [
                                                 name:"testDs1",
                                                 databaseName: rrdFileName,
@@ -182,7 +184,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             ]
                                       ]
 
-        config[Grapher.LINE] = [
+        fconfig[Grapher.LINE] = [
                                         [
                                             name:"testDs1",
                                             description:"My Graph",
@@ -195,17 +197,17 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                         ]
                                ]
 
-        config[Grapher.START_TIME] = 978300900000;
+        fconfig[Grapher.START_TIME] = 978300900000;
 
-        config[Grapher.END_TIME] = 978303900000;
+        fconfig[Grapher.END_TIME] = 978303900000;
 
-        byte[] bytes = null;
-        bytes = Grapher.graph(config);
+        byte[] bytes = Grapher.graph(fconfig);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
         
+        File expectedGraphFile = new File(GRAPH_MULTI_FILE)
         DataInputStream dis = new DataInputStream(new FileInputStream(GRAPH_MULTI_FILE));
-        byte[] expectedBytes = new byte[new File(GRAPH_MULTI_FILE).length()];
+        byte[] expectedBytes = new byte[expectedGraphFile.length()];
         dis.read (expectedBytes);
         dis.close();
 
@@ -568,6 +570,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        DataInputStream dis = new DataInputStream(new FileInputStream(testFile));
        byte[] bytesFromFile = new byte[testFile.length()]
        dis.read(bytesFromFile)
+       dis.close();
 
        assertEquals(bytesToFile.length, bytesFromFile.length)
        for(int i=0; i<bytesToFile.length; i++){

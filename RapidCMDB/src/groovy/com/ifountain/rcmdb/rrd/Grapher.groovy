@@ -39,6 +39,11 @@ class Grapher {
     public static final String WIDTH = "width";
 
     public static final  String TYPE = "type";
+    public static final def colorList = ["0000ff", "00ff00", "ff0000",
+                                      "ffff00","ff00ff","00ffff",
+                                      "888888",
+                                      "ff8800","ff0088","00ff88"];
+    public static int colorIndex = 0;
 
     public static byte[] graph(Map config){
 
@@ -52,7 +57,7 @@ class Grapher {
             throw new Exception("End time is not specified");
         }
 
-        RrdGraphDef graphDef = new RrdGraphDef()
+        RrdGraphDef graphDef = new RrdGraphDef();
 
         try{
             long ntime = (long)(config.get(START_TIME) / 1000)
@@ -71,9 +76,7 @@ class Grapher {
         {
              throw new Exception("Invalid timestamps specified")
         }
-        println "it is weird: " + config.containsKey(DbUtils.DATABASE_NAME);
         if(config.containsKey(DbUtils.DATABASE_NAME)){
-            println "Database name is defined"
             config.get(DATASOURCE).each{
                 if(!it.containsKey(DATABASE_NAME)){
                     it[DATABASE_NAME] = config.get(DATABASE_NAME);
@@ -134,11 +137,19 @@ class Grapher {
             throw new Exception("There is no database selected")
         }
     }
+    public static String getColor(){
+        String colorStr = colorList[colorIndex];
+        colorIndex = (colorIndex+1)%10;
+        return colorStr; 
+    }
     public static void addArea(RrdGraphDef rdef, alist){
          //sample area: graphDef.area("good", new Color(0, 0xFF, 0), "Good speed");
          alist.each{
             try{
                 String colorStr = it.get(COLOR);
+                if(colorStr == null ){
+                    colorStr = getColor();
+                }
                 if(colorStr.length()!=6){
                     throw new Exception("Invalid color: "+colorStr);
                 }
@@ -163,6 +174,9 @@ class Grapher {
          slist.each{
             try{
                 String colorStr = it.get(COLOR);
+                if(colorStr == null ){
+                    colorStr = getColor();
+                }
                 if(colorStr.length()!=6){
                     throw new Exception("Invalid color: "+colorStr);
                 }
@@ -187,6 +201,9 @@ class Grapher {
          llist.each{
             try{
                 String colorStr = it.get(COLOR);
+                if(colorStr == null ){
+                    colorStr = getColor();
+                }
                 if(colorStr.length()!=6){
                     throw new Exception("Invalid color: "+colorStr);
                 }

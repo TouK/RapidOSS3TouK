@@ -360,6 +360,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     private def createDefaultArchives(){
+        if(archives.size()>0) return;
+
         long oneMinute = 60L
         long oneHour = oneMinute*60L;
         long oneDay = oneHour*24L;
@@ -413,8 +415,8 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     public def addArchive(Map config){
-        boolean isExists  = isStepExists(config);
-        if(isExists){ return; }
+//        if there is an other archive with same step edit existing archive
+//        if(isStepExists(config)){ return; }
         
         Map archiveMap = [:];
         if(config.containsKey(FUNCTION))

@@ -815,85 +815,50 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:720, frequency:360,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120, frequency:60,
                                        startTime:978300900000L)
-        variable1.createDB();
-//        variable1.createDefaultArchives();
-        boolean oneHour=false, oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
-        /*
-            todo:test archives
-        variable1.archives.each{
-            println "RrdArchive[step:"+it.step+", rows:"+it.numberOfDatapoints+"]";
-            if(it.name.equals("variable1ArchiveForOneYear")){
-                assertEquals("Step for one year is not proper",it.step.toString(),"1440");
-                assertEquals("Step for one year is not proper",it.numberOfDatapoints.toString(),"365");
-                oneYear = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneMonth")){
-                assertEquals("Step for one month is not proper",it.step.toString(),"120");
-                assertEquals("Step for one month is not proper",it.numberOfDatapoints.toString(),"360");
-                oneMonth = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneWeek")){
-                assertEquals("Step for one week is not proper",it.step.toString(),"30");
-                assertEquals("Step for one week is not proper",it.numberOfDatapoints.toString(),"336");
-                oneWeek = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneDay")){
-                assertEquals("Step for one day is not proper",it.step.toString(),"4");
-                assertEquals("Step for one day is not proper",it.numberOfDatapoints.toString(),"360");
-                oneDay = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneHour")){
-                assertEquals("Step for one hour is not proper",it.step.toString(),"1");
-                assertEquals("Step for one hour is not proper",it.numberOfDatapoints.toString(),"60");
-                oneHour = true;
-            }
-        }
-        assertTrue("at least one default archive is missing", (oneHour && oneDay && oneWeek && oneMonth && oneYear));
-        */
+        variable1.createDB();  
+        assertEquals("Defaults archives are not created", 5, variable1.archives.size());
+
+        Map oneYear = variable1.archives[0].getMap();
+        assertEquals(oneYear.get(RrdVariableOperations.FUNCTION),"AVERAGE");
+        assertEquals(oneYear.get(RrdVariableOperations.STEP).toString(),"1440");
+        assertEquals(oneYear.get(RrdVariableOperations.NUMBER_OF_DATAPOINTS).toString(),"365");
+        assertEquals(oneYear.get(RrdVariableOperations.XFF).toString(),"0.5");
+
+        Map oneMonth = variable1.archives[1].getMap();
+        assertEquals(oneMonth.get(RrdVariableOperations.FUNCTION),"AVERAGE");
+        assertEquals(oneMonth.get(RrdVariableOperations.STEP).toString(),"120");
+        assertEquals(oneMonth.get(RrdVariableOperations.NUMBER_OF_DATAPOINTS).toString(),"360");
+        assertEquals(oneMonth.get(RrdVariableOperations.XFF).toString(),"0.5");
+
+        Map oneWeek = variable1.archives[2].getMap();
+        assertEquals(oneWeek.get(RrdVariableOperations.FUNCTION),"AVERAGE");
+        assertEquals(oneWeek.get(RrdVariableOperations.STEP).toString(),"30");
+        assertEquals(oneWeek.get(RrdVariableOperations.NUMBER_OF_DATAPOINTS).toString(),"336");
+        assertEquals(oneWeek.get(RrdVariableOperations.XFF).toString(),"0.5");
+
+        Map oneDay = variable1.archives[3].getMap();
+        assertEquals(oneDay.get(RrdVariableOperations.FUNCTION),"AVERAGE");
+        assertEquals(oneDay.get(RrdVariableOperations.STEP).toString(),"4");
+        assertEquals(oneDay.get(RrdVariableOperations.NUMBER_OF_DATAPOINTS).toString(),"360");
+        assertEquals(oneDay.get(RrdVariableOperations.XFF).toString(),"0.5");
+
+        println variable1.archives[4].getMap();
+
+        Map oneHour = variable1.archives[4].getMap();
+        assertEquals(oneHour.get(RrdVariableOperations.FUNCTION),"AVERAGE");
+        assertEquals(oneHour.get(RrdVariableOperations.STEP).toString(),"1");
+        assertEquals(oneHour.get(RrdVariableOperations.NUMBER_OF_DATAPOINTS).toString(),"60");
+        assertEquals(oneHour.get(RrdVariableOperations.XFF).toString(),"0.5");
     }
 
     public void testCreateDefaultArchivesOneLessDefault() {
-
-        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
-        assertFalse(archive.errors.toString(), archive.hasErrors())
-
-        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120, frequency:7200,
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:720, frequency:360,
                                        startTime:978300900000L)
         variable1.createDefaultArchives();
-        boolean oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
-        /*
-            todo: test archives
-        variable1.archives.each{
-            println "RrdArchive[name:"+it.name+", step:"+it.step+", rows:"+it.numberOfDatapoints+"]";
 
-            if(it.name.equals("variable1ArchiveForOneYear")){
-                assertEquals("Step for one year is not proper",it.step.toString(),"12");
-                assertEquals("Step for one year is not proper",it.numberOfDatapoints.toString(),"365");
-                oneYear = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneMonth")){
-                assertEquals("Step for one month is not proper",it.step.toString(),"1");
-                assertEquals("Step for one month is not proper",it.numberOfDatapoints.toString(),"360");
-                oneMonth = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneWeek")){
-                assertEquals("Step for one week is not proper",it.step.toString(),"1");
-                assertEquals("Step for one week is not proper",it.numberOfDatapoints.toString(),"84");
-                oneWeek = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneDay")){
-                assertEquals("Step for one day is not proper",it.step.toString(),"1");
-                assertEquals("Step for one day is not proper",it.numberOfDatapoints.toString(),"12");
-                oneDay = true;
-            }
-            else if(it.name.equals("variable1ArchiveForOneHour")){
-                throw new Exception("archive for one hour is not expected.")
-            }
-        }
-        assertTrue("at least one default archive is missing", (oneDay && oneWeek && oneMonth && oneYear));
-       */
+        assertEquals("Defaults archives are not created", 4, variable1.archives.size());
     }
 
     public void testAddArchive() {

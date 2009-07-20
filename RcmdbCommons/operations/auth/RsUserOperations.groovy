@@ -52,31 +52,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         user.update(params);
         return user;
-
-//        def emailInformation=user.retrieveEmailInformation();
-//
-//        def oldProperties=[:];
-//        oldProperties[user] = ControllerUtils.backupOldData(user, params);
-//
-//        user.update(params);
-//
-//
-//        if (!user.hasErrors()) {
-//            emailInformation=user.addEmail(params.email);
-//            if(emailInformation.hasErrors())
-//            {
-//                restoreOldData(oldProperties);
-//            }
-//        }
-//
-//        if(returnAllModels)
-//        {
-//            return [rsUser:user,emailInformation:emailInformation]
-//        }
-//        else
-//        {
-//            return user;
-//        }
     }
     private static void restoreOldData(oldProperties)
     {
@@ -115,30 +90,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             rsUser = RsUser.add(params);
         }
         return rsUser;
-        /*
-        if (!rsUser.hasErrors()) {
-            emailInformation=rsUser.addEmail(params.email);
-            if(emailInformation.hasErrors())
-            {
-                rsUser.remove();
-            }
-        }
-
-        if(returnAllModels)
-        {
-            if(emailInformation==null)
-            {
-               emailInformation=new ChannelUserInformation();
-               emailInformation.setPropertyWithoutUpdate("destination",params.email);
-            }
-            return [rsUser:rsUser,emailInformation:emailInformation]
-        }
-        else
-        {
-            return rsUser;
-        }
-        */
-
     }
 
 

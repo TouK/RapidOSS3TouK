@@ -49,6 +49,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     public static final String NUMBER_OF_DATAPOINTS = "numberOfDatapoints";
 
     def createDB() {
+        createDefaultArchives();
         RrdUtils.createDatabase (createDBConfig())
     }
 
@@ -333,7 +334,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         System.currentTimeMillis();
     }
 
-    private def addDefaultArchive(long duration,long stepDuration){
+    public def addDefaultArchive(long duration,long stepDuration){
         long volume = duration/frequency;
         int arcStep;
         int arcRows;
@@ -348,6 +349,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         }
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
         addRelation(archives:archive);
+        return arcStep;
 
     }
 
@@ -360,11 +362,11 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         long oneYear = oneDay*365L;
         int numberOfRows;
 
-        addDefaultArchive(oneYear,oneDay);
-        addDefaultArchive(oneMonth,oneHour*2);
-        addDefaultArchive(oneWeek,oneMinute*30);
-        addDefaultArchive(oneDay,oneMinute*4);
-        addDefaultArchive(oneHour,12);
+        if (addDefaultArchive(oneYear,oneDay) == 1) return;
+        if (addDefaultArchive(oneMonth,oneHour*2) == 1) return;
+        if (addDefaultArchive(oneWeek,oneMinute*30) == 1) return;
+        if (addDefaultArchive(oneDay,oneMinute*4) == 1) return;
+        if (addDefaultArchive(oneHour,12) == 1) return;
     }
 
     private def createDBConfig() {

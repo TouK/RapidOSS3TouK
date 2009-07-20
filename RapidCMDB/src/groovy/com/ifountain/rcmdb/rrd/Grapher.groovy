@@ -118,8 +118,6 @@ class Grapher {
                 rdef.datasource(it.get(NAME),it.get(RPN) )
             }
             catch(Exception ex){
-                println ""+it.containsKey(DSNAME) +" "+ it.containsKey(FUNCTION)+" "+
-                        it.containsKey(DATABASE_NAME)
                 if(!(it.containsKey(DSNAME) && it.containsKey(FUNCTION) &&
                         it.containsKey(DATABASE_NAME)  )){
                     throw new Exception("Datasource distorted");

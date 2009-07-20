@@ -32,14 +32,11 @@ class CreateSampleRrdVariableTest extends RapidCmdbWithCompassTestCase {
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
         ScriptManagerForTest.initialize(gcl,base_directory);
-        ScriptManagerForTest.addScript('createDefaultRrdArchives');
         ScriptManagerForTest.addScript('createSampleRrdVariable');
     }
 
     public void testVariableCreatedSuccessfully(){
         //default archives must be available in RI to create default rrd variable
-        def archiveResult = ScriptManagerForTest.runScript("createDefaultRrdArchives",[:]);
-
         def result = ScriptManagerForTest.runScript("createSampleRrdVariable",[:]);
 
         def variable = rrdVariable.get(name:"sampleRrdVariable");

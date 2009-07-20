@@ -53,7 +53,7 @@ scriptsToAdd.add([name:"getDevicesByLocation", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getEventClassesForSearch", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getTopologyClassesForSearch", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHistoricalEventClassesForSearch", enabledForAllGroups:true])
-scriptsToAdd.add([name:"createDefaultRrdArchives", enabledForAllGroups:true])
+
 
 
 // topology scripts
@@ -87,7 +87,6 @@ scriptsToAdd.each{  scriptParams ->
 
 def scriptsToRun=[]
 scriptsToRun.add("createDefaultQueries")
-scriptsToRun.add("createDefaultRrdArchives")
 
 scriptsToRun.each{  scriptName ->
 

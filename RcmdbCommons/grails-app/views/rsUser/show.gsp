@@ -32,6 +32,18 @@
                             </td>
 
                         </tr>
+                        <tr class="prop">
+                            <td valign="top" class="name">Channel Informations:</td>
+
+                            <td valign="top" style="text-align:left;" class="value">
+                                <ul>
+                                    <g:each var="channelType" in="${RsUser.getChannelTypes()}">
+                                        <li>${rsUser.retrieveChannelInformation(channelType)?.toString()}</li>
+                                    </g:each>
+                                </ul>
+                            </td>
+
+                        </tr>
                     </tbody>
                 </table>
             </div>

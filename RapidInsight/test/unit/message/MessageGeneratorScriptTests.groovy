@@ -98,7 +98,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     {
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         def destination = "abdurrahim"
-        user.addEmail(destination)
+        user.addChannelInformation(type:"email",destination:destination);
         assertFalse(user.hasErrors())
 
         def adminUser = RsUser.RSADMIN;

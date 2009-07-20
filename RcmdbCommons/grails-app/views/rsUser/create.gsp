@@ -12,7 +12,11 @@
         </div>
         <div class="body">
             <h1>Create User</h1>
-            <g:render template="/common/messages" model="[flash:flash, beans:[rsUser,emailInformation]]"></g:render>
+            <%
+                def errorBeans=[rsUser];
+                errorBeans.addAll(userChannels);
+            %>
+            <g:render template="/common/messages" model="[flash:flash, beans:errorBeans]"></g:render>
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>
@@ -45,14 +49,18 @@
                                 </td>
                             </tr>
 
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="email">Email:</label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: rsUser, field: 'email', 'errors')}">
-                                    <input type="text" id="email" name="email" value="${fieldValue(bean: emailInformation, field: 'destination')}"/>
-                                </td>
-                            </tr>
+
+                            <g:each in="${userChannels}" var="userChannelInfo">
+                                <tr class="prop">
+                                    <td valign="top" class="name">
+                                        <label for="${userChannelInfo.type}">${userChannelInfo.type}:</label>
+                                    </td>
+                                    <td valign="top" class="value ${hasErrors(bean: userChannelInfo, field: 'destination', 'errors')}">
+                                        <input type="text" id="${userChannelInfo.type}" name="${userChannelInfo.type}" value="${fieldValue(bean: userChannelInfo, field: 'destination')}"/>
+                                    </td>
+                                </tr>
+                            </g:each>
+                            
 
                             <tr class="prop">
                                 <td valign="top" class="name" colspan="2">

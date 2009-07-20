@@ -205,43 +205,6 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
 
     }
 
-    public void testAddUserAndUpdateUserWithReturnAllModels()
-    {
-        def group1 = Group.add(name:"group1");
-        def group2 = Group.add(name:"group2");
-
-        def userProps = [username:"user1", password:"password",groups:[group1],email:"myemail"];
-        def createdObjects= RsUser.addUser(userProps,true);
-        def user=createdObjects.rsUser;
-        def emailInformation=createdObjects.emailInformation;
-
-        assertFalse(user.hasErrors());
-        assertFalse(emailInformation.hasErrors());
-        assertEquals(2,createdObjects.size());
-
-        assertEquals(userProps.username,user.username);
-        assertEquals(userProps.email,emailInformation.destination);
-
-        assertEquals (1, user.groups.size());
-
-
-        def updateProps = [username:"user2",groups:[group1,group2],email:"myemail2"];
-
-        def updatedObjects= RsUser.updateUser(user,updateProps,true);
-        def updatedUser=updatedObjects.rsUser;
-        def updatedEmailInformation=updatedObjects.emailInformation;
-
-        assertFalse(updatedUser.hasErrors());
-        assertFalse(updatedEmailInformation.hasErrors());
-        assertEquals(2,updatedObjects.size());
-
-        assertEquals(updateProps.username,updatedUser.username);
-        assertEquals(updateProps.email,updatedEmailInformation.destination);
-
-        assertEquals (2, updatedUser.groups.size());
-
-    }
-
     public void testUpdateUserThrowsExceptionIfGroupsEmpty()
     {
         def group1=Group.add(name:"gr1");
@@ -390,18 +353,21 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         
     }
 
-    public void testAddEmailAndRetrieveEmail()
+    public void testAddChannelInformationAndRetrieveChannelInformation()
     {
+        def channelType="email";
+        def userDestination="testemail";
+
         def userProps = [username:"user1",passwordHash:"password"];
         def user=RsUser.add(userProps);
         assertFalse(user.hasErrors());
 
 
         assertEquals(0,ChannelUserInformation.count());
-        assertEquals("",user.retrieveEmail());
-        assertNull(user.retrieveEmailInformation());
+        //assertEquals("",user.retrieveEmail());
+        assertNull(user.retrieveChannelInformation(channelType));
 
-        def emailInformation=user.addEmail("testemail");
+        def emailInformation=user.addChannelInformation(type:channelType,destination:userDestination);
         assertFalse(user.hasErrors());
 
         assertEquals(1,ChannelUserInformation.count());
@@ -416,35 +382,79 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(userInformations[0].id,emailInformation.id);
         assertEquals(user.id,emailInformation.rsUser.id);
 
-        assertEquals("testemail",user.retrieveEmail());
+        //assertEquals("testemail",user.retrieveEmail());
         
-        def retrievedEmailInformation=user.retrieveEmailInformation();
-        assertEquals(userInformations[0].id,retrievedEmailInformation.id);
+        def retrievedChannelInformation=user.retrieveChannelInformation(channelType);
+        assertEquals(userInformations[0].id,retrievedChannelInformation.id);
 
     }
-    public void testAddUserAndUpdateUserAddsEmailChannelInformation()
+    public void testAddChannelInformations()
     {
-        def group1 = Group.add(name:"group1");
+        def userProps = [username:"user1",passwordHash:"password"];
+        def user=RsUser.add(userProps);
+        assertFalse(user.hasErrors());
 
         assertEquals(0,ChannelUserInformation.count());
 
-        def userProps = [username:"user1", password:"password",groups:[group1],email:"myemail"];
-        def user= RsUser.addUser(userProps);
+
+        def addedChannels=user.addChannelInformations([
+                                        [type:"email",destination:"useremail"],
+                                        [type:"jabber",destination:"usrjabber"]
+                                    ]);
+
+        assertEquals(2,ChannelUserInformation.count());
+        assertEquals(2,user.userInformations.size());
         
+        assertEquals(2,addedChannels.size());
+        addedChannels.each{ channelInfo ->
+            assertEquals(user.id,channelInfo.userId);
+            assertFalse(channelInfo.hasErrors());
+        }
+
+        assertEquals("email",addedChannels[0].type);
+        assertEquals("useremail",addedChannels[0].destination);
+
+        assertEquals("jabber",addedChannels[1].type);
+        assertEquals("usrjabber",addedChannels[1].destination);
+
+        
+        
+    }
+    public void testAddChannelInformationsAndRollBackIfErrorOccursRollsBackWhenErrorOccurs()
+    {
+        def userProps = [username:"user1",passwordHash:"password"];
+        def user=RsUser.add(userProps);
         assertFalse(user.hasErrors());
-        assertEquals(userProps.email,user.retrieveEmail())
+
+        assertEquals(0,ChannelUserInformation.count());
+
+        user.addChannelInformation(type:"email",destination:"email1");
+
         assertEquals(1,ChannelUserInformation.count());
 
-        def updateProps = [email:"myemail2"];
+        def addedChannels=user.addChannelInformationsAndRollBackIfErrorOccurs([
+                                        [type:"email",destination:"email2"],
+                                        [type:"jabber",destination:"jabber2"],
+                                        [type:null,destination:"usrjabber"]
+                                    ]);
 
-        def updatedUser= RsUser.updateUser(user,updateProps);
-        assertFalse(updatedUser.hasErrors());
-        assertEquals(updateProps.email,updatedUser.retrieveEmail())
+
         assertEquals(1,ChannelUserInformation.count());
+        assertEquals(1,user.userInformations.size());
+
+        def userEmailInformation=user.retrieveChannelInformation("email");
+        assertEquals("email1",userEmailInformation.destination);
+
+        assertEquals(3,addedChannels.size());
+        assertFalse(addedChannels[0].hasErrors());
+        assertFalse(addedChannels[1].hasErrors());
+        assertTrue(addedChannels[2].hasErrors());
+
     }
 
     public void testAddUserRollsBackIfEmailInformationHasErrors()
     {
+        fail("should move to controller")
         RsUser.metaClass.addEmail = { email->
             return ChannelUserInformation.add(userId: 4 );
         }
@@ -467,7 +477,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
 
     public void testAddUserRollsBackIfUserHasErrors()
     {
-
+        fail("should move to controller")
         def group1 = Group.add(name:"group1");
 
         def userProps = [username:null, password:"password",groups:[group1],email:"myemail"];
@@ -488,6 +498,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
 
     public void testUpdateUserRollsBackIfEmailInformationHasErrors()
     {
+        fail("should move to controller")
         RsUser.metaClass.addEmail = { email->
             return ChannelUserInformation.add(userId: 4 );
         }
@@ -519,6 +530,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
     public void testUpdateUserRollsBackIfUserHasErrors()
     {
 
+        fail("should move to controller")
         def group1 = Group.add(name:"group1");
 
         def userProps = [username:"user1", password:"password",groups:[group1],email:"myemail"];
@@ -653,4 +665,11 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertFalse(user.hasAllRoles([Role.ADMINISTRATOR,Role.USER,"abc"]));
     }
 
+
+    public void testGetChannelTypes()
+    {
+        assertEquals(["email"],RsUser.getChannelTypes());
+        assertEquals(["email"],RsUser.getEditableChannelTypes());
+
+    }
 }

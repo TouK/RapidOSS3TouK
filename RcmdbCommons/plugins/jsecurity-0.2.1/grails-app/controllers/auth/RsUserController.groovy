@@ -74,7 +74,8 @@ class RsUserController {
         }
         else {
             def availableGroups = availableGroupsForUserGroups(rsUser.groups);
-            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:rsUser.groups,emailInformation:rsUser.retrieveEmailInformation()]
+            def userChannels=getChannelInformationsBeansForUpdate(rsUser);
+            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:rsUser.groups,userChannels:userChannels];
         }
     }
 
@@ -89,10 +90,11 @@ class RsUserController {
         return availableGroups.findAll {!userGroupNames.containsKey(it.name)}
     }
 
+
     def changeProfile = {
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
-            def updateParams = [:]
+            def oldUserProperties=null;
 
             def password1 = params["password1"];
             def password2 = params["password2"];
@@ -113,33 +115,52 @@ class RsUserController {
                     }
                     return;
                 }
+                def updateParams = [:]
                 updateParams.password = password1;
+                oldUserProperties=ControllerUtils.backupOldData(rsUser, updateParams);
+                rsUser=RsUser.updateUser(rsUser,updateParams);
             }
 
+            if(!rsUser.hasErrors())
+            {
+                def errorOccured=false;
+                def errorXml=null;
 
-            updateParams.email = params["email"]
-            
-            def updatedObjects=RsUser.updateUser(rsUser,updateParams,true);
-            rsUser=updatedObjects.rsUser;
-            def emailInformation=updatedObjects.emailInformation;
-
-            if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
-                withFormat {
-                    xml {render(text: ControllerUtils.convertSuccessToXml("Profile changed."), contentType: "text/xml")}
-                }
-            }
-            else {
-                withFormat {
-                    if(rsUser.hasErrors())
+                def addedInformations=addUserChannelInformationsFromParams(rsUser,RsUser.getEditableChannelTypes());
+                addedInformations.each{ addedInfo ->
+                    if(addedInfo.hasErrors())
                     {
-                        xml {render(text: errorsToXml(rsUser.errors), contentType: "text/xml")}
-                    }
-                    else if(emailInformation.hasErrors())
-                    {
-                       xml {render(text: errorsToXml(emailInformation.errors), contentType: "text/xml")}
+                        errorOccured=true;
+                        errorXml=errorsToXml(addedInfo.errors);
                     }
                 }
+
+
+                if(!errorOccured && !rsUser.hasErrors())
+                {
+                    withFormat {
+                        xml {render(text: ControllerUtils.convertSuccessToXml("Profile changed."), contentType: "text/xml")}
+                    }
+                }
+                else
+                {
+                     if(oldUserProperties !=null)
+                     {
+                         rsUser.update(oldUserProperties);
+                     }
+
+                     withFormat {
+                        xml {render(text:errorXml, contentType: "text/xml")}
+                     }
+                }
             }
+            else
+            {
+                withFormat {
+                    xml {render(text: errorsToXml(rsUser.errors), contentType: "text/xml")}
+                }
+            }
+
         }
         else {
             addError("default.object.not.found", [RsUser.class.name, params.username]);
@@ -151,9 +172,12 @@ class RsUserController {
 
     def update = {
         def rsUser = RsUser.get(id: params.id)
-        def emailInformation=rsUser.retrieveEmailInformation();
+        def userChannels=getChannelInformationsBeansForUpdate(rsUser);
         if (rsUser) {
             def exception=null;
+
+            def oldUserProperties=null;
+
 
             def userProps=ControllerUtils.getClassProperties(params, RsUser);
             if (params["password1"] != params["password2"]) {
@@ -164,11 +188,15 @@ class RsUserController {
             if(exception==null)
             {
                 userProps.password= params["password1"];
-                userProps.email = params["email"]
                 try{
-                    def updatedObjects=RsUser.updateUser(rsUser,userProps,true);
-                    rsUser=updatedObjects.rsUser;
-                    emailInformation=updatedObjects.emailInformation;
+                    def propsToSave=[:];
+                    propsToSave.putAll(userProps);
+                    propsToSave.remove("password");
+                    propsToSave.put("passwordHash","");
+
+                    oldUserProperties=ControllerUtils.backupOldData(rsUser, propsToSave);
+
+                    rsUser=RsUser.updateUser(rsUser,userProps);                    
                 }
                 catch(MessageSourceException e)
                 {
@@ -186,18 +214,42 @@ class RsUserController {
                 userProps.each {String propName, value ->
                     rsUser.setProperty(propName, value, false);
                 }
-                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
+                render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:userChannels])
                 return;
             }
             else
             {
-                if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
-                    flash.message = "User ${params.id} updated"
-                    redirect(action: show, id: rsUser.id)
+
+                if (!rsUser.hasErrors() ) {
+                    def errorOccured=false;
+
+                    def addedInformations=addUserChannelInformationsFromParams(rsUser,RsUser.getChannelTypes());
+                    addedInformations.each{ addedInfo ->
+                        if(addedInfo.hasErrors())
+                        {
+                            errorOccured=true;
+                        }
+                    }
+
+                    if(!errorOccured && !rsUser.hasErrors() )
+                    {
+                         flash.message = "User ${params.id} updated"
+                         redirect(action: show, id: rsUser.id)
+                    }
+                    else
+                    {
+                        if(oldUserProperties !=null)
+                        {
+                         rsUser.update(oldUserProperties);
+                        }
+                        render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:addedInformations])
+                    }
+
                 }
                 else {
-                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
+                    render(view: 'edit', model: [rsUser: rsUser, availableGroups:availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:userChannels])
                 }
+
             }
 
         }
@@ -210,9 +262,48 @@ class RsUserController {
     def create = {
         def rsUser = new RsUser()
         rsUser.properties = params
-        return ['rsUser': rsUser, availableGroups: Group.list(),userGroups:[],'emailInformation':new ChannelUserInformation()]
+        def userChannels=getChannelInformationsBeansForCreate();
+
+        return ['rsUser': rsUser, availableGroups: Group.list(),userGroups:[],userChannels:userChannels];
     }
 
+    def addUserChannelInformationsFromParams={ rsUser,channelTypes ->
+        def channelInformationList=[];
+
+        channelTypes.each{ channelType ->
+            channelInformationList.add([type:channelType,destination:params[channelType]]);
+        }
+
+        def addedInformations=rsUser.addChannelInformationsAndRollBackIfErrorOccurs(channelInformationList);
+
+        return  addedInformations;
+    }
+
+    def getChannelInformationsBeansForCreate={
+        def userChannels=[];
+
+        RsUser.getChannelTypes().each{ channelType  ->
+            def channelInfo=new ChannelUserInformation();
+            channelInfo.setPropertyWithoutUpdate("type",channelType);
+            channelInfo.setPropertyWithoutUpdate("destination",params[channelType]);
+            userChannels.add(channelInfo);
+        }
+        return userChannels;
+    }
+    def getChannelInformationsBeansForUpdate={ rsUser ->
+        def userChannels=[];
+
+        RsUser.getChannelTypes().each{ channelType  ->
+            def channelInfo=rsUser.retrieveChannelInformation(channelType);
+            if(channelInfo== null)
+            {
+                channelInfo=new ChannelUserInformation();
+                channelInfo.setPropertyWithoutUpdate("type",channelType);
+            }
+            userChannels.add(channelInfo);
+        }
+        return userChannels;
+    }
     def save = {
         def exception=null;
 
@@ -222,16 +313,14 @@ class RsUserController {
         }
 
 
-        def createdObjects=null;
-
+        def rsUser=null;
 
 
         if(exception==null)
         {
             userProps.password= params["password1"];
-            userProps.email = params["email"]
             try{
-                createdObjects=RsUser.addUniqueUser(userProps,true);
+                rsUser=RsUser.addUniqueUser(userProps);
             }
             catch(MessageSourceException e)
             {
@@ -247,22 +336,41 @@ class RsUserController {
             flash.errors = this.errors;
             userProps.remove("id");
             def tmpUser = new RsUser(userProps);
-            def tmpEmailInformation=new ChannelUserInformation();
-            tmpEmailInformation.setPropertyWithoutUpdate("destination",params.email);
-            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:tmpEmailInformation])
+
+            def userChannels=getChannelInformationsBeansForCreate();
+
+            render(view: 'create', model: [rsUser: tmpUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:userChannels])
             return;
         }
         else
         {
-            def rsUser=createdObjects.rsUser;
-            def emailInformation=createdObjects.emailInformation;
+            if (!rsUser.hasErrors() ) {
+                def errorOccured=false;
 
-            if (!rsUser.hasErrors() && !emailInformation.hasErrors()) {
-               flash.message = "User ${rsUser.id} created"
-               redirect(action: show, id: rsUser.id)
+                def addedInformations=addUserChannelInformationsFromParams(rsUser,RsUser.getChannelTypes());
+                addedInformations.each{ addedInfo ->
+                    if(addedInfo.hasErrors())
+                    {
+                        errorOccured=true;
+                    }
+                }
+                
+                if(!errorOccured && !rsUser.hasErrors())
+                {
+                     flash.message = "User ${rsUser.id} created"
+                     redirect(action: show, id: rsUser.id)
+                }
+                else
+                {
+                    rsUser.remove();
+                    render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:addedInformations])
+                }
+
             }
             else {
-                render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,emailInformation:emailInformation])
+                def userChannels=getChannelInformationsBeansForCreate();
+
+                render(view: 'create', model: [rsUser: rsUser, availableGroups: availableGroupsForUserGroups(userProps.groups),userGroups:userProps.groups,userChannels:userChannels])
             }
         }
     }

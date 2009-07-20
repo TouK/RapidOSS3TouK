@@ -17,4 +17,9 @@ class ChannelUserInformation extends RsUserInformation {
         errors(nullable: true)
     }
     static transients = ["errors"];
+
+    public String toString()
+    {
+        return " ${type} : ${destination}  ";
+    }
 }

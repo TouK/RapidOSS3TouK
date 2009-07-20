@@ -16,7 +16,6 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-
     def beforeDelete()
     {
        if(username.equalsIgnoreCase(getCurrentUserName()))
@@ -36,7 +35,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         return passwordHash == hashPassword(passwordParam);
     }
-    public static def updateUser(user, params,returnAllModels=false)
+    public static def updateUser(user, params)
     {
         if (params.password != null)
         {
@@ -51,30 +50,33 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             }
         }
 
-        def emailInformation=user.retrieveEmailInformation();
-
-        def oldProperties=[:];
-        oldProperties[user] = ControllerUtils.backupOldData(user, params);
-        
         user.update(params);
+        return user;
 
-
-        if (!user.hasErrors()) {
-            emailInformation=user.addEmail(params.email);
-            if(emailInformation.hasErrors())
-            {
-                restoreOldData(oldProperties);
-            }
-        }
-
-        if(returnAllModels)
-        {
-            return [rsUser:user,emailInformation:emailInformation]
-        }
-        else
-        {
-            return user;
-        }
+//        def emailInformation=user.retrieveEmailInformation();
+//
+//        def oldProperties=[:];
+//        oldProperties[user] = ControllerUtils.backupOldData(user, params);
+//
+//        user.update(params);
+//
+//
+//        if (!user.hasErrors()) {
+//            emailInformation=user.addEmail(params.email);
+//            if(emailInformation.hasErrors())
+//            {
+//                restoreOldData(oldProperties);
+//            }
+//        }
+//
+//        if(returnAllModels)
+//        {
+//            return [rsUser:user,emailInformation:emailInformation]
+//        }
+//        else
+//        {
+//            return user;
+//        }
     }
     private static void restoreOldData(oldProperties)
     {
@@ -82,15 +84,15 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             object.update(oldObjectProperties);
         }
     }
-    public static def addUser(params,returnAllModels=false)
+    public static def addUser(params)
     {
-        return _addUser(params,false,returnAllModels);
+        return _addUser(params,false);
     }
-    public static def addUniqueUser(params,returnAllModels=false)
+    public static def addUniqueUser(params)
     {
-        return _addUser(params,true,returnAllModels);
+        return _addUser(params,true);
     }
-    private static def _addUser(params,boolean addUnique,boolean returnAllModels)
+    private static def _addUser(params,boolean addUnique)
     {
         params.passwordHash = hashPassword(params.password);
 
@@ -112,7 +114,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             rsUser = RsUser.add(params);
         }
-
+        return rsUser;
+        /*
         if (!rsUser.hasErrors()) {
             emailInformation=rsUser.addEmail(params.email);
             if(emailInformation.hasErrors())
@@ -134,6 +137,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             return rsUser;
         }
+        */
+
     }
 
 
@@ -187,9 +192,88 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
     }
 
+
+    public static List getChannelTypes()
+    {
+        return ["email"];
+    }
+    public static List getEditableChannelTypes()
+    {
+        return ["email"];
+    }
+
+    def addChannelInformation(channelParams) {
+        def channelInformation = ChannelUserInformation.add(userId: id, type:channelParams.type, destination: channelParams.destination)
+        if(!channelInformation.hasErrors())
+        {
+            addRelation(userInformations: channelInformation);
+        }
+        return channelInformation;
+    }
+
+    def retrieveChannelInformation(channelType) {
+        return ChannelUserInformation.get(userId: id, type: channelType);
+    }
+
+
+
+    def addChannelInformationsAndRollBackIfErrorOccurs(channelInformationList)
+    {
+        def oldInformationProperties=[:];
+        //save all old destinations
+        ChannelUserInformation.searchEvery("userId:${id}").each{ userInfo ->
+             oldInformationProperties[userInfo.id]=ControllerUtils.backupOldData(userInfo, ["destination":""])
+        }
+
+        def errorOccured=false;
+
+        def addedInformations=addChannelInformations(channelInformationList);
+
+        //add all informations and track if error occured
+        addedInformations.each{ addedInfo ->
+            if(addedInfo.hasErrors())
+            {
+                errorOccured=true;
+            }
+        }
+
+        //roll back the information adds / updates if error occured
+        if(errorOccured)
+        {
+            addedInformations.each{ addedInfo ->
+                if(!addedInfo.hasErrors())  //if has error no change is done
+                {
+                    //if information exists earlier update it else remove it
+                    def oldProperties=oldInformationProperties[addedInfo.id];
+                    if(oldProperties!=null)
+                    {
+                        addedInfo.update(oldProperties);
+                    }
+                    else
+                    {
+                        addedInfo.remove();
+                    }
+                }
+            }
+        }
+
+        return addedInformations;
+    }
+
+
+    def addChannelInformations(channelInformationList)
+    {
+        def addedInformations=[];
+        channelInformationList.each{ channelParams ->
+            addedInformations.add(addChannelInformation(channelParams));
+        }
+        return addedInformations;
+    }
+
     def retrieveLdapInformation() {
         return LdapUserInformation.get(userId: id, type: "ldap");
     }
+
     def addLdapInformation(params) {
         params.userId = id;
         params.type = "ldap"
@@ -201,34 +285,13 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         return ldapInformation;
     }
 
-    def addEmail(email) {
-        def emailInformation = ChannelUserInformation.add(userId: id, type: "email", destination: email)
-        if(!emailInformation.hasErrors())
-        {
-            addRelation(userInformations: emailInformation);
-        }
-        return emailInformation;
-    }
-
-    def retrieveEmail() {
-        def emailInformation = retrieveEmailInformation();
-        if (emailInformation != null) {
-            return emailInformation.destination;
-        }
-        return "";
-    }
-
-    def retrieveEmailInformation() {
-        return ChannelUserInformation.get(userId: id, type: "email");
-    }
-
-    def hasRole(roleName) {
+   def hasRole(roleName) {
         def res = groups.findAll {it.role?.name == roleName};
         return res.size() > 0
     }
 
     def hasAllRoles(roles)
-    {           
+    {
         int numberOfFoundRoles = 0;
         def groupList=groups;
 
@@ -244,6 +307,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         }
 
-        return numberOfFoundRoles == roles.size()        
+        return numberOfFoundRoles == roles.size()
     }
 }

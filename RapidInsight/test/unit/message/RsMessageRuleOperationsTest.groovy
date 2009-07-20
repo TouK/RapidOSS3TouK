@@ -134,7 +134,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def user=RsUser.add(username:"testuser",passwordHash:"aaa");
         assertFalse(user.hasErrors());
-        user.addEmail(userEmail); 
+        user.addChannelInformation(type:"email",destination:userEmail);
 
         assertEquals(userEmail,RsMessageRule.getUserDestinationForChannel(user,"email"));
         assertEquals(null,RsMessageRule.getUserDestinationForChannel(user,null));
@@ -373,7 +373,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def user=RsUser.add(username:username,passwordHash:"aaa");
         assertFalse(user.hasErrors());
-        user.addEmail(userEmail);
+        user.addChannelInformation(type:"email",destination:userEmail);
 
 
         def messageRule=RsMessageRule.addMessageRuleForUser(params,username);

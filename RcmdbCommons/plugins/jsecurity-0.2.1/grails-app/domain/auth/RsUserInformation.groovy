@@ -49,4 +49,10 @@ class RsUserInformation {
             rsUser:[isMany:false, reverseName:"userInformations", type:RsUser]
     ]
     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "userInformations"];
+
+
+    public String toString()
+    {
+        return type;
+    }
 }

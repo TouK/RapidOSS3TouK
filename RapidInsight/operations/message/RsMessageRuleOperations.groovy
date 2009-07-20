@@ -1,8 +1,6 @@
 package message
 
-import org.jsecurity.SecurityUtils
 import auth.Role
-import auth.ChannelUserInformation
 import auth.RsUser
 
 /**
@@ -77,10 +75,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static def getUserDestinationForChannel(RsUser user,String channelType)
     {
-        if (channelType) {
-            return ChannelUserInformation.get(userId: user.id, type: channelType)?.destination
-        }
-        return null;
+        return user.retrieveChannelInformation(channelType)?.destination;
     }
 
     public static RsMessageRule addMessageRuleForUser(params,String username)

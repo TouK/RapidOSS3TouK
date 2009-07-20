@@ -10,7 +10,7 @@ class RrdArchive
     
     
     };
-    static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
+     static datasources = ["RCMDB":["mappedName":"RCMDB", "keys":["id":["nameInDs":"id"]]]]
 
     String function ="AVERAGE";
     
@@ -63,7 +63,7 @@ class RrdArchive
     
     public String toString()
     {
-    	return "${getClass().getName()}[name:${getProperty("name")}]";
+    	return "${getClass().getName()}[id:${getProperty("id")}]";
     }
     
     public boolean equals(Object obj) {

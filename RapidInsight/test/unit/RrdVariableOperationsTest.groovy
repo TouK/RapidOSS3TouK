@@ -357,7 +357,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
-                                       startTime:978300900000L, archives: [archive])
+                                       startTime:978300900000L)
         assertFalse(variable1.errors.toString(), variable1.hasErrors())
         variable1.addArchive(archive.getMap())
 
@@ -753,12 +753,12 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
-                                       startTime:978300900000L,frequency:300, archives: [archive])
+                                       startTime:978300900000L,frequency:300)
        assertFalse(variable1.errors.toString(), variable1.hasErrors())
         variable1.addArchive(archive.getMap())
 
         def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
-                                        startTime:978300900000L, frequency:300, archives: [archive])
+                                        startTime:978300900000L, frequency:300)
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
         variable2.addArchive(archive.getMap())
 
@@ -818,9 +818,6 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:720, frequency:360,
                                        startTime:978300900000L)
         variable1.createDB();
-        variable1.archives.each{
-            println it.numberOfDatapoints+" "+it.step;
-        }
 //        variable1.createDefaultArchives();
         boolean oneHour=false, oneDay=false, oneWeek=false, oneMonth=false, oneYear=false;
         /*

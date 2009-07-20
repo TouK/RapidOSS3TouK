@@ -199,10 +199,11 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
         config[Grapher.END_TIME] = 978303900000;
 
-        byte[] bytes = Grapher.graph(config);
+        byte[] bytes = null;
+        bytes = Grapher.graph(config);
 
         assertTrue("Grapher returns no graph info",bytes!=null);
-
+        
         DataInputStream dis = new DataInputStream(new FileInputStream(GRAPH_MULTI_FILE));
         byte[] expectedBytes = new byte[new File(GRAPH_MULTI_FILE).length()];
         dis.read (expectedBytes);

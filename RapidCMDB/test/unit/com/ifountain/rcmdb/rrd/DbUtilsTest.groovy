@@ -797,12 +797,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         String xmlFile = rrdFileName+".xml";
         DbUtils.createXml(result,xmlFile);
     }
-    public void testXml() throws Exception{
-//        RrdDb rrddb = new RrdDb("D:/RapidServer/RapidSuite/rrdFiles/sampleRrdDB.rrd");
-        DbUtils.fetchData("D:/RapidServer/RapidSuite/rrdFiles/sampleRrdDB.rrd");
-//        rrddb.exportXml ("D:/RapidServer/RapidSuite/rrdFiles/sampleRrdDB.rrd.xml");
-    }
-
     public void testCreateXmlForMultipleDataSources() throws Exception{
         createDatabase();
         Map result = DbUtils.fetchDataAsMap (rrdFileName);

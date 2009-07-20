@@ -52,7 +52,7 @@
     </tbody></table>
 </div>
 <rui:html id="changeProfileDialog" iframe="false"></rui:html>
-<rui:popupWindow componentId="changeProfileDialog" width="390" height="170" resizable="false" title="Change Profile"></rui:popupWindow>
+<rui:popupWindow componentId="changeProfileDialog" width="390" height="250" resizable="false" title="Change Profile"></rui:popupWindow>
 <script>
 YAHOO.rapidjs.ErrorManager.serverDownEvent.subscribe(function(){
 YAHOO.util.Dom.setStyle(document.getElementById('serverDownEl'), 'display', '');

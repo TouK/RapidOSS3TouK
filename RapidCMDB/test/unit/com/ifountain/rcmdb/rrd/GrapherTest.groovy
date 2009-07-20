@@ -14,6 +14,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
     final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
+    final String GRAPH_MULTI_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedMultiVariableRrdGraph.gif"
     String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
     String testImageName = TestFile.TESTOUTPUT_DIR + "/testImage.png"
 
@@ -94,7 +95,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
-                                            color: "ff00ff",
                                             description:"My Graph"
                                         ]
                                    ]
@@ -102,7 +102,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        config[Grapher.START_TIME] = 978301200000L;
        config[Grapher.END_TIME] = 978303900000L;
 
-       byte[] actualBytes = Grapher.graph(config)
+       byte[] actualBytes = Grapher.graph(config);
 
        File expectedGraphFile = new File(GRAPH_AREA_FILE)
        DataInputStream dis = new DataInputStream(new java.io.FileInputStream(expectedGraphFile));
@@ -162,6 +162,57 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        }
 
      }
+    public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
+        createDatabase();
+
+        Map config = [:]
+        config[Grapher.DATABASE_NAME] = rrdFileName
+        config[Grapher.DATASOURCE] = [
+                                            [
+                                                name:"testDs1",
+                                                databaseName: rrdFileName,
+                                                function:"AVERAGE",
+                                                dsname: "a"
+                                            ],
+                                            [
+                                                name:"testDs2",
+                                                databaseName: rrdFileName,
+                                                function:"AVERAGE",
+                                                dsname: "b"
+                                            ]
+                                      ]
+
+        config[Grapher.LINE] = [
+                                        [
+                                            name:"testDs1",
+                                            description:"My Graph",
+                                            thickness: 3
+                                        ],
+                                        [
+                                            name:"testDs2",
+                                            description:"My Graph2",
+                                            thickness: 1
+                                        ]
+                               ]
+
+        config[Grapher.START_TIME] = 978300900000;
+
+        config[Grapher.END_TIME] = 978303900000;
+
+        byte[] bytes = Grapher.graph(config);
+
+        assertTrue("Grapher returns no graph info",bytes!=null);
+
+        DataInputStream dis = new DataInputStream(new FileInputStream(GRAPH_MULTI_FILE));
+        byte[] expectedBytes = new byte[new File(GRAPH_MULTI_FILE).length()];
+        dis.read (expectedBytes);
+        dis.close();
+
+        for(int i=0; i<expectedBytes.length; i++){
+           assertEquals(expectedBytes[i], bytes[i])
+        }
+
+    }
 
     public void testGraphThrowsExceptionIfColorIsNotValid () throws Exception{
         Map config = [:]

@@ -451,7 +451,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return exist;
     }
 
-    private String fileSource() {
+    def fileSource() {
         return name + ".rrd";
     }
 

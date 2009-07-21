@@ -229,20 +229,7 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
     }
 
-    public void testUpdateUserGeneratesErrorMessageWhenUserNotFound()
-    {
-        def controller=new RsUserController();
-        //we assign a string to id so controller can not find user
-        def userId="nouser"
-        controller.params["id"]=userId;
 
-        controller.update();
-
-        assertEquals("User not found with id ${userId}",controller.flash.message);
-        assertEquals("/rsUser/edit/${userId}", controller.response.redirectedUrl);
-        
-        assertEquals(0,ChannelUserInformation.count());
-    }
     private def addTestUser()
     {
         def params=[:];
@@ -260,6 +247,21 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         return user;
     }
+    public void testUpdateUserGeneratesErrorMessageWhenUserNotFound()
+    {
+        def controller=new RsUserController();
+        //we assign a string to id so controller can not find user
+        def userId="nouser"
+        controller.params["id"]=userId;
+
+        controller.update();
+
+        assertEquals("User not found with id ${userId}",controller.flash.message);
+        assertEquals("/rsUser/edit/${userId}", controller.response.redirectedUrl);
+
+        assertEquals(0,ChannelUserInformation.count());
+    }
+
     public void testUpdateUserDoesNotUpdateUserWhenPasswordsAreNotSame()
     {
         def rsUser=addTestUser();
@@ -489,6 +491,194 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(1,ChannelUserInformation.countHits("type:email"));
     }
 
+    public void testChangeProfileGeneratesErrorMessageWhenUserNotFound()
+    {
+        def controller=new RsUserController();
+        //we assign a string to id so controller can not find user
+        def username="nouser"
+        controller.params["username"]=username;
+
+        controller.changeProfile();
+
+        def response=controller.response.getContentAsString();
+        def responseXml = new XmlSlurper().parseText(response);
+
+        println response
+
+        assertEquals(1,responseXml.Error.size());
+        assertTrue(responseXml.Error[0].@"error".toString().indexOf("[auth.RsUser] not found with id [${username}]")>=0);
+
+        assertEquals(0,ChannelUserInformation.count());
+    }
+    public void testChangeProfileDoesNotUpdateUserWhenPasswordsAreNotSame()
+    {
+        def rsUser=addTestUser();
+        def emailInformation=rsUser.userInformations[0];
+
+        //update params are different than add params to check beans
+        def controller=new RsUserController();
+        controller.params["username"]="${testUsername}";
+        controller.params["password1"]="123";
+        controller.params["password2"]="124";
+        controller.params["email"]="useremail2";
+
+
+
+        controller.changeProfile();
+
+        def response=controller.response.getContentAsString();
+        def responseXml = new XmlSlurper().parseText(response);
+
+        println response
+
+        assertEquals(1,responseXml.Error.size());
+        assertTrue(responseXml.Error[0].@"error".toString().indexOf("Passwords don't match")>=0);
+
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}"));
+        assertEquals(1,ChannelUserInformation.count());
+        assertEquals(1,ChannelUserInformation.countHits("type:${emailInformation.type} AND destination:${emailInformation.destination}"));
+
+
+        
+
+    }
+
+    public void testChangeProfileDoesNotUpdateUserWhenOldPasswordIsWrong()
+    {
+        def rsUser=addTestUser();
+        def emailInformation=rsUser.userInformations[0];
+
+        //update params are different than add params to check beans
+        def controller=new RsUserController();
+        controller.params["username"]="${testUsername}";
+        controller.params["password1"]="123";
+        controller.params["password2"]="123";
+        controller.params["oldPassword"]="nosuchpass";
+        controller.params["email"]="useremail2";
+
+
+
+        controller.changeProfile();
+
+        def response=controller.response.getContentAsString();
+        def responseXml = new XmlSlurper().parseText(response);
+
+        println response
+
+        assertEquals(1,responseXml.Error.size());
+        assertTrue(responseXml.Error[0].@"error".toString().indexOf("Old Password doesn't match")>=0);
+
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}"));
+        assertEquals(1,ChannelUserInformation.count());
+        assertEquals(1,ChannelUserInformation.countHits("type:${emailInformation.type} AND destination:${emailInformation.destination}"));
+
+    }
+
+    public void testChangeProfileRollsBackIfUserChannelInformationsHaveError()
+    {
+//          RsUser.metaClass.'static'.getEditableChannelTypes= { ->
+//            return ["email"];
+//          }
+
+        def defaultChannelTypeList=RsUser.getEditableChannelTypes().clone();
+        assertEquals("defaultChannelTypeList can not contain null type, possibly another test modified metaclass and didnt roll back", 0,defaultChannelTypeList.findAll{it == null}.size())
+
+        RsUser.metaClass.'static'.getEditableChannelTypes= { ->
+            return ["email",null];
+        }
+
+        assertEquals(["email",null],RsUser.getEditableChannelTypes());
+
+        try{
+            def rsUser=addTestUser();
+            def emailInformation=rsUser.userInformations[0];
+
+            //update params are different than add params to check beans
+             //update params are different than add params to check beans
+            def controller=new RsUserController();
+            controller.params["username"]="${testUsername}";
+            controller.params["password1"]="123";
+            controller.params["password2"]="123";
+            controller.params["oldPassword"]="abc";
+            controller.params["email"]="useremail2";
+            controller.params["groups.id"]=userGroupId.toString();
+
+            controller.changeProfile();
+
+            def response=controller.response.getContentAsString();
+            def responseXml = new XmlSlurper().parseText(response);
+
+            println response
+
+            assertEquals(2,responseXml.Error.size());
+            assertTrue(responseXml.Error[0].@"error".toString().indexOf("Property [type] of class [class auth.ChannelUserInformation] cannot be null")>=0);
+            assertEquals("type",responseXml.Error[0].@"field".toString())
+            assertTrue(responseXml.Error[1].@"error".toString().indexOf("Property [type] of class [class auth.ChannelUserInformation] cannot be null")>=0);
+            assertEquals("userId",responseXml.Error[1].@"field".toString())
+
+            assertEquals(1,RsUser.countHits("username:${testUsername}"));
+            assertEquals(1,ChannelUserInformation.count());
+            assertEquals(1,ChannelUserInformation.countHits("type:${emailInformation.type} AND destination:${emailInformation.destination}"));
+
+            assertEquals(1,RsUser.countHits("username:${testUsername}"));
+            assertEquals(0,RsUser.countHits("username:${testUsername}2"));
+            assertEquals(1,ChannelUserInformation.count());
+            assertEquals(1,ChannelUserInformation.countHits("type:${emailInformation.type} AND destination:${emailInformation.destination}"));
+
+        }
+        finally{
+           RsUser.metaClass.'static'.getEditableChannelTypes= { ->
+                return defaultChannelTypeList;
+           }
+           assertEquals(defaultChannelTypeList,RsUser.getEditableChannelTypes());
+        }
+    }
+
+
+
+//    public void testChangeProfileSuccessfully()
+//    {
+//        def rsUser=addTestUser();
+//        def emailInformation=rsUser.userInformations[0];
+//
+//        //update params are different than add params to check beans
+//        def controller=new RsUserController();
+//        controller.params["username"]="${testUsername}";
+//        controller.params["password1"]="123";
+//        controller.params["password2"]="123";
+//        controller.params["oldPassword"]="abc";
+//        controller.params["email"]="useremail2";
+//        controller.changeProfile();
+//
+//        def response=controller.response.getContentAsString();
+//        def responseXml = new XmlSlurper().parseText(response);
+//
+//        println response
+//
+//        assertEquals(0,responseXml.Error.size());
+//        assertEquals(1,responseXml.Successfull.size());
+//        //assertTrue(responseXml.Error[0].@"error".toString().indexOf("Old Password doesn't match")>=0);
+//
+//
+//
+//        def rsUserUpdated=RsUser.get(id:rsUser.id);
+//
+//        def userGroups=rsUserUpdated.groups;
+//        assertEquals(1,userGroups.size());
+//        assertEquals(adminGroupId,userGroups[0].id);
+//
+//        def userInformations=rsUser.userInformations;
+//        assertEquals(1,userInformations.size());
+//        assertEquals("email",userInformations[0].type);
+//        assertEquals("useremail2",userInformations[0].destination);
+//
+//        assertEquals(1,RsUser.countHits("username:${testUsername}"));
+//        assertEquals(1,ChannelUserInformation.count());
+//
+//
+//    }
 
 
 

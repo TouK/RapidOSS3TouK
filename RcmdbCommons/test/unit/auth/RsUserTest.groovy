@@ -452,113 +452,23 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
 
     }
 
-    public void testAddUserRollsBackIfEmailInformationHasErrors()
+  
+    public void testRemovingUserRemovesUserInformations()
     {
-        fail("should move to controller")
-        RsUser.metaClass.addEmail = { email->
-            return ChannelUserInformation.add(userId: 4 );
-        }
-        
-        def group1 = Group.add(name:"group1");
-
-
-        def userProps = [username:"user1", password:"password",groups:[group1],email:"myemail"];
-        def createdObjects= RsUser.addUser(userProps,true);
-
-        def user=createdObjects.rsUser;
-        def emailInformation=createdObjects.emailInformation;
-
-        assertFalse(user.hasErrors());
-        assertTrue(emailInformation.hasErrors())
-
-        assertEquals(0,ChannelUserInformation.count());
-        assertEquals(0,RsUser.count());
-    }
-
-    public void testAddUserRollsBackIfUserHasErrors()
-    {
-        fail("should move to controller")
-        def group1 = Group.add(name:"group1");
-
-        def userProps = [username:null, password:"password",groups:[group1],email:"myemail"];
-        def createdObjects= RsUser.addUser(userProps,true);
-
-        def user=createdObjects.rsUser;
-        def emailInformation=createdObjects.emailInformation;
-
-
-        assertTrue(user.hasErrors());
-        assertFalse(emailInformation.errors.toString(),emailInformation.hasErrors());
-        assertEquals(userProps.email,emailInformation.destination);
-        
-        assertEquals(0,ChannelUserInformation.count());
-        assertEquals(0,RsUser.count());
-
-    }
-
-    public void testUpdateUserRollsBackIfEmailInformationHasErrors()
-    {
-        fail("should move to controller")
-        RsUser.metaClass.addEmail = { email->
-            return ChannelUserInformation.add(userId: 4 );
-        }
-
-        def group1 = Group.add(name:"group1");
-
-
-        def userProps = [username:"user1", passwordHash:"password"];
-        def user= RsUser.add(userProps);
+        def user=RsUser.add(username:"testuser",passwordHash:"aaa");
         assertFalse(user.errors.toString(),user.hasErrors());
-        assertEquals(0,user.groups.size());
-        
+
+        user.addChannelInformation(type:"email",destination:"useremail");
+
+        assertEquals(1,RsUser.count());
+        assertEquals(1,ChannelUserInformation.count());
+
+        user.remove();
+
+        assertEquals(0,RsUser.count());
         assertEquals(0,ChannelUserInformation.count());
-        assertEquals(1,RsUser.count());
-
-        def updateProps = [username:"user2", password:"password2",groups:[group1],email:"myemail2"];
-        def updatedObjects=RsUser.updateUser(user,updateProps,true);
-
-        assertFalse(updatedObjects.rsUser.hasErrors());
-        assertTrue(updatedObjects.emailInformation.hasErrors())
-        
-        assertEquals(userProps.username,updatedObjects.rsUser.username);
-        assertEquals(userProps.passwordHash,updatedObjects.rsUser.passwordHash);
-        assertEquals(0,updatedObjects.rsUser.groups.size());
-
 
     }
-
-    public void testUpdateUserRollsBackIfUserHasErrors()
-    {
-
-        fail("should move to controller")
-        def group1 = Group.add(name:"group1");
-
-        def userProps = [username:"user1", password:"password",groups:[group1],email:"myemail"];
-        def createdObjects= RsUser.addUser(userProps,true);
-
-        def user=createdObjects.rsUser;
-        def emailInformation=createdObjects.emailInformation;
-
-        assertFalse(user.hasErrors());
-        assertFalse(emailInformation.hasErrors());
-        assertEquals(userProps.email,emailInformation.destination);
-
-        assertEquals(1,ChannelUserInformation.count());
-        assertEquals(1,RsUser.count());
-
-        def updateProps=[username:null,email:"myemail2"];
-
-        def updatedObjects=RsUser.updateUser(user,updateProps,true);
-
-        assertTrue(updatedObjects.rsUser.hasErrors());
-        assertFalse(updatedObjects.emailInformation.hasErrors());
-        
-        assertEquals(userProps.email,updatedObjects.emailInformation.destination);
-
-        assertEquals(1,ChannelUserInformation.count());
-        assertEquals(1,RsUser.count());
-    }
-
     public void testUserCannotDeleteOwnAccountAndRsAdminUser()
     {
         def user=RsUser.add(username:RsUser.RSADMIN,passwordHash:"aaa");

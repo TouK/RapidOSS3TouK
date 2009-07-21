@@ -35,7 +35,7 @@ class SecurityFilters {
                 }
             }
         }
-        def adminControllers = ["group"];
+        def adminControllers = ["group", "uploader"];
         adminAuthorization(controller: "(" + adminControllers.join("|") + ")", action: "*") {
             before = {
                 return accessControl {

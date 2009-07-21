@@ -10,6 +10,7 @@
     <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'uploader/show')}"></a></span>
 </div>
 <div class="body">
+    <g:render template="/common/messages" model="[flash:flash]"></g:render>
     <g:form method="post" controller="uploader" action="upload"
       enctype="multipart/form-data">
         <input type="file" name="file"/>

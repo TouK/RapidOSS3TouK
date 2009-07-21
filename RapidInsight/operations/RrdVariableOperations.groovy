@@ -267,17 +267,15 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     def graphLastHour(Map config) {
-        config[RrdUtils.RRD_VARIABLE] = name
         config[START_TIME] = currentTime() - ONE_HOUR
         config[END_TIME] =  currentTime()
-        return RrdUtils.graph(config)
+        return graph(config)
     }
 
     def graphLastDay(Map config) {
-        config[RrdUtils.RRD_VARIABLE] = name
         config[START_TIME] = currentTime() - ONE_DAY
         config[END_TIME] =  currentTime()
-        return RrdUtils.graph(config)
+        return graph(config)
     }
     def fetchData(){
         String dbname = fileSource();

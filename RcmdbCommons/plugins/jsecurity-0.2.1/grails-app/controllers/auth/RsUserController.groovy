@@ -172,8 +172,9 @@ class RsUserController {
 
     def update = {
         def rsUser = RsUser.get(id: params.id)
-        def userChannels=getChannelInformationsBeansForUpdate(rsUser);
         if (rsUser) {
+            def userChannels=getChannelInformationsBeansForUpdate(rsUser);
+            
             def exception=null;
 
             def oldUserProperties=null;
@@ -195,7 +196,7 @@ class RsUserController {
                     propsToSave.put("passwordHash","");
 
                     oldUserProperties=ControllerUtils.backupOldData(rsUser, propsToSave);
-
+                    println userProps
                     rsUser=RsUser.updateUser(rsUser,userProps);                    
                 }
                 catch(MessageSourceException e)
@@ -292,7 +293,7 @@ class RsUserController {
     }
     def getChannelInformationsBeansForUpdate={ rsUser ->
         def userChannels=[];
-
+        println "getting update beand for ${rsUser}"
         RsUser.getChannelTypes().each{ channelType  ->
             def channelInfo=rsUser.retrieveChannelInformation(channelType);
             if(channelInfo== null)
@@ -300,11 +301,18 @@ class RsUserController {
                 channelInfo=new ChannelUserInformation();
                 channelInfo.setPropertyWithoutUpdate("type",channelType);
             }
+            //only add if form is posted , params contains channelType, params does not contain channelType for edit view
+            if(params.containsKey(channelType))
+            {
+                channelInfo.setPropertyWithoutUpdate("destination",params[channelType]);
+            }
+
+            println "found for ${channelType} ${channelInfo.id} ${channelInfo}"
             userChannels.add(channelInfo);
         }
         return userChannels;
     }
-    def save = {
+    def save = {        
         def exception=null;
 
         def userProps=ControllerUtils.getClassProperties(params, RsUser);
@@ -335,7 +343,11 @@ class RsUserController {
             addError(exception.getCode(),Arrays.asList(exception.getArgs()))
             flash.errors = this.errors;
             userProps.remove("id");
-            def tmpUser = new RsUser(userProps);
+            def tmpUser = new RsUser();
+            
+            userProps.each {String propName, value ->
+                tmpUser.setProperty(propName, value, false);
+            }
 
             def userChannels=getChannelInformationsBeansForCreate();
 

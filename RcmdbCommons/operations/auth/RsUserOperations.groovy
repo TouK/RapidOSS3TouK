@@ -72,7 +72,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         params.passwordHash = hashPassword(params.password);
 
         def rsUser = null;
-        def emailInformation=null;
 
         if (params.groups == null || params.groups.isEmpty())
         {

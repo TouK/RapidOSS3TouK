@@ -135,8 +135,12 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     public void testAddUserDoesNotAddUserWhenRsUserHaveErrors()
     {
+        def existingUser=RsUser.add(username:testUsername,passwordHash:"asd");
+        assertFalse(existingUser.hasErrors());
+
+
         def controller=new RsUserController();
-        controller.params["username"]=null;
+        controller.params["username"]=testUsername;
         controller.params["password1"]="123";
         controller.params["password2"]="123";
         controller.params["email"]="useremail";
@@ -148,7 +152,7 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertNull(controller.flash.errors);
 
         assertTrue(controller.modelAndView.model.rsUser.hasErrors());
-        assertEquals("",controller.modelAndView.model.rsUser.username);
+        assertEquals(testUsername,controller.modelAndView.model.rsUser.username);
 
         assertEquals(1,controller.modelAndView.model.userGroups.size())
         assertEquals(adminGroupId,controller.modelAndView.model.userGroups[0].id)
@@ -163,7 +167,10 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertFalse(controller.modelAndView.model.userChannels[0].hasErrors());
         assertEquals(null,controller.modelAndView.model.userChannels[0].id);
 
-        assertEquals(0,RsUser.countHits("username:${testUsername}"));
+        def existingUserFromRepo=RsUser.get(username:testUsername);
+        assertEquals(0,existingUserFromRepo.groups.size());
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}"));
         assertEquals(0,ChannelUserInformation.count());
     }
 

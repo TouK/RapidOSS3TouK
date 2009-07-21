@@ -196,7 +196,6 @@ class RsUserController {
                     propsToSave.put("passwordHash","");
 
                     oldUserProperties=ControllerUtils.backupOldData(rsUser, propsToSave);
-                    println userProps
                     rsUser=RsUser.updateUser(rsUser,userProps);                    
                 }
                 catch(MessageSourceException e)
@@ -293,7 +292,6 @@ class RsUserController {
     }
     def getChannelInformationsBeansForUpdate={ rsUser ->
         def userChannels=[];
-        println "getting update beand for ${rsUser}"
         RsUser.getChannelTypes().each{ channelType  ->
             def channelInfo=rsUser.retrieveChannelInformation(channelType);
             if(channelInfo== null)
@@ -307,7 +305,6 @@ class RsUserController {
                 channelInfo.setPropertyWithoutUpdate("destination",params[channelType]);
             }
 
-            println "found for ${channelType} ${channelInfo.id} ${channelInfo}"
             userChannels.add(channelInfo);
         }
         return userChannels;

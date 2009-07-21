@@ -681,6 +681,49 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
+    public void testDeleteUserGeneratesErrorMessageWhenUserNotFound()
+    {
+        def controller=new RsUserController();
+        //we assign a string to id so controller can not find user
+        def userId="nouser"
+        controller.params["id"]=userId;
 
+        controller.delete();
+
+        assertEquals("User not found with id ${userId}",controller.flash.message);
+        assertEquals("/rsUser/list", controller.response.redirectedUrl);
+    }
+    public void testDeleteUserGeneratesErrorWhenRemoveGeneratesError()
+    {
+        def adminUser=RsUser.get(username:RsUser.RSADMIN);
+
+        def controller=new RsUserController();
+        controller.params["id"]=adminUser.id.toString();
+        controller.delete();
+
+        assertEquals(1,controller.flash.errors.getAllErrors().size());
+        assertEquals("default.custom.error",controller.flash.errors.getAllErrors()[0].code);
+        
+        assertEquals("/rsUser/list", controller.response.redirectedUrl);
+
+        assertEquals(1,RsUser.countHits("username:${RsUser.RSADMIN}"))
+    }
+    public void testDeleteUserSuccessfully()
+    {
+        def rsUser=addTestUser();
+
+        assertEquals(1,RsUser.countHits("username:${rsUser.username}"));
+        assertEquals(1,ChannelUserInformation.count());
+
+        def controller=new RsUserController();
+        controller.params["id"]=rsUser.id.toString();
+        controller.delete();
+
+        assertEquals("User ${rsUser.id} deleted",controller.flash.message);
+        assertEquals("/rsUser/list", controller.response.redirectedUrl);
+
+        assertEquals(0,RsUser.countHits("username:${rsUser.username}"));
+        assertEquals(0,ChannelUserInformation.count());
+    }
 
 }

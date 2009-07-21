@@ -35,7 +35,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         return passwordHash == hashPassword(passwordParam);
     }
-    public static def updateUser(user, params)
+    public static RsUser updateUser(user, params)
     {
         if (params.password != null)
         {
@@ -59,15 +59,15 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             object.update(oldObjectProperties);
         }
     }
-    public static def addUser(params)
+    public static RsUser addUser(params)
     {
         return _addUser(params,false);
     }
-    public static def addUniqueUser(params)
+    public static RsUser addUniqueUser(params)
     {
         return _addUser(params,true);
     }
-    private static def _addUser(params,boolean addUnique)
+    private static RsUser _addUser(params,boolean addUnique)
     {
         params.passwordHash = hashPassword(params.password);
 

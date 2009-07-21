@@ -638,47 +638,48 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
 
 
-//    public void testChangeProfileSuccessfully()
-//    {
-//        def rsUser=addTestUser();
-//        def emailInformation=rsUser.userInformations[0];
-//
-//        //update params are different than add params to check beans
-//        def controller=new RsUserController();
-//        controller.params["username"]="${testUsername}";
-//        controller.params["password1"]="123";
-//        controller.params["password2"]="123";
-//        controller.params["oldPassword"]="abc";
-//        controller.params["email"]="useremail2";
-//        controller.changeProfile();
-//
-//        def response=controller.response.getContentAsString();
-//        def responseXml = new XmlSlurper().parseText(response);
-//
-//        println response
-//
-//        assertEquals(0,responseXml.Error.size());
-//        assertEquals(1,responseXml.Successfull.size());
-//        //assertTrue(responseXml.Error[0].@"error".toString().indexOf("Old Password doesn't match")>=0);
-//
-//
-//
-//        def rsUserUpdated=RsUser.get(id:rsUser.id);
-//
-//        def userGroups=rsUserUpdated.groups;
-//        assertEquals(1,userGroups.size());
-//        assertEquals(adminGroupId,userGroups[0].id);
-//
-//        def userInformations=rsUser.userInformations;
-//        assertEquals(1,userInformations.size());
-//        assertEquals("email",userInformations[0].type);
-//        assertEquals("useremail2",userInformations[0].destination);
-//
-//        assertEquals(1,RsUser.countHits("username:${testUsername}"));
-//        assertEquals(1,ChannelUserInformation.count());
-//
-//
-//    }
+    public void testChangeProfileSuccessfully()
+    {
+        def rsUser=addTestUser();
+        def emailInformation=rsUser.userInformations[0];
+
+        //update params are different than add params to check beans
+        def controller=new RsUserController();
+        controller.params["username"]="${testUsername}";
+        controller.params["password1"]="123";
+        controller.params["password2"]="123";
+        controller.params["oldPassword"]="abc";
+        controller.params["email"]="useremail2";
+        controller.changeProfile();
+
+        def response=controller.response.getContentAsString();
+        def responseXml = new XmlSlurper().parseText(response);
+
+        println response
+
+
+        assertEquals(0,responseXml.Error.size());
+        assertEquals("Profile changed.",responseXml.text());
+        assertEquals("Successful",responseXml.name());
+        assertEquals(0,responseXml.children().size());
+        
+
+        def rsUserUpdated=RsUser.get(id:rsUser.id);
+
+        def userGroups=rsUserUpdated.groups;
+        assertEquals(1,userGroups.size());
+        assertEquals(adminGroupId,userGroups[0].id);
+
+        def userInformations=rsUser.userInformations;
+        assertEquals(1,userInformations.size());
+        assertEquals("email",userInformations[0].type);
+        assertEquals("useremail2",userInformations[0].destination);
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}"));
+        assertEquals(1,ChannelUserInformation.count());
+
+
+    }
 
 
 

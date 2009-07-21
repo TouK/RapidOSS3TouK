@@ -1,1 +1,1 @@
-<rui:html id="${uiElement.name}" iframe="${uiElement.iframe}"  timeout="${uiElement.timeout}" ${uiElement.url != ""?"url=\"../"+uiElement.url+"\"":""} pollingInterval="${uiElement.pollingInterval}"></rui:html>
+<rui:html id="${uiElement.name}" iframe="${uiElement.iframe}"  timeout="${uiElement.timeout}" ${uiElement.url != ""?"url=\"../"+uiElement.url+"\"":""} pollingInterval="${uiElement.pollingInterval}" title="${uiElement.title}"></rui:html>

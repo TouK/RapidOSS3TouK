@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir: '/')}"></a></span>
+    <span class="menuButton"><a class="home" href="${createLinkTo(dir: 'uploader/show')}"></a></span>
 </div>
 <div class="body">
     <g:form method="post" controller="uploader" action="upload"

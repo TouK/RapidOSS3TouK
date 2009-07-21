@@ -113,92 +113,88 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     static def graphMultiple(Map config){
         String typeVar = "line";
-        String colorVar = "999999";
 
         Map fConfig = getGeneralSettingsMap(config);
 
         if(config.containsKey(TYPE) ){
           typeVar = config.get(TYPE);
-       }
+        }
 
-       if(config.containsKey(COLOR) ){
-          colorVar = config.get(COLOR);
-       }
+        if(!config.containsKey(RRD_VARIABLES) ){
+            throw new Exception("No rrd variable is specified");
+        }
+        def rrdVariables = config.get(RRD_VARIABLES);
 
-       if(!config.containsKey(RRD_VARIABLES) ){
-           throw new Exception("No rrd variable is specified");
-       }
-       def rrdVariables = config.get(RRD_VARIABLES);
+        def datasourceList = [];
+        fConfig[AREA] = [];
+        fConfig[LINE] = [];
+        fConfig[STACK] = [];
+        def typeList = [];
+        def rrdVar;
+        for(int i=0; i<rrdVariables.size(); i++){
+            rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
+            if(rrdVariables[i].containsKey(FUNCTION) ){
+                def datasourceMap = [:];
+                datasourceMap[NAME] = rrdVar.name;
+                datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
+                datasourceMap[DSNAME] = rrdVar.name;
+                datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
+                datasourceList.add(datasourceMap);
 
-       def datasourceList = [];
-       fConfig[AREA] = [];
-       fConfig[LINE] = [];
-       fConfig[STACK] = [];
-       def typeList = [];
-       def rrdVar;
-       for(int i=0; i<rrdVariables.size(); i++){
-           rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
-           if(rrdVariables[i].containsKey(FUNCTION) ){
-               def datasourceMap = [:];
-               datasourceMap[NAME] = rrdVar.name;
-               datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-               datasourceMap[DSNAME] = rrdVar.name;
-               datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
-               datasourceList.add(datasourceMap);
+            }else{
+                rrdVar.archives.each{
+                    def datasourceMap = [:];
+                    datasourceMap[NAME] = rrdVar.name;
+                    datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
+                    datasourceMap[DSNAME] = rrdVar.name;
+                    datasourceMap[FUNCTION] = it.function;
+                    datasourceList.add(datasourceMap);
+                }
+            }
+            if(rrdVariables[i].containsKey(RPN) ){
+                def datasourceMap = [:];
+                datasourceMap[NAME] = rrdVariables[i][RPN];
+                datasourceMap[RPN] = rrdVariables[i][RPN];
+                datasourceList.add(datasourceMap);
+            }
+            def typeMap = [:];
+            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
 
-           }else{
-               rrdVar.archives.each{
-                   def datasourceMap = [:];
-                   datasourceMap[NAME] = rrdVar.name;
-                   datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-                   datasourceMap[DSNAME] = rrdVar.name;
-                   datasourceMap[FUNCTION] = it.function;
-                   datasourceList.add(datasourceMap);
-               }
-           }
-           if(rrdVariables[i].containsKey(RPN) ){
-               def datasourceMap = [:];
-               datasourceMap[NAME] = rrdVariables[i][RPN];
-               datasourceMap[RPN] = rrdVariables[i][RPN];
-               datasourceList.add(datasourceMap);
-           }
-           def typeMap = [:];
-           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
-
-           if(rrdVariables[i].containsKey(DESCRIPTION))
+            if(rrdVariables[i].containsKey(DESCRIPTION))
                 typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION]
-           else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
+            else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
                 typeMap[DESCRIPTION] = config[DESCRIPTION]
-           else
+            else
                 typeMap[DESCRIPTION] = rrdVar.name;
 
+            if(rrdVariables[i].containsKey(COLOR))
+                typeMap[COLOR] = rrdVariables[i][COLOR];
 
-           typeMap[COLOR] = rrdVariables[i].containsKey(COLOR)?rrdVariables[i][COLOR]:colorVar;
-           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
+            typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
 
-           if(rrdVariables[i].containsKey(TYPE) ){
-               try{
+            if(rrdVariables[i].containsKey(TYPE) ){
+                try{
                     fConfig[rrdVariables[i][TYPE]].add(typeMap)
-               }catch (Exception ex){
-                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
-               }
-           }
-           else{
-               fConfig[typeVar].add(typeMap);
-           }
-       }
-       Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
-       if(!fConfig.containsKey (START_TIME)){
-           fConfig[START_TIME] = dbInfo[START_TIME];
-       }
-       if(!fConfig.containsKey (END_TIME)){
-           fConfig[END_TIME] = dbInfo[END_TIME];
-       }
-       fConfig[DATASOURCE] = datasourceList;
+                }catch (Exception ex){
+                    throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
+                }
+            }
+            else{
+                fConfig[typeVar].add(typeMap);
+            }
+        }
+        Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
+        if(!fConfig.containsKey (START_TIME)){
+            fConfig[START_TIME] = dbInfo[START_TIME];
+        }
+        if(!fConfig.containsKey (END_TIME)){
+            fConfig[END_TIME] = dbInfo[END_TIME];
+        }
+        fConfig[DATASOURCE] = datasourceList;
 
-       byte[] bytes = RrdUtils.graph(fConfig);
+        byte[] bytes = RrdUtils.graph(fConfig);
 
-       return bytes
+        return bytes
     }
 
     private static Map getGeneralSettingsMap(Map config){

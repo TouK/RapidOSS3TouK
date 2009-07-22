@@ -1,6 +1,7 @@
 package file
 
-import org.springframework.web.multipart.commons.CommonsMultipartFile
+import org.codehaus.groovy.runtime.StackTraceUtils
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,14 +16,33 @@ class UploaderController {
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [upload: 'POST']
     def upload = {
-        def baseDir = System.getProperty("base.dir")
         def downloadedfile = request.getFile('file');
-        def uploadDir = new File("${baseDir}/uploadedFiles")
-        uploadDir.mkdirs()
-        def fileName = downloadedfile.getOriginalFilename()
-        downloadedfile.transferTo(new File(uploadDir, fileName))
-        flash.message = "Successfully uploaded to uploadedFiles/${fileName}"
-        redirect(action: 'show')
+        if(downloadedfile != null)
+        {
+            def fileName = downloadedfile.getOriginalFilename()
+            try{
+                def uploadDir = getUploadDir();
+                uploadDir.mkdirs()
+                downloadedfile.transferTo(new File(uploadDir, fileName))
+                flash.message = "Successfully uploaded to uploadedFiles/${fileName}"
+            }catch(Throwable t)
+            {
+                log.warn("Exception occurred while uploading ${fileName}", StackTraceUtils.deepSanitize(t));
+                addError("file.upload.exception", [fileName, t.toString()]);
+            }
+        }
+        else
+        {
+            addError("file.upload.file.not.specified", []);
+        }
+        flash.errors = this.errors;
+        redirect(action: 'show', controller:"uploader")
+    }
+
+    public getUploadDir()
+    {
+        def baseDir = System.getProperty("base.dir")
+        return new File("${baseDir}/uploadedFiles")
     }
 
     def show = {

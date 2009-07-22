@@ -74,7 +74,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(emailConnection.emailDatasources[0].id, emailDatasource.id);
     }
 
-    void testIfConnectorHasErrorsNothingIsAdded() {
+    void testAddRollsBackIfConnectorHasErrors() {
 
         def existingConnector=EmailConnector.add(connectorSaveParams);
         assertFalse(existingConnector.hasErrors());
@@ -86,7 +86,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(0, EmailDatasource.count())
     }
 
-    void testIfConnectionHasErrorsConnectorIsNotAdded() {
+    void testAddRollsBackIfConnectionHasErrors() {
         def connectionSaveParams=[:];
         connectionSaveParams.name=EmailConnectorOperations.getEmailConnectionName(connectorSaveParams.name);
         connectionSaveParams.smtpHost=connectorSaveParams.smtpHost;
@@ -103,7 +103,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    void testIfDatasourceHasErrorsConnectorIsNotAdded() {
+    void testAddRollsBackIfDatasourceHasErrors() {
         def datasource = BaseDatasource.add(name: EmailConnector.getEmailDatasourceName(connectorSaveParams.name))
         assertFalse(datasource.hasErrors())
 
@@ -117,19 +117,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(ds.hasErrors())
     }
 
-    void testSuccessfullDelete() {
-        def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
-        assertEquals(1, EmailConnector.count());
-        assertEquals(1, EmailConnection.count());
-        assertEquals(1, EmailDatasource.count());
-
-        EmailConnectorOperations.deleteConnector(createdObjects["emailConnector"])
-
-        assertEquals(0, EmailConnector.count());
-        assertEquals(0, EmailConnection.count());
-        assertEquals(0, EmailDatasource.count());
-    }
 
     public void testSuccessfulUpdate()
     {
@@ -177,7 +165,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(emailConnection.emailDatasources[0].id, emailDatasource.id);
     }
 
-    void testIfConnectionUpdateFailsUpdateIsRollbacked() {
+    void testUpdateRollsbackIfConnectionHasErrors() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
         assertEquals(1, EmailConnector.count())
@@ -206,7 +194,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(connectorSaveParams.smtpHost, emailConnector.ds.connection.smtpHost)
     }
 
-    void testIfDatasourceUpdateFailsUpdateIsRollbacked() {
+    void testUpdateRollsbackIfDatasourceHasErrors() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
         assertEquals(1, EmailConnector.count())
@@ -234,7 +222,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(EmailConnector.getEmailDatasourceName(connectorSaveParams.name), emailConnector.ds.name)
     }
 
-    void testIfConnectorUpdateFailsNothingIsUpdated() {
+    void testUpdateRollsbackIfConnectorHasErrors() {
         def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
 
         assertEquals(1, EmailConnector.count())
@@ -259,6 +247,20 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(connectorSaveParams["userPassword"], emailConnection.userPassword)
         assertEquals(connectorSaveParams["protocol"], emailConnection.protocol)
 
+    }
+
+     void testSuccessfullDelete() {
+        def createdObjects = EmailConnectorOperations.addConnector(connectorSaveParams)
+
+        assertEquals(1, EmailConnector.count());
+        assertEquals(1, EmailConnection.count());
+        assertEquals(1, EmailDatasource.count());
+
+        EmailConnectorOperations.deleteConnector(createdObjects["emailConnector"])
+
+        assertEquals(0, EmailConnector.count());
+        assertEquals(0, EmailConnection.count());
+        assertEquals(0, EmailDatasource.count());
     }
 
 }

@@ -37,7 +37,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         
     }
 
-    public void testSuccessfulSave()
+    public void testAddSuccessfuly()
     {
         def params=[:]
         params.putAll(connectorParams)
@@ -82,54 +82,12 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals (emailDatasource.connection.id, emailConnection.id);
         assertEquals (0, emailDatasource.reconnectInterval);
         assertEquals (emailConnection.emailDatasources[0].id, emailDatasource.id);
-
     }
-    void testIfConnectorHasErrorsConnectorIsNotAdded(){
+    void testAddRollsBackIfAnyModelHasErrors()
+    {
         def params=[:]
         params.putAll(connectorParams)
-        params["name"] ="";
 
-        def controller = new EmailConnectorController();
-        params.each{ key , val ->
-            controller.params[key] = val;
-        }
-
-        controller.save();
-
-        assertEquals(0, EmailConnector.count())
-        assertEquals(0, EmailConnection.count())
-        assertEquals(0, EmailDatasource.count())
-
-        def model = controller.modelAndView.model;
-        def conn = model.emailConnector;
-        assertTrue(conn.hasErrors())
-        assertEquals("blank", conn.errors.allErrors[0].code)
-    }
-    void testIfConnectionHasErrorsConnectorIsNotAdded(){
-        def params=[:]
-        params.putAll(connectorParams)
-        params["smtpHost"] ="";
-
-        def controller = new EmailConnectorController();
-        params.each{ key , val ->
-            controller.params[key] = val;
-        }
-
-        controller.save();
-
-        assertEquals(0, EmailConnector.count())
-        assertEquals(0, EmailConnection.count())
-        assertEquals(0, EmailDatasource.count())
-
-        def model = controller.modelAndView.model;
-        def conn = model.emailConnection;
-        assertTrue(conn.hasErrors())
-        assertEquals("blank", conn.errors.allErrors[0].code)
-    }
-    void testIfDatasourceHasErrorsConnectorIsNotAdded(){
-        def params=[:]
-        params.putAll(connectorParams)
-        
         def datasource = BaseDatasource.add(name:EmailConnector.getEmailDatasourceName(params.name))
         assertFalse(datasource.hasErrors())
 
@@ -139,7 +97,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         }
 
         controller.save();
-        def connector=EmailConnector.list()[0]        
+        def connector=EmailConnector.list()[0]
         assertEquals(0, EmailConnector.count())
         assertEquals(0, EmailConnection.count())
         assertEquals(0, EmailDatasource.count())
@@ -151,7 +109,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals("rapidcmdb.instance.already.exist", ds.errors.allErrors[0].code)
     }
 
-     public void testSuccessfulUpdate()
+     public void testUpdateSuccessfully()
     {
         def oldParams=[:]
         oldParams.putAll(connectorParams)
@@ -224,56 +182,9 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         
 
     }
-     void testIfConnectionRenameFailsUpdateIsNotExecuted(){
-        def params=[:]
-        params.putAll(connectorParams)
 
 
-        def controller = new EmailConnectorController();
-        params.each{ key , val ->
-            controller.params[key] = val;
-        }
-
-        controller.save();
-        
-        assertEquals(1, EmailConnector.count())
-        assertEquals(1, EmailConnection.count())
-        assertEquals(1, EmailDatasource.count())
-
-        def updateParams=[:]
-        updateParams.putAll(params)
-        updateParams["name"]="newEmailConnector"
-        updateParams["id"]=EmailConnector.list()[0].id
-
-        def baseConn = Connection.add(name:updateParams.name)
-        assertFalse(baseConn.hasErrors())
-
-
-        IntegrationTestUtils.resetController(controller);
-        updateParams.each{ key , val ->
-            controller.params[key] = val;
-        }
-        controller.update();
-
-        def model = controller.modelAndView.model;
-        def conn = model.emailConnection;
-
-        assertTrue(conn.hasErrors())
-        assertEquals("default.not.unique.message", conn.errors.allErrors[0].code)
-
-        assertEquals(1, EmailConnector.count())
-        assertEquals(1, EmailConnection.count())
-        assertEquals(1, EmailDatasource.count())
-
-
-        assertNull(EmailConnector.get(name:updateParams.name))
-        def emailConnector = EmailConnector.get(name:params.name);
-        assertNotNull(emailConnector)
-        assertEquals(params.smtpHost, emailConnector.ds.connection.smtpHost)
-        
-    }
-
-    void testIfDatasourceRenameFailsUpdateIsNotExecuted(){
+    void testUpdateRollsBackIfAnyModelHasErrors(){
         def params=[:]
         params.putAll(connectorParams)
 
@@ -322,13 +233,16 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(EmailConnector.getEmailDatasourceName(params.name), emailConnector.ds.name)
 
     }
-     void testIfConnectorHasErrorsConnectorIsNotUpdated(){
+
+    public void testDeleteSuccessfully()
+    {
         def params=[:]
         params.putAll(connectorParams)
 
+
         def controller = new EmailConnectorController();
         params.each{ key , val ->
-            controller.params[key] = val;
+           controller.params[key] = val;
         }
 
         controller.save();
@@ -336,102 +250,20 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(1, EmailConnector.count())
         assertEquals(1, EmailConnection.count())
         assertEquals(1, EmailDatasource.count())
-        
 
 
-        def updateParams=[:]
-        updateParams.putAll(params)
-        updateParams["smtpHost"] ="192.168.1.101";
-        updateParams["smtpPort"] = 26;
-        updateParams["username"] = "testaccoun2t";
-        updateParams["userPassword"] = "13600";
-        updateParams["protocol"] = EmailConnection.SMTPS;        
-        updateParams["name"]=""
-        updateParams["id"]=EmailConnector.list()[0].id
+        IntegrationTestUtils.resetController (controller);
 
-        IntegrationTestUtils.resetController(controller);
-        updateParams.each{ key , val ->
-            controller.params[key] = val;
-        }
+        def existingConnector=EmailConnector.list()[0];
 
-        controller.update();
-        
-        assertEquals(1, EmailConnector.count())
-        assertEquals(1, EmailConnection.count())
-        assertEquals(1, EmailDatasource.count())
+        controller.params["id"]=existingConnector.id.toString();
 
+        controller.delete();
 
-        def model = controller.modelAndView.model;
-        def modelItem = model.emailConnector;
-        assertTrue(modelItem.hasErrors())
-        assertEquals("blank", modelItem.errors.allErrors[0].code)
+        assertEquals(0, EmailConnector.count())
+        assertEquals(0, EmailConnection.count())
+        assertEquals(0, EmailDatasource.count())
 
-        def emailConnector=EmailConnector.list()[0]
-        assertEquals(emailConnector.name,params.name)
-        assertEquals(emailConnector.ds.connection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnector.ds.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
-        
-        def paramsToCheck=[:]
-        paramsToCheck.putAll(params)
-        paramsToCheck.remove("name");
-
-        paramsToCheck.each{ key , val ->
-            assertEquals(val,emailConnector.ds.connection[key])
-        }
-        
     }
-//    void testIfConnectionHasErrorsConnectorIsNotUpdated(){
-//        fail("Needs implementation of pre-validation of parameters. can not be tested otherwise")
-//       def params=[:]
-//        params.putAll(connectorParams)
-//
-//        def controller = new EmailConnectorController();
-//        params.each{ key , val ->
-//            controller.params[key] = val;
-//        }
-//
-//        controller.save();
-//
-//        assertEquals(1, EmailConnector.count())
-//        assertEquals(1, EmailConnection.count())
-//        assertEquals(1, EmailDatasource.count())
-//
-//
-//
-//        def updateParams=[:]
-//        updateParams.putAll(params)
-//        updateParams["name"] = "testConnectorrrx";
-//        updateParams["smtpPort"] = 26;
-//        updateParams["username"] = "testaccoun2t";
-//        updateParams["userPassword"] = "13600";
-//        updateParams["protocol"] = EmailConnection.SMTPS;
-//        updateParams["smtpHost"] =null;
-//        updateParams["id"]=EmailConnector.list()[0].id
-//
-//        IntegrationTestUtils.resetController(controller);
-//        updateParams.each{ key , val ->
-//            controller.params[key] = val;
-//        }
-//
-//        controller.update();
-//
-//
-//        def model = controller.modelAndView.model;
-//        def modelItem = model.emailConnection;
-//        assertTrue(modelItem.hasErrors())
-//        assertEquals("nullable", modelItem.errors.allErrors[0].code)
-//
-//        def emailConnector=EmailConnector.list()[0]
-//        assertEquals(emailConnector.name,params.name)
-//        assertEquals(emailConnector.emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
-//        assertEquals(emailConnector.emailDatasource.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
-//
-//        def paramsToCheck=[:]
-//        paramsToCheck.putAll(params)
-//        paramsToCheck.remove("name");
-//
-//        paramsToCheck.each{ key , val ->
-//            assertEquals(val,emailConnector.emailConnection[key])
-//        }
-//    }
+   
 }

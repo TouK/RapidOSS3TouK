@@ -49,7 +49,9 @@
                             <label for="role">Role:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'role','errors')}">
-                            <g:select optionKey="id" from="${Role.list()}" name="role.id" value="${group?.role?.id}" ></g:select>
+                            <g:set var="selectedRoleId" value="${group?.role?.id}"></g:set>
+                            <g:set var="selectedRoleId" value="${selectedRoleId?selectedRoleId:Role.get(name:Role.USER)?.id}"></g:set>
+                            <g:select optionKey="id" from="${Role.searchEvery('alias:*',[sort:'name',order:'desc'])}" name="role.id" value="${selectedRoleId}" ></g:select>
                         </td>
                     </tr>
 

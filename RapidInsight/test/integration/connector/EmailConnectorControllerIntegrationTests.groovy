@@ -8,6 +8,7 @@ import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import connection.Connection
 import com.ifountain.rcmdb.test.util.EmailConnectionImplTestUtils
 import com.ifountain.comp.test.util.CommonTestUtils
+import connection.EmailConnectionImpl
 
 /**
 * Created by IntelliJ IDEA.
@@ -302,13 +303,13 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals("/emailConnector/list", controller.response.redirectedUrl);
     }
 
-    private def addConnectorForTest()
+    private def addConnectorForTestConnection()
     {
         CommonTestUtils.initializeFromFile("RCMDBTest.properties");
         def params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
 
-        def connectorSaveParams = [name: "testConnector", smtpHost: params.SmtpHost, smtpPort: params.SmtpPort,
-                username: params.Username, userPassword: params.Password, protocol: EmailConnection.SMTP];
+        def connectorSaveParams = [name: "testConnector", smtpHost: params[EmailConnectionImpl.SMTPHOST], smtpPort: params[EmailConnectionImpl.SMTPPORT],
+                username: params[EmailConnectionImpl.USERNAME], userPassword: params[EmailConnectionImpl.PASSWORD], protocol: EmailConnection.SMTP];
 
         def createdObjects=EmailConnector.addConnector(connectorSaveParams);
         createdObjects.each{ objectName,object ->
@@ -323,7 +324,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
     }
     public void testTestConnectionSuccessfullyAndWithException()
     {
-        def connector=addConnectorForTest();
+        def connector=addConnectorForTestConnection();
 
         def controller=new EmailConnectorController();
 

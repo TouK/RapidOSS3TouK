@@ -693,10 +693,34 @@ class DbUtilsTests extends RapidCoreTestCase {
 
         //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
         String xmlFile = rrdFileName+".xml";
-        DbUtils.fetchDataToXml (rrdFileName, "b", "AVERAGE", 978300900000L, 978360900000L, xmlFile);
+        Map data = DbUtils.fetchDataToXml (rrdFileName, "b", xmlFile);
         assertTrue(new File(xmlFile).exists());
-        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000));
-        assertEquals ("Values in xml file are not proper", 2.0d, actualData);
+        println data;
+        assertMap(data);
+    }
+    public void testFetchAllData() throws Exception{
+        new File(rrdFileName+".xml").delete();
+
+        createDatabase();
+
+        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
+        String xmlFile = rrdFileName+".xml";
+        Map data = DbUtils.fetchDataToXml (rrdFileName, xmlFile);
+        assertTrue(new File(xmlFile).exists());
+        println data;
+        assertMap(data.get("b"));
+    }
+    private void assertMap(Map data){
+        assertEquals("Map values are not equal","1.0",data.get("978301200").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978301500").toString());
+        assertEquals("Map values are not equal","5.0",data.get("978301800").toString());
+        assertEquals("Map values are not equal","3.0",data.get("978302100").toString());
+        assertEquals("Map values are not equal","1.0",data.get("978302400").toString());
+        assertEquals("Map values are not equal","2.0",data.get("978302700").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978303000").toString());
+        assertEquals("Map values are not equal","6.0",data.get("978303300").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978303600").toString());
+        assertEquals("Map values are not equal","2.0",data.get("978303900").toString());
     }
 
     public void testWriteMultipleDatasourceToXml() throws Exception{
@@ -707,12 +731,9 @@ class DbUtilsTests extends RapidCoreTestCase {
         String[] dataPoints = new String[2];
         dataPoints[0] = "a";
         dataPoints[1] = "b";
-        DbUtils.fetchDataToXml (rrdFileName, dataPoints, "AVERAGE", 978300900000L, 978303900000L, xmlFile);
+        Map data = DbUtils.fetchDataToXml (rrdFileName, dataPoints, "AVERAGE", 978300900000L, 978303900000L, xmlFile);
         assertTrue(new File(xmlFile).exists());
-        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000));
-        DecimalFormat formatter = new DecimalFormat("#.#");
-        actualData = Double.parseDouble(formatter.format(actualData));
-        assertEquals ("Values in xml file are not proper", 1.3d, actualData);
+        assertMap(data.get(dataPoints[1]));
     }
 
     public void testConvertingXml() throws Exception{
@@ -753,6 +774,12 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             xff:0.5,
                                             steps:1,
                                             rows:30,
+                                        ],
+                                        [
+                                            function:"AVERAGE",
+                                            xff:0.5,
+                                            steps:5,
+                                            rows:20,
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;

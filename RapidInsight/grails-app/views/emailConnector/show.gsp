@@ -40,34 +40,34 @@
                 <tr class="prop">
                     <td valign="top" class="name">smtpHost:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection.smtpHost}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection.smtpHost}</td>
 
                 </tr>
 
                 <tr class="prop">
                     <td valign="top" class="name">smtpPort:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection.smtpPort}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection.smtpPort}</td>
 
                 </tr>
                 <tr class="prop">
                     <td valign="top" class="name">Protocol:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection.protocol}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection.protocol}</td>
 
                 </tr>
 
                  <tr class="prop">
                     <td valign="top" class="name">Username:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection.username}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection.username}</td>
 
                 </tr>
 
                 <tr class="prop">
                     <td valign="top" class="name">Password:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection.userPassword}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection.userPassword}</td>
 
                 </tr>
 
@@ -76,13 +76,13 @@
                 <tr class="prop">
                     <td valign="top" class="name">Min Timeout:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection?.minTimeout}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection?.minTimeout}</td>
 
                 </tr>
                 <tr class="prop">
                     <td valign="top" class="name">Max Timeout:</td>
 
-                    <td valign="top" class="value">${emailConnector.emailConnection?.maxTimeout}</td>
+                    <td valign="top" class="value">${emailConnector.ds.connection?.maxTimeout}</td>
 
                 </tr>
 

@@ -74,7 +74,7 @@ class EmailConnectorController {
             redirect(action: 'list');
         }
         else {
-            return [emailConnector: emailConnector, emailConnection: emailConnector.emailConnection, emailDatasource: emailConnector.emailDatasource]
+            return [emailConnector: emailConnector, emailConnection: emailConnector.ds.connection, emailDatasource: emailConnector.ds]
         }
     }
     def update = {

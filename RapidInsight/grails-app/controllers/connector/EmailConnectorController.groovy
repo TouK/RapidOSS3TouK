@@ -96,104 +96,104 @@ class EmailConnectorController {
             redirect(action: edit, id: params.id)
         }
     }
-
-    def addTo = {
-        def emailConnector = EmailConnector.get([id: params.id])
-        if (!emailConnector) {
-            flash.message = "EmailConnector not found with id ${params.id}"
-            redirect(action: 'list', params: [:]);
-        }
-        else {
-            def relationName = params.relationName;
-            if (relationName) {
-                def otherClass = DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
-                def relatedObjectList = [];
-                if (otherClass) {
-                    relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                }
-                return [emailConnector: emailConnector, relationName: relationName, relatedObjectList: relatedObjectList]
-            }
-            else {
-                flash.message = "No relation name specified for add relation action"
-                redirect(action: edit, id: emailConnector.id)
-            }
-        }
-    }
-
-
-
-    def addRelation = {
-        def emailConnector = EmailConnector.get([id: params.id])
-        if (!emailConnector) {
-            flash.message = "EmailConnector not found with id ${params.id}"
-            redirect(action: 'list', params: [:]);
-        }
-        else {
-            def relationName = params.relationName;
-            def otherClass = DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
-            if (otherClass) {
-                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if (res) {
-                    def relationMap = [:];
-                    relationMap[relationName] = res;
-                    emailConnector.addRelation(relationMap);
-                    if (emailConnector.hasErrors()) {
-                        def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
-                        render(view: 'addTo', model: [emailConnector: emailConnector, relationName: relationName, relatedObjectList: relatedObjectList])
-                    }
-                    else {
-                        flash.message = "EmailConnector ${params.id} updated"
-                        redirect(action: edit, id: emailConnector.id)
-                    }
-
-                }
-                else {
-                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action: addTo, id: params.id, relationName: relationName)
-                }
-            }
-            else {
-                flash.message = "No relation exist with name ${relationName}"
-                redirect(action: addTo, id: params.id, relationName: relationName)
-            }
-        }
-    }
-
-    def removeRelation = {
-        def emailConnector = EmailConnector.get([id: params.id])
-        if (!emailConnector) {
-            flash.message = "EmailConnector not found with id ${params.id}"
-            redirect(action: 'list', params: [:]);
-        }
-        else {
-            def relationName = params.relationName;
-
-            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
-            if (otherClass) {
-                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
-                if (res) {
-                    def relationMap = [:];
-                    relationMap[relationName] = res;
-                    emailConnector.removeRelation(relationMap);
-                    if (emailConnector.hasErrors()) {
-                        render(view: 'edit', model: [emailConnector: emailConnector])
-                    }
-                    else {
-                        flash.message = "EmailConnector ${params.id} updated"
-                        redirect(action: edit, id: emailConnector.id)
-                    }
-                }
-                else {
-                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
-                    redirect(action: edit, id: emailConnector.id)
-                }
-            }
-            else {
-                flash.message = "No relation exist with name ${relationName}"
-                redirect(action: edit, id: emailConnector.id)
-            }
-        }
-    }
+//
+//    def addTo = {
+//        def emailConnector = EmailConnector.get([id: params.id])
+//        if (!emailConnector) {
+//            flash.message = "EmailConnector not found with id ${params.id}"
+//            redirect(action: 'list', params: [:]);
+//        }
+//        else {
+//            def relationName = params.relationName;
+//            if (relationName) {
+//                def otherClass = DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
+//                def relatedObjectList = [];
+//                if (otherClass) {
+//                    relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
+//                }
+//                return [emailConnector: emailConnector, relationName: relationName, relatedObjectList: relatedObjectList]
+//            }
+//            else {
+//                flash.message = "No relation name specified for add relation action"
+//                redirect(action: edit, id: emailConnector.id)
+//            }
+//        }
+//    }
+//
+//
+//
+//    def addRelation = {
+//        def emailConnector = EmailConnector.get([id: params.id])
+//        if (!emailConnector) {
+//            flash.message = "EmailConnector not found with id ${params.id}"
+//            redirect(action: 'list', params: [:]);
+//        }
+//        else {
+//            def relationName = params.relationName;
+//            def otherClass = DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
+//            if (otherClass) {
+//                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
+//                if (res) {
+//                    def relationMap = [:];
+//                    relationMap[relationName] = res;
+//                    emailConnector.addRelation(relationMap);
+//                    if (emailConnector.hasErrors()) {
+//                        def relatedObjectList = otherClass.metaClass.invokeStaticMethod(otherClass, "list");
+//                        render(view: 'addTo', model: [emailConnector: emailConnector, relationName: relationName, relatedObjectList: relatedObjectList])
+//                    }
+//                    else {
+//                        flash.message = "EmailConnector ${params.id} updated"
+//                        redirect(action: edit, id: emailConnector.id)
+//                    }
+//
+//                }
+//                else {
+//                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
+//                    redirect(action: addTo, id: params.id, relationName: relationName)
+//                }
+//            }
+//            else {
+//                flash.message = "No relation exist with name ${relationName}"
+//                redirect(action: addTo, id: params.id, relationName: relationName)
+//            }
+//        }
+//    }
+//
+//    def removeRelation = {
+//        def emailConnector = EmailConnector.get([id: params.id])
+//        if (!emailConnector) {
+//            flash.message = "EmailConnector not found with id ${params.id}"
+//            redirect(action: 'list', params: [:]);
+//        }
+//        else {
+//            def relationName = params.relationName;
+//
+//            def otherClass = com.ifountain.rcmdb.domain.util.DomainClassUtils.getStaticMapVariable(EmailConnector, "relations")[relationName].type;
+//            if (otherClass) {
+//                def res = otherClass.metaClass.invokeStaticMethod(otherClass, "get", params.relatedObjectId.toLong());
+//                if (res) {
+//                    def relationMap = [:];
+//                    relationMap[relationName] = res;
+//                    emailConnector.removeRelation(relationMap);
+//                    if (emailConnector.hasErrors()) {
+//                        render(view: 'edit', model: [emailConnector: emailConnector])
+//                    }
+//                    else {
+//                        flash.message = "EmailConnector ${params.id} updated"
+//                        redirect(action: edit, id: emailConnector.id)
+//                    }
+//                }
+//                else {
+//                    flash.message = otherClass.getName() + " not found with id ${params.relatedObjectId}"
+//                    redirect(action: edit, id: emailConnector.id)
+//                }
+//            }
+//            else {
+//                flash.message = "No relation exist with name ${relationName}"
+//                redirect(action: edit, id: emailConnector.id)
+//            }
+//        }
+//    }
 
     def reloadOperations = {
         def modelClass = grailsApplication.getClassForName("connector.EmailConnector")
@@ -226,7 +226,7 @@ class EmailConnectorController {
             redirect(action: list)
         }
         else {
-            def emailConnection = emailConnector.emailConnection;
+            def emailConnection = emailConnector.ds.connection;
             if (!emailConnection)
             {
                 flash.message = "emailConnection of emailConnector not found"

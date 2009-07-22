@@ -63,7 +63,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(1,emailConnections.size());
         def emailConnection=emailConnections[0];
         assertEquals(emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnection.id,emailConnector.emailConnection.id);
+        assertEquals(emailConnection.id,emailConnector.ds.connection.id);
         assertEquals (emailConnection.emailDatasources.size(), 1);
 
         def paramsToCheck=[:]
@@ -78,7 +78,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals (1, emailDatasources.size());
         EmailDatasource emailDatasource = emailDatasources[0];
         assertEquals (emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
-        assertEquals (emailDatasource.id, emailConnector.emailDatasource.id);
+        assertEquals (emailDatasource.id, emailConnector.ds.id);
         assertEquals (emailDatasource.connection.id, emailConnection.id);
         assertEquals (0, emailDatasource.reconnectInterval);
         assertEquals (emailConnection.emailDatasources[0].id, emailDatasource.id);
@@ -202,7 +202,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals(1,emailConnections.size());
         def emailConnection=emailConnections[0];
         assertEquals(emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnection.id,emailConnector.emailConnection.id);
+        assertEquals(emailConnection.id,emailConnector.ds.connection.id);
         assertEquals (emailConnection.emailDatasources.size(), 1);
 
         def paramsToCheck=[:]
@@ -217,7 +217,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertEquals (1, emailDatasources.size());
         EmailDatasource emailDatasource = emailDatasources[0];
         assertEquals (emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
-        assertEquals (emailDatasource.id, emailConnector.emailDatasource.id);
+        assertEquals (emailDatasource.id, emailConnector.ds.id);
         assertEquals (emailDatasource.connection.id, emailConnection.id);
         assertEquals (0, emailDatasource.reconnectInterval);
         assertEquals (emailConnection.emailDatasources[0].id, emailDatasource.id);
@@ -269,7 +269,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertNull(EmailConnector.get(name:updateParams.name))
         def emailConnector = EmailConnector.get(name:params.name);
         assertNotNull(emailConnector)
-        assertEquals(params.smtpHost, emailConnector.emailConnection.smtpHost)
+        assertEquals(params.smtpHost, emailConnector.ds.connection.smtpHost)
         
     }
 
@@ -318,8 +318,8 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         assertNull(EmailConnector.get(name:updateParams.name))
         def emailConnector = EmailConnector.get(name:params.name);
         assertNotNull(emailConnector)
-        assertEquals(params.smtpHost, emailConnector.emailConnection.smtpHost)
-        assertEquals(EmailConnector.getEmailDatasourceName(params.name), emailConnector.emailDatasource.name)
+        assertEquals(params.smtpHost, emailConnector.ds.connection.smtpHost)
+        assertEquals(EmailConnector.getEmailDatasourceName(params.name), emailConnector.ds.name)
 
     }
      void testIfConnectorHasErrorsConnectorIsNotUpdated(){
@@ -368,15 +368,15 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         def emailConnector=EmailConnector.list()[0]
         assertEquals(emailConnector.name,params.name)
-        assertEquals(emailConnector.emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnector.emailDatasource.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
+        assertEquals(emailConnector.ds.connection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
+        assertEquals(emailConnector.ds.name,EmailConnector.getEmailDatasourceName(emailConnector.name));
         
         def paramsToCheck=[:]
         paramsToCheck.putAll(params)
         paramsToCheck.remove("name");
 
         paramsToCheck.each{ key , val ->
-            assertEquals(val,emailConnector.emailConnection[key])
+            assertEquals(val,emailConnector.ds.connection[key])
         }
         
     }

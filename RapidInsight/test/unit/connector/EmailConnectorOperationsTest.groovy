@@ -59,7 +59,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(connectorSaveParams["username"], emailConnection.username)
         assertEquals(connectorSaveParams["userPassword"], emailConnection.userPassword)
         assertEquals(connectorSaveParams["protocol"], emailConnection.protocol)
-        assertEquals(emailConnection.id, emailConnector.emailConnection.id);
+        assertEquals(emailConnection.id, emailConnector.ds.connection.id);
         assertEquals(emailConnection.emailDatasources.size(), 1);
 
         def emailDatasources = EmailDatasource.list();
@@ -68,7 +68,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertNotNull(createdObjects["emailDatasource"])
         assertEquals(createdObjects["emailDatasource"].id, emailDatasource.id)
         assertEquals(emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
-        assertEquals(emailDatasource.id, emailConnector.emailDatasource.id);
+        assertEquals(emailDatasource.id, emailConnector.ds.id);
         assertEquals(emailDatasource.connection.id, emailConnection.id);
         assertEquals(0, emailDatasource.reconnectInterval);
         assertEquals(emailConnection.emailDatasources[0].id, emailDatasource.id);
@@ -156,7 +156,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertNotNull(updatedObjects["emailConnection"])
         assertEquals(updatedObjects["emailConnection"].id, emailConnection.id)
         assertEquals(emailConnection.name, EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnection.id, emailConnector.emailConnection.id);
+        assertEquals(emailConnection.id, emailConnector.ds.connection.id);
         assertEquals(emailConnection.emailDatasources.size(), 1);
         assertEquals(connectorUpdateParams["smtpHost"], emailConnection.smtpHost)
         assertEquals(connectorUpdateParams["smtpPort"], emailConnection.smtpPort)
@@ -171,7 +171,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertNotNull(updatedObjects["emailDatasource"])
         assertEquals(updatedObjects["emailDatasource"].id, emailDatasource.id)
         assertEquals(emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
-        assertEquals(emailDatasource.id, emailConnector.emailDatasource.id);
+        assertEquals(emailDatasource.id, emailConnector.ds.id);
         assertEquals(emailDatasource.connection.id, emailConnection.id);
         assertEquals(0, emailDatasource.reconnectInterval);
         assertEquals(emailConnection.emailDatasources[0].id, emailDatasource.id);
@@ -203,7 +203,7 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertNull(EmailConnector.get(name: connectorUpdateParams.name))
         def emailConnector = EmailConnector.get(name: connectorSaveParams.name);
         assertNotNull(emailConnector)
-        assertEquals(connectorSaveParams.smtpHost, emailConnector.emailConnection.smtpHost)
+        assertEquals(connectorSaveParams.smtpHost, emailConnector.ds.connection.smtpHost)
     }
 
     void testIfDatasourceUpdateFailsUpdateIsRollbacked() {
@@ -230,8 +230,8 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertNull(EmailConnector.get(name: connectorUpdateParams.name))
         def emailConnector = EmailConnector.get(name: connectorSaveParams.name);
         assertNotNull(emailConnector)
-        assertEquals(connectorSaveParams.smtpHost, emailConnector.emailConnection.smtpHost)
-        assertEquals(EmailConnector.getEmailDatasourceName(connectorSaveParams.name), emailConnector.emailDatasource.name)
+        assertEquals(connectorSaveParams.smtpHost, emailConnector.ds.connection.smtpHost)
+        assertEquals(EmailConnector.getEmailDatasourceName(connectorSaveParams.name), emailConnector.ds.name)
     }
 
     void testIfConnectorUpdateFailsNothingIsUpdated() {
@@ -248,10 +248,10 @@ class EmailConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(emailConnector.hasErrors())
 
         emailConnector = EmailConnector.list()[0]
-        def emailConnection = emailConnector.emailConnection;
+        def emailConnection = emailConnector.ds.connection;
         assertEquals(emailConnector.name, connectorSaveParams.name)
         assertEquals(emailConnection.name, EmailConnector.getEmailConnectionName(emailConnector.name));
-        assertEquals(emailConnector.emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
+        assertEquals(emailConnector.ds.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
 
         assertEquals(connectorSaveParams["smtpHost"], emailConnection.smtpHost)
         assertEquals(connectorSaveParams["smtpPort"], emailConnection.smtpPort)

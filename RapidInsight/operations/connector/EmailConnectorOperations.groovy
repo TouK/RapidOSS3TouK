@@ -31,11 +31,10 @@ class EmailConnectorOperations extends com.ifountain.rcmdb.domain.operation.Abst
             def emailConnection = EmailConnection.addUnique(connectorParamsCopy);
             createdObjects["emailConnection"] = emailConnection;
             if (!emailConnection.hasErrors()) {
-                emailConnector.addRelation(emailConnection: emailConnection)
                 def emailDatasource = EmailDatasource.addUnique(name: EmailConnector.getEmailDatasourceName(emailConnector.name), connection: emailConnection);
                 createdObjects["emailDatasource"] = emailDatasource;
                 if (!emailDatasource.hasErrors()) {
-                    emailConnector.addRelation(emailDatasource: emailDatasource)
+                    emailConnector.addRelation(ds: emailDatasource)
                 }
             }
         }
@@ -57,18 +56,18 @@ class EmailConnectorOperations extends com.ifountain.rcmdb.domain.operation.Abst
     public static Map updateConnector(EmailConnector emailConnector, Map connectorParams) {
         def connectorParamsCopy = connectorParams.clone();
         def oldProperties = [:]
-        def updatedObjects = [emailConnector: emailConnector, emailConnection: emailConnector.emailConnection, emailDatasource: emailConnector.emailDatasource];
+        def updatedObjects = [emailConnector: emailConnector, emailConnection: emailConnector.ds.connection, emailDatasource: emailConnector.ds];
         oldProperties[emailConnector] = ControllerUtils.backupOldData(emailConnector, connectorParamsCopy);
         emailConnector.update(connectorParamsCopy);
         updatedObjects["emailConnector"] = emailConnector;
         if (!emailConnector.hasErrors()) {
-            def emailConnection = emailConnector.emailConnection;
+            def emailConnection = emailConnector.ds.connection;
             connectorParamsCopy.name = EmailConnector.getEmailConnectionName(connectorParamsCopy.name)
             oldProperties[emailConnection] = ControllerUtils.backupOldData(emailConnection, connectorParamsCopy);
             emailConnection.update(connectorParamsCopy)
             updatedObjects["emailConnection"] = emailConnection;
             if (!emailConnection.hasErrors()) {
-                def emailDatasource = emailConnector.emailDatasource;
+                def emailDatasource = emailConnector.ds;
                 oldProperties[emailDatasource] = ControllerUtils.backupOldData(emailDatasource, connectorParamsCopy);
                 emailDatasource.update(name: EmailConnector.getEmailDatasourceName(emailConnector.name));
                 updatedObjects["emailDatasource"] = emailDatasource;
@@ -96,7 +95,8 @@ class EmailConnectorOperations extends com.ifountain.rcmdb.domain.operation.Abst
     }
 
     public static void deleteConnector(EmailConnector emailConnector) {
-        emailConnector.emailConnection.remove();
+        emailConnector.ds?.connection?.remove();
+        emailConnector.ds?.remove();
         emailConnector.remove()
     }
 }

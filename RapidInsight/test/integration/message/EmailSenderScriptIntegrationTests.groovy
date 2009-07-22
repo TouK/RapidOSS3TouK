@@ -336,11 +336,11 @@ class EmailSenderScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals(params.name, emailConnector.name);
 
         def emailConnection=EmailConnection.list()[0];
-        assertEquals(emailConnection.id,emailConnector.emailConnection.id);
+        assertEquals(emailConnection.id,emailConnector.ds.connection.id);
         assertEquals (emailConnection.emailDatasources.size(), 1);
 
         EmailDatasource emailDatasource = EmailDatasource.list()[0];
-        assertEquals (emailDatasource.id, emailConnector.emailDatasource.id);
+        assertEquals (emailDatasource.id, emailConnector.ds.id);
         assertEquals (emailDatasource.connection.id, emailConnection.id);
         
     }

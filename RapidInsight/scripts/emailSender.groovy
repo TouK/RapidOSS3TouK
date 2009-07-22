@@ -15,7 +15,7 @@ def from="IFountainEmailSender@ifountain.com"
 
 def date=new Date();
 
-def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.emailDatasource
+def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 

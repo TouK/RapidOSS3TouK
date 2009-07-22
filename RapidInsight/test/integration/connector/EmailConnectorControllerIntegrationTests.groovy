@@ -6,6 +6,9 @@ import datasource.BaseDatasource
 import datasource.EmailDatasource
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import connection.Connection
+import com.ifountain.rcmdb.test.util.EmailConnectionImplTestUtils
+import com.ifountain.comp.test.util.CommonTestUtils
+
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -62,9 +65,10 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def emailConnections=EmailConnection.list();
         assertEquals(1,emailConnections.size());
         def emailConnection=emailConnections[0];
-        assertEquals(emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
+
+        assertEquals(EmailConnector.getEmailConnectionName(emailConnector.name),emailConnection.name);
         assertEquals(emailConnection.id,emailConnector.ds.connection.id);
-        assertEquals (emailConnection.emailDatasources.size(), 1);
+        assertEquals (1,emailConnection.emailDatasources.size());
 
         def paramsToCheck=[:]
         paramsToCheck.putAll(params)
@@ -77,9 +81,10 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def emailDatasources = EmailDatasource.list();
         assertEquals (1, emailDatasources.size());
         EmailDatasource emailDatasource = emailDatasources[0];
-        assertEquals (emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
+
+        assertEquals (EmailConnector.getEmailDatasourceName(emailConnector.name),emailDatasource.name);
         assertEquals (emailDatasource.id, emailConnector.ds.id);
-        assertEquals (emailDatasource.connection.id, emailConnection.id);
+        assertEquals (emailConnection.id,emailDatasource.connection.id);
         assertEquals (0, emailDatasource.reconnectInterval);
         assertEquals (emailConnection.emailDatasources[0].id, emailDatasource.id);
     }
@@ -132,17 +137,17 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         
         IntegrationTestUtils.resetController (controller);
 
-        def params=[:]
-        params["name"] = "testConnector2";
-        params["smtpHost"] ="192.168.1.101";
-        params["smtpPort"] = 26;
-        params["username"] = "testaccoun2t";
-        params["userPassword"] = "13600";
-        params["protocol"] = EmailConnection.SMTPS;
-        params["id"]=oldEmailConnector.id
+        def updateParams=[:]
+        updateParams["name"] = "testConnector2";
+        updateParams["smtpHost"] ="192.168.1.101";
+        updateParams["smtpPort"] = 26;
+        updateParams["username"] = "testaccoun2t";
+        updateParams["userPassword"] = "13600";
+        updateParams["protocol"] = EmailConnection.SMTPS;
+        updateParams["id"]=oldEmailConnector.id
 
         controller = new EmailConnectorController();
-        params.each{ key , val ->
+        updateParams.each{ key , val ->
             controller.params[key] = val;
         }
         controller.update();
@@ -150,7 +155,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def emailConnectors = EmailConnector.list();
         assertEquals(1, emailConnectors.size());
         EmailConnector emailConnector = emailConnectors[0]
-        assertEquals(params.name, emailConnector.name);
+        assertEquals(updateParams.name, emailConnector.name);
 
         assertEquals(String.valueOf(controller.response.redirectedUrl),"/emailConnector/show/${emailConnector.id}")
 
@@ -159,12 +164,13 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def emailConnections=EmailConnection.list();
         assertEquals(1,emailConnections.size());
         def emailConnection=emailConnections[0];
-        assertEquals(emailConnection.name,EmailConnector.getEmailConnectionName(emailConnector.name));
+
+        assertEquals(EmailConnector.getEmailConnectionName(emailConnector.name),emailConnection.name);
         assertEquals(emailConnection.id,emailConnector.ds.connection.id);
-        assertEquals (emailConnection.emailDatasources.size(), 1);
+        assertEquals ( 1,emailConnection.emailDatasources.size());
 
         def paramsToCheck=[:]
-        paramsToCheck.putAll(params)
+        paramsToCheck.putAll(updateParams)
         paramsToCheck.remove("id");
         
         paramsToCheck.each{ key , val ->
@@ -174,12 +180,26 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def emailDatasources = EmailDatasource.list();
         assertEquals (1, emailDatasources.size());
         EmailDatasource emailDatasource = emailDatasources[0];
-        assertEquals (emailDatasource.name, EmailConnector.getEmailDatasourceName(emailConnector.name));
+
+        assertEquals (EmailConnector.getEmailDatasourceName(emailConnector.name),emailDatasource.name);
         assertEquals (emailDatasource.id, emailConnector.ds.id);
-        assertEquals (emailDatasource.connection.id, emailConnection.id);
+        assertEquals (emailConnection.id,emailDatasource.connection.id);
         assertEquals (0, emailDatasource.reconnectInterval);
         assertEquals (emailConnection.emailDatasources[0].id, emailDatasource.id);
         
+
+    }
+    public void testUpdateGeneratesErrorMessageWhenEmailConnectorNotFound()
+    {
+        def controller=new EmailConnectorController();
+        
+        def objectId="noobject"
+        controller.params["id"]=objectId;
+
+        controller.update();
+
+        assertEquals("EmailConnector not found with id ${objectId}",controller.flash.message);
+        assertEquals("/emailConnector/edit/${objectId}", controller.response.redirectedUrl);
 
     }
 
@@ -203,6 +223,7 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
         def updateParams=[:]
         updateParams.putAll(params)
         updateParams["name"]="newEmailConnector"
+        updateParams["smtpHost"] ="192.168.1.101";
         updateParams["id"]=EmailConnector.list()[0].id
 
         def baseDs = BaseDatasource.add(name:EmailConnector.getEmailDatasourceName(updateParams.name))
@@ -260,10 +281,70 @@ class EmailConnectorControllerIntegrationTests  extends RapidCmdbIntegrationTest
 
         controller.delete();
 
+        assertEquals("/emailConnector/list", controller.response.redirectedUrl);
+        
+
         assertEquals(0, EmailConnector.count())
         assertEquals(0, EmailConnection.count())
         assertEquals(0, EmailDatasource.count())
 
+    }
+
+    public void testDeleteGeneratesErrorMessageWhenGroupNotFound()
+    {
+        def controller=new EmailConnectorController();
+        def objectId="noobject"
+        controller.params["id"]=controller;
+
+        controller.delete();
+
+        assertEquals("EmailConnector not found with id ${controller}",controller.flash.message);
+        assertEquals("/emailConnector/list", controller.response.redirectedUrl);
+    }
+
+    private def addConnectorForTest()
+    {
+        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        def params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
+
+        def connectorSaveParams = [name: "testConnector", smtpHost: params.SmtpHost, smtpPort: params.SmtpPort,
+                username: params.Username, userPassword: params.Password, protocol: EmailConnection.SMTP];
+
+        def createdObjects=EmailConnector.addConnector(connectorSaveParams);
+        createdObjects.each{ objectName,object ->
+                println object.errors 
+        };
+
+        assertEquals(1, EmailConnector.count())
+        assertEquals(1, EmailConnection.count())
+        assertEquals(1, EmailDatasource.count())
+
+        return createdObjects.emailConnector;
+    }
+    public void testTestConnectionSuccessfullyAndWithException()
+    {
+        def connector=addConnectorForTest();
+
+        def controller=new EmailConnectorController();
+
+        controller.params["id"]=connector.id.toString();
+        controller.testConnection();
+        
+        assertEquals("Successfully connected to server.",controller.flash.message);
+        assertEquals("/emailConnector/list", controller.response.redirectedUrl);
+
+
+        //with exception
+
+        connector.ds.connection.update(username:"ssssssssssssss");
+        IntegrationTestUtils.resetController (controller);
+
+        controller.params["id"]=connector.id.toString();
+        controller.testConnection();
+
+        assertEquals(1,controller.flash.errors.getAllErrors().size())
+        assertEquals("connection.test.exception",controller.flash.errors.getAllErrors()[0].code);
+        assertEquals("/emailConnector/list", controller.response.redirectedUrl);
     }
    
 }

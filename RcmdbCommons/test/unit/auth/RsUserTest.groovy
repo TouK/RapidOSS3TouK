@@ -50,10 +50,29 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(userProps.username,user.username);
         assertEquals(RsUser.hashPassword(userProps.password),user.passwordHash)
 
+        def userGroups=user.groups;
+        assertEquals (2, userGroups.size())
+        assertNotNull(userGroups.find{it.id == group1.id})
+        assertNotNull(userGroups.find{it.id == group2.id})
+    }
+    public void testAddUserWithGroupList()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
 
-        assertEquals (2, user.groups.size())
-        assertEquals(group1.id, user.groups[0].id)
-        assertEquals(group2.id, user.groups[1].id)
+        def groupsToBeAdded = ["group1", group2]
+        def userProps = [username:"user1", password:"password",groups:groupsToBeAdded];
+        
+        RsUser user = RsUser.addUser(userProps);
+        assertFalse(user.hasErrors());
+
+        assertEquals(userProps.username,user.username);
+        assertEquals(RsUser.hashPassword(userProps.password),user.passwordHash)
+
+        def userGroups=user.groups;
+        assertEquals (2, userGroups.size())
+        assertNotNull(userGroups.find{it.id == group1.id})
+        assertNotNull(userGroups.find{it.id == group2.id})
     }
     public void testAddUniqueUserHasErrorIfUserAlreadyExists()
     {
@@ -72,39 +91,19 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(1,RsUser.count());
 
     }
-    public void testAddUserWithGroupList()
-    {
-        def group1 = Group.add(name:"group1");
-        def group2 = Group.add(name:"group2");
-
-        def groupsToBeAdded = ["group1", group2]
-        def userProps = [username:"user1", password:"password",groups:groupsToBeAdded];
-        
-        RsUser user = RsUser.addUser(userProps);
-        assertFalse(user.hasErrors());
-
-        assertEquals(userProps.username,user.username);
-        assertEquals(RsUser.hashPassword(userProps.password),user.passwordHash)
-
-
-        assertEquals (2, user.groups.size())
-        assertEquals(group1.id, user.groups[0].id)
-        assertEquals(group2.id, user.groups[1].id)
-
-    }
     public void testAddUserWithGroupListThrowsExceptionIfGroupDoesNotExist()
     {
-
-        def userProps = [username:"user1", password:"password"];
         def groupsToBeCreated = ["group1"]
+        def userProps = [username:"user1", password:"password",groups:groupsToBeCreated];
+
         try
         {
-            RsUser.addUser(userProps, groupsToBeCreated);
+            RsUser.addUser(userProps);
             fail("Should throw exception");
         }
         catch(Exception e)
         {
-
+             assertTrue("wrong exception ${e}",e.getMessage().indexOf("Could not create user since")>=0)
         }
         assertEquals(0,RsUser.count())
     }
@@ -203,6 +202,33 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals (group2.id, updatedUser.groups[0].id)
 
 
+    }
+
+    public void testUpdateUserWithGroupList()
+    {
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+
+        def userProps = [username:"user1", passwordHash:"password"];
+        RsUser user = RsUser.add(userProps);
+
+        assertFalse(user.hasErrors());
+
+        assertEquals (0, user.groups.size());
+
+        def groupsToBeAdded = ["group1", group2]
+        def updateProps = [groups:groupsToBeAdded];
+
+        RsUser updatedUser = RsUser.updateUser(user,updateProps);
+        assertFalse(updatedUser.hasErrors());
+
+        assertEquals(userProps.username,updatedUser.username);
+        
+        def userGroups=updatedUser.groups;
+        assertEquals (2, userGroups.size())
+        assertNotNull(userGroups.find{it.id == group1.id})
+        assertNotNull(userGroups.find{it.id == group2.id})
     }
 
     public void testUpdateUserThrowsExceptionIfGroupsEmpty()

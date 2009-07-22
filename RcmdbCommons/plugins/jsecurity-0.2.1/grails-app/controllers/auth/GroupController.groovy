@@ -19,7 +19,8 @@
 package auth
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import com.ifountain.rcmdb.domain.util.DomainClassUtils;
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.exception.MessageSourceException;
 /**
  * Created by IntelliJ IDEA.
  * User: Sezgin Kucukkaraaslan
@@ -109,13 +110,42 @@ class GroupController {
     def update = {
         def group = Group.get([id: params.id])
         if (group) {
-            group.update(ControllerUtils.getClassProperties(params, Group));
-            if (!group.hasErrors()) {
-                flash.message = "Group ${params.id} updated"
-                redirect(action: show, id: group.id)
+            def groupProps=ControllerUtils.getClassProperties(params, Group);
+
+
+            def exception=null;
+
+            try{
+                Group.updateGroup(group,groupProps);
             }
-            else {
-                render(view: 'edit', model: [group: group])
+            catch(MessageSourceException e)
+            {
+                exception=e;
+            }
+
+            if(exception!=null)
+            {
+                addExceptionToError(exception);
+                flash.errors = this.errors;
+
+                def tmpGroup = new Group();
+
+                groupProps.each {String propName, value ->
+                    tmpGroup.setProperty(propName, value, false);
+                }
+
+                render(view: 'create', model: [group: tmpGroup,availableUsers:availableUsersForGroupUsers(groupProps.users),groupUsers:groupProps.users])
+                return;
+            }
+            else
+            {
+                if (!group.hasErrors()) {
+                    flash.message = "Group ${params.id} updated"
+                    redirect(action: show, id: group.id)
+                }
+                else {
+                    render(view: 'edit', model: [group: group,availableUsers:availableUsersForGroupUsers(groupProps.users),groupUsers:groupProps.users])
+                }
             }
         }
         else {
@@ -127,18 +157,70 @@ class GroupController {
     def create = {
         def group = new Group()
         group.properties = params
-        return ['group': group, availableUsers: RsUser.list()]
+        return ['group': group, availableUsers: RsUser.list(),groupUsers:[]]
+    }
+    def addExceptionToError = { exception ->
+        if(exception instanceof MessageSourceException)
+        {
+            addError(exception.getCode(),Arrays.asList(exception.getArgs()))
+        }
+        else
+        {
+            addError("default.custom.error", [e.getMessage()])
+        }
+    }
+    def save = {
+        def groupProps=ControllerUtils.getClassProperties(params, Group);
+
+
+        def group=null;
+        def exception=null;
+
+        try{
+            group = Group.addUniqueGroup(groupProps)
+        }
+        catch(e)
+        {
+            exception=e;
+        }
+
+
+        if(exception!=null)
+        {
+            addExceptionToError(exception);
+            
+            flash.errors = this.errors;
+
+            def tmpGroup = new Group();
+            
+            groupProps.each {String propName, value ->
+                tmpGroup.setProperty(propName, value, false);
+            }
+
+            render(view: 'create', model: [group: tmpGroup,availableUsers:availableUsersForGroupUsers(groupProps.users),groupUsers:groupProps.users])
+            return;
+        }
+        else
+        {
+
+            if (!group.hasErrors()) {
+                flash.message = "Group ${group.id} created"
+                redirect(action: show, id: group.id)
+            }
+            else {
+                render(view: 'create', model: [group: group,availableUsers:availableUsersForGroupUsers(groupProps.users),groupUsers:groupProps.users])
+            }
+        }
     }
 
-    def save = {
-        def group = Group.addUnique(ControllerUtils.getClassProperties(params, Group))
-        if (!group.hasErrors()) {
-            flash.message = "Group ${group.id} created"
-            redirect(action: show, id: group.id)
-        }
-        else {
-            render(view: 'create', model: [group: group])
-        }
+    def availableUsersForGroupUsers(users)
+    {
+        def availableUsers = RsUser.list();
+        def groupUserNames = [:];
+        users.each {
+            groupUserNames[it.username] = it;
+        };
+        return availableUsers.findAll {!groupUserNames.containsKey(it.username)}
     }
 
 

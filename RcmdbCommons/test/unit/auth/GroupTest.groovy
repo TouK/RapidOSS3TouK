@@ -12,66 +12,170 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 * To change this template use File | Settings | File Templates.
 */
 class GroupTest extends RapidCmdbWithCompassTestCase {
+    def userRole;
+    def adminRole;
 
     public void setUp() {
         super.setUp();
         initialize([RsUser, Group, SegmentFilter, Role], []);
         CompassForTests.addOperationSupport(Group, GroupOperations);
         SegmentQueryHelper.getInstance().initialize([]);
+
+        userRole=Role.add(name:Role.USER)
+        assertFalse(userRole.hasErrors())
+        adminRole=Role.add(name:Role.ADMINISTRATOR)
+        assertFalse(adminRole.hasErrors())
+    }
+    public void tearDown() {
+        super.tearDown();
     }
 
-    public void testCreateGroup()
+    public void testAddGroup()
     {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
-        Group group = Group.createGroup(groupProps);
-        assertFalse(group.hasErrors())
-        assertEquals(1, Group.count())
-        assertEquals(groupProps.name, group.name)
-        assertEquals(groupProps.segmentFilter, group.segmentFilter)
+        def user1 = RsUser.add(username:"user1",passwordHash:"abc");
+        def user2 = RsUser.add(username:"user2",passwordHash:"abc");
+
+        def groupProps = [name:"group1",segmentFilter: "filter1",users:[user1,user2],role:userRole];
+        Group group = Group.addGroup(groupProps);
+
+        assertFalse(group.hasErrors());
+        assertEquals(groupProps.name,group.name);
+        assertEquals(groupProps.segmentFilter,group.segmentFilter);
+        assertEquals(Group.GLOBAL_FILTER,group.segmentFilterType)
+
+        def groupUsers=group.users;
+        
+        assertEquals (2, groupUsers.size());
+        assertNotNull(groupUsers.find{it.id == user1.id})
+        assertNotNull(groupUsers.find{it.id == user2.id})
+        
+        //adding another group with no users
+        def groupProps2 = [name:"group2",segmentFilter: "filter1",segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole];
+        Group group2 = Group.addGroup(groupProps2);
+        assertFalse(group2.hasErrors());
+        assertEquals(groupProps2.name,group2.name);
+        assertEquals(Group.CLASS_BASED_FILTER,group2.segmentFilterType)
+
+        assertEquals (0, group2.users.size());
     }
-
-    public void testCreateGroupWithUsers()
+    public void testGroupWithUserList()
     {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
-        def user1 = RsUser.add(username: "user1", passwordHash: "asdf")
-        assertFalse(user1.hasErrors())
-        def user2 = RsUser.add(username: "user2", passwordHash: "asdf")
-        assertFalse(user2.hasErrors());
 
-        Group group = Group.createGroup(groupProps, ["user1", user2]);
+        def user1 = RsUser.add(username:"user1",passwordHash:"abc");
+        def user2 = RsUser.add(username:"user2",passwordHash:"abc");
 
-        assertFalse(group.hasErrors())
+        def usersToBeAdded = ["user1", user2]
+        def groupProps = [name:"group1",segmentFilter: "filter1",users:usersToBeAdded,role:userRole];
+        Group group = Group.addGroup(groupProps);
 
-        assertEquals(2, group.users.size())
+        assertFalse(group.hasErrors());
+        assertEquals(groupProps.name,group.name);
+        assertEquals(groupProps.segmentFilter,group.segmentFilter);
 
-        assertTrue(group.users.contains(user1))
-        assertTrue(group.users.contains(user2))
+        def groupUsers=group.users;
+
+        assertEquals (2, groupUsers.size());
+        assertNotNull(groupUsers.find{it.id == user1.id})
+        assertNotNull(groupUsers.find{it.id == user2.id})
     }
-
-    public void testCreateGroupThrowsExceptionIfUserDoesnotExist()
+    public void testAddUniqueGroupHasErrorIfGroupAlreadyExists()
     {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
+        def user1 = RsUser.add(username:"user1",passwordHash:"abc");
+
+        def groupProps = [name:"group1",users:[user1],role:userRole];
+        Group group = Group.addUniqueGroup(groupProps);
+
+        assertFalse(group.hasErrors());
+        assertEquals(groupProps.name,group.name);
+
+        def groupUsers=group.users;
+
+        assertEquals (1, groupUsers.size());
+
+        Group group2 = Group.addUniqueGroup(groupProps);
+        assertTrue(group2.hasErrors());
+        assertEquals(1,Group.count());
+    }
+    public void testAddGroupThrowsExceptionIfUserDoesnotExist()
+    {
+        def groupUsers=["user1"]
+        def groupProps = [name: "gr1", segmentFilter: "filter1",users:groupUsers,role:userRole];
         try
         {
-            Group.createGroup(groupProps, ["user1"]);
+            Group.addGroup(groupProps);
             fail("Should throw exception");
         } catch (Exception e)
         {
             assertEquals("Could not created group since user user1 does not exist.", e.getMessage())
         }
-    }
 
-    public void testCreateGroupThrowsExceptionIfGroupPropsIsNull()
+        assertEquals(0,Group.count());
+    }
+    public void testAddGroupThrowsExceptionIfNoRoleIsSpecified()
     {
+        def groupUsers=["user1"]
+        def groupProps = [name: "gr1", segmentFilter: "filter1",users:groupUsers];
         try
         {
-            Group.createGroup(null);
+            Group.addGroup(groupProps);
             fail("Should throw exception");
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {
-            assertEquals("No group props specified", e.getMessage());
+            assertEquals("no.role.specified", e.getCode())
         }
+
+        assertEquals(0,Group.count());
     }
+    public void testUpdateGroup()
+    {
+        def user1 = RsUser.add(username:"user1",passwordHash:"abc");
+        def user2 = RsUser.add(username:"user2",passwordHash:"abc");
+
+        def groupProps = [name:"group1",role:userRole];
+        Group group = Group.add(groupProps);
+
+        assertFalse(group.hasErrors());
+        assertEquals(groupProps.name,group.name);
+        assertEquals (0,group.users.size());
+
+        def updateProps=[name:"group2",role:adminRole,users:[user1,"user2"]]
+
+        def updatedGroup=Group.get(id:group.id);
+        Group.updateGroup(updatedGroup,updateProps)
+        assertFalse(updatedGroup.hasErrors());
+        assertEquals(updateProps.name,updatedGroup.name)
+        assertEquals(adminRole.id,updatedGroup.role.id)
+            
+        def groupUsers=updatedGroup.users;
+        assertEquals (2,groupUsers.size());
+        assertNotNull(groupUsers.find{it.id == user1.id})
+        assertNotNull(groupUsers.find{it.id == user2.id})
+
+    }
+    public void testUpdateGroupThrowsExceptionIfRoleIsNull()
+    {
+
+        def groupProps = [name:"group1",role:userRole];
+        Group group = Group.add(groupProps);
+
+        assertFalse(group.hasErrors());
+        assertEquals(groupProps.name,group.name);
+        assertEquals (0,group.users.size());
+
+
+        try{
+            def updateProps=[name:"group2",role:null]
+            Group.updateGroup(group,updateProps);
+            fail("show throw exception")
+        }
+        catch(e)
+        {
+            assertEquals("no.role.specified", e.getCode())
+        }
+
+    }
+
 
     public void testAddUsers()
     {
@@ -81,7 +185,7 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
         def user2 = RsUser.add(username: "user2", passwordHash: "asdf")
         assertFalse(user2.hasErrors());
 
-        Group group = Group.createGroup(groupProps);
+        Group group = Group.add(groupProps);
         assertFalse(group.hasErrors())
         assertEquals(0, group.users.size())
 
@@ -93,13 +197,15 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
 
     public void testRemoveUsers()
     {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
+
         def user1 = RsUser.add(username: "user1", passwordHash: "asdf")
         assertFalse(user1.hasErrors())
         def user2 = RsUser.add(username: "user2", passwordHash: "asdf")
         assertFalse(user2.hasErrors());
 
-        Group group = Group.createGroup(groupProps, ["user1", user2]);
+        def groupProps = [name: "gr1", segmentFilter: "filter1",users:["user1", user2],role:userRole];
+
+        Group group = Group.addGroup(groupProps);
         assertFalse(group.hasErrors())
         assertEquals(2, group.users.size())
 
@@ -108,8 +214,8 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testAssignRole() {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
-        Group group = Group.createGroup(groupProps);
+        def groupProps = [name: "gr1", segmentFilter: "filter1",role:userRole];
+        Group group = Group.addGroup(groupProps);
         assertFalse(group.hasErrors())
 
         Role role = Role.add(name: "role1")
@@ -121,8 +227,8 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testRemoveRole() {
-        def groupProps = [name: "gr1", segmentFilter: "filter1"];
-        Group group = Group.createGroup(groupProps);
+        def groupProps = [name: "gr1", segmentFilter: "filter1",role:userRole];
+        Group group = Group.addGroup(groupProps);
         assertFalse(group.hasErrors())
 
         Role role = Role.add(name: "role1")
@@ -140,7 +246,7 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
         String groupName = "group1";
         assertNull(SegmentQueryHelper.getInstance().getGroupFilters(groupName))
 
-        Group group = Group.createGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER);
+        Group group = Group.addGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER,role:userRole);
         def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
         assertNotNull(groupFilters);
         assertEquals("name:*", groupFilters[SegmentQueryHelper.SEGMENT_FILTER]);
@@ -148,7 +254,7 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
 
     public void testSegmentGroupFiltersRemovalAfterDelete() {
         String groupName = "group1";
-        Group group = Group.createGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER);
+        Group group = Group.addGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER,role:userRole);
         def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
         assertNotNull(groupFilters);
 
@@ -160,7 +266,7 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
 
     public void testSegmentGroupFiltersCalculationAfterUpdate() {
         String groupName = "group1";
-        Group group = Group.createGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER);
+        Group group = Group.addGroup(name: groupName, segmentFilter: "name:*", segmentFilterType: Group.GLOBAL_FILTER,role:userRole);
         def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
         assertNotNull(groupFilters);
         SegmentQueryHelper.getInstance().removeGroupFilters(groupName);
@@ -186,19 +292,6 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
         }
 
         assertEquals(1,Group.count());
-
-//        user=RsUser.add(username:"system",passwordHash:"aaa");
-//        assertFalse(user.errors.toString(),user.hasErrors());
-//        try{
-//            user.remove();
-//            fail("should throw exception");
-//        }
-//        catch(e)
-//        {
-//            assertEquals("wrong exception ${e}","Can not delete your own account",e.getMessage());
-//        }
-//
-//        assertEquals(2,RsUser.count());
 
         //test a successfull remove
         group=Group.add(name:"testgroup");

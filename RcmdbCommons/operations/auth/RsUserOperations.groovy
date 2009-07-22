@@ -48,6 +48,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             {
                 throw new MessageSourceException("no.group.specified", [] as Object[]);
             }
+
+            params.groups = getGroupsFromRepository(params.groups);
         }
 
         user.update(params);
@@ -104,7 +106,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             Group group = Group.get(name: groupName);
             if (group == null)
             {
-                throw new Exception("Could not created user since Group ${groupName} does not exist.");
+                throw new Exception("Could not create user since Group ${groupName} does not exist.");
             }
             groupsToBeAssigned.add(group);
         }

@@ -208,7 +208,7 @@ class RsUserController {
 
             if(exception!=null)
             {
-                addError(exception.getCode(),Arrays.asList(exception.getArgs()))
+                addExceptionToError(exception);
                 flash.errors = this.errors;
 
                 userProps.each {String propName, value ->
@@ -309,6 +309,17 @@ class RsUserController {
         }
         return userChannels;
     }
+    def addExceptionToError = { exception ->
+        if(exception instanceof MessageSourceException)
+        {
+            addError(exception.getCode(),Arrays.asList(exception.getArgs()))
+        }
+        else
+        {
+            addError("default.custom.error", [e.getMessage()])
+        }
+    }
+
     def save = {        
         def exception=null;
 
@@ -337,7 +348,7 @@ class RsUserController {
 
         if(exception!=null)
         {
-            addError(exception.getCode(),Arrays.asList(exception.getArgs()))
+            addExceptionToError(exception);
             flash.errors = this.errors;
             userProps.remove("id");
             def tmpUser = new RsUser();

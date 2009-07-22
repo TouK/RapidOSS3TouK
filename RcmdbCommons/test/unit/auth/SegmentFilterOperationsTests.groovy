@@ -13,18 +13,23 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 */
 class SegmentFilterOperationsTests extends RapidCmdbWithCompassTestCase {
 
+    def userRole;
+
     public void setUp() {
         super.setUp();
-        initialize([Group, SegmentFilter], []);
+        initialize([Group, SegmentFilter,Role], []);
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(SegmentFilter, SegmentFilterOperations);
         SegmentQueryHelper.getInstance().initialize([]);
+
+        userRole=Role.add(name:Role.USER)
+        assertFalse(userRole.hasErrors())
     }
 
 
     public void testSegmentFilterCalculationAfterCrudOperations(){
         def groupName = "group1"
-        def group = Group.createGroup(name:groupName, segmentFilter:"name*", segmentFilterType:Group.GLOBAL_FILTER);
+        def group = Group.addGroup(name:groupName, segmentFilter:"name*", segmentFilterType:Group.GLOBAL_FILTER,role:userRole);
         assertFalse(group.hasErrors())
 
         SegmentQueryHelper.getInstance().removeGroupFilters(groupName);

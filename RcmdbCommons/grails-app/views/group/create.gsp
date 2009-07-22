@@ -49,7 +49,7 @@
                             <label for="role">Role:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean:group,field:'role','errors')}">
-                            <g:select optionKey="id" from="${Role.list()}" name="role.id" value="${group?.role?.id}" noSelection="['null':'']"></g:select>
+                            <g:select optionKey="id" from="${Role.list()}" name="role.id" value="${group?.role?.id}" ></g:select>
                         </td>
                     </tr>
 
@@ -71,8 +71,6 @@
                         </td>
                     </tr>
 
-
-
                     <tr class="prop">
                         <td valign="top" class="name" colspan="2">
                             Users:
@@ -80,7 +78,7 @@
                     </tr>
                     <tr>
                         <td valign="top" class="name" colspan="2">
-                            <g:render template="/common/listToList" model="[id:'users', inputName:'users.id', valueProperty:'id', displayProperty:'username', fromListTitle:'Available Users', toListTitle:'Group Users', fromListContent:availableUsers, toListContent:group?.users]"></g:render>
+                            <g:render template="/common/listToList" model="[id:'users', inputName:'users.id', valueProperty:'id', displayProperty:'username', fromListTitle:'Available Users', toListTitle:'Group Users', fromListContent:availableUsers, toListContent:groupUsers]"></g:render>
                         </td>
                     </tr>
                     

@@ -27,6 +27,8 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     public void tearDown() {
         super.tearDown();
+        RsUser.get(username:testUsername)?.remove();
+        RsUser.get(username:"${testUsername}2")?.remove();
     }
 
     public void testAddUserSuccessfully()
@@ -96,7 +98,7 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
-    public void testAddUserDoesNotAddUserWhenNoGroupsSelected()
+    public void testAddUserDoesNotAddUserWhenExceptionOccurs()
     {
         def controller=new RsUserController();
         controller.params["username"]=testUsername;
@@ -312,7 +314,7 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     }
 
-    public void testUpdateUserDoesNotUpdateUserWhenNoGroupsSelected()
+    public void testUpdateUserDoesNotUpdateUserWhenExceptionOccurs()
     {
         def rsUser=addTestUser();
         def emailInformation=rsUser.userInformations[0];

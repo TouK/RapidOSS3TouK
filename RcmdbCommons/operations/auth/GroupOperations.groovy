@@ -1,6 +1,7 @@
 package auth
 
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.exception.MessageSourceException
 
 /**
 * Created by IntelliJ IDEA.
@@ -32,20 +33,52 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
             SegmentQueryHelper.getInstance().calculateGroupFilters(name);    
         }
     }
-
-    public static Group createGroup(Map groupProps)
+    public static Group addGroup(params)
     {
-        return createGroup(groupProps, []);
+        return _addGroup(params,false);
     }
-    public static Group createGroup(Map groupProps, List users)
+    public static Group addUniqueGroup(params)
     {
-        if(groupProps == null)
+        return _addGroup(params,true);
+    }
+    private static Group _addGroup(params,boolean addUnique)
+    {
+        def group = null;
+
+        if (params.role == null )
         {
-            throw new Exception("No group props specified");
+            throw new MessageSourceException("no.role.specified", [] as Object[]);
         }
-        List usersToBeAdded = getUsersFromRepository(users);
-        groupProps.users = usersToBeAdded;
-        return Group.add(groupProps);    
+
+        params.users = getUsersFromRepository(params.users)
+
+        if(addUnique)
+        {
+            group = Group.addUnique(params);
+        }
+        else
+        {
+            group = Group.add(params);
+        }
+        return group;
+    }
+
+    public static Group updateGroup(group, params)
+    {
+        if (params.users != null)
+        {
+           params.users = getUsersFromRepository(params.users)
+        }
+        if(params.containsKey("role"))
+        {               
+            if (params.role == null )
+            {
+                throw new MessageSourceException("no.role.specified", [] as Object[]);
+            }
+        }
+
+        group.update(params);
+        return group;
     }
 
     private static List getUsersFromRepository(List users)

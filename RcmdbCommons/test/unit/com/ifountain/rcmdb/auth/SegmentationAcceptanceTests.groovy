@@ -32,6 +32,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
     Class leafClass3;
     Group userGroup;
     RsUser user;
+    Role userRole;
     public void setUp() {
         super.setUp();
         SessionManager.destroyInstance();
@@ -39,8 +40,14 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         createModels();
         initializeForAddAndUpdate();
         SegmentQueryHelper.getInstance().initialize([rootClass, parentClass1, parentClass2, leafClass1, leafClass2, leafClass3])
-        userGroup = Group.createGroup(name: "group1", segmentFilterType: Group.GLOBAL_FILTER)
+
+        userRole=Role.add(name:Role.USER)
+        assertFalse(userRole.hasErrors())
+
+        userGroup = Group.addGroup(name: "group1", segmentFilterType: Group.GLOBAL_FILTER,role:userRole)
         user = RsUser.addUser(username: "user1", password: "changeme", groups: [userGroup]);
+
+
     }
 
     public void tearDown() {
@@ -55,6 +62,8 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RsUser, RsUserOperations)
         CompassForTests.addOperationSupport(Group, GroupOperations)
         CompassForTests.addOperationSupport(SegmentFilter, SegmentFilterOperations)
+
+
     }
     def createModels() {
         def rootModelName = "RootModel";
@@ -497,8 +506,8 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def segmentFilter1 = "rootProp:a*"
         def segmentFilter2 = "rootProp:b*"
         def segmentFilter3 = "rootProp:c*"
-        def group2 = Group.createGroup(name:"group2", segmentFilterType:Group.CLASS_BASED_FILTER)
-        def group3 = Group.createGroup(name:"group3", segmentFilterType:Group.CLASS_BASED_FILTER)
+        def group2 = Group.addGroup(name:"group2", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
+        def group3 = Group.addGroup(name:"group3", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
         user.addToGroups([group2, group3]);
 
         userGroup.update(segmentFilter:segmentFilter1);

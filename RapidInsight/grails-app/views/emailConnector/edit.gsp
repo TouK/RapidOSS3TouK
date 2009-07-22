@@ -13,29 +13,8 @@
 </div>
 <div class="body">
     <h1>Create EmailConnector</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${emailConnector}">
-        <div class="errors">
-            <g:renderErrors bean="${emailConnector}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${emailConnection}">
-        <div class="errors">
-            <g:renderErrors bean="${emailConnection}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${emailDatasource}">
-        <div class="errors">
-            <g:renderErrors bean="${emailDatasource}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[emailConnector,emailConnection,emailDatasource]]"></g:render>
+    
     <g:form method="post">
         <input type="hidden" name="id" value="${emailConnector?.id}"/>
         <div class="dialog">

@@ -30,7 +30,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         new File(fileDirectory + "/" + fileName).delete()
         new File(fileDirectory + "/" + fileNameExt).delete()
-//        new File(fileDirectory + "/" + imageFileName).delete()
+        new File(fileDirectory + "/" + imageFileName).delete()
         new File(fileDirectory).delete()
         super.tearDown();
     }

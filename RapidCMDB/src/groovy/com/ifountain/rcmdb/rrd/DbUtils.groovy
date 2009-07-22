@@ -167,17 +167,17 @@ class DbUtils {
     /**
     *  inserts an array of data to the database at a time
     */
-    public static void updateData(String dbname, String[] data) {
-        if(!(new File(dbname).exists())){
-            throw new Exception("database file is not existent.")
-        }
-        RrdDb rrdDb = new RrdDb(dbname);
+    public static void updateData(String dbName, String[] data) {
+        executeAction(dbName){RrdDb rrdDb ->
+            if(!(new File(dbName).exists())){
+                throw new Exception("database file is not existent.")
+            }
 
-        Sample sample = rrdDb.createSample();
-        for(int i=0; i<data.length; i++){
-            sample.setAndUpdate( convertUpdateData(data[i]) );
+            Sample sample = rrdDb.createSample();
+            for(int i=0; i<data.length; i++){
+                sample.setAndUpdate( convertUpdateData(data[i]) );
+            }
         }
-        rrdDb.close();
     }
 
     /**
@@ -187,10 +187,10 @@ class DbUtils {
     * an exception since it cannot read the database
     */
     public static def fetchArchives(String dbName) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        def result = fetchArchives(rrdDb);
-        rrdDb.close();
-        return result;
+        return executeAction(dbName) {RrdDb rrdDb ->
+            def result = fetchArchives(rrdDb);
+            return result;
+        }
     }
 
     public static def fetchArchives(RrdDb rrdDb) {
@@ -219,10 +219,10 @@ class DbUtils {
     * an exception since it cannot read the database
     */
     public static def fetchDatasources(String dbName) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        def result = fetchDatasources(rrdDb);
-        rrdDb.close();
-        return result;
+        return executeAction(dbName){ RrdDb rrdDb ->
+            def result = fetchDatasources(rrdDb);
+            return result;
+        }
     }
 
     public static def fetchDatasources(RrdDb rrdDb) {
@@ -248,57 +248,56 @@ class DbUtils {
     *  returns the configuration map of specified rrd database
     */
     public static Map getDatabaseInfo(String dbName) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        RrdDef rrdDef = rrdDb.getRrdDef();
+        return executeAction(dbName) {RrdDb rrdDb ->
+            RrdDef rrdDef = rrdDb.getRrdDef();
 
-        Map config = [:];
-        config[DATABASE_NAME] = dbName;
+            Map config = [:];
+            config[DATABASE_NAME] = dbName;
 
-        long max = 0
-        long min = Long.MAX_VALUE
-        int counter = 0;
-        while(true)
-        {
-            try{
-                Archive archive = rrdDb.getArchive(counter++)
-            if(archive.getStartTime() < min)
-                min = archive.getStartTime()
-            if(archive.getEndTime() > max)
-                max = archive.getEndTime()
+            long max = 0
+            long min = Long.MAX_VALUE
+            int counter = 0;
+            while(true)
+            {
+                try{
+                    Archive archive = rrdDb.getArchive(counter++)
+                if(archive.getStartTime() < min)
+                    min = archive.getStartTime()
+                if(archive.getEndTime() > max)
+                    max = archive.getEndTime()
+                }
+                catch(ArrayIndexOutOfBoundsException e) { break;}
             }
-            catch(ArrayIndexOutOfBoundsException e) { break;}
+
+            config[START_TIME] = min * 1000;
+            config[Grapher.END_TIME] = max * 1000;
+
+            config[STEP] = rrdDef.getStep();
+            config[DATASOURCE] = fetchDatasources(rrdDb );
+            config[ARCHIVE] = fetchArchives(rrdDb);
+            return config;
         }
-
-        config[START_TIME] = min * 1000;
-        config[Grapher.END_TIME] = max * 1000;
-
-        config[STEP] = rrdDef.getStep();
-        config[DATASOURCE] = fetchDatasources(rrdDb );
-        config[ARCHIVE] = fetchArchives(rrdDb);
-
-        rrdDb.close();
-        return config;
     }
 
     private static def getArchiveUpdateTime(dbName, key) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        int archiveCount = rrdDb.getArcCount();
+        return executeAction(dbName) {RrdDb rrdDb ->
+            int archiveCount = rrdDb.getArcCount();
 
-        long initialValue = (key == 'Last')?0L:Long.MAX_VALUE
-        int counter = 0;
-        for(int i=0; i<archiveCount; i++)
-        {
-            try{
-                Archive archive = rrdDb.getArchive(i)
-                if(key == 'Last' && archive.getEndTime() > initialValue)
-                    initialValue = archive.getEndTime()
-                else if(key == 'First' && archive.getStartTime() < initialValue)
-                    initialValue = archive.getStartTime()
+            long initialValue = (key == 'Last')?0L:Long.MAX_VALUE
+            int counter = 0;
+            for(int i=0; i<archiveCount; i++)
+            {
+                try{
+                    Archive archive = rrdDb.getArchive(i)
+                    if(key == 'Last' && archive.getEndTime() > initialValue)
+                        initialValue = archive.getEndTime()
+                    else if(key == 'First' && archive.getStartTime() < initialValue)
+                        initialValue = archive.getStartTime()
+                }
+                catch(ArrayIndexOutOfBoundsException e) { break;}
             }
-            catch(ArrayIndexOutOfBoundsException e) { break;}
+            return (initialValue * 1000) as Long;
         }
-        rrdDb.close();
-        return (initialValue * 1000) as Long;
     }
 
     /*
@@ -319,21 +318,21 @@ class DbUtils {
     * returns the minimum step size (maximum resolution value) among all archives
     */
     public static Long getMinimumArchiveStep(String dbName) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        int archiveCount = rrdDb.getArcCount();
+        return executeAction(dbName) {RrdDb rrdDb ->
+            int archiveCount = rrdDb.getArcCount();
 
-        long minStep = Long.MAX_VALUE;
-        for(int i=0; i<archiveCount; i++)
-        {
-            try{
-                Archive archive = rrdDb.getArchive(i)
-                if(archive.getArcStep() < minStep)
-                    minStep = archive.getArcStep()
+            long minStep = Long.MAX_VALUE;
+            for(int i=0; i<archiveCount; i++)
+            {
+                try{
+                    Archive archive = rrdDb.getArchive(i)
+                    if(archive.getArcStep() < minStep)
+                        minStep = archive.getArcStep()
+                }
+                catch(ArrayIndexOutOfBoundsException e) { break;}
             }
-            catch(ArrayIndexOutOfBoundsException e) { break;}
+            return minStep;
         }
-        rrdDb.close();
-        return minStep;
     }
 
     /**
@@ -345,23 +344,23 @@ class DbUtils {
     }
 
     private static def fetchDataInfoMap(dbName, key='normal') {
-        def infoMap = [:]
-        infoMap['startTime'] = (key=='list')?getFirstArchiveUpdateTimes(dbName) as long[]:getFirstArchiveUpdate(dbName)
-        infoMap['endTime'] = (key=='list')?getLastArchiveUpdateTimes(dbName) as long[]:getLastArchiveUpdate(dbName)
+        return executeAction(dbName) {RrdDb rrdDb ->
+            def infoMap = [:]
+            infoMap['startTime'] = (key=='list')?getFirstArchiveUpdateTimes(dbName) as long[]:getFirstArchiveUpdate(dbName)
+            infoMap['endTime'] = (key=='list')?getLastArchiveUpdateTimes(dbName) as long[]:getLastArchiveUpdate(dbName)
 
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        def dslist = fetchDatasources(rrdDb);
-        String[] datasources = new String[dslist.size()];
-        for(int i=0; i<datasources.length; i++){
-            datasources[i] = dslist[i][NAME];
+            def arclist = fetchArchives(rrdDb);
+            def dslist = fetchDatasources(rrdDb);
+            String[] datasources = new String[dslist.size()];
+            for(int i=0; i<datasources.length; i++){
+                datasources[i] = dslist[i][NAME];
+            }
+
+            infoMap['function'] = arclist[0][FUNCTION];
+            infoMap['datasources'] = datasources as String[]
+
+            return infoMap
         }
-        rrdDb.close();
-
-        infoMap['function'] = arclist[0][FUNCTION];
-        infoMap['datasources'] = datasources as String[]
-
-        return infoMap
     }
 
     /**
@@ -390,32 +389,28 @@ class DbUtils {
 
     private static def fetchDataToDestination(String dbName, String[] datasource, String function,
                                       long startTime, long endTime, destination='return', xmlFile='') {
-        RrdDb rrdDb = new RrdDb(dbName);
+        return executeAction(dbName) {RrdDb rrdDb ->
+            long nstarttime = (long)(startTime / 1000)
+            long nendtime = (long)(endTime / 1000)
 
-        long nstarttime = (long)(startTime / 1000)
-        long nendtime = (long)(endTime / 1000)
+            def data
 
-        def data
+            try {
+                FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
+                fetchRequest.setFilter(datasource);
 
-        try {
-            FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-            fetchRequest.setFilter(datasource);
+                data = fetchRequest.fetchData().getValues()
 
-            data = fetchRequest.fetchData().getValues()
-
-            if(destination == 'xml') {
-                fetchRequest.fetchData().exportXml (xmlFile);
-                convertXmlFile (xmlFile);
+                if(destination == 'xml') {
+                    fetchRequest.fetchData().exportXml (xmlFile);
+                    convertXmlFile (xmlFile);
+                }
             }
+            catch(Exception e){
+                throw new Exception(e.getMessage())
+            }
+            return data
         }
-        catch(Exception e){
-            rrdDb.close()
-            throw new Exception(e.getMessage())
-        }
-
-        if(rrdDb.isClosed() == false)
-            rrdDb.close();
-        return data
     }
 
     /**
@@ -497,20 +492,20 @@ class DbUtils {
     }
 
     private static def getArchiveUpdateTimes(dbName, key) {
-        RrdDb rrdDb = new RrdDb(dbName);
-        int archiveCount = rrdDb.getArcCount();
-        def list = [];
-        int counter = 0;
-        for(int i=0; i<archiveCount; i++)
-        {
-            try{
-                Archive archive = rrdDb.getArchive(i)
-                list.add( ((key=='Last')?archive.getEndTime():archive.getStartTime()) * 1000 );
+        return executeAction(dbName) {RrdDb rrdDb ->
+            int archiveCount = rrdDb.getArcCount();
+            def list = [];
+            int counter = 0;
+            for(int i=0; i<archiveCount; i++)
+            {
+                try{
+                    Archive archive = rrdDb.getArchive(i)
+                    list.add( ((key=='Last')?archive.getEndTime():archive.getStartTime()) * 1000 );
+                }
+                catch(ArrayIndexOutOfBoundsException e) { break;}
             }
-            catch(ArrayIndexOutOfBoundsException e) { break;}
+            return list as Long[];
         }
-        rrdDb.close();
-        return list as Long[];
     }
 
     /*
@@ -547,30 +542,29 @@ class DbUtils {
     */
     public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
                                    long[] startTime, long[] endTime){
-        RrdDb rrdDb = new RrdDb(dbName);
-        FetchRequest fetchRequest;
-        FetchData fd;
-        Map values = [:];
-        for(int i=0; i<startTime.length; i++){
-            long nstarttime = (long)(startTime[i] / 1000)
-            long nendtime = (long)(endTime[i] / 1000)
+        return executeAction(dbName){RrdDb rrdDb ->
+            FetchRequest fetchRequest;
+            FetchData fd;
+            Map values = [:];
+            for(int i=0; i<startTime.length; i++){
+                long nstarttime = (long)(startTime[i] / 1000)
+                long nendtime = (long)(endTime[i] / 1000)
 
-            datasources.each {
-                fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-                fetchRequest.setFilter (it);
-                fd = fetchRequest.fetchData();
-                long[] timeStamps = fd.getTimestamps();
-                double[] dataValues = fd.getValues(it);
-                Map datasourceMap = [:];
-                for(int j=0; j<timeStamps.length; j++){
-                    datasourceMap[timeStamps[j]+""] =dataValues[j];
+                datasources.each {
+                    fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
+                    fetchRequest.setFilter (it);
+                    fd = fetchRequest.fetchData();
+                    long[] timeStamps = fd.getTimestamps();
+                    double[] dataValues = fd.getValues(it);
+                    Map datasourceMap = [:];
+                    for(int j=0; j<timeStamps.length; j++){
+                        datasourceMap[timeStamps[j]+""] =dataValues[j];
+                    }
+                    values[it] = datasourceMap;
                 }
-                values[it] = datasourceMap;
             }
-
+            return values;
         }
-        rrdDb.close();
-        return values;
     }
 
     public static Map fetchDataAsMap(String dbName, String datasource, String function,
@@ -717,6 +711,17 @@ class DbUtils {
             }
         }
         return null;
+    }
+
+    private static executeAction(String dbName, Closure closure)
+    {
+        RrdDb rrdDb = new RrdDb(dbName);
+        try{
+            return closure(rrdDb)
+        }
+        finally{
+            rrdDb.close();
+        }
     }
 
 }

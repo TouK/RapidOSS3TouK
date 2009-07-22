@@ -7,6 +7,7 @@ import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
 
+
 /**
 * Created by IntelliJ IDEA.
 * User: ifountain
@@ -116,9 +117,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertEquals(config[DbUtils.DATABASE_NAME],map[DbUtils.DATABASE_NAME]);
         checkDatasources(config[DbUtils.DATASOURCE], map[DbUtils.DATASOURCE]);
         checkArchives(config[DbUtils.ARCHIVE], map[DbUtils.ARCHIVE]);
-        //todo: will be handled later 
-//        assertEquals(config[DbUtils.START_TIME],map[DbUtils.START_TIME]);
-
         assertTrue(new File(rrdFileName).exists());
     }
 
@@ -825,4 +823,10 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.createXml(result,xmlFile);
         assertTrue("Xml file is not created", new File(xmlFile).exists() );
     }
+
+    public void testSynchronizedUpdateAndFetch()
+    {
+        
+    }
+
 }

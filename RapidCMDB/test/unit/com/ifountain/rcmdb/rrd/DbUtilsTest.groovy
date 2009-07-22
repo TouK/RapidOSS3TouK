@@ -646,7 +646,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303600000:2900:4");
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
-        DbUtils.fetchAllDataToXml(rrdFileName,rrdFileName+"fetcdata2.xml");
+        DbUtils.fetchDataToXml(rrdFileName,rrdFileName+"fetcdata2.xml");
     }
 
     public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
@@ -774,12 +774,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             xff:0.5,
                                             steps:1,
                                             rows:30,
-                                        ],
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:5,
-                                            rows:20,
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;

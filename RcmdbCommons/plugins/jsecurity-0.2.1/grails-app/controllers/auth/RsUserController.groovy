@@ -198,7 +198,7 @@ class RsUserController {
                     oldUserProperties=ControllerUtils.backupOldData(rsUser, propsToSave);
                     rsUser=RsUser.updateUser(rsUser,userProps);                    
                 }
-                catch(MessageSourceException e)
+                catch(e)
                 {
                     exception=e;
                 }
@@ -338,7 +338,7 @@ class RsUserController {
             try{
                 rsUser=RsUser.addUniqueUser(userProps);
             }
-            catch(MessageSourceException e)
+            catch(e)
             {
                 exception=e;
             }

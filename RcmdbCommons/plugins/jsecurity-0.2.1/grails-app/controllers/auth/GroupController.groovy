@@ -118,7 +118,7 @@ class GroupController {
             try{
                 Group.updateGroup(group,groupProps);
             }
-            catch(MessageSourceException e)
+            catch(e)
             {
                 exception=e;
             }

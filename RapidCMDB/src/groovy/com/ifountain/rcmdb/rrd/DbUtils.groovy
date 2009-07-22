@@ -474,116 +474,59 @@ class DbUtils {
     //===================================================================================//
 
     /**
-    *  returns first time series of first data point
-    *  it is the easiest call if the database has only one data source
-    */
-    public static double[] fetchDataToXml(String dbName, String xmlFile){
-        return   fetchAllDataToXml(dbName, xmlFile)[0];
-    }
-
-    /**
     * returns the all datasources in the database according to the first archive method.
     * this method also writes an xml file to the given destination file compatible with
     * flex chart application
     */
-    public static double[][] fetchAllDataToXml(String dbName, String xmlFile){
-        long startTime = getFirstArchiveUpdate(dbName);
-        long endTime = getLastArchiveUpdate(dbName);
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        def dslist = fetchDatasources(rrdDb);
-        String[] datasources = new String[dslist.size()];
-        for(int i=0; i<datasources.length; i++){
-            datasources[i] = dslist[i][NAME];
-        }
-//        long endTime = rrdDb.getLastUpdateTime() * 1000;
-        rrdDb.close();
-        String function = arclist[0][FUNCTION];
-//        long startTime = arclist[0][START_TIME] * 1000;
-        return fetchDataToXml(dbName, datasources, function, startTime, endTime, xmlFile);
+    public static Map fetchDataToXml(String dbName, String xmlFile){
+        Map data = fetchDataAsMap (dbName);
+        createXml(data, xmlFile);
+        return data;
     }
 
     /**
     * returns time series of one data index specified with its datasource name
     */
-    public static double[] fetchDataToXml(String dbName, String datasource, String xmlFile){
-        long startTime = getFirstArchiveUpdate(dbName);
-        long endTime = getLastArchiveUpdate(dbName);
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-//        long endTime = rrdDb.getLastUpdateTime() * 1000;
-        rrdDb.close();
-        String function = arclist[0][FUNCTION];
-//        long startTime = arclist[0][START_TIME] * 1000;
-        return fetchDataToXml(dbName, datasource, function, startTime, endTime, xmlFile);
+    public static Map fetchDataToXml(String dbName, String datasource, String xmlFile){
+        Map data = fetchDataAsMap (dbName, datasource);
+        createXml(data, xmlFile);
+        return data;
     }
 
     /**
     *  returns time series of one data index specified with its datasource name,
     * archive function of datasource, start time and end time
     */
-    public static double[] fetchDataToXml(String dbName, String datasource, String function,
+    public static Map fetchDataToXml(String dbName, String datasource, String function,
                                    long startTime, long endTime, String xmlFile){
-        boolean found = false;
-        RrdDb rrdDb = new RrdDb(dbName);
-        def dslist = fetchDatasources(rrdDb);
-        for(int i=0; i<dslist.size(); i++){
-            Map m = dslist[i];
-            if(m.get(NAME).equals(datasource)){
-                found = true;
-            };
-        }
-        if(!found){
-            rrdDb.close();
-            throw new Exception("data source not found")
-            return null;
-        }
-
-        long nstarttime = (long)(startTime / 1000)
-        long nendtime = (long)(endTime / 1000)
-
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-        fetchRequest.setFilter(datasource);
-
-        double[] data = fetchRequest.fetchData().getValues(datasource);
-        fetchRequest.fetchData().exportXml (xmlFile);
-        convertXmlFile (xmlFile);
-        rrdDb.close();
-        return data
+        Map data = fetchDataAsMap (dbName, datasource, function, startTime, endTime);
+        createXml(data, xmlFile);
+        return data;
     }
     /**
     *  returns time series of data indexes specified with its datasource names
     */
-    public static double[][] fetchDataToXml(String dbName, String[] datasources, String xmlFile){
-        long startTime = getFirstArchiveUpdate(dbName);
-        long endTime = getLastArchiveUpdate(dbName);
-        RrdDb rrdDb = new RrdDb(dbName);
-        def arclist = fetchArchives(rrdDb);
-        String function = arclist[0][DbUtils.FUNCTION];
-//        long startTime = arclist[0][DbUtils.START_TIME] * 1000;
-//        long endTime = rrdDb.getLastUpdateTime() * 1000;
-        rrdDb.close();
-        return fetchDataToXml(dbName, datasources, function, startTime, endTime, xmlFile);
+    public static Map fetchDataToXml(String dbName, String[] datasources, String xmlFile){
+        Map data = [:];
+        for(int i; i<datasources.length; i++){
+            data[datasources[i]] = fetchDataAsMap(dbName,datasources[i]);
+        }
+        createXml(data, xmlFile);
+        return data;
     }
 
     /**
     *  returns time series of data indexes specified with its datasource names,
     * archive function of datasource, start time and end time
     */
-    public static double[][] fetchDataToXml(String dbName, String[] datasources, String function,
+    public static Map fetchDataToXml(String dbName, String[] datasources, String function,
                                    long startTime, long endTime, String xmlFile){
-        RrdDb rrdDb = new RrdDb(dbName);
-        long nstarttime = (long)(startTime / 1000)
-        long nendtime = (long)(endTime / 1000)
-        FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-        fetchRequest.setFilter (datasources);
-
-        FetchData fd = fetchRequest.fetchData();
-        double[][] data = fd.getValues();
-        fd.exportXml (xmlFile);
-        convertXmlFile (xmlFile);
-        rrdDb.close();
-        return data
+        Map data = [:];
+        for(int i=0; i<datasources.length; i++){
+            data[datasources[i]] = fetchDataAsMap(dbName,datasources[i], function, startTime, endTime);
+        }
+        createXml(data, xmlFile);
+        return data;
     }
     /*
     * returns the endTime s of all archives
@@ -671,6 +614,10 @@ class DbUtils {
         FetchRequest fetchRequest;
         FetchData fd;
         Map values = [:];
+        datasources.each{
+            values[it] = [:];
+        }
+
         for(int i=0; i<startTime.length; i++){
             long nstarttime = (long)(startTime[i] / 1000)
             long nendtime = (long)(endTime[i] / 1000)
@@ -683,9 +630,10 @@ class DbUtils {
                 double[] dataValues = fd.getValues(0);
                 Map datasourceMap = [:];
                 for(int j=0; j<timeStamps.length; j++){
-                    datasourceMap[timeStamps[j]+""] =dataValues[j];
+//                    datasourceMap[timeStamps[j]+""] =dataValues[j];
+                    values[it][timeStamps[j]+""] =dataValues[j];
                 }
-                values[it] = datasourceMap;
+//                values[it] = datasourceMap;
             }
 
         }

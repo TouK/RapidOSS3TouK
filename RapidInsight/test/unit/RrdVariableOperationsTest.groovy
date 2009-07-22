@@ -1,7 +1,6 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.rrd.RrdUtils
-import com.ifountain.comp.test.util.file.TestFile;
 
 /**
 * User: ifountain

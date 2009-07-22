@@ -100,8 +100,6 @@ class Grapher {
         }
 
         setGeneralSettings(graphDef,config);
-//        graphDef.setImageQuality (1F);
-//        graphDef.setSmallFont(new java.awt.Font("Serif",java.awt.Font.BOLD, 12) )
         RrdGraph graph = new RrdGraph(graphDef);
 
         return graph.getRrdGraphInfo().getBytes()
@@ -135,89 +133,65 @@ class Grapher {
             throw new Exception("There is no database selected")
         }
     }
+
     public static String getColor(){
         String colorStr = colorList[colorIndex];
         colorIndex = (colorIndex+1)%10;
         return colorStr; 
     }
+
+    private static def retriveColor(element){
+        String colorStr = element.get(COLOR);
+        if(colorStr == null ){
+            colorStr = getColor();
+        }
+        if(colorStr.length()!=6){
+            throw new Exception("Invalid color: "+colorStr);
+        }
+        Color color;
+        try{
+            int r = Integer.parseInt(colorStr.substring(0,2),16);
+            int g = Integer.parseInt(colorStr.substring(2,4),16);
+            int b = Integer.parseInt(colorStr.substring(4,6),16);
+            color = new Color(r,g,b );
+        }catch(Exception e){
+            throw new Exception("Invalid color: "+colorStr);
+        }
+        return color
+    }
+    
     public static void addArea(RrdGraphDef rdef, alist){
          //sample area: graphDef.area("good", new Color(0, 0xFF, 0), "Good speed");
          alist.each{
             try{
-                String colorStr = it.get(COLOR);
-                if(colorStr == null ){
-                    colorStr = getColor();
-                }
-                if(colorStr.length()!=6){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
-                Color color;
-                try{
-                    int r = Integer.parseInt(colorStr.substring(0,2),16);
-                    int g = Integer.parseInt(colorStr.substring(2,4),16);
-                    int b = Integer.parseInt(colorStr.substring(4,6),16);
-                    color = new Color(r,g,b );
-                }catch(Exception e){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
-                rdef.area(it.get(NAME),color,it.get(DESCRIPTION) )
+                rdef.area(it.get(NAME),retriveColor(it),it.get(DESCRIPTION) )
             }
             catch(Exception ex){
                 throw new Exception("Area distorted: " + ex.getMessage()) ;
             }
         }
     }
+
     public static void addStack(RrdGraphDef rdef, slist){
          //sample area: graphDef.area("good", new Color(0, 0xFF, 0), "Good speed");
          slist.each{
             try{
-                String colorStr = it.get(COLOR);
-                if(colorStr == null ){
-                    colorStr = getColor();
-                }
-                if(colorStr.length()!=6){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
-                Color color;
-                try{
-                    int r = Integer.parseInt(colorStr.substring(0,2),16);
-                    int g = Integer.parseInt(colorStr.substring(2,4),16);
-                    int b = Integer.parseInt(colorStr.substring(4,6),16);
-                    color = new Color(r,g,b );
-                }catch(Exception e){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
-                rdef.stack(it.get(NAME),color,it.get(DESCRIPTION) )
+                rdef.stack(it.get(NAME),retriveColor(it),it.get(DESCRIPTION) )
             }
             catch(Exception ex){
                 throw new Exception("Stack distorted: " + ex.getMessage()) ;
             }
         }
     }
+
     public static void addLine(RrdGraphDef rdef, llist){
          //sample line: graphDef.line("lineb", Color.GREEN, "Line B", 3);
          llist.each{
             try{
-                String colorStr = it.get(COLOR);
-                if(colorStr == null ){
-                    colorStr = getColor();
-                }
-                if(colorStr.length()!=6){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
-                Color color;
-                try{
-                    int r = Integer.parseInt(colorStr.substring(0,2),16);
-                    int g = Integer.parseInt(colorStr.substring(2,4),16);
-                    int b = Integer.parseInt(colorStr.substring(4,6),16);
-                    color = new Color(r,g,b );
-                }catch(Exception e){
-                    throw new Exception("Invalid color: "+colorStr);
-                }
                 if(it.containsKey(THICKNESS) ){
-                    rdef.line(it.get(NAME),color,it.get(DESCRIPTION),it.get(THICKNESS) );
+                    rdef.line(it.get(NAME),retriveColor(it),it.get(DESCRIPTION),it.get(THICKNESS) );
                 }else{
-                    rdef.line(it.get(NAME),color,it.get(DESCRIPTION) );
+                    rdef.line(it.get(NAME),retriveColor(it),it.get(DESCRIPTION) );
                 }
             }
             catch(Exception ex){

@@ -6,7 +6,6 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
-import java.text.NumberFormat
 
 /**
 * Created by IntelliJ IDEA.
@@ -556,7 +555,7 @@ class DbUtilsTests extends RapidCoreTestCase {
             DbUtils.fetchData(rrdFileName,"c");
             fail("should throw exception because datasource is not number");
         }catch (Exception e){
-            assertEquals("data source not found",e.getMessage());
+            assertEquals("Unknown datasource name: c",e.getMessage());
         }
     }
 

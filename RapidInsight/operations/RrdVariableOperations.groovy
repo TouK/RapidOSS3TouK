@@ -395,8 +395,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         archiveConf[STEP] = arcStep;
         archiveConf[NUMBER_OF_DATAPOINTS] = arcRows;
         addArchive(archiveConf);
-//        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:arcStep, numberOfDatapoints:arcRows);
-//        addRelation(archives:archive);
         return arcStep;
 
     }
@@ -457,9 +455,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     public def addArchive(Map config){
-//        if there is an other archive with same step edit existing archive
-//        if(isStepExists(config)){ return; }
-
         Map archiveMap = [:];
         if(config.containsKey(FUNCTION))
             archiveMap[FUNCTION] = config.get(FUNCTION);

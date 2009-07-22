@@ -1,6 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.rrd.RrdUtils;
+import com.ifountain.rcmdb.rrd.RrdUtils
+import com.ifountain.comp.test.util.file.TestFile;
 
 /**
 * User: ifountain
@@ -30,7 +31,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         new File(fileDirectory + "/" + fileName).delete()
         new File(fileDirectory + "/" + fileNameExt).delete()
-        new File(fileDirectory + "/" + imageFileName).delete()
+//        new File(fileDirectory + "/" + imageFileName).delete()
         new File(fileDirectory).delete()
         super.tearDown();
     }
@@ -350,9 +351,62 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
+    public void testGraphMultipleTakingTwoMap() throws Exception{
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        variable1.addArchive(archive.getMap())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L)
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+        variable2.addArchive(archive.getMap())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        variable1.updateDB(1,978301200000)
+        variable1.updateDB(3,978301500000)
+        variable1.updateDB(5,978301800000)
+        variable1.updateDB(3,978302100000)
+        variable1.updateDB(1,978302400000)
+        variable1.updateDB(2,978302700000)
+        variable1.updateDB(4,978303000000)
+        variable1.updateDB(6,978303300000)
+        variable1.updateDB(4,978303600000)
+        variable1.updateDB(2,978303900000)
+
+        variable2.updateDB(300,978301200000)
+        variable2.updateDB(600,978301500000)
+        variable2.updateDB(900,978301800000)
+        variable2.updateDB(1200,978302100000)
+        variable2.updateDB(1500,978302400000)
+        variable2.updateDB(1800,978302700000)
+        variable2.updateDB(2100,978303000000)
+        variable2.updateDB(2400,978303300000)
+        variable2.updateDB(2700,978303600000)
+        variable2.updateDB(3000,978303900000)
+
+        def varConf = [
+                variable1:[ type:"area", description:"Variable 1"],
+                variable2:[ type:"stack", description:"Variable 2"],
+                ]
+
+        def graphConfig = [ title: "Graph With Multiple Source",
+                startTime: 978300600000L,
+                endTime: 978304200000L,
+                destination: imageFileName,
+                ]
+
+        RrdVariableOperations.graphMultiple(varConf, graphConfig);
+        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+    }
 
     public void testGraphWithMultipleSource() {
-  
+
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
 
@@ -406,7 +460,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
 
-    public void testGraphWithMultipleSourceByList() {
+    public void testFetchWithMultipleSource() {
 
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
         assertFalse(archive.errors.toString(), archive.hasErrors())
@@ -421,6 +475,50 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
         variable2.addArchive(archive.getMap())
 
+        variable1.createDB()
+        variable2.createDB()
+
+        variable1.updateDB(1,978301200000)
+        variable1.updateDB(3,978301500000)
+        variable1.updateDB(5,978301800000)
+        variable1.updateDB(3,978302100000)
+        variable1.updateDB(1,978302400000)
+        variable1.updateDB(2,978302700000)
+        variable1.updateDB(4,978303000000)
+        variable1.updateDB(6,978303300000)
+        variable1.updateDB(4,978303600000)
+        variable1.updateDB(2,978303900000)
+
+        variable2.updateDB(300,978301200000)
+        variable2.updateDB(600,978301500000)
+        variable2.updateDB(900,978301800000)
+        variable2.updateDB(1200,978302100000)
+        variable2.updateDB(1500,978302400000)
+        variable2.updateDB(1800,978302700000)
+        variable2.updateDB(2100,978303000000)
+        variable2.updateDB(2400,978303300000)
+        variable2.updateDB(2700,978303600000)
+        variable2.updateDB(3000,978303900000)
+
+        println RrdVariableOperations.fetchDataAsMap("variable1", "variable2");
+        //todo assertions will be added
+    }
+
+    public void testGraphWithMultipleSourceByList() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        variable1.addArchive(archive.getMap())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L)
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+        variable2.addArchive(archive.getMap())
+         
         variable1.createDB()
         variable2.createDB()
 
@@ -613,6 +711,38 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals("variable1.rrd", fileName)
     }
 
+    public void testFetchMultipleData() throws Exception{
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, frequency:300)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L,frequency:300)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        variable1.createDB();
+        variable2.createDB();
+
+        RrdVariableOperations.fetchData("variable1","variable2");
+    }
+
+    public void testFetchMultipleDataWithMoreConfiguration() throws Exception{
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L, frequency:300)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L,frequency:300)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+
+        variable1.createDB();
+        variable2.createDB();
+
+        def variables = ["variable1", "variable2"];
+
+        println RrdVariableOperations.fetchData(variables, "AVERAGE",978300900000L, 978301800000L );
+    }
+
     public void testFetchData() {
 
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
@@ -786,10 +916,10 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable2.updateDB(2400,978303300000)
         variable2.updateDB(2700,978303600000)
         variable2.updateDB(3000,978303900000)
-
-        String[] datasources = new String[2];
-        datasources[0] = variable1.name; datasources[1] = variable2.name;
-        Map data = RrdVariable.fetchDataAsMap(datasources);
+//
+//        String[] datasources = new String[2];
+//        datasources[0] = variable1.name; datasources[1] = variable2.name;
+        Map data = RrdVariable.fetchDataAsMap("variable1", "variable2");
 
         assertEquals(data["variable1"]["978301200"].toString(),"1.0");
         assertEquals(data["variable1"]["978301500"].toString(),"3.0");
@@ -808,6 +938,57 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
             assertEquals(data["variable2"][timeString].toString(),"1.0");
         }
 
+    }
+
+
+    public void testMultipleFetchDataAsMapWithMoreConfiguration() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L,frequency:300)
+       assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        variable1.addArchive(archive.getMap())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L, frequency:300)
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+        variable2.addArchive(archive.getMap())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        variable1.updateDB(1,978301200000)
+        variable1.updateDB(3,978301500000)
+        variable1.updateDB(5,978301800000)
+        variable1.updateDB(3,978302100000)
+        variable1.updateDB(1,978302400000)
+        variable1.updateDB(2,978302700000)
+        variable1.updateDB(4,978303000000)
+        variable1.updateDB(6,978303300000)
+        variable1.updateDB(4,978303600000)
+        variable1.updateDB(2,978303900000)
+
+        variable2.updateDB(300,978301200000)
+        variable2.updateDB(600,978301500000)
+        variable2.updateDB(900,978301800000)
+        variable2.updateDB(1200,978302100000)
+        variable2.updateDB(1500,978302400000)
+        variable2.updateDB(1800,978302700000)
+        variable2.updateDB(2100,978303000000)
+        variable2.updateDB(2400,978303300000)
+        variable2.updateDB(2700,978303600000)
+        variable2.updateDB(3000,978303900000)
+
+        String[] datasources = new String[2];
+        datasources[0] = variable1.name; datasources[1] = variable2.name;
+        Map data = RrdVariable.fetchDataAsMap(["variable1", "variable2"],
+                                                [978301200000L, 978301200000L],
+                                                [978303900000L, 978303900000L] );
+        println data;
+        assertEquals("fetced data is not same","1.0", )
+        //todo test will be written
     }
 
     public void testCreateDefaultArchives() {

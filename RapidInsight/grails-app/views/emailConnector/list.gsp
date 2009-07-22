@@ -34,9 +34,10 @@
             <tbody>
                 <g:each in="${EmailConnector.list()}" status="i" var="emailConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                        <g:set var="emailConnection" value="${emailConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>
-                        <td>${emailConnector?.ds?.connection?.smtpHost?.encodeAsHTML()}</td>
-                        <td>${emailConnector?.ds?.connection?.username?.encodeAsHTML()}</td>
+                        <td>${emailConnection?.smtpHost?.encodeAsHTML()}</td>
+                        <td>${emailConnection?.username?.encodeAsHTML()}</td>
                         <td><g:link action="testConnection" controller="emailConnector" id="${emailConnector.id}" class="testConnection">Test Connection</g:link></td>
                         <td><g:link action="edit" controller="emailConnector" id="${emailConnector.id}" class="edit">Edit</g:link></td>
                     </tr>

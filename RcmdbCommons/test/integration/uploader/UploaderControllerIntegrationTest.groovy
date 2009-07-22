@@ -56,6 +56,33 @@ class UploaderControllerIntegrationTest extends RapidCmdbIntegrationTestCase {
         }
     }
 
+    public void testUploadThrowsExceptionIfOriginalFileIsOutOfuploadDir()
+    {
+        def prevAttributes = RequestContextHolder.getRequestAttributes()
+        try{
+            def originalFileName = "../uploadedFile.txt"
+            bindMockMultipartWebRequest();
+            def uploaderController = new UploaderController();
+            def uploadDir = uploaderController.getUploadDir();
+            def expectedFileToBeCreated = new File(uploadDir, originalFileName)
+            expectedFileToBeCreated.delete();
+
+            MockMultipartHttpServletRequest request = uploaderController.request
+            def fileContent = "this is the file content"
+            def byteData = fileContent.getBytes();
+            def file = new MockMultipartFile("file", originalFileName, null, byteData)
+            request.addFile(file)
+            uploaderController.upload();
+
+            assertEquals ("/uploader/show", uploaderController.response.redirectedUrl);
+            assertTrue(uploaderController.flash.errors.hasErrors());
+            assertFalse(expectedFileToBeCreated.exists());
+
+        }finally{
+            RequestContextHolder.setRequestAttributes (prevAttributes);
+        }
+    }
+
     public void testUploadReturnsErrorIfFileCouldNotBeCreated()
     {
         def prevAttributes = RequestContextHolder.getRequestAttributes()

@@ -23,8 +23,16 @@ class UploaderController {
             try{
                 def uploadDir = getUploadDir();
                 uploadDir.mkdirs()
-                downloadedfile.transferTo(new File(uploadDir, fileName))
-                flash.message = "Successfully uploaded to uploadedFiles/${fileName}"
+                def targetFile = new File(uploadDir, fileName);
+                if(targetFile.getParentFile().getCanonicalPath() != uploadDir.getCanonicalPath())
+                {
+                    addError("file.upload.invalid.location", [fileName]);
+                }
+                else
+                {
+                    downloadedfile.transferTo(new File(uploadDir, fileName))
+                    flash.message = "Successfully uploaded to uploadedFiles/${fileName}"
+                }
             }catch(Throwable t)
             {
                 log.warn("Exception occurred while uploading ${fileName}", StackTraceUtils.deepSanitize(t));

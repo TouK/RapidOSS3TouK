@@ -3,7 +3,9 @@ import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import org.mortbay.jetty.Connector
 import org.mortbay.jetty.Server
 import org.mortbay.jetty.nio.SelectChannelConnector
+import org.mortbay.jetty.security.SslSocketConnector
 import org.mortbay.jetty.webapp.WebAppContext
+import sun.security.tools.KeyTool
 
 /*
 * Copyright 2004-2005 the original author or authors.
@@ -39,6 +41,12 @@ else
 {
     Ant.antProject.setProperty("env.GRAILS_HOME", grailsHome);
 }
+userHome = Ant.antProject.properties."user.home"
+Ant.property(file:"${grailsHome}/build.properties")
+grailsVersion =  Ant.antProject.properties.'grails.version'
+keystore = "${userHome}/.grails/${grailsVersion}/ssl/keystore"
+keystoreFile = new File("${keystore}")
+keyPassword = "123456"
 
 grailsServer = null
 rootContextLoader = null;
@@ -51,13 +59,17 @@ recompileFrequency = System.getProperty("recompile.frequency")
 recompileFrequency = recompileFrequency ? recompileFrequency.toInteger() : 3
 
 
+includeTargets << new File ( "${grailsHome}/scripts/Init.groovy" )
 includeTargets << new File ( "${grailsHome}/scripts/Package.groovy" )
 
 
 shouldPackageTemplates=true
 
 
-
+def getHttpsPort()
+{
+    return System.getProperty("server.https.port");
+}
 
 target ('default': "Run's a Grails application in Jetty") {
     Ant.delete(dir : projectWorkDir);
@@ -74,7 +86,8 @@ target ('default': "Run's a Grails application in Jetty") {
 target ( runApp : "Main implementation that executes a Grails application") {
 	System.setProperty('org.mortbay.xml.XmlParser.NotValidating', 'true')
     try {
-		print "Running Grails application.."
+        print "Running Grails application.."
+
 		boolean stopNotificationThread = false;
 		Thread t = Thread.start{
             def dotCount = 1;
@@ -99,7 +112,7 @@ target ( runApp : "Main implementation that executes a Grails application") {
             t.join();
             println "";
         }
-        event("StatusFinal", ["Server running. Browse to http://localhost:$serverPort$serverContextPath"])
+        event("StatusFinal", ["Server running. Browse to http://localhost:${serverPort}${serverContextPath} ${getHttpsPort() != null?" OR https://localhost:${getHttpsPort()}${serverContextPath}":""}"])
     } catch(Throwable t) {
         t.printStackTrace()
         event("StatusFinal", ["Server failed to start: $t"])
@@ -192,7 +205,7 @@ target( watchContext: "Watches the WEB-INF/classes directory for changes and res
                     println "";
                 }
                 System.setProperty("restart.application", "false")
-                event("StatusFinal", ["Server running. Browse to http://localhost:$serverPort$serverContextPath"])
+                event("StatusFinal", ["Server running. Browse to http://localhost:${serverPort}${serverContextPath} ${getHttpsPort() != null?" OR https://localhost:${getHttpsPort()}${serverContextPath}":""}"])
             } catch (Throwable e) {
                 GrailsUtil.sanitizeStackTrace(e)
                 e.printStackTrace()
@@ -208,6 +221,7 @@ target( configureHttpServer : "Returns a jetty server configured with an HTTP co
     def connectors = [new SelectChannelConnector()]
     connectors[0].setPort(serverPort)
     server.setConnectors( (Connector [])connectors )
+    addHttpsConfiguration();
 	setupWebContext()
     server.setHandler( webContext )
     event("ConfigureJetty", [server])
@@ -239,4 +253,53 @@ target( stopServer : "Stops the Grails Jetty server") {
 		grailsServer.stop()
 	}
     event("StatusFinal", ["Server stopped"])
+}
+
+
+
+
+
+target ( addHttpsConfiguration : "Main implementation that adds HTTPS listener to a Grails application") {
+    def serverHttpsPortStr = getHttpsPort();
+    if(serverHttpsPortStr != null)
+    {
+
+        def keyPasswordSystemProp = System.getProperty("server.https.key.password");
+        if(keyPasswordSystemProp != null)
+        {
+            keyPassword =  keyPasswordSystemProp;  
+        }
+        def serverHttpsPort = Integer.parseInt(serverHttpsPortStr)
+        if (!(keystoreFile.exists())) {
+            createCert()
+        }
+        def secureListener = new SslSocketConnector()
+        secureListener.setPort(serverHttpsPort)
+        secureListener.setMaxIdleTime(50000)
+        secureListener.setPassword("${keyPassword}")
+        secureListener.setKeyPassword("${keyPassword}")
+        secureListener.setKeystore("${keystore}")
+        secureListener.setNeedClientAuth(false)
+        secureListener.setWantClientAuth(true)
+        def connectors = grailsServer.getConnectors().toList()
+        connectors.add(secureListener)
+        grailsServer.setConnectors(connectors.toArray(new Connector[0]))
+    }
+}
+
+target(createCert:"Creates a keystore and SSL cert for use with HTTPS"){
+ 	println 'Creating SSL Cert...'
+    if(!keystoreFile.getParentFile().exists() &&
+        !keystoreFile.getParentFile().mkdir()){
+        def msg = "Unable to create keystore folder: " + keystoreFile.getParentFile().getCanonicalPath()
+        event("StatusFinal", [msg])
+        throw new RuntimeException(msg)
+    }
+    String[] keytoolArgs = ["-genkey", "-alias", "localhost", "-dname",
+                "CN=localhost,OU=Test,O=Test,C=US", "-keyalg", "RSA",
+                "-validity", "365", "-storepass", "key", "-keystore",
+                "${keystore}", "-storepass", "${keyPassword}",
+                "-keypass", "${keyPassword}"]
+    KeyTool.main(keytoolArgs)
+    println 'Created SSL Cert'
 }

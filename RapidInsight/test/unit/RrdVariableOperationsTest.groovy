@@ -987,8 +987,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
                                                 [978301200000L, 978301200000L],
                                                 [978303900000L, 978303900000L] );
         println data;
-        assertEquals("fetced data is not same","1.0", )
-        //todo test will be written
+        assertEquals("fetced data is not same","1.0",data["variable1"]["978301200"].toString() )
+        assertEquals("fetced data is not same","3.0",data["variable1"]["978301500"].toString() )
+        assertEquals("fetced data is not same","5.0",data["variable1"]["978301800"].toString() )
+        assertEquals("fetced data is not same","3.0",data["variable1"]["978302100"].toString() )
+        assertEquals("fetced data is not same","1.0",data["variable1"]["978302400"].toString() )
+        assertEquals("fetced data is not same","2.0",data["variable1"]["978302700"].toString() )
+        assertEquals("fetced data is not same","4.0",data["variable1"]["978303000"].toString() )
+        assertEquals("fetced data is not same","6.0",data["variable1"]["978303300"].toString() )
+        assertEquals("fetced data is not same","4.0",data["variable1"]["978303600"].toString() )
     }
 
     public void testCreateDefaultArchives() {

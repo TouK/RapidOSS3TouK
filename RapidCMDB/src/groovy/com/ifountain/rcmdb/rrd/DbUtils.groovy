@@ -158,7 +158,7 @@ class DbUtils {
     * sample data is "timestamp:variable1:variable2:...:variablen"
     * e.g. : "978301200:200:1" or "978301200:200"
     */
-    public static void updateData(String dbname, String data) {
+    public synchronized static void updateData(String dbname, String data) {
         String[] dataList = new String[1]
         dataList[0] = data
         updateData(dbname, dataList)

@@ -6,6 +6,8 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
+import java.util.concurrent.Semaphore
+import org.jrobin.core.RrdException
 
 
 /**
@@ -26,7 +28,7 @@ class DbUtilsTests extends RapidCoreTestCase {
     }
 
     protected void tearDown() {
-        new File(rrdFileName).delete();
+        //new File(rrdFileName).delete();
         super.tearDown();
     }
 
@@ -692,7 +694,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         String xmlFile = rrdFileName+".xml";
         Map data = DbUtils.fetchDataToXml (rrdFileName, "b", xmlFile);
         assertTrue(new File(xmlFile).exists());
-        println data;
         assertMap(data);
     }
     public void testFetchAllData() throws Exception{
@@ -704,7 +705,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         String xmlFile = rrdFileName+".xml";
         Map data = DbUtils.fetchDataToXml (rrdFileName, xmlFile);
         assertTrue(new File(xmlFile).exists());
-        println data;
         assertMap(data.get("b"));
     }
     private void assertMap(Map data){
@@ -826,7 +826,53 @@ class DbUtilsTests extends RapidCoreTestCase {
 
     public void testSynchronizedUpdateAndFetch()
     {
-        
-    }
+        def initialTime = 900000000000 - 60000
 
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [ [ name:"threadSource",
+                                         type:"GAUGE",
+                                         heartbeat:120
+                                       ] ]
+        config[DbUtils.ARCHIVE] = [ [ function:"AVERAGE",
+                                      xff:0.5,
+                                      steps:1,
+                                      rows: 5000
+                                    ] ]
+
+        config[DbUtils.START_TIME] = initialTime
+        config[DbUtils.STEP] = 60
+        DbUtils.createDatabase(config)
+
+        def updateTime = initialTime + 60000
+        def threadList = []
+        def exceptionCount = 0;
+        50.times{
+            def index = it
+            Runnable write = {
+                                try {
+                                    DbUtils.updateData(rrdFileName, updateTime + ":" + index)
+                                }
+                                catch(RrdException e) {
+                                    exceptionCount++
+                                }
+                             }
+                             
+            Runnable read = {
+                                Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+                                assertTrue("Result map is not true ", (result["900000000"] >= 0
+                                                && result["900000000"] < 50) || result["900000000"] == Double.NaN
+                                                || result["900000000"] == null);
+                            }
+
+            Thread thread = new Thread(it%2==0?read:write)
+            thread.start()
+            threadList.add(thread)
+        }
+        threadList.each{ it.join()}
+        assertEquals("There is 24 exception required to be caught", 24, exceptionCount)
+
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+        assertTrue("Result map is not true ", result["900000000"] >= 0 && result["900000000"] < 50);
+    }
 }

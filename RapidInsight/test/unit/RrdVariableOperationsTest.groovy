@@ -204,6 +204,28 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(500D, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300000L, 9300000L)[0])
     }
 
+    public void testUpdateDiscardsBadUpdateTimes() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable = RrdVariable.add(name:"variable", resource:"resource", type:"GAUGE", heartbeat:300,
+                                       startTime:9000000, frequency:300)
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+        variable.addArchive(archive.getMap())
+
+        variable.createDB()
+
+        variable.updateDB(500, 9300000)
+
+        variable.updateDB(600, 9200000)
+
+        assertEquals(500D, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9300000L, 9300000L)[0])
+        assertEquals(Double.NaN, RrdUtils.fetchData(fileName, "variable", "AVERAGE", 9200000L, 9200000L)[0])
+
+    }
+
     public void testUpdateOnlyValue() {
 
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)

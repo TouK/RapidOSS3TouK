@@ -57,7 +57,13 @@ class RrdUtils {
     public static void updateData(String dbname, String data){
         createDirectory();
         String fname = RRD_FOLDER + dbname
-        DbUtils.updateData( fname,  data);
+        try {
+            DbUtils.updateData(fname,  data);
+        }
+        catch(Exception e) {
+            if(e.getMessage().indexOf("Bad sample timestamp")<0)
+                throw new Exception(e)
+        }
     }
 
     /**
@@ -66,7 +72,13 @@ class RrdUtils {
     public static void updateData(dbname, data){
         createDirectory();
         String fname = RRD_FOLDER + dbname
+        try {
         DbUtils.updateData( fname, data as String[]);
+        }
+        catch(Exception e) {
+            if(e.getMessage().indexOf("Bad sample timestamp")<0)
+                throw new Exception(e)
+        }
     }
 
     public static byte[] graph(Map config){
@@ -193,6 +205,7 @@ class RrdUtils {
         createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources);
     }
+
     //this method is more useful for models
     public static double[][] fetchData(String[] dbName, String[] datasources){
         if(dbName.length != datasources.length) {
@@ -214,6 +227,7 @@ class RrdUtils {
         createDirectory();
         return DbUtils.fetchData(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
     }
+
     //this method is more useful for models
     public static double[][] fetchData(String[] dbName, String[] datasources, String function,
                                    long startTime, long endTime){
@@ -226,26 +240,31 @@ class RrdUtils {
         }
         return result;
     }
+
     //====following fetch data methods return map[timestamp:value] as result====//
     public static Map fetchDataAsMap(String dbName){
         createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName)
     }
+
     public static Map fetchDataAsMap(String dbName, String datasource){
         createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource);
     }
+
     public static Map fetchDataAsMap(String dbName, String datasource, String function,
                                    long[] startTime, long[] endTime){
         createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
 
     }
+
     public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
                                    long[] startTime, long[] endTime){
         createDirectory();
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
     }
+
     //this method is more useful for models
     public static Map fetchDataAsMap(String[] dbName, String[] datasources){
         createDirectory();
@@ -258,6 +277,7 @@ class RrdUtils {
         }
         return result;
     }
+
     //this method is more useful for models
     public static Map fetchDataAsMap(String[] dbName, String[] datasources, String function, long[] startTime, long[] endTime){
         createDirectory();
@@ -297,13 +317,16 @@ class RrdUtils {
            graphDef.setVerticalLabel(config.get(Grapher.VERTICAL_LABEL));
         }
     }
+
     private static def getRrdVariable(){
         return Grapher.class.classLoader.loadClass("RrdVariable");
     }
+
     private long getCurrentTime(){
         Calendar cal = Calendar.getInstance();
         return cal.getTimeInMillis();
     }
+
     private static void createDirectory(){
         def rrdFile = new File(RRD_FOLDER);
         rrdFile.mkdirs();

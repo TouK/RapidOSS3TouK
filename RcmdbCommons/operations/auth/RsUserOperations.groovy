@@ -242,12 +242,12 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         return res.size() > 0
     }
 
-    def hasAllRoles(roles)
+    def hasAllRoles(roleNames)
     {
         int numberOfFoundRoles = 0;
         def groupList=groups;
 
-        roles.each {String role ->
+        roleNames.each {String role ->
             boolean found=false;
             groupList.each {group ->
                 if (role == group.role?.name && !found)
@@ -259,6 +259,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         }
 
-        return numberOfFoundRoles == roles.size()
+        return numberOfFoundRoles == roleNames.size()
     }
 }

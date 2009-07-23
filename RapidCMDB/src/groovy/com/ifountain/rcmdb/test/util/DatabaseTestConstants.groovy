@@ -27,5 +27,6 @@ public class DatabaseTestConstants {
 	public static final String ORACLE = "ORACLE";
 	public static final String SYBASE = "SYBASE";
 	public static final String MSSQL = "MSSQL";
+	public static final String POSTGRE = "POSTGRE";
 
 }

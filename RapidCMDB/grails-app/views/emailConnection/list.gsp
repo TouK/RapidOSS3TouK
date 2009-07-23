@@ -28,6 +28,7 @@
 
                     <g:sortableColumn property="name" title="Name"/>
                     <g:sortableColumn property="smtpHost" title="Smtp Host"/>
+                    <g:sortableColumn property="smtpPort" title="Smtp Port"/>
 
                 </tr>
             </thead>
@@ -37,6 +38,7 @@
 
                         <td><g:link action="show" id="${emailConnection.id}">${emailConnection.name?.encodeAsHTML()}</g:link></td>
                         <td>${emailConnection.smtpHost?.encodeAsHTML()}</td>
+                        <td>${emailConnection.smtpPort?.encodeAsHTML()}</td>
                     </tr>
                 </g:each>
             </tbody>

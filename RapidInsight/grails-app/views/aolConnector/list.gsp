@@ -26,7 +26,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Host</th>
-                    <th>Username</th>
+                    <th>Port</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -37,7 +37,7 @@
                         <g:set var="aolConnection" value="${aolConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="aolConnector" id="${aolConnector.id}">${aolConnector.name?.encodeAsHTML()}</g:link></td>
                         <td>${aolConnection?.host?.encodeAsHTML()}</td>
-                        <td>${aolConnection?.username?.encodeAsHTML()}</td>
+                        <td>${aolConnection?.port?.encodeAsHTML()}</td>
                         <td><g:link action="testConnection" controller="aolConnector" id="${aolConnector.id}" class="testConnection">Test Connection</g:link></td>
                         <td><g:link action="edit" controller="aolConnector" id="${aolConnector.id}" class="edit">Edit</g:link></td>
                     </tr>

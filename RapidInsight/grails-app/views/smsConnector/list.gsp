@@ -26,7 +26,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Host</th>
-                    <th>Username</th>
+                    <th>Port</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -37,7 +37,7 @@
                         <g:set var="smsConnection" value="${smsConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="smsConnector" id="${smsConnector.id}">${smsConnector.name?.encodeAsHTML()}</g:link></td>
                         <td>${smsConnection?.host?.encodeAsHTML()}</td>
-                        <td>${smsConnection?.username?.encodeAsHTML()}</td>
+                        <td>${smsConnection?.port?.encodeAsHTML()}</td>
                         <td><g:link action="testConnection" controller="smsConnector" id="${smsConnector.id}" class="testConnection">Test Connection</g:link></td>
                         <td><g:link action="edit" controller="smsConnector" id="${smsConnector.id}" class="edit">Edit</g:link></td>
                     </tr>

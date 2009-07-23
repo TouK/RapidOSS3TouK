@@ -26,7 +26,7 @@
                 <tr>
                     <th>Name</th>
                     <th>Host</th>
-                    <th>Username</th>
+                    <th>Community</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -37,7 +37,7 @@
                         <g:set var="sametimeConnection" value="${sametimeConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="sametimeConnector" id="${sametimeConnector.id}">${sametimeConnector.name?.encodeAsHTML()}</g:link></td>
                         <td>${sametimeConnection?.host?.encodeAsHTML()}</td>
-                        <td>${sametimeConnection?.username?.encodeAsHTML()}</td>
+                        <td>${sametimeConnection?.community?.encodeAsHTML()}</td>
                         <td><g:link action="testConnection" controller="sametimeConnector" id="${sametimeConnector.id}" class="testConnection">Test Connection</g:link></td>
                         <td><g:link action="edit" controller="sametimeConnector" id="${sametimeConnector.id}" class="edit">Edit</g:link></td>
                     </tr>

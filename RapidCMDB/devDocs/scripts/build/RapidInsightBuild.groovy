@@ -175,6 +175,11 @@ class RapidInsightBuild extends Build {
         dbViews.each {
             ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true);
         }
+        def channelViews= ["emailConnector","jabberConnector","smsConnector","aolConnector","sametimeConnector"];
+        channelViews.each {
+            ant.copy(file: "${env.dist_rapid_suite}/web-app/notificationChannels.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true);
+        }
+        
         if (ZIP_OPT) {
             def zipFileName = "${env.distribution}/RI_Unix$versionDate" + ".zip"
             ant.zip(destfile: zipFileName) {

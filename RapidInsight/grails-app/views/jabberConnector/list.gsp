@@ -26,7 +26,8 @@
                 <tr>
                     <th>Name</th>
                     <th>Host</th>
-                    <th>Username</th>
+                    <th>Port</th>
+                    <th>Service Name</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -37,7 +38,8 @@
                         <g:set var="jabberConnection" value="${jabberConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="jabberConnector" id="${jabberConnector.id}">${jabberConnector.name?.encodeAsHTML()}</g:link></td>
                         <td>${jabberConnection?.host?.encodeAsHTML()}</td>
-                        <td>${jabberConnection?.username?.encodeAsHTML()}</td>
+                        <td>${jabberConnection?.port?.encodeAsHTML()}</td>
+                        <td>${jabberConnection?.serviceName?.encodeAsHTML()}</td>
                         <td><g:link action="testConnection" controller="jabberConnector" id="${jabberConnector.id}" class="testConnection">Test Connection</g:link></td>
                         <td><g:link action="edit" controller="jabberConnector" id="${jabberConnector.id}" class="edit">Edit</g:link></td>
                     </tr>

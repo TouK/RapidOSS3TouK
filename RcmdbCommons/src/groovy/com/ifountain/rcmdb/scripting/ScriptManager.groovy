@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import script.CmdbScript
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -210,10 +211,11 @@ public class ScriptManager {
         if (scriptClass)
         {
             def scriptObject=scriptClass.newInstance();
+            scriptObject.setProperty(RapidCMDBConstants.LOGGER, scriptLogger);    
             bindings.each {propName, propValue ->
                 scriptObject.setProperty(propName, propValue);
             }
-            scriptObject.setProperty("logger", scriptLogger);            
+
 
             if(operationClass!=null && operationClass!="")
             {

@@ -346,6 +346,37 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), Level.INFO);
 
     }
+    public void testGetScriptObjectAllowsParamsLoggerToOverrideScriptLogger()
+    {
+        ExecutionContextManager.destroy();
+        def scriptName = "script1.groovy";
+        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
+        scriptFile.write("return ${RapidCMDBConstants.LOGGER}");
+        manager.addScript(scriptName)
+
+
+
+        def logLevel = Level.DEBUG;
+        def logger = Logger.getLogger("testlogger");
+        logger.setLevel(logLevel);
+
+        def paramsLoggerLevel=Level.INFO;
+        def paramsLogger=Logger.getLogger("paramsTestLogger");
+        paramsLogger.setLevel(paramsLoggerLevel);
+
+        def bindings = [:];
+        bindings[RapidCMDBConstants.LOGGER]=paramsLogger;
+
+        def scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        assertTrue ("Script obejcts should be wrapped to add execution context", scriptObject instanceof ScriptObjectWrapper);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER], paramsLogger);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), paramsLoggerLevel);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getName(), "paramsTestLogger");
+
+        paramsLogger.setLevel(Level.WARN);
+        scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), Level.WARN);
+    }
     public void testGetScriptObjectCreatesBindingsAndOperationInstance()
     {
         def scriptName = "script1.groovy";

@@ -41,6 +41,7 @@ class DbUtils {
     * create a Round Robin database according to the given configuration map
     */
     public static void createDatabase(Map config) {
+
         if (!config.containsKey(DATABASE_NAME)) {
             throw new Exception("Database name is not specified");
         }
@@ -542,10 +543,13 @@ class DbUtils {
     */
     public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
                                    long[] startTime, long[] endTime){
-        return executeAction(dbName){RrdDb rrdDb ->
+        return executeAction(dbName){ RrdDb rrdDb ->
             FetchRequest fetchRequest;
             FetchData fd;
             Map values = [:];
+            datasources.each{
+                values[it] = [:];
+            }
             for(int i=0; i<startTime.length; i++){
                 long nstarttime = (long)(startTime[i] / 1000)
                 long nendtime = (long)(endTime[i] / 1000)
@@ -558,9 +562,8 @@ class DbUtils {
                     double[] dataValues = fd.getValues(it);
                     Map datasourceMap = [:];
                     for(int j=0; j<timeStamps.length; j++){
-                        datasourceMap[timeStamps[j]+""] =dataValues[j];
+                         values[it][timeStamps[j]+""] =dataValues[j];
                     }
-                    values[it] = datasourceMap;
                 }
             }
             return values;

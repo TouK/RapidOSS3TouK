@@ -28,11 +28,11 @@ class DbUtilsTests extends RapidCoreTestCase {
     }
 
     protected void tearDown() {
-        //new File(rrdFileName).delete();
+        new File(rrdFileName).delete();
         super.tearDown();
     }
 
-    public void testSuccessfullCreateDatabase() throws Exception{
+    public void testSuccessfullCreateDatabase() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
         config[DbUtils.DATASOURCE] = [
@@ -76,7 +76,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertTrue(new File(rrdFileName).exists());
     }
 
-    public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception{
+    public void testSuccessfullCreateDatabaseWithStartTimeByNumber() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
         config[DbUtils.DATASOURCE] = [
@@ -160,13 +160,10 @@ class DbUtilsTests extends RapidCoreTestCase {
         config[DbUtils.START_TIME] = 920804400000L;
 
         DbUtils.createDatabase(config);
-
         assertTrue(new File(rrdFileName).exists());
 
         DbUtils.removeDatabase(rrdFileName)
-
         assertTrue(!(new File(rrdFileName).exists()));
-
     }
 
     public void testRemoveDatabaseThrowsExceptionIfDBNotExists() throws Exception {
@@ -213,48 +210,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             steps:1,
                                             rows:5,
                                         ]
-                                   ]
+                                  ]
 
         config[DbUtils.START_TIME] = 920804400000L;
 
         assertTrue(!(DbUtils.isDatabaseExists(rrdFileName)))
-
         DbUtils.createDatabase(config);
-
         assertTrue(DbUtils.isDatabaseExists(rrdFileName))
-
-    }
-
-    private void checkDatasources(dlist1, rrdDslist2) throws Exception {
-        int size1 = dlist1.size();
-        int size2 = rrdDslist2.size();
-        assertEquals(size1, size2);
-
-        for(int i=0; i<rrdDslist2.size(); i++){
-            double max, min;
-
-            max = ((double)dlist1[i][DbUtils.MAX]==null)?Double.NaN:(double)dlist1[i][DbUtils.MAX];
-            min = ((double)dlist1[i][DbUtils.MIN]==null)?Double.NaN:(double)dlist1[i][DbUtils.MIN];
-
-            assertEquals( dlist1[i][DbUtils.NAME],rrdDslist2[i][DbUtils.NAME]);
-            assertEquals( dlist1[i][DbUtils.TYPE],rrdDslist2[i][DbUtils.TYPE]);
-            assertEquals( dlist1[i][DbUtils.HEARTBEAT],rrdDslist2[i][DbUtils.HEARTBEAT]);
-            assertEquals(max ,(double)rrdDslist2[i][DbUtils.MAX]);
-            assertEquals(min,(double)rrdDslist2[i][DbUtils.MIN]);
-        }
-    }
-
-    private void checkArchives(dlist1, rrdDslist2) throws Exception {
-        int size1 = dlist1.size();
-        int size2 = rrdDslist2.size();
-        assertEquals(size1, size2);
-
-        for(int i=0; i<rrdDslist2.size(); i++){
-            assertEquals( dlist1[i][DbUtils.FUNCTION],rrdDslist2[i][DbUtils.FUNCTION]);
-            assertEquals( dlist1[i][DbUtils.STEPS],rrdDslist2[i][DbUtils.STEPS]);
-            assertEquals( dlist1[i][DbUtils.ROWS],rrdDslist2[i][DbUtils.ROWS]);
-            assertEquals( (double)dlist1[i][DbUtils.XFF],(double)rrdDslist2[i][DbUtils.XFF]);
-        }
     }
 
     public void testCreateDatabaseThrowsExceptionIfConfigMissesProperty() throws Exception {
@@ -296,7 +258,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         }
     }
 
-    public void testCreateDatabaseThrowsExceptionIfStartTimeIsNotValid() throws Exception{
+    public void testCreateDatabaseThrowsExceptionIfStartTimeIsNotValid() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
         config[DbUtils.DATASOURCE] = [
@@ -342,7 +304,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         }
     }
 
-    public void testCreateDatabaseThrowsExceptionIfStepIsNotNumber() throws Exception{
+    public void testCreateDatabaseThrowsExceptionIfStepIsNotNumber() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
         config[DbUtils.DATASOURCE] = [
@@ -455,7 +417,7 @@ class DbUtilsTests extends RapidCoreTestCase {
 
     }
 
-    public void testUpdateDataSuccessful() throws Exception{
+    public void testUpdateDataSuccessful() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
         config[DbUtils.DATASOURCE] = [
@@ -495,7 +457,7 @@ class DbUtilsTests extends RapidCoreTestCase {
 
         RrdDb rrdDb = new RrdDb(rrdFileName);
         rrdDb.exportXml (rrdFileName+".xml");
-        /* note that Jrobin works with time in seconds not milliseconds as java do */
+        // note that Jrobin works with time in seconds not milliseconds as java do
         FetchRequest fetchRequest = rrdDb.createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
 
@@ -513,7 +475,7 @@ class DbUtilsTests extends RapidCoreTestCase {
          assertEquals(expectedValues, newValues);
     }
 
-    public void testFetchDataThrowsException() throws Exception{
+    public void testFetchDataThrowsException() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName;
         config[DbUtils.DATASOURCE] = [
@@ -559,7 +521,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         }
     }
 
-    public void testFetchDataSuccessfully() throws Exception{
+    public void testFetchDataSuccessfully() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName;
         config[DbUtils.DATASOURCE] = [
@@ -596,12 +558,11 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303300000:2400:6");
         DbUtils.updateData(rrdFileName,"978303600000:2900:4");
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
-
         DbUtils.fetchData(rrdFileName,"a");
         DbUtils.fetchData(rrdFileName,"b");
     }
 
-    public void testFetchDataByDatabaseNameOnly() throws Exception{
+    public void testFetchDataByDatabaseNameOnly() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName;
         config[DbUtils.DATASOURCE] = [
@@ -648,7 +609,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.fetchDataToXml(rrdFileName,rrdFileName+"fetcdata2.xml");
     }
 
-    public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception{
+    public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName;
         config[DbUtils.DATASOURCE] = [
@@ -681,49 +642,28 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303300000:2400");
         DbUtils.updateData(rrdFileName,"978303600000:2900");
         DbUtils.updateData(rrdFileName,"978303900000:3300");
-
     }
 
-    public void testFetchhOneDatasourceToXml() throws Exception{
-
+    public void testFetchhOneDatasourceToXml() throws Exception {
         new File(rrdFileName+".xml").delete();
-
         createDatabase();
-
-        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
         String xmlFile = rrdFileName+".xml";
         Map data = DbUtils.fetchDataToXml (rrdFileName, "b", xmlFile);
         assertTrue(new File(xmlFile).exists());
         assertMap(data);
     }
-    public void testFetchAllData() throws Exception{
+
+    public void testFetchAllData() throws Exception {
         new File(rrdFileName+".xml").delete();
-
         createDatabase();
-
-        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
         String xmlFile = rrdFileName+".xml";
         Map data = DbUtils.fetchDataToXml (rrdFileName, xmlFile);
         assertTrue(new File(xmlFile).exists());
         assertMap(data.get("b"));
     }
-    private void assertMap(Map data){
-        assertEquals("Map values are not equal","1.0",data.get("978301200").toString());
-        assertEquals("Map values are not equal","4.0",data.get("978301500").toString());
-        assertEquals("Map values are not equal","5.0",data.get("978301800").toString());
-        assertEquals("Map values are not equal","3.0",data.get("978302100").toString());
-        assertEquals("Map values are not equal","1.0",data.get("978302400").toString());
-        assertEquals("Map values are not equal","2.0",data.get("978302700").toString());
-        assertEquals("Map values are not equal","4.0",data.get("978303000").toString());
-        assertEquals("Map values are not equal","6.0",data.get("978303300").toString());
-        assertEquals("Map values are not equal","4.0",data.get("978303600").toString());
-        assertEquals("Map values are not equal","2.0",data.get("978303900").toString());
-    }
 
-    public void testWriteMultipleDatasourceToXml() throws Exception{
+    public void testWriteMultipleDatasourceToXml() throws Exception {
         createDatabase();
-
-        //writeDataToXml ( dbName, datasource, function, startTime, endTime, resolution, outFile )
         String xmlFile = rrdFileName+".xml"
         String[] dataPoints = new String[2];
         dataPoints[0] = "a";
@@ -733,7 +673,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertMap(data.get(dataPoints[1]));
     }
 
-    public void testConvertingXml() throws Exception{
+    public void testConvertingXml() throws Exception {
         createDatabase();
 
         RrdDb rrdDb = new RrdDb(rrdFileName);
@@ -746,9 +686,156 @@ class DbUtilsTests extends RapidCoreTestCase {
         DecimalFormat formatter = new DecimalFormat("#.#");
         actualData = Double.parseDouble(formatter.format(actualData));
         assertEquals ("Values in xml file are not proper", 1.3d, actualData);
+        rrdDb.close()
     }
 
-    private void createDatabase(){
+
+
+    public void testArchiveLastUpdateTimes() throws Exception {
+        createDatabase();
+        long lastUpdate = DbUtils.getLastArchiveUpdate (rrdFileName);
+        assertEquals("Last update time is not true",978303900000L,lastUpdate);
+    }
+
+    public void testFetchDataAsMapForOneDataSource() throws Exception {
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
+        assertEquals("Result map is not true ",result["978303300"],6d);
+    }
+
+    public void testFetchDataAsMapForMultipleDataSources() throws Exception {
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName);
+        Map b = result.get("b");
+        assertEquals("Result map is not true ",b["978303300"],6d);
+    }
+
+    public void testCreateXmlForOneDataSource() throws Exception {
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
+        assertEquals("Result map is not true ",result["978303300"],6d);
+        String xmlFile = rrdFileName+".xml";
+        DbUtils.createXml(result,xmlFile);
+    }
+
+    public void testCreateXmlForMultipleDataSources() throws Exception {
+        createDatabase();
+        Map result = DbUtils.fetchDataAsMap (rrdFileName);
+
+        String xmlFile = rrdFileName+".xml";
+        DbUtils.createXml(result,xmlFile);
+        assertTrue("Xml file is not created", new File(xmlFile).exists() );
+    }
+    
+    public void testSynchronizedUpdateAndFetch() {
+        def initialTime = 900000000000 - 60000
+
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [ [ name:"threadSource",
+                                         type:"GAUGE",
+                                         heartbeat:120
+                                       ] ]
+        config[DbUtils.ARCHIVE] = [ [ function:"AVERAGE",
+                                      xff:0.5,
+                                      steps:1,
+                                      rows: 50
+                                    ] ]
+        config[DbUtils.START_TIME] = initialTime
+        config[DbUtils.STEP] = 60
+
+        DbUtils.createDatabase(config)
+
+        def updateTime = initialTime + 60000
+        def threadList = []
+        def exceptionCount = 0;
+        50.times{
+            def index = it
+            Runnable write = {
+                                try {
+                                    DbUtils.updateData(rrdFileName, updateTime + ":" + index)
+                                }
+                                catch(RrdException e) {
+                                    synchronized(this){ exceptionCount++ }
+                                }
+                             }
+            Runnable read = {
+                                Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+                                assertTrue("Result map is not true ", (result["900000000"] >= 0
+                                                && result["900000000"] < 50) || result["900000000"] == Double.NaN
+                                                || result["900000000"] == null);
+                             }
+
+            Thread thread = new Thread(index%2==0?read:write)
+            thread.start()
+            threadList.add(thread)
+        }
+        threadList.each{ it.join()}
+
+        assertEquals("There is 24 exception required to be caught", 24, exceptionCount)
+
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+        assertTrue("Result map is not true ", result["900000000"] >= 0 && result["900000000"] < 50);
+    }
+
+    public void testSuccessfullSynchronizedUpdateAndFetch() {
+        def step = 60000
+        def initialTime = 900000000000 - step
+
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [ [ name:"threadSource",
+                                         type:"GAUGE",
+                                         heartbeat:120
+                                       ] ]
+        config[DbUtils.ARCHIVE] = [ [ function:"AVERAGE",
+                                      xff:0.5,
+                                      steps:1,
+                                      rows: 50
+                                    ] ]
+        config[DbUtils.START_TIME] = initialTime
+        config[DbUtils.STEP] = 60
+
+        DbUtils.createDatabase(config)
+
+        def updateTime = initialTime + step
+        def threadList = []
+        def updatedData = [:]
+        def erroredData = [:]
+        50.times{
+            def index = it
+            Runnable write = {
+                                try {
+                                    DbUtils.updateData(rrdFileName, updateTime + ":" + index)
+                                    synchronized(this) {
+                                        updatedData[updateTime] = index
+                                        updateTime = updateTime + step
+                                    }
+                                }
+                                catch(RrdException e) {
+                                    synchronized(this) { erroredData[updateTime] = index }
+                                }
+                             }
+            Thread thread = new Thread(write)
+            thread.start()
+            threadList.add(thread)
+        }
+        threadList.each{it.join()}
+
+        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+
+        for( e in updatedData ) {
+            assertEquals('Inserted value is not retrived', (double)e.value, result.get(((long)(e.key/1000)).toString()))
+        }
+        for( e in erroredData ) {
+            assertFalse('Data, whose insertion failed, is retrived', (double)e.value == result.get(((long)(e.key/1000)).toString()) )
+        }
+    }
+
+    /*
+     * Creates a sample rrd database to be used in tests
+     */
+    private void createDatabase() {
 
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName;
@@ -788,91 +875,52 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
     }
 
-    public void testArchiveLastUpdateTimes() throws Exception{
-        createDatabase();
-        long lastUpdate = DbUtils.getLastArchiveUpdate (rrdFileName);
-        assertEquals("Last update time is not true",978303900000L,lastUpdate);
+    /*
+     * to check retrived map. used in some tests
+     */
+    private void assertMap(Map data) {
+        assertEquals("Map values are not equal","1.0",data.get("978301200").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978301500").toString());
+        assertEquals("Map values are not equal","5.0",data.get("978301800").toString());
+        assertEquals("Map values are not equal","3.0",data.get("978302100").toString());
+        assertEquals("Map values are not equal","1.0",data.get("978302400").toString());
+        assertEquals("Map values are not equal","2.0",data.get("978302700").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978303000").toString());
+        assertEquals("Map values are not equal","6.0",data.get("978303300").toString());
+        assertEquals("Map values are not equal","4.0",data.get("978303600").toString());
+        assertEquals("Map values are not equal","2.0",data.get("978303900").toString());
     }
 
-    public void testFetchDataAsMapForOneDataSource() throws Exception{
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
-        assertEquals("Result map is not true ",result["978303300"],6d);
+    private void checkDatasources(dlist1, rrdDslist2) throws Exception {
+        int size1 = dlist1.size();
+        int size2 = rrdDslist2.size();
+        assertEquals(size1, size2);
 
-    }
+        for(int i=0; i<rrdDslist2.size(); i++){
+            double max, min;
 
-    public void testFetchDataAsMapForMultipleDataSources() throws Exception{
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName);
-        Map b = result.get("b");
-        assertEquals("Result map is not true ",b["978303300"],6d);
-    }
+            max = ((double)dlist1[i][DbUtils.MAX]==null)?Double.NaN:(double)dlist1[i][DbUtils.MAX];
+            min = ((double)dlist1[i][DbUtils.MIN]==null)?Double.NaN:(double)dlist1[i][DbUtils.MIN];
 
-    public void testCreateXmlForOneDataSource() throws Exception{
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
-        assertEquals("Result map is not true ",result["978303300"],6d);
-        String xmlFile = rrdFileName+".xml";
-        DbUtils.createXml(result,xmlFile);
-    }
-    public void testCreateXmlForMultipleDataSources() throws Exception{
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName);
-
-        String xmlFile = rrdFileName+".xml";
-        DbUtils.createXml(result,xmlFile);
-        assertTrue("Xml file is not created", new File(xmlFile).exists() );
-    }
-
-    public void testSynchronizedUpdateAndFetch()
-    {
-        def initialTime = 900000000000 - 60000
-
-        Map config = [:]
-        config[DbUtils.DATABASE_NAME] = rrdFileName;
-        config[DbUtils.DATASOURCE] = [ [ name:"threadSource",
-                                         type:"GAUGE",
-                                         heartbeat:120
-                                       ] ]
-        config[DbUtils.ARCHIVE] = [ [ function:"AVERAGE",
-                                      xff:0.5,
-                                      steps:1,
-                                      rows: 5000
-                                    ] ]
-
-        config[DbUtils.START_TIME] = initialTime
-        config[DbUtils.STEP] = 60
-        DbUtils.createDatabase(config)
-
-        def updateTime = initialTime + 60000
-        def threadList = []
-        def exceptionCount = 0;
-        50.times{
-            def index = it
-            Runnable write = {
-                                try {
-                                    DbUtils.updateData(rrdFileName, updateTime + ":" + index)
-                                }
-                                catch(RrdException e) {
-                                    exceptionCount++
-                                }
-                             }
-                             
-            Runnable read = {
-                                Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
-                                assertTrue("Result map is not true ", (result["900000000"] >= 0
-                                                && result["900000000"] < 50) || result["900000000"] == Double.NaN
-                                                || result["900000000"] == null);
-                            }
-
-            Thread thread = new Thread(it%2==0?read:write)
-            thread.start()
-            threadList.add(thread)
+            assertEquals( dlist1[i][DbUtils.NAME],rrdDslist2[i][DbUtils.NAME]);
+            assertEquals( dlist1[i][DbUtils.TYPE],rrdDslist2[i][DbUtils.TYPE]);
+            assertEquals( dlist1[i][DbUtils.HEARTBEAT],rrdDslist2[i][DbUtils.HEARTBEAT]);
+            assertEquals(max ,(double)rrdDslist2[i][DbUtils.MAX]);
+            assertEquals(min,(double)rrdDslist2[i][DbUtils.MIN]);
         }
-        threadList.each{ it.join()}
-        assertEquals("There is 24 exception required to be caught", 24, exceptionCount)
-
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
-        assertTrue("Result map is not true ", result["900000000"] >= 0 && result["900000000"] < 50);
     }
+
+    private void checkArchives(dlist1, rrdDslist2) throws Exception {
+        int size1 = dlist1.size();
+        int size2 = rrdDslist2.size();
+        assertEquals(size1, size2);
+
+        for(int i=0; i<rrdDslist2.size(); i++){
+            assertEquals( dlist1[i][DbUtils.FUNCTION],rrdDslist2[i][DbUtils.FUNCTION]);
+            assertEquals( dlist1[i][DbUtils.STEPS],rrdDslist2[i][DbUtils.STEPS]);
+            assertEquals( dlist1[i][DbUtils.ROWS],rrdDslist2[i][DbUtils.ROWS]);
+            assertEquals( (double)dlist1[i][DbUtils.XFF],(double)rrdDslist2[i][DbUtils.XFF]);
+        }
+    }
+
 }

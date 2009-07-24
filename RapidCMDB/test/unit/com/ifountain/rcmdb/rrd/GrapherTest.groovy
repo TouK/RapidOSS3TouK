@@ -12,18 +12,17 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 */
 class GrapherTest extends RapidCmdbWithCompassTestCase {
 
-    final String GRAPH_LINE_FILE =getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
+    final String GRAPH_LINE_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedLineRrdGraph.gif";
     final String GRAPH_AREA_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedAreaRrdGraph.gif"
     final String GRAPH_MULTI_FILE = getWorkspacePath() + "/RapidModules/RapidCMDB/test/unit/com/ifountain/rcmdb/rrd/expectedMultiVariableRrdGraph.gif"
-    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/testRrd.rrd";
-    String testImageName = TestFile.TESTOUTPUT_DIR + "/testImage.png"
+    String rrdFileName = TestFile.TESTOUTPUT_DIR + "/grapherTest.rrd";
+    String testImageName = TestFile.TESTOUTPUT_DIR + "/grapherTestImage.png"
 
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         new File(rrdFileName).delete();
         new File(testImageName).delete(); 
         Grapher.colorIndex = 0 ;
-
     }
 
     public void tearDown() {
@@ -74,9 +73,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
 
     public void testGraphWithArea() throws Exception{
         createDatabase();
-
         Map config = [:]
-
         config[Grapher.DATASOURCE] = [
                                             [
                                                 name:"myspeed",
@@ -93,14 +90,12 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
                                             description:"My Graph"
                                         ]
                                    ]
-
        config[Grapher.START_TIME] = 978301200000L;
        config[Grapher.END_TIME] = 978303900000L;
 
@@ -117,11 +112,10 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
            assertEquals(expectedBytes[i], actualBytes[i])
        }
 
-     }
+    }
 
     public void testGraphWithLine() throws Exception{
         createDatabase();
-
         Map config = [:]
         config[Grapher.DATASOURCE] = [
                                             [
@@ -139,7 +133,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.LINE] = [
                                         [
                                             name:"kmh",
@@ -168,7 +161,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
      }
     public void testMultipleDatasourceGraphDatasourcesSuccessfully() throws Exception{
         createDatabase();
-
         Map fconfig = [:]
         fconfig[Grapher.DATABASE_NAME] = rrdFileName
         fconfig[Grapher.DATASOURCE] = [
@@ -185,7 +177,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 dsname: "b"
                                             ]
                                       ]
-
         fconfig[Grapher.LINE] = [
                                         [
                                             name:"testDs1",
@@ -198,9 +189,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             thickness: 1
                                         ]
                                ]
-
         fconfig[Grapher.START_TIME] = 978300900000;
-
         fconfig[Grapher.END_TIME] = 978303900000;
 
         byte[] bytes = Grapher.graph(fconfig);
@@ -237,7 +226,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -245,7 +233,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
-
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -255,10 +242,8 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        }
        catch(Exception e){
            assertTrue(e.getMessage().indexOf("Invalid color")>=0);
-
        }
-
-     }
+    }
 
     public void testGraphThrowsExceptionIfDBNotExistent() throws Exception{
         Map config = [:]
@@ -279,7 +264,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -287,7 +271,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
-
        config[Grapher.START_TIME] = 978301200L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -295,14 +278,11 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
             Grapher.graph(config)
             fail("should throw exception because database is not existent")
        }
-       catch(FileNotFoundException e){
-       }
-
-     }
+       catch(FileNotFoundException e){}
+    }
 
     public void testGraphThrowsExceptionIfConfigMissesProperty() throws Exception{
        Map config = [:]
-
        try{
             Grapher.graph(config)
             fail("should throw exception because no datasource specified")
@@ -344,8 +324,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        catch(Exception e){
             assertEquals("End time is not specified", e.getMessage())
        }
-
-     }
+    }
 
     public void testGraphThrowsExceptionIfStartTimeIsNotValid() throws Exception{
        Map config = [:]
@@ -365,7 +344,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -373,7 +351,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                             description:"My Graph"
                                         ]
                                    ]
-
        config[Grapher.START_TIME] = -1232L;
        config[Grapher.END_TIME] = 978303900L;
 
@@ -385,7 +362,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        {
              assertTrue(e.getMessage().indexOf("Invalid timestamps specified")>=0);
        }
-     }
+    }
 
     public void testGraphThrowsExceptionIfEndTimeIsNotValid() throws Exception{
        Map config = [:]
@@ -405,7 +382,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         config[Grapher.AREA] = [
                                         [
                                             name:"kmh",
@@ -425,7 +401,7 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        {
              assertTrue(e.getMessage().indexOf("Invalid timestamps specified")>=0);
        }
-     }
+    }
 
     public void testAddDataSourceThrowsExceptionIfNameIsNotSpecified() throws Exception{
         Map config = [:]
@@ -449,8 +425,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
-
         try{
             Grapher.graph(config)
             fail("should throw exception because name of datasource is missing")
@@ -459,7 +433,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals("Datasource distorted: Name of datasource is not specified", e.getMessage()) 
         }
-
     }
 
     public void testAddDataSourceThrowsExceptionIfRpnIsNotSpecified() throws Exception{
@@ -484,8 +457,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
-
         try{
             Grapher.graph(config)
             fail("should throw exception because rpn of datasource is missing")
@@ -494,7 +465,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals("Datasource distorted", e.getMessage())
         }
-
     }
 
     public void testAddDataSourceThrowsExceptionIfNoDBDatasourceSelected() throws Exception{
@@ -523,7 +493,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
                                                 rpn:"kmh,100,GT,100,0,IF"
                                             ]
                                       ]
-
         try{
             Grapher.graph(config)
             fail("should throw exception because db datasource is missing")
@@ -532,7 +501,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals("There is no database selected", e.getMessage())
         }
-
     }
 
     public void testToFileSuccessfull() throws Exception{
@@ -578,8 +546,6 @@ class GrapherTest extends RapidCmdbWithCompassTestCase {
        for(int i=0; i<bytesToFile.length; i++){
            assertEquals(bytesToFile[i], bytesFromFile[i])
        }
-
      }
-
 
 }

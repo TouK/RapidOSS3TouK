@@ -12,8 +12,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
     String fileDirectory = "rrdFiles"
-    String rrdFileName = "testRrd.rrd";
-    String testImageFile = "testImage.png"
+    String rrdFileName = "rrdUtilsTest.rrd";
+    String testImageFile = "rrdUtilsTestImage.png"
 
     public void setUp() {
         super.setUp();
@@ -27,7 +27,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
     public void tearDown() {
         new File(fileDirectory + "/" + rrdFileName).delete();
         new File(fileDirectory + "/" + testImageFile).delete();
-//        deleteDirectory(new File(fileDirectory))
+        deleteDirectory(new File(fileDirectory))
         clearMetaClasses();
         super.tearDown();
     }
@@ -51,7 +51,6 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
          ExpandoMetaClass.enableGlobally();
     }
 
-
     public void testGraphThrowsExceptionIfNoWebResponseIsDefined(){
         def graphCallConfig=null;
         Grapher.metaClass.'static'.graph={ Map config ->
@@ -73,5 +72,4 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         assertSame(graphConfig,graphCallConfig);
 
     }
-
 }

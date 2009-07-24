@@ -14,9 +14,9 @@ import javax.imageio.ImageIO
 */
 class RrdUtils {
 
-    public static final  String RRD_VARIABLES = "rrdVariables";
-    public static final  String RRD_VARIABLE = "rrdVariable";
-    public static final  String GRAPH_TEMPLATE = "template";
+    public static final String RRD_VARIABLES = "rrdVariables";
+    public static final String RRD_VARIABLE = "rrdVariable";
+    public static final String GRAPH_TEMPLATE = "template";
 
     public static final String RRD_FOLDER = "rrdFiles/"
     public static final String DATABASE_NAME = "databaseName";
@@ -96,9 +96,7 @@ class RrdUtils {
         }
 
         bytes=Grapher.graph(config);
-        println "destionation: "+config["destination"];
 
-        println "destination: "+config.containsKey("destination")
         if(config.containsKey("destination")) {
            def destination=config["destination"];
            if( destination == 'web')
@@ -117,7 +115,6 @@ class RrdUtils {
            else{
               String filename = RRD_FOLDER + destination
               createDirectory();
-              println "written file:"+new File(filename).getAbsolutePath();
               Grapher.toFile (bytes, filename);
            }
 

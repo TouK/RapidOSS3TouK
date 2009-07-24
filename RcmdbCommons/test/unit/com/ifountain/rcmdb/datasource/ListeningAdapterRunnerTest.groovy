@@ -12,6 +12,7 @@ import org.apache.log4j.Logger
 import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
+import com.ifountain.rcmdb.test.util.LoggerForTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -49,6 +50,7 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
         GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningAdapterMock);
+        ExpandoMetaClass.enableGlobally();
     }
     void initializeScriptManager()
     {
@@ -144,11 +146,21 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void testStartAdapter() {
+
+
         def ds = new RunnerBaseListeningDatasourceMock(id: 1);
         def runner = new ListeningAdapterRunner(ds.id);
         ds.listeningScript = createScriptObject();
         ds.listeningAdapter = new BaseListeningAdapterMock();
+
+        def logger  = CmdbScript.getScriptLogger(ds.listeningScript);
+
+        assertEquals(Logger.getLogger("scripting"),runner.logger);
+        assertTrue(logger.getName() != runner.logger.getName())
+
         runner.start(ds);
+        assertEquals(logger,runner.logger);
+
         assertEquals(AdapterStateProvider.STARTED, runner.getState());
         def data = ["param1": "value1", "param2": new BigDecimal(1)];
         ds.listeningAdapter.update(ds.listeningAdapter, data);
@@ -163,12 +175,54 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         assertEquals(new Double(1), receivedData["param2"]);
         
         runner.stop();
+        assertEquals(logger,runner.logger);
+
+
         runner.cleanUp();
-        def logger  = CmdbScript.getScriptLogger(ds.listeningScript);
+
+        assertEquals(logger,runner.logger);
         assertEquals(logger, DataStore.get ("runContext")[RapidCMDBConstants.LOGGER]);
         assertEquals(logger, DataStore.get ("initContext")[RapidCMDBConstants.LOGGER]);
         assertEquals(logger, DataStore.get ("getParametersContext")[RapidCMDBConstants.LOGGER]);
         assertEquals(logger, DataStore.get ("cleanUpContext")[RapidCMDBConstants.LOGGER]);
+    }
+    public void testStartAdapterAssignsScriptLoggerToTheRunnerLogger()
+    {
+        def testLogger=new LoggerForTest();
+        def scriptInGetScriptLogger;
+        CmdbScript.metaClass.'static'.getScriptLogger = { CmdbScript script ->
+            scriptInGetScriptLogger=script;
+            return testLogger;
+        }
+
+        def ds = new RunnerBaseListeningDatasourceMock(id: 1);
+        def runner = new ListeningAdapterRunner(ds.id);
+        assertEquals(Logger.getLogger("scripting"),runner.logger);
+        assertTrue(testLogger.getName() != runner.logger.getName())
+
+        ds.listeningScript = createScriptObject();
+        ds.listeningAdapter = new BaseListeningAdapterMock();
+
+        assertEquals(0,testLogger.logHistory.DEBUG.size());
+
+        runner.start(ds);
+
+        assertEquals(testLogger,runner.logger);
+
+        assertEquals(1,testLogger.logHistory.DEBUG.size());
+        assertEquals(0,testLogger.logHistory.WARN.size());
+        assertTrue(testLogger.logHistory.DEBUG[0].indexOf("Starting listening adapter")>=0);
+
+
+        runner.stop();
+        assertEquals(testLogger,runner.logger);
+
+        runner.cleanUp();
+        assertEquals(testLogger,runner.logger);
+
+        assertEquals(2,testLogger.logHistory.DEBUG.size());
+        assertEquals(0,testLogger.logHistory.WARN.size());
+        assertTrue(testLogger.logHistory.DEBUG[1].indexOf("Stopping listening adapter")>=0);
     }
 
     public void testUpdateConvertsParametersIfAdapterEnabledUpdateConversion()

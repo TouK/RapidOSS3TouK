@@ -31,7 +31,7 @@ class LoggerForTest  extends Logger
     {
         logHistory["WARN"].add(message);
     }
-    public void warn(Object message,exception)
+    public void warn(Object message,java.lang.Throwable exception)
     {
         logHistory["WARN"].add([message:message,exception:exception]);
     }

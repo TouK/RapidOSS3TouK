@@ -81,11 +81,14 @@ public class ListeningAdapterRunner implements AdapterStateProvider
     public void start(BaseListeningDatasource listeningDatasource) throws Exception {
         def scriptObject = null;
         setState(INITIALIZING);
-        logger.debug("Starting listening adapter with datasource id ${datasourceId}");
         CmdbScript script = listeningDatasource.listeningScript;
         if (script && script.type == CmdbScript.LISTENING) {
+            logger=CmdbScript.getScriptLogger(script);
+            logger.debug("Starting listening adapter with datasource id ${datasourceId}");
+
             scriptObject = createScriptObject(script, listeningDatasource);
             def scriptLogger = scriptObject.logger;
+            println scriptLogger;
             try {
                 scriptObject.run();
             }

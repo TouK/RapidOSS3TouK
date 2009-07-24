@@ -4,6 +4,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import datasource.BaseListeningDatasource
+import com.ifountain.rcmdb.test.util.LoggerForTest
 
 /**
  * Created by IntelliJ IDEA.
@@ -118,9 +119,17 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
         def ds = new RunnerBaseListeningDatasourceMock(id: 1);
         MockListeningAdapterRunner runner = new MockListeningAdapterRunner(ds.id);
         runner.setStartException(ListeningAdapterException.couldNotSubscribed(runner.datasourceId, new Exception("")), AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+        def testLogger=new LoggerForTest();
+        runner.logger=testLogger;
+        
         ListeningAdapterRunnerFactory.setRunner(runner);
         rObj.start(ds);
         waitForState(rObj, AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals(1,testLogger.logHistory.WARN.size())
+            assertTrue(testLogger.logHistory.WARN[0].message.indexOf("Exception occurred while starting adapter with datasource id ${ds.id}")>=0);
+        }));
     }
 
     public void testStopAdapter() {

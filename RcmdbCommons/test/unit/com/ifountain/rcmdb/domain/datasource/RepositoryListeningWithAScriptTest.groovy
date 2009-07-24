@@ -125,7 +125,6 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
 
     public void testRepositoryListeningScript()
     {
-
         def connectionName = "repoConn"
 
         DatasourceTestUtils.getParamSupplier().setParam(new ConnectionParam("RepositoryConnection", connectionName, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0));
@@ -237,6 +236,11 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
             assertEquals(EventTriggeringUtils.AFTER_DELETE_EVENT,listeningHistory[7][ObjectProcessor.EVENT_NAME]);
             assertEquals(modelClass2,listeningHistory[7][ObjectProcessor.DOMAIN_OBJECT].class);
             assertEquals(model2ins1.id,listeningHistory[7][ObjectProcessor.DOMAIN_OBJECT].id);
+        }
+        catch(e)
+        {
+            e.printStackTrace();
+            throw e;
         }
         finally
         {

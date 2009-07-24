@@ -51,7 +51,8 @@ class QuartzScriptJob implements StatefulJob {
             }
             catch (t)
             {
-                logger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));                
+                def scriptLogger=CmdbScript.getScriptLogger(script);
+                scriptLogger.warn("Exception in periodic script ${scriptName}", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
             }
         }
     }

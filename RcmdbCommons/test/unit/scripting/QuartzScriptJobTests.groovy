@@ -8,6 +8,8 @@ import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.test.util.CompassForTests;
 import org.apache.commons.io.FileUtils
+import com.ifountain.rcmdb.test.util.LoggerForTest
+
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -90,6 +92,13 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
             callParams.script=script
             throw new Exception("Test Exception");
         }
+        def testLogger=new LoggerForTest();
+        def scriptInGetScriptLogger;
+        CmdbScript.metaClass.static.getScriptLogger={CmdbScript script ->
+            scriptInGetScriptLogger=script;
+            return testLogger;
+        }
+
 
         QuartzScriptJob job=new QuartzScriptJob();
 
@@ -97,7 +106,8 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
         def scriptName="myTestScript";
         def scriptFile=scriptName+".groovy"
         createScript(scriptFile,content);
-        CmdbScript.addScript(name:scriptName,scriptFile:scriptFile);
+        def addedScript=CmdbScript.addScript(name:scriptName,scriptFile:scriptFile);
+        assertFalse(addedScript.hasErrors());
 
         assertEquals(callParams.size(),0);
         try{
@@ -107,6 +117,12 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
             fail("should not throw exception");
         }
         assertEquals(callParams.script.name,scriptName);
+
+        assertEquals(addedScript.id,scriptInGetScriptLogger.id);
+
+        assertEquals(1,testLogger.logHistory.WARN.size());
+        assertTrue(testLogger.logHistory.WARN[0].message.indexOf("Exception in periodic script ${scriptName}")>=0);
+        
         
     }
 

@@ -28,7 +28,12 @@ class GroupControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         Group.get(name:testGroupname)?.remove();
         Group.get(name:"${testGroupname}2")?.remove();
 
-
+        RsUser.list().each{ user ->
+            if(user.username != RsUser.RSADMIN && user.username != RsUser.RSUSER )
+            {
+                user.remove();
+            }
+        }
     }
 
     public void tearDown() {

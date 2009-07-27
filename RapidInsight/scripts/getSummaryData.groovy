@@ -78,4 +78,4 @@ builder.chart() {
     builder.set(label: "Indeterminate", value: severityMap.get("1"), color: "0xac6bac")
     builder.set(label: "Normal", value: severityMap.get("0"), color: "0x00ff00")
 }
-web.render(contentType: 'text/xml', text: sw.toString()) 
+return sw.toString();

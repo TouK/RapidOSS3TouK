@@ -1,24 +1,19 @@
-package scripts
+package scriptTests
 
-import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
-import script.CmdbScript
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
-import script.ScriptController
 
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Jan 13, 2009
- * Time: 3:12:46 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Jul 27, 2009
+* Time: 3:06:44 PM
+* To change this template use File | Settings | File Templates.
+*/
+class GetSummaryDataScriptTest extends RapidCmdbWithCompassTestCase {
 
-
-
-// Warning :  this test copies getSummaryData script from parent - svn RapidInsight directory to the scripts directory
-class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase {
-    static transactional = false;
-    def classes=[:]
+     def classes=[:]
 
      static String CRITICAL = "Critical";
      static String MAJOR = "Major";
@@ -31,10 +26,10 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
      static severityMap=[:];
 
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         loadClasses(["RsEvent"])
-        clearAll();
+        initialize([classes.RsEvent], []);
 
         severityMap[CRITICAL]=5;
         severityMap[MAJOR]=4;
@@ -43,23 +38,23 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         severityMap[INDETERMINATE]=1;
         severityMap[NORMAL]=0;
         severityMap[INVALID]=50;
-        copyScript("getSummaryData");
+        initializeScriptManager();
     }
 
-    void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
     }
 
-
-    void clearAll()
+    void initializeScriptManager()
     {
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/scripts"
+        println "base path is :"+new File(base_directory).getCanonicalPath();
 
-        classes.RsEvent.removeAll();
+        ScriptManagerForTest.initialize (gcl,base_directory);
+        ScriptManagerForTest.addScript('getSummaryData');
 
-        CmdbScript.list().each{
-            CmdbScript.deleteScript(it);
-        }
     }
+
      void loadClasses(classList)
     {
         classList.each{
@@ -67,21 +62,8 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
             classes[loadedClass.getSimpleName()]=loadedClass
         }
     }
-    void copyScript(scriptName)
-    {
-
-        def scriptPath= "../../../RapidModules/RapidInsight/scripts/${scriptName}.groovy";
-
-        def ant=new AntBuilder();
-
-        ant.copy(file: scriptPath, toDir: "scripts",overwrite:true);
-
-    }
 
     void testSummaryDataWithNoEvent(){
-        def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
-        assertFalse(summaryScript.hasErrors());
-
         assertEquals(classes.RsEvent.count(),0)
 
         def params=[name:"TESTDS",nodeType:"Container"]
@@ -97,8 +79,6 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
     }
     void testSummaryDataWithInvalidSeverityEvents(){
-        def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
-        assertFalse(summaryScript.hasErrors());
 
         assertEquals(classes.RsEvent.count(),0)
 
@@ -148,8 +128,6 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
     }
      void testSummaryDataWithEvents(){
-        def summaryScript=CmdbScript.addScript([name:"getSummaryData"])
-        assertFalse(summaryScript.hasErrors());
 
         assertEquals(classes.RsEvent.count(),0)
 
@@ -191,11 +169,10 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
 
 
     }
-    def getSummaryDataMap(params){
-        params.id="getSummaryData";
-        def controller=runScriptViaController(params);
+    def getSummaryDataMap(params){        
+        def scriptResult=ScriptManagerForTest.runScript("getSummaryData",["params":params]);        
 
-        def resultXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        def resultXml = new XmlSlurper().parseText(scriptResult);
         def sets=resultXml.set;
         assertEquals(sets.size(),6);
 
@@ -207,19 +184,6 @@ class GetSummaryDataScriptIntegrationTests extends RapidCmdbIntegrationTestCase 
         return setMap;
     }
 
-    def runScriptViaController(externalParams){
-        def params=[:]
-
-        params.putAll(externalParams);
-
-
-        def controller = new ScriptController();
-        params.each{ key , val ->
-            controller.params[key] = val;
-        }
-        controller.run();
-        return controller;
-    }
 
 
 }

@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -56,6 +56,9 @@ class ChartsTagLib {
     def flexPieChart = {attrs, body ->
         out << fFlexPieChart(attrs, "");
     }
+    def flexLineChart = {attrs, body ->
+        out << fFlexLineChart(attrs, "");
+    }
 
 
     static def fFlexPieChart(attrs, bodyString) {
@@ -84,6 +87,38 @@ class ChartsTagLib {
                }
            </script>
         """;
+    }
+
+
+    static def fFlexLineChart(attrs, bodyString) {
+        def configStr = getFlexLineConfig(attrs);
+
+        return """
+           <script type="text/javascript">
+               var chartConfig = ${configStr};
+               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var lineChart = new YAHOO.rapidjs.component.FlexLineChart(container, chartConfig);
+
+               if(lineChart.pollingInterval > 0){
+                   lineChart.poll();
+               }
+           </script>
+        """;
+    }
+
+    static def getFlexLineConfig(attrs) {
+        return """{
+            swfURL:'${attrs["swfURL"]}',
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            rootTag:'${attrs["rootTag"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+            width: ${attrs["width"]},
+            height: ${attrs["height"]},
+            bgcolor: ${attrs["bgcolor"]}
+        }"""
     }
 
     static def getFlexPieConfig(attrs) {

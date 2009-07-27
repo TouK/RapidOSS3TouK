@@ -210,7 +210,8 @@ class ScriptController {
             catch (t)
             {
                 addError("script.execute.error", [t.toString()])
-                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                def scriptLogger=CmdbScript.getScriptLogger(script);
+                scriptLogger.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
                 render(text: errorsToXml(errors), contentType: "text/xml")
             }
 

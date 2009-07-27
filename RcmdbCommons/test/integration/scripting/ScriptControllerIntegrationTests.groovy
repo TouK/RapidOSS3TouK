@@ -413,20 +413,28 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testRunReturnsErrorIfScriptContainsErrors()
     {
-        def exceptionMessage = "Error occurred";
-        String scriptName = "script1"
+        
+        def exceptionMessage = "ControllerTestError occured ${System.currentTimeMillis()}";
+        String scriptName = "scriptWithErrorForControllerTest"
         def scriptFile = new File("${System.getProperty("base.dir")}/$ScriptManager.SCRIPT_DIRECTORY/${scriptName}.groovy");
         scriptFile.write ("throw new Exception(\"$exceptionMessage\")");
         try
         {
             def scriptController = new ScriptController();
             scriptController.params["name"] = scriptName;
+            scriptController.params["logFileOwn"] = "on";
             scriptController.save();
 
             IntegrationTestUtils.resetController (scriptController);
             scriptController.params["id"] = scriptName;
             scriptController.run();
+
             assertTrue(scriptController.response.contentAsString, scriptController.response.contentAsString.indexOf(exceptionMessage) >= 0);
+            def logFile=new File("logs/${scriptName}.log");
+            assertTrue(logFile.exists());
+            def logContent=logFile.getText();
+            assertTrue(logContent.indexOf(exceptionMessage)>=0);
+            assertTrue(logContent.indexOf("WARN")>=0);
         }
         finally
         {

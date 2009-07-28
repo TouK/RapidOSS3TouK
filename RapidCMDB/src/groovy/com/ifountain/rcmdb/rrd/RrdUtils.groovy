@@ -102,8 +102,7 @@ class RrdUtils {
            if( destination == 'web')
            {
 	            def webResponse=ControllerUtils.getWebResponse();
-	            if(webResponse == null )
-                {
+	            if(webResponse == null ) {
                     throw new Exception("Web response is not avaliable, web destination only usable from scripts or controllers");
                 }
 
@@ -117,9 +116,7 @@ class RrdUtils {
               createDirectory();
               Grapher.toFile (bytes, filename);
            }
-
         }
-
         return bytes;
     }
 
@@ -134,10 +131,6 @@ class RrdUtils {
         return DbUtils.fetchArchives(RRD_FOLDER + dbName);
     }
 
-    public static def fetchArchives(RrdDb rrdDb){
-        return DbUtils.fetchArchives(rrdDb);
-    }
-
     /**
     * retrieves defined datasources in speficied database
     * Notice: it is better to use overriden function fetchDatasources(rrdDb) if an rrdDb is
@@ -149,10 +142,6 @@ class RrdUtils {
         return DbUtils.fetchDatasources(RRD_FOLDER + dbName);
     }
 
-    public static def fetchDatasources(RrdDb rrdDb){
-       return DbUtils.fetchDatasources(rrdDb);
-    }
-
     /**
     *  returns the configuration map of specified rrd database
     */
@@ -161,130 +150,143 @@ class RrdUtils {
         return DbUtils.getDatabaseInfo(RRD_FOLDER + dbName);
     }
 
-    /**
-    *  returns first time series of first data point
-    *  it is the easiest call if the database has only one data source
-    */
-    public static double[] fetchData(String dbName){
-        createDirectory();
-        return DbUtils.fetchData(RRD_FOLDER + dbName);
+    private static def fetchDataInfoMap(dbName) {
+        dbName = RRD_FOLDER + dbName
+        def infoMap = [:]
+
+        def arclist = DbUtils.fetchArchives(dbName)
+        def dslist = DbUtils.fetchDatasources(dbName);
+        def datasources = []
+        for(int i=0; i<dslist.size(); i++){
+            datasources.add(dslist[i][DbUtils.NAME]);
+        }
+        infoMap['function'] = arclist[0][DbUtils.FUNCTION];
+        infoMap['datasources'] = datasources
+
+        return infoMap
     }
 
-    /**
-    * returns the all datasources in the database according to the first archive method.
-    */
-    public static double[][] fetchAllData(String dbName){
+    public static def fetchAllDataAsMap(dbName) {
         createDirectory();
-        return DbUtils.fetchAllData(RRD_FOLDER + dbName);
+        def info = fetchDataInfoMap(dbName)
+        return DbUtils.fetchAllDataAsMap(RRD_FOLDER + dbName, info['datasources'], info['function']);
     }
 
-    /**
-    * returns time series of one data index specified with its datasource name
-    */
-    public static double[] fetchData(String dbName, String datasource){
+    public static def fetchAllDataAsMap(dbName, datasource, function = 'notSpecified') {
         createDirectory();
-        return DbUtils.fetchData(RRD_FOLDER + dbName, datasource);
+        def info = fetchDataInfoMap(dbName)
+        def datasources = []
+        datasources.add(datasource)
+        return DbUtils.fetchAllDataAsMap(RRD_FOLDER + dbName, datasources,
+                                         function!='notSpecified'?function:info['function']);
     }
 
-    /**
-    *  returns time series of one data index specified with its datasource name,
-    * archive function of datasource, start time and end time
-    */
-    public static double[] fetchData(String dbName, String datasource, String function,
-                                   long startTime, long endTime){
+    public static def fetchAllDataAsMap(dbName, List datasources, function = 'notSpecified') {
         createDirectory();
-        return DbUtils.fetchData(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
+        def info = fetchDataInfoMap(dbName)
+        return DbUtils.fetchAllDataAsMap(RRD_FOLDER + dbName, datasources,
+                                         function!='notSpecified'?function:info['function']);
     }
-    /**
-    *  returns time series of data indexes specified with its datasource names
-    */
-    public static double[][] fetchData(String dbName, String[] datasources){
+
+    public static def fetchDataAsMap(dbName, datasource, function,
+                                      long startTime, long endTime) {
         createDirectory();
-        return DbUtils.fetchData(RRD_FOLDER + dbName, datasources);
+        def datasources =  []
+        datasources.add(datasource)
+        def startTimes = []
+        startTimes.add(startTime)
+        def endTimes = []
+        endTimes.add(endTime)
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
+    }
+
+    public static def fetchDataAsMap(dbName, datasource, long startTime, long endTime) {
+        createDirectory();
+        def datasources =  []
+        datasources.add(datasource)
+        def startTimes = []
+        startTimes.add(startTime)
+        def endTimes = []
+        endTimes.add(endTime)
+        def arclist = DbUtils.fetchArchives(dbName)
+        def function = arclist[0][DbUtils.FUNCTION];
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
+    }
+
+    public static def fetchDataAsMap(dbName, List datasources, function,
+                                      long startTime, long endTime) {
+        createDirectory();
+        def startTimes = []
+        startTimes.add(startTime)
+        def endTimes = []
+        endTimes.add(endTime)
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
+    }
+
+    public static def fetchDataAsMap(dbName, datasource, function,
+                                      List startTimes, List endTimes) {
+        createDirectory();
+        def datasources =  []
+        datasources.add(datasource)
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
+    }
+
+    public static def fetchDataAsMap(dbName, List datasources, function,
+                                      List startTimes, List endTimes) {
+        createDirectory();
+        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
     }
 
     //this method is more useful for models
-    public static double[][] fetchData(String[] dbName, String[] datasources){
-        if(dbName.length != datasources.length) {
+    public static def fetchAllDataAsMap(List dbNames, List datasources) {
+        if(dbNames.size() != datasources.size()) {
             throw new Exception("number of database and number of datasources are not equal");
         }
-        double[][] result = new double[dbName.length][];
-        for(int i=0; i<dbName.length; i++){
-            result[i] = DbUtils.fetchData(RRD_FOLDER + dbName[i], datasources[i]);
+        def result = [:]
+        for(int i = 0; i < dbNames.size(); i++){
+            result[datasources.get(i)] = fetchAllDataAsMap(dbNames.get(i), datasources.get(i)).get(datasources.get(i));
         }
         return result;
     }
 
-    /**
-    *  returns time series of data indexes specified with its datasource names,
-    * archive function of datasource, start time and end time
-    */
-    public static double[][] fetchData(String dbName, String[] datasources, String function,
-                                   long startTime, long endTime){
-        createDirectory();
-        return DbUtils.fetchData(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
-    }
-
-    //this method is more useful for models
-    public static double[][] fetchData(String[] dbName, String[] datasources, String function,
-                                   long startTime, long endTime){
-        if(dbName.length != datasources.length) {
+    public static def fetchDataAsMap(List dbNames, List datasources, long startTime, long endTime){
+        if(dbNames.size() != datasources.size()) {
             throw new Exception("number of database and number of datasources are not equal");
         }
-        double[][] result = new double[dbName.length][];
-        for(int i=0; i<dbName.length; i++){
-            result[i] = DbUtils.fetchData(RRD_FOLDER + dbName[i], datasources[i], function, startTime, endTime);
+        def result = [:]
+        for(int i=0; i < dbNames.size(); i++){
+            def arclist = DbUtils.fetchArchives(dbNames.get(i))
+            def function = arclist[0][DbUtils.FUNCTION];
+            result[datasources.get(i)] = fetchDataAsMap(dbNames.get(i), datasources.get(i),
+                                                             function, startTime, endTime).get(datasources.get(i));
         }
         return result;
     }
 
-    //====following fetch data methods return map[timestamp:value] as result====//
-    public static Map fetchDataAsMap(String dbName){
-        createDirectory();
-        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName)
-    }
-
-    public static Map fetchDataAsMap(String dbName, String datasource){
-        createDirectory();
-        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource);
-    }
-
-    public static Map fetchDataAsMap(String dbName, String datasource, String function,
-                                   long[] startTime, long[] endTime){
-        createDirectory();
-        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasource, function, startTime, endTime);
-
-    }
-
-    public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
-                                   long[] startTime, long[] endTime){
-        createDirectory();
-        return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTime, endTime);
+    //this method is more useful for models
+    public static def fetchDataAsMap(List dbNames, List datasources, function,
+                                   long startTime, long endTime){
+        if(dbNames.size() != datasources.size()) {
+            throw new Exception("number of database and number of datasources are not equal");
+        }
+        def result = [:]
+        for(int i=0; i < dbNames.size(); i++){
+            result[datasources.get(i)] = fetchDataAsMap(dbNames.get(i), datasources.get(i),
+                                                             function, startTime, endTime).get(datasources.get(i));
+        }
+        return result;
     }
 
     //this method is more useful for models
-    public static Map fetchDataAsMap(String[] dbName, String[] datasources){
+    public static def fetchDataAsMap(List dbNames, List datasources, function, List startTimes, List endTimes){
         createDirectory();
-        if(dbName.length != datasources.length) {
+        if(dbNames.size() != datasources.size()) {
             throw new Exception("number of database and number of datasources are not equal");
         }
         Map result = [:];
-        for(int i=0; i<dbName.length; i++){
-            result[datasources[i]] = DbUtils.fetchDataAsMap(RRD_FOLDER + dbName[i], datasources[i]);
-        }
-        return result;
-    }
-
-    //this method is more useful for models
-    public static Map fetchDataAsMap(String[] dbName, String[] datasources, String function, long[] startTime, long[] endTime){
-        createDirectory();
-        if(dbName.length != datasources.length) {
-            throw new Exception("number of database and number of datasources are not equal");
-        }
-        Map result = [:];
-        for(int i=0; i<dbName.length; i++){
-            result[datasources[i]] = DbUtils.fetchDataAsMap(RRD_FOLDER + dbName[i],
-                    datasources[i], function, startTime[i], endTime[i]);
+        for(int i=0; i < dbNames.size(); i++){
+            result[datasources.get(i)] = fetchDataAsMap(dbNames.get(i), datasources.get(i),
+                                                             function, startTimes.get(i) as long, endTimes.get(i) as long).get(datasources.get(i));
         }
         return result;
     }

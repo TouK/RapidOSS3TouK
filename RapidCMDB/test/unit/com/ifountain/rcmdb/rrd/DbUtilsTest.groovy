@@ -6,9 +6,7 @@ import org.jrobin.core.FetchRequest
 import org.jrobin.core.FetchData
 import org.jrobin.core.RrdDb
 import java.text.DecimalFormat
-import java.util.concurrent.Semaphore
 import org.jrobin.core.RrdException
-
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,47 +22,41 @@ class DbUtilsTests extends RapidCoreTestCase {
     protected void setUp() {
         super.setUp();
         new File(rrdFileName).delete();
-        new File(rrdFileName+".xml").delete();
     }
 
     protected void tearDown() {
         new File(rrdFileName).delete();
+        new File(rrdFileName+".xml").delete();
         super.tearDown();
     }
 
     public void testSuccessfullCreateDatabase() throws Exception {
         Map config = [:]
         config[DbUtils.DATABASE_NAME] = rrdFileName
-        config[DbUtils.DATASOURCE] = [
-                                            [
-                                                name:"testDs",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:10,
-                                                min:2
-                                            ],
-                                            [
-                                                name:"testDs2",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[DbUtils.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:6,
-                                            rows:10,
-                                        ],
-                                        [
-                                            function:"MIN",
-                                            xff:0.5,
-                                            steps:3,
-                                            rows:7,
-                                        ]
-                                   ]
-
+        config[DbUtils.DATASOURCE] = [  [
+                                            name:"testDs",
+                                            type:"GAUGE",
+                                            heartbeat:600,
+                                            max:10,
+                                            min:2
+                                         ],
+                                         [
+                                            name:"testDs2",
+                                            type:"GAUGE",
+                                            heartbeat:600
+                                         ] ]
+        config[DbUtils.ARCHIVE] = [ [
+                                        function:"AVERAGE",
+                                        xff:0.5,
+                                        steps:6,
+                                        rows:10,
+                                    ],
+                                    [
+                                        function:"MIN",
+                                        xff:0.5,
+                                        steps:3,
+                                         rows:7,
+                                    ] ]
         DbUtils.createDatabase(config)
 
         assertTrue(new File(rrdFileName).exists());
@@ -95,7 +87,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 min:0
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -141,7 +132,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 min:0
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -156,7 +146,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             rows:5,
                                         ]
                                    ]
-
         config[DbUtils.START_TIME] = 920804400000L;
 
         DbUtils.createDatabase(config);
@@ -196,7 +185,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 min:0
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -211,7 +199,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             rows:5,
                                         ]
                                   ]
-
         config[DbUtils.START_TIME] = 920804400000L;
 
         assertTrue(!(DbUtils.isDatabaseExists(rrdFileName)))
@@ -239,16 +226,13 @@ class DbUtilsTests extends RapidCoreTestCase {
             assertEquals("No Datasource specified", e.getMessage());
         }
 
-
-        config[DbUtils.DATASOURCE] = [
-                                            [
-                                                name:"testDs",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                                max:1,
-                                                min:0
-                                            ]
-                                       ]
+        config[DbUtils.DATASOURCE] = [ [
+                                          name:"testDs",
+                                          type:"GAUGE",
+                                          heartbeat:600,
+                                          max:1,
+                                          min:0
+                                       ] ]
         try{
             DbUtils.createDatabase(config)
             fail("should throw exception because there is no archive specified")
@@ -277,8 +261,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 min:2
                                             ]
                                       ]
-
-        config[DbUtils.ARCHIVE] = [
+         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
                                             xff:0.5,
@@ -292,8 +275,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             rows:5,
                                         ]
                                    ]
-
-         config[DbUtils.START_TIME] = "notnumber";
+        config[DbUtils.START_TIME] = "notnumber";
 
         try{
             DbUtils.createDatabase(config)
@@ -323,7 +305,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 min:0
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -338,7 +319,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             rows:5,
                                         ]
                                    ]
-
          config[DbUtils.STEP] = "notnumber";
 
          try{
@@ -348,11 +328,10 @@ class DbUtilsTests extends RapidCoreTestCase {
          catch(Exception e){
              assertEquals("Step is not valid", e.getMessage());
          }
-
     }
 
     public void testGetDsDefSuccessful() throws Exception {
-       def datasource = [
+        def datasource = [
                             [
                                 name:"testDs",
                                 type:"GAUGE",
@@ -366,11 +345,9 @@ class DbUtilsTests extends RapidCoreTestCase {
                                 heartbeat:600
                             ]
                         ]
-
         def object = DbUtils.getDsDefs(datasource)
 
         assertEquals(2, object.length);
-
         assertEquals("testDs",object[0].getDsName())
         assertEquals("GAUGE", object[0].getDsType())
         assertEquals(600, object[0].getHeartbeat())
@@ -382,11 +359,10 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertEquals(600, object[1].getHeartbeat())
         assertEquals(Double.NaN, object[1].getMaxValue())
         assertEquals(Double.NaN, object[1].getMinValue())
-
     }
 
     public void testGetArcDefSuccessful() throws Exception {
-       def archives = [
+        def archives = [
                             [
                                 function:"AVERAGE",
                                 xff:0.5,
@@ -404,7 +380,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         def object = DbUtils.getArcDefs(archives)
 
         assertEquals(2, object.length);
-
         assertEquals("AVERAGE",object[0].getConsolFun())
         assertEquals(0.5D, object[0].getXff())
         assertEquals(6, object[0].getSteps())
@@ -414,7 +389,6 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertEquals(0.5D, object[1].getXff())
         assertEquals(1, object[1].getSteps())
         assertEquals(5, object[1].getRows())
-
     }
 
     public void testUpdateDataSuccessful() throws Exception {
@@ -432,7 +406,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -461,18 +434,18 @@ class DbUtilsTests extends RapidCoreTestCase {
         FetchRequest fetchRequest = rrdDb.createFetchRequest("AVERAGE", 978301200, 978304200);
         FetchData fetchData = fetchRequest.fetchData();
 
-         def values = fetchData.getValues("a");
-         rrdDb.close();
+        def values = fetchData.getValues("a");
+        rrdDb.close();
 
-         DecimalFormat df = new DecimalFormat("#.##");
-         def newValues = [];
-         values.each{
-             if(it!= Double.NaN){
+        DecimalFormat df = new DecimalFormat("#.##");
+        def newValues = [];
+        values.each{
+            if(it!= Double.NaN){
                 newValues.add(df.format(it))
-             }
-         };
-         def expectedValues = ["0.67", "1.67", "1", "0.67", "1.67", "0.67", "1", "1.67", "1.33"];
-         assertEquals(expectedValues, newValues);
+            }
+        };
+        def expectedValues = ["0.67", "1.67", "1", "0.67", "1.67", "0.67", "1", "1.67", "1.33"];
+        assertEquals(expectedValues, newValues);
     }
 
     public void testFetchDataThrowsException() throws Exception {
@@ -490,7 +463,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -514,7 +486,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
 
         try{
-            DbUtils.fetchData(rrdFileName,"c");
+            DbUtils.fetchAllDataAsMap(rrdFileName, ['c'], 'AVERAGE');
             fail("should throw exception because datasource is not number");
         }catch (Exception e){
             assertEquals("Unknown datasource name: c",e.getMessage());
@@ -536,7 +508,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",
@@ -558,175 +529,15 @@ class DbUtilsTests extends RapidCoreTestCase {
         DbUtils.updateData(rrdFileName,"978303300000:2400:6");
         DbUtils.updateData(rrdFileName,"978303600000:2900:4");
         DbUtils.updateData(rrdFileName,"978303900000:3300:2");
-        DbUtils.fetchData(rrdFileName,"a");
-        DbUtils.fetchData(rrdFileName,"b");
+
+        def result =  DbUtils.fetchAllDataAsMap(rrdFileName, ['a', 'b'], 'AVERAGE');
+
+        assertTrue('result should include value whose key is \'a\'', result.containsKey('a'))
+        assertTrue('result should include value whose key is \'b\'', result.containsKey('b'))
+        assertEquals('values retrived for source b is incorrect', 1.0D, result['b']['978302400'])
+        assertEquals('values retrived for source b is incorrect', 2.0D, result['b']['978303900'])
     }
 
-    public void testFetchDataByDatabaseNameOnly() throws Exception {
-        Map config = [:]
-        config[DbUtils.DATABASE_NAME] = rrdFileName;
-        config[DbUtils.DATASOURCE] = [
-                                            [
-                                                name:"a",
-                                                type:"COUNTER",
-                                                heartbeat:600,
-                                            ],
-                                            [
-                                                name:"b",
-                                                type:"GAUGE",
-                                                heartbeat:600
-                                            ]
-                                      ]
-
-        config[DbUtils.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:30,
-                                        ],
-                                        [
-                                            function:"MIN",
-                                            xff:0.5,
-                                            steps:2,
-                                            rows:30,
-                                        ]
-                                   ]
-        config[DbUtils.START_TIME] = 978300900000;
-        DbUtils.createDatabase(config);
-
-        DbUtils.updateData(rrdFileName,"978301200000:200:1");
-        DbUtils.updateData(rrdFileName,"978301500000:400:4");
-        DbUtils.updateData(rrdFileName,"978301800000:900:5");
-        DbUtils.updateData(rrdFileName,"978302100000:1200:3");
-        DbUtils.updateData(rrdFileName,"978302400000:1400:1");
-        DbUtils.updateData(rrdFileName,"978302700000:1900:2");
-        DbUtils.updateData(rrdFileName,"978303000000:2100:4");
-        DbUtils.updateData(rrdFileName,"978303300000:2400:6");
-        DbUtils.updateData(rrdFileName,"978303600000:2900:4");
-        DbUtils.updateData(rrdFileName,"978303900000:3300:2");
-
-        DbUtils.fetchDataToXml(rrdFileName,rrdFileName+"fetcdata2.xml");
-    }
-
-    public void testFetchDataByDatabaseNameOnlyForOneDatapoint() throws Exception {
-        Map config = [:]
-        config[DbUtils.DATABASE_NAME] = rrdFileName;
-        config[DbUtils.DATASOURCE] = [
-                                            [
-                                                name:"a",
-                                                type:"GAUGE",
-                                                heartbeat:600,
-                                            ]
-                                      ]
-
-        config[DbUtils.ARCHIVE] = [
-                                        [
-                                            function:"AVERAGE",
-                                            xff:0.5,
-                                            steps:1,
-                                            rows:30,
-                                        ]
-                                   ]
-        config[DbUtils.START_TIME] = 978300900000;
-
-        DbUtils.createDatabase(config);
-
-        DbUtils.updateData(rrdFileName,"978301200000:200");
-        DbUtils.updateData(rrdFileName,"978301500000:400");
-        DbUtils.updateData(rrdFileName,"978301800000:900");
-        DbUtils.updateData(rrdFileName,"978302100000:1200");
-        DbUtils.updateData(rrdFileName,"978302400000:1400");
-        DbUtils.updateData(rrdFileName,"978302700000:1900");
-        DbUtils.updateData(rrdFileName,"978303000000:2100");
-        DbUtils.updateData(rrdFileName,"978303300000:2400");
-        DbUtils.updateData(rrdFileName,"978303600000:2900");
-        DbUtils.updateData(rrdFileName,"978303900000:3300");
-    }
-
-    public void testFetchhOneDatasourceToXml() throws Exception {
-        new File(rrdFileName+".xml").delete();
-        createDatabase();
-        String xmlFile = rrdFileName+".xml";
-        Map data = DbUtils.fetchDataToXml (rrdFileName, "b", xmlFile);
-        assertTrue(new File(xmlFile).exists());
-        assertMap(data);
-    }
-
-    public void testFetchAllData() throws Exception {
-        new File(rrdFileName+".xml").delete();
-        createDatabase();
-        String xmlFile = rrdFileName+".xml";
-        Map data = DbUtils.fetchDataToXml (rrdFileName, xmlFile);
-        assertTrue(new File(xmlFile).exists());
-        assertMap(data.get("b"));
-    }
-
-    public void testWriteMultipleDatasourceToXml() throws Exception {
-        createDatabase();
-        String xmlFile = rrdFileName+".xml"
-        String[] dataPoints = new String[2];
-        dataPoints[0] = "a";
-        dataPoints[1] = "b";
-        Map data = DbUtils.fetchDataToXml (rrdFileName, dataPoints, "AVERAGE", 978300900000L, 978303900000L, xmlFile);
-        assertTrue(new File(xmlFile).exists());
-        assertMap(data.get(dataPoints[1]));
-    }
-
-    public void testConvertingXml() throws Exception {
-        createDatabase();
-
-        RrdDb rrdDb = new RrdDb(rrdFileName);
-        FetchRequest fr = rrdDb.createFetchRequest("AVERAGE",978301200L,978303900L);
-        String xmlFile = rrdFileName+".xml";
-        fr.fetchData().exportXml(xmlFile);
-        DbUtils.convertXmlFile(xmlFile);
-        assertTrue("Xml file can not be created", new File(xmlFile).exists());
-        Double actualData = Double.parseDouble(DbUtils.getValueFromXml(xmlFile,978303900000L));
-        DecimalFormat formatter = new DecimalFormat("#.#");
-        actualData = Double.parseDouble(formatter.format(actualData));
-        assertEquals ("Values in xml file are not proper", 1.3d, actualData);
-        rrdDb.close()
-    }
-
-
-
-    public void testArchiveLastUpdateTimes() throws Exception {
-        createDatabase();
-        long lastUpdate = DbUtils.getLastArchiveUpdate (rrdFileName);
-        assertEquals("Last update time is not true",978303900000L,lastUpdate);
-    }
-
-    public void testFetchDataAsMapForOneDataSource() throws Exception {
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
-        assertEquals("Result map is not true ",result["978303300"],6d);
-    }
-
-    public void testFetchDataAsMapForMultipleDataSources() throws Exception {
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName);
-        Map b = result.get("b");
-        assertEquals("Result map is not true ",b["978303300"],6d);
-    }
-
-    public void testCreateXmlForOneDataSource() throws Exception {
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"b");
-        assertEquals("Result map is not true ",result["978303300"],6d);
-        String xmlFile = rrdFileName+".xml";
-        DbUtils.createXml(result,xmlFile);
-    }
-
-    public void testCreateXmlForMultipleDataSources() throws Exception {
-        createDatabase();
-        Map result = DbUtils.fetchDataAsMap (rrdFileName);
-
-        String xmlFile = rrdFileName+".xml";
-        DbUtils.createXml(result,xmlFile);
-        assertTrue("Xml file is not created", new File(xmlFile).exists() );
-    }
-    
     public void testSynchronizedUpdateAndFetch() {
         def initialTime = 900000000000 - 60000
 
@@ -760,7 +571,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                 }
                              }
             Runnable read = {
-                                Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+                                Map result = DbUtils.fetchAllDataAsMap (rrdFileName,['threadSource'],'AVERAGE')['threadSource'];
                                 assertTrue("Result map is not true ", (result["900000000"] >= 0
                                                 && result["900000000"] < 50) || result["900000000"] == Double.NaN
                                                 || result["900000000"] == null);
@@ -774,7 +585,7 @@ class DbUtilsTests extends RapidCoreTestCase {
 
         assertEquals("There is 24 exception required to be caught", 24, exceptionCount)
 
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+        Map result = DbUtils.fetchAllDataAsMap (rrdFileName,['threadSource'],'AVERAGE')['threadSource'];
         assertTrue("Result map is not true ", result["900000000"] >= 0 && result["900000000"] < 50);
     }
 
@@ -822,7 +633,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         }
         threadList.each{it.join()}
 
-        Map result = DbUtils.fetchDataAsMap (rrdFileName,"threadSource");
+        Map result = DbUtils.fetchAllDataAsMap (rrdFileName,['threadSource'],'AVERAGE')['threadSource'];
 
         for( e in updatedData ) {
             assertEquals('Inserted value is not retrived', (double)e.value, result.get(((long)(e.key/1000)).toString()))
@@ -851,7 +662,6 @@ class DbUtilsTests extends RapidCoreTestCase {
                                                 heartbeat:600
                                             ]
                                       ]
-
         config[DbUtils.ARCHIVE] = [
                                         [
                                             function:"AVERAGE",

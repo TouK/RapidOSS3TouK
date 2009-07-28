@@ -81,7 +81,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
     }
 
     def graph(Map config) {
-
         Map rVariable = [:];
         rVariable[RRD_VARIABLE] = name;
         if(config.containsKey(COLOR) ){
@@ -103,7 +102,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
            rVariable[DESCRIPTION] = config.get(DESCRIPTION)
            config.remove (DESCRIPTION);
        }
-
        def vlist = [];
        vlist.add(rVariable);
        config[RRD_VARIABLES] = vlist;
@@ -116,7 +114,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         listOfVariables.each{
             variableList.add([rrdVariable:it.toString()])
         }
-
         config[RRD_VARIABLES] = variableList
         graphMultiple(config)
     }
@@ -132,7 +129,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             varmap[RRD_VARIABLE] = it;
             config[RRD_VARIABLES].add(varmap) ;
         }
-        println config;
         graphMultiple(config);
     }
 
@@ -142,90 +138,89 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         Map fConfig = getGeneralSettingsMap(config);
 
         if(config.containsKey(TYPE) ){
-          typeVar = config.get(TYPE);
-       }
-       if(!config.containsKey(DESTINATION)) {
-           config[DESTINATION] = "web";
-       }
+            typeVar = config.get(TYPE);
+        }
+        if(!config.containsKey(DESTINATION)) {
+            config[DESTINATION] = "web";
+        }
 
-       if(!config.containsKey(RRD_VARIABLES) ){
-           throw new Exception("No rrd variable is specified");
-       }
-       def rrdVariables = config.get(RRD_VARIABLES);
+        if(!config.containsKey(RRD_VARIABLES) ){
+            throw new Exception("No rrd variable is specified");
+        }
+        def rrdVariables = config.get(RRD_VARIABLES);
 
-       def datasourceList = [];
-       fConfig[AREA] = [];
-       fConfig[LINE] = [];
-       fConfig[STACK] = [];
-       def typeList = [];
-       def rrdVar;
-       for(int i=0; i<rrdVariables.size(); i++){
-           rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
-           if(rrdVariables[i].containsKey(FUNCTION) ){
-               def datasourceMap = [:];
-               datasourceMap[NAME] = rrdVar.name;
-               datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-               datasourceMap[DSNAME] = rrdVar.name;
-               datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
-               datasourceList.add(datasourceMap);
+        def datasourceList = [];
+        fConfig[AREA] = [];
+        fConfig[LINE] = [];
+        fConfig[STACK] = [];
+        def typeList = [];
+        def rrdVar;
+        for(int i=0; i<rrdVariables.size(); i++){
+            rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
+            if(rrdVariables[i].containsKey(FUNCTION) ){
+                def datasourceMap = [:];
+                datasourceMap[NAME] = rrdVar.name;
+                datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
+                datasourceMap[DSNAME] = rrdVar.name;
+                datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
+                datasourceList.add(datasourceMap);
 
-           }else{
-               rrdVar.archives.each{
-                   def datasourceMap = [:];
-                   datasourceMap[NAME] = rrdVar.name;
-                   datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-                   datasourceMap[DSNAME] = rrdVar.name;
-                   datasourceMap[FUNCTION] = it.function;
-                   datasourceList.add(datasourceMap);
-               }
-           }
-           if(rrdVariables[i].containsKey(RPN) ){
-               def datasourceMap = [:];
-               datasourceMap[NAME] = rrdVariables[i][RPN];
-               datasourceMap[RPN] = rrdVariables[i][RPN];
-               datasourceList.add(datasourceMap);
-           }
-           def typeMap = [:];
-           typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
+            }else{
+                rrdVar.archives.each{
+                    def datasourceMap = [:];
+                    datasourceMap[NAME] = rrdVar.name;
+                    datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
+                    datasourceMap[DSNAME] = rrdVar.name;
+                    datasourceMap[FUNCTION] = it.function;
+                    datasourceList.add(datasourceMap);
+                }
+            }
+            if(rrdVariables[i].containsKey(RPN) ){
+                def datasourceMap = [:];
+                datasourceMap[NAME] = rrdVariables[i][RPN];
+                datasourceMap[RPN] = rrdVariables[i][RPN];
+                datasourceList.add(datasourceMap);
+            }
+            def typeMap = [:];
+            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
 
-           if(rrdVariables[i].containsKey(DESCRIPTION))
+            if(rrdVariables[i].containsKey(DESCRIPTION))
                 typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION]
-           else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
+            else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
                 typeMap[DESCRIPTION] = config[DESCRIPTION]
-           else
+            else
                 typeMap[DESCRIPTION] = rrdVar.name;
 
-           if(rrdVariables[i].containsKey(COLOR))
+            if(rrdVariables[i].containsKey(COLOR))
                 typeMap[COLOR] = rrdVariables[i][COLOR];
-           typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
+            typeMap[THICKNESS] = rrdVariables[i].containsKey(THICKNESS) ? rrdVariables[i][THICKNESS]:2;
 
-           if(rrdVariables[i].containsKey(TYPE) ){
-               try{
+            if(rrdVariables[i].containsKey(TYPE) ){
+                try{
                     fConfig[rrdVariables[i][TYPE]].add(typeMap)
-               }catch (Exception ex){
-                   throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
-               }
-           }
-           else{
-               fConfig[typeVar].add(typeMap);
-           }
-       }
-       Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
-       if(!fConfig.containsKey (START_TIME)){
-           fConfig[START_TIME] = dbInfo[START_TIME];
-       }
-       if(!fConfig.containsKey (END_TIME)){
-           fConfig[END_TIME] = dbInfo[END_TIME];
-       }
-       fConfig[DATASOURCE] = datasourceList;
+                }catch (Exception ex){
+                    throw new Exception("Not valid type: "+ rrdVariables[i][TYPE]);
+                }
+            }
+            else{
+                fConfig[typeVar].add(typeMap);
+            }
+        }
+        Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
+        if(!fConfig.containsKey (START_TIME)){
+            fConfig[START_TIME] = dbInfo[START_TIME];
+        }
+        if(!fConfig.containsKey (END_TIME)){
+            fConfig[END_TIME] = dbInfo[END_TIME];
+        }
+        fConfig[DATASOURCE] = datasourceList;
 
-       byte[] bytes = RrdUtils.graph(fConfig);
+        byte[] bytes = RrdUtils.graph(fConfig);
 
-       return bytes
+        return bytes
     }
 
     private static Map getGeneralSettingsMap(Map config){
-
        Map fConfig = [:];
        if(config.containsKey(RrdUtils.GRAPH_TEMPLATE)){
            fConfig = getGeneralSettingsMapWithTemplate(config);
@@ -324,64 +319,45 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return graph(config)
     }
 
-    def fetchData(){
+    def fetchAllData(){
         String dbname = fileSource();
-        return RrdUtils.fetchData (dbname, name);
+        return RrdUtils.fetchAllDataAsMap(dbname, name);
+    }
+
+
+    def fetchData(long startTime, long endTime){
+        def dbname = fileSource()
+        return RrdUtils.fetchDataAsMap(dbname, name, startTime, endTime)
     }
 
     def fetchData(String function, long startTime, long endTime){
         String dbname = fileSource();
-        return RrdUtils.fetchData (dbname, name, function, startTime, endTime);
-    }
-
-    def fetchDataAsMap(){
-        String dbname = fileSource();
-        return RrdUtils.fetchDataAsMap (dbname, name);
-    }
-
-    def fetchDataAsMap(String function, long startTime, long endTime){
-        String dbname = fileSource();
         return RrdUtils.fetchDataAsMap (dbname, name, function, startTime, endTime);
     }
 
+    static def fetchData(List datasources, long startTime, long endTime){
+        def filesources = []
+        datasources.each{
+            filesources.add(RrdVariable.get(name:it).fileSource())
+        }
+        return RrdUtils.fetchDataAsMap(filesources, datasources, startTime, endTime)
+    }
+
     static def fetchData(List datasources, String function, long startTime, long endTime){
-        String[] filesources = new String[datasources.size()];
-        for(int i=0; i<filesources.length; i++){
-            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+        def filesources = []
+        datasources.each{
+            filesources.add(RrdVariable.get(name:it).fileSource())
         }
-        double[][] data = new double[filesources.length][];
-        for(int i=0; i<filesources.length; i++){
-            data[i] = RrdUtils.fetchData (filesources[i], datasources[i], function, startTime, endTime);
-        }
-        return data;
+        return RrdUtils.fetchDataAsMap(filesources, datasources, function, startTime, endTime)
     }
 
-    static def fetchData(String ... datasources){
-        String[] filesources = new String[datasources.length];
-        for(int i=0; i<filesources.length; i++){
-            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
-        }
-        RrdUtils.fetchData (filesources, datasources);
-    }
 
-    static def fetchDataAsMap(List datasources, List startTime, List endTime){
-        String[] filesources = new String[datasources.size()];
-        String function = RrdVariable.get(name:datasources[0]).archives[0].function ;
-        for(int i=0; i<filesources.length; i++){
-            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
+    static def fetchAllData(List datasources){
+        List filesources = []
+        datasources.each{
+            filesources.add( RrdVariable.get(name:it).fileSource())
         }
-        String[] datasourcesArray = datasources.toArray();
-        long[] startTimeArray = startTime.toArray();
-        long[] endTimeArray = endTime.toArray();
-        RrdUtils.fetchDataAsMap(filesources, datasourcesArray, function, startTimeArray, endTimeArray);
-    }
-
-    static def fetchDataAsMap(String ... datasources){
-        String[] filesources = new String[datasources.length];
-        for(int i=0; i<datasources.length; i++){
-            filesources[i] = RrdVariable.get(name:datasources[i]).fileSource();
-        }
-        RrdUtils.fetchDataAsMap (filesources, datasources);
+        RrdUtils.fetchAllDataAsMap (filesources, datasources);
     }
 
     private def currentTime() {
@@ -408,7 +384,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         archiveConf[NUMBER_OF_DATAPOINTS] = arcRows;
         addArchive(archiveConf);
         return arcStep;
-
     }
 
     private def createDefaultArchives(){
@@ -439,17 +414,14 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[STEP] = frequency
 
         def datapoint = [:]
-
         datapoint[NAME] = name
         datapoint[TYPE] = type
         datapoint[HEARTBEAT] = heartbeat
         datapoint[MAX] = max
         datapoint[MIN] = min
-
         dbConfig[DATASOURCE] = [datapoint]
 
         def archiveList = []
-
         archives.each
         {
             def archive = [:]
@@ -462,7 +434,6 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         }
 
         dbConfig[ARCHIVE] = archiveList
-
         return dbConfig
     }
 

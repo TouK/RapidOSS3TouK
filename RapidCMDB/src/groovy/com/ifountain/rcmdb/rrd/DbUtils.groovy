@@ -13,6 +13,10 @@ import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import org.jrobin.core.FetchData;
 
+import groovy.xml.MarkupBuilder
+import java.text.SimpleDateFormat
+
+
 /**
 * Created by IntelliJ IDEA.
 * User: ifountain
@@ -150,7 +154,6 @@ class DbUtils {
 
         for(int i = 1; i < tokens.size(); i++)
             newData = newData + ":" + tokens[i]
-
         return newData
     }
 
@@ -173,7 +176,6 @@ class DbUtils {
             if(!(new File(dbName).exists())){
                 throw new Exception("database file is not existent.")
             }
-
             Sample sample = rrdDb.createSample();
             for(int i=0; i<data.length; i++){
                 sample.setAndUpdate( convertUpdateData(data[i]) );
@@ -254,7 +256,6 @@ class DbUtils {
 
             Map config = [:];
             config[DATABASE_NAME] = dbName;
-
             long max = 0
             long min = Long.MAX_VALUE
             int counter = 0;
@@ -280,218 +281,6 @@ class DbUtils {
         }
     }
 
-    private static def getArchiveUpdateTime(dbName, key) {
-        return executeAction(dbName) {RrdDb rrdDb ->
-            int archiveCount = rrdDb.getArcCount();
-
-            long initialValue = (key == 'Last')?0L:Long.MAX_VALUE
-            int counter = 0;
-            for(int i=0; i<archiveCount; i++)
-            {
-                try{
-                    Archive archive = rrdDb.getArchive(i)
-                    if(key == 'Last' && archive.getEndTime() > initialValue)
-                        initialValue = archive.getEndTime()
-                    else if(key == 'First' && archive.getStartTime() < initialValue)
-                        initialValue = archive.getStartTime()
-                }
-                catch(ArrayIndexOutOfBoundsException e) { break;}
-            }
-            return (initialValue * 1000) as Long;
-        }
-    }
-
-    /*
-    * returns the last archive-update time for all archives.
-    */
-    public static Long getLastArchiveUpdate(String dbName) {
-        return getArchiveUpdateTime(dbName, 'Last')
-    }
-
-    /*
-    * returns the earliest start time of archives.
-    */
-    public static Long getFirstArchiveUpdate(String dbName) {
-        return getArchiveUpdateTime(dbName, 'First')
-    }
-
-    /*
-    * returns the minimum step size (maximum resolution value) among all archives
-    */
-    public static Long getMinimumArchiveStep(String dbName) {
-        return executeAction(dbName) {RrdDb rrdDb ->
-            int archiveCount = rrdDb.getArcCount();
-
-            long minStep = Long.MAX_VALUE;
-            for(int i=0; i<archiveCount; i++)
-            {
-                try{
-                    Archive archive = rrdDb.getArchive(i)
-                    if(archive.getArcStep() < minStep)
-                        minStep = archive.getArcStep()
-                }
-                catch(ArrayIndexOutOfBoundsException e) { break;}
-            }
-            return minStep;
-        }
-    }
-
-    /**
-    *  returns first time series of first data point
-    *  it is the easiest call if the database has only one data source
-    */
-    public static double[] fetchData(String dbName) {
-        return fetchAllData(dbName)[0];
-    }
-
-    private static def fetchDataInfoMap(dbName, key='normal') {
-        return executeAction(dbName) {RrdDb rrdDb ->
-            def infoMap = [:]
-            infoMap['startTime'] = (key=='list')?getFirstArchiveUpdateTimes(dbName) as long[]:getFirstArchiveUpdate(dbName)
-            infoMap['endTime'] = (key=='list')?getLastArchiveUpdateTimes(dbName) as long[]:getLastArchiveUpdate(dbName)
-
-            def arclist = fetchArchives(rrdDb);
-            def dslist = fetchDatasources(rrdDb);
-            String[] datasources = new String[dslist.size()];
-            for(int i=0; i<datasources.length; i++){
-                datasources[i] = dslist[i][NAME];
-            }
-
-            infoMap['function'] = arclist[0][FUNCTION];
-            infoMap['datasources'] = datasources as String[]
-
-            return infoMap
-        }
-    }
-
-    /**
-    * returns the all datasources in the database according to the first archive method.
-    */
-    public static double[][] fetchAllData(String dbName) {
-        def infoMap = fetchDataInfoMap(dbName)
-        return fetchData(dbName, infoMap['datasources'], infoMap['function'], infoMap['startTime'], infoMap['endTime']);
-    }
-
-    /**
-    * returns time series of one data index specified with its datasource name
-    */
-    public static double[] fetchData(String dbName, String datasource){
-        def infoMap = fetchDataInfoMap(dbName)
-        return fetchData(dbName, datasource, infoMap['function'], infoMap['startTime'], infoMap['endTime']);
-    }
-
-    /**
-    *  returns time series of data indexes specified with its datasource names
-    */
-    public static double[][] fetchData(String dbName, String[] datasources){
-        def infoMap = fetchDataInfoMap(dbName)
-        return fetchData(dbName, datasources, infoMap['function'], infoMap['startTime'], infoMap['endTime']);
-    }
-
-    private static def fetchDataToDestination(String dbName, String[] datasource, String function,
-                                      long startTime, long endTime, destination='return', xmlFile='') {
-        return executeAction(dbName) {RrdDb rrdDb ->
-            long nstarttime = (long)(startTime / 1000)
-            long nendtime = (long)(endTime / 1000)
-
-            def data
-
-            try {
-                FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
-                fetchRequest.setFilter(datasource);
-
-                data = fetchRequest.fetchData().getValues()
-
-                if(destination == 'xml') {
-                    fetchRequest.fetchData().exportXml (xmlFile);
-                    convertXmlFile (xmlFile);
-                }
-            }
-            catch(Exception e){
-                throw new Exception(e.getMessage())
-            }
-            return data
-        }
-    }
-
-    /**
-    *  returns time series of one data index specified with its datasource name,
-    * archive function of datasource, start time and end time
-    */
-    public static double[] fetchData(String dbName, String datasource, String function,
-                                      long startTime, long endTime) {
-        String[] datasources = new String[1]
-        datasources[0] = datasource
-        return fetchDataToDestination(dbName, datasources, function, startTime, endTime)[0] as double[]
-    }
-
-    /**
-    *  returns time series of data indexes specified with its datasource names,
-    * archive function of datasource, start time and end time
-    */
-    public static double[][] fetchData(String dbName, String[] datasources, String function,
-                                        long startTime, long endTime) {
-        return fetchDataToDestination(dbName, datasources, function, startTime, endTime) as double[][]
-    }
-
-    //===================================================================================//
-
-    /**
-    * returns the all datasources in the database according to the first archive method.
-    * this method also writes an xml file to the given destination file compatible with
-    * flex chart application
-    */
-    public static Map fetchDataToXml(String dbName, String xmlFile){
-        Map data = fetchDataAsMap (dbName);
-        createXml(data, xmlFile);
-        return data;
-    }
-
-    /**
-    * returns time series of one data index specified with its datasource name
-    */
-    public static Map fetchDataToXml(String dbName, String datasource, String xmlFile){
-        Map data = fetchDataAsMap (dbName, datasource);
-        createXml(data, xmlFile);
-        return data;
-    }
-
-    /**
-    *  returns time series of one data index specified with its datasource name,
-    * archive function of datasource, start time and end time
-    */
-    public static Map fetchDataToXml(String dbName, String datasource, String function,
-                                   long startTime, long endTime, String xmlFile){
-        Map data = fetchDataAsMap (dbName, datasource, function, startTime, endTime);
-        createXml(data, xmlFile);
-        return data;
-    }
-    /**
-    *  returns time series of data indexes specified with its datasource names
-    */
-    public static Map fetchDataToXml(String dbName, String[] datasources, String xmlFile){
-        Map data = [:];
-        for(int i; i<datasources.length; i++){
-            data[datasources[i]] = fetchDataAsMap(dbName,datasources[i]);
-        }
-        createXml(data, xmlFile);
-        return data;
-    }
-
-    /**
-    *  returns time series of data indexes specified with its datasource names,
-    * archive function of datasource, start time and end time
-    */
-    public static Map fetchDataToXml(String dbName, String[] datasources, String function,
-                                   long startTime, long endTime, String xmlFile){
-        Map data = [:];
-        for(int i=0; i<datasources.length; i++){
-            data[datasources[i]] = fetchDataAsMap(dbName,datasources[i], function, startTime, endTime);
-        }
-        createXml(data, xmlFile);
-        return data;
-    }
-
     private static def getArchiveUpdateTimes(dbName, key) {
         return executeAction(dbName) {RrdDb rrdDb ->
             int archiveCount = rrdDb.getArcCount();
@@ -505,59 +294,44 @@ class DbUtils {
                 }
                 catch(ArrayIndexOutOfBoundsException e) { break;}
             }
-            return list as Long[];
+            return list;
         }
     }
 
     /*
-    * returns the endTime s of all archives
+    * returns the endTimes of all archives
     */
-    public static Long[] getLastArchiveUpdateTimes(String dbName){
+    public static List getLastArchiveUpdateTimes(String dbName){
         return getArchiveUpdateTimes(dbName, 'Last')
     }
 
     /*
-    * returns the startTime s of all archives
+    * returns the startTimes of all archives
     */
-    public static Long[] getFirstArchiveUpdateTimes(String dbName){
+    public static List getFirstArchiveUpdateTimes(String dbName){
         return getArchiveUpdateTimes(dbName, 'First')
     }
 
-    /**
-    * this method retrieves the data of all archives with a map.
-    * Map keys are timestamps (as String) values are data
-    * since data are coming from all archives, increment of timestamps are not regular.
-    */
-    public static Map fetchDataAsMap(String dbName){
-        def infoMap = fetchDataInfoMap(dbName, 'list')
-        return fetchDataAsMap(dbName, infoMap['datasources'], infoMap['function'],
-                              infoMap['startTime'], infoMap['endTime'])
+    public static def fetchAllDataAsMap(String dbName, List datasources, String function) {
+        def startTimes = getFirstArchiveUpdateTimes (dbName);
+        def endTimes = getLastArchiveUpdateTimes(dbName);
+        return fetchDataAsMap(dbName, datasources, function, startTimes, endTimes);
     }
-    public static Map fetchDataAsMap(String dbName, String datasource){
-        def infoMap = fetchDataInfoMap(dbName, 'list')
-        return fetchDataAsMap(dbName, datasource, infoMap['function'],
-                              infoMap['startTime'], infoMap['endTime'])
-    }
-    /**
-    * this method retrieves the data with a map. Map keys are timestamps (as String) values are data
-    */
-    public static Map fetchDataAsMap(String dbName, String[] datasources, String function,
-                                   long[] startTime, long[] endTime){
+
+    public static def fetchDataAsMap(String dbName, List datasources, String function,
+                                     List startTime, List endTime) {
         return executeAction(dbName){ RrdDb rrdDb ->
-            FetchRequest fetchRequest;
-            FetchData fd;
             Map values = [:];
             datasources.each{
                 values[it] = [:];
             }
-            for(int i=0; i<startTime.length; i++){
+            for(int i=0; i<startTime.size(); i++){
                 long nstarttime = (long)(startTime[i] / 1000)
                 long nendtime = (long)(endTime[i] / 1000)
-
                 datasources.each {
-                    fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
+                    FetchRequest fetchRequest = rrdDb.createFetchRequest(function, nstarttime, nendtime);
                     fetchRequest.setFilter (it);
-                    fd = fetchRequest.fetchData();
+                    FetchData fd = fetchRequest.fetchData();
                     long[] timeStamps = fd.getTimestamps();
                     double[] dataValues = fd.getValues(it);
                     Map datasourceMap = [:];
@@ -569,155 +343,91 @@ class DbUtils {
             return values;
         }
     }
-
-    public static Map fetchDataAsMap(String dbName, String datasource, String function,
-                                   long[] startTime, long[] endTime){
-        String[] datasources = new String[1]
-        datasources[0] = datasource
-        return fetchDataAsMap(dbName, datasources, function, startTime, endTime).get(datasource)
-    }
-
-    public static Map fetchDataAsMap(String dbName, String datasource, String function,
-                                   long startTime, long endTime) {
-        String[] datasources = new String[1]
-        datasources[0] = datasource
-
-        long[] startTimes = new long[1]
-        startTimes[0] = startTime
-
-        long[] endTimes = new long[1]
-        endTimes[0] = endTime
-
-        return fetchDataAsMap(dbName, datasources, function, startTimes, endTimes).get(datasource)
-    }
-
-    private static def createXmlCommons(data, xmlFile, key='single') {
-        String newXmlFile = xmlFile+"new.xml";
-        XmlWriter xwriter = new XmlWriter(new DataOutputStream(new FileOutputStream(newXmlFile) ) );
-        xwriter.startTag("rrd");
-
-        String[] datasources = data.keySet().toArray();
-
-        String[] keyArray = key=='multiple'?data[datasources[0]].keySet().toArray():data.keySet().toArray();
-        Arrays.sort(keyArray);
-
-        for(int i=0; i<keyArray.length; i++){
-            xwriter.startTag("data");
-            long timestamp = Long.parseLong(keyArray[i]);
-            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-            long timeLong = timestamp*1000L;
-            String dateString = formatter.format(new Date(timeLong));
-
-            xwriter.writeTag ("date",dateString);
-            if(key == 'multiple') {
-                datasources.each {
-                    xwriter.writeTag ("value",data.get(it).get(keyArray[i]));
-                }
-                xwriter.writeTag ("volume",data.get(datasources[0]).get(keyArray[i]));
-            }
-            else {
-                xwriter.writeTag ("value",data.get(keyArray[i]));
-                xwriter.writeTag ("volume",data.get(keyArray[i]));
-            }
-            xwriter.closeTag();
-        }
-
-        xwriter.closeTag();
-        writeNewFileToOldFile (xmlFile,newXmlFile);
-    }
-
     /*
-    * creates an xml file compatible with flex chart application according to the given map
-    * map's keys comprise of timestamps (as String) and values are data.
-    */
-    public static void createXml(Map data, String xmlFile){
+        these are discared exporttoxml methods
+
+    public static def fetchAllDataToXmlFile(String dbName, List datasources, String function, String xmlFile){
+        return fetchAllDataToXml(dbName, datasources, function,xmlFile)
+    }
+
+    public static def fetchAllDataToXmlString(String dbName, List datasources, String function) {
+        return fetchAllDataToXml(dbName, datasources, function)
+    }
+
+    public static def fetchDataToXmlFile(String dbName, List datasources, String function,
+                                            List startTimes, List endTimes, String xmlFile) {
+         return fetchDataToXml(dbName, datasources, function, startTimes, endTimes, xmlFile)
+    }
+
+    public static def fetchDataToXmlString(String dbName, List datasources, String function,
+                                            List startTimes, List endTimes) {
+        return fetchDataToXml(dbName, datasources, function, startTimes, endTimes)
+    }
+
+    private static def fetchAllDataToXml(String dbName, List datasources, String function, String xmlFile='') {
+        Map data = fetchAllDataAsMap(dbName, datasources, function);
+        def xml = createXml(data)
+        if(xmlFile != '') {
+            new File(xmlFile).append(xml)
+        }
+        return xml
+    }
+
+    private static def fetchDataToXml(String dbName, List datasources, String function,
+                                     List startTimes, List endTimes, String xmlFile='') {
+        Map data = fetchDataAsMap(dbName, datasources, function, startTimes, endTimes);
+        def xml = createXml(data)
+        if(xmlFile != '') {
+            new File(xmlFile).append(xml)
+        }
+        return xml
+    }
+
+    private static def createXmlCommons(data, key='single') {
+        def writer = new StringWriter()
+        def xml = new MarkupBuilder(writer)
+
+        def datasources = data.keySet().toArray()
+        def keys = key=='multiple'?data[datasources[0]].keySet().toArray():data.keySet().toArray();
+        Arrays.sort(keys)
+
+        xml.rrd(){
+            for(int i=0; i<keys.length; i++){
+                xml.data() {
+                    long timestamp = Long.parseLong(keys[i]) * 1000;
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String dateString = formatter.format(new Date(timestamp));
+
+                    xml.date(dateString)
+
+                    if(key == 'multiple') {
+                        datasources.each {
+                            xml.value(data.get(it).get(keys[i]));
+                        }
+                        xml.volume(data.get(datasources[0]).get(keys[i]));
+                    }
+                    else {
+                        xml.value(data.get(keys[i]));
+                        xml.volume(data.get(keys[i]));
+                    }
+                }
+            }
+        }
+        return writer.toString()
+    }
+
+    public static def createXml(Map data){
         try {
             long trialForLong = Long.parseLong(data.keySet().toArray()[0]);
         }
         catch (Exception ex){
-            createXmlCommons(data,xmlFile,'multiple');
-            return;
+            return createXmlCommons(data,'multiple');
         }
-        createXmlCommons(data, xmlFile)
+        return createXmlCommons(data)
     }
-   
-    private static void convertXmlFile(String xmlFile){
-        //  retrieve xml file to be converted
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        org.w3c.dom.Document document = builder.parse(xmlFile);
-        org.w3c.dom.Node node = document.getDocumentElement();
-        node = node.getElementsByTagName ("data").item (0);
-        org.w3c.dom.NodeList dataList = node.getElementsByTagName ("row");
+    */
 
-        //creates new xml file
-        String newXmlFile = xmlFile+"new.xml";
-        XmlWriter xwriter = new XmlWriter(new DataOutputStream(new FileOutputStream(newXmlFile) ) );
-        xwriter.startTag("rrd");
-
-        for(int i=0; i<dataList.length; i++){
-            xwriter.startTag("data");
-
-            org.w3c.dom.Node data = dataList.item(i);
-            String timestamp = data.getElementsByTagName("timestamp").item(0).getFirstChild().getNodeValue();
-            org.w3c.dom.Node values = data.getElementsByTagName("values").item(0);
-            String value = values.getElementsByTagName("v").item(0).getFirstChild().getNodeValue();
-
-            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-            long timeLong = Long.parseLong(timestamp)*1000L;
-
-            String dateString = formatter.format(new Date(timeLong));
-
-            xwriter.writeTag ("date",dateString);
-            xwriter.writeTag ("value",value);
-            xwriter.writeTag ("volume",value);
-
-            xwriter.closeTag();
-        }
-
-        xwriter.closeTag();
-
-        writeNewFileToOldFile (xmlFile,newXmlFile);
-    }
-
-    private static writeNewFileToOldFile(String oldFile, String newFile){
-        DataInputStream dis = new DataInputStream(new FileInputStream(newFile));
-        long length = new File(newFile).length();
-        byte[] content = new byte[length];
-        dis.readFully(content);
-        dis.close();
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream(oldFile));
-        dos.write (content);
-        dos.close();
-        new File(newFile).delete();
-    }
-
-    public static String getValueFromXml(String fileName, long timestamp){
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        org.w3c.dom.Document document = builder.parse(fileName);
-        org.w3c.dom.Node node = document.getDocumentElement();
-        org.w3c.dom.NodeList list = node.getElementsByTagName ("data");
-
-        java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateString = formatter.format(timestamp);
-
-        String xmlDate;
-
-        for(int i=0; i<list.length; i++){
-            org.w3c.dom.Node data = list.item (i);
-            org.w3c.dom.Node dataDate = data.getElementsByTagName("date").item(0)
-            xmlDate = dataDate.getFirstChild().getNodeValue();
-            if(dateString.equals(xmlDate) ){
-                String value = data.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
-                return value;
-            }
-        }
-        return null;
-    }
-
-    private static executeAction(String dbName, Closure closure)
-    {
+    private static executeAction(String dbName, Closure closure) {
         RrdDb rrdDb = new RrdDb(dbName);
         try{
             return closure(rrdDb)

@@ -1,5 +1,4 @@
 package com.ifountain.rcmdb.rrd
-import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
@@ -13,6 +12,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
     String fileDirectory = "rrdFiles"
     String rrdFileName = "rrdUtilsTest.rrd";
+    String rrdFileNameExt = "rrdUtilsTestExt.rrd";
     String testImageFile = "rrdUtilsTestImage.png"
 
     public void setUp() {
@@ -21,11 +21,13 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
 
         new File(fileDirectory).mkdirs()
         new File(fileDirectory + "/" + rrdFileName).delete();
+        new File(fileDirectory + "/" + rrdFileNameExt).delete();
         new File(fileDirectory + "/" + testImageFile).delete();
     }
 
     public void tearDown() {
         new File(fileDirectory + "/" + rrdFileName).delete();
+        new File(fileDirectory + "/" + rrdFileNameExt).delete();
         new File(fileDirectory + "/" + testImageFile).delete();
         deleteDirectory(new File(fileDirectory))
         clearMetaClasses();
@@ -51,7 +53,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
          ExpandoMetaClass.enableGlobally();
     }
 
-    public void testGraphThrowsExceptionIfNoWebResponseIsDefined(){
+    public void testGraphThrowsExceptionIfNoWebResponseIsDefined() {
         def graphCallConfig=null;
         Grapher.metaClass.'static'.graph={ Map config ->
              graphCallConfig=config;
@@ -68,8 +70,137 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         {
             assertTrue("wrong exception ${e}",e.getMessage().indexOf("Web response is not avaliable")>=0)
         }
-
         assertSame(graphConfig,graphCallConfig);
-
     }
+
+    private void createDatabase() {
+        def dbConfig = [:]
+        dbConfig[DbUtils.DATABASE_NAME] = rrdFileName
+        dbConfig[DbUtils.START_TIME] =  30000000L
+        dbConfig[DbUtils.STEP] = 30
+
+        def datapointList = []
+        def datapoint1 = [:]
+        datapoint1[DbUtils.NAME] = 'firstDatasource'
+        datapoint1[DbUtils.TYPE] = 'GAUGE'
+        datapoint1[DbUtils.HEARTBEAT] = 60
+
+        def datapoint2 = [:]
+        datapoint2[DbUtils.NAME] = 'secondDatasource'
+        datapoint2[DbUtils.TYPE] = 'COUNTER'
+        datapoint2[DbUtils.HEARTBEAT] = 60
+
+        datapointList.add(datapoint1)
+        datapointList.add(datapoint2)
+
+        dbConfig[DbUtils.DATASOURCE] = datapointList
+        
+        def archive = [:]
+        archive[DbUtils.FUNCTION] = 'AVERAGE'
+        archive[DbUtils.XFF] = 0.5
+        archive[DbUtils.STEPS] = 1
+        archive[DbUtils.ROWS] = 10
+        dbConfig[DbUtils.ARCHIVE] = [archive]
+
+        RrdUtils.createDatabase(dbConfig)
+        RrdUtils.updateData(rrdFileName, ["30030000:1:3", "30060000:2:6", "30090000:3:9", "30120000:4:12", "30150000:5:15", "30180000:6:18"])
+    }
+
+    public void testFetchDataInfoMap() {
+        createDatabase()
+        def info = RrdUtils.fetchDataInfoMap(rrdFileName)
+        assertEquals('fetchDataInfoMap returns wrong function value','AVERAGE', info['function'])
+        assertEquals('fetchDataInfoMap returns wrong datasource value', ['firstDatasource', 'secondDatasource'], info['datasources'])
+    }
+
+    public void testFetchAllDataAsMapWithDBNameOnly() {
+        createDatabase()
+        def result = RrdUtils.fetchAllDataAsMap(rrdFileName)
+        assertTrue('result should have firstDatasource map', result.containsKey('firstDatasource'))
+        assertTrue('result should have secondDatasource map', result.containsKey('secondDatasource'))
+        assertEquals('result has wrong values', 1.0D, result['firstDatasource']['30030'])
+        assertEquals('result has wrong values', 2.0D, result['firstDatasource']['30060'])
+        assertEquals('result has wrong values', 3.0D, result['firstDatasource']['30090'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30060'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30090'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30120'])
+    }
+
+    public void testFetchAllDataAsMapWithSingleSource() {
+        createDatabase()
+        def result = RrdUtils.fetchAllDataAsMap(rrdFileName, 'firstDatasource')
+        assertTrue('result should have firstDatasource map', result.containsKey('firstDatasource'))
+        assertEquals('result has wrong values', 1.0D, result['firstDatasource']['30030'])
+        assertEquals('result has wrong values', 2.0D, result['firstDatasource']['30060'])
+        assertEquals('result has wrong values', 3.0D, result['firstDatasource']['30090'])
+    }
+    
+    public void testFetchDataWithTimestamps() {
+        createDatabase()
+        def result = RrdUtils.fetchDataAsMap(rrdFileName, ['firstDatasource', 'secondDatasource'], 'AVERAGE', 30060000, 30120000)
+        assertTrue('result should have firstDatasource map', result.containsKey('firstDatasource'))
+        assertTrue('result should have secondDatasource map', result.containsKey('secondDatasource'))
+        assertEquals('result has wrong values', 2.0D, result['firstDatasource']['30060'])
+        assertEquals('result has wrong values', 3.0D, result['firstDatasource']['30090'])
+        assertEquals('result has wrong values', 4.0D, result['firstDatasource']['30120'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30060'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30090'])
+        assertEquals('result has wrong values', 0.1D, result['secondDatasource']['30120'])
+    }
+
+    private void createMultipleDatabase() {
+        def dbConfig = [:]
+        dbConfig[DbUtils.DATABASE_NAME] = rrdFileName
+        dbConfig[DbUtils.START_TIME] =  30000000L
+        dbConfig[DbUtils.STEP] = 30
+
+        def datapointList = []
+        def datapoint1 = [:]
+        datapoint1[DbUtils.NAME] = 'firstDBSource'
+        datapoint1[DbUtils.TYPE] = 'GAUGE'
+        datapoint1[DbUtils.HEARTBEAT] = 60
+        datapointList.add(datapoint1)
+        dbConfig[DbUtils.DATASOURCE] = datapointList
+
+        def archive = [:]
+        archive[DbUtils.FUNCTION] = 'AVERAGE'
+        archive[DbUtils.XFF] = 0.5
+        archive[DbUtils.STEPS] = 1
+        archive[DbUtils.ROWS] = 10
+        dbConfig[DbUtils.ARCHIVE] = [archive]
+
+        RrdUtils.createDatabase(dbConfig)
+        RrdUtils.updateData(rrdFileName, ["30030000:1", "30060000:2", "30090000:3", "30120000:4", "30150000:5", "30180000:6"])
+
+        dbConfig[DbUtils.DATABASE_NAME] = rrdFileNameExt
+        dbConfig[DbUtils.START_TIME] =  30000000L
+        dbConfig[DbUtils.STEP] = 30
+
+        datapointList.clear()
+        def datapoint2 = [:]
+        datapoint2[DbUtils.NAME] = 'secondDBSource'
+        datapoint2[DbUtils.TYPE] = 'COUNTER'
+        datapoint2[DbUtils.HEARTBEAT] = 60
+        datapointList.add(datapoint2)
+        dbConfig[DbUtils.DATASOURCE] = datapointList
+        dbConfig[DbUtils.ARCHIVE] = [archive]
+
+        RrdUtils.createDatabase(dbConfig)
+        RrdUtils.updateData(rrdFileNameExt, ["30030000:3", "30060000:6", "30090000:9", "30120000:12", "30150000:15", "30180000:18"])
+    }
+
+    public void testFetchDataWithMultipleDB() {
+        createMultipleDatabase()
+        
+        def result = RrdUtils.fetchAllDataAsMap([rrdFileName, rrdFileNameExt],['firstDBSource', 'secondDBSource'])
+        assertTrue('result should have firstDBSource map', result.containsKey('firstDBSource'))
+        assertTrue('result should have secondDBSource map', result.containsKey('secondDBSource'))
+        assertEquals('result has wrong values', 2.0D, result['firstDBSource']['30060'])
+        assertEquals('result has wrong values', 3.0D, result['firstDBSource']['30090'])
+        assertEquals('result has wrong values', 4.0D, result['firstDBSource']['30120'])
+        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30060'])
+        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30090'])
+        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30120'])
+    }
+
 }

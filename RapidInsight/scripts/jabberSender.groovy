@@ -6,25 +6,20 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.EmailConnector
+import connector.JabberConnector;
 import message.RsMessage
 
-def destinationType=RsMessage.EMAIL;
-def templatePath="grails-app/templates/email/emailTemplate.gsp";
-//should be a valid email address
-def from="IFountainEmailSender@ifountain.com"
+def destinationType="jabber";
 
-def date=new Date();
-
-def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=JabberConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 
-    // Process RsMessage instances with destinationType
+    // Process RsMessage instances with destinationType 
     def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:${destinationType.exactQuery()}", [sort: "id",order:"asc",max:100]).results;
 
     messages.each{ message ->
-        
+
         def event=null;
         if(message.action==RsMessage.ACTION_CREATE )
         {
@@ -40,23 +35,24 @@ if(ds!=null)
 
             def eventProps=event.asMap();
 
-            //////// EMAIL SENDING PART ////////////////////////////////////////////
+            //////// MESSAGE SENDING PART ////////////////////////////////////////////
             ////// Modify the code below to execute your action /////////////////////
-            logger.debug("Will send email about RsEvent : ${eventProps}");
+            logger.debug("Will send message about RsEvent : ${eventProps}");
 
-            def templateParams=[eventParams:eventProps]
-            def emailParams=[:]
-            emailParams.from=from
-            emailParams.to=message.destination
-            emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
-            emailParams.template=templatePath
-            emailParams.templateParams=templateParams
-            emailParams.contentType="text/html"
+
+            def messageContent="----------------------------------"
+
+            messageContent+= "\n"+( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" );
+
+            messageContent += "\nEvent Properties";
+            eventProps.each{ propName, propVal ->
+            	messageContent += "\n${propName} : ${propVal}";
+            }
 
             try{
-                ds.sendEmail(emailParams)
-                logger.debug("Sended email about RsEvent: ${eventProps}")
-                message.update(state:RsMessage.STATE_SENT,sendAt:date.getTime());
+                ds.sendMessage(message.destination,messageContent)
+                logger.debug("Sended message about RsEvent: ${eventProps}")
+                message.update(state:RsMessage.STATE_SENT,sendAt:new Date().getTime());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)
@@ -70,7 +66,7 @@ if(ds!=null)
         else
         {
             message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:date.getTime());
-            logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send email. Updated state of message as 4");
+            logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send message. Updated state of message as 4");
         }
 
     }

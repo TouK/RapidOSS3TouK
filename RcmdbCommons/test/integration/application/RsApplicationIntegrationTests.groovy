@@ -43,7 +43,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         createUtility(utilityName,utilityContent);
         assertEquals(5,RsApplication.getUtility(utilityName).x);
         assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
-        assertSame(RsApplication.getUtility(utilityName),RsApplication.getUtility(utilityName));
+        assertNotSame(RsApplication.getUtility(utilityName),RsApplication.getUtility(utilityName));
 
 
     }

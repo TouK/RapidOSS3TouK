@@ -136,7 +136,7 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static def getUtility(utilityName)
     {
-        return RsApplicationOperations.class.classLoader.loadClass (utilityName);
+        return RsApplicationOperations.class.classLoader.loadClass (utilityName).newInstance();
     }
 
     public static def fullExport(CONFIG)

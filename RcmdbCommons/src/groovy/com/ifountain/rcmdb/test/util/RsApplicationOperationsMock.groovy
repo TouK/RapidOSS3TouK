@@ -10,6 +10,6 @@ class RsApplicationOperationsMock extends com.ifountain.rcmdb.domain.operation.A
 
     public static def getUtility(utilityName)
     {
-       return RsApplicationTestUtils.loadUtility(utilityName);
+       return RsApplicationTestUtils.loadUtility(utilityName).newInstance();
     }
 }

@@ -132,7 +132,7 @@
                             <label for="staticParam">Static Parameter:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: cmdbScript, field: 'staticParam', 'errors')}">
-                            <input type="text" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
+                            <input type="text" class="inputtextfield" id="staticParam" name="staticParam" value="${fieldValue(bean: cmdbScript, field: 'staticParam')}"/>
                         </td>
                     </tr>
                     <tr class="prop">

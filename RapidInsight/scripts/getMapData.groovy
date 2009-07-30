@@ -49,15 +49,17 @@ mapDataBuilder.graphData {
 
     edges.each { edgeParam->
         def edgeTokens = edgeParam.splitPreserveAllTokens(",");
-        def source = edgeTokens[0];
-        def target = edgeTokens[1];
-        def links = getLinkModel().searchEvery( "${CONFIG.CONNECTION_SOURCE_PROPERTY}:${source.exactQuery()} ${CONFIG.CONNECTION_TARGET_PROPERTY}: ${target.exactQuery()}");
-        if( links.size() == 0 )
-        	links = getLinkModel().searchEvery( "${CONFIG.CONNECTION_SOURCE_PROPERTY}:${target.exactQuery()} ${CONFIG.CONNECTION_TARGET_PROPERTY}: ${source.exactQuery()}");
+        def linkName=edgeTokens[0];
+        def source = edgeTokens[1];
+        def target = edgeTokens[2];
+
+        def links = getLinkModel().searchEvery("name:${linkName.exactQuery()} ${getMapTypeQuery()}");
 
         if( links.size() != 0 )
         {
-            mapDataBuilder.edge( source : source, target : target, state : links[0].getState());
+            def link=links[0];
+            
+            mapDataBuilder.edge( id:link.name,source : source, target : target, state : link.getState());
         }
 
     }
@@ -66,10 +68,6 @@ mapDataBuilder.graphData {
 return writer.toString();
 
 //utility functions
-def getLinksofDevice(sourceName,targetName)
-{
-   return getLinkModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${source.exactQuery()} ${CONFIG.CONNECTION_TARGET_PROPERTY}: ${targetName.exactQuery()} ) ${getMapTypeQuery()} ");
-}
 def getMapTypeQuery()
 {
     def query="";

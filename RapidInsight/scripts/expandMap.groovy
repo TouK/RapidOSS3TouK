@@ -51,24 +51,31 @@ nodes.each{nodeParam->
 
 }
 
+println "deviceMap"
+deviceMap.each{ key, val ->
+    println "device ${key} ${val}"
+}
+
 def deviceSet = [:]
 deviceMap.each{deviceName, deviceConfigMap->
+    println "iterating device ${deviceName}"
     deviceSet[deviceName] = deviceConfigMap;
     if(deviceConfigMap.expanded == "true")
     {
+        println "gonna expand device"
         deviceConfigMap.expandable = "true"        
         def links=getLinksofDevice(deviceName);
+        println "links of device ${links}"
         links.each {link->
             def otherSide = getOtherSideName(link, deviceName);
 
-            if(otherSide != null && !edgeMap.containsKey(deviceName + otherSide)
-                        && !edgeMap.containsKey(otherSide + deviceName))
+            if(otherSide != null && !edgeMap.containsKey(link.name))
             {
                 def otherSideModel = getOtherSideModel(link,deviceName);
 
                 def otherSideDevice = otherSideModel.get(name:otherSide);
                 if(otherSideDevice != null){
-                    edgeMap[deviceName + otherSide] = [ "source" : deviceName, "target" : otherSide];
+                    edgeMap[link.name] = [ "source" : deviceName, "target" : otherSide,"id":link.name];
                     if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
                     {
                         deviceSet[otherSide]= buildNodeData(otherSideDevice,"false","","");
@@ -222,8 +229,7 @@ def isExpandable( devName, edgeMap)
     links.each{link->
         def otherSide = getOtherSideName(link, devName);
         if( otherSide != null ){
-            if( !edgeMap.containsKey(devName + otherSide)
-                    && !edgeMap.containsKey(otherSide + devName) )
+            if( !edgeMap.containsKey(link.name) )
             {
                 expandable = "true";
                 return;

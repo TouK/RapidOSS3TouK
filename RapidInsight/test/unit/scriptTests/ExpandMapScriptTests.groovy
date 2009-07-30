@@ -73,7 +73,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
     }
 
-     public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
+     public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverseGeneratesDuplicatedLinks()
     {
 
         def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
@@ -94,44 +94,51 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sourceNodeData=expandData.nodes[source.name];
         def targetNodeData=expandData.nodes[target.name];
-        def edgeData=getEdgeFrom(expandData.edges,source.name,target.name)
+        def edgeData=getEdgeFrom(expandData.edges,link1.name)
 
         checkNodeData(sourceNodeData,source,"true","true","50","100");
         checkNodeData(targetNodeData,target,"false","false","","");
-        checkEdgeData(edgeData,source.name,target.name);
+        checkEdgeData(edgeData,source.name,target.name,link1.name);
 
-        // add a duplicate link ,  and check that result is same
+        // add a duplicate link ,  and check that duplicate link also exists in xml
         def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1Duplicate.hasErrors())
 
         def duplicateExpandData=getExpandMapData(params);
 
         assertEquals(2,duplicateExpandData.nodes.size());
-        assertEquals(1,duplicateExpandData.edges.size());
+        assertEquals(2,duplicateExpandData.edges.size());
 
         def sourceDuplicateNodeData=duplicateExpandData.nodes[source.name];
         def targetDuplicateNodeData=duplicateExpandData.nodes[target.name];
-        def edgeDuplicateData=getEdgeFrom(duplicateExpandData.edges,source.name,target.name)
+        def edgeDuplicateData=getEdgeFrom(duplicateExpandData.edges,link1Duplicate.name)
+        edgeData=getEdgeFrom(duplicateExpandData.edges,link1.name)
 
         checkNodeData(sourceDuplicateNodeData,source,"true","true","50","100");
         checkNodeData(targetDuplicateNodeData,target,"false","false","","");
-        checkEdgeData(edgeDuplicateData,source.name,target.name);
+        checkEdgeData(edgeDuplicateData,source.name,target.name,link1Duplicate.name);
+        checkEdgeData(edgeData,source.name,target.name,link1.name);
 
-        // add a reverse link , link is duplicated , and check that result is same
+
+        // add a reverse link , link is duplicated , and check that reverse link also exists in xml
         def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
         assertFalse(link1Reverse.hasErrors())
 
         def reverseExpandData=getExpandMapData(params);
         assertEquals(2,reverseExpandData.nodes.size());
-        assertEquals(1,reverseExpandData.edges.size());
+        assertEquals(3,reverseExpandData.edges.size());
 
         def sourceReverseNodeData=reverseExpandData.nodes[source.name];
         def targetReverseNodeData=reverseExpandData.nodes[target.name];
-        def edgeReverseData=getEdgeFrom(reverseExpandData.edges,source.name,target.name)
+        def edgeReverseData=getEdgeFrom(reverseExpandData.edges,link1Reverse.name)
+        edgeDuplicateData=getEdgeFrom(reverseExpandData.edges,link1Duplicate.name)
+        edgeData=getEdgeFrom(reverseExpandData.edges,link1.name)
 
         checkNodeData(sourceReverseNodeData,source,"true","true","50","100");
         checkNodeData(targetReverseNodeData,target,"false","false","","");
-        checkEdgeData(edgeReverseData,source.name,target.name);
+        checkEdgeData(edgeReverseData,source.name,target.name,link1Reverse.name);
+        checkEdgeData(edgeDuplicateData,source.name,target.name,link1Duplicate.name);
+        checkEdgeData(edgeData,source.name,target.name,link1.name);
 
     }
     public void testExpandMapWith1To1To1Nodes()
@@ -159,11 +166,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def node1NodeData=expandData.nodes[node1.name];
         def node2NodeData=expandData.nodes[node2.name];
-        def link1Data=getEdgeFrom(expandData.edges,node1.name,node2.name)
+        def link1Data=getEdgeFrom(expandData.edges,link1.name)
 
         checkNodeData(node1NodeData,node1,"true","true","","");
         checkNodeData(node2NodeData,node2,"false","true","","");
-        checkEdgeData(link1Data,node1.name,node2.name);
+        checkEdgeData(link1Data,node1.name,node2.name,link1.name);
 
         //expand node1 again,and see the results is same
         params.nodes="node1,true,,;node2,false,,"
@@ -174,12 +181,12 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def node1AgainNodeData=expandAgainData.nodes[node1.name];
         def node2AgainNodeData=expandAgainData.nodes[node2.name];
-        def link1AgainData=getEdgeFrom(expandAgainData.edges,node1.name,node2.name)
+        def link1AgainData=getEdgeFrom(expandAgainData.edges,link1.name)
 
 
         checkNodeData(node1AgainNodeData,node1,"true","true","","");
         checkNodeData(node2AgainNodeData,node2,"false","true","","");
-        checkEdgeData(link1AgainData,node1.name,node2.name);
+        checkEdgeData(link1AgainData,node1.name,node2.name,link1.name);
 
         //expand node2
         params.nodes="node1,true,,;node2,false,,"
@@ -193,14 +200,14 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def node1NodeData2=expandNode2Data.nodes[node1.name];
         def node2NodeData2=expandNode2Data.nodes[node2.name];
         def node3NodeData2=expandNode2Data.nodes[node3.name];
-        def link1Data2=getEdgeFrom(expandNode2Data.edges,node1.name,node2.name)
-        def link2Data2=getEdgeFrom(expandNode2Data.edges,node2.name,node3.name)
+        def link1Data2=getEdgeFrom(expandNode2Data.edges,link1.name)
+        def link2Data2=getEdgeFrom(expandNode2Data.edges,link2.name)
 
         checkNodeData(node1NodeData2,node1,"true","true","","");
         checkNodeData(node2NodeData2,node2,"true","true","","");
         checkNodeData(node3NodeData2,node3,"false","false","","");
-        checkEdgeData(link1Data2,node1.name,node2.name);
-        checkEdgeData(link2Data2,node2.name,node3.name);
+        checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
 
 
 
@@ -232,14 +239,14 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def node1NodeData=expandData.nodes[node1.name];
         def node2NodeData=expandData.nodes[node2.name];
         def node3NodeData=expandData.nodes[node3.name];
-        def link1Data=getEdgeFrom(expandData.edges,node1.name,node2.name)
-        def link2Data=getEdgeFrom(expandData.edges,node1.name,node3.name)
+        def link1Data=getEdgeFrom(expandData.edges,link1.name)
+        def link2Data=getEdgeFrom(expandData.edges,link3.name)
 
         checkNodeData(node1NodeData,node1,"true","true","","");
         checkNodeData(node2NodeData,node2,"false","true","","");
         checkNodeData(node3NodeData,node3,"false","true","","");
-        checkEdgeData(link1Data,node1.name,node2.name);
-        checkEdgeData(link2Data,node1.name,node3.name);
+        checkEdgeData(link1Data,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data,node1.name,node3.name,link3.name);
 
 
         //expand node2
@@ -254,17 +261,17 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def node1NodeData2=expandNode2Data.nodes[node1.name];
         def node2NodeData2=expandNode2Data.nodes[node2.name];
         def node3NodeData2=expandNode2Data.nodes[node3.name];
-        def link1Data2=getEdgeFrom(expandNode2Data.edges,node1.name,node2.name)
-        def link2Data2=getEdgeFrom(expandNode2Data.edges,node2.name,node3.name)
-        def link3Data2=getEdgeFrom(expandNode2Data.edges,node1.name,node3.name)
+        def link1Data2=getEdgeFrom(expandNode2Data.edges,link1.name)
+        def link2Data2=getEdgeFrom(expandNode2Data.edges,link2.name)
+        def link3Data2=getEdgeFrom(expandNode2Data.edges,link3.name)
 
 
         checkNodeData(node1NodeData2,node1,"true","true","","");
         checkNodeData(node2NodeData2,node2,"true","true","","");
         checkNodeData(node3NodeData2,node3,"false","false","","");
-        checkEdgeData(link1Data2,node1.name,node2.name);
-        checkEdgeData(link2Data2,node2.name,node3.name);
-        checkEdgeData(link3Data2,node1.name,node3.name);
+        checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
+        checkEdgeData(link3Data2,node1.name,node3.name,link3.name);
 
 
         //expand node3
@@ -279,17 +286,17 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def node1NodeData3=expandNode3Data.nodes[node1.name];
         def node2NodeData3=expandNode3Data.nodes[node2.name];
         def node3NodeData3=expandNode3Data.nodes[node3.name];
-        def link1Data3=getEdgeFrom(expandNode3Data.edges,node1.name,node2.name)
-        def link2Data3=getEdgeFrom(expandNode3Data.edges,node2.name,node3.name)
-        def link3Data3=getEdgeFrom(expandNode3Data.edges,node1.name,node3.name)
+        def link1Data3=getEdgeFrom(expandNode3Data.edges,link1.name)
+        def link2Data3=getEdgeFrom(expandNode3Data.edges,link2.name)
+        def link3Data3=getEdgeFrom(expandNode3Data.edges,link3.name)
 
 
         checkNodeData(node1NodeData3,node1,"true","true","","");
         checkNodeData(node2NodeData3,node2,"false","false","","");
         checkNodeData(node3NodeData3,node3,"true","true","","");
-        checkEdgeData(link1Data3,node1.name,node2.name);
-        checkEdgeData(link2Data3,node2.name,node3.name);
-        checkEdgeData(link3Data3,node1.name,node3.name);
+        checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data3,node2.name,node3.name,link2.name);
+        checkEdgeData(link3Data3,node1.name,node3.name,link3.name);
 
 
     }
@@ -341,12 +348,12 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             def targetNodeData=expandData.nodes[targetName];
             checkNodeData(targetNodeData,targetNode,"false","true","","");
 
-            def linkData=getEdgeFrom(expandData.edges,sourceNode.name,targetNode.name);
-            checkEdgeData (linkData,sourceNode.name,targetNode.name);
+            def linkData=getEdgeFrom(expandData.edges,"l${counter}");
+            checkEdgeData (linkData,sourceNode.name,targetNode.name,"l${counter}");
 
 
         }
-
+        
         /*************************************************************************************************/
         //expand each targetNode when sourceNode is expanded only
         def nodeParamString="sourceNode,true,,;";
@@ -374,8 +381,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             def expandedNodeData=targetExpandData.nodes[targetName];
 
             checkNodeData(expandedNodeData,expandedNode,"true","true","","");
-            def linkData=getEdgeFrom(targetExpandData.edges,sourceNode.name,expandedNode.name);
-            checkEdgeData (linkData,sourceNode.name,expandedNode.name);
+            def linkData=getEdgeFrom(targetExpandData.edges,"l${counter}");
+            checkEdgeData (linkData,sourceNode.name,expandedNode.name,"l${counter}");
 
             subTargetCount.times{ subTargetCounter ->
                 def targetNameToCheck="subtarget${counter}_${subTargetCounter}".toString();
@@ -383,8 +390,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                 def targetNodeData=targetExpandData.nodes[targetNameToCheck];
                 checkNodeData(targetNodeData,targetNode,"false","false","","");
 
-                def targetLinkData=getEdgeFrom(targetExpandData.edges,expandedNode.name,targetNode.name);
-                checkEdgeData (targetLinkData,expandedNode.name,targetNode.name);
+                def targetLinkData=getEdgeFrom(targetExpandData.edges,"subl${counter}_${subTargetCounter}");
+                checkEdgeData (targetLinkData,expandedNode.name,targetNode.name,"subl${counter}_${subTargetCounter}");
             }
 
             //check targets which are not expanded
@@ -395,8 +402,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                     def targetNode=targets[targetNameToCheck];
                     def targetNodeData=targetExpandData.nodes[targetNameToCheck];
                     checkNodeData(targetNodeData,targetNode,"false","true","","");
-                    def targetLinkData=getEdgeFrom(targetExpandData.edges,sourceNode.name,targetNode.name);
-                    checkEdgeData (targetLinkData,sourceNode.name,targetNode.name);
+                    def targetLinkData=getEdgeFrom(targetExpandData.edges,"l${targetCounter}");
+                    checkEdgeData (targetLinkData,sourceNode.name,targetNode.name,"l${targetCounter}");
                 }
             }
         }
@@ -448,9 +455,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                 def expandedNode=targets[targetNameKey];
                 def expandedNodeData=targetExpandData.nodes[targetNameKey];
 
+
+
                checkNodeData(expandedNodeData,expandedNode,"true","true","","");
-               def linkData=getEdgeFrom(targetExpandData.edges,sourceNode.name,expandedNode.name);
-               checkEdgeData (linkData,sourceNode.name,expandedNode.name);
+               def linkData=getEdgeFrom(targetExpandData.edges,"l${targetNameValue.substringAfter('target')}");
+               checkEdgeData (linkData,sourceNode.name,expandedNode.name,"l${targetNameValue.substringAfter('target')}");
 
                subTargetCount.times{ subTargetCounter ->
                     def targetIndex=targetNameKey.replace("target","");
@@ -459,8 +468,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                     def targetNodeData=targetExpandData.nodes[subTargetNameToCheck];
                     checkNodeData(targetNodeData,targetNode,"false","false","","");
 
-                    def targetLinkData=getEdgeFrom(targetExpandData.edges,expandedNode.name,targetNode.name);
-                    checkEdgeData (targetLinkData,expandedNode.name,targetNode.name);
+                    def targetLinkData=getEdgeFrom(targetExpandData.edges,"subl${targetIndex}_${subTargetCounter}");
+                    checkEdgeData (targetLinkData,expandedNode.name,targetNode.name,"subl${targetIndex}_${subTargetCounter}");
                }
             }
 
@@ -473,8 +482,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                     def targetNode=targets[targetNameToCheck];
                     def targetNodeData=targetExpandData.nodes[targetNameToCheck];
                     checkNodeData(targetNodeData,targetNode,"false","true","","");
-                    def targetLinkData=getEdgeFrom(targetExpandData.edges,sourceNode.name,targetNode.name);
-                    checkEdgeData (targetLinkData,sourceNode.name,targetNode.name);
+                    def targetLinkData=getEdgeFrom(targetExpandData.edges,"l${targetCounter}");
+                    checkEdgeData (targetLinkData,sourceNode.name,targetNode.name,"l${targetCounter}");
                 }
             }
          }
@@ -488,26 +497,17 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(y,nodeData.y);
 
     }
-    def getEdgeFrom(edges,sourceName,targetName)
+    def getEdgeFrom(edges,edgeName)
     {
-        def edgeData=edges[getEdgeMapKey(sourceName,targetName)];
-        if(edgeData==null)
-        {
-            edgeData=edges[getEdgeMapKey(targetName,sourceName)];
-        }
-        return edgeData;
-
+        return edges[edgeName];
     }
-    def getEdgeMapKey(sourceName,targetName)
-    {
-        return sourceName+""+targetName;
-    }
-    def checkEdgeData(edgeData,sourceName,targetName)
+    def checkEdgeData(edgeData,sourceName,targetName,edgeName)
     {
         if(edgeData==null)
         {
             fail("edge ${edgeData} is not same as ${sourceName} to ${targetName}")
         }
+        assertEquals(edgeData.id,edgeName)
         if(edgeData.source==sourceName)
         {
             assertEquals(edgeData.target,targetName)
@@ -535,6 +535,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def results=[:]
         results.nodes=[:];
         results.edges=[:];
+        def nodeList=[];
+        def edgeList=[];
 
         def nodeProps=["id","expanded","expandable","x","y","displayName"];
 
@@ -544,15 +546,19 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
                 nodeData[propName]=dataRow.@"${propName}".toString();
             }
             results.nodes.put(nodeData.id,nodeData);
+            nodeList.add(nodeData);
         }
-        def edgeProps=["source","target"];
+        def edgeProps=["source","target","id"];
         resultXml.edge.each {    dataRow->
             def edgeData=[:];
             edgeProps.each{ propName ->
                 edgeData[propName]=dataRow.@"${propName}".toString();
             }
-            results.edges.put(getEdgeMapKey(edgeData.source,edgeData.target),edgeData);
+            results.edges.put(edgeData.id,edgeData);
+            edgeList.add(edgeData);
         }
+        assertEquals("duplicate node entry exists",nodeList.size(),results.nodes.size());
+        assertEquals("duplicate edge entry exists",edgeList.size(),results.edges.size());
         println "result parsed from xml ${results}"
         return results;
     }

@@ -17,8 +17,6 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 */
 class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
-
-
     def RsComputerSystem;
     def RsTopologyObject;
     def RsLink;
@@ -73,7 +71,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
     }
-    public void testExpandMapWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
+    public void testGetMapDataWith1To1NodesAndWithLinkDuplicateAndWithLinkReverse()
     {
 
         def source=RsComputerSystem.add(name:"start",model:"smodel",className:"sclass");
@@ -83,9 +81,17 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
         assertFalse(link1.hasErrors())
 
+        // add a duplicate link
+        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        assertFalse(link1Duplicate.hasErrors())
+
+         // add a reverse link
+        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
+        assertFalse(link1Reverse.hasErrors())
+
         def params=[:];
         params.nodes="start;end";
-        params.edges="end,start"
+        params.edges="l1,end,start"
 
         def getMapData=getMapDataFromScript(params);
         assertEquals(2,getMapData.nodes.size());
@@ -94,47 +100,55 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sourceNodeData=getMapData.nodes[source.name];
         def targetNodeData=getMapData.nodes[target.name];
-        def edgeData=getEdgeFrom(getMapData.edges,source.name,target.name)
+        def edgeData=getEdgeFrom(getMapData.edges,link1.name)
 
         checkNodeData(sourceNodeData,source);
         checkNodeData(targetNodeData,target);
         checkEdgeData(edgeData,link1,source.name,target.name);
 
-        // add a duplicate link ,  and check that result is same
-        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
-        assertFalse(link1Duplicate.hasErrors())
+
+        //check that duplicate link data exists in xml
+        params.nodes="start;end";
+        params.edges="l1,end,start;l1Duplicate,start,end;"
 
         def duplicateGetMapData=getMapDataFromScript(params);
 
         assertEquals(2,duplicateGetMapData.nodes.size());
-        assertEquals(1,duplicateGetMapData.edges.size());
+        assertEquals(2,duplicateGetMapData.edges.size());
 
         def sourceDuplicateNodeData=duplicateGetMapData.nodes[source.name];
         def targetDuplicateNodeData=duplicateGetMapData.nodes[target.name];
-        def edgeDuplicateData=getEdgeFrom(duplicateGetMapData.edges,source.name,target.name)
+        def edgeDuplicateData=getEdgeFrom(duplicateGetMapData.edges,link1Duplicate.name)
+        edgeData=getEdgeFrom(duplicateGetMapData.edges,link1.name)
 
         checkNodeData(sourceDuplicateNodeData,source);
         checkNodeData(targetDuplicateNodeData,target);
-        checkEdgeData(edgeDuplicateData,link1,source.name,target.name);
+        checkEdgeData(edgeDuplicateData,link1Duplicate,source.name,target.name);
+        checkEdgeData(edgeData,link1,source.name,target.name);
 
-        // add a reverse link , link is duplicated , and check that result is same
-        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
-        assertFalse(link1Reverse.hasErrors())
+
+        //check that reverse link data exists in xml
+        params.nodes="start;end";
+        params.edges="l1,end,start;l1Duplicate,start,end;l1Reverse,start,end;"
 
         def reverseGetMapData=getMapDataFromScript(params);
         assertEquals(2,reverseGetMapData.nodes.size());
-        assertEquals(1,reverseGetMapData.edges.size());
+        assertEquals(3,reverseGetMapData.edges.size());
 
         def sourceReverseNodeData=reverseGetMapData.nodes[source.name];
         def targetReverseNodeData=reverseGetMapData.nodes[target.name];
-        def edgeReverseData=getEdgeFrom(reverseGetMapData.edges,source.name,target.name)
+        def edgeReverseData=getEdgeFrom(reverseGetMapData.edges,link1Reverse.name);
+        edgeDuplicateData=getEdgeFrom(reverseGetMapData.edges,link1Duplicate.name)
+        edgeData=getEdgeFrom(reverseGetMapData.edges,link1.name)
 
         checkNodeData(sourceReverseNodeData,source);
         checkNodeData(targetReverseNodeData,target);
-        checkEdgeData(edgeReverseData,link1,source.name,target.name);
+        checkEdgeData(edgeReverseData,link1Reverse,source.name,target.name);
+        checkEdgeData(edgeDuplicateData,link1Duplicate,source.name,target.name);
+        checkEdgeData(edgeData,link1,source.name,target.name);
 
     }
-     public void  testExpandMapWithNNodesAndMEdges()
+     public void  testGetMapDataWithNNodesAndMEdges()
     {
         def sourceNode=RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
         assertFalse(sourceNode.hasErrors())
@@ -198,7 +212,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             params.edges="";
 
             linkCounter.times{ subCounter ->
-                params.edges+="source${subCounter},target${subCounter};"
+                params.edges+="l${subCounter},source${subCounter},target${subCounter};"
 
             }
             def getMapData=getMapDataFromScript(params);
@@ -208,65 +222,13 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             linkCounter.times{ subCounter ->
                 def sourceName="source${subCounter}".toString();
                 def targetName="target${subCounter}".toString();
-                def link=links["l"+counter];
-                def linkData=getEdgeFrom(getMapData.edges,sourceName,targetName)
+                def link=links["l"+subCounter];
+                def linkData=getEdgeFrom(getMapData.edges,link.name)
                 checkEdgeData (linkData,link,sourceName,targetName);
 
             }
         }
-
-        //call with 1 .. N nodes and for each call use 1 .. M links
-        nodeCount.times { counter ->
-            def nodeCounter=counter+1;
-            def params=[:];
-            params.nodes="sourceNode;";
-            params.edges="";
-
-            linkCount.times{ linkMainCounter ->
-                def linkCounter=linkMainCounter+1;
-                linkCounter.times{ subCounter ->
-                    params.edges+="source${subCounter},target${subCounter};"
-
-                }
-
-                nodeCounter.times{ subCounter ->
-                    def targetName="target${subCounter}".toString()
-                    params.nodes+="${targetName};"
-
-                }
-
-
-                def getMapData=getMapDataFromScript(params);
-                assertEquals(1+nodeCounter,getMapData.nodes.size());
-                assertEquals(linkCounter,getMapData.edges.size());
-
-                //check sourceNode data
-                def sourceNodeData=getMapData.nodes[sourceNode.name];
-                checkNodeData(sourceNodeData,sourceNode);
-
-                //check other nodes
-                nodeCounter.times{ subCounter ->
-                    def targetName="target${subCounter}".toString();
-                    def targetNode=targets[targetName];
-                    def targetNodeData=getMapData.nodes[targetName];
-                    checkNodeData(targetNodeData,targetNode);
-                }
-
-                //check edges
-                linkCounter.times{ subCounter ->
-                    def sourceName="source${subCounter}".toString();
-                    def targetName="target${subCounter}".toString();
-                    def link=links["l"+counter];
-                    def linkData=getEdgeFrom(getMapData.edges,sourceName,targetName)
-                    checkEdgeData (linkData,link,sourceName,targetName);
-
-                }
-
-             }
-
-        }
-
-    }
+   }
 
     def checkNodeData(nodeData,node)
     {
@@ -277,23 +239,14 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(node.getState().toString(),nodeData.state);
 
     }
-    def getEdgeFrom(edges,sourceName,targetName)
+    def getEdgeFrom(edges,edgeName)
     {
-        def edgeData=edges[getEdgeMapKey(sourceName,targetName)];
-        if(edgeData==null)
-        {
-            edgeData=edges[getEdgeMapKey(targetName,sourceName)];
-        }
-        return edgeData;
-
-    }
-    def getEdgeMapKey(sourceName,targetName)
-    {
-        return sourceName+""+targetName;
+        return edges[edgeName];
     }
     def checkEdgeData(edgeData,edge,sourceName,targetName)
     {
         assertEquals(edge.getState().toString(),edgeData.state)
+        assertEquals(edge.getName().toString(),edgeData.id)
         if(edgeData==null)
         {
             fail("edge ${edgeData} is not same as ${sourceName} to ${targetName}")
@@ -327,6 +280,8 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         def results=[:]
         results.nodes=[:];
         results.edges=[:];
+        def nodeList=[];
+        def edgeList=[];
 
         def nodeProps=["id","state","type","displayName","model","gauged"];
 
@@ -336,15 +291,19 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
                 nodeData[propName]=dataRow.@"${propName}".toString();
             }
             results.nodes.put(nodeData.id,nodeData);
+            nodeList.add(nodeData);
         }
-        def edgeProps=["source","target","state"];
+        def edgeProps=["source","target","state","id"];
         resultXml.edge.each {    dataRow->
             def edgeData=[:];
             edgeProps.each{ propName ->
                 edgeData[propName]=dataRow.@"${propName}".toString();
             }
-            results.edges.put(getEdgeMapKey(edgeData.source,edgeData.target),edgeData);
+            results.edges.put(edgeData.id,edgeData);
+            edgeList.add(edgeData);
         }
+        assertEquals("duplicate node entry exists",nodeList.size(),results.nodes.size());
+        assertEquals("duplicate edge entry exists",edgeList.size(),results.edges.size());
         println "result parsed from xml ${results}"
         return results;
     }

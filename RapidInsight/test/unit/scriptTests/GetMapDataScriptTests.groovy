@@ -247,7 +247,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     {
         assertEquals(edge.getState().toString(),edgeData.state)
         assertEquals(edge.name,edgeData.id)
-        assertEquals(edge.displayName,edgeData.displayName)
+        assertEquals(edge.displayName,edgeData.tooltip)
         if(edgeData==null)
         {
             fail("edge ${edgeData} is not same as ${sourceName} to ${targetName}")
@@ -294,7 +294,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             results.nodes.put(nodeData.id,nodeData);
             nodeList.add(nodeData);
         }
-        def edgeProps=["source","target","state","id","displayName"];
+        def edgeProps=["source","target","state","id","tooltip"];
         resultXml.edge.each {    dataRow->
             def edgeData=[:];
             edgeProps.each{ propName ->

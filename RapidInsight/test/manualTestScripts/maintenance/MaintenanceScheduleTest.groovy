@@ -42,7 +42,7 @@ def maint=RsInMaintenance.get(objectName:objectName)
 assert(maint.info==maintSchedule.info)
 assert(maint.starting==maintSchedule.starting)
 assert(maint.ending==maintSchedule.ending)
-assert(maint.source=="schedule")
+assert(maint.source=="schedule_${maintSchedule.id}")
 sleep(200)
 
 
@@ -84,6 +84,20 @@ RsInMaintenanceSchedule.removeSchedule(maintSchedule.id);
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==0)
 assert(RsInMaintenanceSchedule.countHits("objectName:${objectName.exactQuery()}")==0)
 
+//removing a schedule should not remove other maintenance objects
+def props1 = ["objectName":objectName, "source":"schedule", "info":"maint1"]
+RsInMaintenance.putObjectInMaintenance(props1)
+
+assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)
+
+startTime = new Date(System.currentTimeMillis())
+endTime = new Date(System.currentTimeMillis() + 1200)
+
+maintSchedule= RsInMaintenanceSchedule.addObjectSchedule(objectName,info,startTime,endTime)
+RsInMaintenanceSchedule.removeSchedule(maintSchedule.id);
+
+assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)
+
 //manually remove schedule while its active but  in maintenance source is not schedule , user has overriden
 startTime = new Date(System.currentTimeMillis())
 endTime = new Date(System.currentTimeMillis() + 1200)
@@ -96,7 +110,7 @@ script.CmdbScript.runScript(maintScheduler) // now in maintenance
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)
 assert(RsInMaintenanceSchedule.countHits("objectName:${objectName.exactQuery()}")==1)
 
-def props = ["objectName":objectName, "source":"userX", "info":info]
+props = ["objectName":objectName, "source":"userX", "info":info]
 RsInMaintenance.putObjectInMaintenance(props)
 RsInMaintenanceSchedule.removeSchedule(maintSchedule.id);
 assert(RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")==1)

@@ -55,12 +55,14 @@
             <table width="100%">
             <tr><td colspan="5"><span class="r-buttontoolbar-text">Existing Schedules</span></td></tr>
             <g:each var="schedule" in="${schedules}">
-                <tr><td colspan="5"><b>Info :</b> ${schedule.info}</td></tr>
+                <tr><td colspan="7"><b>Info :</b> ${schedule.info}</td></tr>
                 <tr>
                     <td><b>Starting:</b></td>
                     <td>${schedule.starting}</td>
                     <td><b>Ending:</b></td>
                     <td>${schedule.ending}</td>
+                    <td><b>Active:</b></td>
+                    <td>${schedule.active}</td>
                     <td>                        
                         <span class="yui-button yui-push-button default">
                             <span class="first-child">                                

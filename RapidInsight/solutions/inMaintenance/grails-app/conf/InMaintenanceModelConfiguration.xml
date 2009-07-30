@@ -5,6 +5,7 @@
       			<Property Name="objectName" Type="string" IsKey="true"/>
                 <Property Name="source" Type="string"/>
                 <Property Name="info" Type="string"/>
+                <Property Name="starting" Type="date"/>
                 <Property Name="ending" Type="date"/>
    			</Properties>
 		</Model>

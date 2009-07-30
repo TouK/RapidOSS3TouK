@@ -1,3 +1,5 @@
+import junit.framework.Assert;
+
 RsInMaintenance.removeAll()
 RsTopologyObject.removeAll()
 RsEvent.removeAll()
@@ -25,13 +27,16 @@ assert(!RsEvent.get(name:event12.name).inMaintenance)
 
 // indeterminate inMaintenance
 def props = ["objectName":"Device1", "source":source, "info":info]
+def startTimeForMaint1=System.currentTimeMillis();
 def maint1 = RsInMaintenance.putObjectInMaintenance(props)
-//def maint1 = RsInMaintenance.putObjectInMaintenance(["Device1",source,info)
+
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(RsEvent.get(name:event11.name).inMaintenance)
 assert(RsEvent.get(name:event12.name).inMaintenance)
 assert(maint1.source==source)
 assert(maint1.info==info)
+assert(maint1.starting.getTime()>=startTimeForMaint1);
+assert(maint1.ending.getTime()==0)
 
 def eventDuringMaintenance1 = RsEvent.add(name:"eventDuringMaintenance1", elementName:maint1.objectName)
 assert(eventDuringMaintenance1.inMaintenance)
@@ -46,19 +51,20 @@ assert(!event13.inMaintenance)
 assert(!RsEvent.get(name:eventDuringMaintenance1.name).inMaintenance)
 
 // inMaintenance with duration
-def startTime=System.currentTimeMillis();
-def endTime = new Date(System.currentTimeMillis() + 1500)
+def startTime=new Date(System.currentTimeMillis()-1500);
+def endTime = new Date(System.currentTimeMillis()+1500)
 
-//device1.putInMaintenance(endTime, true)
-props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
+
+props = ["objectName":"Device1", "source":source, "info":info,"starting":startTime, "ending":endTime]
 maint1 = RsInMaintenance.putObjectInMaintenance(props)
 
-//maint1 = RsInMaintenance.putObjectInMaintenance("Device1",source,info,endTime)
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(RsEvent.get(name:event11.name).inMaintenance)
 assert(RsEvent.get(name:event12.name).inMaintenance)
 assert(maint1.source==source)
 assert(maint1.info==info)
+assert(maint1.starting.getTime()==startTime.getTime());
+assert(maint1.ending.getTime()==endTime.getTime());
 
 
 sleep(100)
@@ -83,19 +89,40 @@ assert(!RsEvent.get(name:event14.name).inMaintenance)
 
 // inMaintenance with duration - user aborted
 endTime = new Date(System.currentTimeMillis() + 1000)
-//device1.putInMaintenance(endTime)
+
+startTimeForMaint1=System.currentTimeMillis();
+
 props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
 maint1 = RsInMaintenance.putObjectInMaintenance(props)
-//maint1 = RsInMaintenance.putObjectInMaintenance("Device1",source,info,endTime)
+
 assert(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(RsEvent.get(name:event11.name).inMaintenance)
 assert(RsEvent.get(name:event12.name).inMaintenance)
 assert(maint1.source==source)
 assert(maint1.info==info)
+assert(maint1.starting.getTime()>=startTimeForMaint1);
+assert(maint1.ending.getTime()==endTime.getTime())
 
 RsInMaintenance.takeObjectOutOfMaintenance(maint1.objectName) // manually take out of maintenance
 assert(!RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(!RsEvent.get(name:event11.name).inMaintenance)
 assert(!RsEvent.get(name:event12.name).inMaintenance)
+
+
+
+//putObjectInMaintenance throws exception if endtime is smaller than starttime
+endTime = new Date(System.currentTimeMillis() - 1000)
+
+props = ["objectName":"Device1", "source":source, "info":info, "ending":endTime]
+try{
+    maint1 = RsInMaintenance.putObjectInMaintenance(props)
+    fail("should throw exception");
+}
+catch(e)
+{
+    Assert.assertTrue("wrong exception ${e}",e.getMessage().indexOf("time should be greater than starting time")>=0);
+}
+assert(RsInMaintenance.count()==0)
+
 
 return "SUCCESS";

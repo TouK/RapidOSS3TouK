@@ -14,6 +14,17 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     //map should contain objectName and can optionally contain ending, source, and info
     public static RsInMaintenance putObjectInMaintenance(props)
     {
+        if(props.starting==null)
+        {
+            props.starting=new Date();
+        }
+        if(props.ending!=null)
+        {
+            if(props.ending.getTime()<=props.starting.getTime())
+            {
+                throw new Exception("ending ${props.ending} time should be greater than starting time ${props.starting}");
+            }
+        }
         def maintObj = RsInMaintenance.add(props);
         if (maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
         eventsInMaintenance(true, props.objectName);
@@ -37,9 +48,9 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 
     public static void eventsInMaintenance(boolean maint, String objectName) {
         def events = RsEvent.search("elementName:${objectName}")
-        events.results.each {
-            if (it.inMaintenance != maint)
-                it.inMaintenance = maint
+        events.results.each { event ->
+            if (event.inMaintenance != maint)
+                event.inMaintenance = maint
         }
     }
 
@@ -54,11 +65,11 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
         def activeItems = RsInMaintenance.searchEvery("alias:*")
         logger.debug("active item count: ${activeItems.size()}")
         def nullDate = new Date(0).getTime()
-        activeItems.each {
-            logger.debug("ending.getTime(): ${it.ending.getTime()}")
-            if (it.ending.getTime() > nullDate && it.ending.getTime() <= currentTime) {
-                logger.debug("deactivating maintenance for: ${it.objectName}")
-                RsInMaintenance.takeObjectOutOfMaintenance(it);
+        activeItems.each { maintenance ->
+            logger.debug("ending.getTime(): ${maintenance.ending.getTime()}")
+            if (maintenance.ending.getTime() > nullDate && maintenance.ending.getTime() <= currentTime) {
+                logger.debug("deactivating maintenance for: ${maintenance.objectName}")
+                RsInMaintenance.takeObjectOutOfMaintenance(maintenance);
             }
         }
     }

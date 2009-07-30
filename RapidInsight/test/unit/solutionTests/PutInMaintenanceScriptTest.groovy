@@ -60,6 +60,8 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
         def params=[model:"maintenance",objectName:"testobj",inMaintenance:"true",info:"manualMaintenance"];
         def webParams=[session:[username:"testuser"]];
 
+        def startTimeForMaintenance=System.currentTimeMillis();
+
         runScript(params,webParams);
         assertEquals(1,RsInMaintenance.count());
         def maintObject=RsInMaintenance.list()[0];
@@ -68,6 +70,7 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
         assertEquals(params.info,maintObject.info);
         assertEquals("User ${webParams.session.username}",maintObject.source);
         assertEquals(new Date(0),maintObject.ending);
+        assertTrue(maintObject.starting.getTime()>=startTimeForMaintenance);
 
 
         //we remove inMaintenance key, and it will be taken out of maintenance
@@ -81,6 +84,8 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
         def params=[model:"maintenance",objectName:"testobj",inMaintenance:"true",info:"manualMaintenance",minutes:"10"];
         def webParams=[session:[username:"testuser"]];
 
+        def startTimeForMaintenance=System.currentTimeMillis();
+
         runScript(params,webParams);
         assertEquals(1,RsInMaintenance.count());
         def maintObject=RsInMaintenance.list()[0];
@@ -93,6 +98,7 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
         def timeDiff=(maintObject.ending.getTime()-Date.now())/1000;
         assertTrue(timeDiff>599);
         assertTrue(timeDiff<601);
+        assertTrue(maintObject.starting.getTime()>=startTimeForMaintenance);
     }
     public void testPutInMaintenanceWithMinutesThrowsExceptionIfMinutesIsNotAValidInteger()
     {

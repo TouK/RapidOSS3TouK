@@ -59,12 +59,12 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         def nullDate = new Date(0).getTime()
         def scheduledItems = RsInMaintenanceSchedule.search("active:false")
         logger.debug("scheduled item count: ${scheduledItems.total}")
-        scheduledItems.results.each{
-            logger.debug("starting.getTime(): ${it.starting.getTime()}")
-            if (it.starting.getTime()>nullDate && it.starting.getTime() <= currentTime){
-                it.active = true
-                logger.debug("activating maintenance for: ${it.objectName}")
-                def putInMaintProps = ["objectName":it.objectName, "source":SCHEDULE_SOURCE, "info": it.info, "ending":it.ending]
+        scheduledItems.results.each{  schedule ->
+            logger.debug("starting.getTime(): ${schedule.starting.getTime()}")
+            if (schedule.starting.getTime()>nullDate && schedule.starting.getTime() <= currentTime){
+                schedule.active = true
+                logger.debug("activating maintenance for: ${schedule.objectName}")
+                def putInMaintProps = ["objectName":schedule.objectName, "source":SCHEDULE_SOURCE, "info": schedule.info,"starting":schedule.starting, "ending":schedule.ending]
                 RsInMaintenance.putObjectInMaintenance(putInMaintProps);
             }
         }
@@ -82,11 +82,11 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         def activeItems = RsInMaintenanceSchedule.search("active:true")
         logger.debug("active item count: ${activeItems.total}")
 
-        activeItems.results.each{
-            logger.debug("ending.getTime(): ${it.ending.getTime()}")
-            if (it.ending.getTime()>nullDate && it.ending.getTime() <= currentTime){
-                logger.debug("removing schedule for: ${it.objectName}")
-                it.remove();
+        activeItems.results.each{ schedule ->
+            logger.debug("ending.getTime(): ${schedule.ending.getTime()}")
+            if (schedule.ending.getTime()>nullDate && schedule.ending.getTime() <= currentTime){
+                logger.debug("removing schedule for: ${schedule.objectName}")
+                schedule.remove();
             }
         }
     }

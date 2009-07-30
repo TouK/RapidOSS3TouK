@@ -21,6 +21,8 @@ class RsInMaintenance {
 
     String source="";
 
+    Date starting =new Date(0);
+
     Date ending =new Date(0);
 
     org.springframework.validation.Errors errors ;
@@ -42,6 +44,8 @@ class RsInMaintenance {
      info(blank:true,nullable:true)
 
      source(blank:true,nullable:true)
+
+     starting(nullable:true)
 
      ending(nullable:true)
 

@@ -41,11 +41,13 @@
                 <tr><td width="20%" valign="top"><label>Info:</label></td><td width="80%"><textarea rows="2" cols="60" name="info">${inMaintenance?inMaintenanceObject.info.encodeAsHTML():''}</textarea></td></tr>
                 <g:if test="${inMaintenance}">
                     <tr><td width="20%"><label>Source:</label></td><td width="80%">${inMaintenanceObject.source}</td></tr>
+                    <tr><td width="20%"><label>Started:</label></td><td width="80%">${inMaintenanceObject.starting}</td></tr>
+
                     <g:if test="${inMaintenanceObject?.ending!=new Date(0) && inMaintenanceObject.ending!=null}">
-                    <tr><td width="20%"><label>Currently Until:</label></td><td width="80%">${inMaintenanceObject.ending}</td></tr>
+                        <tr><td width="20%"><label>Ending:</label></td><td width="80%">${inMaintenanceObject.ending}</td></tr>
                     </g:if>
                     <g:else>
-                    <tr><td width="20%"><label>Currently Until:</label></td><td width="80%">Manually canceled.</td></tr>    
+                        <tr><td width="20%"><label>Ending:</label></td><td width="80%">Until manually canceled.</td></tr>
                     </g:else>
                 </g:if>
             </table>

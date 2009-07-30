@@ -151,6 +151,7 @@
 			<Properties>
                 <Property Name='name' Type='string' IsKey="true"/>
                 <Property Name='mapType' Type='string' IsKey="true" Default="default"/>
+                <Property Name="displayName" Type="string"/>
                 <Property Name="a_Name" Type="string"/>
 				<Property Name="a_RsClassName" Type="string"/>
 				<Property Name="z_Name" Type="string"/>

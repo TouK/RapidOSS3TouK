@@ -17,6 +17,8 @@ class RsMapConnection {
 
     String mapType ="default";
 
+    String displayName ="";
+
     String a_Name ="";
 
     String a_RsClassName ="";
@@ -42,6 +44,8 @@ class RsMapConnection {
     name(blank:false,nullable:false)
 
      mapType(blank:false,nullable:false,key:["name"])
+
+     displayName(blank:true,nullable:true)
 
      a_Name(blank:true,nullable:true)
 

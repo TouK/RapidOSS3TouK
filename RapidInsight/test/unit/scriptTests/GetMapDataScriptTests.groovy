@@ -78,15 +78,15 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         assertFalse(source.hasErrors())
         def target=RsComputerSystem.add(name:"end",model:"emodel",className:"eclass");
         assertFalse(target.hasErrors())
-        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name,displayName:"l1D");
         assertFalse(link1.hasErrors())
 
         // add a duplicate link
-        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name);
+        def link1Duplicate=RsLink.add(name:"l1Duplicate",a_ComputerSystemName:source.name,z_ComputerSystemName:target.name,displayName:"l1DuplicateD");
         assertFalse(link1Duplicate.hasErrors())
 
          // add a reverse link
-        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name);
+        def link1Reverse=RsLink.add(name:"l1Reverse",a_ComputerSystemName:target.name,z_ComputerSystemName:source.name,displayName:"l1ReverseD");
         assertFalse(link1Reverse.hasErrors())
 
         def params=[:];
@@ -166,7 +166,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             assertFalse(target.hasErrors())
         }
         linkCount.times{ counter ->
-            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:"source${counter}",z_ComputerSystemName:"target${counter}");
+            def link=RsLink.add(name:"l${counter}",a_ComputerSystemName:"source${counter}",z_ComputerSystemName:"target${counter}",displayName:"l${counter}D");
             links[link.name]=link;
             assertFalse(link.hasErrors())
         }
@@ -246,7 +246,8 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
     def checkEdgeData(edgeData,edge,sourceName,targetName)
     {
         assertEquals(edge.getState().toString(),edgeData.state)
-        assertEquals(edge.getName().toString(),edgeData.id)
+        assertEquals(edge.name,edgeData.id)
+        assertEquals(edge.displayName,edgeData.displayName)
         if(edgeData==null)
         {
             fail("edge ${edgeData} is not same as ${sourceName} to ${targetName}")
@@ -293,7 +294,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
             results.nodes.put(nodeData.id,nodeData);
             nodeList.add(nodeData);
         }
-        def edgeProps=["source","target","state","id"];
+        def edgeProps=["source","target","state","id","displayName"];
         resultXml.edge.each {    dataRow->
             def edgeData=[:];
             edgeProps.each{ propName ->

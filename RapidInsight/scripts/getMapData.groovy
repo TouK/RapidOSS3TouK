@@ -59,7 +59,7 @@ mapDataBuilder.graphData {
         {
             def link=links[0];
             
-            mapDataBuilder.edge( id:link.name,source : source, target : target, state : link.getState());
+            mapDataBuilder.edge( id:link.name,source : source, target : target, state : link.getState(),displayName:link.displayName);
         }
 
     }

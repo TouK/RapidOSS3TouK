@@ -14,20 +14,29 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     //map should contain objectName and can optionally contain ending, source, and info
     public static RsInMaintenance putObjectInMaintenance(props)
     {
-        if(props.starting==null)
+        def tempProps=[:];
+        tempProps.putAll(props);
+
+        if(tempProps.starting==null)
         {
-            props.starting=new Date();
+            tempProps.starting=new Date();
         }
-        if(props.ending!=null)
+        if(isObjectInMaintenance(tempProps.objectName))
         {
-            if(props.ending.getTime()<=props.starting.getTime())
+            tempProps.remove("starting");
+        }
+
+        if(tempProps.ending!=null && tempProps.starting!=null)
+        {
+            if(tempProps.ending.getTime()<=tempProps.starting.getTime())
             {
-                throw new Exception("ending ${props.ending} time should be greater than starting time ${props.starting}");
+                throw new Exception("ending ${tempProps.ending} time should be greater than starting time ${tempProps.starting}");
             }
         }
-        def maintObj = RsInMaintenance.add(props);
+
+        def maintObj = RsInMaintenance.add(tempProps);
         if (maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
-        eventsInMaintenance(true, props.objectName);
+        eventsInMaintenance(true, tempProps.objectName);
         return maintObj;
 
     }

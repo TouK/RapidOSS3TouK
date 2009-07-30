@@ -50,6 +50,7 @@ def event13 = RsEvent.add(name:"Event13", elementName:maint1.objectName)
 assert(!event13.inMaintenance)
 assert(!RsEvent.get(name:eventDuringMaintenance1.name).inMaintenance)
 
+
 // inMaintenance with duration
 def startTime=new Date(System.currentTimeMillis()-1500);
 def endTime = new Date(System.currentTimeMillis()+1500)
@@ -87,6 +88,42 @@ assert(!RsEvent.get(name:event12.name).inMaintenance)
 assert(!RsEvent.get(name:event14.name).inMaintenance)
 
 
+
+//does not change starttime if there is currently a maintenance for the same object
+assert(RsInMaintenance.count()==0)
+
+props = ["objectName":"Device2", "source":source, "info":info]
+startTimeForMaint1=System.currentTimeMillis();
+maint1 = RsInMaintenance.putObjectInMaintenance(props)
+def oldStartTime=maint1.starting.getTime();
+
+assert(maint1.starting.getTime()>=startTimeForMaint1);
+assert(maint1.ending.getTime()==0)
+
+Thread.sleep(500);
+assert(RsInMaintenance.count()==1)
+
+endTime = new Date(System.currentTimeMillis() + 5000000)
+props = ["objectName":"Device2", "source":source, "info":info,"ending":endTime]
+maint1 = RsInMaintenance.putObjectInMaintenance(props)
+
+assert(maint1.starting.getTime()==oldStartTime);
+assert(maint1.ending.getTime()==endTime.getTime())
+
+startTime = new Date(System.currentTimeMillis() + 3000000)
+endTime = new Date(System.currentTimeMillis() + 5000000)
+props = ["objectName":"Device2", "source":source, "info":info,"starting":startTime,"ending":endTime];
+maint1 = RsInMaintenance.putObjectInMaintenance(props);
+
+assert(maint1.starting.getTime()==oldStartTime);
+assert(maint1.ending.getTime()==endTime.getTime());
+
+
+
+RsInMaintenance.takeObjectOutOfMaintenance(maint1.objectName)
+
+assert(RsInMaintenance.count()==0)
+
 // inMaintenance with duration - user aborted
 endTime = new Date(System.currentTimeMillis() + 1000)
 
@@ -107,6 +144,7 @@ RsInMaintenance.takeObjectOutOfMaintenance(maint1.objectName) // manually take o
 assert(!RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(!RsEvent.get(name:event11.name).inMaintenance)
 assert(!RsEvent.get(name:event12.name).inMaintenance)
+
 
 
 

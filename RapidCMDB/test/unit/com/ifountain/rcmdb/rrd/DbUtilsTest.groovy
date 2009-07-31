@@ -49,13 +49,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                         function:"AVERAGE",
                                         xff:0.5,
                                         steps:6,
-                                        rows:10,
+                                        rows:10
                                     ],
                                     [
                                         function:"MIN",
                                         xff:0.5,
                                         steps:3,
-                                         rows:7,
+                                        rows:7
                                     ] ]
         DbUtils.createDatabase(config)
 
@@ -92,13 +92,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:6,
-                                            rows:10,
+                                            rows:10
                                         ],
                                         [
                                             function:"MIN",
                                             xff:0.5,
                                             steps:1,
-                                            rows:5,
+                                            rows:5
                                         ]
                                    ]
 
@@ -137,13 +137,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:6,
-                                            rows:10,
+                                            rows:10
                                         ],
                                         [
                                             function:"MIN",
                                             xff:0.5,
                                             steps:1,
-                                            rows:5,
+                                            rows:5
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 920804400000L;
@@ -190,13 +190,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:6,
-                                            rows:10,
+                                            rows:10
                                         ],
                                         [
                                             function:"MIN",
                                             xff:0.5,
                                             steps:1,
-                                            rows:5,
+                                            rows:5
                                         ]
                                   ]
         config[DbUtils.START_TIME] = 920804400000L;
@@ -266,13 +266,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:6,
-                                            rows:10,
+                                            rows:10
                                         ],
                                         [
                                             function:"MIN",
                                             xff:0.5,
                                             steps:1,
-                                            rows:5,
+                                            rows:5
                                         ]
                                    ]
         config[DbUtils.START_TIME] = "notnumber";
@@ -310,13 +310,13 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:6,
-                                            rows:10,
+                                            rows:10
                                         ],
                                         [
                                             function:"MIN",
                                             xff:0.5,
                                             steps:1,
-                                            rows:5,
+                                            rows:5
                                         ]
                                    ]
          config[DbUtils.STEP] = "notnumber";
@@ -398,7 +398,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
-                                                heartbeat:600,
+                                                heartbeat:600
                                             ],
                                             [
                                                 name:"b",
@@ -411,7 +411,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:30,
+                                            rows:30
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -455,7 +455,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
-                                                heartbeat:600,
+                                                heartbeat:600
                                             ],
                                             [
                                                 name:"b",
@@ -468,7 +468,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:100,
+                                            rows:100
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -500,7 +500,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
-                                                heartbeat:600,
+                                                heartbeat:600
                                             ],
                                             [
                                                 name:"b",
@@ -513,7 +513,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:30,
+                                            rows:30
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -538,7 +538,48 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertEquals('values retrived for source b is incorrect', 2.0D, result['b']['978303900'])
     }
 
-    public void testSynchronizedUpdateAndFetch() {
+    public void testFetchAllDataReturnsSortedMap() throws Exception {
+        Map config = [:]
+        config[DbUtils.DATABASE_NAME] = rrdFileName;
+        config[DbUtils.DATASOURCE] = [ [
+                                            name:"testSource",
+                                            type:"GAUGE",
+                                            heartbeat:120
+                                       ] ]
+        config[DbUtils.ARCHIVE] = [ [
+                                        function:"AVERAGE",
+                                        xff:0.5,
+                                        steps:1,
+                                        rows:5
+                                    ],
+                                    [
+                                        function:"AVERAGE",
+                                        xff:0.5,
+                                        steps:2,
+                                        rows:5
+                                    ] ]
+        config[DbUtils.STEP] = 60
+        config[DbUtils.START_TIME] = 900000000 - 60000;
+        DbUtils.createDatabase(config);
+
+        def initialTime = 900000000
+        for(int i = 0; i < 10; i++)
+        {
+            def data = "" + initialTime + ":" + i
+            DbUtils.updateData(rrdFileName, data)
+            initialTime += 60000
+        }
+
+        def result =  DbUtils.fetchAllDataAsMap(rrdFileName, ['testSource'], 'AVERAGE')
+        assertTrue('result should include value whose key is \'testSource\'', result.containsKey('testSource'))
+
+        def keys = result['testSource'].keySet().toArray()
+        for(int i = 0; i < keys.length-1; i++) {
+            assertTrue('map keys are not sorted', keys[i] < keys[i+1])
+        }        
+    }
+
+    public void testSynchronizedUpdateAndFetch() throws Exception {
         def initialTime = 900000000000 - 60000
 
         Map config = [:]
@@ -589,7 +630,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         assertTrue("Result map is not true ", result["900000000"] >= 0 && result["900000000"] < 50);
     }
 
-    public void testSuccessfullSynchronizedUpdateAndFetch() {
+    public void testSuccessfullSynchronizedUpdateAndFetch() throws Exception {
         def step = 60000
         def initialTime = 900000000000 - step
 
@@ -654,7 +695,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             [
                                                 name:"a",
                                                 type:"COUNTER",
-                                                heartbeat:600,
+                                                heartbeat:600
                                             ],
                                             [
                                                 name:"b",
@@ -667,7 +708,7 @@ class DbUtilsTests extends RapidCoreTestCase {
                                             function:"AVERAGE",
                                             xff:0.5,
                                             steps:1,
-                                            rows:30,
+                                            rows:30
                                         ]
                                    ]
         config[DbUtils.START_TIME] = 978300900000;
@@ -732,5 +773,6 @@ class DbUtilsTests extends RapidCoreTestCase {
             assertEquals( (double)dlist1[i][DbUtils.XFF],(double)rrdDslist2[i][DbUtils.XFF]);
         }
     }
+
 
 }

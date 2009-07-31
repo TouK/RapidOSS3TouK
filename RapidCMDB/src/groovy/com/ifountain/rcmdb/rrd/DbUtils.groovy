@@ -334,13 +334,21 @@ class DbUtils {
                     FetchData fd = fetchRequest.fetchData();
                     long[] timeStamps = fd.getTimestamps();
                     double[] dataValues = fd.getValues(it);
-                    Map datasourceMap = [:];
                     for(int j=0; j<timeStamps.length; j++){
                          values[it][timeStamps[j]+""] =dataValues[j];
                     }
                 }
             }
-            return values;
+            datasources.each{
+                def keyset = values[it].keySet().toArray()
+                Arrays.sort(keyset)
+                def newMap = [:];
+                for(int i=0; i < keyset.length; i++){
+                    newMap[keyset[i]] = values[it][keyset[i]];
+                }
+                values[it] = newMap;
+            }
+            return values
         }
     }
     /*

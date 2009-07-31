@@ -339,7 +339,7 @@ class DbUtils {
                     }
                 }
             }
-            datasources.each{
+            datasources.each{ 
                 def keyset = values[it].keySet().toArray()
                 Arrays.sort(keyset)
                 def newMap = [:];

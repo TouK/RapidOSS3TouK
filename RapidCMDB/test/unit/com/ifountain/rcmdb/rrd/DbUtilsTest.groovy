@@ -577,7 +577,7 @@ class DbUtilsTests extends RapidCoreTestCase {
         for(int i = 0; i < keys.length-1; i++) {
             assertTrue('map keys are not sorted', keys[i] < keys[i+1])
         }        
-    }
+    } 
 
     public void testSynchronizedUpdateAndFetch() throws Exception {
         def initialTime = 900000000000 - 60000

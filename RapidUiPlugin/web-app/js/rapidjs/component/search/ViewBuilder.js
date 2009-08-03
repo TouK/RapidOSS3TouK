@@ -269,7 +269,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
              var width = column['width'];
              if (column['sortBy'] == true) {
                 defaultSortColumn = attName;
-                if (columns['sortOrder']) {
+                if (column['sortOrder']) {
                     sortOrder = column['sortOrder'];
                 }
             }

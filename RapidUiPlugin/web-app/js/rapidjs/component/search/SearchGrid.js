@@ -143,6 +143,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.lastSortedHeader = this.headers[sortColIndex];
             this.lastSortedHeader.sortDir = sortOrder;
             this.params['order'] = sortOrder;
+            this.lastSortOrder = sortOrder;
             var sortAtt = this.columns[sortColIndex]['attributeName']
             this.lastSortAtt = sortAtt;
             this.params['sort'] = sortAtt;

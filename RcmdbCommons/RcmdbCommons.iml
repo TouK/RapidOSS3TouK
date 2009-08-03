@@ -54,12 +54,9 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/test" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/test/performance" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/test/ui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/views" />
       <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/lib" />

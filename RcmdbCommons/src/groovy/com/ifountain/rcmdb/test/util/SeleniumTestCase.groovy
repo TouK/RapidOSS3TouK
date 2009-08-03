@@ -24,7 +24,7 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     public static void registerDynamicMethodsToSelenium()
     {
-        def utilityClassNamesToBeTried = ["utils.UserGroupUiTestUtilities", "utils.ScriptUiUtilities"]
+        def utilityClassNamesToBeTried = ["utils.UserGroupUiTestUtilities", "utils.ScriptUiUtilities", "utils.DatabaseUiUtilities"]
         def utilityClassesToBeTried = []
         utilityClassNamesToBeTried.each{
             try{

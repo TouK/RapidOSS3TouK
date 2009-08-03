@@ -39,7 +39,7 @@ class CommonUiTestUtils {
 
     public static void assertPageMessage(Selenium selenium, String expectedMessage)
     {
-            Assert.assertEquals("Instance could not be cretaed. Reason :${CommonUiTestUtils.getPageErrorMessage(selenium)}".toString(), expectedMessage, getPageMessage(selenium))
+            Assert.assertEquals("Expected message cannot be retreived. Error Message :${CommonUiTestUtils.getPageErrorMessage(selenium)}".toString(), expectedMessage, getPageMessage(selenium))
     }
     public static String getIdFromlocation(String location)
     {

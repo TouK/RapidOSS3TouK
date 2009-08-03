@@ -155,7 +155,7 @@ class ScriptUiUtilities {
     public static deleteScriptsByFileName(Selenium selenium, String fileName)
     {
         CommonUiTestUtils.search (selenium, "script.CmdbScript", "scriptFile:${fileName}").each{
-            deleteScriptById(it.id);
+            deleteScriptById(selenium, it.id, true);
         }
     }
 

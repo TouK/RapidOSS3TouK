@@ -176,7 +176,7 @@ class ActionsTagLib {
         else if (actionType == "link") {
             return """
                <script type="text/javascript">
-               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"].encodeAsJavaScript()}\", ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"});
+               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"].encodeAsJavaScript()}\", ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"}, ${attrs["target"] ? "\"${attrs["target"]}\"":"null"});
                ${errorJs} 
                </script>
             """;

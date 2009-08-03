@@ -229,10 +229,11 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
 
     }
 };
-YAHOO.rapidjs.component.action.LinkAction = function(id, urlExp, condition) {
+YAHOO.rapidjs.component.action.LinkAction = function(id, urlExp, condition, target) {
     this.condition = condition;
     this.urlExp = urlExp;
     this.id = id;
+    this.target = target || 'self';
     this.events = {
         'error' : new YAHOO.util.CustomEvent('error')
     };
@@ -248,7 +249,13 @@ YAHOO.rapidjs.component.action.LinkAction.prototype = {
             }
             if (conditionResult) {
                 var url = eval(this.urlExp)
-                window.location = url;
+                if(this.target == 'self'){
+                    window.location = url;    
+                }
+                else{
+                    window.open(url);
+                }
+
             }
         }
         catch(err) {

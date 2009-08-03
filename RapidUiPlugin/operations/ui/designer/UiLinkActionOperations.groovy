@@ -20,7 +20,8 @@ class UiLinkActionOperations extends UiActionOperations {
                 imageExpanded: "images/rapidjs/designer/link.png",
                 imageCollapsed: "images/rapidjs/designer/link.png",
                 propertyConfiguration: [
-                        url: [descr: "JavaScript expression that will be evaluated to determine the URL to redirect to", type:"Expression"]
+                        url: [descr: "JavaScript expression that will be evaluated to determine the URL to redirect to", type:"Expression"],
+                        target: [descr: "Specifies where to open the linked document"]
                 ],
                 childrenConfiguration: []
         ];

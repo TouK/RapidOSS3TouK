@@ -30,7 +30,7 @@
                             <label for="className">Class Name:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: segmentFilter, field: 'className', 'errors')}">
-                            <g:select class="inputtextfield" id="className" name="className" from="${grailsApplication.domainClasses.clazz.findAll{it.name.indexOf('.') < 0}.collect{it.name.encodeAsHTML()}}"
+                            <g:select class="inputtextfield" id="className" name="className" from="${grailsApplication.domainClasses.clazz.findAll{it.name.indexOf('.') < 0}.sort{it.name}.collect{it.name.encodeAsHTML()}}"
                                     value="${fieldValue(bean:segmentFilter,field:'className')}"></g:select>
                         </td>
                     </tr>

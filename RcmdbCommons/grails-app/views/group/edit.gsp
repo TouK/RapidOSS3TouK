@@ -109,7 +109,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${group.filters}" status="i" var="segmentFilter">
+                                <%
+                                    def segmentFilters = group.filters.sort{it.className};
+                                %>
+                                <g:each in="${segmentFilters}" status="i" var="segmentFilter">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td><g:link action="show" controller="segmentFilter" id="${segmentFilter.id}" params="${[groupId:group.id, targetURI:currentUrl]}">${segmentFilter.className?.encodeAsHTML()}</g:link></td>
                                         <td>${segmentFilter.filter.encodeAsHTML()}</td>

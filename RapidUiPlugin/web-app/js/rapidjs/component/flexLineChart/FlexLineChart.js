@@ -10,7 +10,28 @@ YAHOO.rapidjs.component.FlexLineChart = function(container, config) {
 	this.url = config.url || "script/run/rrdXmlLoader?name=yahooUtil";  //todo: to be deleted
 	this.application = null;
 
+	//xml data attribute names:
+	this.rootTag = config.rootTag || "RootTag";
+		//graph constants
+	this.dataRootTag = config.dataRootTag || "Variable";
+	this.dataTag = config.dataTag || "Data";
+	this.dateAttribute = config.dateAttribute  || "time";
+	this.valueAttribute = config.valueAttribute  || "value";
+		//annotation constants
+	this.annotationTag = config.annotationTag  || "Annotation";
+	this.annLabelAttr = config.annLabelAttr || "label";
+	this.annTimeAttr = config.annTimeAttr  || "time";
+		//durations for zooming flex line chart
+	this.durations = config.durations  || "";
+
+	this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
+    this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
+    this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
+    this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
+    this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
+
 	this.body = YAHOO.ext.DomHelper.append(this.container,{tag:'div'},true);
+
 
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.render, this);
     YAHOO.util.Event.onDOMReady(function() {
@@ -66,24 +87,133 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
         this.flashTimer.delay(300);
     },
     handleSuccess:function(response, keepExisting, removeAttribute) {
-        var xmlDoc = response.responseXML;
+	    var xmlDoc = response.responseXML;
 
-		var dateArray = new Array();
-		var valueArray = new Array();
+		var root = xmlDoc.getElementsByTagName(this.rootTag)[0];
+		this.loadRangeData(root);
+		this.loadVolumeData(root);
+		this.loadAnnotations(root);
+		this.addDurationButtons();
+    },
+	loadRangeData: function(root){
+		/*todo: dataroot will be used for multiple data. usage will be in this way:
+			//@unchecked
+			var dataRoots = getElementsByTagName(this.dataRootTag);
+			var multiDataArray = new Array();
+			for(var i=0; i<dataRoots.length; i++){
+				multiDataArray[i] = {};
+				var dataList = dataRoots[i].getElementsByTagName(this.dataTag);
+				var mapArray = new Array();
+				....  //same with below
+				var rootAttributes = dataRoots[i].attributes;
+				multiDataArray["content"] = mapArray;
+				for(var j=0; j<rootAttributes.length; j++){
+					var rootKey = rootAttributes.item(j).nodeName;
+					var rootValue = rootAttributes.item(j).nodeValue;
+					multiDataArray[rootKey] = rootValue;
+				}
+			}
+		*/
+		var dataRoot = root.getElementsByTagName(this.dataRootTag)[0];
+		var dataList = dataRoot.getElementsByTagName(this.dataTag);
 
-		var root = xmlDoc.getElementsByTagName('rrd')[0];
-		var dataList = root.getElementsByTagName('data');
+		var mapArray = new Array();
 
 		for(i=0; i<dataList.length; i++){
+			mapArray[i] = {};
 			var node = dataList.item(i);
-			var date = node.getElementsByTagName('date')[0].childNodes.item(0).nodeValue;
-			var value = node.getElementsByTagName('value')[0].childNodes.item(0).nodeValue;
+			var attributes = node.attributes;
+			for(j=0; j<attributes.length; j++){
+				var key = attributes.item(j).nodeName;
+				var avalue = attributes.item(j).nodeValue;
+				mapArray[i][key] = avalue;
+			}
+			var date = new Date(parseInt(attributes.getNamedItem(this.dateAttribute).nodeValue));
+			mapArray[i][this.dateAttribute] = date.format('Y-n-d H:i')+"";
+			var avalue = parseInt(attributes.getNamedItem(this.valueAttribute).nodeValue);
+			mapArray[i][this.valueAttribute] = avalue;
+			/*
+			var volume = attributes.getNamedItem(this.volumeAttribute);
+			if(volume ==null){
+				mapArray[i][this.volumeAttribute] = avalue;
+			}else{
+				mapArray[i][this.volumeAttribute] = parseInt(volume.nodeValue);
+			}
+			*/
+		}
+		this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);
+	},
+	loadVolumeData: function(root){
+		var dataRoot = root.getElementsByTagName(this.dataRootTag);
+		var rootIndex;
+		for(i=0; i<dataRoot.length; i++){
+			if(dataRoot[i].getAttribute("Target")=="LowerBand"){
+				rootIndex=i;
+				break;
+			}
+		}
+		if(rootIndex == null){
+			alert("rootIndex is null");
+		}
+		var dataList = dataRoot[rootIndex].getElementsByTagName(this.dataTag);
 
-			dateArray[i] = date;
-			valueArray[i] = value;
+		var mapArray = new Array();
+
+		for(i=0; i<dataList.length; i++){
+			mapArray[i] = {};
+			var node = dataList.item(i);
+			var attributes = node.attributes;
+			for(j=0; j<attributes.length; j++){
+				var key = attributes.item(j).nodeName;
+				var avalue = attributes.item(j).nodeValue;
+				mapArray[i][key] = avalue;
+			}
+			var date = new Date(parseInt(attributes.getNamedItem(this.dateAttribute).nodeValue));
+			mapArray[i][this.dateAttribute] = date.format('Y-n-d H:i')+"";
+			var avalue = parseInt(attributes.getNamedItem(this.valueAttribute).nodeValue);
+			mapArray[i][this.valueAttribute] = avalue;
 		}
 
-		this.setRangeData(dateArray, valueArray);
+		this.application.loadVolumeData(mapArray);
+	},
+    loadAnnotations: function(root) {
+	    var annotationList = root.getElementsByTagName(this.annotationTag);
+
+	    var annotationArray = new Array();
+		var str = "";
+		for(i=0; i<annotationList.length; i++){
+			annotationArray[i] = {};
+			var node = annotationList.item(i);
+			var attributes = node.attributes;
+			for(j=0; j<attributes.length; j++){
+				var key = attributes.item(j).nodeName;
+				var avalue = attributes.item(j).nodeValue;
+				annotationArray[i][key] = avalue;
+				str += key + ": "+avalue+"\n";
+			}
+		}
+
+		this.application.loadAnnotations(annotationArray, this.annLabelAttr, this.annTimeAttr);
+    },
+    setAnnotation: function(annotationInfo) {
+	    var infoString = "";
+	    for(key in annotationInfo){
+			infoString += key + ": " + annotationInfo[key]+"\n" ;
+	    }
+	    alert(infoString);
+    },
+	//sample: this.addAnnotation({description:'Test Item', name:'added', index:23})
+    addAnnotation: function(annotationInfo) {
+	    this.application.addAnnotation(annotationInfo);
+    },
+    addDurationButtons: function() {
+	    if(this.durations ==undefined || this.durations ==null ||
+	    	this.durations =="") return;
+	    var durationArray = new Array();
+
+	    durationArray = this.durations.replace(/ /,"").split(",");
+
+	    this.application.addDurationButtons(durationArray);
     },
     getFlexApp: function(appName){
       if (navigator.appName.indexOf ("Microsoft") !=-1)
@@ -117,6 +247,8 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
         try{
             if(this.getFlexApp(this.id) != null){
 				this.application = this.getFlexApp(this.id);
+				this.application.applicationLoaded(this.id);
+				this.chartReady();
 				return true;
             }
             else{
@@ -126,24 +258,21 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
             this.flashTimer.delay(300);
         }
     },
-
 	chartReady: function(){
-        var flexLineChart = this;
-	    flexLineChart.poll();
-
+	    if(this.application == null ){
+		    alert("application is null");
+		}
+	    this.poll();
 	},
 	applicationResize: function(){
 		this.application.applicationResize();
 	},
-	setRangeData: function(dates,values){
-		var application = this.getFlexApp(this.id);
-
-		if(application == null){
-			alert("application is null")
-		}
-		try{
-			this.application.setRangeData(dates,values);
-			this.applicationResize();
-		}catch(e){alert('setRangeData: '+e);}
-	}
+    resize: function(width, height) {
+        this.body.setHeight(height - this.header.offsetHeight);
+        this.body.setWidth(width);
+    },
+    showMessage: function(message) {
+        alert(message);
+    }
 })
+

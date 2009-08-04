@@ -154,7 +154,58 @@ class AdminUiSnmpTabTest extends SeleniumTestCase {
             return "Completed event trap generation"
         """
         selenium.executeScript(scriptContent);
-        def maxSleepTime = 30000;
+        checkLookup(lookupName, 30000)
+        assertTrue(CommonUiTestUtils.search(selenium, "RsRiEvent", "alias:*").size() > 0)
+        assertTrue(CommonUiTestUtils.search(selenium, "RsRiHistoricalEvent", "alias:*").size() > 0)
+        assertTrue(CommonUiTestUtils.search(selenium, "RsEventJournal", "alias:*").size() > 0)
+    }
+
+    void testConnectorScriptReload(){
+        def lookupName = "trapCount";
+        def connectorScriptContent = """
+            def getParameters(){
+                return [:]
+            }
+            LOOKUP_NAME = '${lookupName}'
+            RsLookup.get(name:LOOKUP_NAME)?.remove();
+            def init(){}
+            def cleanUp(){}
+            def update(eventTrap){
+               RsLookup.add(name:LOOKUP_NAME, value:"value");
+            }
+        """
+        def connectorName = "snmp";
+        def host = "0.0.0.0";
+        def port = "162"
+        def scriptName = "snmpTestListener";
+        SeleniumTestUtils.createScriptFile(scriptName, connectorScriptContent)
+        def connectorId = selenium.createSnmpConnector(connectorName, host, port, scriptName, "", "DEBUG", true)
+        selenium.startSnmpConnectorById(connectorId, true);
+        Thread.sleep(1000);
+
+        def scriptContent = """
+            import com.ifountain.rcmdb.snmp.*
+            import snmp.SnmpUtils
+
+            long sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"41"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Up"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"0"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            return "Completed event trap generation"
+        """
+        selenium.executeScript(scriptContent);
+        checkLookup(lookupName, 5000)
+        selenium.stopSnmpConnectorById(connectorId, true);
+
+        
+        def newLookupName =  "newTrapCount";
+        SeleniumTestUtils.createScriptFile(scriptName, connectorScriptContent.replaceAll(lookupName, newLookupName));
+        selenium.reloadSnmpConnectorById(connectorId, true);
+        selenium.startSnmpConnectorById(connectorId, true);
+        Thread.sleep(1000);
+        selenium.executeScript(scriptContent);
+        checkLookup(newLookupName, 5000)
+    }
+
+    def checkLookup(lookupName, maxSleepTime){
         def sleepTime = 0
         boolean lookupCreated = false;
         while(sleepTime < maxSleepTime){
@@ -170,10 +221,6 @@ class AdminUiSnmpTabTest extends SeleniumTestCase {
         if(!lookupCreated){
             throw new Exception("Listening script could not finish in ${maxSleepTime} milliseconds");
         }
-
-        assertTrue(CommonUiTestUtils.search(selenium, "RsRiEvent", "alias:*").size() > 0)
-        assertTrue(CommonUiTestUtils.search(selenium, "RsRiHistoricalEvent", "alias:*").size() > 0)
-        assertTrue(CommonUiTestUtils.search(selenium, "RsEventJournal", "alias:*").size() > 0)
     }
 
 }

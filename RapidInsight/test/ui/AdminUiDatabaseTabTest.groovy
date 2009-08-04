@@ -1,10 +1,7 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
-import com.ifountain.comp.test.util.CommonTestUtils
-import com.ifountain.rcmdb.test.util.DatabaseTestConstants
-import com.ifountain.rcmdb.test.util.DatabaseConnectionImplTestUtils
-import com.ifountain.rcmdb.test.util.DatabaseConnectionParams
 import utils.CommonUiTestUtils
+import com.ifountain.comp.test.util.CommonTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,9 +22,12 @@ class AdminUiDatabaseTabTest extends SeleniumTestCase {
 
     public void testCreateADatabaseConnectionWithTestConnectionButton()
     {
-        DatabaseConnectionParams connParams = DatabaseConnectionImplTestUtils.getConnectionParams(DatabaseTestConstants.MYSQL)
+        def driver = CommonTestUtils.getTestProperty("MYSQL.DatabaseDriver")
+        def url = CommonTestUtils.getTestProperty("MYSQL.DatabaseUrl")
+        def username = CommonTestUtils.getTestProperty("MYSQL.DatabaseUsername")
+        def password = CommonTestUtils.getTestProperty("MYSQL.DatabasePassword")
         def connName = "dbConn1";
-        selenium.createDatabaseConnection(connName, connParams.getDriver(), connParams.getUrl(), connParams.getUsername(), connParams.getPassword(), true);
+        selenium.createDatabaseConnection(connName, driver, url, username, password, true);
         selenium.clickAndWait("link=DatabaseConnection List");
         selenium.clickAndWait("link=Test Connection");
         CommonUiTestUtils.assertPageMessage (selenium, "Successfully connected to server.")
@@ -35,9 +35,12 @@ class AdminUiDatabaseTabTest extends SeleniumTestCase {
 
     public void testCreateADatabaseConnectionWithInvalidConnectionParameters()
     {
-        DatabaseConnectionParams connParams = DatabaseConnectionImplTestUtils.getConnectionParams(DatabaseTestConstants.MYSQL)
+        def driver = CommonTestUtils.getTestProperty("MYSQL.DatabaseDriver")
+        def url = CommonTestUtils.getTestProperty("MYSQL.DatabaseUrl")
+        def username = CommonTestUtils.getTestProperty("MYSQL.DatabaseUsername")
+        def password = CommonTestUtils.getTestProperty("MYSQL.DatabasePassword")
         def connName = "dbConn1";
-        selenium.createDatabaseConnection(connName, connParams.getDriver(), "invalidUrl", connParams.getUsername(), connParams.getPassword(), true);
+        selenium.createDatabaseConnection(connName, driver, url, username, password, true);
         selenium.clickAndWait("link=DatabaseConnection List");
         selenium.clickAndWait("link=Test Connection");
         assertEquals("Cannot connect to [dbConn1]. Reason: [java.sql.SQLException: No suitable driver found for invalidUrl]", CommonUiTestUtils.getPageErrorMessage(selenium))

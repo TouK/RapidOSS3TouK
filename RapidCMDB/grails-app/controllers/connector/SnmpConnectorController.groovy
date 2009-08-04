@@ -149,6 +149,7 @@ class SnmpConnectorController {
             render(view: 'create', model: createdObjects)
         }
         else {
+            flash.message = "SnmpConnector ${createdObjects["snmpConnector"].id} created"
             redirect(action: show, id: createdObjects["snmpConnector"].id)
         }
     }

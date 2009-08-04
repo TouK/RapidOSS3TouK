@@ -2,6 +2,7 @@ package utils
 
 import com.thoughtworks.selenium.Selenium
 import junit.framework.Assert
+import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -11,6 +12,13 @@ import junit.framework.Assert
 * To change this template use File | Settings | File Templates.
 */
 class ScriptUiUtilities {
+    public static String TEMP_SCRIPT_NAME = "tempScript"
+    public static executeScript(Selenium selenium, String scriptContent, Map params = [:]){
+        SeleniumTestUtils.createScriptFile(TEMP_SCRIPT_NAME, scriptContent);
+        def scriptId = createOnDemandScript(selenium, TEMP_SCRIPT_NAME);
+        reloadScriptById(selenium, scriptId);
+        runScriptById(selenium, scriptId, params);
+    }
     public static createOnDemandScript(Selenium selenium, String scriptName, Map otherParams = [:], List allowedGroups = [], boolean validate = true)
     {
         selenium.openAndWait("/RapidSuite/script/list")

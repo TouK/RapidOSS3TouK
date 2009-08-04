@@ -4,6 +4,10 @@
     <g:layoutHead/>
 </head>
 <body class=" yui-skin-sam rimain">
+<script type="text/javascript">
+    window.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
+    window.loadingMask.show();
+</script>
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">
@@ -68,5 +72,17 @@ profileDlg.show(createURL("userProfileForm.gsp"));
 },this, true)
 </script>
 <g:layoutBody/>
+<script type="text/javascript">
+    YAHOO.util.Event.onDOMReady(function(){
+        if(window.yuiLayout._rendered){
+           window.loadingMask.hide();
+        }
+        else{
+            window.yuiLayout.on('render', function(){
+               window.loadingMask.hide();
+            })
+        }
+    })
+</script>
 </body>
 </html>

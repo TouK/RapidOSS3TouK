@@ -1,7 +1,6 @@
 <html>
 <head>
     <g:render template="/layouts/layoutHeader"></g:render>
-    <script type="text/javascript" src="js/rapidjs/component/simplewidgets/LoadingMask.js"></script>
     <script type="text/javascript" src="js/rapidjs/component/simplewidgets/ConfirmBox.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/UIDesigner.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/DesignerUtils.js"></script>

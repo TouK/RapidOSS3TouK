@@ -29,6 +29,9 @@ YAHOO.util.Event.onDOMReady(function() {
         %>
         ]
     });
+    <g:if test="${parentElement == null}">
+       window.yuiLayout = layout${layoutConfiguration.attributes.id};
+    </g:if>
     layout${layoutConfiguration.attributes.id}.on('render', function() {
     <%
         units.each{layoutunit->

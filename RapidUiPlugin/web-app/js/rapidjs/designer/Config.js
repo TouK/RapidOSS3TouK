@@ -353,6 +353,25 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             }
         },
+        "FlexLineChart":{
+            "poll":{
+                descr:"Refreshes component's data with its already saved request url and parameters.",
+                args:{}
+            },
+            "refresh":{
+                descr:"Refreshes component's data with the given request parameters.",
+                args:{
+                    "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
+            }
+        },
         "GMap":{
             "poll":{
                 descr:"Refreshes component's data with its already saved request url and parameters.",
@@ -601,6 +620,9 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "params.data":"JavaScript object representing the slice data"
                 }
             }
+        },
+        "FlexLineChart":{
+
         },
         "GMap":{
             "markerClicked":{

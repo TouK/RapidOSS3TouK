@@ -1,5 +1,6 @@
 import com.ifountain.rcmdb.test.util.SeleniumTestCase
 import com.ifountain.rcmdb.test.util.SeleniumTestUtils
+import utils.CommonUiTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -66,6 +67,113 @@ class AdminUiSnmpTabTest extends SeleniumTestCase {
         selenium.startSnmpConnectorById(connectorId, true);
         Thread.sleep(1000);
         selenium.stopSnmpConnectorById(connectorId, true);
+    }
+
+    void testConnectorWithScript(){
+        def lookupName = "trapCount";
+        def scriptContent = """
+            RsEvent.removeAll();
+            RsHistoricalEvent.removeAll();
+            RsEventJournal.removeAll();
+        """
+        selenium.executeScript(scriptContent);
+
+        scriptContent = """
+            def getParameters(){
+                return [:]
+            }
+            TRAP_COUNT = 0;
+            LOOKUP_NAME = '${lookupName}'
+            RsLookup.get(name:LOOKUP_NAME)?.remove();
+            def init(){}
+            def cleanUp(){}
+            def update(eventTrap){
+                def currentDate = new Date();
+                def deviceid = eventTrap.Varbinds[0].Value.toString();
+                def eventType = eventTrap.Varbinds[1].Value;
+                def severity = eventTrap.Varbinds[2].Value;
+                def source = eventTrap.Varbinds[6].Value;
+                def trapTime = Long.parseLong(eventTrap.Timestamp)*1000;
+                def name = deviceid+'|'+eventType+'|'+currentDate.toString();
+                def event;
+                switch(eventType) {
+                     case 'Down' :
+                        TRAP_COUNT ++;
+                        event = RsRiEvent.add(name:name,elementName:deviceid,identifier:eventType,createdAt:trapTime,changedAt:trapTime,severity:severity,source:source);
+                        RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:currentDate);
+                        break;
+                     case 'Up' :
+                        TRAP_COUNT ++;
+                        event = RsRiEvent.add(name:name,elementName:deviceid,identifier:eventType,createdAt:trapTime,changedAt:trapTime,severity:severity,source:source);
+                        RsEventJournal.add(eventId:event.id,eventName:event.identifier,rsTime:currentDate);
+                        event.clear();
+                        break;
+                     default: println 'Need to implement trap code for new event type \${eventType}';
+                 }
+                 if(TRAP_COUNT == 8){
+                    RsLookup.add(name:LOOKUP_NAME, value:TRAP_COUNT);
+                 }
+            }
+        """
+        def connectorName = "snmp";
+        def host = "0.0.0.0";
+        def port = "162"
+        def scriptName = "snmpTestListener";
+        SeleniumTestUtils.createScriptFile(scriptName, scriptContent)
+        def connectorId = selenium.createSnmpConnector(connectorName, host, port, scriptName, "", "DEBUG", true)
+        selenium.startSnmpConnectorById(connectorId, true);
+        Thread.sleep(1000);
+
+        scriptContent = """
+            import com.ifountain.rcmdb.snmp.*
+            import snmp.SnmpUtils
+
+            long sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"41"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Up"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"0"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"5"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"10"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"5"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Up"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"0"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD1"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"30"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"33"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
+            sleep(1000)
+            sec = (System.currentTimeMillis())/1000;
+            SnmpUtils.sendV1Trap("localhost/162", "localhost", "public", "1.3.6.1.2.1.11",sec,1,1,[["OID":"1.3.6.1.2.1.1.3.0", "Value":"8"],["OID":"1.3.6.1.2.1.1.3.1", "Value":"Down"],["OID":"1.3.6.1.2.1.1.3.2", "Value":"2"],["OID":"1.3.6.1.2.1.1.3.3", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.4", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.5", "Value":"1"],["OID":"1.3.6.1.2.1.1.3.6", "Value":"NMD2"]]);
+            return "Completed event trap generation"
+        """
+        selenium.executeScript(scriptContent);
+        def maxSleepTime = 30000;
+        def sleepTime = 0
+        boolean lookupCreated = false;
+        while(sleepTime < maxSleepTime){
+            def results = CommonUiTestUtils.search(selenium, "RsLookup", "name:${lookupName}")
+            if(results.size() > 0){
+                lookupCreated = true;
+                break;
+            }
+            Thread.sleep(1000);
+            sleepTime +=1000
+        }
+
+        if(!lookupCreated){
+            throw new Exception("Listening script could not finish in ${maxSleepTime} milliseconds");
+        }
+
+        assertTrue(CommonUiTestUtils.search(selenium, "RsRiEvent", "alias:*").size() > 0)
+        assertTrue(CommonUiTestUtils.search(selenium, "RsRiHistoricalEvent", "alias:*").size() > 0)
+        assertTrue(CommonUiTestUtils.search(selenium, "RsEventJournal", "alias:*").size() > 0)
     }
 
 }

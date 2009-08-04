@@ -13,11 +13,11 @@ import com.ifountain.rcmdb.test.util.SeleniumTestUtils
 */
 class ScriptUiUtilities {
     public static String TEMP_SCRIPT_NAME = "tempScript"
-    public static executeScript(Selenium selenium, String scriptContent, Map params = [:]){
+    public static executeScript(Selenium selenium, String scriptContent, Map params = [:], String timeout = "30000"){
         SeleniumTestUtils.createScriptFile(TEMP_SCRIPT_NAME, scriptContent);
         def scriptId = createOnDemandScript(selenium, TEMP_SCRIPT_NAME);
         reloadScriptById(selenium, scriptId);
-        runScriptById(selenium, scriptId, params);
+        runScriptById(selenium, scriptId, params, timeout);
     }
     public static createOnDemandScript(Selenium selenium, String scriptName, Map otherParams = [:], List allowedGroups = [], boolean validate = true)
     {

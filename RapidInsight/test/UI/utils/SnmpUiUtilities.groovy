@@ -52,4 +52,43 @@ class SnmpUiUtilities {
             deleteSnmpConnectorById(selenium, it.id, validate);
         }
     }
+
+    public static startSnmpConnectorById(Selenium selenium, String connectorId, boolean validate = true){
+        selenium.openAndWait("/RapidSuite/snmpConnector/show/" + connectorId);
+        Assert.assertTrue("Snmp connector ${connectorId} does not exist".toString(), selenium.getLocation().indexOf("/snmpConnector/show") >= 0);
+        def connectorName = selenium.getText("name");
+        selenium.clickAndWait("_action_StartConnector");
+        if (validate)
+        {
+            Assert.assertTrue("Expected to end with /RapidSuite/snmpConnector/list but was ${selenium.getLocation()}", selenium.getLocation().endsWith("/RapidSuite/snmpConnector/list"));
+            CommonUiTestUtils.assertPageMessage(selenium, "Connector " + connectorName + " successfully started")
+        }
+    }
+
+    public static stopSnmpConnectorById(Selenium selenium, String connectorId, boolean validate = true){
+        selenium.openAndWait("/RapidSuite/snmpConnector/show/" + connectorId);
+        Assert.assertTrue("Snmp connector ${connectorId} does not exist".toString(), selenium.getLocation().indexOf("/snmpConnector/show") >= 0);
+        def connectorName = selenium.getText("name");
+        selenium.clickAndWait("_action_StopConnector");
+        if (validate)
+        {
+            Assert.assertTrue("Expected to end with /RapidSuite/snmpConnector/list but was ${selenium.getLocation()}", selenium.getLocation().endsWith("/RapidSuite/snmpConnector/list"));
+            CommonUiTestUtils.assertPageMessage(selenium, "Connector " + connectorName + " successfully stopped")
+        }
+    }
+
+    public static stopAllSnmpConnectors(Selenium selenium){
+        def scriptContent = """
+            import script.*;
+            import connector.*;
+            def snmpConnectors = SnmpConnector.list();
+            snmpConnectors.each{
+                try{
+                    CmdbScript.stopListening(it.script);
+                }
+                catch(e){}
+            }
+        """
+        selenium.executeScript(scriptContent);
+    }
 }

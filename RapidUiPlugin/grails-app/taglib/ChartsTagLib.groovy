@@ -89,6 +89,17 @@ class ChartsTagLib {
         """;
     }
 
+    static def getFlexPieConfig(attrs) {
+        return """{
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            rootTag:'${attrs["rootTag"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+            swfURL:'${attrs["swfURL"]}'
+        }"""
+    }
 
     static def fFlexLineChart(attrs, bodyString) {
         def configStr = getFlexLineConfig(attrs);
@@ -112,24 +123,18 @@ class ChartsTagLib {
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
             rootTag:'${attrs["rootTag"]}',
+            dataTag:'${attrs["dataTag"]}',
+            dataRootTag:'${attrs["dataRootTag"]}',
+            annotationTag:'${attrs["annotationTag"]}',
+            annTimeAttr:'${attrs["annTimeAttr"]}',
+            annLabelAttr:'${attrs["annLabelAttr"]}',
+            dateAttribute:'${attrs["dateAttribute"]}',
+            valueAttribute:'${attrs["valueAttribute"]}',
+            durations:'${attrs["durations"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
-            width: ${attrs["width"]},
-            height: ${attrs["height"]},
             bgcolor: ${attrs["bgcolor"]}
-        }"""
-    }
-
-    static def getFlexPieConfig(attrs) {
-        return """{
-            id:'${attrs["id"]}',
-            url:'${attrs["url"]}',
-            rootTag:'${attrs["rootTag"]}',
-            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
-            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
-            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
-            swfURL:'${attrs["swfURL"]}'
         }"""
     }
 

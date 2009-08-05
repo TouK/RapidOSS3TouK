@@ -21,7 +21,7 @@ import auth.RsUser
 import groovy.xml.MarkupBuilder;
 
 def notificationName = params.name;
-def user = RsUser.findByUsername(session.username);
+def user = RsUser.findByUsername(web.session.username);
 def act = params.act;
 def rsEvent = RsEvent.get(name: notificationName);
 if (rsEvent) {

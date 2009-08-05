@@ -173,6 +173,7 @@ class ScriptStateManagerTests extends RapidCmdbTestCase {
     {
         def scriptName1="script1";
         def scriptName2="script2";
+        def scriptName3="script3";
 
         stateManager.createStopStateIfNotExists(scriptName1);
         stateManager.createStopStateIfNotExists(scriptName2);
@@ -195,6 +196,9 @@ class ScriptStateManagerTests extends RapidCmdbTestCase {
         assertEquals(true,stateManager.getStopStateOfStateObject(oldStateMap2));
         assertNotSame(oldStateMap2,stateManager.scriptStopStates[scriptName2]);
         assertEquals(false,stateManager.getStopStateOfStateObject(stateManager.scriptStopStates[scriptName2]));
+
+        stateManager.stopRunningScripts(scriptName3);
+        assertEquals(false,stateManager.getStopStateOfStateObject(stateManager.scriptStopStates[scriptName3]));
 
     }
 

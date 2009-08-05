@@ -72,7 +72,9 @@ class ScriptStateManager {
        synchronized (stopStateLock)
        {
             def oldStateMap=scriptStopStates[scriptName];
-            oldStateMap[IS_STOPPED_PROPERTY]=true;
+            if(oldStateMap){
+                oldStateMap[IS_STOPPED_PROPERTY]=true;
+            }
             createDefaultStopState(scriptName);
        }
     }

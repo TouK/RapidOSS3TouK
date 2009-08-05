@@ -21,7 +21,7 @@ import auth.RsUser
 import groovy.xml.MarkupBuilder;
 
 def notificationName = params.name;
-def user = RsUser.findByUsername(web.session.username);
+def user = RsUser.findByUsername(session.username);
 def act = params.act;
 def rsEvent = RsEvent.get(name: notificationName);
 if (rsEvent) {
@@ -43,7 +43,7 @@ if (rsEvent) {
     builder.Objects {
         builder.Object(props);
     }
-    web.render(contentType: 'text/xml', text:sw.toString()) 
+    return sw.toString() 
 }
 else {
     throw new Exception("RsEvent with name: ${notificationName} does not exist.");

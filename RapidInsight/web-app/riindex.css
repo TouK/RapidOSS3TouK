@@ -116,4 +116,10 @@
     width: 80px;
 }
 
+.yui-skin-sam .mask {
+    background-color: #DAE8FB;
+    opacity: 1;
+    filter: alpha( opacity = 100 )
+}
+
 

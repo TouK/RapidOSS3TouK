@@ -183,7 +183,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         webRequest = null
         request = null
         response = null
-        gcl = null
+        gcl = new GroovyClassLoader(this.class.classLoader);
         ga = null
         mockManager = null
         ctx = null

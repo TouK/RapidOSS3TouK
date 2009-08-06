@@ -47,13 +47,13 @@ class SearchableExtensionGrailsPlugin {
     def loadAfter = ['searchable', 'hibernate']
     def domainClassMap;
     def doWithSpring = {
-        BooleanQuery.setMaxClauseCount (3000);
-        for(dc in application.domainClasses) {
+        BooleanQuery.setMaxClauseCount(3000);
+        for (dc in application.domainClasses) {
             "${dc.fullName}Validator"(RapidGrailsDomainClassValidator) {
                 messageSource = ref("messageSource")
-                domainClass = ref("${dc.fullName}DomainClass")                
+                domainClass = ref("${dc.fullName}DomainClass")
             }
-		}
+        }
     }
 
     def doWithApplicationContext = {applicationContext ->
@@ -64,7 +64,7 @@ class SearchableExtensionGrailsPlugin {
 
     def doWithDynamicMethods = {ctx ->
         CompassTransactionFactory factory = new CompassTransactionFactory(ctx.getBean("compass"));
-		RapidCmdbTransactionManager.initializeTransactionManager (factory);
+        RapidCmdbTransactionManager.initializeTransactionManager(factory);
         IdGenerator.initialize(new IdGeneratorStrategyImpl());
         domainClassMap = [:];
         for (dc in application.domainClasses) {
@@ -87,7 +87,6 @@ class SearchableExtensionGrailsPlugin {
             registerDynamicMethods(dc, application, ctx);
         }
 
-        
     }
 
     def onChange = {event ->
@@ -103,7 +102,7 @@ class SearchableExtensionGrailsPlugin {
         {
             dc.metaClass.getTheClass().newInstance().delete();
         }
-        catch(t)
+        catch (t)
         {
             logger.debug("Delete method injection didnot performed for ${dc.name} by hibernate plugin.");
         }
@@ -152,53 +151,54 @@ class SearchableExtensionGrailsPlugin {
 
         def addMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
         def addUniqueMethod = new AddMethod(mc, parentDomainClass, dc.validator, persProps, relations, keys);
-        addUniqueMethod.setWillReturnErrorIfExist (true);
+        addUniqueMethod.setWillReturnErrorIfExist(true);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
         def getPropertyValuesMethod = new GetPropertyValuesMethod(mc, relations);
         def getRelatedModelPropertyValuesMethod = new GetRelatedObjectPropertyValuesMethod(mc, relations);
+        def getRelatedObjectsMethod = new GetRelatedObjectsMethod(mc, relations);
         def removeMethod = new RemoveMethod(mc, relations);
         def updateMethod = new UpdateMethod(mc, dc.validator, persProps, relations);
         def addRelationMethod = new AddRelationMethod(mc, relations);
         def removeRelationMethod = new RemoveRelationMethod(mc, relations);
 
-        mc._update = {Map props->
-            return updateMethod.invoke(delegate,  [props] as Object[])
+        mc._update = {Map props ->
+            return updateMethod.invoke(delegate, [props] as Object[])
         }
 
-        mc._addRelation = {Map props->
-            return addRelationMethod.invoke(delegate,  [props, null] as Object[])
+        mc._addRelation = {Map props ->
+            return addRelationMethod.invoke(delegate, [props, null] as Object[])
         }
-        mc._addRelation = {Map props, String source->
-          return addRelationMethod.invoke(delegate,  [props, source] as Object[])
+        mc._addRelation = {Map props, String source ->
+            return addRelationMethod.invoke(delegate, [props, source] as Object[])
         }
-        mc._removeRelation = {Map props, String source->
-            return removeRelationMethod.invoke(delegate,  [props, source] as Object[])
+        mc._removeRelation = {Map props, String source ->
+            return removeRelationMethod.invoke(delegate, [props, source] as Object[])
         }
-        mc._removeRelation = {Map props->
-            return removeRelationMethod.invoke(delegate,  [props, null] as Object[])
+        mc._removeRelation = {Map props ->
+            return removeRelationMethod.invoke(delegate, [props, null] as Object[])
         }
 
         mc._remove = {->
             return removeMethod.invoke(delegate, null);
         }
 
-        mc.update = {Map props->
+        mc.update = {Map props ->
             return invokeCompassOperation("update", [props]);
         }
 
-        mc.addRelation = {Map props->
+        mc.addRelation = {Map props ->
             return invokeCompassOperation("addRelation", [props]);
         }
-        mc.addRelation = {Map props, String source->
-          return invokeCompassOperation("addRelation", [props, source]);
+        mc.addRelation = {Map props, String source ->
+            return invokeCompassOperation("addRelation", [props, source]);
         }
-        mc.removeRelation = {Map props, String source->
+        mc.removeRelation = {Map props, String source ->
             return invokeCompassOperation("removeRelation", [props, source]);
         }
-        mc.removeRelation = {Map props->
+        mc.removeRelation = {Map props ->
             return invokeCompassOperation("removeRelation", [props]);
         }
-        
+
         mc.remove = {->
             return invokeCompassOperation("remove", []);
         }
@@ -206,33 +206,44 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.removeAll = {->
             removeAllMatchingMethod.invoke(mc.theClass, ["alias:*"] as Object[]);
         }
-        mc.'static'.removeAll = {String query->
+        mc.'static'.removeAll = {String query ->
             removeAllMatchingMethod.invoke(mc.theClass, [query] as Object[]);
         }
-        
-        mc.'static'.add = {Map props->
+
+        mc.'static'.add = {Map props ->
             return addMethod.invoke(mc.theClass, [props] as Object[]);
         }
-        mc.'static'.addUnique = {Map props->
+        mc.'static'.addUnique = {Map props ->
             return addUniqueMethod.invoke(mc.theClass, [props] as Object[]);
         }
-        
-        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList->
-            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, [:]] as Object[])
+
+        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList ->
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, [:], null] as Object[])
         }
 
-        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList, Map options->
-            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, options] as Object[])
+        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList, Map options ->
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, options, null] as Object[])
         }
 
-        mc.'static'.getPropertyValues = {String query, Collection propertyList->
+        mc.getRelatedModelPropertyValues = {String relationName, Collection propertyList, Map options, String source ->
+            getRelatedModelPropertyValuesMethod.invoke(delegate, [relationName, propertyList, options, source] as Object[])
+        }
+
+        mc.getRelatedObjects = {String relationName, String source ->
+            getRelatedObjectsMethod.invoke(delegate, [relationName, source] as Object[])
+        }
+        mc.getRelatedObjects = {String relationName ->
+            getRelatedObjectsMethod.invoke(delegate, [relationName, null] as Object[])
+        }
+
+        mc.'static'.getPropertyValues = {String query, Collection propertyList ->
             delegate.'getPropertyValues'(query, propertyList, [:]);
         }
 
-        mc.'static'.getPropertyValues = {String query, Collection propertyList, Map options->
+        mc.'static'.getPropertyValues = {String query, Collection propertyList, Map options ->
             getPropertyValuesMethod.invoke(mc.theClass, [query, propertyList, options] as Object[]);
         }
-        
+
     }
 
     def addQueryMethods(dc, application, ctx)
@@ -240,31 +251,31 @@ class SearchableExtensionGrailsPlugin {
         def mc = dc.metaClass;
         def keys = DomainClassUtils.getKeys(dc);
         def propSummaryMethod = new PropertySummaryMethod(mc);
-        def parentDomainClass = DomainClassUtils.getParentDomainClass(dc,  application.getDomainClasses())
+        def parentDomainClass = DomainClassUtils.getParentDomainClass(dc, application.getDomainClasses())
         def relations = DomainClassUtils.getRelations(dc);
         def getMethod = new GetMethod(mc, keys, relations);
-        mc.'static'.getFromHierarchy = {Map searchParams->
+        mc.'static'.getFromHierarchy = {Map searchParams ->
             return getMethod.invoke(parentDomainClass, [searchParams] as Object[])
         }
 
-        mc.'static'.getFromHierarchy = {Map searchParams, boolean willTriggerOnLoad->
+        mc.'static'.getFromHierarchy = {Map searchParams, boolean willTriggerOnLoad ->
             return getMethod.invoke(parentDomainClass, [searchParams, willTriggerOnLoad] as Object[])
         }
-        mc.'static'.getCacheEntry = {object->
+        mc.'static'.getCacheEntry = {object ->
             return IdCache.get(mc.theClass, object);
         }
 
-        mc.'static'.updateCacheEntry = {object, boolean exist->
+        mc.'static'.updateCacheEntry = {object, boolean exist ->
             return IdCache.update(object, exist);
         }
-        mc.'static'.get = {Map searchParams->
+        mc.'static'.get = {Map searchParams ->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }
 
-        mc.'static'.get = {Map searchParams, boolean willTriggerOnLoad->
+        mc.'static'.get = {Map searchParams, boolean willTriggerOnLoad ->
             return getMethod.invoke(mc.theClass, [searchParams, willTriggerOnLoad] as Object[])
         }
-        mc.'static'.get = {Long searchParams->
+        mc.'static'.get = {Long searchParams ->
             return getMethod.invoke(mc.theClass, [searchParams] as Object[])
         }
 
@@ -272,11 +283,11 @@ class SearchableExtensionGrailsPlugin {
         mc.'static'.list = {->
             return CompassMethodInvoker.searchEvery(mc, "alias:*");
         }
-        mc.'static'.propertySummary = {query, propNames->
+        mc.'static'.propertySummary = {query, propNames ->
             return propSummaryMethod.invoke(mc.theClass, [query, propNames] as Object[])
         }
 
-        mc.'static'.list = {Map options->
+        mc.'static'.list = {Map options ->
             return CompassMethodInvoker.search(mc, "alias:*", options).results;
         }
 
@@ -299,12 +310,12 @@ class RapidBindException extends BindException
 {
 
     public RapidBindException(Object o, String s) {
-        super(o, s); 
+        super(o, s);
     }
 
     public void addAllErrors(Errors errors) {
-        if(errors == null) return;
-        super.addAllErrors(errors);    //To change body of overridden methods use File | Settings | File Templates.
+        if (errors == null) return;
+        super.addAllErrors(errors); //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

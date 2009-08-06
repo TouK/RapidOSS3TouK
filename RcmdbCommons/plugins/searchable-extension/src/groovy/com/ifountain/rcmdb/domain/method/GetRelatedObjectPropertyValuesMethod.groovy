@@ -40,11 +40,12 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
         String relName = arguments[0]
         Collection propList = arguments[1]
         Map options = arguments[2]
+        String source = arguments[3]
         RelationMetaData relationMetaData = relations[relName];
         def results = [];
         if(relationMetaData != null)
         {
-            Map relatedObjectIds = RelationUtils.getRelatedObjectsIds(domainObject, relationMetaData.name, relationMetaData.otherSideName);
+            Map relatedObjectIds = RelationUtils.getRelatedObjectsIds(domainObject, relationMetaData.name, relationMetaData.otherSideName, source);
             def ids = new ArrayList(relatedObjectIds.keySet())
             CollectionUtils.executeForEachBatch (ids, 200, ){List idsToBeProcessed->
                 StringBuffer query = new StringBuffer("id:");

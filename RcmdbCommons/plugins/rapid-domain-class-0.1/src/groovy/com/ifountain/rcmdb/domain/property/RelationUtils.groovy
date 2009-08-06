@@ -177,29 +177,44 @@ class RelationUtils
             }
         }]);
     }
-    public static Map getRelatedObjectsIdsByObjectId(objectId, String relationName, String otherSideName)
+    public static Map getRelatedObjectsIdsByObjectId(objectId, String relationName, String otherSideName){
+        return getRelatedObjectsIdsByObjectId(objectId, relationName, otherSideName, null)
+    }
+    public static Map getRelatedObjectsIdsByObjectId(objectId, String relationName, String otherSideName, String source)
     {
         otherSideName = otherSideName == null?NULL_RELATION_NAME:otherSideName;
         relationName = relationName == null?NULL_RELATION_NAME:relationName;
         def allRelatedObjectIds = [:];
         def query = "objectId:${objectId} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\"";
         Relation.getPropertyValues(query, ["reverseObjectId", "source"]).each{
-            allRelatedObjectIds.put(it.reverseObjectId, it);            
+            if((source == null || source == "") || it.source.indexOf(getSourceString(source)) > -1){
+                allRelatedObjectIds.put(it.reverseObjectId, it);    
+            }
         }
         query = "reverseObjectId:${objectId} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\"";
         Relation.getPropertyValues(query, ["objectId", "source"]).each{
-            allRelatedObjectIds.put(it.objectId, it);
+            if((source == null || source == "") || it.source.indexOf(getSourceString(source)) > -1){
+                allRelatedObjectIds.put(it.objectId, it);    
+            }
         }
 
         return allRelatedObjectIds;
     }
     public static Map getRelatedObjectsIds(object, String relationName, String otherSideName)
     {
-        return getRelatedObjectsIdsByObjectId(object.id, relationName, otherSideName);
+        return getRelatedObjectsIds(object, relationName, otherSideName, null);
     }
-    public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData)
+    public static Map getRelatedObjectsIds(object, String relationName, String otherSideName, String source)
     {
-        def allRealtedObjectIds = getRelatedObjectsIds(object, relationMetaData.name, relationMetaData.otherSideName);
+        return getRelatedObjectsIdsByObjectId(object.id, relationName, otherSideName, source);
+    }
+
+    public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData){
+         return getRelatedObjects(object, relationMetaData, null)
+    }
+    public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData, String source)
+    {
+        def allRealtedObjectIds = getRelatedObjectsIds(object, relationMetaData.name, relationMetaData.otherSideName, source);
         if(relationMetaData.isOneToOne() || relationMetaData.isManyToOne())
         {
             if(!allRealtedObjectIds.isEmpty())

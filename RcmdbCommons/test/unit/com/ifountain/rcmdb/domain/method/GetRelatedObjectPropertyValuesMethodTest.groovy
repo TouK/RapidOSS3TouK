@@ -98,6 +98,58 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         assertEquals(relatedModelInstance3.id, results[0].id);
     }
 
+    public void testGetRelatedObjectPropertiesWithSource(){
+        createModelClasses();
+        initialize([modelClass, relatedModelClass], [])
+
+        def relatedModelInstance1 = relatedModelClass.'add'(keyProp: "relatedModel1", prop1: "instance1Prop1Value", prop2: 5, prop3: "instance1Prop3Value");
+        def relatedModelInstance2 = relatedModelClass.'add'(keyProp: "relatedModel2", prop1: "instance2Prop1Value", prop2: 7, prop3: "instance2Prop3Value");
+        def relatedModelInstance3 = relatedModelClass.'add'(keyProp: "relatedModel3", prop1: "instance3Prop1Value", prop2: 8, prop3: "instance3Prop3Value");
+        def modelInstance1 = modelClass.'add'(keyProp: "model1");
+        def modelInstance2 = modelClass.'add'(keyProp: "model2");
+        def modelInstance3 = modelClass.'add'(keyProp: "model2");
+        assertFalse(relatedModelInstance1.hasErrors());
+        assertFalse(relatedModelInstance2.hasErrors());
+        assertFalse(relatedModelInstance3.hasErrors());
+        assertFalse(modelInstance1.hasErrors());
+        assertFalse(modelInstance2.hasErrors());
+        assertFalse(modelInstance3.hasErrors());
+        
+        modelInstance1.addRelation([rel1:relatedModelInstance1], "source1")
+        modelInstance1.addRelation([rel1:relatedModelInstance2], "source2")
+        modelInstance2.addRelation([rel1:relatedModelInstance3], "source1")
+
+        List results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [:], "source1");
+        assertEquals(1, results.size());
+        def result = results[0]
+        assertEquals(4, result.size())
+        assertEquals("instance1Prop3Value", result.prop3);
+        assertEquals(relatedModelClass.name, result.alias);
+        assertEquals(relatedModelInstance1.id, result.id);
+
+        results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [:], "source2");
+        assertEquals(1, results.size());
+        result = results[0]
+        assertEquals(4, result.size())
+        assertEquals("instance2Prop3Value", result.prop3);
+        assertEquals(relatedModelClass.name, result.alias);
+        assertEquals(relatedModelInstance2.id, result.id);
+
+        results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [:], "nonexistantsource");
+        assertEquals(0, results.size());
+
+        results = modelInstance2.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [:],"source1");
+        assertEquals(1, results.size());
+        assertEquals(4, results[0].size())
+        assertEquals("instance3Prop1Value", results[0].prop1);
+        assertEquals(relatedModelClass.name, results[0].alias);
+        assertEquals(relatedModelInstance3.id, results[0].id);
+
+        results = modelInstance2.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [:],"source2");
+        assertEquals(0, results.size());
+
+    }
+
     public void testGetRelatedObjectPropertiesWithHugeNumberOfObjects()
     {
         def defaultMaxCount = BooleanQuery.getMaxClauseCount();

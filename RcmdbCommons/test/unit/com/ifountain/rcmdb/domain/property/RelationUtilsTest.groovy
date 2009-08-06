@@ -281,7 +281,7 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         //this relation is added from reverse reverse relations can also be deleted from other side
         relations =DomainClassUtils.getRelations(to.name);
         def revRel1MetaData = relations["revrel1"]
-        RelationUtils.addRelatedObjects(toObj4, revRel1MetaData, [fromObj1], "source1");
+        RelationUtils.addRelatedObjects(toObj4, revRel1MetaData, [fromObj1], "source2");
 
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
@@ -293,7 +293,12 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         returnedObjectConfig = relatedObjectIds[toObj2.id];
         assertTrue (returnedObjectConfig.reverseObjectId == toObj2.id && returnedObjectConfig.source == RelationUtils.getSourceString("source1"));
         returnedObjectConfig = relatedObjectIds[toObj4.id];
-        assertTrue (returnedObjectConfig.objectId == toObj4.id && returnedObjectConfig.source == RelationUtils.getSourceString("source1"));
+        assertTrue (returnedObjectConfig.objectId == toObj4.id && returnedObjectConfig.source == RelationUtils.getSourceString("source2"));
+
+        relatedObjectIds = RelationUtils.getRelatedObjectsIdsByObjectId(fromObj1.id, "rel1", "revrel1", "source2");
+        assertEquals (1,  relatedObjectIds.size());
+        returnedObjectConfig = relatedObjectIds[toObj4.id];
+        assertTrue (returnedObjectConfig.objectId == toObj4.id && returnedObjectConfig.source == RelationUtils.getSourceString("source2"));
     }
 
     public void testGetRelatedObjectsWithManyToManyRelation()
@@ -317,7 +322,7 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         //this relation is added from reverse reverse relations can also be deleted from other side
         relations =DomainClassUtils.getRelations(to.name);
         def revRel1MetaData = relations["revrel1"]
-        RelationUtils.addRelatedObjects(toObj4, revRel1MetaData, [fromObj1], "source1");
+        RelationUtils.addRelatedObjects(toObj4, revRel1MetaData, [fromObj1], "source2");
 
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
@@ -326,6 +331,11 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (3,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj1.id});
         assertNotNull (relatedObjects.find {it.id == toObj2.id});
+        assertNotNull (relatedObjects.find {it.id == toObj4.id});
+
+        //with source
+        relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel1MetaData, "source2");
+        assertEquals (1,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
     }
 
@@ -350,7 +360,7 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         //this relation is added from reverse reverse relations can also be deleted from other side
         relations =DomainClassUtils.getRelations(to.name);
         def revRel4MetaData = relations["revrel4"]
-        RelationUtils.addRelatedObjects(toObj4, revRel4MetaData, [fromObj1], "source1");
+        RelationUtils.addRelatedObjects(toObj4, revRel4MetaData, [fromObj1], "source2");
 
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
@@ -359,6 +369,11 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (3,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj1.id});
         assertNotNull (relatedObjects.find {it.id == toObj2.id});
+        assertNotNull (relatedObjects.find {it.id == toObj4.id});
+
+        //with source
+        relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel4MetaData, "source2");
+        assertEquals (1,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
     }
 
@@ -390,6 +405,12 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
 
         def relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData);
         assertEquals(toObj1.id, relatedObject.id);
+
+        //with source
+        relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source1");
+        assertEquals(toObj1.id, relatedObject.id);
+        relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source2");
+        assertNull(relatedObject)
     }
 
     public void testGetRelatedObjectsWithManyToOneRelation()
@@ -420,6 +441,12 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
 
         def relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel3MetaData);
         assertEquals(toObj1.id, relatedObject.id);
+
+        //with source
+        relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel3MetaData, "source1");
+        assertEquals(toObj1.id, relatedObject.id);
+        relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel3MetaData, "source2");
+        assertNull(relatedObject);
     }
 
     public void testGetRelatedObjectsWithHugeNumberOfRelatedObjects()

@@ -8,9 +8,6 @@
 
 import connector.EmailConnector;
 import message.RsMessage;
-import application.RsApplication;
-
-
 
 def destinationType="email";
 def templatePath="grails-app/templates/message/emailTemplate.gsp";
@@ -41,7 +38,7 @@ if(ds!=null)
                 emailParams.from=from
                 emailParams.to=message.destination
                 emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
-                emailParams.body=RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+                emailParams.body=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
                 emailParams.contentType="text/html"
 
                 ds.sendEmail(emailParams)

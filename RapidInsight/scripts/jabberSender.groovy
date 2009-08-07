@@ -8,7 +8,6 @@
 
 import connector.JabberConnector;
 import message.RsMessage
-import application.RsApplication;
 
 def destinationType="jabber";
 def templatePath="grails-app/templates/message/jabberTemplate.gsp";
@@ -31,7 +30,7 @@ if(ds!=null)
             try{
 
                 def templateParams=[event:event,message:message]
-                def messageContent=RsApplication.getUtility("RsTemplate").render(templatePath,templateParams); 
+                def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
                 ds.sendMessage(message.destination,messageContent)
                 logger.debug("Sended message about RsEvent: ${event.name}")
                 message.update(state:RsMessage.STATE_SENT,sendAt:new Date().getTime());
@@ -39,7 +38,7 @@ if(ds!=null)
             }
             catch(e)
             {
-                logger.warn("Error occured while sending email.Reason ${e}",e);
+                logger.warn("Error occured while sending message.Reason ${e}",e);
             }
             ////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////

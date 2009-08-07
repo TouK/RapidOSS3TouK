@@ -10,6 +10,7 @@ import connector.SametimeConnector;
 import message.RsMessage
 
 def destinationType="sametime";
+def templatePath="grails-app/templates/message/sametimeTemplate.gsp";
 
 def ds=SametimeConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
@@ -20,44 +21,23 @@ if(ds!=null)
 
     messages.each{ message ->
 
-        def event=null;
-        if(message.action==RsMessage.ACTION_CREATE )
-        {
-            event=RsEvent.get(id:message.eventId);
-        }
-        else
-        {
-            event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
-        }
-
+        def event=message.retrieveEvent();
         if(event!=null)
         {
-
-            def eventProps=event.asMap();
-
             //////// MESSAGE SENDING PART ////////////////////////////////////////////
             ////// Modify the code below to execute your action /////////////////////
-            logger.debug("Will send message about RsEvent : ${eventProps}");
-
-
-            def messageContent="----------------------------------"
-
-            messageContent+= "\n"+( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" );
-
-            messageContent += "\nEvent Properties";
-            eventProps.each{ propName, propVal ->
-            	messageContent += "\n${propName} : ${propVal}";
-            }
-
+            logger.debug("Will send message about RsEvent : ${event.name}");
             try{
+                def templateParams=[event:event,message:message]
+                def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
                 ds.sendMessage(message.destination,messageContent)
-                logger.debug("Sended message about RsEvent: ${eventProps}")
+                logger.debug("Sended message about RsEvent: ${event.name}")
                 message.update(state:RsMessage.STATE_SENT,sendAt:new Date().getTime());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)
             {
-                logger.warn("Error occured while sending email.Reason ${e}",e);
+                logger.warn("Error occured while sending message.Reason ${e}",e);
             }
             ////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////

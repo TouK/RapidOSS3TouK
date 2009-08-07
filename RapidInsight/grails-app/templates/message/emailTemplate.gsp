@@ -6,8 +6,8 @@
 
 <br><br>Event Properties
 <ul>
-<g:each in="${event.asMap().entrySet()}">
-<li>${it.key} : ${it.value}</li>
+<g:each var="entry" in="${event.asMap().entrySet()}">
+<li>${entry.key} : ${entry.value}</li>
 </g:each>
 </ul>
 </body>

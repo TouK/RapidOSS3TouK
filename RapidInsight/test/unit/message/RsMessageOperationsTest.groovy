@@ -14,9 +14,15 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 */
 class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
+    def RsEvent;
+    def RsHistoricalEvent;
+
     public void setUp() {
         super.setUp();
 
+        ["RsEvent","RsHistoricalEvent"].each{ className ->
+            setProperty(className,gcl.loadClass(className));
+        }
 
     }
 
@@ -138,5 +144,43 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(clearMessage.eventId,params.id)
         assertEquals(clearMessage.action,RsMessage.ACTION_CLEAR)
         
+    }
+
+    public void testGetEvent()
+    {
+        initialize([RsMessage,RsEvent,RsHistoricalEvent], []);
+        CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
+
+        def nonExistingEventId=4444444444;
+
+        def noEventMessage=RsMessage.add(action:RsMessage.ACTION_CREATE,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
+        assertFalse(noEventMessage.hasErrors());
+        assertNull(noEventMessage.getEvent());
+
+
+        def noHistoricalEventMessage=RsMessage.add(action:RsMessage.ACTION_CLEAR,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
+        assertFalse(noHistoricalEventMessage.hasErrors());
+        assertNull(noHistoricalEventMessage.getEvent());
+
+        def unknownActionMessage=RsMessage.add(action:"someaction",eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
+        assertFalse(unknownActionMessage.hasErrors());
+
+        assertNull(unknownActionMessage.getEvent());
+
+        def activeEvent=RsEvent.add(name:"testev");
+        assertFalse(activeEvent.hasErrors());
+
+        def activeEventMessage=RsMessage.add(action:RsMessage.ACTION_CREATE,eventId:activeEvent.id,destination:"dest",destinationType:"desttype");
+        assertFalse(activeEventMessage.hasErrors());
+
+        assertEquals(activeEvent.id,activeEventMessage.getEvent().id);
+        
+        def historicalEvent=RsHistoricalEvent.add(name:"testev3",activeId:55);
+        assertFalse(historicalEvent.hasErrors());
+
+        def historicalEventMessage=RsMessage.add(action:RsMessage.ACTION_CLEAR,eventId:historicalEvent.activeId,destination:"dest",destinationType:"desttype");
+        assertFalse(historicalEventMessage.hasErrors());
+
+        assertEquals(historicalEvent.id,historicalEventMessage.getEvent().id);
     }
 }

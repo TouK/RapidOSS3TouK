@@ -18,7 +18,7 @@
 */
 package message
 
-import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
@@ -86,5 +86,25 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
             getLogger().debug("Skipped clear message for event with id ${historicalEvent.activeId} . No create message exists for event ")
         }
         return message
+    }
+
+    public def getEvent()
+    {
+       def event=null;
+
+       if(action==RsMessage.ACTION_CREATE )
+       {
+           event=_loadDomainClass("RsEvent").get(id:eventId);
+       }
+       else
+       {
+           event=_loadDomainClass("RsHistoricalEvent").search("activeId:${eventId}").results[0];
+       }
+
+       return event;
+    }
+    private def _loadDomainClass(domainClassName)
+    {
+        return ApplicationHolder.application.getDomainClass(domainClassName).clazz;
     }
 }

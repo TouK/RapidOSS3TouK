@@ -52,34 +52,34 @@ class EmailDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(params.size(),adapter.callParams.size())
         assertEquals(params,adapter.callParams)
     }
-    public void testSendEmailCallsRenderTemplateAndGeneratesBodyParamIfTemplateParamIsSupplied(){
-        def renderCallParams=[:];
-        EmailDatasourceOperations.metaClass.'static'.renderTemplate = { templatePath,parameters ->
-            renderCallParams.templatePath=templatePath
-            renderCallParams.parameters=parameters
-            return "testrenderresult"
-        }
-
-        def params=[:]
-
-        params.from="a@b"
-        params.to="b@c"
-        params.subject="testsbj"        
-        params.contentType="text/plain"
-        params.template="testtemplate"
-        params.templateParams=["x":5,"y":6]
-
-        def adapter=new EmailAdapterMockForOperations()
-        def oper=new EmailDatasourceOperations();
-        oper.setAdapter(adapter)
-        oper.sendEmail(params);
-
-        assertEquals(params.size()+1,adapter.callParams.size())
-        params.each{ key, val ->
-            assertEquals(val,adapter.callParams[key])
-        }
-        assertEquals(adapter.callParams["body"],"testrenderresult")
-    }
+//    public void testSendEmailCallsRenderTemplateAndGeneratesBodyParamIfTemplateParamIsSupplied(){
+//        def renderCallParams=[:];
+//        EmailDatasourceOperations.metaClass.'static'.renderTemplate = { templatePath,parameters ->
+//            renderCallParams.templatePath=templatePath
+//            renderCallParams.parameters=parameters
+//            return "testrenderresult"
+//        }
+//
+//        def params=[:]
+//
+//        params.from="a@b"
+//        params.to="b@c"
+//        params.subject="testsbj"
+//        params.contentType="text/plain"
+//        params.template="testtemplate"
+//        params.templateParams=["x":5,"y":6]
+//
+//        def adapter=new EmailAdapterMockForOperations()
+//        def oper=new EmailDatasourceOperations();
+//        oper.setAdapter(adapter)
+//        oper.sendEmail(params);
+//
+//        assertEquals(params.size()+1,adapter.callParams.size())
+//        params.each{ key, val ->
+//            assertEquals(val,adapter.callParams[key])
+//        }
+//        assertEquals(adapter.callParams["body"],"testrenderresult")
+//    }
 
     public void testOnLoadDoesNotThrowExceptionWhenDatasourceDoesNotHaveConnection()
     {

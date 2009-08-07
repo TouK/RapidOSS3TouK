@@ -6,11 +6,15 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.EmailConnector
-import message.RsMessage
+import connector.EmailConnector;
+import message.RsMessage;
+import application.RsApplication;
+
+
 
 def destinationType=RsMessage.EMAIL;
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
+
 //should be a valid email address
 def from="IFountainEmailSender@ifountain.com"
 
@@ -43,17 +47,15 @@ if(ds!=null)
             //////// EMAIL SENDING PART ////////////////////////////////////////////
             ////// Modify the code below to execute your action /////////////////////
             logger.debug("Will send email about RsEvent : ${eventProps}");
-
-            def templateParams=[eventParams:eventProps]
-            def emailParams=[:]
-            emailParams.from=from
-            emailParams.to=message.destination
-            emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
-            emailParams.template=templatePath
-            emailParams.templateParams=templateParams
-            emailParams.contentType="text/html"
-
             try{
+                def templateParams=[eventProps:eventProps]
+                def emailParams=[:]
+                emailParams.from=from
+                emailParams.to=message.destination
+                emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
+                emailParams.body=RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+                emailParams.contentType="text/html"
+
                 ds.sendEmail(emailParams)
                 logger.debug("Sended email about RsEvent: ${eventProps}")
                 message.update(state:RsMessage.STATE_SENT,sendAt:date.getTime());

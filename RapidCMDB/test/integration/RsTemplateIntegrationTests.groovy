@@ -1,16 +1,14 @@
-package datasource
-
 import com.ifountain.core.test.util.RapidCoreTestCase
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 
 /**
 * Created by IntelliJ IDEA.
-* User: iFountain
-* Date: Dec 26, 2008
-* Time: 10:27:52 AM
+* User: admin
+* Date: Aug 4, 2009
+* Time: 9:45:51 AM
 * To change this template use File | Settings | File Templates.
 */
-class EmailDatasourceOperationsIntegrationTests extends RapidCoreTestCase{
+class RsTemplateIntegrationTests extends RapidCoreTestCase {
     static transactional = false;
     public void testRenderTemplate(){
 
@@ -31,7 +29,7 @@ class EmailDatasourceOperationsIntegrationTests extends RapidCoreTestCase{
         def templatePath=file.getPath();
         def parameters=["aList":[1,2,3]];
 
-        String result=EmailDatasource.renderTemplate(templatePath,parameters);
+        String result=application.RsApplication.getUtility("RsTemplate").render(templatePath,parameters);
         assertEquals("1,2,3,",result.trim())
     }
 }

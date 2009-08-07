@@ -11,6 +11,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import datasource.EmailDatasourceOperations
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -29,12 +30,24 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     def RsHistoricalEvent;
     def RsEventOperations;
     def RsEventJournal;
+    def RsTemplate;
+
+
 
     public void setUp() throws Exception {
         super.setUp();
 
-        ["RsEvent","RsHistoricalEvent","RsEventJournal","RsEventOperations"].each{ className ->
+
+        
+        ["RsEvent","RsHistoricalEvent","RsEventJournal","RsEventOperations","RsTemplate"].each{ className ->
             setProperty(className,gcl.loadClass(className));
+        }
+        
+        clearMetaClasses();
+
+
+        RsTemplate.metaClass.'static'.render={ String templatePath,params ->
+            return "___renderTestResult";
         }
 
         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,EmailConnector,EmailConnection,EmailDatasource], []);
@@ -51,8 +64,17 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() throws Exception {
+        clearMetaClasses();
         super.tearDown();
     }
+
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RsTemplate);
+        ExpandoMetaClass.enableGlobally();
+    }
+
     void buildConnectorParams(){
 
         connectorParams=[:]
@@ -99,6 +121,85 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         FileUtils.copyFileToDirectory (new File(getWorkspacePath()+"/RapidModules/RapidInsight/scripts/emailSender.groovy"),scriptsDir);
 
         ScriptManagerForTest.addScript('emailSender');
+    }
+
+    void testSenderCallsRenderTemplateAndPassesTemplateResultToSendMessage()
+    {
+        def renderTemplateParams=[];
+        RsTemplate.metaClass.'static'.render={ String templatePath,params ->
+            renderTemplateParams.add([templatePath:templatePath,params:params]);
+            return "renderTestResult";
+        }
+
+        def sendEmailParams=[];
+
+        EmailDatasource.metaClass.sendEmail= { Map params ->
+            sendEmailParams.add([params:params]);
+            println "my send email";
+        }
+
+
+        assertEquals(RsEvent.countHits("alias:*"),0)
+        assertEquals(RsMessage.countHits("alias:*"),0)
+
+        def events=addEvents("testev1",4)
+        events.each{ event ->
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:RsMessage.EMAIL,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+        }
+        assertEquals(RsEvent.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+
+        def historicalEvents=addHistoricalEvents("testhistev1",4)
+        historicalEvents.each{ event ->
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:RsMessage.EMAIL,action:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
+        }
+        assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
+
+
+        def connector=addEmailConnector();
+
+        TestLogUtils.enableLogger (TestLogUtils.log);
+        
+        ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name],logger:TestLogUtils.log])
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
+        
+
+        assertEquals(8,sendEmailParams.size());
+        assertEquals(8,renderTemplateParams.size());
+
+        def index=0;
+        RsMessage.searchEvery("alias:*",[sort: "id",order:"asc"]).each{ message ->
+           def event=null;
+           if(message.action==RsMessage.ACTION_CREATE )
+           {
+               event=RsEvent.get(id:message.eventId);
+           }
+           else
+           {
+               event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
+           }
+
+           assertEquals("grails-app/templates/email/emailTemplate.gsp",renderTemplateParams[index].templatePath);
+           assertEquals(event.asMap(),renderTemplateParams[index].params.eventProps);
+
+           assertEquals("IFountainEmailSender@ifountain.com",sendEmailParams[index].params.from)
+           assertEquals(message.destination,sendEmailParams[index].params.to)
+           assertEquals("renderTestResult",sendEmailParams[index].params.body)
+           assertEquals("text/html",sendEmailParams[index].params.contentType)
+            if(message.action==RsMessage.ACTION_CREATE)
+                assertEquals("Event Created",sendEmailParams[index].params.subject)
+            else
+                assertEquals("Event Cleared",sendEmailParams[index].params.subject)
+
+
+           index++;
+        }
+
+
     }
 
     void testSenderProcessesMessages()

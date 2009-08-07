@@ -2,7 +2,7 @@
 <body>
 Event Properties 
 <ul>
-<g:each in="${eventParams.entrySet()}">
+<g:each in="${eventProps.entrySet()}">
 <li>${it.key} : ${it.value}</li>
 </g:each>
 </ul>

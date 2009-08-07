@@ -32,11 +32,6 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
     {
        def emailParams=[:]
        emailParams.putAll(params);
-       if(params.containsKey("template"))
-       {
-           def body=renderTemplate(emailParams["template"],emailParams["templateParams"])
-           emailParams["body"]=body;
-       }
        this.adapter.sendEmail(emailParams);
     }
 
@@ -46,40 +41,5 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
     }
     public void setAdapter(EmailAdapter adapter){
         this.adapter=adapter;        
-    }
-
-    public static String renderTemplate(templatePath,parameters){
-        def engine=new GroovyPagesTemplateEngine()
-        def template= engine.createTemplate(new File(templatePath));
-
-        def requestAttributes = RequestContextHolder.getRequestAttributes()
-
-        boolean unbindRequest = false
-
-        // outside of an executing request, establish a mock version
-        if(!requestAttributes) {            
-            def servletContext  = ServletContextHolder.getServletContext()
-            def applicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext)
-            requestAttributes = grails.util.GrailsWebUtil.bindMockWebRequest(applicationContext)
-            unbindRequest = true
-        }
-
-        def out = new StringWriter();
-        def originalOut = requestAttributes.getOut()
-        requestAttributes.setOut(out)
-        try {
-
-            template.make( parameters ).writeTo(out)
-
-        }
-        finally {
-            requestAttributes.setOut(originalOut)
-            if(unbindRequest) {
-                RequestContextHolder.setRequestAttributes(null)
-            }
-        }
-
-        return out.toString();
-                
     }
 }

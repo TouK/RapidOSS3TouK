@@ -370,6 +370,12 @@ YAHOO.rapidjs.designer.Config = new function() {
                 args:{
                     "title":"Component's new title"
                 }
+            },
+            "showAnnotationDetails":{
+                descr:"Shows details of selected annotation.",
+                args:{
+                    "time":"Annotation's timestamp"
+                }
             }
         },
         "GMap":{
@@ -622,7 +628,18 @@ YAHOO.rapidjs.designer.Config = new function() {
             }
         },
         "FlexLineChart":{
-
+            "itemClicked":{
+                descr:"Fired when a chart annotation is clicked",
+                params:{
+                    "params.data":"JavaScript object representing the clicked annotation"
+                }
+            },
+            "rangeChanged":{
+                descr:"Fired when main chart range is changed",
+                params:{
+                    "params.data":"JavaScript object representing the slice data"
+                }
+            }
         },
         "GMap":{
             "markerClicked":{

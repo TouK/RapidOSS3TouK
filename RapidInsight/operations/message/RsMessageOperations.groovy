@@ -88,7 +88,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         return message
     }
 
-    public def getEvent()
+    public def retrieveEvent()
     {
        def event=null;
 

@@ -13,7 +13,7 @@ import application.RsApplication;
 
 
 def destinationType="email";
-def templatePath="grails-app/templates/email/emailTemplate.gsp";
+def templatePath="grails-app/templates/message/emailTemplate.gsp";
 
 //should be a valid email address
 def from="IFountainEmailSender@ifountain.com"
@@ -29,26 +29,14 @@ if(ds!=null)
 
     messages.each{ message ->
         
-        def event=null;
-        if(message.action==RsMessage.ACTION_CREATE )
-        {
-            event=RsEvent.get(id:message.eventId);
-        }
-        else
-        {
-            event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
-        }
-
+        def event=message.retrieveEvent();
         if(event!=null)
         {
-
-            def eventProps=event.asMap();
-
             //////// EMAIL SENDING PART ////////////////////////////////////////////
             ////// Modify the code below to execute your action /////////////////////
-            logger.debug("Will send email about RsEvent : ${eventProps}");
+            logger.debug("Will send email about RsEvent : ${event.name}");
             try{
-                def templateParams=[eventProps:eventProps]
+                def templateParams=[event:event,message:message]
                 def emailParams=[:]
                 emailParams.from=from
                 emailParams.to=message.destination
@@ -57,7 +45,7 @@ if(ds!=null)
                 emailParams.contentType="text/html"
 
                 ds.sendEmail(emailParams)
-                logger.debug("Sended email about RsEvent: ${eventProps}")
+                logger.debug("Sended email about RsEvent: ${event.name}")
                 message.update(state:RsMessage.STATE_SENT,sendAt:date.getTime());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }

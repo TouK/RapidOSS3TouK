@@ -39,6 +39,10 @@ scriptsToAdd.add([name:"getViewFields", enabledForAllGroups:true])
 
 scriptsToAdd.add([name: "messageGenerator", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
 scriptsToAdd.add([name: "emailSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:emailConnector"]);
+scriptsToAdd.add([name: "jabberSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:jabberConnector"]);
+scriptsToAdd.add([name: "aolSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:aolConnector"]);
+scriptsToAdd.add([name: "sametimeSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:sametimeConnector"]);
+scriptsToAdd.add([name: "smsSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:smsConnector"]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);
 scriptsToAdd.add([name: "importUiConfiguration"]);

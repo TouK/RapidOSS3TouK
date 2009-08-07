@@ -185,7 +185,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
                event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
            }
 
-           assertEquals("grails-app/templates/email/emailTemplate.gsp",renderTemplateParams[index].templatePath);
+           assertEquals("grails-app/templates/message/emailTemplate.gsp",renderTemplateParams[index].templatePath);
            assertEquals(event.asMap(),renderTemplateParams[index].params.eventProps);
 
            assertEquals("IFountainEmailSender@ifountain.com",sendEmailParams[index].params.from)

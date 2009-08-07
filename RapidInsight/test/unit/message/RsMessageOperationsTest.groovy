@@ -147,7 +147,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         
     }
 
-    public void testGetEvent()
+    public void testRetrieveEvent()
     {
         initialize([RsMessage,RsEvent,RsHistoricalEvent], []);
         CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
@@ -156,17 +156,17 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
         def noEventMessage=RsMessage.add(action:RsMessage.ACTION_CREATE,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
         assertFalse(noEventMessage.hasErrors());
-        assertNull(noEventMessage.getEvent());
+        assertNull(noEventMessage.retrieveEvent());
 
 
         def noHistoricalEventMessage=RsMessage.add(action:RsMessage.ACTION_CLEAR,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
         assertFalse(noHistoricalEventMessage.hasErrors());
-        assertNull(noHistoricalEventMessage.getEvent());
+        assertNull(noHistoricalEventMessage.retrieveEvent());
 
         def unknownActionMessage=RsMessage.add(action:"someaction",eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
         assertFalse(unknownActionMessage.hasErrors());
 
-        assertNull(unknownActionMessage.getEvent());
+        assertNull(unknownActionMessage.retrieveEvent());
 
         def activeEvent=RsEvent.add(name:"testev");
         assertFalse(activeEvent.hasErrors());
@@ -174,7 +174,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         def activeEventMessage=RsMessage.add(action:RsMessage.ACTION_CREATE,eventId:activeEvent.id,destination:"dest",destinationType:"desttype");
         assertFalse(activeEventMessage.hasErrors());
 
-        assertEquals(activeEvent.id,activeEventMessage.getEvent().id);
+        assertEquals(activeEvent.id,activeEventMessage.retrieveEvent().id);
         
         def historicalEvent=RsHistoricalEvent.add(name:"testev3",activeId:55);
         assertFalse(historicalEvent.hasErrors());
@@ -182,6 +182,6 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         def historicalEventMessage=RsMessage.add(action:RsMessage.ACTION_CLEAR,eventId:historicalEvent.activeId,destination:"dest",destinationType:"desttype");
         assertFalse(historicalEventMessage.hasErrors());
 
-        assertEquals(historicalEvent.id,historicalEventMessage.getEvent().id);
+        assertEquals(historicalEvent.id,historicalEventMessage.retrieveEvent().id);
     }
 }

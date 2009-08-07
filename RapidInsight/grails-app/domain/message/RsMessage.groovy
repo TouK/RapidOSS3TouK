@@ -4,8 +4,6 @@ import com.ifountain.core.domain.annotations.*;
 
 class RsMessage {
 
-    public static String EMAIL = "email";
-
     public static String ACTION_CREATE="create";
     public static String ACTION_CLEAR="clear";
 

@@ -32,6 +32,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
+    def EMAIL_TYPE="email";
     
     String scriptName = "messageGenerator"
     void setUp() {
@@ -106,7 +107,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: RsMessage.EMAIL, enabled: false, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: EMAIL_TYPE, enabled: false, clearAction: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -126,7 +127,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorDoesNotProcessIfUserAndAdminDoesNotHaveDestination()
     {
-        def destinationType = RsMessage.EMAIL
+        def destinationType = EMAIL_TYPE
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
 
@@ -221,7 +222,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorDoesNotProcessClearEventsForClearDisabledRules()
     {
-        def destinationType = RsMessage.EMAIL
+        def destinationType = EMAIL_TYPE
         def destination = "sezgin@gmail.com"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
@@ -261,7 +262,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testEmailGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
     {
-        def destinationType = RsMessage.EMAIL
+        def destinationType = EMAIL_TYPE
         def destination = "sezgin@gmail.com"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
@@ -352,7 +353,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         params.eventId = 1
         params.state = RsMessage.STATE_IN_DELAY
         params.destination = "xxx"
-        params.destinationType = RsMessage.EMAIL
+        params.destinationType = EMAIL_TYPE
         params.action = RsMessage.ACTION_CREATE
         params.sendAfter = date.getTime() + delay
 
@@ -378,7 +379,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     void testMessageGeneratorUsesWithSessionToApplySegmentation()
     {
         SessionManager.getInstance().addSessionListener(new FilterSessionListener());
-        def destinationType = RsMessage.EMAIL
+        def destinationType = EMAIL_TYPE
         def userRole = Role.add(name: Role.USER);
         def userGroup = Group.add(name: "testusergroup", role: userRole, segmentFilter: "severity:2");
         assertFalse(userGroup.hasErrors());

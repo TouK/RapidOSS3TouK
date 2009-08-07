@@ -12,7 +12,7 @@ import application.RsApplication;
 
 
 
-def destinationType=RsMessage.EMAIL;
+def destinationType="email";
 def templatePath="grails-app/templates/email/emailTemplate.gsp";
 
 //should be a valid email address

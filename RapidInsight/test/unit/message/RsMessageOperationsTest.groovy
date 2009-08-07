@@ -16,6 +16,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
     def RsEvent;
     def RsHistoricalEvent;
+    def EMAIL_TYPE="email";
 
     public void setUp() {
         super.setUp();
@@ -42,7 +43,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         params.eventId=1
         params.state=RsMessage.STATE_IN_DELAY
         params.destination="xxx"
-        params.destinationType=RsMessage.EMAIL
+        params.destinationType=EMAIL_TYPE
         params.action=RsMessage.ACTION_CREATE
         params.sendAfter=date.getTime()+delay
 
@@ -74,7 +75,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(RsMessage.count(),0)
         
-        def undelayedMessage=RsMessage.addEventCreateMessage([id:1],RsMessage.EMAIL, "xxx",0)
+        def undelayedMessage=RsMessage.addEventCreateMessage([id:1],EMAIL_TYPE, "xxx",0)
 
         assertFalse(undelayedMessage.hasErrors())
         assertEquals(RsMessage.count(),1)
@@ -84,7 +85,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(undelayedMessage.action,RsMessage.ACTION_CREATE)
 
         Long delay2=2
-        def delayedMessage=RsMessage.addEventCreateMessage([id:2],RsMessage.EMAIL, "xxx",delay2)
+        def delayedMessage=RsMessage.addEventCreateMessage([id:2],EMAIL_TYPE, "xxx",delay2)
         assertFalse(delayedMessage.hasErrors())
         assertEquals(RsMessage.count(),2)
         assertEquals(delayedMessage.state,RsMessage.STATE_IN_DELAY)
@@ -98,7 +99,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         initialize([RsMessage], []);
         CompassForTests.addOperationSupport(RsMessage,RsMessageOperations)
         
-        def message=RsMessage.addEventClearMessage([activeId:5],RsMessage.EMAIL, "xxx")
+        def message=RsMessage.addEventClearMessage([activeId:5],EMAIL_TYPE, "xxx")
         assertNull(message)
         assertEquals(RsMessage.count(),0)
 
@@ -111,9 +112,9 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         params.id=4
         params.destination="xxx"
 
-        def delayingMessage=RsMessage.addEventCreateMessage([id:params.id],RsMessage.EMAIL,params.destination,1000)
+        def delayingMessage=RsMessage.addEventCreateMessage([id:params.id],EMAIL_TYPE,params.destination,1000)
 
-        def clearMessage=RsMessage.addEventClearMessage([activeId:params.id],RsMessage.EMAIL,params.destination)
+        def clearMessage=RsMessage.addEventClearMessage([activeId:params.id],EMAIL_TYPE,params.destination)
         assertNull(clearMessage)
         assertEquals(RsMessage.count(),1)
 
@@ -129,7 +130,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         params.id=4
         params.destination="xxx"
 
-        def createMessage=RsMessage.addEventCreateMessage([id:params.id],RsMessage.EMAIL,params.destination,0)
+        def createMessage=RsMessage.addEventCreateMessage([id:params.id],EMAIL_TYPE,params.destination,0)
         assertFalse(createMessage.hasErrors())
         assertEquals(RsMessage.count(),1)
         assertEquals(createMessage.state,RsMessage.STATE_READY)
@@ -137,7 +138,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(createMessage.action,RsMessage.ACTION_CREATE)
 
 
-        def clearMessage=RsMessage.addEventClearMessage([activeId:params.id],RsMessage.EMAIL,params.destination)
+        def clearMessage=RsMessage.addEventClearMessage([activeId:params.id],EMAIL_TYPE,params.destination)
         assertFalse(clearMessage.hasErrors())
         assertEquals(RsMessage.count(),2)
         assertEquals(clearMessage.state,RsMessage.STATE_READY)

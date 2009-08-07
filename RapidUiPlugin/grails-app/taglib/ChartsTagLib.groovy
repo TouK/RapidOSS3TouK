@@ -89,27 +89,42 @@ class ChartsTagLib {
         """;
     }
 
-    static def getFlexPieConfig(attrs) {
-        return """{
-            id:'${attrs["id"]}',
-            url:'${attrs["url"]}',
-            rootTag:'${attrs["rootTag"]}',
-            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
-            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
-            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
-            swfURL:'${attrs["swfURL"]}'
-        }"""
-    }
 
     static def fFlexLineChart(attrs, bodyString) {
         def configStr = getFlexLineConfig(attrs);
+		def onItemClick = attrs["onItemClicked"];
+        def itemClickJs = "";
+        if (onItemClick != null) {
+            getActionsArray(onItemClick).each {actionName ->
+                itemClickJs += """
+                   lineChart.events['itemClicked'].subscribe(function(info){
+                       var params = {data:info};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
 
+        }
+        def onRangeChange = attrs["onRangeChanged"];
+        def rangeChangeJs = "";
+        if (onRangeChange != null) {
+            getActionsArray(onRangeChange).each {actionName ->
+                rangeChangeJs += """
+                   lineChart.events['rangeChanged'].subscribe(function(info){
+                       var params = {data:info};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
+        }
         return """
            <script type="text/javascript">
                var chartConfig = ${configStr};
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var lineChart = new YAHOO.rapidjs.component.FlexLineChart(container, chartConfig);
-
+				${itemClickJs}
+				${rangeChangeJs}
                if(lineChart.pollingInterval > 0){
                    lineChart.poll();
                }
@@ -135,6 +150,18 @@ class ChartsTagLib {
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             bgcolor: ${attrs["bgcolor"]}
+        }"""
+    }
+
+    static def getFlexPieConfig(attrs) {
+        return """{
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            rootTag:'${attrs["rootTag"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+            swfURL:'${attrs["swfURL"]}'
         }"""
     }
 

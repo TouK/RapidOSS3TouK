@@ -29,6 +29,8 @@ class FullExportImportUtility {
     def compass;
     def compassSession;
     def RELATION_IDS_TO_EXPORT=[:];
+    def MODEL_IDS_TO_EXPORTED_WITH_RELATIONS=[:];
+
     private static int MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS=100;
 
     def FullExportImportUtility(logger)
@@ -47,6 +49,7 @@ class FullExportImportUtility {
 
         try{
             backup(CONFIG.backupDir);
+            MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.clear();
             RELATION_IDS_TO_EXPORT.clear();
 
             def EXPORT_CONFIG=generateModelsToExport(CONFIG.MODELS);
@@ -330,6 +333,7 @@ class FullExportImportUtility {
                         if(relations)
                         {
                             objectIds.add(object.id);
+                            MODEL_IDS_TO_EXPORTED_WITH_RELATIONS[object.id]=true;
                         }
                         def props=object.asMap(nonFederatedPropNames);
                         builder.Object(props);
@@ -369,8 +373,8 @@ class FullExportImportUtility {
             def hits=getModelHits("relation.Relation",query);
 
             hits.length().times{ dataIndex ->
-                def object=hits.data(dataIndex);
-                RELATION_IDS_TO_EXPORT[object.id]=true;
+                def object=hits.data(dataIndex);                
+                RELATION_IDS_TO_EXPORT[object.id]=[objectId:object.objectId,reverseObjectId:object.reverseObjectId];
             }
 
             logger.debug("MARKING RELATIONS with query ${query}");
@@ -408,9 +412,18 @@ class FullExportImportUtility {
 
                         if(RELATION_IDS_TO_EXPORT.containsKey(object.id))
                         {
-                            relationCount++;
-                            def props=object.asMap();
-                            builder.Object(props);
+                            def relationIds=RELATION_IDS_TO_EXPORT[object.id];
+                            if(MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.containsKey(relationIds.objectId) && MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.containsKey(relationIds.reverseObjectId))
+                            {
+                                relationCount++;
+                                def props=object.asMap();
+                                builder.Object(props);
+                            }
+                            else
+                            {
+                                skipCount++;
+                            }
+
                         }
                         else
                         {

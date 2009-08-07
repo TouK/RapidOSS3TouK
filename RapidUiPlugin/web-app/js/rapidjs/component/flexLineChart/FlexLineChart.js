@@ -2,6 +2,11 @@ YAHOO.namespace('rapidjs', 'rapidjs.component');
 
 YAHOO.rapidjs.component.FlexLineChart = function(container, config) {
     YAHOO.rapidjs.component.FlexLineChart.superclass.constructor.call(this, container, config);
+    var events = {
+        'itemClicked': new YAHOO.util.CustomEvent('itemClicked'),
+        'rangeChanged': new YAHOO.util.CustomEvent('rangeChanged')
+    };
+    YAHOO.ext.util.Config.apply(this.events, events);
 
 	this.swfURL = config.swfURL;
 	this.chartWidth = config.width || 680;
@@ -69,11 +74,13 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 							<param name='quality' value='high' /> \
 							<param name='bgcolor' value='"+this.bgcolor+"' /> \
 							<param name='allowScriptAccess' value='sameDomain' /> \
+							<param value='Transparent' name='wmode'/> \
 							<embed src='"+this.swfURL+"' id='embed"+this.id+"' quality='high' bgcolor='"+this.bgcolor+"' \
 								width='100%' height='100%' name='embed"+this.id+"' align='middle' \
 								play='true'  \
 								loop='false' \
 								quality='high' \
+								wmode = 'Transparent' \
 								allowScriptAccess='sameDomain' \
 								type='application/x-shockwave-flash' \
 								pluginspage='http://www.adobe.com/go/getflashplayer'> \
@@ -118,7 +125,7 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 		var dataList = dataRoot.getElementsByTagName(this.dataTag);
 
 		var mapArray = new Array();
-
+		//dataList.length
 		for(i=0; i<dataList.length; i++){
 			mapArray[i] = {};
 			var node = dataList.item(i);
@@ -128,9 +135,10 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 				var avalue = attributes.item(j).nodeValue;
 				mapArray[i][key] = avalue;
 			}
-			var date = new Date(parseInt(attributes.getNamedItem(this.dateAttribute).nodeValue));
+			var date = new Date(+(node.getAttribute(this.dateAttribute)));
 			mapArray[i][this.dateAttribute] = date.format('Y-n-d H:i')+"";
-			var avalue = parseInt(attributes.getNamedItem(this.valueAttribute).nodeValue);
+			var avalue = +(attributes.getNamedItem(this.valueAttribute).nodeValue);
+			if(avalue == 0) avalue = 500.9;
 			mapArray[i][this.valueAttribute] = avalue;
 			/*
 			var volume = attributes.getNamedItem(this.volumeAttribute);
@@ -141,7 +149,14 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 			}
 			*/
 		}
-		this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);
+		/*
+		alert(dataList.item(100).getAttribute("time")+" " + dataList.item(100).getAttribute("value")+" " + mapArray[100]["time"]+" "+mapArray[100]["value"]+"\n"+
+				dataList.item(101).getAttribute("time")+" " + dataList.item(101).getAttribute("value")+" " + mapArray[99]["time"]+" "+mapArray[1]["value"]+"\n"+
+				dataList.item(102).getAttribute("time")+" " + dataList.item(102).getAttribute("value")+" " + mapArray[2]["time"]+" "+mapArray[2]["value"]+"\n"+
+				dataList.item(103).getAttribute("time")+" " + dataList.item(103).getAttribute("value")+" " + mapArray[3]["time"]+" "+mapArray[3]["value"]+"\n"+
+				dataList.item(104).getAttribute("time")+" " + dataList.item(104).getAttribute("value")+" " + mapArray[4]["time"]+" "+mapArray[4]["value"]+"\n");
+		*/
+				this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);
 	},
 	loadVolumeData: function(root){
 		var dataRoot = root.getElementsByTagName(this.dataRootTag);
@@ -153,7 +168,7 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 			}
 		}
 		if(rootIndex == null){
-			alert("rootIndex is null");
+			return;
 		}
 		var dataList = dataRoot[rootIndex].getElementsByTagName(this.dataTag);
 
@@ -196,11 +211,21 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 		this.application.loadAnnotations(annotationArray, this.annLabelAttr, this.annTimeAttr);
     },
     setAnnotation: function(annotationInfo) {
+	    this.events["itemClicked"].fireDirect(annotationInfo)
+
+	    /*
 	    var infoString = "";
 	    for(key in annotationInfo){
 			infoString += key + ": " + annotationInfo[key]+"\n" ;
 	    }
 	    alert(infoString);
+	    */
+    },
+    setBoundaries: function(rangeInfo) {
+	    //setTimeout(alert("ager"),4000);
+	    setTimeout(
+	    this.events["rangeChanged"].fireDirect(rangeInfo),
+	    		300);
     },
 	//sample: this.addAnnotation({description:'Test Item', name:'added', index:23})
     addAnnotation: function(annotationInfo) {

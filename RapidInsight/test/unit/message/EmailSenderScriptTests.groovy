@@ -175,18 +175,12 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def index=0;
         RsMessage.searchEvery("alias:*",[sort: "id",order:"asc"]).each{ message ->
-           def event=null;
-           if(message.action==RsMessage.ACTION_CREATE )
-           {
-               event=RsEvent.get(id:message.eventId);
-           }
-           else
-           {
-               event=RsHistoricalEvent.search("activeId:${message.eventId}").results[0];
-           }
+           def event=message.retrieveEvent();
 
            assertEquals("grails-app/templates/message/emailTemplate.gsp",renderTemplateParams[index].templatePath);
-           assertEquals(event.asMap(),renderTemplateParams[index].params.eventProps);
+           assertEquals(event.id,renderTemplateParams[index].params.event.id);
+           assertEquals(message.id,renderTemplateParams[index].params.message.id);
+           assertEquals(2,renderTemplateParams[index].params.size());
 
            assertEquals("IFountainEmailSender@ifountain.com",sendEmailParams[index].params.from)
            assertEquals(message.destination,sendEmailParams[index].params.to)
@@ -382,9 +376,9 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
     def addEmailConnector()
     {
-        assertEquals(EmailConnector.count(),0)
-        assertEquals(EmailConnection.count(),0)
-        assertEquals(EmailDatasource.count(),0)
+        assertEquals(0,EmailConnector.count())
+        assertEquals(0,EmailConnection.count())
+        assertEquals(0,EmailDatasource.count())
 
         def params=[:]
         params.putAll(connectorParams)
@@ -395,6 +389,11 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
             assertFalse(object.hasErrors());
         }
         assertNotNull(addedObjects.emailConnector)
+
+        assertEquals(1,EmailConnector.count())
+        assertEquals(1,EmailConnection.count())
+        assertEquals(1,EmailDatasource.count())
+
         return addedObjects.emailConnector;
     }
 

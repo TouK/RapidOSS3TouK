@@ -25,34 +25,45 @@
 			extractQuery = query.query
 			queryName = query.name
 		}
+		else
+		{
+			errorCaught = true;
+			errorMessage = "Query with id: ${id} does not exist. It may have been deleted"
+		}
 	}
 	else {
 		extractQuery = params.search
 		queryName = "Custom Query"
 	}
 	
-	try
+	if(!errorCaught)
 	{
-		searchResults = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]);
-		eventList = searchResults.results
-		total = searchResults.total
-		totalPage = (int)((total + 9) / 10)
-		if(eventList.size() == 0) {
-			if(total > 0) {	
-				page = totalPage - 1
-				eventList = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]).results
-			}
-			else {
-				eventList = []
-				page = 0;
-				totalPage = 1;
+		try
+		{
+			searchResults = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]);
+			eventList = searchResults.results
+			total = searchResults.total
+			totalPage = (int)((total + 9) / 10)
+			if(eventList.size() == 0) {
+				if(total > 0) {	
+					page = totalPage - 1
+					eventList = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]).results
+				}
+				else {
+					eventList = []
+					page = 0;
+					totalPage = 1;
+				}
 			}
 		}
+		catch(Exception e) {
+			errorMessage = e.getMessage()
+			errorCaught = true
+		}
 	}
-	catch(Exception e)
-	{
-		errorMessage = e.getMessage()
-		errorCaught = true
+	
+	if(errorCaught) {
+		queryName = "Error";
 		eventList = [] 
 		total=0 
 		page=0 
@@ -68,11 +79,12 @@
 
 <body>
 
+
 	<%-------------------------------------------------------------------------------
 										<Events>									
 	 -------------------------------------------------------------------------------%>
 	<div id="event" title="${queryName}:Events"selected="true">
-		
+	
 		<%----------------------------------------------------------------
 		 						<Event Pagination>						
 		 ----------------------------------------------------------------%>
@@ -84,8 +96,8 @@
 		
 		<div class="paginate">
 		
-			<g:if test="${page != 0}">
-				<a href="${link}&page=0" target="_temp" > << </a>
+			<g:if test="${page-1>=0}">
+				<a href="${link}&page=${page-1}" target="_temp"> < </a>
 			</g:if>
 			&nbsp &nbsp
 			<g:if test="${page-2 >= 0}">
@@ -114,8 +126,8 @@
 				<a href="${link}&page=${page+1}" target="_temp"> ${page+2} </a>
 			</g:elseif>
 			&nbsp &nbsp
-			<g:if test="${page != totalPage-1 && totalPage != 0}">
-	    		<a href="${link}&page=${totalPage-1}" target="_temp"> >> </a>
+			<g:if test="${page+1 < totalPage}">
+				<a href="${link}&page=${page+1}" target="_temp"> > </a>
 			</g:if>
 		</div>
 		<%----------------------------------------------------------------
@@ -129,15 +141,15 @@
 		<table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
 				<tr class="header">
 					<th width="1%"></th>
-					<th id="name" onclick="redirectEvent('name', '${shortLink}', '${params.sort}', '${params.order}')">Name</th>
-					<th id="acknowledged" onclick="redirectEvent('acknowledged', '${shortLink}', '${params.sort}', '${params.order}')">Ack</th>
-					<th id="owner" onclick="redirectEvent('owner', '${shortLink}', '${params.sort}', '${params.order}')">Owner</th>
-					<th id="source" onclick="redirectEvent('source', '${shortLink}', '${params.sort}', '${params.order}')">Source</th>
+					<th id="name" onclick="redirectEvent('name', '${shortLink}', '${params.sort}', '${params.order}'); return false">Name</th>
+					<th id="acknowledged" onclick="redirectEvent('acknowledged', '${shortLink}', '${params.sort}', '${params.order}'); return false">Ack</th>
+					<th id="owner" onclick="redirectEvent('owner', '${shortLink}', '${params.sort}', '${params.order}'); return false">Owner</th>
+					<th id="source" onclick="redirectEvent('source', '${shortLink}', '${params.sort}', '${params.order}'); return false">Source</th>
 				</tr>
 
 				<g:each var="event" in="${eventList}">
-				<tr class="${(i++ % 2) == 0 ? 'reg' : 'alt'}" onclick="window.iui.showPageByHref('eventdetails.gsp?name=${event.name}')">
-					<td><img src="images/${event.severity}.png" height="25px" width="19px"/></td>
+				<tr class="${(i++ % 2) == 0 ? 'reg' : 'alt'}" onclick="showPageByHref('eventdetails.gsp?name=${event.name}')">
+					<td><img src="../images/mobile/${event.severity}.png" height="25px" width="19px"/></td>
 					<td>${event.name}</td>
 					<td>${event.acknowledged}</td>
 					<td>${event.owner}</td>

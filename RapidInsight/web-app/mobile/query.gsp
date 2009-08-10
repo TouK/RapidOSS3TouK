@@ -7,7 +7,7 @@
 	def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
 %>
 
-<body onload="alert('3');" selected="true">
+<body>
 
 	<%-------------------------------------------------------------------------------
 										<Query Page>									

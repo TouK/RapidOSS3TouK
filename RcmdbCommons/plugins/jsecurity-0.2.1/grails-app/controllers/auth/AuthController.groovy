@@ -11,6 +11,10 @@ class AuthController {
     def index = { redirect(action: 'login', params: params) }
 
     def login = {
+        String userAgent = String.valueOf(request.getHeader("user-agent")).toLowerCase();
+    	if(userAgent.indexOf("mobile") >= 0 || userAgent.indexOf("ipod") >= 0 || userAgent.indexOf("iphone") >= 0)         {
+        	redirect(action:'mobilelogin', params: params)
+        }
         if(params.format == "xml"){
             render(contentType:'text/xml') {
                 Authenticate()

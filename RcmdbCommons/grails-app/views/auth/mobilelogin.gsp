@@ -33,6 +33,7 @@
             </div>
             <input id="targetUri" type="hidden" name="targetUri" value="/mobile/home.gsp">
         </fieldset>
+        <a class="whiteButton" href="javascript:{}" onclick="this.parentNode.submit(); return false;">Login</a>
     </g:form>
 
 </body>

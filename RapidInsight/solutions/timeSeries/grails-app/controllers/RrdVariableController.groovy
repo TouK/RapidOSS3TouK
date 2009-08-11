@@ -49,7 +49,7 @@ class RrdVariableController {
     		config[Grapher.DESCRIPTION] = params.description;
     	}
 
-        config["destination"] = 'web' 
+        config["destination"] = 'web'
 
     	try {
             def variable=RrdVariable.get(name:params.name);
@@ -61,7 +61,7 @@ class RrdVariableController {
                 throw new Exception("RrdVariable ${params.name} does not exist");
             }
 
-            
+
         }
         catch(Exception e) {
             def image = new BufferedImage(500, 250, BufferedImage.TYPE_INT_RGB);

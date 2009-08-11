@@ -1,14 +1,17 @@
+package solutionTests
+
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.rrd.RrdUtils
-
 /**
-* User: ifountain
-* Date: Jun 22, 2009
-* Time: 5:00:47 PM
-*/
+ * Created by IntelliJ IDEA.
+ * User: admin
+ * Date: Aug 11, 2009
+ * Time: 5:16:39 PM
+ * To change this template use File | Settings | File Templates.
+ */
 class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
-
+    
     String fileName = "variable.rrd";
     String fileNameExt = "variable2.rrd";
     String imageFileName = "imageOutput.png"
@@ -16,8 +19,26 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     String rrdFileName = "testRrd.rrd";
     String testImageFile = "testImage.png"
 
+    def RrdVariable;
+    def RrdArchive;
+    def RrdGraphTemplate;
+
+    def RrdVariableOperations;
+    def RrdArchiveOperations;
+    
     public void setUp() {
         super.setUp();
+        GroovyClassLoader loader = new GroovyClassLoader();
+        
+        def op_base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/timeSeries/operations"
+
+        ["RrdVariable","RrdArchive","RrdGraphTemplate"].each{ className ->
+            setProperty(className,gcl.loadClass(className));
+        }
+        ["RrdVariableOperations","RrdArchiveOperations"].each{ className ->
+            setProperty(className,loader.parseClass(new File("${op_base_directory}/${className}.groovy")));
+        }
+        
         initialize([RrdVariable,RrdArchive, RrdGraphTemplate], []);
         CompassForTests.addOperationSupport(RrdVariable, RrdVariableOperations);
         CompassForTests.addOperationSupport(RrdArchive, RrdArchiveOperations);
@@ -167,7 +188,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         archiveConfig["xff"] = 0.5D
         archiveList.add(archiveConfig)
         dbConfig["archive"].get(0).remove("startTime")
-        
+
 //        assertEquals(archiveList, dbConfig["archive"])
     }
 
@@ -332,7 +353,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
     }
-    
+
     public void testGraphWithRPNSource() {
 
         def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)
@@ -494,7 +515,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
                                         startTime:978300900000L)
         assertFalse(variable2.errors.toString(), variable2.hasErrors())
         variable2.addArchive(archive.getMap())
-         
+
         variable1.createDB()
         variable2.createDB()
 
@@ -591,7 +612,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def variable = RrdVariable.add(name:"variable", resource:"resource", type:"COUNTER", heartbeat:600,
                                        startTime:920804400000L, frequency:300)
 
-        assertFalse(variable.errors.toString(), variable.hasErrors())  
+        assertFalse(variable.errors.toString(), variable.hasErrors())
         variable.addArchive(archive1.getMap())
         variable.addArchive(archive2.getMap())
 
@@ -712,7 +733,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def result = RrdVariable.fetchAllData(["variable1","variable2"]);
         assertTrue('result should have values from variable1', result.containsKey('variable1'))
         assertTrue('result should have values from variable2', result.containsKey('variable2'))
-        
+
         assertEquals('wrong values returned',3.5D, result['variable1']['3040'])
         assertEquals('wrong values returned',5D, result['variable1']['3050'])
     }
@@ -730,7 +751,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
                                                         startTime:3000000L, frequency:10)
         assertFalse(variable1.errors.toString(), variable1.hasErrors())
-        
+
         def archiveConfig1 = [function:'AVERAGE', xff:0.5, step:1, numberOfDatapoints:3]
 
         variable1.addArchive(archiveConfig1)
@@ -743,7 +764,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals('wrong values returned',5D, result['variable1']['3050'])
         assertEquals('wrong values returned',6D, result['variable1']['3060'])
     }
-    
+
     public void testCreateDefaultArchives() {
 
         def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
@@ -751,7 +772,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:120, frequency:60,
                                        startTime:978300900000L)
-        variable1.createDB();  
+        variable1.createDB();
         assertEquals("Defaults archives are not created", 5, variable1.archives.size());
 
         Map oneYear = variable1.archives[0].getMap();
@@ -804,5 +825,4 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
             assertEquals("archive step is not proper",it.step.toString(),"5");
         }
     }
-
 }

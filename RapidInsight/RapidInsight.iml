@@ -24,6 +24,8 @@
       <sourceFolder url="file://$MODULE_DIR$/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/solutions/heartbeat/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/solutions/inMaintenance/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/solutions/timeSeries/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/solutions/timeSeries/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />

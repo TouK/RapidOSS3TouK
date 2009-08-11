@@ -61,8 +61,8 @@ class RrdVariableControllerIntegrationTests extends RapidCmdbIntegrationTestCase
     }
 
     private void loadOriginalOperation() {
-
-        FileUtils.copyFileToDirectory(new File("../../../RapidModules/RapidInsight/operations/RrdVariableOperations.groovy"),new File("operations"));
+                
+        FileUtils.copyFileToDirectory(new File("../../../RapidModules/RapidInsight/solutions/timeSeries/operations/RrdVariableOperations.groovy"),new File("operations"));
         RrdVariable.reloadOperations();
 
     }

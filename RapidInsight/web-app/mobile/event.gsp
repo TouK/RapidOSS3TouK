@@ -4,6 +4,10 @@
 	def eventList
 	def queryName
 	def extractQuery
+	
+	if(params.page == '' || params.page == null)
+		params.page = "0";
+	
 	def page = java.lang.Integer.parseInt(params.page)
 	def total;
 	def totalPage

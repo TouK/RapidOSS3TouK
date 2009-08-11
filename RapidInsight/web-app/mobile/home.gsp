@@ -24,7 +24,6 @@
             <a class="button leftButton" type="cancel">Cancel</a>
             <a class="button blueButton" type="submit">Search</a>
             <input id="search" type="text" name="search"/>
-            <input id="page" type="hidden" name="page" value="0"/>
         </fieldset>
     </form>
     <%-------------------------------------------------------------------------------
@@ -122,7 +121,7 @@
 		 */
 		function redirectEvent(source, link, sort, order)
 		{
-			window.iui.urlHistory(true);
+			window.iui.getLastUrl(true);
 			var element = document.getElementById(source);
 			
 			/* if previous sorting element is the same with column clicked it changes order, otherwise it starts from ascending order */

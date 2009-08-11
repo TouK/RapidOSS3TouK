@@ -29,6 +29,10 @@ class AuthController {
 
     }
 
+    def mobilelogin = {
+    	return[username:params.login, targetUri: params.targetUri]
+    }
+
     def signIn = {
         def authToken = new UsernamePasswordToken(params.login, params.password)
 

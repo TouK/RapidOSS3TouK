@@ -415,20 +415,31 @@ fieldset > .row:last-child {
     border-bottom: 1px solid #999999;
     padding: 1px 10px;
     background: url(../../images/mobile/listGroup.png) repeat-x;
-    font-size: 17px;
-    font-weight: bold;
-    text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
     color: #000000;
     height:25px;
 }
 
+.paginate-table {
+	table-layout:fixed;
+	border-width: 0px 0px 0px 0px;
+	border-spacing: 0px 0px;
+	text-align: center;
+}
 
-.paginate > a { 
+.paginate-talbe td {
+	border-width: 0px 0px 0px 0px;
+	padding: 1px 1px 1px 1px;
+}
+
+.paginate-table td > a {
+    font-size: 17px;
+    font-weight: bold;
+    text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
 	color: #F4FFFF;
 	text-decoration:none
 }
 
-.paginate > a[selected], .paginate > a:active {
+.paginate-table td > a[selected], .paginate-table td > a:active {
 
     background-color: transparent !important;
     background-image: none, none !important;

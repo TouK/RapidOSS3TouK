@@ -1,5 +1,4 @@
 <%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat"%>
-
 <%
 	def name = params.name
 	def event = RsEvent.get(name:name)
@@ -20,13 +19,12 @@
 			</div>
 		</g:if>
 		<g:else>
-		
 			<%----------------------------------------------------------------
 		 						<Event Action Menu>						
 		 	----------------------------------------------------------------%>
 			<div id="event${event.id}-menu" style="position: static; ">
 				<div id="menu${event.id}-header">
-					<div id="menu${event.id}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expand('menu${event.id}-link', 'menu${event.id}-list'); return false">Event Actions</a></div>
+					<div id="menu${event.id}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expandEventActionMenu('menu${event.id}-link', 'menu${event.id}-list'); return false">Event Actions</a></div>
 				</div>
 				<div id="menu${event.id}-list" style="display: none; ">
 					<ul class="items">

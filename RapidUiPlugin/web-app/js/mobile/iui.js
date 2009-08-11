@@ -21,6 +21,9 @@ var hasOrientationEvent = false;
 var portraitVal = "portrait";
 var landscapeVal = "landscape";
 
+/*
+ * urlHistory is like pageHistory above, the difference between two is urlHistory holds url while pageHistory holds page id.
+ */
 var urlHistory = [];
 
 
@@ -53,7 +56,10 @@ window.iui =
         }
     },
     
-    urlHistory: function(remove)
+    /*
+     * returns the last url visited. if remove is true, its removed from the list
+     */
+    getLastUrl: function(remove)
     {
 		var url = urlHistory[urlHistory.length-1];    
 		if(remove)
@@ -77,10 +83,18 @@ window.iui =
             iui.showPage(page, backwards);
         }
     },
-
+    
+    
+	/*
+	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
+	 */
     showPageByHref: function(href, args, method, replace, cb, backwards)
     {
+	    /*
+	     * each time an url is opened, it is added to url list
+	     */
 	    urlHistory.push(href);
+	    
         var req = new XMLHttpRequest();
         req.onerror = function()
         {
@@ -119,6 +133,9 @@ window.iui =
         }
     },
     
+    /*
+	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
+	 */
     insertPages: function(nodes, backwards)
     {
         var targetPage;
@@ -206,6 +223,10 @@ addEventListener("click", function(event)
         }
         else if (link == $("backButton"))
         {
+	        /* function of back button is now different from previous version, which just call history.back()
+	         * backButton removes last element from url and page history lists, and opens new last element into the current page.
+	         * in this way apge refreshing is done
+	         */
 	        urlHistory.pop();
             pageHistory.pop();
             var url = urlHistory.pop();
@@ -233,6 +254,9 @@ addEventListener("click", function(event)
             link.setAttribute("selected", "progress");
             iui.showPageByHref(link.href, null, null, link, unselect);
         }
+        /*
+         * if target attribute has value '_temp' then the page will replace the last page in pageHistory and urlHistory 
+         */
         else if (link.target == "_temp")
         {
 	        urlHistory.pop();
@@ -357,10 +381,17 @@ function updatePage(page, fromPage)
     pageHistory.push(page.id);
 
     var pageTitle = $("pageTitle");
+    
+    
+	/* title attribute has two element deliminated by ':'
+	 * first one is used in the toolbar heading,
+	 * second one is used in back button
+	 */
     if (page.title)
 	{
-		var long = page.title.split(":");
-		pageTitle.innerHTML = long[0];
+		//gets the first token in title
+		var longTitle = page.title.split(":");
+		pageTitle.innerHTML = longTitle[0];
    	}
     if (page.localName.toLowerCase() == "form" && !page.target)
         showForm(page);
@@ -377,6 +408,7 @@ function updatePage(page, fromPage)
 	        {
             	if(prevPage.title)
             	{
+	            	//gets the second element in title
             		var short = prevPage.title.split(":");
             		backButton.innerHTML = short[1] ? short[1] : short[0];
         		}

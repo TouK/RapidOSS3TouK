@@ -1,19 +1,25 @@
 <%@ page import="search.SearchQuery; java.text.SimpleDateFormat"%>
-
+<g:if test="${params.search != 'null' && params.search != null}">
+	<g:javascript>
+		var url = window.iui.getLastUrl(true);
+		url = url + "?search=${params.search}";
+		window.iui.addUrl(url, 'event');
+	</g:javascript>
+</g:if>
 <%
 	def eventList
 	def queryName
 	def extractQuery
-	
+
 	if(params.page == '' || params.page == null)
 		params.page = "0";
-	
+
 	def page = java.lang.Integer.parseInt(params.page)
 	def total;
 	def totalPage
 	def errorMessage
 	def errorCaught = false
-	
+
 	if(params.sort == '' || params.sort == null) {
 		params.sort = 'name'
 	}
@@ -22,23 +28,30 @@
 	}
 	if(params.search == 'null' || params.search == null) {
 		def id = params.id
-		def query = SearchQuery.searchEvery("( id:${params.id.exactQuery()} )")[0]
-		if(query != null)
-		{
-			extractQuery = query.query
-			queryName = query.name
+		if(id == null){
+			extractQuery = searchString
+			queryName = "Custom Query"
 		}
-		else
-		{
-			errorCaught = true;
-			errorMessage = "Query with id: ${id} does not exist. It may have been deleted"
+		else{
+			def query = SearchQuery.searchEvery("( id:${params.id.exactQuery()} )")[0]
+			if(query != null)
+			{
+				extractQuery = query.query
+				queryName = query.name
+			}
+			else
+			{
+				errorCaught = true;
+				errorMessage = "Query with id: ${id} does not exist. It may have been deleted"
+			}
 		}
 	}
 	else {
 		extractQuery = params.search
+		searchString = extractQuery
 		queryName = "Custom Query"
 	}
-	
+
 	if(!errorCaught)
 	{
 		try
@@ -48,7 +61,7 @@
 			total = searchResults.total
 			totalPage = (int)((total + 9) / 10)
 			if(eventList.size() == 0) {
-				if(total > 0) {	
+				if(total > 0) {
 					page = totalPage - 1
 					eventList = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]).results
 				}
@@ -64,29 +77,26 @@
 			errorCaught = true
 		}
 	}
-	
+
 	if(errorCaught) {
 		queryName = "Error";
-		eventList = [] 
-		total=0 
-		page=0 
-		totalPage=1 
+		eventList = []
+		total=0
+		page=0
+		totalPage=1
 	}
-	
 	def i = 0
 	def j = 0
-	
 	def link = "event.gsp?id=${params.id}&search=${params.search}&sort=${params.sort}&order=${params.order}"
 	def shortLink = "event.gsp?id=${params.id}&search=${params.search}&page=${params.page}"
 %>
 <body>
 	<%-------------------------------------------------------------------------------
-										<Events>									
+										<Events>
 	 -------------------------------------------------------------------------------%>
 	<div id="event" title="${queryName}:Events"selected="true">
-	
 		<%----------------------------------------------------------------
-		 						<Event Pagination>						
+		 						<Event Pagination>
 		 ----------------------------------------------------------------%>
 		<g:if test="${errorCaught == true}">
 			<div id="messageArea" class="error">
@@ -109,7 +119,7 @@
 					<g:elseif test="${page-1>=0}">
 						<td width="35"><a href="${link}&page=${page-1}" target="_temp">${page}</a></td>
 					</g:elseif>
-					<td width="35"><b> ${page+1} </b></td> 
+					<td width="35"><b> ${page+1} </b></td>
 					<g:if test="${page+2 < totalPage}">
 						<td width="35"><a href="${link}&page=${page+1}" target="_temp">${page+2}</a></td>
 					 	<td width="35"><a href="${link}&page=${page+2}" target="_temp">${page+3}</a></td>
@@ -127,11 +137,11 @@
 			</table>
 		</div>
 		<%----------------------------------------------------------------
-		 						</Pagination>							
+		 						</Pagination>
 		 ----------------------------------------------------------------%>
-		
+
 		<%----------------------------------------------------------------
-		 						<Events Table>							
+		 						<Events Table>
 		 ----------------------------------------------------------------%>
 		<div class = "table">
 			<table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
@@ -151,14 +161,14 @@
 					<td>${event.owner}</td>
 					<td>${event.source}</td>
 				</tr>
-				</g:each>	
+				</g:each>
 			</table>
 		</div>
 		<%----------------------------------------------------------------
-		 						</Events Table>							
+		 						</Events Table>
 		 ----------------------------------------------------------------%>
 	</div>
 	<%-------------------------------------------------------------------------------
-	 								</Events>										
+	 								</Events>
 	 -------------------------------------------------------------------------------%>
 </body>

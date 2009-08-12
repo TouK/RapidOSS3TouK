@@ -55,21 +55,51 @@ window.iui =
             }
         }
     },
-    
+
     /*
      * returns the last url visited. if remove is true, its removed from the list
      */
     getLastUrl: function(remove)
     {
-		var url = urlHistory[urlHistory.length-1];    
+		var url = urlHistory[urlHistory.length-1];
 		if(remove)
 		{
 	        urlHistory.pop();
-	        pageHistory.pop();
+	        //pageHistory.pop();
 		}
 		return url;
 	},
-    
+
+	/*
+     * adds given element to the end of url history
+     */
+	addUrl: function(url)
+	{
+		urlHistory.push(url);
+	},
+
+
+	/*
+	 * returns the id of last page visited. if remove is true, its removed from the list
+	 */
+	getLastPage: function(remove)
+	{
+		var pageId = pageHistory[pageHistory.length-1];
+		if(remove)
+		{
+	        pageHistory.pop();
+	    }
+		return pageId;
+	},
+
+	/*
+     * adds given element to the end of page history
+     */
+	addPage: function(id)
+	{
+		pageHistory.push(id);
+	},
+
     showPageById: function(pageId)
     {
         var page = $(pageId);
@@ -83,8 +113,8 @@ window.iui =
             iui.showPage(page, backwards);
         }
     },
-    
-    
+
+
 	/*
 	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
 	 */
@@ -94,14 +124,14 @@ window.iui =
 	     * each time an url is opened, it is added to url list
 	     */
 	    urlHistory.push(href);
-	    
+
         var req = new XMLHttpRequest();
         req.onerror = function()
         {
             if (cb)
                 cb(false);
         };
-        
+
         req.onreadystatechange = function()
         {
             if (req.readyState == 4)
@@ -132,7 +162,7 @@ window.iui =
             req.send(null);
         }
     },
-    
+
     /*
 	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
 	 */
@@ -155,14 +185,14 @@ window.iui =
 
                 if (child.getAttribute("selected") == "true" || !targetPage)
                     targetPage = child;
-                
+
                 --i;
 
         	}
         }
 
         if (targetPage)
-            iui.showPage(targetPage, backwards);    
+            iui.showPage(targetPage, backwards);
     },
 
     getSelectedPage: function()
@@ -171,7 +201,7 @@ window.iui =
         {
             if (child.nodeType == 1 && child.getAttribute("selected") == "true")
                 return child;
-        }    
+        }
     },
     isNativeUrl: function(href)
     {
@@ -207,14 +237,14 @@ addEventListener("unload", function(event)
 {
 	return;
 }, false);
-    
+
 addEventListener("click", function(event)
 {
     var link = findParent(event.target, "a");
     if (link)
     {
 	    function unselect() { link.removeAttribute("selected"); }
-        
+
         if (link.href && link.hash && link.hash != "#")
         {
             link.setAttribute("selected", "true");
@@ -231,7 +261,7 @@ addEventListener("click", function(event)
             pageHistory.pop();
             var url = urlHistory.pop();
             var pageid = pageHistory.pop();
-            
+
             if(url && pageid)
 			{
 				var page = document.getElementById(pageid);
@@ -255,14 +285,14 @@ addEventListener("click", function(event)
             iui.showPageByHref(link.href, null, null, link, unselect);
         }
         /*
-         * if target attribute has value '_temp' then the page will replace the last page in pageHistory and urlHistory 
+         * if target attribute has value '_temp' then the page will replace the last page in pageHistory and urlHistory
          */
         else if (link.target == "_temp")
         {
 	        urlHistory.pop();
 	        pageHistory.pop();
 	   	    link.setAttribute("selected", "progress");
-            iui.showPageByHref(link.href, null, null, null, unselect);        
+            iui.showPageByHref(link.href, null, null, null, unselect);
         }
         else if (link.target == "_open")
         {
@@ -280,8 +310,8 @@ addEventListener("click", function(event)
         }
         else
             return;
-        
-        event.preventDefault();        
+
+        event.preventDefault();
     }
 }, true);
 
@@ -291,7 +321,7 @@ addEventListener("click", function(event)
     if (div && hasClass(div, "toggle"))
     {
         div.setAttribute("toggled", div.getAttribute("toggled") != "true");
-        event.preventDefault();        
+        event.preventDefault();
     }
 }, true);
 
@@ -302,10 +332,10 @@ function orientChangeHandler()
   {
     case 0:
         setOrientation(portraitVal);
-        break;  
-        
+        break;
+
     case 90:
-    case -90: 
+    case -90:
         setOrientation(landscapeVal);
         break;
   }
@@ -323,7 +353,7 @@ function checkOrientAndLocation()
     if (!hasOrientationEvent)
     {
       if (window.innerWidth != currentWidth)
-      {   
+      {
           currentWidth = window.innerWidth;
           var orient = currentWidth == 320 ? portraitVal : landscapeVal;
           setOrientation(orient);
@@ -347,7 +377,7 @@ function showDialog(page)
 {
     currentDialog = page;
     page.setAttribute("selected", "true");
-    
+
     if (hasClass(page, "dialog") && !page.target)
         showForm(page);
 }
@@ -359,7 +389,7 @@ function showForm(form)
         event.preventDefault();
         submitForm(form);
     };
-    
+
     form.onclick = function(event)
     {
         if (event.target == form && hasClass(form, "dialog"))
@@ -381,11 +411,13 @@ function updatePage(page, fromPage)
     pageHistory.push(page.id);
 
     var pageTitle = $("pageTitle");
-    
-    
+
+
 	/* title attribute has two element deliminated by ':'
 	 * first one is used in the toolbar heading,
 	 * second one is used in back button
+	 * It is designed because sometimes normal title does not fit in back button size.
+	 * in this way, you can specify what to be in toolbar title and back button for that page seperately.
 	 */
     if (page.title)
 	{
@@ -395,7 +427,7 @@ function updatePage(page, fromPage)
    	}
     if (page.localName.toLowerCase() == "form" && !page.target)
         showForm(page);
-        
+
     var backButton = $("backButton");
     if (backButton)
     {
@@ -414,7 +446,7 @@ function updatePage(page, fromPage)
         		}
         		else
         			backButton.innerHTML = "Back";
-   			} 
+   			}
        	}
         else
             backButton.style.display = "none";
@@ -422,7 +454,7 @@ function updatePage(page, fromPage)
 }
 
 function slidePages(fromPage, toPage, backwards)
-{        
+{
     var axis = (backwards ? fromPage : toPage).getAttribute("axis");
     if (axis == "y")
         (backwards ? fromPage : toPage).style.top = "100%";
@@ -432,7 +464,7 @@ function slidePages(fromPage, toPage, backwards)
     toPage.setAttribute("selected", "true");
     scrollTo(0, 1);
     clearInterval(checkTimer);
-    
+
     var percent = 100;
     slide();
     var timer = setInterval(slide, slideInterval);
@@ -449,7 +481,7 @@ function slidePages(fromPage, toPage, backwards)
             checkTimer = setInterval(checkOrientAndLocation, 300);
             setTimeout(updatePage, 0, toPage, fromPage);
         }
-    
+
         if (axis == "y")
         {
             backwards
@@ -458,8 +490,8 @@ function slidePages(fromPage, toPage, backwards)
         }
         else
         {
-            fromPage.style.left = (backwards ? (100-percent) : (percent-100)) + "%"; 
-            toPage.style.left = (backwards ? -percent : percent) + "%"; 
+            fromPage.style.left = (backwards ? (100-percent) : (percent-100)) + "%";
+            toPage.style.left = (backwards ? -percent : percent) + "%";
         }
     }
 }
@@ -491,7 +523,7 @@ function encodeForm(form)
     encode(form.getElementsByTagName("input"));
     encode(form.getElementsByTagName("textarea"));
     encode(form.getElementsByTagName("select"));
-    return args;    
+    return args;
 }
 
 function findParent(node, localName)

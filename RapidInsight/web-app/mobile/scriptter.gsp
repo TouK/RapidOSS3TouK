@@ -3,32 +3,42 @@
 	def errorCaught = false;
 	def errorMessage;
 	def successMessage;
-	
+
 	def notificationName = params.name;
 	if(params.acknowledge != null)
 	{
-		try {		
+		try {
 	    	def scriptParams = [name:notificationName, acknowledged:params.acknowledge];
-    		successMessage = CmdbScript.runScript("acknowledge", [params:scriptParams, web:[session:session]]);
+	    	CmdbScript.runScript("acknowledge", [params:scriptParams, web:[session:session]]);
+    		if(params.acknowledge == "true")
+    			successMessage = "acknowledged"
+    		else
+    			successMessage = "unacknowledged"
+    		successMessage = "RsEvent with name:${notificationName} is successfully " + successMessage;
     	}
     	catch(Exception e) {
 			errorCaught = true;
 			errorMessage = e.getMessage();
     	}
 	}
-	
+
 	if(params.ownership != null)
 	{
-		try {		
+		try {
 	    	def scriptParams = [name:notificationName, act:params.ownership];
     		successMessage = CmdbScript.runScript("setOwnership", [params:scriptParams, web:[session:session]]);
+    		if(params.ownership == "true")
+    			successMessage = "taken"
+    		else
+    			successMessage = "released"
+			successMessage = "Ownership of RsEvent with name:${notificationName} is successfully  " + successMessage;
     	}
     	catch(Exception e) {
 			errorCaught = true;
 			errorMessage = e.getMessage();
     	}
 	}
-	
+
 	if(successMessage != null )
 	{
 		successMessage = StringEscapeUtils.escapeXml(successMessage);

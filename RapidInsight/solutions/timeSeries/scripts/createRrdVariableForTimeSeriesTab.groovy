@@ -1,5 +1,3 @@
-RrdVariable.removeAll()
-RrdArchive.removeAll()
 
 def oneH = RrdArchive.add(name:"1h1m", function:"AVERAGE", xff:0.5, step:1, row:60)
 def sixH = RrdArchive.add(name:"6h4m", function:"AVERAGE", xff:0.5, step:4, row:90)

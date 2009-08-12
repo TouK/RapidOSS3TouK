@@ -88,7 +88,6 @@ public class ListeningAdapterRunner implements AdapterStateProvider
 
             scriptObject = createScriptObject(script, listeningDatasource);
             def scriptLogger = scriptObject.logger;
-            println scriptLogger;
             try {
                 scriptObject.run();
             }

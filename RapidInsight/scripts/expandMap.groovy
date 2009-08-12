@@ -51,21 +51,13 @@ nodes.each{nodeParam->
 
 }
 
-println "deviceMap"
-deviceMap.each{ key, val ->
-    println "device ${key} ${val}"
-}
-
 def deviceSet = [:]
 deviceMap.each{deviceName, deviceConfigMap->
-    println "iterating device ${deviceName}"
     deviceSet[deviceName] = deviceConfigMap;
     if(deviceConfigMap.expanded == "true")
     {
-        println "gonna expand device"
-        deviceConfigMap.expandable = "true"        
+        deviceConfigMap.expandable = "true"
         def links=getLinksofDevice(deviceName);
-        println "links of device ${links}"
         links.each {link->
             def otherSide = getOtherSideName(link, deviceName);
 

@@ -218,8 +218,16 @@ class ScriptController {
         }
         else
         {
-            flash.message = SCRIPT_DOESNOT_EXIST
-            redirect(action: list, controller: 'script');
+            if(params.format!="xml")
+            {
+                flash.message = SCRIPT_DOESNOT_EXIST;
+                redirect(action: list, controller: 'script');
+            }
+            else
+            {
+                render(text: ControllerUtils.convertErrorToXml("${params.id} ${SCRIPT_DOESNOT_EXIST}"), contentType: "text/xml");
+            }
+
         }
     }
 

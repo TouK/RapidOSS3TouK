@@ -276,7 +276,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         }
     }
 
-    public void testRunReturnsErrorIfScriptDoesnotExist()
+    public void testRunReturnsErrorIfScriptDoesnotExistForHtml()
     {
         String scriptName = "script1"
         try
@@ -286,6 +286,35 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.run();
             assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
             assertEquals("/script/list", scriptController.response.redirectedUrl);
+
+            IntegrationTestUtils.resetController (scriptController);            
+            scriptController.params["id"] = scriptName;
+            scriptController.params["format"] = "html";
+            scriptController.run();
+            assertEquals(ScriptController.SCRIPT_DOESNOT_EXIST, scriptController.flash.message);
+            assertEquals("/script/list", scriptController.response.redirectedUrl);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testRunReturnsErrorIfScriptDoesnotExistForXml()
+    {
+        String scriptName = "script1"
+        try
+        {
+            def scriptController = new ScriptController();
+            scriptController.params["id"] = scriptName;
+            scriptController.params["format"] = "xml";
+            scriptController.run();            
+            assertEquals (GrailsWebUtil.getContentType("text/xml", "").toLowerCase(), scriptController.response.contentType.toLowerCase());
+            def content = scriptController.response.contentAsString;
+            def errorsXml = new XmlSlurper().parseText(content);
+            def errors = errorsXml.Error;
+            assertEquals(1, errors.size());
+            assertEquals("${scriptName} ${ScriptController.SCRIPT_DOESNOT_EXIST}",errors[0].@"error".toString())            
         }
         finally
         {

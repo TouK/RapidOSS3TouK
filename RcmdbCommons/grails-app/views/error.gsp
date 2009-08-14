@@ -1,4 +1,4 @@
-<%@ page import="groovy.xml.MarkupBuilder" %>
+<%@ page import="groovy.xml.MarkupBuilder; com.ifountain.rcmdb.mobile.MobileUtils" %>
 <g:if test="${params.format == 'xml'}">
     <% response.contentType = "text/xml" %>
     <%
@@ -10,6 +10,21 @@
         println sw.toString()
     %>
 </g:if>
+<g:elseif test="${MobileUtils.isMobile(request)}">
+    <% response.contentType = "text/xml" %>
+    <div>
+        <strong>Message:</strong> ${exception.message} <br/>
+        <strong>Caused by:</strong> ${exception.cause.message} <br/>
+        <strong>Class:</strong> ${exception.className} <br/>
+        <strong>At Line:</strong> [${exception.lineNumber}] <br/>
+        <strong>Code Snippet:</strong><br/>
+        <div class="snippet">
+            <g:each var="cs" in="${exception.codeSnippet}">
+                ${cs?.encodeAsHTML()}<br/>
+            </g:each>
+        </div>
+    </div>
+</g:elseif>
 <g:else>
     <% response.contentType = "text/html" %>
     <html>

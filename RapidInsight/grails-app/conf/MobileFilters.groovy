@@ -1,3 +1,4 @@
+import com.ifountain.rcmdb.mobile.MobileUtils
 /**
  * Created by IntelliJ IDEA.
  * User: admin
@@ -9,10 +10,8 @@ class MobileFilters {
     def filters = {
         allURIs(uri: '/**') {
             before = {
-                String userAgent = String.valueOf(request.getHeader("user-agent")).toLowerCase();
-                if (userAgent.indexOf("mobile") >= 0 || userAgent.indexOf("ipod") >= 0 || userAgent.indexOf("iphone") >= 0)
-                {
-                	if(request.getRequestURL().indexOf("/auth") < 0 && request.getRequestURL().indexOf("/layouts") < 0  && request.getRequestURL().indexOf("/mobile") < 0)
+                if(MobileUtils.isMobile(request)) {
+                    if(request.getRequestURL().indexOf("/auth") < 0 && request.getRequestURL().indexOf("/layouts") < 0  && request.getRequestURL().indexOf("/mobile") < 0)
                     {
                     	response.sendRedirect("/RapidSuite/mobile/home.gsp");
                     }

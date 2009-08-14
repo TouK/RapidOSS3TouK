@@ -34,6 +34,11 @@
             <input id="targetUri" type="hidden" name="targetUri" value="/mobile/home.gsp">
         </fieldset>
         <a class="whiteButton" href="javascript:{}" onclick="this.parentNode.submit(); return false;">Login</a>
+        <g:if test="${params.flash != null}">
+        	<div style="margin-top: 20px; color:ff0000;">
+       	 		${params.flash}
+       		</div>
+        </g:if>
     </g:form>
 
 </body>

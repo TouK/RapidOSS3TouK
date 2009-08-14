@@ -4,6 +4,7 @@ import org.jsecurity.SecurityUtils
 import org.jsecurity.authc.AuthenticationException
 import org.jsecurity.authc.UsernamePasswordToken
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import com.ifountain.rcmdb.mobile.MobileUtils
 
 class AuthController {
     def jsecSecurityManager
@@ -11,26 +12,24 @@ class AuthController {
     def index = { redirect(action: 'login', params: params) }
 
     def login = {
-        String userAgent = String.valueOf(request.getHeader("user-agent")).toLowerCase();
-    	if(userAgent.indexOf("mobile") >= 0 || userAgent.indexOf("ipod") >= 0 || userAgent.indexOf("iphone") >= 0)         {
+        if(MobileUtils.isMobile(request)) {
         	redirect(action:'mobilelogin', params: params)
         }
         if(params.format == "xml"){
             render(contentType:'text/xml') {
                 Authenticate()
                 {
-                    Url(params.targetUri);    
+                    Url(params.targetUri);
                 }
             }
         }
         else{
             return [ username: params.login, rememberMe: (params.rememberMe != null), targetUri: params.targetUri ]
         }
-
     }
 
     def mobilelogin = {
-    	return[username:params.login, targetUri: params.targetUri]
+    	return[username:params.login, targetUri: params.targetUri, flash : params.flash]
     }
 
     def signIn = {
@@ -57,7 +56,7 @@ class AuthController {
             ExecutionContextManagerUtils.addUsernameToCurrentContext (session.username)
             def statClass=this.class.classLoader.loadClass("Statistics");
             statClass.record("user.login","");
-            
+
             if(params.format == "xml"){
                 render(contentType:'text/xml') {
                     Successful("Successfully logged in.")
@@ -74,6 +73,7 @@ class AuthController {
             log.info "Authentication failure for user '${params.login}'."
             flash.message = message(code: "login.failed")
 
+
             // Keep the username and "remember me" setting so that the
             // user doesn't have to enter them again.
             def m = [ login: params.login ]
@@ -85,6 +85,9 @@ class AuthController {
             if (params.targetUri) {
                 m['targetUri'] = params.targetUri
             }
+
+            //ri mobile needs flash message in params
+            m['flash'] = flash.message
 
             // Now redirect back to the login page.
             if(params.format == "xml"){

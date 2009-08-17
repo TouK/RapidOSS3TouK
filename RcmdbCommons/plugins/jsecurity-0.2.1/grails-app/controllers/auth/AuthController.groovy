@@ -14,6 +14,7 @@ class AuthController {
     def login = {
         if(MobileUtils.isMobile(request)) {
         	redirect(action:'mobilelogin', params: params)
+        	return;
         }
         if(params.format == "xml"){
             render(contentType:'text/xml') {

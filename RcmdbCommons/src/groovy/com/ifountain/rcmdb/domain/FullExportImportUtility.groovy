@@ -446,9 +446,14 @@ class FullExportImportUtility {
         logger.info("   exported model ${modelName}");
     }
     protected def exportXml(strXml, fileName){
-        def fw = new FileWriter(new File(fileName));
-        fw.write(strXml);
-        fw.close();
+//        def fw = new FileWriter(new File(fileName));
+//        fw.write(strXml);
+//        fw.close();
+
+        BufferedWriter out = new BufferedWriter(new OutputStreamWriter
+                         (new FileOutputStream(new File(fileName)),"UTF8"));
+        out.write(strXml);
+        out.close();
     }
 
     protected def importModelFiles(exportDir)

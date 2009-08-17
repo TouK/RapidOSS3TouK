@@ -991,6 +991,12 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             rel.update(source:"relsource");
             assertFalse(rel.hasErrors());
         }
+
+        //for unicode character checking
+        def unicodeObj1=modelClassMap.RsTopologyObject.add(name:"unicodeObj1"+"\u015E");
+        def unicodeObj2=modelClassMap.RsTopologyObject.add(name:"unicodeObj2"+"\u015F");
+        assertFalse(unicodeObj1.hasErrors());
+        assertFalse(unicodeObj2.hasErrors());
     }
 
     public void testFullExportWithAllModels()
@@ -1019,21 +1025,23 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         def filesToCheck=[];
         filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:5])
         filesToCheck.add([name:"RsTopologyObject_1.xml",model:"RsTopologyObject",objectCount:5])
+        filesToCheck.add([name:"RsTopologyObject_2.xml",model:"RsTopologyObject",objectCount:2])
         filesToCheck.add([name:"RsGroup_0.xml",model:"RsGroup",objectCount:2])
         filesToCheck.add([name:"RsTicket_0.xml",model:"RsTicket",objectCount:2])
         filesToCheck.add([name:"connection.Connection_0.xml",model:"connection.Connection",objectCount:1])
         filesToCheck.add([name:"relation.Relation_0.xml",model:"relation.Relation",objectCount:5])
         filesToCheck.add([name:"relation.Relation_1.xml",model:"relation.Relation",objectCount:4])
 
+    
         assertEquals(filesToCheck.size(),exportDir.listFiles().size());
 
         def xmlData=[:];
 
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[0],filesToCheck[1]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[2]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[0],filesToCheck[1],filesToCheck[2]],false);
         xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[3]],false);
         xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[4]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[5],filesToCheck[6]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[5]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[6],filesToCheck[7]],false);
 
 
         def repoResults=[];
@@ -1693,12 +1701,12 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
         fullExport.fullExport(EXPORT_CONFIG);
 
 
-
         def IMPORT_CONFIG=[:];
         IMPORT_CONFIG.importDir=directoryPaths.importDir;
         IMPORT_CONFIG.exportDir=directoryPaths.exportDir;
 
         fullExport.fullImport(IMPORT_CONFIG);
+
 
         //we save current objects in repo
         def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","connection.Connection","relation.Relation"];
@@ -1707,68 +1715,129 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
            def modelAlias=fullExport.getModelAlias(modelName);
            oldRepoResults[modelName]=modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}",[sort:"id",order:"asc"]);
         }
-        def oldInderDir=System.getProperty("index.dir");
-        assertTrue(System.getProperty("index.dir").compareTo(EXPORT_CONFIG.backupDir)!=0);
+       
+        //we delete temporary backup dir and make sure that importDir is not export backup dir or index.dir
+        FileUtils.deleteDirectory (new File(EXPORT_CONFIG.backupDir));
+        assertFalse(IMPORT_CONFIG.importDir.compareTo(EXPORT_CONFIG.backupDir)==0);
+        assertFalse(IMPORT_CONFIG.importDir.compareTo(System.getProperty("index.dir"))==0);
 
-        //we remove all instances check that no instance exists
+        fullExport.beginCompass(IMPORT_CONFIG.importDir);
+        def tx=fullExport.beginCompassTransaction();
+        try{
+            //check all data is same
+             oldRepoResults.each{ modelName , oldObjects ->
+                def modelAlias=fullExport.getModelAlias(modelName);
+                println "searching modelAlias ${modelAlias}"
+                def query="alias:${modelAlias.exactQuery()}";
+                CompassQuery queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+                queryObj.addSort ("id")
+                queryObj.setAliases ([modelAlias] as String[]);
+                CompassHits hits = queryObj.hits();
+                assertEquals(oldObjects.size(),hits.length());
 
-        modelsToCheck.each{ modelName ->
-           modelClassMap[modelName].removeAll()
-           assertEquals(0,modelClassMap[modelName].countHits("alias:*"));
-        }
+                hits.length().times{ dataIndex->
+                    def newObject=hits.data(dataIndex);
+                    def oldObject=oldObjects[dataIndex];
+                    assertEquals(oldObject.id,newObject.id);
 
-        def tempBackupDir="../tempbackupdir";
-        assertTrue(tempBackupDir.compareTo(EXPORT_CONFIG.backupDir)!=0)
-        def ant=new AntBuilder();
-        ant.copy(todir: tempBackupDir) {
-            ant.fileset(dir: EXPORT_CONFIG.backupDir)
-        }
+//                    if(newObject.class.name=="RsTopologyObject")
+//                    {
+//                        if(newObject.name.indexOf("unicodeObj")>=0)
+//                        {
+//                            println "old object ${oldObject.name}";
+//                            printCharacters(oldObject.name);
+//                            println "new object ${newObject.name}";
+//                            printCharacters(newObject.name);
+//                        }
+//                    }
 
-        this.indexDir=tempBackupDir;
-        initializeFullExportModels();
-        assertTrue(System.getProperty("index.dir").compareTo(tempBackupDir)==0);
-                
-        oldRepoResults.each{ modelName , oldObjects ->
-            def modelAlias=fullExport.getModelAlias(modelName);
-            def newObjects=modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}",[sort:"id",order:"asc"]);
-            assertEquals(oldObjects.size(),newObjects.size());
-            oldObjects.size().times{ index ->
-                def oldObject=oldObjects[0];
-                def newObject=newObjects[0];
-                assertNotSame(oldObject,newObject);
-                assertEquals(oldObject.id,newObject.id);
-                def oldMap=oldObject.asMap();
-                oldMap.each{ propName , propVal ->
-                    assertEquals(propVal,newObject.getProperty(propName))
+                    def oldMap=oldObject.asMap();
+                    oldMap.each{ propName , propVal ->
+                        assertEquals(propVal,newObject.getProperty(propName))
+                    }
                 }
 
             }
 
+            //relation model is imported like other models ( without calling addRelation() )
+            //check relations of models is accessible and correct
+            def query="name:parentObject*";
+            CompassQuery queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+            queryObj.addSort ("id")
+            queryObj.setAliases (["RsTopologyObject"] as String[]);
+            CompassHits hits = queryObj.hits();
+            assertEquals(5,hits.length());
+            
+            hits.length().times{ dataIndex->
+                def parentObject=hits.data(dataIndex);
+                def childObjects=parentObject.childObjects;
+                assertEquals(1,childObjects.size());
+                assertEquals(parentObject.name.replace("parent","child"),childObjects[0].name);
+                assertEquals(0,childObjects[0].childObjects.size());
+                assertEquals(1,childObjects[0].parentObjects.size());
+            }
+
+            //check ticket relations
+            query="name:ticket*";
+            queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+            queryObj.addSort ("name")
+            queryObj.setAliases (["RsTicket"] as String[]);
+            hits = queryObj.hits();
+            assertEquals(2,hits.length());
+
+            def ticket1=hits.data(0);
+            def ticket2=hits.data(1);
+
+            assertEquals(null,ticket1.parentTicket);
+            assertEquals(ticket2.id,ticket1.subTickets[0].id);
+            assertEquals(ticket1.id,ticket2.parentTicket.id);
+
+            //check group relations
+            query="name:group*";
+            queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+            queryObj.addSort ("name")
+            queryObj.setAliases (["RsGroup"] as String[]);
+            hits = queryObj.hits();
+            assertEquals(2,hits.length());
+
+            def group1=hits.data(0);
+            def group2=hits.data(1);
+
+            assertEquals(ticket1.id,group1.relatedTickets[0].id);
+            assertEquals(ticket1.id,group2.relatedTickets[0].id);
+            assertEquals(ticket2.id,group2.relatedTickets[1].id);
+
+            //unicode checking
+            query="name:unicodeObj*";
+            queryObj = fullExport.getCompassSession().queryBuilder().queryString(query).toQuery();
+            queryObj.addSort ("name")
+            queryObj.setAliases (["RsTopologyObject"] as String[]);
+            hits = queryObj.hits();
+            assertEquals(2,hits.length());
+
+            def uniobj1=hits.data(0);
+            def uniobj2=hits.data(1);
+
+            assertEquals("unicodeObj1"+"\u015E",uniobj1.name);
+            assertEquals("unicodeObj2"+"\u015F",uniobj2.name);
+
         }
-        //relation model is imported like other models ( without calling addRelation() )
-        //check relations of models is accessible and correct
-        def parentObjects=modelClassMap.RsTopologyObject.searchEvery("name:parentObject*");
-        assertEquals(5,parentObjects.size());
-        parentObjects.each{ parentObject ->
-            def childObjects=parentObject.childObjects;
-            assertEquals(1,childObjects.size());
-            assertEquals(parentObject.name.replace("parent","child"),childObjects[0].name);
-            assertEquals(0,childObjects[0].childObjects.size());
-            assertEquals(1,childObjects[0].parentObjects.size());
+        finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
         }
+    }
 
-        def ticket1=modelClassMap.RsTicket.get(name:"ticket1");
-        def ticket2=modelClassMap.RsTicket.get(name:"ticket2");
-        assertEquals(null,ticket1.parentTicket);
-        assertEquals(ticket2.id,ticket1.subTickets[0].id);
-        assertEquals(ticket1.id,ticket2.parentTicket.id);
 
-        def group1=modelClassMap.RsGroup.get(name:"group1");
-        assertEquals(ticket1.id,group1.relatedTickets[0].id);
+    public def printCharacters(aString)
+    {
+        println "Character Codes Of : ${aString}"
+        def bbs=aString.getBytes();
 
-        def group2=modelClassMap.RsGroup.get(name:"group2");
-        assertEquals(ticket1.id,group2.relatedTickets[0].id);
-        assertEquals(ticket2.id,group2.relatedTickets[1].id);
+        bbs.length.times{
+            println "${bbs[it]} ${(int)(aString.charAt(it))} ${aString.charAt(it)} "
+        }
+        println "Character Codes Ended : ${aString}"
 
     }
 

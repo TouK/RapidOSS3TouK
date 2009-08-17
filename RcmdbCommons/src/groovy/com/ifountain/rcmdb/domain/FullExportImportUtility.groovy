@@ -335,7 +335,7 @@ class FullExportImportUtility {
                             objectIds.add(object.id);
                             MODEL_IDS_TO_EXPORTED_WITH_RELATIONS[object.id]=true;
                         }
-                        def props=object.asMap(nonFederatedPropNames);
+                        def props=getObjectAsMapForExport(object,nonFederatedPropNames);
                         builder.Object(props);
                     }
                 }
@@ -359,6 +359,22 @@ class FullExportImportUtility {
         //println " ${modelName} results : ${objects}";
 
         logger.info("   exported model ${modelName}");
+    }
+    protected def getObjectAsMapForExport(object,nonFederatedPropNames)
+    {
+        def props=object.asMap(nonFederatedPropNames);
+        props.each{ propName , propVal ->
+            try{
+                props[propName]=convertProperty(String, propVal);
+            }
+            catch(ConversionException exception)
+            {
+                logger.warn("fullExport : cannot convert property ${modelName}.${propName} with val ${propVal} to String ");
+                throw new Exception("fullExport : cannot convert property ${modelName}.${propName} with val ${propVal} to String",exception);
+            }
+
+        }
+        return props;
     }
     protected def markRelationsOfObjectIds(objectIds)
     {
@@ -384,6 +400,8 @@ class FullExportImportUtility {
     {
         def modelName="relation.Relation";
         logger.info("   exporting model ${modelName}");
+        def modelClass = getModel(modelName)
+        def nonFederatedPropNames = modelClass.getNonFederatedPropertyList().name;
 
         def hits=getModelHits(modelName,"alias:*");
 
@@ -416,7 +434,7 @@ class FullExportImportUtility {
                             if(MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.containsKey(relationIds.objectId) && MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.containsKey(relationIds.reverseObjectId))
                             {
                                 relationCount++;
-                                def props=object.asMap();
+                                def props=getObjectAsMapForExport(object,nonFederatedPropNames);
                                 builder.Object(props);
                             }
                             else
@@ -508,13 +526,13 @@ class FullExportImportUtility {
         }
         catch(ConversionException exception)
         {
-            logger.warn("cannot convert property ${modelName}.${propName} with val ${propVal}");
-            throw new Exception("cannot convert property ${modelName}.${propName} with val ${propVal}",exception);
+            logger.warn("fullImport : cannot convert property ${modelName}.${propName} with val ${propVal} to ${propType}");
+            throw new Exception("fullImport : cannot convert property ${modelName}.${propName} with val ${propVal} to ${propType}",exception);
         }
         catch(Exception e)
         {
-            logger.warn("can not set property: ${modelName}.${propName} is missing , value ${propVal}");
-            throw new Exception("can not set property: ${modelName}.${propName} is missing , value ${propVal}",e);
+            logger.warn("fullImport :can not set property: ${modelName}.${propName} is missing , value ${propVal} to ${propType}");
+            throw new Exception("fullImport :can not set property: ${modelName}.${propName} is missing , value ${propVal} to ${propType}",e);
 
         }
     }

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger
 import org.apache.lucene.search.BooleanQuery
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -472,7 +473,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
             assertEquals(objectAttributes.size(),xmlAttributes.size())
             objectAttributes.each{ propName,propVal ->
-                assertEquals(propVal.toString(),xmlAttributes[propName]);
+                def converter = RapidConvertUtils.getInstance().lookup (String);
+                def convertedVal=converter.convert(String, propVal);
+                assertEquals(convertedVal,xmlAttributes[propName]);
             }
         }
     }
@@ -944,7 +947,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     private def initializeFullExportModels()
     {
-        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsTicket","relation.Relation","application.ObjectId","connection.Connection"];
+        def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsEventJournal","RsTicket","relation.Relation","application.ObjectId","connection.Connection"];
         def modelClasses=loadClasses(modelClassesNameList);
         def modelClassMap=getClassMapFromClassList(modelClasses);
         initialize(modelClasses,[],true);
@@ -992,6 +995,17 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
             assertFalse(rel.hasErrors());
         }
 
+        //for testing dates, long , string fields
+        3.times{
+            def eventA=modelClassMap.RsEvent.add(name:"event${it}a",owner:"owner${it}",acknowledged:false)
+            def eventB=modelClassMap.RsEvent.add(name:"event${it}b",owner:"owner${it}",acknowledged:true)
+            assertFalse(eventA.hasErrors());
+            assertFalse(eventB.hasErrors());
+
+            def journal=modelClassMap.RsEventJournal.add(eventName:"event${it}a",eventId:eventA.id,rsTime:new Date());            
+            assertFalse(journal.hasErrors());
+        }
+
         //for unicode character checking
         def unicodeObj1=modelClassMap.RsTopologyObject.add(name:"unicodeObj1"+"\u015E");
         def unicodeObj2=modelClassMap.RsTopologyObject.add(name:"unicodeObj2"+"\u015F");
@@ -1023,6 +1037,9 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
 
         def filesToCheck=[];
+        filesToCheck.add([name:"RsEvent_0.xml",model:"RsEvent",objectCount:5])
+        filesToCheck.add([name:"RsEvent_1.xml",model:"RsEvent",objectCount:1])
+        filesToCheck.add([name:"RsEventJournal_0.xml",model:"RsEventJournal",objectCount:3])
         filesToCheck.add([name:"RsTopologyObject_0.xml",model:"RsTopologyObject",objectCount:5])
         filesToCheck.add([name:"RsTopologyObject_1.xml",model:"RsTopologyObject",objectCount:5])
         filesToCheck.add([name:"RsTopologyObject_2.xml",model:"RsTopologyObject",objectCount:2])
@@ -1037,15 +1054,17 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def xmlData=[:];
 
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[0],filesToCheck[1],filesToCheck[2]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[3]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[4]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[5]],false);
-        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[6],filesToCheck[7]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[0],filesToCheck[1]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[2]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[3],filesToCheck[4],filesToCheck[5]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[6]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[7]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[8]],false);
+        xmlData.putAll checkXmlFiles(exportDir,[filesToCheck[9],filesToCheck[10]],false);
 
 
         def repoResults=[];
-        def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","connection.Connection","relation.Relation"];
+        def modelsToCheck=["RsTopologyObject","RsGroup","RsTicket","RsEvent","RsEventJournal","connection.Connection","relation.Relation"];
         modelsToCheck.each{ modelName ->
            def modelAlias=fullExport.getModelAlias(modelName);
            repoResults.addAll(modelClassMap[modelName].searchEvery("alias:${modelAlias.exactQuery()}"))

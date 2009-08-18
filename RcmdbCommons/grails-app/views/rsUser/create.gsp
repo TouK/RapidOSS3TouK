@@ -56,7 +56,7 @@
                                         <label for="${userChannelInfo.type}">${userChannelInfo.type}:</label>
                                     </td>
                                     <td valign="top" class="value ${hasErrors(bean: userChannelInfo, field: 'destination', 'errors')}">
-                                        <input type="text" id="${userChannelInfo.type}" name="${userChannelInfo.type}" value="${fieldValue(bean: userChannelInfo, field: 'destination')}"/>
+                                        <input type="text" class="inputtextfield" id="${userChannelInfo.type}" name="${userChannelInfo.type}" value="${fieldValue(bean: userChannelInfo, field: 'destination')}"/>
                                     </td>
                                 </tr>
                             </g:each>

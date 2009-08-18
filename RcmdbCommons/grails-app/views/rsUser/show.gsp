@@ -38,7 +38,13 @@
                             <td valign="top" style="text-align:left;" class="value">
                                 <ul>
                                     <g:each var="channelType" in="${RsUser.getChannelTypes()}">
-                                        <li>${rsUser.retrieveChannelInformation(channelType)?.toString()}</li>
+                                        <g:set var="channelInformation" value="${rsUser.retrieveChannelInformation(channelType)}"></g:set>
+                                        <g:if test="${channelInformation!=null}">
+                                            <li>${channelInformation?.toString()}</li>
+                                        </g:if>
+                                        <g:else>
+                                            <li>${channelType} : <u>no record</u> </li>
+                                        </g:else>
                                     </g:each>
                                 </ul>
                             </td>

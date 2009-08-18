@@ -53,7 +53,9 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 		Map props = asMap();
 		props.putAll (extraProperties)
 		def now=Date.now();
-		props.clearedAt = now
+		if(!props.clearedAt){
+            props.clearedAt = now    
+        }
 		props.activeId = id;
 		if(createJournal)
         {

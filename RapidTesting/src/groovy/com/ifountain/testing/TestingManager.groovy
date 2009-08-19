@@ -65,6 +65,10 @@ class TestingManager extends DirListener{
         initialize(this.config.testDirectories, [".svn":".svn", "CVS":"CVS"]);
     }
 
+    public void fileDeleted(File testFile)
+    {
+
+    }
     public void fileChanged(File testFile)
     {
         println "Found test :${testFile}"

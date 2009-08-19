@@ -61,6 +61,7 @@ public abstract class DirListener {
         }
     }
     abstract public void fileChanged(File file);
+    abstract public void fileDeleted(File file);
 
 
     public void destroy()

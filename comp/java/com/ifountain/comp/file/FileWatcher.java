@@ -20,8 +20,10 @@ package com.ifountain.comp.file;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +35,6 @@ import java.util.HashMap;
 public class FileWatcher implements Runnable{
     File dirToWatch;
     Map files = new HashMap();
-    Map dirs = new HashMap();
     long lastChangedFile = 0;
     DirListener listener;
     Map exludedFiles;
@@ -53,10 +54,14 @@ public class FileWatcher implements Runnable{
                 if(!dirToWatch.exists()) return;
                 File[] currentFiles = dirToWatch.listFiles();
                 long tmpLastModified = lastChangedFile;
+                Map oldFiles = new HashMap(files);
+                files.clear();
                 for(int i=0; i < currentFiles.length; i++)
                 {
 
                     File file = currentFiles[i];
+                    files.put(file.getName(), file);
+                    oldFiles.remove(file.getName());
                     try
                     {
                         if(!exludedFiles.containsKey(file.getCanonicalPath()) && !exludedFiles.containsKey(file.getName()))
@@ -78,6 +83,11 @@ public class FileWatcher implements Runnable{
                     }catch(IOException e)
                     {
                     }
+                }
+                Collection entries = oldFiles.values();
+                for(Iterator it = entries.iterator(); it.hasNext();)
+                {
+                    listener.fileDeleted((File)it.next());
                 }
 
                 lastChangedFile = tmpLastModified;

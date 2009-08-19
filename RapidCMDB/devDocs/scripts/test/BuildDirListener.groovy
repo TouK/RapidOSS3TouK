@@ -46,6 +46,10 @@ class BuildDirListener extends DirListener{
         return new File(toDir.getAbsolutePath()+"/"+file.getAbsolutePath().substring(fromDir.getAbsolutePath().length()+1));
     }
 
+    public void fileDeleted(File file)
+    {
+        
+    }
     public void fileChanged(File file)
     {
         try

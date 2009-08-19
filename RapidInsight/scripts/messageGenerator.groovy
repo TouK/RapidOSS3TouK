@@ -80,7 +80,7 @@ users.each {user ->
 
                 if (destination!=null)
                 {
-                    logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
+                    logger.debug("Processing RsMessageRule for userId:${userId}, destination is:${destination}");
                     //processing for RsEvent creates
                     //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
                     def newMaxCreateId = maxCreateId;

@@ -50,104 +50,112 @@ users.each {user ->
     withSession(user.username) {
         def userId = user.id;
         DESTINATIONS.each {destinationInfo ->
-            logger.debug("Going to search RsMessageRule for userId:${userId}");
+            logger.debug("Going to search RsMessageRule for userId:${userId} ${user.username}");
 
             def destinationType=destinationInfo.name;
             def channelType=destinationInfo.channelType;
 
-            def destination=RsMessageRule.getUserDestinationForChannel(user,channelType);
-            try{
-                RsMessageRule.validateUserDestinationForChannel(user,destination,channelType);
-                if(!RsMessageRule.isChannelType(channelType))
-                {
-                     destination="admin_destination";
-                }
-                if(destination == null)
-                {
-                    throw new Exception("Critical Error can not find destination for ${destinationType}");
-                }
-            }
-            catch(e)
+            def createRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND enabled:true")
+            def clearRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND clearAction:true AND enabled:true")
+            if(createRules.size()>0 || clearRules.size>0)
             {
-               logger.warn("Skipping search RsMessageRule for userId:${userId}. Reason ${e.getMessage()}");
-            }
-
-            if (destination!=null)
-            {
-                logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
-                //processing for RsEvent creates
-                //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
-                def newMaxCreateId = maxCreateId;
-                def createRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND enabled:true")
-                createRules.each {rule ->
-                    def delay = rule.delay
-                    def searchQuery = SearchQuery.get(id: rule.searchQueryId)
-                    if (searchQuery)
+                def destination=RsMessageRule.getUserDestinationForChannel(user,channelType);
+                try{
+                    RsMessageRule.validateUserDestinationForChannel(user,destination,channelType);
+                    if(!RsMessageRule.isChannelType(channelType))
                     {
-                        def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+                         destination="admin_destination";
+                    }
+                    if(destination == null)
+                    {
+                        throw new Exception("Critical Error can not find destination for ${destinationType}");
+                    }
+                }
+                catch(e)
+                {
+                   logger.warn("Skipping search RsMessageRule for userId:${userId}. Reason ${e.getMessage()}");
+                }
 
-                        logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
-                        def createdEvents = RsEvent.getPropertyValues(createQuery, ["id"], [sort: "id", order: "asc", max: 1000])
-                        def date = new Date()
-                        def now = date.getTime();
 
-                        createdEvents.each {event ->
-                            RsMessage.addEventCreateMessage(event, destinationType, destination, delay);
-                            if (newMaxCreateId < Long.valueOf(event.id) + 1)
-                            {
-                                newMaxCreateId = Long.valueOf(event.id) + 1;
+
+                if (destination!=null)
+                {
+                    logger.debug("Searching RsMessageRule for userId:${userId}, destination is:${destination}");
+                    //processing for RsEvent creates
+                    //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
+                    def newMaxCreateId = maxCreateId;
+                    createRules.each {rule ->
+                        def delay = rule.delay
+                        def searchQuery = SearchQuery.get(id: rule.searchQueryId)
+                        if (searchQuery)
+                        {
+                            def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+
+                            logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
+                            def createdEvents = RsEvent.getPropertyValues(createQuery, ["id"], [sort: "id", order: "asc", max: 1000])
+                            def date = new Date()
+                            def now = date.getTime();
+
+                            createdEvents.each {event ->
+                                RsMessage.addEventCreateMessage(event, destinationType, destination, delay);
+                                if (newMaxCreateId < Long.valueOf(event.id) + 1)
+                                {
+                                    newMaxCreateId = Long.valueOf(event.id) + 1;
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        logger.debug("SearchQuery with id ${rule.searchQueryId} does not exist")
-                    }
-
-                }
-                if (newMaxCreateId > maxCreateId)
-                {
-                    createIdLookup.update(value: String.valueOf(newMaxCreateId))
-                }
-
-
-                //process Event Clears, HistoricalEvent Creates
-                //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
-                def newMaxClearId = maxClearId;
-                def clearRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND clearAction:true AND enabled:true")
-                clearRules.each {rule ->
-                    def searchQuery = SearchQuery.get(id: rule.searchQueryId)
-                    if (searchQuery)
-                    {
-                        def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
-
-                        logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
-                        def clearedEvents = RsHistoricalEvent.getPropertyValues(clearQuery, ["id", "activeId"], [sort: "id", order: "asc", max: 1000])
-                        def date = new Date()
-                        def now = date.getTime();
-
-                        clearedEvents.each {event ->
-                            RsMessage.addEventClearMessage(event, destinationType, destination)
-                            if (newMaxClearId < Long.valueOf(event.id) + 1)
-                            {
-                                newMaxClearId = Long.valueOf(event.id) + 1;
-                            }
-
+                        else
+                        {
+                            logger.debug("SearchQuery with id ${rule.searchQueryId} does not exist")
                         }
+
                     }
-                    else
+                    if (newMaxCreateId > maxCreateId)
                     {
-                        logger.debug("SearchQuery with id ${rule.searchQueryId} does not exist")
+                        createIdLookup.update(value: String.valueOf(newMaxCreateId))
+                    }
+
+
+                    //process Event Clears, HistoricalEvent Creates
+                    //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
+                    def newMaxClearId = maxClearId;
+                    clearRules.each {rule ->
+                        def searchQuery = SearchQuery.get(id: rule.searchQueryId)
+                        if (searchQuery)
+                        {
+                            def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
+
+                            logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
+                            def clearedEvents = RsHistoricalEvent.getPropertyValues(clearQuery, ["id", "activeId"], [sort: "id", order: "asc", max: 1000])
+                            def date = new Date()
+                            def now = date.getTime();
+
+                            clearedEvents.each {event ->
+                                RsMessage.addEventClearMessage(event, destinationType, destination)
+                                if (newMaxClearId < Long.valueOf(event.id) + 1)
+                                {
+                                    newMaxClearId = Long.valueOf(event.id) + 1;
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            logger.debug("SearchQuery with id ${rule.searchQueryId} does not exist")
+                        }
+
+                    }
+                    if (newMaxClearId > maxClearId)
+                    {
+                        clearIdLookup.update(value: String.valueOf(newMaxClearId))
                     }
 
                 }
-                if (newMaxClearId > maxClearId)
-                {
-                    clearIdLookup.update(value: String.valueOf(newMaxClearId))
-                }
-
             }
-
+            else
+            {
+                logger.debug("No rules found for user userId:${userId} ${user.username}");
+            }
         }
     }
 }

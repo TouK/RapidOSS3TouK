@@ -50,11 +50,13 @@ users.each {user ->
     withSession(user.username) {
         def userId = user.id;
         DESTINATIONS.each {destinationInfo ->
-            logger.debug("Going to search RsMessageRule for userId:${userId} ${user.username}");
+
 
             def destinationType=destinationInfo.name;
             def channelType=destinationInfo.channelType;
-
+            
+            logger.debug("Going to search RsMessageRule for userId:${userId} ${user.username} with destinationType:${destinationType}");
+            
             def createRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND enabled:true")
             def clearRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND clearAction:true AND enabled:true")
             if(createRules.size()>0 || clearRules.size>0)
@@ -154,7 +156,7 @@ users.each {user ->
             }
             else
             {
-                logger.debug("No rules found for user userId:${userId} ${user.username}");
+                logger.debug("No rules found for user userId:${userId} ${user.username}  with destinationType:${destinationType}");
             }
         }
     }

@@ -25,4 +25,7 @@ Statistics.record("system.usedMemory",used);
 
 def currentTime=new Date();
 def line = "Time: "+currentTime+"\tTotal: " +total + "\tFree: " + free + "\tUsed: " + used + "\n";
+
+logger.warn("\tTotal: " +total + "\tFree: " + free + "\tUsed: " + used );
+
 return line;

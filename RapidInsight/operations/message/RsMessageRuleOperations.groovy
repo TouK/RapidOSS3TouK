@@ -64,7 +64,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
        return RsMessageRuleOperations.getDestinations().findAll{!isChannelType(it.channelType)}.name;
     }
 
-    private static boolean isChannelType(String channelType)
+    public static boolean isChannelType(String channelType)
     {
         if(channelType != null && channelType != "")
         {

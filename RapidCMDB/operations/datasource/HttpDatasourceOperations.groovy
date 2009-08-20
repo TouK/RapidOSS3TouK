@@ -58,4 +58,9 @@ class HttpDatasourceOperations extends BaseDatasourceOperations{
     def doPostRequest(String url, Map params){
         return adapter.doPostRequest(url, params);
     }
+
+    def uploadFile(String url, String fieldName, String file, String fileName)
+    {
+        adapter.uploadFile (url, fieldName, new File(file), fileName);        
+    }
 }

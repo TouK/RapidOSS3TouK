@@ -37,6 +37,7 @@ class GetBytesAction implements Action{
     }
 
     public void execute(IConnection conn) {
+        def completeUrl = HttpActionUtils.getCompleteUrl(conn.getBaseUrl(), this.url);
         bytes = conn.getHttpConnection().getBytes(completeUrl, params);
     }
 

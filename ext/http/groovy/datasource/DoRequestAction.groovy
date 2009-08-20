@@ -45,7 +45,7 @@ public class DoRequestAction implements Action {
 
     public void execute(IConnection conn) throws Exception {
 
-        String completeUrl = getCompleteUrl(conn.getBaseUrl());
+        String completeUrl = HttpActionUtils.getCompleteUrl(conn.getBaseUrl(), this.url);
         logger.debug("Making the request:\n" + completeUrl);
         if(type == POST)
         {
@@ -58,15 +58,6 @@ public class DoRequestAction implements Action {
         logger.debug("Response received:\n"+completeUrl);
     }
 
-    protected String getCompleteUrl(String baseUrl){
-        if(baseUrl.length() > 0 && baseUrl.charAt(baseUrl.length() -1) == '/'){
-            baseUrl = baseUrl.substring(0, baseUrl.length() -1)
-        }
-        if(url.length() > 0 && url.charAt(0) == '/'){
-            url = url.substring(1);
-        }
-        return baseUrl + "/" + url;
-    }
 
     public String getResponse() {
         return response;

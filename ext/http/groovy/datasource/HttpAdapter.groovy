@@ -70,7 +70,12 @@ public class HttpAdapter extends BaseAdapter{
     public String doGetRequest(String url, Map params) throws Exception{
         return doRequest(url, params, DoRequestAction.GET);
     }
-    
+
+    public void uploadFile(String url, String fieldName, File fileTobeUploaded, String fileName) throws Exception{
+        UploadFileAction action = new UploadFileAction(logger, url, fieldName, fileTobeUploaded, fileName);
+        executeAction (action);
+    }
+
     public String doPostRequest(String url, Map params) throws Exception{
         return doRequest(url, params, DoRequestAction.POST);
     }

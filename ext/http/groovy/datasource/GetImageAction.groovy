@@ -37,7 +37,7 @@ class GetImageAction implements Action{
        this.params = params;
     }
     public void execute(IConnection conn) {
-       String completeUrl = conn.getBaseUrl() + url;
+       String completeUrl = HttpActionUtils.getCompleteUrl(conn.getBaseUrl(), this.url);
        image =  conn.getHttpConnection().getImage(completeUrl, params);
     }
 

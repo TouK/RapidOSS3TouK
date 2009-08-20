@@ -20,11 +20,12 @@ package http.datasource
 
 import com.ifountain.comp.utils.HttpStatusException
 import com.ifountain.comp.utils.HttpUtils
-import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpException
+import org.apache.commons.httpclient.methods.PostMethod;
 
 class HttpUtilsMock extends HttpUtils{
         public boolean willThrowException = false;
-
+        public List postMethodsExecuted = [];
         public String doGetRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException {
             if(willThrowException){
                 throw new HttpException();
@@ -38,4 +39,11 @@ class HttpUtilsMock extends HttpUtils{
             }
             return "<PostRequest></PostRequest>";
         }
+
+    public String executePostMethod(PostMethod post) {
+        postMethodsExecuted << post;
+        return "<PostRequest></PostRequest>"; 
+    }
+
+
     }

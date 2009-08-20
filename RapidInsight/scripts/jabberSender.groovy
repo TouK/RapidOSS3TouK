@@ -38,7 +38,7 @@ if(ds!=null)
             }
             catch(e)
             {
-                logger.warn("Error occured while sending message.Reason ${e}",e);
+                logger.warn("Error occured while sending message.Reason ${e}");
             }
             ////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ if(ds!=null)
             }
             catch(e)
             {
-                logger.warn("Error occured while sending email.Reason ${e}",e);
+                logger.warn("Error occured while sending email.Reason ${e}");
             }
             ////////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////

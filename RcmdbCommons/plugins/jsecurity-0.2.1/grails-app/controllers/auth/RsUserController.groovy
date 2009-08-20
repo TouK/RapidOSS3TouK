@@ -188,7 +188,13 @@ class RsUserController {
 
             if(exception==null)
             {
+
                 userProps.password= params["password1"];
+                if(userProps.password==null || userProps.password=="")
+                {
+                    userProps.remove("password");    
+                }
+
                 try{
                     def propsToSave=[:];
                     propsToSave.putAll(userProps);

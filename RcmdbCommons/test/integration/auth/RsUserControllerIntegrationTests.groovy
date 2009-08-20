@@ -484,8 +484,11 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def rsUserUpdated=RsUser.get(id:rsUser.id);
         assertEquals("User ${rsUserUpdated.id} updated",controller.flash.message);
-
         assertEquals("/rsUser/show/${rsUserUpdated.id}", controller.response.redirectedUrl);
+
+        assertTrue(rsUserUpdated.isPasswordSame("123"))
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}2"));
 
         def userGroups=rsUserUpdated.groups;
         assertEquals(1,userGroups.size());
@@ -496,8 +499,31 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals("email",userInformations[0].type);
         assertEquals("useremail2",userInformations[0].destination);
 
-        assertEquals(1,RsUser.countHits("username:${testUsername}2"));
         assertEquals(1,ChannelUserInformation.countHits("type:email"));
+    }
+    public void testUpdateUserDoesNotUpdatePasswordWhenPasswordIsEmpty()
+    {
+        def rsUser=addTestUser();
+
+        //update params are different than add params to check beans
+        def controller=new RsUserController();
+        controller.params["id"]=rsUser.id.toString();
+        controller.params["username"]="${testUsername}2";
+        controller.params["password1"]="";
+        controller.params["password2"]="";
+        controller.params["groups.id"]=userGroupId.toString();
+        controller.update();
+
+        def rsUserUpdated=RsUser.get(id:rsUser.id);
+        assertEquals("User ${rsUserUpdated.id} updated",controller.flash.message);
+
+        assertEquals("/rsUser/show/${rsUserUpdated.id}", controller.response.redirectedUrl);
+
+        assertTrue(rsUserUpdated.isPasswordSame("abc"))
+
+        assertEquals(1,RsUser.countHits("username:${testUsername}2"));
+
+
     }
 
     public void testChangeProfileGeneratesErrorMessageWhenUserNotFound()

@@ -47,9 +47,6 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         clearMetaClasses();
 
 
-        RsTemplate.metaClass.'static'.render={ String templatePath,params ->
-            return "___renderTestResult";
-        }
 
         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,SametimeConnector,SametimeConnection,SametimeDatasource], []);
         CompassForTests.addOperationSupport (SametimeConnector,SametimeConnectorOperations);
@@ -58,6 +55,9 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
         RsApplicationTestUtils.clearProcessors();
+        RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
+            return "___renderTestResult";
+        }
 
         buildConnectorParams();
 
@@ -130,7 +130,7 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     void testSenderCallsRenderTemplateAndPassesTemplateResultToSendMessage()
     {
         def renderTemplateParams=[];
-        RsTemplate.metaClass.'static'.render={ String templatePath,params ->
+        RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             renderTemplateParams.add([templatePath:templatePath,params:params]);
             return "renderTestResult";
         }

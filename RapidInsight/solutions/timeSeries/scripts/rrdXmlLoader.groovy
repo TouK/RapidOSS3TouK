@@ -1,5 +1,9 @@
 import groovy.xml.*;
 dsname = params.name;
+if(dsname == null)
+{
+    throw new Exception("Variable name should be specified")
+}
 
 def sw = new StringWriter();
 def mb = new MarkupBuilder(sw);
@@ -18,7 +22,7 @@ mb.RootTag{
         }
     }
     mb.Annotations{
-        RsEvent.searchEvery("elementName:${dataUtil.resource}").each{ event ->
+        RsEvent.searchEvery("elementName:${dataUtil.resource.exactQuery()}").each{ event ->
             def eventPropToDisplay=["severity","count"];
             def eventProps=[time:event.changedAt,label:event.name];
             eventPropToDisplay.each{  propName ->

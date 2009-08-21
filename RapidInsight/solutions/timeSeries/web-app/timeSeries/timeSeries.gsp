@@ -152,7 +152,7 @@ showInDialogVisible="params.data.nodeType=='Object'"
 </rui:flexLineChart>
 
 <%
-functionActionCondition6133Condition="window.currentDevice=params.data.resource"
+functionActionCondition6133Condition="window.currentDevice=params.data.resource;true;"
 %>
 
 <rui:action id="graph" type="function" function="refresh" componentId='FlexLineChart' condition="$functionActionCondition6133Condition"
@@ -173,7 +173,7 @@ functionActionCondition6143Condition=""
 
 >
 
-    <rui:functionArg><![CDATA['changedAt: ' +params.data.time +' AND elementName: ' +window.currentDevice]]></rui:functionArg>
+    <rui:functionArg><![CDATA['changedAt: ' +params.data.time +' AND elementName: ' +window.currentDevice.toExactQuery()]]></rui:functionArg>
 
     <rui:functionArg><![CDATA['default']]></rui:functionArg>
 
@@ -193,7 +193,7 @@ functionActionCondition6162Condition=""
 
 >
 
-    <rui:functionArg><![CDATA[ 'changedAt:[' +params.data.start  + ' TO ' +params.data.end +'] AND elementName: ' +window.currentDevice]]></rui:functionArg>
+    <rui:functionArg><![CDATA[ 'changedAt:[' +params.data.start  + ' TO ' +params.data.end +'] AND elementName: ' +window.currentDevice.toExactQuery()]]></rui:functionArg>
 
     <rui:functionArg><![CDATA['default']]></rui:functionArg>
 

@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import javax.imageio.ImageIO
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -56,6 +57,7 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
     private void clearMetaClasses(){
          ExpandoMetaClass.disableGlobally();
          GroovySystem.metaClassRegistry.removeMetaClass(Grapher);
+         GroovySystem.metaClassRegistry.removeMetaClass(ControllerUtils);
          ExpandoMetaClass.enableGlobally();
     }
 

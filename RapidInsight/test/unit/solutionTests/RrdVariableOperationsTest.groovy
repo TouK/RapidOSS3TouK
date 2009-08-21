@@ -3,21 +3,24 @@ package solutionTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.rrd.RrdUtils
+import com.ifountain.rcmdb.domain.util.ControllerUtils
+import org.apache.commons.io.FileUtils
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Aug 11, 2009
- * Time: 5:16:39 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Aug 11, 2009
+* Time: 5:16:39 PM
+* To change this template use File | Settings | File Templates.
+*/
 class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     
     String fileName = "variable.rrd";
     String fileNameExt = "variable2.rrd";
-    String imageFileName = "imageOutput.png"
-    String fileDirectory = "rrdFiles"
+    String imageDirectory = "../testOutput"
+    String imageFilePath = "${imageDirectory}/imageOutput.png"
+    String rrdRootDirectory = "rrdFiles"
     String rrdFileName = "testRrd.rrd";
-    String testImageFile = "testImage.png"
 
     def RrdVariable;
     def RrdArchive;
@@ -28,6 +31,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         GroovyClassLoader loader = new GroovyClassLoader();
         
         def op_base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/timeSeries/operations"
@@ -44,20 +48,29 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RrdArchive, RrdArchiveOperations);
         RrdVariable.removeAll()
         RrdArchive.removeAll()
-        def rrdFile = new File(fileDirectory);
+        def rrdFile = new File(rrdRootDirectory);
+        def imageDirFile = new File(imageDirectory);
+        FileUtils.deleteDirectory (rrdFile)
+        FileUtils.deleteDirectory (imageDirFile)
         rrdFile.mkdirs();
-        new File(fileDirectory + "/" + fileName).delete()
-        new File(fileDirectory + "/" + imageFileName).delete()
+        imageDirFile.mkdirs();
     }
 
     public void tearDown() {
-        new File(fileDirectory + "/" + fileName).delete()
-        new File(fileDirectory + "/" + fileNameExt).delete()
-        new File(fileDirectory + "/" + imageFileName).delete()
-        new File(fileDirectory).delete()
+        FileUtils.deleteDirectory (new File(rrdRootDirectory))
+        FileUtils.deleteDirectory ( new File(imageDirectory))
         RrdVariable.removeAll()
         RrdArchive.removeAll()
+        clearMetaClasses();
         super.tearDown();
+    }
+
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RrdUtils);
+        GroovySystem.metaClassRegistry.removeMetaClass(ControllerUtils);
+        ExpandoMetaClass.enableGlobally();
     }
 
     public void testCreateDBConfigSuccessfulWithOneArchive() {
@@ -166,7 +179,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def dbConfig = RrdUtils.getDatabaseInfo(fileName)
 
-        assertEquals(fileDirectory + "/" + fileName, dbConfig["databaseName"])
+        assertEquals(rrdRootDirectory + "/" + fileName, dbConfig["databaseName"])
         assertEquals(300L, dbConfig["step"])
 
         def datapointList = []
@@ -311,9 +324,45 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12423,920808900000L)
 
         variable.graph(title:"Graph Without Template", startTime:920804400000L, endTime:920808000000L, type:"line",
-                       vlabel:"Vertical Label", color:"FF0000", description:"Red Line", destination: imageFileName)
+                       vlabel:"Vertical Label", color:"FF0000", description:"Red Line", destination: imageFilePath)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
+    }
+
+    public void testGraphWithoutDestination() {
+        boolean isGraphCalled = false;
+        RrdUtils.metaClass.static.graph = {Map config->
+            isGraphCalled = true;
+            assertEquals ("web", config["destination"]);
+        }
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        variable1.addArchive(archive.getMap())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L)
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+        variable2.addArchive(archive.getMap())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        def config = [:]
+        config["title"] = "Graph With Multiple Source"
+        config["startTime"] = 978300600000L
+        config["endTime"] = 978304200000L
+
+        config["rrdVariables"] = []
+        config["rrdVariables"].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
+        config["rrdVariables"].add([rrdVariable:"variable2", color:"00FF00", type:"line", description:"Variable 2"])
+
+        RrdVariable.internalGraphMultiple(config)
+        assertTrue (isGraphCalled);
+
     }
 
     public void testGraphWithDefaultProperties() {
@@ -349,9 +398,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12423,920808900000L)
 
         variable.graph(title:"Graph Without Template", startTime:920804400000L,
-                       endTime:920808000000L, destination:imageFileName)
+                       endTime:920808000000L, destination:imageFilePath)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithRPNSource() {
@@ -387,9 +436,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12423,920808900000L)
 
         variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400000L, endTime:920808000000L,
-                       rpn:"variable,1000,*", destination:imageFileName)
+                       rpn:"variable,1000,*", destination:imageFilePath)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphMultipleTakingTwoMap() {
@@ -439,11 +488,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         def graphConfig = [ title: "Graph With Multiple Source",
                 startTime: 978300600000L,
                 endTime: 978304200000L,
-                destination: imageFileName,
+                destination: imageFilePath,
                 ]
 
         RrdVariable.graphMultiple(varConf, graphConfig);
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithMultipleSource() {
@@ -490,15 +539,15 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["title"] = "Graph With Multiple Source"
         config["startTime"] = 978300600000L
         config["endTime"] = 978304200000L
-        config["destination"] = imageFileName
+        config["destination"] = imageFilePath
 
         config["rrdVariables"] = []
         config["rrdVariables"].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
         config["rrdVariables"].add([rrdVariable:"variable2", color:"00FF00", type:"line", description:"Variable 2"])
 
-        RrdVariable.graphMultiple(config)
+        RrdVariable.internalGraphMultiple(config)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithMultipleSourceByList() {
@@ -545,11 +594,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["title"] = "Graph With Multiple Source With Variable List"
         config["startTime"] = 978300600000L
         config["endTime"] = 978304200000L
-        config["destination"] = imageFileName
+        config["destination"] = imageFilePath
 
         RrdVariable.graphMultiple(["variable1", "variable2"], config)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithMultipleSourceandRPN() {
@@ -589,16 +638,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["title"] = "Graph With Multiple Source"
         config["startTime"] = 920804400000L
         config["endTime"] = 920808000000L
-        config["destination"] = imageFileName
+        config["destination"] = imageFilePath
 
         config["rrdVariables"] = []
         config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
-        RrdVariable.graphMultiple(config)
+        RrdVariable.internalGraphMultiple(config)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithSingleSourceandTemplate() {
@@ -640,16 +689,16 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["template"] = "templateSample"
         config["startTime"] = 920804400000L
         config["endTime"] = 920808000000L
-        config["destination"] = imageFileName
+        config["destination"] = imageFilePath
 
         config["rrdVariables"] = []
         config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
         config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
 
-        RrdVariable.graphMultiple(config)
+        RrdVariable.internalGraphMultiple(config)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testGraphWithMultipleSourceandTemplate() {
@@ -693,11 +742,11 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["template"] = "templateSample"
         config["startTime"] = 920804400000L
         config["endTime"] = 920808000000L
-        config["destination"] = imageFileName
+        config["destination"] = imageFilePath
 
         variable.graph(config)
 
-        assertTrue(new File(fileDirectory + "/" + imageFileName).exists())
+        assertTrue(new File(imageFilePath).exists())
     }
 
     public void testFileSource() {

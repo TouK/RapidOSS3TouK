@@ -106,16 +106,16 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
        vlist.add(rVariable);
        config[RRD_VARIABLES] = vlist;
 
-       return graphMultiple(config);
+       return internalGraphMultiple(config);
     }
 
-    static def graphMultiple(listOfVariables, config=[:]){
+    static def graphMultiple(List listOfVariables, Map config=[:]){
         def variableList = []
         listOfVariables.each{
             variableList.add([rrdVariable:it.toString()])
         }
         config[RRD_VARIABLES] = variableList
-        graphMultiple(config)
+        return internalGraphMultiple(config)
     }
 
     static def graphMultiple(Map varConf, Map graphConf=[:]){
@@ -129,13 +129,13 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             varmap[RRD_VARIABLE] = it;
             config[RRD_VARIABLES].add(varmap) ;
         }
-        graphMultiple(config);
+        return internalGraphMultiple(config);
     }
 
-    static def graphMultiple(Map config){
+    static def internalGraphMultiple(Map config){
         String typeVar = "line";
 
-        Map fConfig = getGeneralSettingsMap(config);
+
 
         if(config.containsKey(TYPE) ){
             typeVar = config.get(TYPE);
@@ -147,6 +147,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         if(!config.containsKey(RRD_VARIABLES) ){
             throw new Exception("No rrd variable is specified");
         }
+        Map fConfig = getGeneralSettingsMap(config);
         def rrdVariables = config.get(RRD_VARIABLES);
 
         def datasourceList = [];

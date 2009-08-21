@@ -27,6 +27,8 @@ import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.comp.utils.SmartWait
 import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
 import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.datasource.RunnerObject
+import com.ifountain.rcmdb.datasource.ListeningAdapterRunner
 
 /**
 * Created by IntelliJ IDEA.
@@ -80,6 +82,9 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager);
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
+        GroovySystem.metaClassRegistry.removeMetaClass(RunnerObject);
+        GroovySystem.metaClassRegistry.removeMetaClass(AdapterStateProvider);
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterRunner);
         ExpandoMetaClass.enableGlobally();
     }
 

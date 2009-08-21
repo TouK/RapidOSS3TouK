@@ -7,3 +7,5 @@ def majorEvents = RrdVariable.add(name:"majorEvents", frequency:60)
 allEvents.createDB();
 criticalEvents.createDB();
 majorEvents.createDB();
+def varNames = RrdVariable.list().name
+return  "Variable ${varNames} created successfully"

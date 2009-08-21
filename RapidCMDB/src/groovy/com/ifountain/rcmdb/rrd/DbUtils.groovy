@@ -290,7 +290,12 @@ class DbUtils {
             {
                 try{
                     Archive archive = rrdDb.getArchive(i)
-                    list.add( ((key=='Last')?archive.getEndTime():archive.getStartTime()) * 1000 );
+                    long time = ((key=='Last')?archive.getEndTime():archive.getStartTime())
+                    if(time < 0)
+                    {
+                        time = 0;
+                    }
+                    list.add(  time * 1000 );
                 }
                 catch(ArrayIndexOutOfBoundsException e) { break;}
             }

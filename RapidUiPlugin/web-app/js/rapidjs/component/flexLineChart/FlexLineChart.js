@@ -29,7 +29,10 @@ YAHOO.rapidjs.component.FlexLineChart = function(container, config) {
 		//durations for zooming flex line chart
 	this.durations = config.durations  || "";
 
-	this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
+    this.applicationLoaded = false;
+    this.tempData = 0;
+
+    this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
     this.toolbar = new YAHOO.rapidjs.component.tool.ButtonToolBar(this.header, {title:this.title});
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
     this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
@@ -46,7 +49,7 @@ YAHOO.rapidjs.component.FlexLineChart = function(container, config) {
 
 
 /*
-//TODO:enable/disable extra chart parts from configuration
+//TODO:enable/disable extra chart parts from configuration (for further development)
 //these methods are to set size of chart parts: main graph, range graph, volume graph
 function setRangeChartHeight(){
 	var application = getFlexApp(this.id);
@@ -94,16 +97,22 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
         this.flashTimer.delay(300);
     },
     handleSuccess:function(response, keepExisting, removeAttribute) {
-	    var xmlDoc = response.responseXML;
+        if(this.applicationLoaded){
+            var xmlDoc = response.responseXML;
 
-		var root = xmlDoc.getElementsByTagName(this.rootTag)[0];
-		this.loadRangeData(root);
-		this.loadVolumeData(root);
-		this.loadAnnotations(root);
-		this.addDurationButtons();
+            var root = xmlDoc.getElementsByTagName(this.rootTag)[0];
+            this.loadRangeData(root);
+            this.loadVolumeData(root);
+            this.loadAnnotations(root);
+            this.addDurationButtons();
+        }
+        else{
+
+            setTimeout(this.handleSuccess.createDelegate(this, [response, keepExisting, removeAttribute], true),300);
+        }
     },
-	loadRangeData: function(root){
-		/*todo: dataroot will be used for multiple data. usage will be in this way:
+    loadRangeData: function(root){
+		/*todo: dataroot will be used for multiple data. usage will be in this way (for further development):
 			//@unchecked
 			var dataRoots = getElementsByTagName(this.dataRootTag);
 			var multiDataArray = new Array();
@@ -125,7 +134,6 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 		var dataList = dataRoot.getElementsByTagName(this.dataTag);
 
 		var mapArray = new Array();
-		//dataList.length
 		for(i=0; i<dataList.length; i++){
 			mapArray[i] = {};
 			var node = dataList.item(i);
@@ -140,23 +148,8 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 			var avalue = +(attributes.getNamedItem(this.valueAttribute).nodeValue);
 			if(avalue == 0) avalue = 500.9;
 			mapArray[i][this.valueAttribute] = avalue;
-			/*
-			var volume = attributes.getNamedItem(this.volumeAttribute);
-			if(volume ==null){
-				mapArray[i][this.volumeAttribute] = avalue;
-			}else{
-				mapArray[i][this.volumeAttribute] = parseInt(volume.nodeValue);
-			}
-			*/
 		}
-		/*
-		alert(dataList.item(100).getAttribute("time")+" " + dataList.item(100).getAttribute("value")+" " + mapArray[100]["time"]+" "+mapArray[100]["value"]+"\n"+
-				dataList.item(101).getAttribute("time")+" " + dataList.item(101).getAttribute("value")+" " + mapArray[99]["time"]+" "+mapArray[1]["value"]+"\n"+
-				dataList.item(102).getAttribute("time")+" " + dataList.item(102).getAttribute("value")+" " + mapArray[2]["time"]+" "+mapArray[2]["value"]+"\n"+
-				dataList.item(103).getAttribute("time")+" " + dataList.item(103).getAttribute("value")+" " + mapArray[3]["time"]+" "+mapArray[3]["value"]+"\n"+
-				dataList.item(104).getAttribute("time")+" " + dataList.item(104).getAttribute("value")+" " + mapArray[4]["time"]+" "+mapArray[4]["value"]+"\n");
-		*/
-				this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);
+		this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);
 	},
 	loadVolumeData: function(root){
 		var dataRoot = root.getElementsByTagName(this.dataRootTag);
@@ -211,21 +204,10 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 		this.application.loadAnnotations(annotationArray, this.annLabelAttr, this.annTimeAttr);
     },
     setAnnotation: function(annotationInfo) {
-	    this.events["itemClicked"].fireDirect(annotationInfo)
-
-	    /*
-	    var infoString = "";
-	    for(key in annotationInfo){
-			infoString += key + ": " + annotationInfo[key]+"\n" ;
-	    }
-	    alert(infoString);
-	    */
+	    this.events["itemClicked"].fireDirect(annotationInfo);
     },
     setBoundaries: function(rangeInfo) {
-	    //setTimeout(alert("ager"),4000);
-	    setTimeout(
-	    this.events["rangeChanged"].fireDirect(rangeInfo),
-	    		300);
+	    this.events["rangeChanged"].fireDirect(rangeInfo);
     },
 	//sample: this.addAnnotation({description:'Test Item', name:'added', index:23})
     addAnnotation: function(annotationInfo) {
@@ -284,10 +266,9 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
         }
     },
 	chartReady: function(){
-	    if(this.application == null ){
-		    alert("application is null");
-		}
-	    this.poll();
+	    if(this.application != null ){
+             this.applicationLoaded = true;
+        }
 	},
 	applicationResize: function(){
 		this.application.applicationResize();
@@ -295,9 +276,6 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
     resize: function(width, height) {
         this.body.setHeight(height - this.header.offsetHeight);
         this.body.setWidth(width);
-    },
-    showMessage: function(message) {
-        alert(message);
     }
 })
 

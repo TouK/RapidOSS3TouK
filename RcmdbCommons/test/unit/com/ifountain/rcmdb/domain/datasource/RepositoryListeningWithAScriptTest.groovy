@@ -79,6 +79,7 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager);
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
         ExpandoMetaClass.enableGlobally();
     }
 

@@ -15,5 +15,5 @@ def majorEventCount = RsEvent.countHits("severity:4");
 //Time series database will be updated by found event counts
 allEvents.updateDB(allEventCount)
 // time parameter can be specified in updateDB optionally. If it is not specified, it will be assigned to current time
-allEvents.updateDB(criticalEventCount, Date.now())
-allEvents.updateDB(majorEventCount)
+criticalEventCount.updateDB(criticalEventCount, Date.now())
+majorEventCount.updateDB(majorEventCount)

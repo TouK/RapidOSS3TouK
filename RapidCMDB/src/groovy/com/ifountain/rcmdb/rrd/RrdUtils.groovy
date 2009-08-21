@@ -82,6 +82,7 @@ class RrdUtils {
     }
 
     public static byte[] graph(Map config){
+        config = new HashMap(config)
         def rrdFileGraph = new File(RRD_FOLDER);
         rrdFileGraph.mkdirs();
 
@@ -112,7 +113,7 @@ class RrdUtils {
                 ControllerUtils.drawImageToWeb (image,"image/png","png",webResponse);
            }
            else{
-              String filename = RRD_FOLDER + destination
+              String filename = destination
               createDirectory();
               Grapher.toFile (bytes, filename);
            }

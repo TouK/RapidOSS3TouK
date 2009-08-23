@@ -32,12 +32,12 @@ import java.util.Map;
  * Time: 9:51:53 AM
  * To change this template use File | Settings | File Templates.
  */
-public class FileWatcher implements Runnable{
+public class FileWatcher implements Runnable {
     File dirToWatch;
     Map files = new HashMap();
-    long lastChangedFile = 0;
     DirListener listener;
     Map exludedFiles;
+
     public FileWatcher(File dirToWatch, DirListener listener, Map exludedFiles) {
         this.exludedFiles = exludedFiles;
         this.dirToWatch = dirToWatch;
@@ -45,58 +45,54 @@ public class FileWatcher implements Runnable{
     }
 
 
-    public void run()
-    {
-        try
-        {
-            while(true)
-            {
-                if(!dirToWatch.exists()) return;
+    public void run() {
+        try {
+            while (true) {
+                if (!dirToWatch.exists()) return;
                 File[] currentFiles = dirToWatch.listFiles();
-                long tmpLastModified = lastChangedFile;
-                Map oldFiles = new HashMap(files);
-                files.clear();
-                for(int i=0; i < currentFiles.length; i++)
-                {
+                Map oldFiles = files;
+                files = new HashMap();
+                for (int i = 0; i < currentFiles.length; i++) {
 
                     File file = currentFiles[i];
-                    files.put(file.getName(), file);
+                    FileRecord newFileRecord = new FileRecord(file, file.lastModified());
+                    files.put(file.getName(), newFileRecord);
+                    FileRecord oldRec = (FileRecord)oldFiles.get(file.getName());
                     oldFiles.remove(file.getName());
-                    try
-                    {
-                        if(!exludedFiles.containsKey(file.getCanonicalPath()) && !exludedFiles.containsKey(file.getName()))
-                        {
-                            long lastMod = file.lastModified();
-                            if(lastMod > lastChangedFile)
-                            {
-                                if(lastMod > tmpLastModified) tmpLastModified = lastMod;
-                                if(!file.isDirectory())
-                                {
-                                    listener.fileChanged (file);
-                                }
-                                else
-                                {
-                                    listener.createNewWatcherThread (file);
+                    try {
+                        if (!exludedFiles.containsKey(file.getCanonicalPath()) && !exludedFiles.containsKey(file.getName())) {
+                            if (oldRec == null || oldRec.lastModifiedAt < newFileRecord.lastModifiedAt) {
+                                System.out.println("File :"+file.getName()+" OldLast:"+(oldRec==null?"Unknown":oldRec.lastModifiedAt) + " NewLast:"+newFileRecord.lastModifiedAt);
+                                if (!file.isDirectory()) {
+                                    listener.fileChanged(file);
+                                } else {
+                                    listener.createNewWatcherThread(file);
                                 }
                             }
                         }
-                    }catch(IOException e)
-                    {
+                    } catch (IOException e) {
                     }
                 }
                 Collection entries = oldFiles.values();
-                for(Iterator it = entries.iterator(); it.hasNext();)
-                {
-                    listener.fileDeleted((File)it.next());
+                for (Iterator it = entries.iterator(); it.hasNext();) {
+                    listener.fileDeleted((File) it.next());
                 }
 
-                lastChangedFile = tmpLastModified;
-                Thread.sleep ((int)(Math.random()*800));
+                Thread.sleep((int) (Math.random() * 800));
             }
         }
-        catch(InterruptedException ex)
-        {
+        catch (InterruptedException ex) {
 
+        }
+    }
+
+    class FileRecord {
+        public File file;
+        public long lastModifiedAt;
+
+        FileRecord(File file, long lastModifiedAt) {
+            this.file = file;
+            this.lastModifiedAt = lastModifiedAt;
         }
     }
 }

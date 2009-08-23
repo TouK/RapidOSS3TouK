@@ -30,13 +30,8 @@ class RemoteApplicationModificationOperations extends com.ifountain.rcmdb.domain
         update(commited:true, commitedAt:new Date(), comment:comment, isActive:false);
     }
 
-    def ignoreLocalChanges(String comment)
+    def ignore(String comment)
     {
-        RemoteApplicationModification lastModification = RemoteApplicationModification.search("filePath:${filePath.exactQuery()}", [sort:"id", order:"desc"]);
-        if(lastModification != null)
-        {
-            new File(completeFilePath).setText(lastModification.content);
-        }
         update(ignored:true, isActive:false)
     }
 }

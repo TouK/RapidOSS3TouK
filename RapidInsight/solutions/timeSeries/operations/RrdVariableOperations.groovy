@@ -207,12 +207,12 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
                 fConfig[typeVar].add(typeMap);
             }
         }
-        Map dbInfo = RrdUtils.getDatabaseInfo(rrdVar.name+".rrd");
+        def currTime = System.currentTimeMillis();
         if(!fConfig.containsKey (START_TIME)){
-            fConfig[START_TIME] = dbInfo[START_TIME];
+            fConfig[START_TIME] = currTime - ONE_DAY;
         }
         if(!fConfig.containsKey (END_TIME)){
-            fConfig[END_TIME] = dbInfo[END_TIME];
+            fConfig[END_TIME] = currTime;
         }
         fConfig[DATASOURCE] = datasourceList;
 

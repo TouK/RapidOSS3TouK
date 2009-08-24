@@ -365,6 +365,40 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+    public void testGraphWithMinimumSetOfConfigurationParam() {
+        boolean isGraphCalled = false;
+        RrdUtils.metaClass.static.graph = {Map config->
+            isGraphCalled = true;
+            assertEquals ("web", config["destination"]);
+            assertEquals (60l*60*1000*24, config["endTime"] - config["startTime"]);
+            assertTrue(System.currentTimeMillis()-config["endTime"] < 10000);
+        }
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+
+        def variable1 = RrdVariable.add(name:"variable1", resource:"resource", type:"GAUGE", heartbeat:600,
+                                       startTime:978300900000L)
+        assertFalse(variable1.errors.toString(), variable1.hasErrors())
+        variable1.addArchive(archive.getMap())
+
+        def variable2 = RrdVariable.add(name:"variable2", resource:"resource", type:"COUNTER", heartbeat:600,
+                                        startTime:978300900000L)
+        assertFalse(variable2.errors.toString(), variable2.hasErrors())
+        variable2.addArchive(archive.getMap())
+
+        variable1.createDB()
+        variable2.createDB()
+
+        def config = [:]
+        config["rrdVariables"] = []
+        config["rrdVariables"].add([rrdVariable:"variable1", color:"FF0000", type:"line", description:"Variable 1"])
+        config["rrdVariables"].add([rrdVariable:"variable2", color:"00FF00", type:"line", description:"Variable 2"])
+
+        RrdVariable.internalGraphMultiple(config)
+        assertTrue (isGraphCalled);
+
+    }
+
     public void testGraphWithDefaultProperties() {
 
         def archive1 = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:24)

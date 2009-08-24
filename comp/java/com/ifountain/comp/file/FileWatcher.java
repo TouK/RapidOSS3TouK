@@ -48,7 +48,14 @@ public class FileWatcher implements Runnable {
     public void run() {
         try {
             while (true) {
-                if (!dirToWatch.exists()) return;
+                if (!dirToWatch.exists()){
+                    Collection entries = files.values();
+                    for (Iterator it = entries.iterator(); it.hasNext();) {
+                        FileRecord deletedRecord = (FileRecord) it.next();
+                        listener.fileDeleted(deletedRecord.file);
+                    }
+                    return;
+                }
                 File[] currentFiles = dirToWatch.listFiles();
                 Map oldFiles = files;
                 files = new HashMap();

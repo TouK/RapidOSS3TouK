@@ -8,6 +8,7 @@ def srcFile = new File(rsHome, "RapidSuite/uploadedFiles/${from}");
 def targetFile = new File(rsHome, "${to}");
 checkFileIsInRsHome(srcFile);
 checkFileIsInRsHome(targetFile);
+targetFile.parentFile.mkdirs();
 if(operation == "copy")
 {
     FileUtils.copyFile (srcFile, targetFile);
@@ -18,11 +19,11 @@ else if(operation == "delete")
     {
         if(!targetFile.isDirectory())
         {
-            targetFile.delete();
+            FileUtils.deleteDirectory (targetFile);
         }
         else
         {
-            throw new Exception("You cannot delete a nonempty directory.");            
+            throw new Exception("You cannot delete a nonempty directory.");
         }
     }
 }

@@ -32,17 +32,17 @@ class ModificationPopulator extends DirListener {
 
     public String getRelativeFilePath(File file)
     {
-        return file.getCanonicalPath().substring(fromDir.getCanonicalPath().length() + 1);
+        return file.getCanonicalPath().substring(fromDir.getCanonicalPath().length() + 1).replaceAll("\\\\", "/");
     }
 
     public String getRsFileLocation(String relativeFilePath)
     {
-        return "${rsDirectory}/${relativeFilePath}"        
+        return "${rsDirectory}/${relativeFilePath}" .replaceAll("\\\\", "/")
     }
 
     public String getUploadFileLocation(String relativeFilePath)
     {
-        return "${targetUploadDir}/${relativeFilePath}"        
+        return "${targetUploadDir}/${relativeFilePath}".replaceAll("\\\\", "/")        
     }
 
     public void fileDeleted(File file)

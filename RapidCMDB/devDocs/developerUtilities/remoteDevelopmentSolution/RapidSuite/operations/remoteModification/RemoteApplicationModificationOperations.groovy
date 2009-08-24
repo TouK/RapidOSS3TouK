@@ -31,7 +31,7 @@ class RemoteApplicationModificationOperations extends com.ifountain.rcmdb.domain
         def errors = xmlRespose.Error
         if(errors.size() != 0)
         {
-            throw new Exception(errors[0].error.text());            
+            throw new Exception(errors[0].@error.text());            
         }
         update(commited:true, commitedAt:new Date(), comment:comment, isActive:false);
     }

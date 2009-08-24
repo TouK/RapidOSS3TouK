@@ -62,7 +62,6 @@ public class FileWatcher implements Runnable {
                     try {
                         if (!exludedFiles.containsKey(file.getCanonicalPath()) && !exludedFiles.containsKey(file.getName())) {
                             if (oldRec == null || oldRec.lastModifiedAt < newFileRecord.lastModifiedAt) {
-                                System.out.println("File :"+file.getName()+" OldLast:"+(oldRec==null?"Unknown":oldRec.lastModifiedAt) + " NewLast:"+newFileRecord.lastModifiedAt);
                                 if (!file.isDirectory()) {
                                     listener.fileChanged(file);
                                 } else {
@@ -75,7 +74,8 @@ public class FileWatcher implements Runnable {
                 }
                 Collection entries = oldFiles.values();
                 for (Iterator it = entries.iterator(); it.hasNext();) {
-                    listener.fileDeleted((File) it.next());
+                    FileRecord deletedRecord = (FileRecord) it.next();
+                    listener.fileDeleted(deletedRecord.file);
                 }
 
                 Thread.sleep((int) (Math.random() * 800));

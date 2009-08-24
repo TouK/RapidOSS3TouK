@@ -19,7 +19,9 @@ class RemoteApplicationModificationOperations extends com.ifountain.rcmdb.domain
         {
             throw new Exception("You can not commit an inactive modification");
         }
-        ds.uploadFile("/uploader/upload", "file", completeFilePath, "uploadedCustomerFiles/${filePath}");
+        def file = new File("uploadedCustomerFiles/${filePath}");
+
+        ds.uploadFile("/uploader/upload", "file", completeFilePath, file.name, [dir:file.parentFile.path]);
         def res = ds.doRequest("script/run/fileOperation", [file:filePath, operation:operation, login:"rsadmin", password:"changeme"]);
         GPathResult xmlRespose = new XmlSlurper().parseText(res)
         def errors = xmlRespose.Error

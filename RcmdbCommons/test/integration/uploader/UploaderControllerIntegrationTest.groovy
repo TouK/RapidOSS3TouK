@@ -56,6 +56,33 @@ class UploaderControllerIntegrationTest extends RapidCmdbIntegrationTestCase {
         }
     }
 
+    public void testUploadWithDirParameter()
+    {
+        def prevAttributes = RequestContextHolder.getRequestAttributes()
+        try{
+            def originalFileName = "uploadedFile.txt"
+            def dir = "directory"
+            bindMockMultipartWebRequest();
+            def uploaderController = new UploaderController();
+            def uploadDir = uploaderController.getUploadDir();
+            def expectedFileToBeCreated = new File(uploadDir, "${dir}/${originalFileName}")
+            expectedFileToBeCreated.delete();
+
+            MockMultipartHttpServletRequest request = uploaderController.request
+            def fileContent = "this is the file content"
+            def byteData = fileContent.getBytes();
+            def file = new MockMultipartFile("file", originalFileName, null, byteData)
+            uploaderController.params.dir = dir;
+            request.addFile(file)
+            uploaderController.upload();
+
+            assertEquals (fileContent, expectedFileToBeCreated.getText());
+            assertEquals ("/uploader/show", uploaderController.response.redirectedUrl);
+        }finally{
+            RequestContextHolder.setRequestAttributes (prevAttributes);
+        }
+    }
+
     public void testUploadThrowsExceptionIfOriginalFileIsOutOfuploadDir()
     {
         def prevAttributes = RequestContextHolder.getRequestAttributes()
@@ -72,6 +99,35 @@ class UploaderControllerIntegrationTest extends RapidCmdbIntegrationTestCase {
             def byteData = fileContent.getBytes();
             def file = new MockMultipartFile("file", originalFileName, null, byteData)
             request.addFile(file)
+            uploaderController.upload();
+
+            assertEquals ("/uploader/show", uploaderController.response.redirectedUrl);
+            assertTrue(uploaderController.flash.errors.hasErrors());
+            assertFalse(expectedFileToBeCreated.exists());
+
+        }finally{
+            RequestContextHolder.setRequestAttributes (prevAttributes);
+        }
+    }
+
+    public void testUploadWithDirThrowsExceptionIfOriginalFileIsOutOfuploadDir()
+    {
+        def prevAttributes = RequestContextHolder.getRequestAttributes()
+        try{
+            def originalFileName = "uploadedFile.txt"
+            def dir  = "../directory"
+            bindMockMultipartWebRequest();
+            def uploaderController = new UploaderController();
+            def uploadDir = uploaderController.getUploadDir();
+            def expectedFileToBeCreated = new File(uploadDir, "${dir}/${originalFileName}")
+            expectedFileToBeCreated.delete();
+
+            MockMultipartHttpServletRequest request = uploaderController.request
+            def fileContent = "this is the file content"
+            def byteData = fileContent.getBytes();
+            def file = new MockMultipartFile("file", originalFileName, null, byteData)
+            request.addFile(file)
+            uploaderController.params.dir = dir;
             uploaderController.upload();
 
             assertEquals ("/uploader/show", uploaderController.response.redirectedUrl);

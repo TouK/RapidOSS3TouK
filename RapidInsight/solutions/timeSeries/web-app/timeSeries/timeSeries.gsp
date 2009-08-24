@@ -109,13 +109,6 @@ releaseOwnershipVisible="true"
 
     </rui:tgColumns>
     <rui:tgMenuItems>
-        <%
-showInDialogVisible="params.data.nodeType=='Object'"
-%>
-
-        <rui:tgMenuItem id="showInDialog" label="Show In Dialog" visible="${showInDialogVisible}" action="${['openDialog']}">
-
-        </rui:tgMenuItem>
 
     </rui:tgMenuItems>
     <rui:tgRootImages>
@@ -152,10 +145,10 @@ showInDialogVisible="params.data.nodeType=='Object'"
 </rui:flexLineChart>
 
 <%
-functionActionCondition6133Condition="window.currentDevice=params.data.resource;true;"
+functionActionCondition21283Condition="window.currentDevice=params.data.resource;true;"
 %>
 
-<rui:action id="graph" type="function" function="refresh" componentId='FlexLineChart' condition="$functionActionCondition6133Condition"
+<rui:action id="graph" type="function" function="refresh" componentId='FlexLineChart' condition="$functionActionCondition21283Condition"
 
 >
 
@@ -166,7 +159,7 @@ functionActionCondition6133Condition="window.currentDevice=params.data.resource;
 </rui:action>
 
 <%
-functionActionCondition6143Condition=""
+functionActionCondition21293Condition=""
 %>
 
 <rui:action id="showVariableDetails" type="function" function="setQueryWithView" componentId='eventsGrid'
@@ -186,7 +179,7 @@ functionActionCondition6143Condition=""
 </rui:action>
 
 <%
-functionActionCondition6162Condition=""
+functionActionCondition21312Condition=""
 %>
 
 <rui:action id="showAnnotations" type="function" function="setQueryWithView" componentId='eventsGrid'
@@ -200,20 +193,6 @@ functionActionCondition6162Condition=""
     <rui:functionArg><![CDATA['RsEvent']]></rui:functionArg>
 
     <rui:functionArg><![CDATA['Events between ' + params.data.start + ' and ' + params.data.end]]></rui:functionArg>
-
-    <rui:functionArg>null</rui:functionArg>
-
-</rui:action>
-
-<%
-functionActionCondition6181Condition="window.currentDevice=params.data.resource"
-%>
-
-<rui:action id="openDialog" type="function" function="refresh" componentId='FlexLineChartDialog' condition="$functionActionCondition6181Condition"
-
->
-
-    <rui:functionArg><![CDATA[{name:params.data.name}]]></rui:functionArg>
 
     <rui:functionArg>null</rui:functionArg>
 
@@ -236,17 +215,17 @@ functionActionCondition6181Condition="window.currentDevice=params.data.resource"
 
 
 
-    <rui:innerLayout id="6093">
+    <rui:innerLayout id="21245">
 
-            <rui:layoutUnit position='center' gutter='0px' id='6195' isActive='true' scroll='false' useShim='false' component='FlexLineChart'>
-
-            </rui:layoutUnit>
-
-            <rui:layoutUnit position='left' gutter='0px' id='6201' isActive='true' resize='false' scroll='false' useShim='false' width='200' component='RRDVariables'>
+            <rui:layoutUnit position='center' gutter='0px' id='21334' isActive='true' scroll='false' useShim='false' component='FlexLineChart'>
 
             </rui:layoutUnit>
 
-            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='6198' isActive='true' resize='false' scroll='false' useShim='false' component='eventsGrid'>
+            <rui:layoutUnit position='left' gutter='0px' id='21340' isActive='true' resize='false' scroll='false' useShim='false' width='200' component='RRDVariables'>
+
+            </rui:layoutUnit>
+
+            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='21337' isActive='true' resize='false' scroll='false' useShim='false' component='eventsGrid'>
 
             </rui:layoutUnit>
 

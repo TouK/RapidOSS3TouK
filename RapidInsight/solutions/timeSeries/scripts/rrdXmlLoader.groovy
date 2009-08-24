@@ -18,7 +18,9 @@ def mapArray = map.keySet().toArray();
 mb.RootTag{
     mb.Variable(Target:"UpperBand"){
         map.keySet().each{
-            mb.Data(time:Long.parseLong(it)*1000, value:map[it]);
+            def value = map[it];
+            value = value == Double.NaN?0:value;
+            mb.Data(time:Long.parseLong(it)*1000, value:value);
         }
     }
     mb.Annotations{

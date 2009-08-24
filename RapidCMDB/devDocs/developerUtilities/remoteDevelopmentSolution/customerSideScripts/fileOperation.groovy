@@ -19,7 +19,11 @@ else if(operation == "delete")
     {
         if(!targetFile.isDirectory())
         {
-            FileUtils.deleteDirectory (targetFile);
+            targetFile.delete();
+        }
+        else if(targetFile.list().length == 0)
+        {
+            FileUtils.deleteDirectory (targetFile)    
         }
         else
         {

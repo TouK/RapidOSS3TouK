@@ -4,7 +4,7 @@ baseDir = new File(System.getProperty("base.dir", "."));
 def file = params.file
 def operation = params.operation
 def srcFile = new File(baseDir, "uploadedFiles/uploadedCustomerFiles/${file}");
-def targetFile = new File(baseDir, "../../${file}");
+def targetFile = new File(baseDir, "../${file}");
 checkFileIsInRsHome(srcFile);
 checkFileIsInRsHome(targetFile);
 if(operation == "copy")
@@ -15,7 +15,7 @@ else if(operation == "delete")
 {
     targetFile.delete();
 }
-return "<successfull>succesfully sopied file</successfull>"
+return "<successful>succesfully copied file</successful>"
 
 
 def checkFileIsInRsHome(File file)

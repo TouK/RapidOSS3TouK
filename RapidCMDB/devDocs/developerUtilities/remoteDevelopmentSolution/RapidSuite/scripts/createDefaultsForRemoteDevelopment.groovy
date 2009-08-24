@@ -3,7 +3,7 @@ import script.CmdbScript
 def scriptsToAdd=[]
 scriptsToAdd.add([name:"startFileWatchers", logFileOwn:true])
 scriptsToAdd.add([name:"modificationOperation", logFileOwn:true])
-scriptsToAdd.add([name:"getActiveModificationList", logFileOwn:true])
+scriptsToAdd.add([name:"getActiveModifications", logFileOwn:true])
 
 
 scriptsToAdd.each{  scriptParams ->

@@ -1,10 +1,11 @@
 import org.apache.commons.io.FileUtils
 
 rsHome = new File(System.getProperty("base.dir", "."), "..");
-def file = params.file
+def from = params.from
+def to = params.to
 def operation = params.operation
-def srcFile = new File(rsHome, "RapidSuite/uploadedFiles/uploadedCustomerFiles/${file}");
-def targetFile = new File(rsHome, "${file}");
+def srcFile = new File(rsHome, "RapidSuite/uploadedFiles/${from}");
+def targetFile = new File(rsHome, "${to}");
 checkFileIsInRsHome(srcFile);
 checkFileIsInRsHome(targetFile);
 if(operation == "copy")

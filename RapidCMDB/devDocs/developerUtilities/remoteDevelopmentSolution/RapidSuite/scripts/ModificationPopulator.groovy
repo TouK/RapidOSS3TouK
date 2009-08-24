@@ -1,14 +1,13 @@
-/**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Aug 20, 2009
- * Time: 6:53:03 PM
- * To change this template use File | Settings | File Templates.
- */
-
 import com.ifountain.comp.file.DirListener
-import org.apache.commons.io.FileUtils
 import remoteModification.RemoteApplicationModification
+
+/**
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Aug 20, 2009
+* Time: 6:53:03 PM
+* To change this template use File | Settings | File Templates.
+*/
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,10 +18,14 @@ import remoteModification.RemoteApplicationModification
 */
 class ModificationPopulator extends DirListener {
     File fromDir;
+    String rsDirectory;
+    String targetUploadDir;
     Map exludedDirs;
-    public ModificationPopulator(File fromDir, Map exludedDirs)
+    public ModificationPopulator(File fromDir, String targetUploadDir, String rsDirectory, Map exludedDirs)
     {
         this.fromDir = fromDir;
+        this.rsDirectory = rsDirectory?rsDirectory:".";
+        this.targetUploadDir = targetUploadDir?targetUploadDir:".";
         this.exludedDirs = exludedDirs;
         initialize([fromDir], exludedDirs);
     }
@@ -38,10 +41,10 @@ class ModificationPopulator extends DirListener {
         RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(filePath);
         if(modification == null)
         {
-            RemoteApplicationModification.add(filePath: filePath, completeFilePath:file.getCanonicalPath(), lastChangedAt:new Date(), operation: RemoteApplicationModification.DELETE);
+            RemoteApplicationModification.add(filePath: filePath, rsDirectory:rsDirectory, completeFilePath:file.getCanonicalPath(), lastChangedAt:new Date(), operation: RemoteApplicationModification.DELETE);
         }
         else{
-            modification.update(operation:RemoteApplicationModification.DELETE, lastChangedAt:new Date());
+            modification.update(operation:RemoteApplicationModification.DELETE, lastChangedAt:new Date(), rsDirectory:rsDirectory);
         }
     }
     
@@ -51,7 +54,7 @@ class ModificationPopulator extends DirListener {
         {
             def filePath = getFileRelativePath(file);
             RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(filePath);
-            def propsToBeUpdated = [operation:RemoteApplicationModification.COPY, content:file.getText(), lastChangedAt:new Date(file.lastModified())];
+            def propsToBeUpdated = [operation:RemoteApplicationModification.COPY, content:file.getText(), targetUploadDir:targetUploadDir, rsDirectory:rsDirectory, lastChangedAt:new Date(file.lastModified())];
             if(modification == null)
             {
                 propsToBeUpdated.filePath = filePath;

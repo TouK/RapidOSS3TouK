@@ -10,17 +10,17 @@ application.Cache.retrieve("DIR_COPIERS").each{
 }
 
 //def dirMappings = [
-//        [from: "", to: "", excludeds: [".svn", ".cvs","CVS"]]
+//        [localDir: "", targetUploadDir: "", targetRsDir:"", excludeds: [".svn", ".cvs","CVS"]]
 //]
 def dirMappings = [:]
 def dirCopiers = [];
 application.Cache.store("DIR_COPIERS", dirCopiers);
 dirMappings.each {
     def exludedDirs = [:];
-    it.excludedDirs.each {excludedDir ->
+    it.excludeds.each {excludedDir ->
         exludedDirs[excludedDir] = excludedDir
     }
-    dirCopiers << new ModificationPopulator(new File(it.from), exludedDirs);
+    dirCopiers << new ModificationPopulator(new File(it.localDir), it.targetUploadDir, it.targetRsDir, exludedDirs);
 }
 
 return "Watchers started"

@@ -17,6 +17,8 @@ class RemoteApplicationModification {
 
     String filePath = "";
     String completeFilePath = "";
+    String rsDirectory = ".";
+    String targetUploadDir = ".";
     Date lastChangedAt = new Date(0);
     String operation = "";
     String content = "";

@@ -90,5 +90,37 @@ class HttpDatasourceOperationsTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+    public void testUploadFileWithParameters()
+    {
+        initialize([HttpDatasource, HttpConnection], []);
+        CompassForTests.addOperationSupport(HttpDatasource, HttpDatasourceOperations);
+
+
+        def con = HttpConnection.add(name: "testcon", baseUrl: "u");
+        assertFalse(con.errors.toString(), con.hasErrors());
+
+        def newDs = HttpDatasource.add(name: "testds", connection: con);
+        assertFalse(newDs.hasErrors());
+        assertNotNull(newDs.adapter);
+
+        def mockAdapter = new MockHttpAdapter();
+        newDs.adapter = mockAdapter;
+        def url = "someurl"
+        def fieldName = "file"
+        def fileToBeUploaded = "somefile";
+        def fileName = "someFileName"
+        def params = [param1:"pr1"]
+        newDs.uploadFile(url, fieldName, fileToBeUploaded, fileName, params);
+        def excutedActions = mockAdapter.executedActions
+        assertEquals (1, excutedActions.size());
+        UploadFileAction action = excutedActions[0]
+        assertEquals (url, action.getUrl());
+        assertEquals (fieldName, action.getFieldName());
+        assertEquals (params, action.getParams());
+        assertEquals (new File(fileToBeUploaded), action.getFileToBeUploaded());
+        assertEquals (fileName, action.getFileNameWillBeSentToClient());
+
+    }
+
 }
 

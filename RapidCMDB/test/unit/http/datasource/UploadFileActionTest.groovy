@@ -53,7 +53,9 @@ class UploadFileActionTest extends RapidCmdbTestCase {
         def fileNameToBeSenttoServer = "../../../afilenameDirreferentFromOriginal.txt"
         def actionUrl = "/file/upload";
         def fieldName = "file";
+        def paramsToBeSent = [param1:"param1Val", param2:"param2Val"]
         UploadFileAction action = new UploadFileAction(TestLogUtils.log, actionUrl, fieldName, file, fileNameToBeSenttoServer);
+        action.setParams (paramsToBeSent);
         def executedPostMethods = httpUtilsMock.postMethodsExecuted;
         assertEquals (0, executedPostMethods.size());
         action.execute (conn);
@@ -61,6 +63,7 @@ class UploadFileActionTest extends RapidCmdbTestCase {
         assertEquals (1, executedPostMethods.size());
         PostMethod mt = executedPostMethods[0];
         assertEquals (new URI("${baseUrl}${actionUrl}").toString(), mt.getURI().toString());
+
         MultipartRequestEntity entity = mt.getRequestEntity();
 
         assertTrue(entity.getContentType().indexOf("multipart/form-data;") >= 0);
@@ -69,6 +72,10 @@ class UploadFileActionTest extends RapidCmdbTestCase {
         def content = new String(out.getBytes());
         assertTrue (content.indexOf("filename=\"${fileNameToBeSenttoServer}\"") >= 0);
         assertTrue (content.indexOf("name=\"${fieldName}\"") >= 0);
+        paramsToBeSent.each{paramName, paramValue->
+            assertTrue (content.indexOf("name=\"${paramName}\"") >= 0);
+            assertTrue (content.indexOf(paramValue) >= 0);
+        }
     }
 
     public void testUploadFileWithNullFileName()

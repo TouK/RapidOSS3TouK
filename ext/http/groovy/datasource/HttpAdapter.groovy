@@ -71,8 +71,9 @@ public class HttpAdapter extends BaseAdapter{
         return doRequest(url, params, DoRequestAction.GET);
     }
 
-    public void uploadFile(String url, String fieldName, File fileTobeUploaded, String fileName) throws Exception{
+    public void uploadFile(String url, String fieldName, File fileTobeUploaded, String fileName, Map params=[:]) throws Exception{
         UploadFileAction action = new UploadFileAction(logger, url, fieldName, fileTobeUploaded, fileName);
+        action.setParams (params);
         executeAction (action);
     }
 

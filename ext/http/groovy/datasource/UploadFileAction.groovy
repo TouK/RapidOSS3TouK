@@ -8,6 +8,7 @@ import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity
 import org.apache.commons.httpclient.methods.multipart.FilePart
 import org.apache.commons.httpclient.methods.multipart.Part
+import org.apache.commons.httpclient.methods.multipart.StringPart
 
 /**
 * Created by IntelliJ IDEA.
@@ -22,6 +23,7 @@ class UploadFileAction implements Action{
     String fileNameWillBeSentToClient;
     String url;
     String fieldName;
+    Map params;
     public UploadFileAction(Logger logger, String url, String fieldName, File fileToBeUploaded, String fileNameWillBeSentToClient)
     {
         this.fieldName = fieldName;
@@ -34,9 +36,11 @@ class UploadFileAction implements Action{
         HttpConnectionImpl httpConnection = (HttpConnectionImpl)conn;
         def completeUrl = HttpActionUtils.getCompleteUrl(httpConnection.getBaseUrl(), this.url);
         PostMethod method = new PostMethod(completeUrl);
-        MultipartRequestEntity multiPart = new MultipartRequestEntity(
-                [new FilePart(fieldName, fileNameWillBeSentToClient, fileToBeUploaded) ] as Part[],
-                method.getParams());
+        def parts = [new FilePart(fieldName, fileNameWillBeSentToClient, fileToBeUploaded)];
+        params.each{paramName, paramValue->
+            parts.add(new StringPart(String.valueOf(paramName), String.valueOf(paramValue)));
+        }
+        MultipartRequestEntity multiPart = new MultipartRequestEntity(parts as Part[],method.getParams());
         method.setRequestEntity(multiPart);
         httpConnection.getHttpConnection().executePostMethod (method);
 

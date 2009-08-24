@@ -146,7 +146,6 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 			var date = new Date(+(node.getAttribute(this.dateAttribute)));
 			mapArray[i][this.dateAttribute] = date.format('Y-n-d H:i')+"";
 			var avalue = +(attributes.getNamedItem(this.valueAttribute).nodeValue);
-			if(avalue == 0) avalue = 500.9;
 			mapArray[i][this.valueAttribute] = avalue;
 		}
 		this.application.loadRangeData(mapArray, this.dateAttribute, this.valueAttribute);

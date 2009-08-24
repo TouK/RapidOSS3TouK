@@ -9,7 +9,7 @@ def mb = new MarkupBuilder(sw);
 mb.Modifications(total:modifications.size())
 {
     modifications.each{modification->
-        def props = [filePath:modification.filePath, completeFilePath:modification.completeFilePath, operation:modification.operation]
+        def props = [relativeFilePath:modification.relativeFilePath, completeFilePath:modification.completeFilePath, targetUploadFilePath:modification.targetUploadFilePath, targetRsFilePath:modification.targetRsFilePath, operation:modification.operation]
         props.isActive = modification.isActive;
         props.id = modification.id;
         mb.Modification(props);

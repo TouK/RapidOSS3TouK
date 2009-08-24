@@ -42,7 +42,7 @@ def sw = new StringWriter();
 def mb = new MarkupBuilder(sw);
 mb.Modifications()
 {
-    mb.Modification(id:modificationId, filePath:modification.filePath, willBeRemoved:true);
+    mb.Modification(id:modificationId, relativeFilePath:modification.relativeFilePath, willBeRemoved:true);
 }
 
 return sw.toString();

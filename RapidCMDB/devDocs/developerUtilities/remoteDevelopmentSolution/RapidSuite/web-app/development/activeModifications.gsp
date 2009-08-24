@@ -24,6 +24,13 @@ ignoreVisible="true"
         <rui:sgMenuItem id="ignore" label="Ignore Changes" visible="${ignoreVisible}" action="${['ignoreAction']}">
             
         </rui:sgMenuItem>
+    <%
+ignoreAllVisible="true"
+%>
+
+        <rui:sgMenuItem id="ignoreAll" label="Ignore All" visible="${ignoreAllVisible}" action="${['ignoreAllAction']}">
+            
+        </rui:sgMenuItem>
     
     </rui:sgMenuItems>
     <rui:sgImages>
@@ -35,22 +42,22 @@ ignoreVisible="true"
             
             <rui:sgColumnImages>
                 <%
-image150Visible="params.data.operation == \"delete\""
+image235Visible="params.data.operation == \"delete\""
 %>
 
-                <rui:sgColumnImage src="../images/remoteApplicationDevelopment/delete.png" visible="${image150Visible}" align="left"></rui:sgColumnImage>
+                <rui:sgColumnImage src="../images/remoteApplicationDevelopment/delete.png" visible="${image235Visible}" align="left"></rui:sgColumnImage>
                 <%
-image152Visible="params.data.operation == \"copy\""
+image237Visible="params.data.operation == \"copy\""
 %>
 
-                <rui:sgColumnImage src="../images/remoteApplicationDevelopment/copy.png" visible="${image152Visible}" align="left"></rui:sgColumnImage>
+                <rui:sgColumnImage src="../images/remoteApplicationDevelopment/copy.png" visible="${image237Visible}" align="left"></rui:sgColumnImage>
                 
             </rui:sgColumnImages>
             
 
         </rui:sgColumn>
     
-        <rui:sgColumn attributeName="filePath" colLabel="File" width="600"   type="text">
+        <rui:sgColumn attributeName="relativeFilePath" colLabel="File" width="600"   type="text">
             
 
         </rui:sgColumn>
@@ -62,42 +69,52 @@ image152Visible="params.data.operation == \"copy\""
 </rui:searchGrid>
 
 <%
-mergeActionCondition160Condition=""
+mergeActionCondition247Condition=""
 %>
 
 <rui:action id="commitAction" type="merge" url="../script/run/modificationOperation" components="${['modificationList']}" submitType="GET" removeAttribute='willBeRemoved' 
 
 >
     <%
-parameter163Visible="params.data.id"
+parameter250Visible="params.data.id"
 %>
 
-    <rui:requestParam key="modificationId" value="${parameter163Visible}"></rui:requestParam>
+    <rui:requestParam key="modificationId" value="${parameter250Visible}"></rui:requestParam>
     <%
-parameter165Visible="'commit'"
+parameter252Visible="'commit'"
 %>
 
-    <rui:requestParam key="operation" value="${parameter165Visible}"></rui:requestParam>
+    <rui:requestParam key="operation" value="${parameter252Visible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-mergeActionCondition171Condition=""
+mergeActionCondition258Condition=""
 %>
 
 <rui:action id="ignoreAction" type="merge" url="../script/run/modificationOperation" components="${['modificationList']}" submitType="GET" removeAttribute='willBeRemoved' 
 
 >
     <%
-parameter174Visible="params.data.id"
+parameter261Visible="params.data.id"
 %>
 
-    <rui:requestParam key="modificationId" value="${parameter174Visible}"></rui:requestParam>
+    <rui:requestParam key="modificationId" value="${parameter261Visible}"></rui:requestParam>
     <%
-parameter176Visible="'ignore'"
+parameter263Visible="'ignore'"
 %>
 
-    <rui:requestParam key="operation" value="${parameter176Visible}"></rui:requestParam>
+    <rui:requestParam key="operation" value="${parameter263Visible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionCondition269Condition=""
+%>
+
+<rui:action id="ignoreAllAction" type="merge" url="../script/run/ignoreAllChanges" components="${['modificationList']}" submitType="GET"  
+
+>
     
 </rui:action>
 
@@ -112,9 +129,9 @@ parameter176Visible="'ignore'"
         
 
 
-    <rui:innerLayout id="142">
+    <rui:innerLayout id="227">
         
-            <rui:layoutUnit position='center' gutter='0px' id='182' isActive='true' scroll='false' useShim='false' component='modificationList'>
+            <rui:layoutUnit position='center' gutter='0px' id='276' isActive='true' scroll='false' useShim='false' component='modificationList'>
         
             </rui:layoutUnit>
         

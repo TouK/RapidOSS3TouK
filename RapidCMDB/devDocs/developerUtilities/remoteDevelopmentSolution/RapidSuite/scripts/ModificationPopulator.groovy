@@ -30,21 +30,31 @@ class ModificationPopulator extends DirListener {
         initialize([fromDir], exludedDirs);
     }
 
-    public String getFileRelativePath(File file)
+    public String getRelativeFilePath(File file)
     {
         return file.getCanonicalPath().substring(fromDir.getCanonicalPath().length() + 1);
     }
 
+    public String getRsFileLocation(String relativeFilePath)
+    {
+        return "${rsDirectory}/${relativeFilePath}"        
+    }
+
+    public String getUploadFileLocation(String relativeFilePath)
+    {
+        return "${targetUploadDir}/${relativeFilePath}"        
+    }
+
     public void fileDeleted(File file)
     {
-        def filePath = getFileRelativePath(file);
-        RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(filePath);
+        def relativeFilePath = getRelativeFilePath(file);
+        RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(relativeFilePath);
         if(modification == null)
         {
-            RemoteApplicationModification.add(filePath: filePath, rsDirectory:rsDirectory, completeFilePath:file.getCanonicalPath(), lastChangedAt:new Date(), operation: RemoteApplicationModification.DELETE);
+            RemoteApplicationModification.add(relativeFilePath: relativeFilePath, targetRsFilePath:getRsFileLocation(relativeFilePath), completeFilePath:file.getCanonicalPath(), lastChangedAt:new Date(), operation: RemoteApplicationModification.DELETE);
         }
         else{
-            modification.update(operation:RemoteApplicationModification.DELETE, lastChangedAt:new Date(), rsDirectory:rsDirectory);
+            modification.update(operation:RemoteApplicationModification.DELETE, lastChangedAt:new Date(), targetRsFilePath:getRsFileLocation(relativeFilePath));
         }
     }
     
@@ -52,12 +62,12 @@ class ModificationPopulator extends DirListener {
     {
         try
         {
-            def filePath = getFileRelativePath(file);
-            RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(filePath);
-            def propsToBeUpdated = [operation:RemoteApplicationModification.COPY, content:file.getText(), targetUploadDir:targetUploadDir, rsDirectory:rsDirectory, lastChangedAt:new Date(file.lastModified())];
+            def relativeFilePath = getRelativeFilePath(file);
+            RemoteApplicationModification modification = RemoteApplicationModification.getActiveModification(relativeFilePath);
+            def propsToBeUpdated = [operation:RemoteApplicationModification.COPY, content:file.getText(), targetUploadFilePath:getUploadFileLocation(relativeFilePath), targetRsFilePath:getRsFileLocation(relativeFilePath), lastChangedAt:new Date(file.lastModified())];
             if(modification == null)
             {
-                propsToBeUpdated.filePath = filePath;
+                propsToBeUpdated.relativeFilePath = relativeFilePath;
                 propsToBeUpdated.completeFilePath = file.getCanonicalPath();
                 modification = RemoteApplicationModification.add(propsToBeUpdated);
             }

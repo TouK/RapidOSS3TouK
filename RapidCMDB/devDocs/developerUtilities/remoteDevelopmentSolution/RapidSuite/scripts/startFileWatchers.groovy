@@ -12,7 +12,9 @@ application.Cache.retrieve("DIR_COPIERS").each{
 //def dirMappings = [
 //        [localDir: "", targetUploadDir: "", targetRsDir:"", excludeds: [".svn", ".cvs","CVS"]]
 //]
-def dirMappings = [:]
+def dirMappings = [
+
+]
 def dirCopiers = [];
 application.Cache.store("DIR_COPIERS", dirCopiers);
 dirMappings.each {

@@ -5,6 +5,7 @@ scriptsToAdd.add([name:"startFileWatchers", logFileOwn:true])
 scriptsToAdd.add([name:"modificationOperation", logFileOwn:true])
 scriptsToAdd.add([name:"getModificationFieldList", logFileOwn:true])
 scriptsToAdd.add([name:"getActiveModifications", logFileOwn:true])
+scriptsToAdd.add([name:"ignoreAllChanges", logFileOwn:true])
 
 
 scriptsToAdd.each{  scriptParams ->

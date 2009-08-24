@@ -15,10 +15,10 @@ class RemoteApplicationModification {
     static datasources = [:]
 
 
-    String filePath = "";
+    String relativeFilePath = "";
     String completeFilePath = "";
-    String rsDirectory = ".";
-    String targetUploadDir = ".";
+    String targetRsFilePath = ".";
+    String targetUploadFilePath = ".";
     Date lastChangedAt = new Date(0);
     String operation = "";
     String content = "";
@@ -43,8 +43,10 @@ class RemoteApplicationModification {
 
     static relations = [:]
     static constraints = {
-        filePath(blank: false, nullable: false)
+        relativeFilePath(blank: false, nullable: false)
         completeFilePath(blank: false, nullable: false)
+        targetUploadFilePath(blank: false, nullable: false)
+        targetRsFilePath(blank: false, nullable: false)
         lastChangedAt(nullable: false)
         operation(blank: false, nullable: false)
         content(blank: true, nullable: true)

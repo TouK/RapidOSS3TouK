@@ -14,7 +14,17 @@ if(operation == "copy")
 }
 else if(operation == "delete")
 {
-    targetFile.delete();
+    if(targetFile.exists())
+    {
+        if(!targetFile.isDirectory())
+        {
+            targetFile.delete();
+        }
+        else
+        {
+            throw new Exception("You cannot delete a nonempty directory.");            
+        }
+    }
 }
 return "<successful>succesfully copied file</successful>"
 

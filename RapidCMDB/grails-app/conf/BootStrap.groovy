@@ -179,7 +179,8 @@ class BootStrap {
     }
 
 
-    def destroy = {        
+    def destroy = {
+        logger.warn("Stopping Server");
         ListeningAdapterManager.destroyInstance();
         ScriptManager.destroyInstance();
         SessionManager.destroyInstance();
@@ -190,6 +191,7 @@ class BootStrap {
         {
             compass.close();
         }
+        logger.warn("Server Stopped");
     }
 
 }

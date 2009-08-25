@@ -51,6 +51,7 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 class BootStrap {
     
     def init = {servletContext ->
+        log.warn("Starting Server");
         initializeCaches();
         registerDatasourceConverters();
         initializeSessionManager();
@@ -63,6 +64,7 @@ class BootStrap {
         registerDefaultDatasources();
         corrrectModelData();
         initializeScripting();
+        log.warn("Server Started");
     }
 
     def initializeSegmentHelper(){

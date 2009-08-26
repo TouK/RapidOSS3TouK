@@ -322,7 +322,7 @@ class RsUserController {
         }
         else
         {
-            addError("default.custom.error", [e.getMessage()])
+            addError("default.custom.error", [exception.getMessage()])
         }
     }
 

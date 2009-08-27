@@ -2,11 +2,11 @@ public class StatisticsOperations extends com.ifountain.rcmdb.domain.operation.A
 {
     static String GLOBAL_ENABLE_KEY="RIStatistics.enable";
     
-    static def record(String param, value) {
+    static def record(String param, value, String description = "") {
         if (recordStats(param)) {//checks whether the param should be recorded at this time
             def t = Date.now()
             def user = auth.RsUser.getCurrentUserName() // get the name of the user
-            Statistics.add([timestamp: t, user: user, parameter: param, value: value])
+            Statistics.add([timestamp: t, user: user, parameter: param, value: value, description:description])
         }
     }
 

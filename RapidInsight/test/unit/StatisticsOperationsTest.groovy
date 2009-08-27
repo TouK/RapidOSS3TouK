@@ -41,6 +41,7 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
         assertFalse(stat1.timestamp<Date.now()-400)
 
         assertEquals("system",stat1.user);
+        assertEquals(description,stat1.description);
         assertEquals(duration.toString(),stat1.value);
 
         //add again
@@ -66,6 +67,27 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
             assertTrue(stat2.id<stat3.id);
         }
     }
+
+    public void testRecordWithDescription()
+    {
+        def insParam=InstrumentationParameters.add(name:"testStats",enabled:true);
+        assertFalse(insParam.hasErrors());
+
+        def duration=500;
+        def description = "a description";
+        assertEquals(0,Statistics.countHits("alias:*"));
+        Statistics.record("testStats",duration, description);
+
+        assertEquals(1,Statistics.countHits("parameter:${insParam.name}"));
+        Statistics stat1=Statistics.searchEvery("parameter:${insParam.name}",[sort:"id",order:"asc"])[0];
+
+        
+        assertEquals("system",stat1.user);
+        assertEquals(description,stat1.description);
+        assertEquals(duration.toString(),stat1.value);
+
+    }
+
     public void testRecordStateDoesNotRecordIfInstrumentationParameterIsDisabled()
     {
         def insParam=InstrumentationParameters.add(name:"testStats",enabled:true);

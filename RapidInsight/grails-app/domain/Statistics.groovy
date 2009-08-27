@@ -19,7 +19,8 @@ class Statistics
     String user ="";
     
     String parameter ="";
-    
+    String description ="";
+
     String value ="";
     
     org.springframework.validation.Errors errors ;
@@ -41,7 +42,8 @@ class Statistics
      user(blank:true,nullable:true)
         
      parameter(blank:true,nullable:true)
-        
+     description(blank:true,nullable:true)
+
      value(blank:true,nullable:true)
         
      errors(nullable:true)

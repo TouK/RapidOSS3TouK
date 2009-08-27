@@ -270,7 +270,7 @@ class ScriptController {
         {
             try {
                 CmdbScript.stopListening(script);
-                flash.message = "Script ${params.id} started to listen"
+                flash.message = "Script ${params.id} stopped to listen"
                 if(params.targetURI){
                     redirect(uri:params.targetURI);
                 }

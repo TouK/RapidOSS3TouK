@@ -29,6 +29,9 @@
             case 'historicalEvent': className = 'RsHistoricalEvent'; break;
             case 'topology': className = 'RsTopologyObject'; break;
         }
+        if(className == null){
+            className = params.rootClass;
+        }
         def allProps = [];
         def classes = [];
         def domainClass = grailsApplication.getDomainClass(className);

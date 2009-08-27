@@ -30,7 +30,7 @@ class UiSearchList extends UiComponent{
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
     String defaultSearchClass = "RsEvent"
-    String searchClassesUrl = "script/run/getEventClassesForSearch"
+    String searchClassesUrl = "script/run/getClassesForSearch?rootClass=RsEvent&format=xml"
     List fields = [];
     List images = [];
     List propertyMenuItems = [];

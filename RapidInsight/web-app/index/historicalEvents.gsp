@@ -7,7 +7,7 @@
 <rui:searchList id="eventList" url="../search" rootTag="Objects" contentPath="Object" keyAttribute="id"
     lineSize="3" title="Historical Events" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
     pollingInterval="0" defaultFields='${["name"]}'  defaultQuery=""
-    defaultSearchClass="RsHistoricalEvent" searchClassesUrl="../script/run/getHistoricalEventClassesForSearch" timeout="30"
+    defaultSearchClass="RsHistoricalEvent" searchClassesUrl="../script/run/getClassesForSearch?rootClass=RsHistoricalEvent" timeout="30"
     
         onSaveQueryClicked="${['saveQueryAction']}"
     

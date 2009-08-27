@@ -8,7 +8,8 @@ import groovy.xml.MarkupBuilder
 * To change this template use File | Settings | File Templates.
 */
 def domainClasses = [];
-def domainClass = web.grailsApplication.getDomainClass("RsTopologyObject");
+def rootClass = params.rootClass != null ? params.rootClass : "RsEvent"
+def domainClass = web.grailsApplication.getDomainClass(rootClass);
 domainClasses.add(domainClass);
 domainClasses.addAll(domainClass.getSubClasses());
 domainClasses = domainClasses.sort {it.fullName}
@@ -19,4 +20,5 @@ builder.Classes() {
         builder.Class(name: it.fullName)
     }
 }
-web.render(contentType: 'text/xml', text: sw.toString()) 
+web.render(contentType: 'text/xml', text: sw.toString())
+

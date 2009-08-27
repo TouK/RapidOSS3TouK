@@ -24,7 +24,7 @@ class UiSearchGrid extends UiComponent {
     String offsetAttribute = "offset";
     String sortOrderAttribute = "sortOrder";
     String defaultSearchClass = "RsEvent"
-    String searchClassesUrl = "script/run/getEventClassesForSearch"
+    String searchClassesUrl = "script/run/getClassesForSearch?rootClass=RsEvent&format=xml"
     Long pollingInterval = 0;
     Long timeout = 30;
     Boolean queryEnabled = true;

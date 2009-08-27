@@ -13,6 +13,7 @@ class UiAutocomplete extends UiComponent{
     String contentPath = "";
     String url = "";
     String suggestionAttribute = "";
+    String submitButtonLabel = "Search";
     Long cacheSize = 0;
     Long timeout = 0;
     Boolean animated = false;
@@ -26,6 +27,7 @@ class UiAutocomplete extends UiComponent{
         cacheSize(nullable:true)
         animated(nullable:true)
         timeout(nullable:true)
+        submitButtonLabel(blank:true,nullable:true)
     }
 
     static propertyConfiguration= [:]

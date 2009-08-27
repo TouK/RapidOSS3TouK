@@ -60,6 +60,7 @@ class AutocompleteTagLib {
             url:'${attrs["url"]}',
             contentPath:'${attrs["contentPath"]}',
             ${attrs["cacheSize"] ? "cacheSize:${attrs["cacheSize"]}," : ""}
+            ${attrs["submitButtonLabel"] ? "submitButtonLabel:'${attrs["submitButtonLabel"]}'," : ""}
             ${attrs["animated"] ? "animated:${attrs["animated"]}," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             suggestionAttribute:'${attrs["suggestionAttribute"]}'

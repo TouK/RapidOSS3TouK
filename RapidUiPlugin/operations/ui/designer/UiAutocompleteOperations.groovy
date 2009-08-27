@@ -23,6 +23,7 @@ class UiAutocompleteOperations extends UiComponentOperations {
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data. "],
                         contentPath: [descr: "The node names of AJAX response which will be used as suggestion data."],
                         suggestionAttribute: [descr: "The attribute of suggestion data which will be displayed in suggestion box."],
+                        submitButtonLabel: [descr: "Submit button text. Default is \"Search\"."],
                         cacheSize: [descr: "Max number of data stored in client side cache."],
                         animated: [descr: "Parameter to display suggestion box whether animated or not."],
                         timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]

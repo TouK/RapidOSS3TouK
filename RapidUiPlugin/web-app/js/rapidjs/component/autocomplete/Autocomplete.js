@@ -23,6 +23,7 @@ YAHOO.rapidjs.component.Autocomplete = function(container, config) {
     this.suggestionAttribute = null;
     this.cacheSize = 0;
     this.animated = false;
+    this.submitButtonLabel = "Search"
     YAHOO.ext.util.Config.apply(this, config);
     var events = {
         'submit': new YAHOO.util.CustomEvent('submit')
@@ -48,7 +49,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Autocomplete, YAHOO.rapidjs.component.
         this.searchInput = this.body.getElementsByTagName('input')[0];
         this.suggestion = dh.append(document.body,{tag:'div', cls:'r-autocomplete-suggestion'});
         var buttonWrp = YAHOO.util.Dom.getElementsByClassName('r-autocomplete-swrp', 'div', this.body)[0];
-        this.submitButton = new YAHOO.widget.Button(buttonWrp, {label:'Search', type:'submit'});
+        this.submitButton = new YAHOO.widget.Button(buttonWrp, {label:this.submitButtonLabel, type:'submit'});
 
         this.datasource = new YAHOO.util.XHRDataSource(this.url);
         this.datasource.responseType = YAHOO.util.XHRDataSource.TYPE_XML;

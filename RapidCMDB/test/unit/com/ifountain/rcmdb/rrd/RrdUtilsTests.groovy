@@ -265,20 +265,6 @@ class RrdUtilsTests extends RapidCmdbWithCompassTestCase {
         RrdUtils.updateData(rrdFileNameExt, ["30030000:3", "30060000:6", "30090000:9", "30120000:12", "30150000:15", "30180000:18"])
     }
 
-    public void testFetchDataWithMultipleDB() {
-        createMultipleDatabase()
-        
-        def result = RrdUtils.fetchAllDataAsMap([rrdFileName, rrdFileNameExt],['firstDBSource', 'secondDBSource'])
-        assertTrue('result should have firstDBSource map', result.containsKey('firstDBSource'))
-        assertTrue('result should have secondDBSource map', result.containsKey('secondDBSource'))
-        assertEquals('result has wrong values', 2.0D, result['firstDBSource']['30060'])
-        assertEquals('result has wrong values', 3.0D, result['firstDBSource']['30090'])
-        assertEquals('result has wrong values', 4.0D, result['firstDBSource']['30120'])
-        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30060'])
-        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30090'])
-        assertEquals('result has wrong values', 0.1D, result['secondDBSource']['30120'])
-    }
-
 
     private getImageBytes(String imageFile)
     {

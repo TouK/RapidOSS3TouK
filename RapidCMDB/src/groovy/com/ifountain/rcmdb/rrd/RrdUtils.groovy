@@ -238,17 +238,6 @@ class RrdUtils {
         return DbUtils.fetchDataAsMap(RRD_FOLDER + dbName, datasources, function, startTimes, endTimes)
     }
 
-    //this method is more useful for models
-    public static def fetchAllDataAsMap(List dbNames, List datasources) {
-        if(dbNames.size() != datasources.size()) {
-            throw new Exception("number of database and number of datasources are not equal");
-        }
-        def result = [:]
-        for(int i = 0; i < dbNames.size(); i++){
-            result[datasources.get(i)] = fetchAllDataAsMap(dbNames.get(i), datasources.get(i)).get(datasources.get(i));
-        }
-        return result;
-    }
 
     public static def fetchDataAsMap(List dbNames, List datasources, long startTime, long endTime){
         if(dbNames.size() != datasources.size()) {
@@ -264,33 +253,6 @@ class RrdUtils {
         return result;
     }
 
-    //this method is more useful for models
-    public static def fetchDataAsMap(List dbNames, List datasources, function,
-                                   long startTime, long endTime){
-        if(dbNames.size() != datasources.size()) {
-            throw new Exception("number of database and number of datasources are not equal");
-        }
-        def result = [:]
-        for(int i=0; i < dbNames.size(); i++){
-            result[datasources.get(i)] = fetchDataAsMap(dbNames.get(i), datasources.get(i),
-                                                             function, startTime, endTime).get(datasources.get(i));
-        }
-        return result;
-    }
-
-    //this method is more useful for models
-    public static def fetchDataAsMap(List dbNames, List datasources, function, List startTimes, List endTimes){
-        createDirectory();
-        if(dbNames.size() != datasources.size()) {
-            throw new Exception("number of database and number of datasources are not equal");
-        }
-        Map result = [:];
-        for(int i=0; i < dbNames.size(); i++){
-            result[datasources.get(i)] = fetchDataAsMap(dbNames.get(i), datasources.get(i),
-                                                             function, startTimes.get(i) as long, endTimes.get(i) as long).get(datasources.get(i));
-        }
-        return result;
-    }
 
     /**
     * sets the following properties of graphdef:

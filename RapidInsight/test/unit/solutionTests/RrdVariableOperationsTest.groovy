@@ -90,7 +90,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def datapointList = []
         def datapointConfig = [:]
-        datapointConfig["name"] = "variable"
+        datapointConfig["name"] = "data"
         datapointConfig["type"] = "GAUGE"
         datapointConfig["heartbeat"] = 300L
         datapointConfig["max"] = Double.NaN
@@ -133,7 +133,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def datapointList = []
         def datapointConfig = [:]
-        datapointConfig["name"] = "variable"
+        datapointConfig["name"] = "data"
         datapointConfig["type"] = "GAUGE"
         datapointConfig["heartbeat"] = 300L
         datapointConfig["max"] = Double.NaN
@@ -184,7 +184,47 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def datapointList = []
         def datapointConfig = [:]
-        datapointConfig["name"] = "variable"
+        datapointConfig["name"] = "data"
+        datapointConfig["type"] = "GAUGE"
+        datapointConfig["heartbeat"] = 300L
+        datapointConfig["max"] = Double.NaN
+        datapointConfig["min"] = Double.NaN
+        datapointList.add(datapointConfig)
+
+        assertEquals(datapointList, dbConfig["datasource"])
+
+        def archiveList = []
+        def archiveConfig = [:]
+        archiveConfig["function"] = "AVERAGE"
+        archiveConfig["steps"] = 1
+        archiveConfig["rows"] = 10
+        archiveConfig["xff"] = 0.5D
+        archiveList.add(archiveConfig)
+        dbConfig["archive"].get(0).remove("startTime")
+
+//        assertEquals(archiveList, dbConfig["archive"])
+    }
+
+    public void testCreateDBSuccessfulWithLongVarName() {
+
+        def archive = RrdArchive.add(function:"AVERAGE", xff:0.5, step:1, numberOfDatapoints:10)
+        assertFalse(archive.errors.toString(), archive.hasErrors())
+        def varName = "variable11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+        fileName = varName+".rrd"
+        def variable = RrdVariable.add(name:varName, resource:"resource", type:"GAUGE", heartbeat:300,
+                                       startTime:9000, frequency:300)
+        assertFalse(variable.errors.toString(), variable.hasErrors())
+        variable.addArchive(archive.getMap());
+        variable.createDB()
+
+        def dbConfig = RrdUtils.getDatabaseInfo(fileName)
+
+        assertEquals(rrdRootDirectory + "/" + varName + ".rrd", dbConfig["databaseName"])
+        assertEquals(300L, dbConfig["step"])
+
+        def datapointList = []
+        def datapointConfig = [:]
+        datapointConfig["name"] = "data"
         datapointConfig["type"] = "GAUGE"
         datapointConfig["heartbeat"] = 300L
         datapointConfig["max"] = Double.NaN
@@ -237,7 +277,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.createDB()
         variable.updateDB(500, 9300000)
 
-        assertEquals(500D, RrdUtils.fetchDataAsMap(fileName, "variable", "AVERAGE", 9300000L, 9300000L)['variable']['9300'])
+        assertEquals(500D, RrdUtils.fetchDataAsMap(fileName, "data", "AVERAGE", 9300000L, 9300000L)['data']['9300'])
     }
 
     public void testUpdateDiscardsBadUpdateTimes() {
@@ -254,8 +294,8 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(500, 9300000)
         variable.updateDB(600, 9200000)
 
-        assertEquals(500D, RrdUtils.fetchDataAsMap(fileName, "variable", "AVERAGE", 9300000L, 9300000L)['variable']['9300'])
-        assertEquals(null, RrdUtils.fetchDataAsMap(fileName, "variable", "AVERAGE", 9200000L, 9200000L)['variable']['9200'])
+        assertEquals(500D, RrdUtils.fetchDataAsMap(fileName, "data", "AVERAGE", 9300000L, 9300000L)['data']['9300'])
+        assertEquals(null, RrdUtils.fetchDataAsMap(fileName, "data", "AVERAGE", 9200000L, 9200000L)['data']['9200'])
     }
 
     public void testUpdateOnlyValue() {
@@ -288,7 +328,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
 
         RrdVariable.updateDB(fileName, [5, 10, 15], [9300000L, 9600000L, 9900000L] )
 
-        assertEquals(['9300':5D,'9600':10D,'9900':15D], RrdUtils.fetchDataAsMap(fileName, "variable", "AVERAGE", 9300000, 9900000)['variable'])
+        assertEquals(['9300':5D,'9600':10D,'9900':15D], RrdUtils.fetchDataAsMap(fileName, "data", "AVERAGE", 9300000, 9900000)['data'])
     }
 
     public void testGraphWithoutTemplate() {
@@ -470,7 +510,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         variable.updateDB(12423,920808900000L)
 
         variable.graph(title:"Graph With RPN Source", color: "0000FF", startTime:920804400000L, endTime:920808000000L,
-                       rpn:"variable,1000,*", destination:imageFilePath)
+                       rpn:"data,1000,*", destination:imageFilePath)
 
         assertTrue(new File(imageFilePath).exists())
     }
@@ -675,9 +715,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["destination"] = imageFilePath
 
         config["rrdVariables"] = []
-        config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
-        config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
-        config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"data,3600,*",description:"km/h"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"data,3600,*,100,GT,data,3600,*,0,IF", description:"Fast"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"data,3600,*,100,GT,0,data,3600,*,IF", description:"Good"])
 
         RrdVariable.internalGraphMultiple(config)
 
@@ -726,9 +766,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         config["destination"] = imageFilePath
 
         config["rrdVariables"] = []
-        config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"variable,3600,*",description:"km/h"])
-        config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"variable,3600,*,100,GT,variable,3600,*,0,IF", description:"Fast"])
-        config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"variable,3600,*,100,GT,0,variable,3600,*,IF", description:"Good"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"000000", type:"line", thickness:4, rpn:"data,3600,*",description:"km/h"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"FF0000", type:"area", rpn:"data,3600,*,100,GT,data,3600,*,0,IF", description:"Fast"])
+        config["rrdVariables"].add([rrdVariable:"variable", color:"00FF00", type:"area", rpn:"data,3600,*,100,GT,0,data,3600,*,IF", description:"Good"])
 
         RrdVariable.internalGraphMultiple(config)
 
@@ -824,6 +864,7 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
     public void testFetchMultipleDataWithMoreConfiguration() {
         createVariables()
         def result = RrdVariable.fetchData(['variable1','variable2'], "AVERAGE", 3030000L, 3060000L);
+        println result;
         assertTrue('result should have values from variable1', result.containsKey('variable1'))
         assertTrue('result should have values from variable2', result.containsKey('variable2'))
         assertEquals('wrong values returned',4D, result['variable2']['3040'])
@@ -842,10 +883,9 @@ class RrdVariableOperationsTest extends RapidCmdbWithCompassTestCase {
         RrdVariable.updateDB(variable1.fileSource(), [1,2,3,4,5,6], [3010000L,3020000L,3030000L,3040000L,3050000L,3060000L])
 
         def result = variable1.fetchAllData();
-        assertTrue('result should have values from variable1', result.containsKey('variable1'))
-        assertEquals('wrong values returned',4D, result['variable1']['3040'])
-        assertEquals('wrong values returned',5D, result['variable1']['3050'])
-        assertEquals('wrong values returned',6D, result['variable1']['3060'])
+        assertEquals('wrong values returned',4D, result['3040'])
+        assertEquals('wrong values returned',5D, result['3050'])
+        assertEquals('wrong values returned',6D, result['3060'])
     }
 
     public void testCreateDefaultArchives() {

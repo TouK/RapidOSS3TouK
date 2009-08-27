@@ -10,17 +10,13 @@ def mb = new MarkupBuilder(sw);
 
 def dataUtil = RrdVariable.get(name:params.name);
 def map = dataUtil.fetchAllData();
-def variable = map.keySet().toArray()[0];
-map = map[variable];
 
 long now = Date.now();
-def mapArray = map.keySet().toArray();
 mb.RootTag{
     mb.Variable(Target:"UpperBand"){
-        map.keySet().each{
-            def value = map[it];
+        map.each{String time,  value->
             value = value == Double.NaN?0:value;
-            mb.Data(time:Long.parseLong(it)*1000, value:value);
+            mb.Data(time:Long.parseLong(time)*1000, value:value);
         }
     }
     mb.Annotations{

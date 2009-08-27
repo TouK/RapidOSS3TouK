@@ -160,18 +160,18 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
             rrdVar = RrdVariable.get(name:rrdVariables[i][RRD_VARIABLE]);
             if(rrdVariables[i].containsKey(FUNCTION) ){
                 def datasourceMap = [:];
-                datasourceMap[NAME] = rrdVar.name;
+                datasourceMap[NAME] = "data";
                 datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-                datasourceMap[DSNAME] = rrdVar.name;
+                datasourceMap[DSNAME] = "data";
                 datasourceMap[FUNCTION] = rrdVariables[i][FUNCTION];
                 datasourceList.add(datasourceMap);
 
             }else{
                 rrdVar.archives.each{
                     def datasourceMap = [:];
-                    datasourceMap[NAME] = rrdVar.name;
+                    datasourceMap[NAME] = "data";
                     datasourceMap[DATABASE_NAME] = rrdVar.fileSource();
-                    datasourceMap[DSNAME] = rrdVar.name;
+                    datasourceMap[DSNAME] = "data";
                     datasourceMap[FUNCTION] = it.function;
                     datasourceList.add(datasourceMap);
                 }
@@ -183,14 +183,14 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
                 datasourceList.add(datasourceMap);
             }
             def typeMap = [:];
-            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : rrdVar.name
+            typeMap[NAME] = rrdVariables[i].containsKey(RPN) ? rrdVariables[i][RPN] : "data"
 
             if(rrdVariables[i].containsKey(DESCRIPTION))
                 typeMap[DESCRIPTION] = rrdVariables[i][DESCRIPTION]
             else if(config.containsKey(DESCRIPTION) && rrdVariables.size() == 1)
                 typeMap[DESCRIPTION] = config[DESCRIPTION]
             else
-                typeMap[DESCRIPTION] = rrdVar.name;
+                typeMap[DESCRIPTION] = rrdVariables[i].name;
 
             if(rrdVariables[i].containsKey(COLOR))
                 typeMap[COLOR] = rrdVariables[i][COLOR];
@@ -322,43 +322,55 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
 
     def fetchAllData(){
         String dbname = fileSource();
-        return RrdUtils.fetchAllDataAsMap(dbname, name);
+        return RrdUtils.fetchAllDataAsMap(dbname, "data").data;
     }
 
 
     def fetchData(long startTime, long endTime){
         def dbname = fileSource()
-        return RrdUtils.fetchDataAsMap(dbname, name, startTime, endTime)
+        return RrdUtils.fetchDataAsMap(dbname, "data", startTime, endTime).data
     }
 
     def fetchData(String function, long startTime, long endTime){
         String dbname = fileSource();
-        return RrdUtils.fetchDataAsMap (dbname, name, function, startTime, endTime);
+        return RrdUtils.fetchDataAsMap (dbname, "data", function, startTime, endTime).data;
     }
 
     static def fetchData(List datasources, long startTime, long endTime){
-        def filesources = []
+        def res = [:]
         datasources.each{
-            filesources.add(RrdVariable.get(name:it).fileSource())
+            def rrdVariable = RrdVariable.get(name:it)
+            res[rrdVariable.name] = rrdVariable.fetchData(startTime, endTime);
         }
-        return RrdUtils.fetchDataAsMap(filesources, datasources, startTime, endTime)
+        return res;
     }
 
     static def fetchData(List datasources, String function, long startTime, long endTime){
-        def filesources = []
+        def res = [:]
         datasources.each{
-            filesources.add(RrdVariable.get(name:it).fileSource())
+            def rrdVariable = RrdVariable.get(name:it)
+            res[rrdVariable.name] = rrdVariable.fetchData(function, startTime, endTime);
         }
-        return RrdUtils.fetchDataAsMap(filesources, datasources, function, startTime, endTime)
+        return res;
     }
 
 
     static def fetchAllData(List datasources){
-        List filesources = []
+        def res = [:]
         datasources.each{
-            filesources.add( RrdVariable.get(name:it).fileSource())
+            def rrdVariable = RrdVariable.get(name:it)
+            res[rrdVariable.name] = rrdVariable.fetchAllData();
         }
-        RrdUtils.fetchAllDataAsMap (filesources, datasources);
+        return res;
+    }
+
+    private static convertFetchDataResults(Map res)
+    {
+        def newRes = [:]
+        res.each{variableName, results->
+            newRes[]
+        }
+        return [:]
     }
 
     private def currentTime() {
@@ -415,7 +427,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         dbConfig[STEP] = frequency
 
         def datapoint = [:]
-        datapoint[NAME] = name
+        datapoint[NAME] = "data"
         datapoint[TYPE] = type
         datapoint[HEARTBEAT] = heartbeat
         datapoint[MAX] = max

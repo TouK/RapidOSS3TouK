@@ -12,30 +12,30 @@ class UiGMap extends UiComponent{
         storageType "FileAndMemory"
     };
 
-    String contentPath
     String url
     String googleKey = "ABQIAAAA7ipkp7ZXyXVH2UHyOgqZhxT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRnNbZP5arP3T53Mzg-yLZcEMRBew"
     Long pollingInterval= 0;
-    String latitudeField
-    String longitudeField
-    String addressField
-    String markerField
-    String tooltipField
     Long timeout=60;
+    String locationTagName = "Location";
+    String lineTagName = "Line";
+    String iconTagName = "Icon";
+    Long lineSize = 5;
+    Long defaultIconWidth = 32;
+    Long defaultIconHeight = 32;
     org.springframework.validation.Errors errors ;
     static datasources = [:]
     static relations = [:]
     static constraints={
-        latitudeField(blank:false)
-        longitudeField(blank:false)
-        addressField(blank:false)
-        markerField(blank:false)
-        tooltipField(blank:false)
-        contentPath(blank:false)
+        locationTagName(nullable: true, blank: true)
+        lineTagName(nullable: true, blank: true)
+        iconTagName(nullable: true, blank: true)
         url(blank:false)
         googleKey(blank:false)
         pollingInterval(nullable:true)
+        lineSize(nullable:true)
         timeout(nullable:true)
+        defaultIconWidth(nullable:true)
+        defaultIconHeight(nullable:true)
     }
 
     static propertyConfiguration= [:]

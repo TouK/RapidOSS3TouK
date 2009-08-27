@@ -23,15 +23,41 @@ YAHOO.rapidjs.component.GMap = function(container, config) {
         YAHOO.rapidjs.component.GMap.isGoogleLibIncluded = true;        
     }
     YAHOO.rapidjs.component.GMap.superclass.constructor.call(this, container, config);
+    this.locationTagName = "Location";
+    this.lineTagName = "Line";
+    this.iconTagName = "Icon";
+    this.latitudeField = "lat"
+    this.longitudeField = "lng"
+    this.addressField = "address"
+    this.markerField = "marker"
+    this.tooltipField = "tooltip"
+    this.lineSize = 5;
+    this.latitudeField = "lat"
+    this.lineStartLatField = "startLat"
+    this.lineEndLatField = "endLat"
+    this.lineStartLngField = "startLng"
+    this.lineEndLngField = "endLng"
+    this.lineColorField = "color"
+    this.iconWidthField = "width"
+    this.iconHeightField = "height"
+    this.iconSourceField = "src"
+    this.defaultIconWidth = 32
+    this.defaultIconHeight = 32
     YAHOO.ext.util.Config.apply(this, config);
 
     var events = {
-        'markerClicked' : new YAHOO.util.CustomEvent('markerClicked')
+        'markerClicked' : new YAHOO.util.CustomEvent('markerClicked'),
+        'iconClicked' : new YAHOO.util.CustomEvent('iconClicked'),
+        'lineClicked' : new YAHOO.util.CustomEvent('lineClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.configureTimeout(config);
     this.markers = [];
     this.locations = {};
+    this.lineConfigs = [];
+    this.lines = [];
+    this.iconConfigs = [];
+    this.icons = [];
     this.renderingFinished = false;
     this.pollInterval = 0;
     YAHOO.util.Event.addListener(window, 'unload', function() {
@@ -55,28 +81,67 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         var data = new YAHOO.rapidjs.data.RapidXmlDocument(response);
         var node = data.rootNode;
         if (node) {
-            var locations = node.getElementsByTagName(this.contentPath);
-            var bounds = new GLatLngBounds();
+            var locations = node.getElementsByTagName(this.locationTagName);
+//            var bounds = new GLatLngBounds();
             for (var index = 0; index < locations.length; index++) {
                 var locationNode = locations[index];
                 this.createLocation(locationNode);
             }
-            this.putMarkersOnMap();
+            var lines = node.getElementsByTagName(this.lineTagName);
+            for (var index = 0; index < lines.length; index++) {
+                var lineNode = lines[index];
+                this.createLineConfig(lineNode);
+            }
+            var icons = node.getElementsByTagName(this.iconTagName);
+            for (var index = 0; index < icons.length; index++) {
+                var iconNode = icons[index];
+                this.createIconConfig(iconNode);
+            }
+            this.putItemsOnMap();
         }
     },
 
     createLocation: function(locationNode) {
-        var lat = parseFloat(locationNode.getAttribute(this.latitudeAttributeName));
-        var lng = parseFloat(locationNode.getAttribute(this.longitudeAttributeName));
-        var address = locationNode.getAttribute(this.addressAttributeName);
+        var lat = parseFloat(locationNode.getAttribute(this.latitudeField));
+        var lng = parseFloat(locationNode.getAttribute(this.longitudeField));
+        var address = locationNode.getAttribute(this.addressField);
         if (!this.locations[address]) {
-            var tooltip = "";
-            if (this.tooltipAttributeName) {
-                tooltip = locationNode.getAttribute(this.tooltipAttributeName);
-            }
-            var marker = locationNode.getAttribute(this.markerAttributeName);
+            var tooltip = locationNode.getAttribute(this.tooltipField) || "";
+            var marker = locationNode.getAttribute(this.markerField);
             this.locations[address] = {lat:lat, lng: lng, tooltip:tooltip, marker: marker, node:locationNode};
         }
+    },
+
+    createLineConfig: function(lineNode) {
+        var startLat = parseFloat(lineNode.getAttribute(this.lineStartLatField));
+        var startLng = parseFloat(lineNode.getAttribute(this.lineStartLngField));
+        var endLat = parseFloat(lineNode.getAttribute(this.lineEndLatField));
+        var endLng = parseFloat(lineNode.getAttribute(this.lineEndLngField));
+        var color = lineNode.getAttribute(this.lineColorField) || "#ff0000";
+        var tooltip = lineNode.getAttribute(this.tooltipField) || "";   
+        this.lineConfigs[this.lineConfigs.length] = {startLat:startLat, startLng: startLng, endLat:endLat, endLng: endLng, node:lineNode, color:color, tooltip:tooltip};
+    },
+
+    createIconConfig: function(iconNode) {
+        var lat = parseFloat(iconNode.getAttribute(this.latitudeField));
+        var lng = parseFloat(iconNode.getAttribute(this.longitudeField));
+        var srcValue = iconNode.getAttribute(this.iconSourceField);
+        var src = srcValue;
+        if(srcValue.indexOf("http") < 0){
+            src = getUrlPrefix() + srcValue
+        }
+        var iconWidth = 0;
+        var iconHeight = 0;
+        try{
+            iconWidth = parseFloat(iconNode.getAttribute(this.iconWidthField));
+        }
+        catch(error){}
+        try{
+            iconHeight = parseFloat(iconNode.getAttribute(this.iconHeightField));
+        }
+        catch(error){}
+        var tooltip = iconNode.getAttribute(this.tooltipField) || "";
+        this.iconConfigs[this.iconConfigs.length] = {lat:lat, lng: lng, tooltip:tooltip, src: src, node:iconNode, width:iconWidth || this.defaultIconWidth, height:iconHeight || this.defaultIconHeight};
     },
 
     render: function() {
@@ -86,17 +151,16 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
             this.map.setCenter(new GLatLng(0, 0), 1);
 
 		    // Create our "tiny" marker icon
+            this.baseMarkerIcon = new GIcon();
+            this.baseMarkerIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
+            this.baseMarkerIcon.iconSize = new GSize(20, 34);
+            this.baseMarkerIcon.shadowSize = new GSize(37, 34);
+            this.baseMarkerIcon.iconAnchor = new GPoint(9, 34);
+            this.baseMarkerIcon.infoWindowAnchor = new GPoint(9, 2);
+
             this.baseIcon = new GIcon();
-            /*			this.baseIcon.shadow = "http://labs.google.com/ridefinder/images/mm_30_shadow.png";
-                        this.baseIcon.iconSize = new GSize(12, 20);
-                        this.baseIcon.shadowSize = new GSize(22, 20);
-                        this.baseIcon.iconAnchor = new GPoint(6, 20);
-                        this.baseIcon.infoWindowAnchor = new GPoint(5, 1);
-            */
-            this.baseIcon.shadow = "http://www.google.com/mapfiles/shadow50.png";
-            this.baseIcon.iconSize = new GSize(20, 34);
-            this.baseIcon.shadowSize = new GSize(37, 34);
-            this.baseIcon.iconAnchor = new GPoint(9, 34);
+            this.baseIcon.iconSize = new GSize(this.defaultIconWidth, this.defaultIconHeight);
+            this.baseIcon.iconAnchor = new GPoint(8, 8);
             this.baseIcon.infoWindowAnchor = new GPoint(9, 2);
 
         }
@@ -108,20 +172,32 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
             GEvent.clearInstanceListeners(marker);
             this.map.removeOverlay(marker);
         }
+        while (this.lines.length > 0) {
+            var line = this.lines.pop();
+            GEvent.clearInstanceListeners(line);
+            this.map.removeOverlay(line);
+        }
+        while (this.icons.length > 0) {
+            var icon = this.icons.pop();
+            GEvent.clearInstanceListeners(icon);
+            this.map.removeOverlay(icon);
+        }
         this.locations = {};
+        this.lineConfigs = [];
+        this.iconConfigs = [];
     },
 
     createMarker: function(point, loc) {
         // Do we need to clean up icons created????
-        var icon = new GIcon(this.baseIcon);
+        var icon = new GIcon(this.baseMarkerIcon);
         icon.image = loc.marker;
         var marker = new GMarker(point, icon);
         var component = this;
         var node = loc.node;
         var mapEvents = this.events;
         var component = this;
-        GEvent.addListener(marker, "click", function(e) {
-            if (component.tooltipAttributeName) {
+        GEvent.addListener(marker, "click", function(latLng) {
+            if(loc.tooltip != ''){
                 marker.openInfoWindowHtml(loc.tooltip);
             }
             mapEvents['markerClicked'].fireDirect(node);
@@ -130,9 +206,45 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         this.markers.push(marker);
         return marker;
     },
+    createIcon: function(point, iconConfig) {
+        // Do we need to clean up icons created????
+        var icon = new GIcon(this.baseIcon);
+        icon.image = iconConfig.src;
+        icon.iconSize = new GSize(iconConfig.width, iconConfig.height);
+        var marker = new GMarker(point, icon);
+        var component = this;
+        var node = iconConfig.node;
+        var mapEvents = this.events;
+        var component = this;
+        GEvent.addListener(marker, "click", function(latLng) {
+            if(iconConfig.tooltip != ''){
+                marker.openInfoWindowHtml(iconConfig.tooltip);
+            }
+            mapEvents['iconClicked'].fireDirect(node);
+        });
+
+        this.icons.push(marker);
+        return marker;
+    },
+
+    createLine: function(lineConfig, startPoint, endPoint){
+        var line = new GPolyline([startPoint,endPoint], lineConfig.color, this.lineSize);
+        var mapEvents = this.events;
+        var node = lineConfig.node;
+        var component = this;
+        var gmap = this.map;
+        GEvent.addListener(line, "click", function(latLng) {
+            if (lineConfig.tooltip != '') {
+                gmap.openInfoWindowHtml(latLng, lineConfig.tooltip);
+            }
+            mapEvents['lineClicked'].fireDirect(node);
+        });
+        this.lines.push(line);
+        return line;
+    },
 
 
-    putMarkersOnMap: function() {
+    putItemsOnMap: function() {
         var bounds = new GLatLngBounds();
         var index = 0;
         for (var address in this.locations) {
@@ -141,6 +253,22 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
             var marker = this.createMarker(point, loc);
             this.map.addOverlay(marker);
             bounds.extend(point);
+        }
+        for (var index = 0; index < this.iconConfigs.length; index++) {
+            var iconConfig = this.iconConfigs[index];
+            var point = new GLatLng(iconConfig.lat, iconConfig.lng);
+            var icon = this.createIcon(point, iconConfig);
+            this.map.addOverlay(icon);
+            bounds.extend(point);
+        }
+        for (var index = 0; index < this.lineConfigs.length; index++) {
+            var lineConfig = this.lineConfigs[index];
+            var startPoint =  new GLatLng(lineConfig.startLat, lineConfig.startLng);
+            var endPoint =  new GLatLng(lineConfig.endLat, lineConfig.endLng);
+            var line = this.createLine(lineConfig, startPoint, endPoint);
+            this.map.addOverlay(line);
+            bounds.extend(startPoint);
+            bounds.extend(endPoint);
         }
         var zoom = this.map.getBoundsZoomLevel(bounds);
         var lng = bounds.getCenter().lng();

@@ -647,6 +647,18 @@ YAHOO.rapidjs.designer.Config = new function() {
                 params:{
                     "params.data":"JavaScript object representing the location data"
                 }
+            },
+            "lineClicked":{
+                descr:"Fired when a line is clicked",
+                params:{
+                    "params.data":"JavaScript object representing the line data"
+                }
+            },
+            "iconClicked":{
+                descr:"Fired when an icon is clicked",
+                params:{
+                    "params.data":"JavaScript object representing the icon data"
+                }
             }
         },
         "Html":{

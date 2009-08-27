@@ -1,39 +1,43 @@
->
-GMap is a UI component which integrates Google Maps with RapidInsight UI.</p>
+GMap is a UI component which integrates Google Maps with RapidInsight UI. Currently location markers, lines between specified coordinates and icons are supported.</p>
 
-<p><img src="download/attachments/2201786/Gmap.jpg" align="absmiddle" border="0"/></p>
+<p><img src="/confluence/download/attachments/2201786/Gmap.jpg" align="absmiddle" border="0" /></p>
 
 <h4><a name="GMapComponent-AvailableProperties"></a>Available Properties</h4>
 
 <p><b>name</b> (Required): Name of the component. Default is GMap.<br/>
 <b>title</b> (Optional): GMap component title<br/>
 <b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
-<b>contentPath</b> (Required): The node names of AJAX response which will be used as location data. ex: "Location" for the sample data below<br/>
-<b>latitudeField</b> (Required): The attribute in data which specifies the latitude of the location. ex: "Lat" for the sample data below<br/>
-<b>longitudeField</b> (Required): The attribute in data which specifies the longitude of the location. ex: "Lng" for the sample data below<br/>
-<b>adressField</b> (Required): The attribute in data which specifies open location address. ex: "Address" for the sample data below<br/>
-<b>markerField</b> (Required): The marker image url. ex: "Marker" for the sample data below<br/>
-<b>tooltipField</b> (Required): The attribute in data which will be displayed in tooltip. ex: "Tooltip" for the sample data below<br/>
-<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.</p>
 
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.</p>
 
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
 <pre class="code-java">&lt;Locations&gt;
-    &lt;Location Address='Greater Rochester International Airport' Lat='43.1279950' Lng='-77.6660980'
-              Tooltip='&amp;lt;b&amp;gt;Greater Rochester International Airport (2 devices)&amp;lt;/b&amp;gt;'
-              Marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_orange.png' NodeType='Container' Name='CorpVPN1'/&gt;
-</span>    &lt;Location Address='Logan International Airport' Lat='42.3613980' Lng='-71.0135050' Tooltip='&amp;lt;b&amp;gt;Logan International Airport (7 devices)&amp;lt;/b&amp;gt;'
-              Marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
-</span>    &lt;Location Address='John F Kennedy International Airport' Lat='40.6424805' Lng='-73.7880710'
-              Tooltip='&amp;lt;b&amp;gt;John F Kennedy International Airport (6 devices)&amp;lt;/b&amp;gt;'
-              Marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
-</span>&lt;/Locations&gt;</pre>
+    &lt;Location address='Greater Rochester International Airport' lat='43.1279950' lng='-77.6660980'
+              tooltip='&amp;lt;b&amp;gt;Greater Rochester International Airport (2 devices)&amp;lt;/b&amp;gt;'
+              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_orange.png' NodeType='Container' Name='CorpVPN1'/&gt;
+
+</span>    &lt;Location address='Logan International Airport' lat='42.3613980' lng='-71.0135050' tooltip='&amp;lt;b&amp;gt;Logan International Airport (7 devices)&amp;lt;/b&amp;gt;'
+              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
+</span>    &lt;Location address='John F Kennedy International Airport' lat='40.6424805' lng='-73.7880710'
+              tooltip='&amp;lt;b&amp;gt;John F Kennedy International Airport (6 devices)&amp;lt;/b&amp;gt;'
+              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
+</span>    &lt;Line startLat='43.1279950' startLng='-77.6660980' endLat='42.3613980' endLng='-71.0135050' color='#00ff00'/&gt;
+
+    &lt;Icon lat='42.1279950' lng='-76.6660980' src='images/rapidjs/component/states/red.png' width='16' height='16'/&gt;
+&lt;/Locations&gt;</pre>
 </div></div>
 
 <h4><a name="GMapComponent-AdditionalProperties"></a>Additional Properties</h4>
 
-<p><b>timeout</b> (Optional): The time interval in seconds to wait the server request completes successfully before aborting. Default is 30.</p>
+<p><b>locationTagName</b> (Optional): The node names of AJAX response which will be used as location data. Default is "Location".<br/>
+<b>lineTagName</b> (Optional): The node names of AJAX response which will be used as line data. Default is "Line".<br/>
+
+<b>iconTagName</b> (Optional): The node names of AJAX response which will be used as icon data. Default is "Icon".<br/>
+<b>lineSize</b>(Optional): Pixel width of the lines. Default is 5.<br/>
+<b>defaultIconWidth</b>(Optional): Default width of icons in pixels if not specified in AJAX response. Default is 32.<br/>
+<b>defaultIconHeight</b>(Optional): Default height of icons in pixels if not specified in AJAX response. Default is 32.<br/>
+<b>timeout</b> (Optional): The time interval in seconds to wait the server request completes successfully before aborting. Default is 30.</p>
 
 <h4><a name="GMapComponent-AvailableActions"></a>Available Actions</h4>
 
@@ -43,8 +47,19 @@ GMap is a UI component which integrates Google Maps with RapidInsight UI.</p>
 <h4><a name="GMapComponent-AvailableEvents"></a>Available Events</h4>
 
 <p><b>onMarkerClick</b>: Event fired when a marker is clicked. Available parameters:</p>
+
 <ul>
 	<li>params.data: JavaScript object representing location data.</li>
 </ul>
 
 
+<p><b>onLineClick</b>: Event fired when a line is clicked. Available parameters:</p>
+<ul>
+	<li>params.data: JavaScript object representing line data.</li>
+</ul>
+
+
+<p><b>onIconClick</b>: Event fired when a icon is clicked. Available parameters:</p>
+<ul>
+	<li>params.data: JavaScript object representing icon data.</li>
+</ul>

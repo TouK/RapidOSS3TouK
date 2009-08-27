@@ -1,7 +1,6 @@
-<rui:gmap id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" contentPath="${uiElement.contentPath}" googleKey="${uiElement.googleKey}"
-        timeout="${uiElement.timeout}" latitudeField="${uiElement.latitudeField}"
-        longitudeField="${uiElement.longitudeField}" addressField="${uiElement.addressField}" markerField="${uiElement.markerField}"
-        tooltipField="${uiElement.tooltipField}"
+<rui:gmap id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" googleKey="${uiElement.googleKey}"
+        timeout="${uiElement.timeout}" locationTagName="${uiElement.locationTagName}" lineTagName="${uiElement.lineTagName}"
+         iconTagName="${uiElement.iconTagName}" lineSize="${uiElement.lineSize}" defaultIconWidth="${uiElement.defaultIconWidth}" defaultIconHeight="${uiElement.defaultIconHeight}"
 <%
         uiElement.getActionTrigers().each{eventName, actionTriggers->
     def actionString = uiElement.getActionsString(actionTriggers);

@@ -27,11 +27,35 @@ class GmapTagLib {
     static def fGmap(attrs, bodyString) {
         def configStr = getConfig(attrs);
         def onMarkerClick = attrs["onMarkerClicked"];
+        def onLineClick = attrs["onLineClicked"];
+        def onIconClick = attrs["onIconClicked"];
         def markerClickJs = "";
+        def linerClickJs = "";
+        def iconClickJs = "";
         if (onMarkerClick != null) {
             getActionsArray(onMarkerClick).each {actionName ->
                 markerClickJs += """
                    gmap.events['markerClicked'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+         if (onLineClick != null) {
+            getActionsArray(onLineClick).each {actionName ->
+                linerClickJs += """
+                   gmap.events['lineClicked'].subscribe(function(xmlData){
+                       var params = {data:xmlData.getAttributes()};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+        }
+         if (onIconClick != null) {
+            getActionsArray(onIconClick).each {actionName ->
+                iconClickJs += """
+                   gmap.events['iconClicked'].subscribe(function(xmlData){
                        var params = {data:xmlData.getAttributes()};
                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                     }, this, true);
@@ -44,6 +68,8 @@ class GmapTagLib {
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var gmap = new YAHOO.rapidjs.component.GMap(container, gmapConfig);
                ${markerClickJs}
+               ${linerClickJs}
+               ${iconClickJs}
                if(gmap.pollingInterval > 0){
                    gmap.poll();
                }
@@ -58,16 +84,16 @@ class GmapTagLib {
         return """{
             id:'${attrs["id"]}',
             url:'${attrs["url"]}',
-            googleKey:'${attrs["googleKey"]}',
-            contentPath:'${attrs["contentPath"]}',
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
-            latitudeAttributeName:'${attrs["latitudeField"]}',
-            longitudeAttributeName:'${attrs["longitudeField"]}',
-            addressAttributeName:'${attrs["addressField"]}',
-            markerAttributeName:'${attrs["markerField"]}',
-            tooltipAttributeName:'${attrs["tooltipField"]}'
+            ${attrs["locationTagName"] ? "locationTagName:'${attrs["locationTagName"]}'," : ""}
+            ${attrs["lineTagName"] ? "lineTagName:'${attrs["lineTagName"]}'," : ""}
+            ${attrs["iconTagName"] ? "iconTagName:'${attrs["iconTagName"]}'," : ""}
+            ${attrs["lineSize"] ? "lineSize:${attrs["lineSize"]}," : ""}
+            ${attrs["defaultIconWidth"] ? "defaultIconWidth:${attrs["defaultIconWidth"]}," : ""}
+            ${attrs["defaultIconHeight"] ? "defaultIconHeight:${attrs["defaultIconHeight"]}," : ""}
+            googleKey:'${attrs["googleKey"]}'
         }"""
     }
 

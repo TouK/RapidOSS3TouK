@@ -22,14 +22,14 @@ class UiGMapOperations extends UiComponentOperations
                 imageCollapsed: "images/rapidjs/designer/map.png",
                 propertyConfiguration: [
                         url:[descr:"The default URL to be used for requests to the server to retrieve the data. "],
-                        contentPath:[descr:"The node names of AJAX response which will be used as location data. "],
                         googleKey:[descr:"Google Maps API key for your domain.See Google Maps API documentation for further information."],
-                        latitudeField:[descr:"The attribute in data which specifies the latitude of the location. "],
-                        longitudeField:[descr:"The attribute in data which specifies the longitude of the location. "],
-                        addressField:[descr:"The attribute in data which specifies open location address. "],
-                        markerField:[descr:"The marker image url. "],
-                        tooltipField:[descr:"The attribute in data which will be displayed in tooltip. "],
                         pollingInterval:[descr:"Time delay between two server requests.", required:true],
+                        locationTagName:[descr:"The node names of AJAX response which will be used as location data. "],
+                        lineTagName:[descr:"The node names of AJAX response which will be used as line data. "],
+                        iconTagName:[descr:"The node names of AJAX response which will be used as icon data. "],
+                        lineSize:[descr:"Pixel width of the lines."],
+                        defaultIconWidth:[descr:"Default width of icons in pixels if not specified in AJAX response. Default is 32."],
+                        defaultIconHeight:[descr:"Default height of icons in pixels if not specified in AJAX response. Default is 32."],
                         timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
                 ],
                 childrenConfiguration: []

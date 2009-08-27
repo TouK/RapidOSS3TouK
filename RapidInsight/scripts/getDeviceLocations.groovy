@@ -77,7 +77,7 @@ builder.Locations() {
         def marker = getMarker(location);
         def lat = location.get("lat");
         def lng = location.get("lng");
-        builder.Location(Address: address, Lat: lat, Lng: lng, Tooltip: tooltip, Marker: marker, NodeType: nodeType, Name: name);
+        builder.Location(address: address, lat: lat, lng: lng, tooltip: tooltip, marker: marker, nodeType: nodeType, name: name);
     }
 }
 web.render(contentType: "text/xml", text: sw.toString())

@@ -34,9 +34,11 @@ import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
 import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
+import org.apache.log4j.Logger
 
 class AddMethod extends AbstractRapidDomainWriteMethod
 {
+    Logger logger = Logger.getLogger(AddMethod)
     def relations;
     GetMethod getMethod
     def fieldTypes = [:]
@@ -84,6 +86,11 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             if(clazz.isAssignableFrom(existingInstanceEntry.alias) )
             {
                 def existingInstance = getMethod.invoke(clazz, [props, false] as Object[]);
+                if(existingInstance == null)
+                {
+                    def idCacheEntry = clazz.getCacheEntry(props);
+                    logger.error ("There is a mismatch between IdCache and repository. Repository instance:${existingInstance} IdCacheEntryExist:${idCacheEntry?idCacheEntry.exist:"<null>"}");
+                }
                 return existingInstance.update(props);
             }
             else

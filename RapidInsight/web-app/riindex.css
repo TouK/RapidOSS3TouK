@@ -122,4 +122,28 @@
     filter: alpha( opacity = 100 )
 }
 
+.apgWrapperBox {
+    background-position: left top;
+    border: 1px solid #B8C1D6;
+    margin-bottom: 15px;
+    margin-top: 12px;
+    padding: 11px;
+}
+
+.apgWrapperBox .apgGraphWrapperBox {
+    text-align: center;
+}
+
+.apgWrapperBox  .apgLegendBox {
+    border: 1px solid #A7BBC4;
+    margin-top: 5px;
+    padding: 2px 5px 5px;
+    text-align: center;
+}
+
+
+.apgLegendCell {
+    border: 1px solid #A7BBC4;
+    color: #076D8F;
+}
 

@@ -29,22 +29,23 @@
             <tbody>
                 <g:each in="${snmpConnectorList}" status="i" var="snmpConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
+                        <g:set var="snmpConn" value="${snmpConnector.connection}"></g:set>
+                        <g:set var="connectorScript" value="${snmpConnector.script}"></g:set>
                         <td><g:link action="show" id="${snmpConnector.id}">${snmpConnector.name?.encodeAsHTML()}</g:link></td>
 
-                        <td>${snmpConnector.connection?.host?.encodeAsHTML()}</td>
+                        <td>${snmpConn?.host?.encodeAsHTML()}</td>
 
-                        <td>${snmpConnector.connection?.port?.encodeAsHTML()}</td>                        
-                        <td>${snmpConnector.script?.scriptFile?.encodeAsHTML()}</td>
+                        <td>${snmpConn?.port?.encodeAsHTML()}</td>
+                        <td>${connectorScript?.scriptFile?.encodeAsHTML()}</td>
                         <td>
                              <g:form>
-                                 <g:select name="logLevel" from="${snmpConnector.script.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:snmpConnector.script,field:'logLevel')}"></g:select>
+                                 <g:select name="logLevel" from="${connectorScript.constraints.logLevel.inList.collect{it.encodeAsHTML()}}" value="${fieldValue(bean:connectorScript,field:'logLevel')}"></g:select>
                                  <g:actionSubmit value="Update Log Level" action="updateLogLevel"/>
                                  <input type="hidden" name="id" value="${snmpConnector?.id}"/>
                              </g:form>
                          </td>
                         <%
-                            def isSubscribed = snmpConnector.script.listeningDatasource.isFree();
+                            def isSubscribed = connectorScript.listeningDatasource.isFree();
                             if (isSubscribed) {
                         %>
                            <td><g:link action="startConnector" controller="snmpConnector" id="${snmpConnector.id}" class="start">Start</g:link></td>

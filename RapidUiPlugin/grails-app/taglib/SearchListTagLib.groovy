@@ -179,7 +179,9 @@ class SearchListTagLib {
                ${menuEventsJs ? menuEventsJs : ""}
                ${propMenuEventsJs ? propMenuEventsJs : ""}
                if(${searchListId}sl.pollingInterval > 0){
-                   ${searchListId}sl.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, ${searchListId}sl, true)
                }
            </script>
         """

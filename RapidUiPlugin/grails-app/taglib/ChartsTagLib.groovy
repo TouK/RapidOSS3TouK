@@ -28,7 +28,9 @@ class ChartsTagLib {
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var pieChart = new YAHOO.rapidjs.component.PieChart(container, chartConfig);
                if(pieChart.pollingInterval > 0){
-                   pieChart.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, pieChart, true)
                }
            </script>
         """;
@@ -83,7 +85,9 @@ class ChartsTagLib {
                var pieChart = new YAHOO.rapidjs.component.FlexPieChart(container, chartConfig);
                ${itemClickJs}
                if(pieChart.pollingInterval > 0){
-                   pieChart.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, pieChart, true)
                }
            </script>
         """;

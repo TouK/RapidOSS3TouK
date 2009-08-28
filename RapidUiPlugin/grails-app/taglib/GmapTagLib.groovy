@@ -71,7 +71,9 @@ class GmapTagLib {
                ${linerClickJs}
                ${iconClickJs}
                if(gmap.pollingInterval > 0){
-                   gmap.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, gmap, true)
                }
            </script>
         """;

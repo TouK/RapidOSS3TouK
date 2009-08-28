@@ -54,8 +54,8 @@
         tooltip: 'Add group',
         click:function() {
             var queryGroupForm = YAHOO.rapidjs.Components['saveMapGroupForm'];
-        	queryGroupForm.show(createURL('mapGroupForm.gsp', {mode:'create'}));
-        	queryGroupForm.popupWindow.show();
+            queryGroupForm.popupWindow.show();
+            queryGroupForm.show(createURL('mapGroupForm.gsp', {mode:'create'}));
         }
     });
     tree.addToolbarButton({
@@ -64,8 +64,8 @@
         tooltip: 'Save Map',
         click:function() {
             var queryForm = YAHOO.rapidjs.Components['saveMapForm'];
-        	queryForm.show(createURL('mapForm.gsp',getMapSaveParams()));
-        	queryForm.popupWindow.show();
+            queryForm.popupWindow.show();
+            queryForm.show(createURL('mapForm.gsp',getMapSaveParams()));
         }
     });
     tree.poll();

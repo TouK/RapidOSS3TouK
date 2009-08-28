@@ -38,7 +38,9 @@ YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
 YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapidjs.component.ComponentContainer, {
 
     poll : function() {
-        this.doRequest(this.url, this.params);
+        if(this.isVisible()){
+            this.doRequest(this.url, this.params);    
+        }
     },
 
     refresh: function(params, title) {
@@ -91,9 +93,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         }
         if (this.pollingInterval > 0)
         {
-            if (!this.popupWindow || (this.popupWindow && this.popupWindow.isVisible())) {
-                this.pollTask.delay(this.pollingInterval * 1000);
-            }
+            this.pollTask.delay(this.pollingInterval * 1000);
         }
 
     },
@@ -269,9 +269,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         this.pollTask.cancel();
     },
 
-    handleVisible : function() {
-        //		this.poll();
-    },
     clearData: function() {
     }
 });

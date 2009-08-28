@@ -43,8 +43,8 @@
         tooltip: 'Add group',
         click:function() {
         	var queryGroupForm = YAHOO.rapidjs.Components['saveQueryGroupForm'];
-        	queryGroupForm.show(createURL('queryGroupForm.gsp', {mode:'create', type:'historicalEvent'}));
-        	queryGroupForm.popupWindow.show();
+            queryGroupForm.popupWindow.show();
+            queryGroupForm.show(createURL('queryGroupForm.gsp', {mode:'create', type:'historicalEvent'}));
 
         }
     });
@@ -54,8 +54,8 @@
         tooltip: 'Add query',
         click:function() {
             var queryForm = YAHOO.rapidjs.Components['saveQueryForm'];
-        	queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'historicalEvent', searchComponentType:'list'}));
-        	queryForm.popupWindow.show();
+            queryForm.popupWindow.show();
+            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'historicalEvent', searchComponentType:'list'}));
         }
     });
     filterTree.poll();

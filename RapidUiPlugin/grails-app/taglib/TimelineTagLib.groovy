@@ -51,7 +51,9 @@ class TimelineTagLib {
                var timeline = new YAHOO.rapidjs.component.TimelineWindow(container, timelineConfig);
                ${tooltipClickJs}
                if(timeline.pollingInterval > 0){
-                   timeline.poll();
+                    YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, timeline, true)
                }
            </script>
         """

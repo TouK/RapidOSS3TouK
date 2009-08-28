@@ -31,7 +31,9 @@ class HtmlTagLib {
                var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
                var html = new YAHOO.rapidjs.component.Html(container, htmlConfig);
                if(html.pollingInterval > 0){
-                   html.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, html, true)
                }
            </script>
         """;

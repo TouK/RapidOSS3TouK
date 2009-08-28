@@ -141,7 +141,9 @@ class SearchGridTagLib {
                ${propertyClickedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${searchGridId}sg.pollingInterval > 0){
-                   ${searchGridId}sg.poll();
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, ${searchGridId}sg, true)
                }
            </script>
         """

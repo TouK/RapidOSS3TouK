@@ -104,7 +104,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     },
 
     poll: function() {
-        this._show(this.url, this.title);
+        if(this.isVisible()){
+            this._show(this.url, this.title);    
+        }
     },
 
     refresh: function(params, title) {

@@ -13,7 +13,12 @@ class AudioPlayerTagLib {
         return """
            <script type="text/javascript">
                var aConfig = ${configString};
-               new YAHOO.rapidjs.component.AudioPlayer(aConfig);
+               var audioPlayer = new YAHOO.rapidjs.component.AudioPlayer(aConfig);
+               if(audioPlayer.pollingInterval > 0){
+                    YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, audioPlayer, true)
+               }
            </script>
         """;
     }

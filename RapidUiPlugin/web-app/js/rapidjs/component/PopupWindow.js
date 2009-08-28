@@ -56,11 +56,9 @@ YAHOO.rapidjs.component.PopupWindow.prototype = {
    show: function(){
        this.dialog.show();
        this.windowResized();
-       this.component.handleVisible();
    },
    hide: function(){
        this.dialog.hide();
-       this.component.handleUnvisible();
    },
 
    setTitle: function(title){

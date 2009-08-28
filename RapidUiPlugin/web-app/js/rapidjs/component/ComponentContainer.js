@@ -56,17 +56,18 @@ YAHOO.rapidjs.component.ComponentContainer.prototype =
 
     clearData: function() {
     },
-
-    handleVisible : function() {
-    },
-
-    handleUnvisible: function() {
-    },
-
+    
     addToolbarButton: function(buttonConfig) {
         if (this.toolbar) {
             return this.toolbar.addButton(buttonConfig)
         }
+    },
+
+    isVisible: function(){
+        if(this.popupWindow && !this.popupWindow.isVisible()){
+            return false;
+        }
+        return true;
     },
 
 

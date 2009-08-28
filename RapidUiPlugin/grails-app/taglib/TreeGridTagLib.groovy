@@ -86,7 +86,9 @@ class TreeGridTagLib {
                ${selectionChangedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                if(${treeGridId}tg.pollingInterval > 0){
-                   ${treeGridId}tg.poll();
+                    YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, ${treeGridId}tg, true)
                }
            </script>
         """

@@ -30,6 +30,7 @@ import script.CmdbScript
 def scriptsToAdd=[]
 scriptsToAdd.add([name:"modelCreator"])
 scriptsToAdd.add([name:"removeAll"])
+scriptsToAdd.add([name:"scriptTestRunner", logFileOwn:true])
 scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
 scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])

@@ -89,7 +89,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 if(existingInstance == null)
                 {
                     def idCacheEntry = clazz.getCacheEntry(props);
-                    logger.error ("There is a mismatch between IdCache and repository. \nRepository instance:${existingInstance}\nSearch Props:${props} \nIdCacheEntryExist:${idCacheEntry?idCacheEntry.exist:"<null>"}");
+                    logger.error ("There is a mismatch between IdCache and repository. \nRepository instance:${existingInstance}\nSearch Props:${props} \nSearch class:${clazz} \nIdCacheEntryExist:${idCacheEntry?idCacheEntry.exist:"<null>"}");
                 }
                 return existingInstance.update(props);
             }

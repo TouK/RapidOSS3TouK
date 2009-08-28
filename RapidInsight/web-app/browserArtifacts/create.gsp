@@ -16,7 +16,8 @@
 <div class="ri-browser-form">
     <script type="text/javascript">
         window.refreshObjectList = function(){
-            YAHOO.rapidjs.Components['objectList'].setQuery('', 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
+            var objectListComp = YAHOO.rapidjs.Components['objectList'];
+            objectListComp.setQuery(objectListComp.searchInput.value, 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
         }
     </script>
     <rui:formRemote componentId="${params.componentId}" method="POST" action="rsBrowserCrud/save" onSuccess="window.refreshObjectList">

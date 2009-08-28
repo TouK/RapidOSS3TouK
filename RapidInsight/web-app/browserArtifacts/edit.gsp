@@ -18,7 +18,8 @@
     %>
     <script type="text/javascript">
         window.refreshObjectList = function(){
-            YAHOO.rapidjs.Components['objectList'].setQuery('', 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
+            var objectListComp = YAHOO.rapidjs.Components['objectList'];
+            objectListComp.setQuery(objectListComp.searchInput.value, 'id', 'asc', '${domainClass.fullName}', {domain:'${logicalName}'});
         }
     </script>
     <div class="ri-browser-form">

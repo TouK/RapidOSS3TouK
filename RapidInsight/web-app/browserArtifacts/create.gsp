@@ -12,6 +12,7 @@
     def logicalName = domainClass.logicalPropertyName;
     def properties = domainClass.clazz.getNonFederatedPropertyList();
     def keys = domainClass.clazz."keySet"();
+    def propsToBeExcluded = ["id", "rsInsertedAt", "rsUpdatedAt"]
 %>
 <div class="ri-browser-form">
     <script type="text/javascript">
@@ -24,7 +25,7 @@
         <table><tbody>
             <input type="hidden" name="__rsBrowserClassName" value="${className}">
             <g:each var="keyProp" in="${keys}">
-                <g:if test="${!keyProp.isRelation && keyProp.name != 'id'}">
+                <g:if test="${!keyProp.isRelation && !propsToBeExcluded.contains(keyProp.name)}">
                     <tr class="prop">
                         <td valign="top" class="name">
                             <label>${keyProp.name}:</label>
@@ -36,7 +37,7 @@
                 </g:if>
             </g:each>
             <g:each var="prop" in="${properties}">
-                <g:if test="${!prop.isKey && prop.name != 'id'}">
+                <g:if test="${!prop.isKey && !propsToBeExcluded.contains(prop.name)}">
                     <tr class="prop">
                         <td valign="top" class="name">
                             <label>${prop.name}:</label>

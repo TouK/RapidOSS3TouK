@@ -22,6 +22,10 @@ class RsLookup {
     Long id ;
     
     Long version ;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     
     Object __operation_class__ ;
     

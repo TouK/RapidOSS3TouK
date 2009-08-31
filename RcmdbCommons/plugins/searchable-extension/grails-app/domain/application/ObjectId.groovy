@@ -33,6 +33,10 @@ class ObjectId {
     Long version;
     String name;
     long nextId;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
     static transients = ["errors", "__operation_class__"]

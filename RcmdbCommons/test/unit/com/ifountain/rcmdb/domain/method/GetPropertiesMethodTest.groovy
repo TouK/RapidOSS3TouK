@@ -463,6 +463,10 @@ class GetPropertiesMethodDomainObject
     static datasources = [:]
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String prop1;
     String prop2;
     String prop3;
@@ -553,6 +557,10 @@ class GetPropertiesMethodIgnorePropertyDomainObject
     static datasources = [:]
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String prop1;
     String prop2;
     String prop3;
@@ -607,6 +615,10 @@ class GetPropertiesMethodIgnoreStaticPropertyDomainObject
     static datasources = [:]
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String prop1;
     String prop2;
     String prop3;

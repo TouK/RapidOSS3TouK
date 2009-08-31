@@ -74,6 +74,10 @@ class RsEvent {
     Object __is_federated_properties_loaded__ ;
     
     List relatedEventTickets =[];
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     
     
     static relations = [

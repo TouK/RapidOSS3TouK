@@ -35,6 +35,8 @@ class ModelAction {
     String rsOwner = "p"
     Long id;
     Long version;
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     String modelName;
     String action;
     boolean willBeDeleted = false;

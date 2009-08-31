@@ -9,6 +9,8 @@ class JiraConnector {
     static datasources = ["RCMDB":["keys":["name":["nameInDs":"name"]]]]
     Long id;
     Long version=0;
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     String name ="";
     String rsOwner = "p"
     JiraDatasource ds;

@@ -24,6 +24,10 @@ class BaseDatasource {
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String name ="";
     String rsOwner = "p"
     org.springframework.validation.Errors errors ;

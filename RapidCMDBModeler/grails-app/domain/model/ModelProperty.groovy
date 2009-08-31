@@ -34,6 +34,8 @@ class ModelProperty {
     String name;
     String rsOwner = "p"
     String type;
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     boolean blank = true;
     String defaultValue;
     ModelDatasource propertyDatasource;

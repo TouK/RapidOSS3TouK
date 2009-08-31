@@ -24,6 +24,8 @@ class SnmpUtils {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     String rsOwner = "p"
     org.springframework.validation.Errors errors;
     Object __operation_class__;

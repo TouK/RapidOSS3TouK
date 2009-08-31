@@ -186,6 +186,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1;
                 List rel1 = [];
                 static relations = [rel1:[type:${domainClassName2}, reverseName:"revRel1", isMany:true]]
@@ -197,6 +199,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1;
                 List revRel1 = [];
                 static relations = [revRel1:[type:${domainClassName}, reverseName:"rel1", isMany:true]]
@@ -234,6 +238,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1 = "${prop1DefaultValue}";
                 static relations = [:]
             }
@@ -257,6 +263,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1 = "${prop1DefaultValue}";
                 static relations = [:]
             }
@@ -445,6 +453,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1;
                 String prop2;
                 static transients = ["prop2"]
@@ -553,6 +563,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 static relations = [:]
             }
         """)
@@ -581,6 +593,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                 }
                 Long id;
                 Long version;
+                Date rsInsertedAt = new Date(0);
+                Date rsUpdatedAt  = new Date(0);
                 String prop1;
                 String prop2;
                 static transients = ["prop2", "${RapidCMDBConstants.OPERATION_PROPERTY_NAME}"]

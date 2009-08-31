@@ -29,6 +29,10 @@ class UiTimelineBand {
     Date date=new Date(0);
     Long textWidth=200;
     UiTimeline timeline;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
 
     Object __operation_class__ ;

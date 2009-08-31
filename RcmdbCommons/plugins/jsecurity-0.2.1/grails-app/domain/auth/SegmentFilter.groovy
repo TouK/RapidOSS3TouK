@@ -14,6 +14,10 @@ class SegmentFilter {
     static datasources = ["RCMDB": ["keys": ["className": ["nameInDs": "className"], "groupId": ["nameInDs": "groupId"]]]]
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String rsOwner = "p"
     String className = ""
     String filter = "";

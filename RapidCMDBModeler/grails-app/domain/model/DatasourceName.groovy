@@ -18,29 +18,32 @@
 */
 package model;
 class DatasourceName {
-     static searchable = {
-         except=["modelDatasources", "__operation_class__", "errors"]
-     };
-     static cascaded = [modelDatasources:true]
-     static relations = [modelDatasources:[type:ModelDatasource, reverseName:"datasource", isMany:true]]
-     String name;
-     String mappedName;
-     String mappedNameProperty;
-     String rsOwner = "p"
-     List modelDatasources = [];
-     org.springframework.validation.Errors errors ;
-     Object __operation_class__;
-     static transients = ["errors", "__operation_class__"]
-     static constraints = {
-         name(blank:false, nullable:false, key:[]);
-         mappedName(blank:true, nullable:true, key:[]);
-         mappedNameProperty(blank:true, nullable:true, key:[]);
-         errors(nullable:true);
-         __operation_class__(nullable:true);
-     };
+    static searchable = {
+        except = ["modelDatasources", "__operation_class__", "errors"]
+    };
+    static cascaded = [modelDatasources: true]
+    static relations = [modelDatasources: [type: ModelDatasource, reverseName: "datasource", isMany: true]]
 
-     String toString(){
-         return "$name";
-     }
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt = new Date(0);
+    String name;
+    String mappedName;
+    String mappedNameProperty;
+    String rsOwner = "p"
+    List modelDatasources = [];
+    org.springframework.validation.Errors errors;
+    Object __operation_class__;
+    static transients = ["errors", "__operation_class__"]
+    static constraints = {
+        name(blank: false, nullable: false, key: []);
+        mappedName(blank: true, nullable: true, key: []);
+        mappedNameProperty(blank: true, nullable: true, key: []);
+        errors(nullable: true);
+        __operation_class__(nullable: true);
+    };
+
+    String toString() {
+        return "$name";
+    }
 
 }

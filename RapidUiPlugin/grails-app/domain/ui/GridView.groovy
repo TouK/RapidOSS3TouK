@@ -36,6 +36,10 @@ class GridView {
     List gridColumns = [];
     Boolean isPublic = false;
 
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
+
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;

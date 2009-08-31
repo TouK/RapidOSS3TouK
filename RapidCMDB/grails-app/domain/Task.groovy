@@ -28,7 +28,10 @@ class Task {
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
-    
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String name ="";
     List workedOnBy = [];
     org.springframework.validation.Errors errors ;

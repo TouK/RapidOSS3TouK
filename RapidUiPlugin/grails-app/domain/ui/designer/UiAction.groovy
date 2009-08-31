@@ -21,6 +21,10 @@ class UiAction
 
     Long version;
 
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
+
     org.springframework.validation.Errors errors;
 
     Object __operation_class__;

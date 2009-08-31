@@ -40,6 +40,10 @@ class RrdGraphTemplate
 
     Long version ;
 
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
+
     Object __operation_class__ ;
 
     Object __is_federated_properties_loaded__ ;

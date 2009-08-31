@@ -35,6 +35,10 @@ class RsApplication {
     Object __operation_class__ ;
     Object __is_federated_properties_loaded__ ;
 
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
+
     static constraints = {
         __operation_class__(nullable:true)
         __is_federated_properties_loaded__(nullable:true)

@@ -30,6 +30,10 @@ class Relation {
     };
     Long id;
     Long version;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String rsOwner = "p"
     Long objectId;
     Long reverseObjectId;

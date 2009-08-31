@@ -33,6 +33,10 @@ class RelationMethodDomainObject1 {
     static datasources = [:]
     Long id ;
     Long version ;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     RelationMethodDomainObject2 rel1;
     List rel2 = [];
     RelationMethodDomainObject2 rel3;

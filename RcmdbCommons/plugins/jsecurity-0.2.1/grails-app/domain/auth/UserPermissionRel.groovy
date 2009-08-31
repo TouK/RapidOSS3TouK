@@ -21,6 +21,10 @@ class UserPermissionRel {
     static searchable = {
         except=["permission", "rsUser", "errors", "__operation_class__"]
      };
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     RsUser rsUser
     Permission permission
     String target

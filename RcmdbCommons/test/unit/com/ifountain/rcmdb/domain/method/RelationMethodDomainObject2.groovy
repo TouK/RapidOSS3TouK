@@ -33,6 +33,8 @@ public class RelationMethodDomainObject2 {
     String prop1 ="1";
     Long id ;
     Long version ;
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     RelationMethodDomainObject1 revRel1;
     RelationMethodDomainObject1 revRel2;
     List revRel4 = [];

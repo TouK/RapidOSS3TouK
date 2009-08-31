@@ -104,6 +104,10 @@ class FilterManagerTestDomainObject2 {
     static datasources = [:]
     Long id ;
     Long version ;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String prop1;
     String owner;
     String rsOwner = "p"
@@ -147,6 +151,10 @@ class FilterManagerTestDomainObject1 {
     static datasources = [:]
     Long id ;
     Long version ;
+
+    Date rsInsertedAt = new Date(0);
+
+    Date rsUpdatedAt  = new Date(0);
     String prop1;
     String owner;
     String rsOwner = "p"

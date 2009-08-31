@@ -23,6 +23,9 @@ class ModelDatasourceKeyMapping {
     static searchable = {
         except=["datasource", "property", "__operation_class__", "errors"]
     };
+
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt  = new Date(0);
     ModelProperty property;
     String rsOwner = "p"
     ModelDatasource datasource;

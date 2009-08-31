@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -83,6 +84,9 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         addedObject.numberOfFlushCalls = 0;
         addedObject.isFlushedByProperty = [];
         objectBeforeAdd.id = addedObject.id;
+        def insertedAt = addedObject.rsInsertedAt;
+        //make sure that time passed after add to test rsInsertedAt modification
+        Thread.sleep (200);
 
         AddMethodDomainObject1.indexList.clear();
         props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value", rel1: relatedObject, id: 5000];
@@ -92,12 +96,17 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertFalse (updatedObject.hasErrors());
 
         //id property will be ignored
+        assertEquals (updatedObject.rsInsertedAt.getTime(), insertedAt.getTime());
+        def updatedAt = addedObject.rsUpdatedAt;
+        assertTrue (updatedAt.getTime() > 0);
+        assertTrue (updatedAt.getTime() <= System.currentTimeMillis() && updatedAt.getTime() >= System.currentTimeMillis()-3000);
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals("newProp2Value", updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
-        assertEquals(2, addedObject.numberOfFlushCalls);
+        assertEquals(3, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty[0]);
         assertFalse(addedObject.isFlushedByProperty[1]);
+        assertFalse(addedObject.isFlushedByProperty[2]);
         assertEquals(relatedObject, updatedObject.relationsShouldBeAdded.get("rel1"));
         assertEquals(1, AddMethodDomainObject1.indexList.size());
         assertSame(updatedObject, AddMethodDomainObject1.indexList[0]);
@@ -170,6 +179,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertTrue (updatedObject.hasErrors());
         assertSame (object, AddMethodDomainObject1.cacheEntryParams[0]);
         assertEquals ("default.not.exist.message", updatedObject.errors.allErrors[0].code);
+        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
     }
 
 
@@ -197,6 +207,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
 
         //id property will be ignored
+        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -282,6 +293,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
         assertEquals(objectBeforeAdd.prop5, updatedObject.prop5);
         assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
         assertTrue(updatedObject.hasErrors());
@@ -313,6 +325,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
         assertEquals(objectBeforeAdd.prop1, updatedObject.prop1);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -606,6 +619,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
             assertEquals(null, updatedObject.prop4);
             assertEquals(null, updatedObject.doubleProp);
             assertEquals(null, updatedObject.prop5);
+            assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
             assertTrue(updatedObject.hasErrors());
             assertTrue(updatedObject.errors.toString().indexOf("Field error in object") >= 0);
             assertTrue(updatedObject.errors.toString().indexOf("prop4") >= 0);

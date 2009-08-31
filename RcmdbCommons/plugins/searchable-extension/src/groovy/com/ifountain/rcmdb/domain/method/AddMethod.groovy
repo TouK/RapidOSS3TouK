@@ -151,6 +151,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             nullProps.each{propName->
                 sampleBean.setProperty (propName, defaultValues[propName], false);                
             }
+            sampleBean.setProperty(RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, new Date(), false);
             CompassMethodInvoker.index (mc, sampleBean);
             sampleBean.updateCacheEntry(sampleBean, true);
             if(!relatedInstances.isEmpty())

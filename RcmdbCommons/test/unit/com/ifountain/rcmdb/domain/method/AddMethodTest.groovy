@@ -34,6 +34,7 @@ import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -90,10 +91,16 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(AddMethodDomainObject1, cacheEntry.alias);
         assertEquals(addedObject.id, cacheEntry.id);
 
-        assertEquals(2, addedObject.numberOfFlushCalls);
+        assertEquals(3, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty[0]);
         assertFalse(addedObject.isFlushedByProperty[1]);
+        assertFalse(addedObject.isFlushedByProperty[2]);
         def prevId = addedObject.id;
+        def insertedAt = addedObject.rsInsertedAt;
+        def updatedAt = addedObject.rsUpdatedAt;
+        assertEquals (0, updatedAt.getTime());
+        assertTrue (insertedAt.getTime() > 0);
+        assertTrue (insertedAt.getTime() <= System.currentTimeMillis() && insertedAt.getTime() >= System.currentTimeMillis()-3000);
 
         AddMethodDomainObject1.indexList.clear();
         AddMethodDomainObject1.idCache.clear();
@@ -514,6 +521,8 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     Boolean booleanProp;
     String nullableProp = "defaultValue";
     long id;
+    Date rsInsertedAt = new Date(0);
+    Date rsUpdatedAt = new Date(0);
     def static searchWithoutTriggering(queryClosure)
     {
         AddMethodDomainObject1.query = queryClosure;
@@ -605,7 +614,7 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
         super.setProperty(propName, propValue);
         if (propName == "prop1" || propName == "prop2" || propName == "prop3"
                 || propName == "prop4" || propName == "prop5" || propName == "prop6"
-                || propName == "rel1" || propName == "doubleProp" || propName == "id")
+                || propName == "rel1" || propName == "doubleProp" || propName == "id" || propName == RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME || propName == RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME)
         {
             numberOfFlushCalls++;
             this.isFlushedByProperty += flush;

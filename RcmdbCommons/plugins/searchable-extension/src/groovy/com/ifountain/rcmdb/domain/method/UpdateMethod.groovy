@@ -129,6 +129,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                     nullProps.each{propName->
                         domainObject.setProperty (propName, defaultValues[propName], false);
                     }
+                    domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
                     domainObject.index(domainObject);
                     domainObject.updateCacheEntry(domainObject, true);
 

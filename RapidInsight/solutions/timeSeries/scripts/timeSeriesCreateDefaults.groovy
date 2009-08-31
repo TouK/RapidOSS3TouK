@@ -32,7 +32,7 @@ scriptsToAdd.each{  scriptParams ->
     }
     catch(e)
     {
-       logger.warn("timeSeriesCreateDefaults: Could not add script with params : ${scriptParams}.Reason:${e}")
+       logger.warn("timeSeriesCreateDefaults: Could not add script ${scriptParams.name}. Reason:${e}")
     }
 }
 

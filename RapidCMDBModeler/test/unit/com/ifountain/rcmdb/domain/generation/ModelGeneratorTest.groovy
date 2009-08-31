@@ -87,6 +87,8 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertNull (object.errors);
         assertEquals (Errors.class, object.metaClass.getMetaProperty("errors").type);
         assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME]);
+        assertEquals (new Date(0), object[com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME]);
+        assertEquals (new Date(0), object[com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED]);
         assertEquals (Object.class, object.metaClass.getMetaProperty(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME).type);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());

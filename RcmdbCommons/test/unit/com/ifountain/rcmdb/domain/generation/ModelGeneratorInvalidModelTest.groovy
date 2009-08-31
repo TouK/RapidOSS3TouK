@@ -342,6 +342,22 @@ class ModelGeneratorInvalidModelTest extends RapidCmdbTestCase {
         }
     }
 
+    public void testThrowsExceptionIfOneOfPredefinedPropertiesAreRedefined()
+    {
+        def prop1 = [name: "id", type: ModelGenerator.NUMBER_TYPE, blank: false, defaultValue: "1"]
+
+        String modelName = "ParentModel";
+        def modelXml1 = createModel(modelName, null, [prop1], [prop1], []);
+        try
+        {
+            ModelGenerator.getInstance().generateModels([modelXml1])
+            fail("Should throw exception since duplicate property defined");
+        } catch (ModelGenerationException e)
+        {
+            assertEquals(ModelGenerationException.duplicateProperty(modelName, prop1.name).getMessage(), e.getMessage());
+        }
+    }
+
 
     public void testDoesNotThrowExceptionIfTwoChildrenHaveRelationWithSameNameAndDiffeentTypeDefined()
     {

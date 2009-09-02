@@ -2,7 +2,7 @@
 	var filterTree = YAHOO.rapidjs.Components['filterTree'];
 	var eventList = YAHOO.rapidjs.Components['eventList'];
     eventList.renderCellFunction = function(key, value, data, el){
-        if(key == "changedAt"){
+        if(key == "changedAt" || key == 'createdAt' || key == 'clearedAt' || key == 'willExpireAt'){
             if(value == "0" || value == "")
             {
                 return "never"

@@ -164,15 +164,6 @@ def getModelXmls()
                             modelPropertyConfig["nameInDatasource"] = localName;
                         }
                         logger.info("Creating property ${localName}");
-                        if (type == "number")
-                        {
-                            modelPropertyConfig["defaultValue"] = "0";
-                        }
-                        else
-                        {
-                            modelPropertyConfig["defaultValue"] = "";
-                        }
-
                         modelBuilder.Property(modelPropertyConfig);
                         if (isKey)
                         {

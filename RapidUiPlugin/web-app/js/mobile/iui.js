@@ -6,559 +6,619 @@
 
 (function() {
 
-var slideSpeed = 20;
-var slideInterval = 0;
+    var slideSpeed = 20;
+    var slideInterval = 0;
 
-var currentPage = null;
-var currentDialog = null;
-var currentWidth = 0;
-var currentHash = location.hash;
-var hashPrefix = "#_";
-var pageHistory = [];
-var newPageCount = 0;
-var checkTimer;
-var hasOrientationEvent = false;
-var portraitVal = "portrait";
-var landscapeVal = "landscape";
+    var currentPage = null;
+    var currentDialog = null;
+    var currentWidth = 0;
+    var currentHash = location.hash;
+    var hashPrefix = "#_";
+    var pageHistory = [];
+    var newPageCount = 0;
+    var checkTimer;
+    var hasOrientationEvent = false;
+    var portraitVal = "portrait";
+    var landscapeVal = "landscape";
 
-/*
- * urlHistory is like pageHistory above, the difference between two is urlHistory holds url while pageHistory holds page id.
- */
-var urlHistory = [];
+    /*
+    * urlHistory is like pageHistory above, the difference between two is urlHistory holds url while pageHistory holds page id.
+    */
+    var urlHistory = [];
 
 
 // *************************************************************************************************
 
-window.iui =
-{
-    showPage: function(page, backwards)
+    window.iui =
     {
-        if (page)
+        lastRequest: null,
+        defaultFailureFunction : function(req, httpStatus) {
+        },
+        showPage: function(page, backwards)
         {
-            if (currentDialog)
+            if (page)
             {
-                currentDialog.removeAttribute("selected");
-                currentDialog = null;
-            }
+                if (currentDialog)
+                {
+                    currentDialog.removeAttribute("selected");
+                    currentDialog = null;
+                }
 
-            if (hasClass(page, "dialog"))
-                showDialog(page);
-            else
-            {
-                var fromPage = currentPage;
-                currentPage = page;
-
-                if (fromPage)
-                    setTimeout(slidePages, 0, fromPage, page, backwards);
-                else
-                    updatePage(page, fromPage);
-            }
-        }
-    },
-
-    /*
-     * returns the last url visited. if remove is true, its removed from the list
-     */
-    getLastUrl: function(remove)
-    {
-		var url = urlHistory[urlHistory.length-1];
-		if(remove)
-		{
-	        urlHistory.pop();
-	        //pageHistory.pop();
-		}
-		return url;
-	},
-
-	/*
-     * adds given element to the end of url history
-     */
-	addUrl: function(url)
-	{
-		urlHistory.push(url);
-	},
-
-
-	/*
-	 * returns the id of last page visited. if remove is true, its removed from the list
-	 */
-	getLastPage: function(remove)
-	{
-		var pageId = pageHistory[pageHistory.length-1];
-		if(remove)
-		{
-	        pageHistory.pop();
-	    }
-		return pageId;
-	},
-
-	/*
-     * adds given element to the end of page history
-     */
-	addPage: function(id)
-	{
-		pageHistory.push(id);
-	},
-
-    showPageById: function(pageId)
-    {
-        var page = $(pageId);
-        if (page)
-        {
-            var index = pageHistory.indexOf(pageId);
-            var backwards = index != -1;
-            if (backwards)
-                pageHistory.splice(index, pageHistory.length);
-
-            iui.showPage(page, backwards);
-        }
-    },
-
-
-	/*
-	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
-	 */
-    showPageByHref: function(href, args, method, replace, cb, backwards)
-    {
-	    /*
-	     * each time an url is opened, it is added to url list
-	     */
-	    urlHistory.push(href);
-
-        var req = new XMLHttpRequest();
-        req.onerror = function()
-        {
-            if (cb)
-                cb(false);
-        };
-
-        req.onreadystatechange = function()
-        {
-            if (req.readyState == 4)
-            {
-                if (replace)
-                    replaceElementWithSource(replace, req.responseText);
+                if (hasClass(page, "dialog"))
+                    showDialog(page);
                 else
                 {
-                    var frag = document.createElement("div");
-                    frag.innerHTML = req.responseText;
-                    iui.insertPages(frag.childNodes, backwards);
+                    var fromPage = currentPage;
+                    currentPage = page;
+
+                    if (fromPage)
+                        setTimeout(slidePages, 0, fromPage, page, backwards);
+                    else
+                        updatePage(page, fromPage);
                 }
-                if (cb)
-                    setTimeout(cb, 1000, true);
             }
-        };
+        },
 
-        if (args)
+        /*
+        * returns the last url visited. if remove is true, its removed from the list
+        */
+        getLastUrl: function(remove)
         {
-            req.open(method || "GET", href, true);
-            req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            req.setRequestHeader("Content-Length", args.length);
-            req.send(args.join("&"));
-        }
-        else
-        {
-            req.open(method || "GET", href, true);
-            req.send(null);
-        }
-    },
-
-    /*
-	 * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
-	 */
-    insertPages: function(nodes, backwards)
-    {
-        var targetPage;
-        for (var i = 0; i < nodes.length; ++i)
-        {
-            var child = nodes[i];
-            if (child.nodeType == 1)
+            var url = urlHistory[urlHistory.length - 1];
+            if (remove)
             {
-                if (!child.id)
-                    child.id = "__" + (++newPageCount) + "__";
+                urlHistory.pop();
+	        //pageHistory.pop();
+            }
+            return url;
+        },
 
-                var clone = $(child.id);
-                if (clone)
-                    clone.parentNode.replaceChild(child, clone);
-                else
-                    document.body.appendChild(child);
-
-                if (child.getAttribute("selected") == "true" || !targetPage)
-                    targetPage = child;
-
-                --i;
-
-        	}
-        }
-
-        if (targetPage)
-            iui.showPage(targetPage, backwards);
-    },
-
-    getSelectedPage: function()
-    {
-        for (var child = document.body.firstChild; child; child = child.nextSibling)
+        /*
+        * adds given element to the end of url history
+        */
+        addUrl: function(url)
         {
-            if (child.nodeType == 1 && child.getAttribute("selected") == "true")
-                return child;
-        }
-    },
-    isNativeUrl: function(href)
-    {
-        for(var i = 0; i < iui.nativeUrlPatterns.length; i++)
+            urlHistory.push(url);
+        },
+
+
+        /*
+       * returns the id of last page visited. if remove is true, its removed from the list
+       */
+        getLastPage: function(remove)
         {
-            if(href.match(iui.nativeUrlPatterns[i])) return true;
-        }
-        return false;
-    },
-    nativeUrlPatterns: [
-        new RegExp("^http:\/\/maps.google.com\/maps\?"),
-        new RegExp("^mailto:"),
-        new RegExp("^tel:"),
-        new RegExp("^http:\/\/www.youtube.com\/watch\\?v="),
-        new RegExp("^http:\/\/www.youtube.com\/v\/")
-    ]
-};
+            var pageId = pageHistory[pageHistory.length - 1];
+            if (remove)
+            {
+                pageHistory.pop();
+            }
+            return pageId;
+        },
+
+        /*
+        * adds given element to the end of page history
+        */
+        addPage: function(id)
+        {
+            pageHistory.push(id);
+        },
+
+        showPageById: function(pageId)
+        {
+            var page = $(pageId);
+            if (page)
+            {
+                var index = pageHistory.indexOf(pageId);
+                var backwards = index != -1;
+                if (backwards)
+                    pageHistory.splice(index, pageHistory.length);
+
+                iui.showPage(page, backwards);
+            }
+        },
+
+
+        /*
+       * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
+       */
+        showPageByHref: function(href, args, method, replace, cb, backwards, failureFunc)
+        {
+            /*
+            * each time an url is opened, it is added to url list
+            */
+            urlHistory.push(href);
+            if(iui.lastRequest){
+                iui.abortRequest(iui.lastRequest);
+            }
+            var req = new XMLHttpRequest();
+            iui.lastRequest = req;
+            req.onerror = function()
+            {
+                if (cb)
+                    cb(false);
+            };
+
+            req.onreadystatechange = function()
+            {
+                var httpStatus;
+                if (req.readyState == 4)
+                {
+                    try
+                    {
+                        if (req.status !== undefined && req.status !== 0) {
+                            httpStatus = req.status;
+                        }
+                        else {
+                            httpStatus = 13030;
+                        }
+                    }
+                    catch(e) {
+                        httpStatus = 13030;
+                    }
+                    if (httpStatus >= 200 && httpStatus < 300 || httpStatus === 1223) {
+                        if (replace)
+                            replaceElementWithSource(replace, req.responseText);
+                        else
+                        {
+                            var frag = document.createElement("div");
+                            frag.innerHTML = req.responseText;
+                            iui.insertPages(frag.childNodes, backwards);
+                        }
+                        if (cb)
+                            setTimeout(cb, 1000, true);
+                    }
+                    else {
+                        if(req.isAbort !== true){
+                            if (failureFunc) {
+                                failureFunc(req, httpStatus)
+                            }
+                            else {
+                                iui.defaultFailureFunction(req, httpStatus);
+                            }
+                        }
+
+                    }
+                }
+            };
+
+            if (args)
+            {
+                req.open(method || "GET", href, true);
+                req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                req.setRequestHeader("Content-Length", args.length);
+                req.send(args.join("&"));
+            }
+            else
+            {
+                req.open(method || "GET", href, true);
+                req.send(null);
+            }
+        },
+
+        isRequestInProgress:function(request)
+        {
+            if (request) {
+                return request.readyState !== 4 && request.readyState !== 0;
+            }
+            return false;
+        },
+
+        abortRequest: function(request){
+           if(iui.isRequestInProgress(request)){
+               request.isAbort = true;
+               request.abort();
+           }
+        },
+
+        /*
+       * this function now has an ability of opening page with sliding backwards or forwards. Previous version was a default of forwards.
+       */
+        insertPages: function(nodes, backwards)
+        {
+            var targetPage;
+            for (var i = 0; i < nodes.length; ++i)
+            {
+                var child = nodes[i];
+                if (child.nodeType == 1)
+                {
+                    if (!child.id)
+                        child.id = "__" + (++newPageCount) + "__";
+
+                    var clone = $(child.id);
+                    if (clone)
+                        clone.parentNode.replaceChild(child, clone);
+                    else
+                        document.body.appendChild(child);
+
+                    if (child.getAttribute("selected") == "true" || !targetPage)
+                        targetPage = child;
+
+                    --i;
+
+                }
+            }
+
+            if (targetPage)
+                iui.showPage(targetPage, backwards);
+        },
+
+        getSelectedPage: function()
+        {
+            for (var child = document.body.firstChild; child; child = child.nextSibling)
+            {
+                if (child.nodeType == 1 && child.getAttribute("selected") == "true")
+                    return child;
+            }
+        },
+        isNativeUrl: function(href)
+        {
+            for (var i = 0; i < iui.nativeUrlPatterns.length; i++)
+            {
+                if (href.match(iui.nativeUrlPatterns[i])) return true;
+            }
+            return false;
+        },
+        nativeUrlPatterns: [
+            new RegExp("^http:\/\/maps.google.com\/maps\?"),
+            new RegExp("^mailto:"),
+            new RegExp("^tel:"),
+            new RegExp("^http:\/\/www.youtube.com\/watch\\?v="),
+            new RegExp("^http:\/\/www.youtube.com\/v\/")
+        ]
+    };
 
 // *************************************************************************************************
 
-addEventListener("load", function(event)
-{
-    var page = iui.getSelectedPage();
-    if (page)
-        iui.showPage(page);
-
-    setTimeout(preloadImages, 0);
-    setTimeout(checkOrientAndLocation, 0);
-    checkTimer = setInterval(checkOrientAndLocation, 300);
-}, false);
-
-addEventListener("unload", function(event)
-{
-	return;
-}, false);
-
-addEventListener("click", function(event)
-{
-    var link = findParent(event.target, "a");
-    if (link)
+    addEventListener("load", function(event)
     {
-	    function unselect() { link.removeAttribute("selected"); }
+        var page = iui.getSelectedPage();
+        if (page)
+            iui.showPage(page);
 
-        if (link.href && link.hash && link.hash != "#")
-        {
-            link.setAttribute("selected", "true");
-            iui.showPage($(link.hash.substr(1)));
-            setTimeout(unselect, 500);
-        }
-        else if (link == $("backButton"))
-        {
-	        /* function of back button is now different from previous version, which just call history.back()
-	         * backButton removes last element from url and page history lists, and opens new last element into the current page.
-	         * in this way apge refreshing is done
-	         */
-	        urlHistory.pop();
-            pageHistory.pop();
-            var url = urlHistory.pop();
-            var pageid = pageHistory.pop();
+        setTimeout(preloadImages, 0);
+        setTimeout(checkOrientAndLocation, 0);
+        checkTimer = setInterval(checkOrientAndLocation, 300);
+    }, false);
 
-            if(url && pageid)
-			{
-				var page = document.getElementById(pageid);
-            	page.setAttribute("selected", "progress");
-            	function undo() { page.removeAttribute("selected"); }
-                iui.showPageByHref(url, null, null, null, undo, true);
-       		}
-       		else if(pageid)
-       		{
-	       		pageHistory.push(pageid);
-       			iui.showPageById(pageid);
-   			}
-    	}
-        else if (link.getAttribute("type") == "submit")
-            submitForm(findParent(link, "form"));
-        else if (link.getAttribute("type") == "cancel")
-            cancelDialog(findParent(link, "form"));
-        else if (link.target == "_replace")
-        {
-            link.setAttribute("selected", "progress");
-            iui.showPageByHref(link.href, null, null, link, unselect);
-        }
-        /*
-         * if target attribute has value '_temp' then the page will replace the last page in pageHistory and urlHistory
-         */
-        else if (link.target == "_temp")
-        {
-	        urlHistory.pop();
-	        pageHistory.pop();
-	   	    link.setAttribute("selected", "progress");
-            iui.showPageByHref(link.href, null, null, null, unselect);
-        }
-        else if (link.target == "_open")
-        {
-            link.setAttribute("selected", "progress");
-            iui.showPageByHref(link.href, null, null, null, unselect);
-        }
-        else if (iui.isNativeUrl(link.href))
-        {
-            return;
-        }
-        else if (!link.target)
-        {
-            link.setAttribute("selected", "progress");
-            iui.showPageByHref(link.href, null, null, null, unselect);
-        }
-        else
-            return;
-
-        event.preventDefault();
-    }
-}, true);
-
-addEventListener("click", function(event)
-{
-    var div = findParent(event.target, "div");
-    if (div && hasClass(div, "toggle"))
+    addEventListener("unload", function(event)
     {
-        div.setAttribute("toggled", div.getAttribute("toggled") != "true");
-        event.preventDefault();
-    }
-}, true);
+        return;
+    }, false);
 
-function orientChangeHandler()
-{
-  var orientation=window.orientation;
-  switch(orientation)
-  {
-    case 0:
-        setOrientation(portraitVal);
-        break;
-
-    case 90:
-    case -90:
-        setOrientation(landscapeVal);
-        break;
-  }
-}
-
-if (typeof window.onorientationchange == "object")
-{
-    window.onorientationchange=orientChangeHandler;
-    hasOrientationEvent = true;
-    setTimeout(orientChangeHandler, 0);
-}
-
-function checkOrientAndLocation()
-{
-    if (!hasOrientationEvent)
+    addEventListener("click", function(event)
     {
-      if (window.innerWidth != currentWidth)
-      {
-          currentWidth = window.innerWidth;
-          var orient = currentWidth == 320 ? portraitVal : landscapeVal;
-          setOrientation(orient);
-      }
+        var link = findParent(event.target, "a");
+        if (link)
+        {
+            function unselect() {
+                link.removeAttribute("selected");
+            }
+
+            function failure(req, httpStatus) {
+                unselect();
+                iui.defaultFailureFunction(req, httpStatus);
+            }
+
+            if (link.href && link.hash && link.hash != "#")
+            {
+                link.setAttribute("selected", "true");
+                iui.showPage($(link.hash.substr(1)));
+                setTimeout(unselect, 500);
+            }
+            else if (link == $("backButton"))
+            {
+                /* function of back button is now different from previous version, which just call history.back()
+                 * backButton removes last element from url and page history lists, and opens new last element into the current page.
+                 * in this way apge refreshing is done
+                 */
+                urlHistory.pop();
+                pageHistory.pop();
+                var url = urlHistory.pop();
+                var pageid = pageHistory.pop();
+
+                if (url && pageid)
+                {
+                    var page = document.getElementById(pageid);
+                    page.setAttribute("selected", "progress");
+                    function undo() {
+                        page.removeAttribute("selected");
+                    }
+                    iui.showPageByHref(url, null, null, null, undo, true, failure);
+                }
+                else if (pageid)
+                {
+                    pageHistory.push(pageid);
+                    iui.showPageById(pageid);
+                }
+            }
+            else if (link.getAttribute("type") == "submit")
+                submitForm(findParent(link, "form"));
+            else if (link.getAttribute("type") == "cancel")
+                cancelDialog(findParent(link, "form"));
+            else if (link.target == "_replace")
+            {
+                link.setAttribute("selected", "progress");
+                iui.showPageByHref(link.href, null, null, link, unselect, false, failure);
+            }
+                /*
+                * if target attribute has value '_temp' then the page will replace the last page in pageHistory and urlHistory
+                */
+            else if (link.target == "_temp")
+            {
+                urlHistory.pop();
+                pageHistory.pop();
+                link.setAttribute("selected", "progress");
+                iui.showPageByHref(link.href, null, null, null, unselect, false, failure);
+            }
+            else if (link.target == "_open")
+            {
+                link.setAttribute("selected", "progress");
+                iui.showPageByHref(link.href, null, null, null, unselect, false, failure);
+            }
+            else if (iui.isNativeUrl(link.href))
+            {
+                return;
+            }
+            else if (!link.target)
+            {
+                link.setAttribute("selected", "progress");
+                iui.showPageByHref(link.href, null, null, null, unselect, false, failure);
+            }
+            else
+                return;
+
+            event.preventDefault();
+        }
+    }, true);
+
+    addEventListener("click", function(event)
+    {
+        var div = findParent(event.target, "div");
+        if (div && hasClass(div, "toggle"))
+        {
+            div.setAttribute("toggled", div.getAttribute("toggled") != "true");
+            event.preventDefault();
+        }
+    }, true);
+
+    function orientChangeHandler()
+    {
+        var orientation = window.orientation;
+        switch (orientation)
+                {
+            case 0:
+                setOrientation(portraitVal);
+                break;
+
+            case 90:
+            case -90:
+                setOrientation(landscapeVal);
+                break;
+        }
     }
 
-    if (location.hash != currentHash)
+    if (typeof window.onorientationchange == "object")
     {
-        var pageId = location.hash.substr(hashPrefix.length);
-        iui.showPageById(pageId);
+        window.onorientationchange = orientChangeHandler;
+        hasOrientationEvent = true;
+        setTimeout(orientChangeHandler, 0);
     }
-}
 
-function setOrientation(orient)
-{
-    document.body.setAttribute("orient", orient);
-    setTimeout(scrollTo, 100, 0, 1);
-}
-
-function showDialog(page)
-{
-    currentDialog = page;
-    page.setAttribute("selected", "true");
-
-    if (hasClass(page, "dialog") && !page.target)
-        showForm(page);
-}
-
-function showForm(form)
-{
-    form.onsubmit = function(event)
+    function checkOrientAndLocation()
     {
-        event.preventDefault();
-        submitForm(form);
-    };
-
-    form.onclick = function(event)
-    {
-        if (event.target == form && hasClass(form, "dialog"))
-            cancelDialog(form);
-    };
-}
-
-function cancelDialog(form)
-{
-    form.removeAttribute("selected");
-}
-
-function updatePage(page, fromPage)
-{
-    if (!page.id)
-        page.id = "__" + (++newPageCount) + "__";
-
-    location.href = currentHash = hashPrefix + page.id;
-    pageHistory.push(page.id);
-
-    var pageTitle = $("pageTitle");
-
-
-	/* title attribute has two element deliminated by ':'
-	 * first one is used in the toolbar heading,
-	 * second one is used in back button
-	 * It is designed because sometimes normal title does not fit in back button size.
-	 * in this way, you can specify what to be in toolbar title and back button for that page seperately.
-	 */
-    if (page.title)
-	{
-		//gets the first token in title
-		var longTitle = page.title.split(":");
-		pageTitle.innerHTML = longTitle[0];
-   	}
-    if (page.localName.toLowerCase() == "form" && !page.target)
-        showForm(page);
-
-    var backButton = $("backButton");
-    if (backButton)
-    {
-        var prevPage = $(pageHistory[pageHistory.length-2]);
-        if (prevPage && !page.getAttribute("hideBackButton"))
+        if (!hasOrientationEvent)
         {
-	        backButton.style.display = "inline";
-	        var currentpage = $(pageHistory[pageHistory.length-1]);
-	        if(prevPage.title != currentPage.title)
-	        {
-            	if(prevPage.title)
-            	{
-	            	//gets the second element in title
-            		var short = prevPage.title.split(":");
-            		backButton.innerHTML = short[1] ? short[1] : short[0];
-        		}
-        		else
-        			backButton.innerHTML = "Back";
-   			}
-       	}
-        else
-            backButton.style.display = "none";
-    }
-}
-
-function slidePages(fromPage, toPage, backwards)
-{
-    var axis = (backwards ? fromPage : toPage).getAttribute("axis");
-    if (axis == "y")
-        (backwards ? fromPage : toPage).style.top = "100%";
-    else
-        toPage.style.left = "100%";
-
-    toPage.setAttribute("selected", "true");
-    scrollTo(0, 1);
-    clearInterval(checkTimer);
-
-    var percent = 100;
-    slide();
-    var timer = setInterval(slide, slideInterval);
-
-    function slide()
-    {
-        percent -= slideSpeed;
-        if (percent <= 0)
-        {
-            percent = 0;
-            if (!hasClass(toPage, "dialog"))
-                fromPage.removeAttribute("selected");
-            clearInterval(timer);
-            checkTimer = setInterval(checkOrientAndLocation, 300);
-            setTimeout(updatePage, 0, toPage, fromPage);
+            if (window.innerWidth != currentWidth)
+            {
+                currentWidth = window.innerWidth;
+                var orient = currentWidth == 320 ? portraitVal : landscapeVal;
+                setOrientation(orient);
+            }
         }
 
+        if (location.hash != currentHash)
+        {
+            var pageId = location.hash.substr(hashPrefix.length);
+            iui.showPageById(pageId);
+        }
+    }
+
+    function setOrientation(orient)
+    {
+        document.body.setAttribute("orient", orient);
+        setTimeout(scrollTo, 100, 0, 1);
+    }
+
+    function showDialog(page)
+    {
+        currentDialog = page;
+        page.setAttribute("selected", "true");
+
+        if (hasClass(page, "dialog") && !page.target)
+            showForm(page);
+    }
+
+    function showForm(form)
+    {
+        form.onsubmit = function(event)
+        {
+            event.preventDefault();
+            submitForm(form);
+        };
+
+        form.onclick = function(event)
+        {
+            if (event.target == form && hasClass(form, "dialog"))
+                cancelDialog(form);
+        };
+    }
+
+    function cancelDialog(form)
+    {
+        form.removeAttribute("selected");
+    }
+
+    function updatePage(page, fromPage)
+    {
+        if (!page.id)
+            page.id = "__" + (++newPageCount) + "__";
+
+        location.href = currentHash = hashPrefix + page.id;
+        pageHistory.push(page.id);
+
+        var pageTitle = $("pageTitle");
+
+
+        /* title attribute has two element deliminated by ':'
+       * first one is used in the toolbar heading,
+       * second one is used in back button
+       * It is designed because sometimes normal title does not fit in back button size.
+       * in this way, you can specify what to be in toolbar title and back button for that page seperately.
+       */
+        if (page.title)
+        {
+            //gets the first token in title
+            var longTitle = page.title.split(":");
+            pageTitle.innerHTML = longTitle[0];
+        }
+        if (page.localName.toLowerCase() == "form" && !page.target)
+            showForm(page);
+
+        var backButton = $("backButton");
+        if (backButton)
+        {
+            var prevPage = $(pageHistory[pageHistory.length - 2]);
+            if (prevPage && !page.getAttribute("hideBackButton"))
+            {
+                backButton.style.display = "inline";
+                var currentpage = $(pageHistory[pageHistory.length - 1]);
+                if (prevPage.title != currentPage.title)
+                {
+                    if (prevPage.title)
+                    {
+                        //gets the second element in title
+                        var short = prevPage.title.split(":");
+                        backButton.innerHTML = short[1] ? short[1] : short[0];
+                    }
+                    else
+                        backButton.innerHTML = "Back";
+                }
+            }
+            else
+                backButton.style.display = "none";
+        }
+    }
+
+    function slidePages(fromPage, toPage, backwards)
+    {
+        var axis = (backwards ? fromPage : toPage).getAttribute("axis");
         if (axis == "y")
-        {
-            backwards
-                ? fromPage.style.top = (100-percent) + "%"
-                : toPage.style.top = percent + "%";
-        }
+            (backwards ? fromPage : toPage).style.top = "100%";
         else
+            toPage.style.left = "100%";
+
+        toPage.setAttribute("selected", "true");
+        scrollTo(0, 1);
+        clearInterval(checkTimer);
+
+        var percent = 100;
+        slide();
+        var timer = setInterval(slide, slideInterval);
+
+        function slide()
         {
-            fromPage.style.left = (backwards ? (100-percent) : (percent-100)) + "%";
-            toPage.style.left = (backwards ? -percent : percent) + "%";
+            percent -= slideSpeed;
+            if (percent <= 0)
+            {
+                percent = 0;
+                if (!hasClass(toPage, "dialog"))
+                    fromPage.removeAttribute("selected");
+                clearInterval(timer);
+                checkTimer = setInterval(checkOrientAndLocation, 300);
+                setTimeout(updatePage, 0, toPage, fromPage);
+            }
+
+            if (axis == "y")
+            {
+                backwards
+                        ? fromPage.style.top = (100 - percent) + "%"
+                        : toPage.style.top = percent + "%";
+            }
+            else
+            {
+                fromPage.style.left = (backwards ? (100 - percent) : (percent - 100)) + "%";
+                toPage.style.left = (backwards ? -percent : percent) + "%";
+            }
         }
     }
-}
 
-function preloadImages()
-{
-    var preloader = document.createElement("div");
-    preloader.id = "preloader";
-    document.body.appendChild(preloader);
-}
-
-function submitForm(form)
-{
-    iui.showPageByHref(form.action || "POST", encodeForm(form), form.method);
-}
-
-function encodeForm(form)
-{
-    function encode(inputs)
+    function preloadImages()
     {
-        for (var i = 0; i < inputs.length; ++i)
+        var preloader = document.createElement("div");
+        preloader.id = "preloader";
+        document.body.appendChild(preloader);
+    }
+
+    function submitForm(form)
+    {
+        iui.showPageByHref(form.action || "POST", encodeForm(form), form.method);
+    }
+
+    function encodeForm(form)
+    {
+        function encode(inputs)
         {
-            if (inputs[i].name)
-                args.push(inputs[i].name + "=" + escape(inputs[i].value));
+            for (var i = 0; i < inputs.length; ++i)
+            {
+                if (inputs[i].name)
+                    args.push(inputs[i].name + "=" + escape(inputs[i].value));
+            }
         }
+
+        var args = [];
+        encode(form.getElementsByTagName("input"));
+        encode(form.getElementsByTagName("textarea"));
+        encode(form.getElementsByTagName("select"));
+        return args;
     }
 
-    var args = [];
-    encode(form.getElementsByTagName("input"));
-    encode(form.getElementsByTagName("textarea"));
-    encode(form.getElementsByTagName("select"));
-    return args;
-}
-
-function findParent(node, localName)
-{
-    while (node && (node.nodeType != 1 || node.localName.toLowerCase() != localName))
-        node = node.parentNode;
-    return node;
-}
-
-function hasClass(self, name)
-{
-    var re = new RegExp("(^|\\s)"+name+"($|\\s)");
-    return re.exec(self.getAttribute("class")) != null;
-}
-
-function replaceElementWithSource(replace, source)
-{
-    var page = replace.parentNode;
-    var parent = replace;
-    while (page.parentNode != document.body)
+    function findParent(node, localName)
     {
-        page = page.parentNode;
-        parent = parent.parentNode;
+        while (node && (node.nodeType != 1 || node.localName.toLowerCase() != localName))
+            node = node.parentNode;
+        return node;
     }
 
-    var frag = document.createElement(parent.localName);
-    frag.innerHTML = source;
+    function hasClass(self, name)
+    {
+        var re = new RegExp("(^|\\s)" + name + "($|\\s)");
+        return re.exec(self.getAttribute("class")) != null;
+    }
 
-    page.removeChild(parent);
+    function replaceElementWithSource(replace, source)
+    {
+        var page = replace.parentNode;
+        var parent = replace;
+        while (page.parentNode != document.body)
+        {
+            page = page.parentNode;
+            parent = parent.parentNode;
+        }
 
-    while (frag.firstChild)
-        page.appendChild(frag.firstChild);
-}
+        var frag = document.createElement(parent.localName);
+        frag.innerHTML = source;
 
-function $(id) { return document.getElementById(id); }
-function ddd() { console.log.apply(console, arguments); }
+        page.removeChild(parent);
+
+        while (frag.firstChild)
+            page.appendChild(frag.firstChild);
+    }
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+    function ddd() {
+        console.log.apply(console, arguments);
+    }
 
 })();

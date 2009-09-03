@@ -40,13 +40,14 @@
 										</Home Page>
 	 -------------------------------------------------------------------------------%>
 
-	<%-------------------------------------------------------------------------------
+    <rui:include template="mobile/errors.gsp" model="${binding.variables}"></rui:include>
+    <%-------------------------------------------------------------------------------
 										<JavaScripts>
 	   All javascripts can be added here whether is used in this gsp or other gsps.
 	   It does not make difference to put it to gsp where it is used.
 	 -------------------------------------------------------------------------------%>
 	<script type="text/javascript">
-
+        
 		/**
 		 * called when current page changes from main page to other one
 		 * removes logout button from toolbar

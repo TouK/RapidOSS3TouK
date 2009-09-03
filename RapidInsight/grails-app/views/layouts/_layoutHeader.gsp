@@ -20,6 +20,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/data', file:'RapidXmlDocument.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'RapidElement.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'ComponentContainer.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'Requester.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'PollingComponentContainer.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/form', file:'Form.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/form', file:'HtmlEmbeddableForm.js')}"></script>

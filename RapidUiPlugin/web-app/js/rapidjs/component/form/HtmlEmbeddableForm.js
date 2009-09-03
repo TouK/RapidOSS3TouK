@@ -75,20 +75,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         }
     },
 
-    handleErrors: function(response)
+    handleErrors: function(errors)
     {
-        this.htmlComp.handleErrors(response);
-    },
-    handleTimeout: function(response)
-    {
-       this.htmlComp.handleTimeout(response)
-    },
-    handleInternalServerError: function(response) {
-        this.htmlComp.handleInternalServerError(response)
-    },
-    handleUnknownUrl: function(response)
-    {
-         this.htmlComp.handleUnknownUrl(response)
+        this.htmlComp.handleErrors(errors);
     },
 
     destroy: function() {
@@ -200,10 +189,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
                 i,
                 formAttrs;
         var callback = {
-            success: this.processSuccess,
-            failure: this.processFailure,
-            timeout: this.timeout,
-            scope: this,
+            success: this.requester.processSuccess,
+            failure: this.requester.processFailure,
+            timeout: this.requester.timeout,
+            scope: this.requester,
             cache:false,
             argument : []
         };

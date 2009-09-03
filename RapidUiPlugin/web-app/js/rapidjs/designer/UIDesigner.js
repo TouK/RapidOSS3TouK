@@ -42,6 +42,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
         Boolean: new YAHOO.widget.DropdownCellEditor({dropdownOptions:['true', 'false']})
 
     };
+    this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.handleFailure, this);
     this.editors['Expression'].move = RenderUtils.textAreaEditorMoveFunc;
     this.editors['DateMock'].attach = RenderUtils.dateEditorAttachFunc;
     RenderUtils.handleFirefoxCursorBugForEditors(this.editors);
@@ -78,14 +79,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
 
     getMetaData: function() {
-        var callback = {
-            success: this.processSuccess,
-            failure: this.handleFailure,
-            scope:this,
-            cache:false,
-            argument:[this.loadMetaData]
-        }
-        YAHOO.util.Connect.asyncRequest('GET', this.metaDataUrl, callback);
+        this.requester.doGetRequest(this.metaDataUrl, null, this.loadMetaData)
     },
     loadMetaData: function(response) {
         UIConfig.loadMetaData(response);
@@ -132,24 +126,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.getHelp();
     },
     getHelp: function() {
-        var callback = {
-            success: this.processSuccess,
-            failure: this.handleFailure,
-            scope:this,
-            cache:false,
-            argument:[this.loadHelp]
-        }
-        YAHOO.util.Connect.asyncRequest('GET', this.helpUrl, callback);
+        this.requester.doGetRequest(this.helpUrl, null, this.loadHelp)
     },
     getData: function() {
-        var callback = {
-            success: this.processSuccess,
-            failure: this.handleFailure,
-            scope:this,
-            cache:false,
-            argument:[this.loadData]
-        }
-        YAHOO.util.Connect.asyncRequest('GET', this.url, callback);
+        this.requester.doGetRequest(this.url, null, this.loadData)
     },
     loadHelp: function(response){
         UIConfig.loadHelp(response);
@@ -173,39 +153,21 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     processSuccess: function(response) {
         YAHOO.rapidjs.ErrorManager.serverUp();
-        try
+        if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
         {
-            if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
-            {
-                return;
-            }
-            else if (YAHOO.rapidjs.Connect.containsError(response) == false)
-            {
-                this.tree.events["success"].fireDirect(this.tree);
-                var callback = response.argument[0];
-                if (callback) {
-                    callback.call(this, response);
-                }
-            }
-            else
-            {
-                this.loadingMask.hide();
-                var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
-                this.tree.events["error"].fireDirect(this.tree, errors);
-                YAHOO.rapidjs.ErrorManager.errorOccurred(this.tree, errors);
-            }
-
+            return;
         }
-        catch(e)
+        else
         {
+            this.tree.events["success"].fireDirect(this.tree);
         }
         this.tree.events["loadstatechanged"].fireDirect(this.tree, false);
 
     },
 
-    handleFailure: function(response) {
+    handleFailure: function(errors, statusCodes) {
         this.loadingMask.hide();
-        this.tree.processFailure(response)
+        this.tree.processFailure(errors, statusCodes)
     },
 
     treeSelectionChanged:function(xmlData) {
@@ -444,16 +406,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         RenderUtils.showHelp.call(this)
     },
     save : function() {
-        var callback = {
-            success: this.processSuccess,
-            failure: this.handleFailure,
-            scope:this,
-            cache:false,
-            argument:[this.saveSuccess]
-        }
-        var postData = 'configuration=' + encodeURIComponent(this.data.firstChild().toString());
         this.loadingMask.show("Saving, please wait...");
-        YAHOO.util.Connect.asyncRequest('POST', this.saveUrl, callback, postData);
+        this.requester.doPostRequest(this.saveUrl, {configuration:this.data.firstChild().toString()}, this.saveSuccess);
     },
     confirmBoxHandler: function() {
         this.confirmBox.hide();
@@ -468,15 +422,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
     },
     _generate : function() {
-        var callback = {
-            success: this.processSuccess,
-            failure: this.handleFailure,
-            scope:this,
-            cache:false,
-            argument:[this.generateSuccess]
-        }
-        YAHOO.util.Connect.asyncRequest('GET', this.generateUrl, callback);
         this.loadingMask.show("Generating, please wait...");
+        this.requester.doGetRequest(this.generateUrl, {}, this.generateSuccess);
     },
     saveSuccess: function(response) {
         this.loadingMask.show("Successfully saved.");

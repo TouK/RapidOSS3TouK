@@ -27,15 +27,12 @@ YAHOO.rapidjs.component.action.RequestAction = function(config, requestParams, c
     this.allowMultipleRequests = config.allowMultipleRequests;
     this.events = {
         'success' : new YAHOO.util.CustomEvent('success'),
-        'error' : new YAHOO.util.CustomEvent('error'),
-        'timeout' : new YAHOO.util.CustomEvent('timeout'),
-        'unknownUrl' : new YAHOO.util.CustomEvent('unknownUrl'),
-        'internalServerError' : new YAHOO.util.CustomEvent('internalServerError'),
-        'serverDown' : new YAHOO.util.CustomEvent('serverDown')
+        'error' : new YAHOO.util.CustomEvent('error')
     };
     this.lastConnection = null;
     this.requestParams = requestParams;
     this.timeout = config.timeout != null ? config.timeout : 30000;
+    this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this, this.timeout);
     YAHOO.rapidjs.Actions[this.id] = this;
 };
 YAHOO.rapidjs.component.action.RequestAction.prototype = {
@@ -61,93 +58,35 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
 
     },
     _execute : function(requestParams) {
-        if (this.allowMultipleRequests != true)
-        {
-            this.abort();
-        }
-        var callback = {
-            success:this.processSuccess,
-            failure: this.processFailure,
-            scope: this,
-            timeout: this.timeout
-        };
         var urlAndParams = parseURL(this.url);
-        var params = urlAndParams.params;
-        for(var param in requestParams){
-            params[param] = requestParams[param];
-        }
-        if(!params['format']){
-            params["format"] = "xml";
-        }
-        var postDataArray = [];
-        for(var param in params){
-            postDataArray[postDataArray.length] = param + "=" + encodeURIComponent(params[param]) 
+        if(!urlAndParams.params['format']){
+            urlAndParams.params["format"] = "xml";
         }
         if (this.submitType == 'GET') {
-
-            var tmpUrl = urlAndParams.url + "?" + postDataArray.join("&")
-            this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, callback);
+            this.requester.doGetRequest(urlAndParams.url, params);
         }
         else {
-            this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', urlAndParams.url, callback, postDataArray.join("&"));
+            this.requester.doPostRequest(urlAndParams.url, params);
         }
     },
     processSuccess: function(response)
     {
-        YAHOO.rapidjs.ErrorManager.serverUp();
-        try
-        {
 
             if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
             {
                 return;
             }
-            else if (YAHOO.rapidjs.Connect.containsError(response) == false)
+            else
             {
                 this.handleSuccess(response);
                 this.events['success'].fireDirect(response);
             }
-            else
-            {
-                this.handleErrors(response);
-                this.events['error'].fireDirect(YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML));
-            }
-        }
-        catch(e)
-        {
-        }
 
     },
-    processFailure: function(response)
+    processFailure: function(errors, statusCodes)
     {
-        var st = response.status;
-        if (st == -1) {
-            this._fireErrors(response, ['Request received timeout.']);
-            this.events['timeout'].fireDirect();
-        }
-        else if (st == 404) {
-            this._fireErrors(response, ['Specified url cannot be found.']);
-            this.events['unknownUrl'].fireDirect();
-        }
-         else if (st == 500) {
-            this._fireErrors(response, ['Internal Server Error. Please see the log files.']);
-            this.events['internalServerError'].fireDirect();
-        }
-        else if (st == 0) {
-            YAHOO.rapidjs.ErrorManager.serverDown();
-            this.events['serverDown'].fireDirect();
-        }
-
-    },
-    abort: function()
-    {
-        if (this.lastConnection) {
-            var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
-            if (callStatus == true) {
-                YAHOO.util.Connect.abort(this.lastConnection);
-                this.lastConnection = null;
-            }
-        }
+        this.events['errors'].fireDirect();
+        this._fireErrors(errors);
     },
     handleSuccess: function(response) {
         var componentList = this.components;
@@ -157,19 +96,13 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             }
         }
     },
-    handleErrors: function(response) {
-        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
-        this._fireErrors(response, errors);
-
-    },
-    _fireErrors : function(response, errors) {
+    _fireErrors : function( errors) {
         var componentList = this.components;
         if (componentList && componentList.length) {
             for (var i = 0; i < componentList.length; i++) {
                 componentList[i].events['error'].fireDirect(componentList[i], errors);
             }
         }
-        YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
     }
 };
 

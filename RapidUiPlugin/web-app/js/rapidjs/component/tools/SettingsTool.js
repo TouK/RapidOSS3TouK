@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -29,15 +29,9 @@ YAHOO.rapidjs.component.tool.SettingsTool = function(container, component, confi
     YAHOO.rapidjs.component.tool.SettingsTool.superclass.constructor.call(this, container, component, this.config);
     this.render();
     this.form.events['submit'].subscribe(this.handleSubmit, this, true);
-    var callback = {
-        success: this.processSuccess,
-        failure:this.processFailure,
-        scope:this,
-        timeout:30000
-    }
-    var url = getUrlPrefix() + 'componentConfig/get?format=xml&name=' + this.component.id + '&url=' + encodeURIComponent(window.location.pathname);
-    YAHOO.util.Connect.asyncRequest('GET', url, callback);
-
+    this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this, 30000);
+    var url = getUrlPrefix() + 'componentConfig/get?format=xml';
+    this.requester.doGetRequest(url, {name:this.component.id, url:window.location.pathname})
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.component.tool.BasicTool, {
@@ -70,38 +64,24 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.compo
     },
 
     processSuccess:function(response) {
-        YAHOO.rapidjs.ErrorManager.serverUp();
         if (YAHOO.rapidjs.Connect.checkAuthentication(response)) {
-            if (!YAHOO.rapidjs.Connect.containsError(response)) {
-               var pollingInterval = response.responseXML.getElementsByTagName("ComponentConfig")[0].getAttribute("pollingInterval")
-                var pollingInt = parseInt(pollingInterval);
-                if (YAHOO.lang.isNumber(pollingInt)) {
-                    this.component.setPollingInterval(pollingInt);
-                    if (pollingInt > 0) {
-                        this.component.pollTask.delay(pollingInt);
-                    }
+           var pollingInterval = response.responseXML.getElementsByTagName("ComponentConfig")[0].getAttribute("pollingInterval")
+            var pollingInt = parseInt(pollingInterval);
+            if (YAHOO.lang.isNumber(pollingInt)) {
+                this.component.setPollingInterval(pollingInt);
+                if (pollingInt > 0) {
+                    this.component.pollTask.delay(pollingInt);
                 }
             }
         }
 
     },
 
-    processFailure:function(response) {
-        var st = response.status;
-        if (st == -1) {
-            this.component.events["error"].fireDirect(this.component, ['Request received timeout.']);
-            YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, ['Request received timeout.']);
-        }
-        else if (st == 404) {
-            this.component.events["error"].fireDirect(this.component, ['Specified url cannot be found.']);
-            YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, ['Specified url cannot be found.']);
-        }
-        else if (st == 500) {
-            this.component.events["error"].fireDirect(this.component, ['Internal Server Error. Please see the log files.']);
-            YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, ['Internal Server Error. Please see the log files.']);
-        }
-        else if (st == 0) {
-            YAHOO.rapidjs.ErrorManager.serverDown();
+    processFailure:function(errors, statusCodes) {
+        if(statusCodes != null)
+        {
+            this.component.events["error"].fireDirect(this.component, errors);
+            YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, errors);
         }
     }
 });

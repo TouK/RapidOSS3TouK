@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -54,6 +54,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.scrollPos = null;
     this.mask = null;
     this.maskMessage = null;
+    this.searchClassRequester = new YAHOO.rapidjs.Requester(this.searchClassesSuccess, this.processFailure, this, this.timeout)
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
     var events = {
@@ -76,24 +77,11 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
 
     retrieveSearchClasses: function() {
-        var cb = {
-            success: this.searchClassesSuccess,
-            failure: this.processFailure,
-            timeout: this.timeout,
-            scope: this,
-            cache:false
-        };
         var urlAndParams = parseURL(this.searchClassesUrl);
-        var params = urlAndParams.params
-        if(!params['format']){
-            params['format'] = this.format;
+        if(!urlAndParams.params['format']){
+            urlAndParams.params['format'] = this.format;
         }
-        var paramsArray = [];
-        for(var param in params){
-            paramsArray[paramsArray.length] = param + "=" + encodeURIComponent(params[param])
-        }
-        var url = urlAndParams.url + "?" + paramsArray.join("&")
-        YAHOO.util.Connect.asyncRequest('GET', url, cb);
+        this.searchClassRequester.doGetRequest(urlAndParams.url,  urlAndParams.params)
     },
     searchClassesSuccess:function(response) {
         var classes = response.responseXML.getElementsByTagName("Class");
@@ -698,6 +686,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             return this.classesInput.options[this.classesInput.selectedIndex].value;
         }
         return this.defaultSearchClass;
+    },
+    configureTimeout: function(config) {
+        YAHOO.rapidjs.component.search.AbstractSearchList.superclass.configureTimeout.call(this, config);
+        if(this.searchClassRequester)
+        {
+            this.searchClassRequester.timeout = this.timeout;
+        }
     },
 
     showCurrentState: function() {

@@ -29,6 +29,7 @@ YAHOO.rapidjs.component.PollingComponentContainer = function(container, config)
     {
         this.setPollingInterval(0);
     }
+    this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this);
     this.params = null;
     this.format = "xml";
     this.rootTag = config.rootTag;
@@ -39,7 +40,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     poll : function() {
         if(this.isVisible()){
-            this.doRequest(this.url, this.params);    
+            this.requester.doRequest(this.url, this.params);
         }
     },
 
@@ -52,7 +53,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
                 this.params[param] = params[param];
             }
         }
-        this.doRequest(this.url, this.params);
+        this.requester.doRequest(this.url, this.params);
         if (title) {
             this.setTitle(title);
         }
@@ -64,90 +65,41 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     processSuccess : function(response) {
         YAHOO.rapidjs.ErrorManager.serverUp();
-        try
-        {
 
-            if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
-            {
-                this.handleAuthenticate();
-                return;
-            }
-            else if (YAHOO.rapidjs.Connect.containsError(response) == false)
-            {
-                this.fireSuccessEvent();
-                this.handleSuccess(response);
-            }
-            else
-            {
-                this.handleErrors(response);
-            }
-
-        }
-        catch(e)
+        if (YAHOO.rapidjs.Connect.checkAuthentication(response) == false)
         {
+            this.handleAuthenticate();
+            return;
         }
+        else
+        {
+            this.fireSuccessEvent();
+            this.handleSuccess(response);
+        }
+
         this.events["loadstatechanged"].fireDirect(this, false);
-        var callback = response.argument[0];
-        if (typeof callback == 'function') {
-            callback(response);
-        }
         if (this.pollingInterval > 0)
         {
             this.pollTask.delay(this.pollingInterval * 1000);
         }
-
     },
 
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
     },
-    handleErrors: function(response)
+    handleErrors: function(errors)
     {
         this.clearData();
-        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
         this.events["error"].fireDirect(this, errors);
         YAHOO.rapidjs.ErrorManager.errorOccurred(this, errors);
-    },
-    handleTimeout: function(response)
-    {
-        this.events["error"].fireDirect(this, ['Request received timeout.']);
-        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Request received timeout.']);
-    },
-    handleInternalServerError: function(response) {
-        this.events["error"].fireDirect(this, ["Internal Server Error. Please see the log files."]);
-        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ["Internal Server Error. Please see the log files."]);
-    },
-    handleUnknownUrl: function(response)
-    {
-        this.events["error"].fireDirect(this, ['Specified url cannot be found.']);
-        YAHOO.rapidjs.ErrorManager.errorOccurred(this, ['Specified url cannot be found.']);
     },
     handleAuthenticate: function(response)
     {
     },
-    handleServerDown: function(response)
+    processFailure : function(errors, statusCodes)
     {
-        YAHOO.rapidjs.ErrorManager.serverDown();
-    },
-    processFailure : function(response)
-    {
-        if (!this.lastConnection || YAHOO.util.Connect.isCallInProgress(this.lastConnection) == false) {
-
-            this.events["loadstatechanged"].fireDirect(this, false);
-        }
-        var st = response.status;
-        if (st == -1) {
-            this.handleTimeout(response);
-        }
-        else if (st == 404) {
-            this.handleUnknownUrl(response);
-        }
-        else if (st == 500) {
-            this.handleInternalServerError(response);
-        }
-        else if (st == 0) {
-            this.handleServerDown(response);
-        }
+        this.events["loadstatechanged"].fireDirect(this, false);
+        this.handleErrors(errors);
         if (this.pollingInterval > 0)
         {
             this.pollTask.delay(this.pollingInterval * 1000);
@@ -164,7 +116,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     doRequest: function(url, params, callback)
     {
-        this.abort();
 
         if (params == null)
         {
@@ -174,26 +125,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params["format"] = this.format;
         }
-        var urlAndParams = parseURL(url)
-        var parsedParams = urlAndParams.params;
-        for (var param in parsedParams) {
-            params[param] = parsedParams[param]
-        }
-        var paramsArray = [];
-        for (var param in params) {
-            paramsArray[paramsArray.length] = param + "=" + encodeURIComponent(params[param])
-        }
-
-        var cb = {
-            success: this.processSuccess,
-            failure: this.processFailure,
-            timeout: this.timeout,
-            scope: this,
-            cache:false,
-            argument : [callback]
-        };
-        var tmpUrl = urlAndParams.url + "?" + paramsArray.join("&");
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('GET', tmpUrl, cb, null);
+        this.requester.doRequest(url, params, callback)
         this.events["loadstatechanged"].fireDirect(this, true);
     },
     doGetRequest : function(url, params, callback)
@@ -202,8 +134,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
     },
     doPostRequest : function(url, params, callback)
     {
-        this.abort();
-
         if (params == null)
         {
             params = {};
@@ -212,39 +142,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         {
             params["format"] = this.format;
         }
-        var urlAndParams = parseURL(url)
-        var parsedParams = urlAndParams.params;
-        for (var param in parsedParams) {
-            params[param] = parsedParams[param]
-        }
-        var paramsArray = [];
-        for (var param in params) {
-            paramsArray[paramsArray.length] = param + "=" + encodeURIComponent(params[param])
-        }
-
-        var callback = {
-            success: this.processSuccess,
-            failure: this.processFailure,
-            timeout: this.timeout,
-            scope: this,
-            cache:false,
-            argument : [callback]
-        };
-
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', urlAndParams.url, callback, paramsArray.join("&"));
+        this.requester.doPostRequest(url, params,  callback);
         this.events["loadstatechanged"].fireDirect(this, true);
     },
 
     abort: function()
     {
-        if (this.lastConnection) {
-            var callStatus = YAHOO.util.Connect.isCallInProgress(this.lastConnection);
-            if (callStatus == true) {
-                YAHOO.util.Connect.abort(this.lastConnection);
-                this.events["loadstatechanged"].fireDirect(this, false);
-                this.lastConnection = null;
-            }
-        }
+        this.requester.abort();
+        this.events["loadstatechanged"].fireDirect(this, false);
         this.pollTask.cancel();
     },
     setPollingInterval: function(newPollInterval)
@@ -263,6 +168,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
         else {
             this.timeout = 30000;
         }
+        this.requester.timeout = this.timeout;
     },
     handleUnvisible: function() {
         this.abort();

@@ -75,17 +75,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         YAHOO.util.Dom.setStyle(this.container.parentNode, "top", "-15000px");
 
     },
-    handleTimeout: function(response)
-    {
-        this.errors.dom.innerHTML = "";
-        var dh = YAHOO.ext.DomHelper;
-        this.isSubmitInProggress = false;
-
-        var listItem = dh.append(this.errors.dom, {tag:"li"});
-        listItem.appendChild(document.createTextNode("Request timeout"));
-        this.hideMask();
-        this.errors.show();
-    },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         this.hideMask();
@@ -149,11 +138,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
             this.handleSubmit();
         }
     },
-    handleUnknownUrl: function(response)
-    {
-        this.hideMask();
-        YAHOO.rapidjs.component.Form.superclass.handleUnknownUrl.call(this);
-    },
 
     handleSubmit: function()
     {
@@ -199,11 +183,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Form, YAHOO.rapidjs.component.PollingC
         }
     },
 
-    handleErrors: function(response)
+    handleErrors: function(errors)
     {
         var dh = YAHOO.ext.DomHelper;
         this.isSubmitInProggress = false;
-        var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);
         for (var i = 0; i < errors.length; i++)
         {
             var listItem = dh.append(this.errors.dom, {tag:"li"});

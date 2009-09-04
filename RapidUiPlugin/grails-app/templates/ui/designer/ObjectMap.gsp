@@ -33,8 +33,10 @@
                  if(menuItem.parentMenuItem == null){
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                    def menuItemVisiblePropertyName = menuItem.name+ "Visible";
+                    println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
         %>
-        <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" ${actionString}>
+        <rui:omMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${menuItemVisiblePropertyName}}" ${actionString}>
         </rui:omMenuItem>
         <%
             }

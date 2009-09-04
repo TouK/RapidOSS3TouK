@@ -32,12 +32,14 @@ class UiSearchGrid extends UiComponent {
     String defaultQuery = "";
     List images = [];
     List rowColors = [];
+    List subComponents = [];
     org.springframework.validation.Errors errors ;
 
 
     static relations = [
             images: [type: UiImage, reverseName: "component", isMany: true],
-            rowColors: [type: UiRowColor, reverseName: "grid", isMany: true]
+            rowColors: [type: UiRowColor, reverseName: "grid", isMany: true],
+            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "grid", isMany: true]
     ]
 
     static constraints = {

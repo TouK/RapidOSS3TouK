@@ -34,13 +34,15 @@ class UiSearchList extends UiComponent{
     List fields = [];
     List images = [];
     List propertyMenuItems = [];
+    List subComponents = [];
     org.springframework.validation.Errors errors ;
 
 
     static relations = [
             fields: [type: UiSearchListField, reverseName: "component", isMany: true],
             images: [type: UiImage, reverseName: "component", isMany: true],
-            propertyMenuItems: [type: UiMenuItem, isMany: true]
+            propertyMenuItems: [type: UiMenuItem, isMany: true],
+            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "list", isMany: true]
     ]
 
     static constraints = {

@@ -40,6 +40,7 @@ class UiSearchListOperations extends UiComponentOperations{
                 ],
                 childrenConfiguration:
                 [
+                        [designerType: "SearchListTimeRangeSelector", isMultiple: false, propertyName: "subComponents"],
                         [
                                 designerType: "SearchListFields",
                                 isMultiple: false,
@@ -114,10 +115,15 @@ class UiSearchListOperations extends UiComponentOperations{
         attributes.tabId = parentElement.id;
         def searchList = DesignerUtils.addUiObject(UiSearchList, attributes, xmlNode);
         
+        def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListFields"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListImages"};
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMenuItems"};
         def propertyMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListPropertyMenuItems"};
+        if(timeRangeSelector && timeRangeSelector.size() > 0 )
+        {
+            UiSearchListTimeRangeSelector.addUiElement(timeRangeSelector, searchList)
+        }
         columnsNode.UiElement.each{
             UiSearchListField.addUiElement(it, searchList);
         }

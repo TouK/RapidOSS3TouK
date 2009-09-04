@@ -46,3 +46,11 @@
 .rcmdb-search-exporttool{
    background-image:url(../../../images/rapidjs/component/tools/table_go.png)
 }
+
+.rcmdb-search-time-range-selector{
+    width: 100%;
+    height: 100px;
+}
+.rcmdb-search-sub-component{
+
+}

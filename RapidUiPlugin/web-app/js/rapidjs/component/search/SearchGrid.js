@@ -702,9 +702,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
 
     handleSearch: function(e, willSaveHistory) {
-        this.offset = 0;
-        this.poll();
-        this._changeScroll(0);
+        YAHOO.rapidjs.component.search.SearchGrid.superclass.handleSearch.call(this, e);
         if (willSaveHistory !== false) {
             var newHistoryState = [];
             newHistoryState[newHistoryState.length] = this.searchInput.value;

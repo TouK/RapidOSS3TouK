@@ -123,6 +123,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.retrieveSearchClasses();
     },
 
+    handleSearch: function(e)
+    {
+        YAHOO.rapidjs.component.search.SearchList.superclass.handleSearch.call(this, e);
+        var newHistoryState = [];
+        newHistoryState[newHistoryState.length] = this.searchInput.value;
+        newHistoryState[newHistoryState.length] = this.lastSortAtt;
+        newHistoryState[newHistoryState.length] = this.lastSortOrder;
+        newHistoryState[newHistoryState.length] = this.params['searchIn'];
+        this.saveHistoryChange(newHistoryState.join("!::!"));    
+    },
+
     createMask: function() {
         var dh = YAHOO.ext.DomHelper;
         this.mask = dh.append(this.wrapper, {tag:'div', cls:'rcmdb-search-mask'}, true);

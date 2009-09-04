@@ -27,6 +27,7 @@
 
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/simplewidgets', file:'Button.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/simplewidgets', file:'split.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/simplewidgets', file:'TimeRangeSelector.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'ButtonToolBar.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'BasicTool.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'SettingsTool.js')}"></script>
@@ -39,6 +40,8 @@
 
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchNode.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ExportTool.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchListSubComponent.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'TimeSelectorSubComponent.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'AbstractSearchList.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchList.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ViewBuilder.js')}"></script>

@@ -187,7 +187,18 @@ class SearchGridTagLib {
             menuItemArray.add(processMenuItem(menuItem, menuEvents, subMenuEvents));
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
-
+        def timeRangeSelector = xml.TimeRangeSelector;
+        if(timeRangeSelector != null && timeRangeSelector.size() > 0)
+        {
+            timeRangeSelector = timeRangeSelector[0];
+            cArray.add("timeRangeSelectorEnabled:true")
+            cArray.add("""timeRangeConfig:{
+                url:'${timeRangeSelector.@url.text()}',
+                buttonConfigurationUrl:'${timeRangeSelector.@buttonConfigurationUrl.text()}',
+                timeProperty:'${timeRangeSelector.@timeProperty.text()}',
+                valueProperties:['${timeRangeSelector.@timeProperty.text().replaceAll(",", "','")}']
+            }""")
+        }
         def images = xml.Images?.Image;
         if (images.size() > 0) {
             def imageArray = [];
@@ -346,6 +357,14 @@ class SearchGridTagLib {
     }
     def sgImages = {attrs, body ->
         out << fSgImages(attrs, body())
+    }
+
+    static def fTimeRangeSelector(attrs, bodyString) {
+        def validAttrs = ["url", "buttonConfigurationUrl", "timeProperty", "valueProperties"];
+        return TagLibUtils.getConfigAsXml("TimeRangeSelector", attrs, validAttrs)
+    }
+    def timeRangeSelector = {attrs, body ->
+        out << fTimeRangeSelector(attrs, body())
     }
 
     static def fSgImage(attrs, bodyString) {

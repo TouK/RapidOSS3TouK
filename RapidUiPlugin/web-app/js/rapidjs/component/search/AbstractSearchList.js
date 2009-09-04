@@ -42,6 +42,8 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.searchClassesLoaded = false;
     this.rootNode = null;
     this.searchData = [];
+    this.subComponents = [];
+    this.subComponentsContinuePolling = {};
     this.rowHeight = null;
     this.totalRowCount = 0;
     this.lastOffset = 0;
@@ -54,6 +56,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.scrollPos = null;
     this.mask = null;
     this.maskMessage = null;
+    this.filtersFromOtherComponents = {};
     this.searchClassRequester = new YAHOO.rapidjs.Requester(this.searchClassesSuccess, this.processFailure, this, this.timeout)
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
@@ -66,6 +69,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
         'saveQueryClicked' : new YAHOO.util.CustomEvent('saveQueryClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
+    this.createSubComponents();
     this.calculateRowHeight();
     this.init();
     this.render();
@@ -75,7 +79,41 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
 }
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapidjs.component.PollingComponentContainer, {
+    createSubComponents: function()
+    {
+        var isTimeRangeSelectorEnabled = this.config["timeRangeSelectorEnabled"];
+        if(isTimeRangeSelectorEnabled == true)
+        {
+            this.subComponents[this.subComponents.length] = new YAHOO.rapidjs.component.search.TimeSelectorSubComponent(this);
+        }
 
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            var subComponent = this.subComponents[i]
+            this.subComponentsContinuePolling[subComponent] = false;
+            subComponent.events.pollCompleted.subscribe(this.subComponentPollFinished, this, true);
+            subComponent.events.pollCompleted.subscribe(this.subComponentPollStarted, this, true);
+        }
+    },
+    subComponentPollStarted: function(subComponent){
+        this.subComponentsContinuePolling[subComponent] = true;
+    },
+    subComponentPollFinished: function(subComponent){
+        this.subComponentsContinuePolling[subComponent] = false;
+        this.hideMask();
+    },
+
+    isAllsubComponentsContinuePolling: function()
+    {
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            if(this.subComponentsContinuePolling[this.subComponents[i]] == true)
+            {
+                return false
+            }
+        }
+        return true;
+    },
     retrieveSearchClasses: function() {
         var urlAndParams = parseURL(this.searchClassesUrl);
         if(!urlAndParams.params['format']){
@@ -94,14 +132,21 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
     handleSearch: function(e) {
         this.offset = 0;
-        var newHistoryState = [];
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            this.subComponents[i].preparePoll();    
+        }
         this.poll();
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            this.subComponents[i].poll();    
+        }
         this._changeScroll(0);
-        newHistoryState[newHistoryState.length] = this.searchInput.value;
-        newHistoryState[newHistoryState.length] = this.lastSortAtt;
-        newHistoryState[newHistoryState.length] = this.lastSortOrder;
-        newHistoryState[newHistoryState.length] = this.params['searchIn'];
-        this.saveHistoryChange(newHistoryState.join("!::!"));
+    },
+
+    addFilter: function(object, filterQuery)
+    {
+        this.filtersFromOtherComponents[object] = filterQuery;
     },
 
     _changeScroll: function(scrollTop) {
@@ -196,17 +241,36 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         }
     },
 
+    modifyQuery: function(query, queryToBeAppend)
+    {
+        if (query.trim() != "")
+        {
+            query = "(" + query + ") AND " + queryToBeAppend;
+        }
+        else
+        {
+            query = queryToBeAppend;
+        }
+        return queryToBeAppend;
+    },
+
+    getCurrentlyExecutingQuery: function()
+    {
+        return this.currentlyExecutingQuery;    
+    },
+
     poll: function() {
         this.currentlyExecutingQuery = this.searchInput.value;
         if (this.defaultFilter != null)
         {
-            if (this.currentlyExecutingQuery.trim() != "")
+            this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, this.defaultFilter)
+        }
+        for(var i in this.filtersFromOtherComponents)
+        {
+            var filterQuery = this.filtersFromOtherComponents[i];
+            if(filterQuery)
             {
-                this.currentlyExecutingQuery = "(" + this.currentlyExecutingQuery + ") AND " + this.defaultFilter;
-            }
-            else
-            {
-                this.currentlyExecutingQuery = this.defaultFilter;
+                this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, filterQuery)
             }
         }
         this.showMask();
@@ -427,6 +491,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.addTools();
         this.body = dh.append(this.wrapper, {tag: 'div', cls:'rcmdb-search-body'}, true);
         this._render();
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            var subComponentWrapper = dh.append(this.header.dom, {tag:'div', cls:'rcmdb-search-sub-component'});
+            this.subComponents[i].render(subComponentWrapper)
+        }
         this.createMask();
         this.rowHeaderMenu = new YAHOO.widget.Menu(this.id + '_rowHeaderMenu', {position: "dynamic", autofillheight:false, minscrollheight:300});
 
@@ -462,8 +531,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     hideMask: function() {
-        this.mask.hide();
-        this.maskMessage.hide();
+        if(this.isAllsubComponentsContinuePolling())
+        {
+            this.mask.hide();
+            this.maskMessage.hide();
+        }
     },
 
     _sort:function(arrayToBeSorted) {

@@ -241,7 +241,18 @@ class SearchListTagLib {
             pmenuItemArray.add(processMenuItem(menuItem, propertyMenuEvents, [:]));
         }
         cArray.add("propertyMenuItems:[${pmenuItemArray.join(',\n')}]");
-
+        def timeRangeSelector = xml.TimeRangeSelector;
+        if(timeRangeSelector != null && timeRangeSelector.size() > 0)
+        {
+            timeRangeSelector = timeRangeSelector[0];
+            cArray.add("timeRangeSelectorEnabled:true")
+            cArray.add("""timeRangeConfig:{
+                url:'${timeRangeSelector.@url.text()}',
+                buttonConfigurationUrl:'${timeRangeSelector.@buttonConfigurationUrl.text()}',
+                timeProperty:'${timeRangeSelector.@timeProperty.text()}',
+                valueProperties:['${timeRangeSelector.@timeProperty.text().replaceAll(",", "','")}']
+            }""")
+        }
         def images = xml.Images?.Image;
         def imageArray = [];
         images.each {image ->

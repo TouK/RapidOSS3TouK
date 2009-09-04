@@ -40,6 +40,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                 ],
                 childrenConfiguration:
                 [
+                        [designerType: "SearchListTimeRangeSelector", isMultiple: false, propertyName: "subComponents"],
                         [
                                 designerType: "SearchGridImages",
                                 isMultiple: false,
@@ -113,10 +114,15 @@ class UiSearchGridOperations extends UiComponentOperations {
         attributes.tab = parentElement;
         attributes.tabId = parentElement.id;
         def searchGrid = DesignerUtils.addUiObject(UiSearchGrid, attributes, xmlNode);
+        def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
         def rowColorsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridRowColors"};
+        if(timeRangeSelector && timeRangeSelector.size() > 0 )
+        {
+            UiSearchListTimeRangeSelector.addUiElement(timeRangeSelector, searchGrid)
+        }
         columnsNode.UiElement.each{
             UiSearchGridColumn.addUiElement(it, searchGrid);
         }

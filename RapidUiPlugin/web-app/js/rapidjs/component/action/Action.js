@@ -62,6 +62,10 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         if(!urlAndParams.params['format']){
             urlAndParams.params["format"] = "xml";
         }
+        var params = urlAndParams.params;
+        for(var param in requestParams){
+            params[param] = requestParams[param];
+        }
         if (this.submitType == 'GET') {
             this.requester.doGetRequest(urlAndParams.url, params);
         }
@@ -85,7 +89,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     },
     processFailure: function(errors, statusCodes)
     {
-        this.events['errors'].fireDirect();
+        this.events['error'].fireDirect();
         this._fireErrors(errors);
     },
     handleSuccess: function(response) {

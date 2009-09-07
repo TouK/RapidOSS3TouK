@@ -23,7 +23,7 @@
             <h1>Event Search</h1>
             <a class="button leftButton" type="cancel">Cancel</a>
             <a class="button blueButton" type="submit">Search</a>
-            <input id="search" type="text" name="search"/>
+            <input id="search" type="text" name="query"/>
         </fieldset>
     </form>
     <%-------------------------------------------------------------------------------

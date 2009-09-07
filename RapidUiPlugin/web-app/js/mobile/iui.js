@@ -70,7 +70,7 @@
                 urlHistory.pop();
 	        //pageHistory.pop();
             }
-            return url;
+            return url.href;
         },
 
         /*
@@ -126,8 +126,8 @@
             /*
             * each time an url is opened, it is added to url list
             */
-            urlHistory.push(href);
-            if(iui.lastRequest){
+            urlHistory.push({href:href, args:args});
+            if (iui.lastRequest) {
                 iui.abortRequest(iui.lastRequest);
             }
             var req = new XMLHttpRequest();
@@ -168,7 +168,7 @@
                             setTimeout(cb, 1000, true);
                     }
                     else {
-                        if(req.isAbort !== true){
+                        if (req.isAbort !== true) {
                             if (failureFunc) {
                                 failureFunc(req, httpStatus)
                             }
@@ -183,7 +183,7 @@
 
             if (args)
             {
-                req.open(method || "GET", href, true);
+                req.open(method || "POST", href, true);
                 req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 req.setRequestHeader("Content-Length", args.length);
                 req.send(args.join("&"));
@@ -203,11 +203,11 @@
             return false;
         },
 
-        abortRequest: function(request){
-           if(iui.isRequestInProgress(request)){
-               request.isAbort = true;
-               request.abort();
-           }
+        abortRequest: function(request) {
+            if (iui.isRequestInProgress(request)) {
+                request.isAbort = true;
+                request.abort();
+            }
         },
 
         /*
@@ -320,10 +320,14 @@
                 {
                     var page = document.getElementById(pageid);
                     page.setAttribute("selected", "progress");
-                    function undo() {
-                        page.removeAttribute("selected");
+                    var selectedPage = currentPage;
+                    function replaceAll() {
+                        if(selectedPage){
+                            selectedPage.parentNode.removeChild(selectedPage);
+                        }
                     }
-                    iui.showPageByHref(url, null, null, null, undo, true, failure);
+
+                    iui.showPageByHref(url.href, url.args, null, null, replaceAll, true, failure);
                 }
                 else if (pageid)
                 {
@@ -502,6 +506,9 @@
                     }
                     else
                         backButton.innerHTML = "Back";
+                }
+                else{
+                    backButton.innerHTML = "Back"; 
                 }
             }
             else

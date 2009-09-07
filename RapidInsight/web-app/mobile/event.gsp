@@ -1,174 +1,59 @@
-<%@ page import="search.SearchQuery; java.text.SimpleDateFormat"%>
-<g:if test="${params.search != 'null' && params.search != null}">
-	<g:javascript>
-		var url = window.iui.getLastUrl(true);
-		url = url + "?search=${params.search}";
-		window.iui.addUrl(url, 'event');
-	</g:javascript>
-</g:if>
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: Sep 4, 2009
+  Time: 3:44:07 PM
+  To change this template use File | Settings | File Templates.
+--%>
 <%
-	def eventList
-	def queryName
-	def extractQuery
+    //////////////////////////// SEVERITY MAPPING //////////////////////
+        SEVERITY_MAPPING = [
+                    "0":"images/mobile/states/green.png",
+                    "1":"images/mobile/states/purple.png",
+                    "2":"images/mobile/states/blue.png",
+                    "3":"images/mobile/states/yellow.png",
+                    "4":"images/mobile/states/orange.png",
+                    "5":"images/mobile/states/red.png"
+        ]
 
-	if(params.page == '' || params.page == null)
-		params.page = "0";
+    ///////////////////////////////////////////////////////////////////////
 
-	def page = java.lang.Integer.parseInt(params.page)
-	def total;
-	def totalPage
-	def errorMessage
-	def errorCaught = false
-
-	if(params.sort == '' || params.sort == null) {
-		params.sort = 'name'
-	}
-	if(params.order == '' || params.order == null) {
-		params.order = 'asc'
-	}
-	if(params.search == 'null' || params.search == null) {
-		def id = params.id
-		if(id == null){
-			extractQuery = searchString
-			queryName = "Custom Query"
-		}
-		else{
-			def query = SearchQuery.searchEvery("( id:${params.id.exactQuery()} )")[0]
-			if(query != null)
-			{
-				extractQuery = query.query
-				queryName = query.name
-			}
-			else
-			{
-				errorCaught = true;
-				errorMessage = "Query with id: ${id} does not exist. It may have been deleted"
-			}
-		}
-	}
-	else {
-		extractQuery = params.search
-		searchString = extractQuery
-		queryName = "Custom Query"
-	}
-
-	if(!errorCaught)
-	{
-		try
-		{
-			searchResults = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]);
-			eventList = searchResults.results
-			total = searchResults.total
-			totalPage = (int)((total + 9) / 10)
-			if(eventList.size() == 0) {
-				if(total > 0) {
-					page = totalPage - 1
-					eventList = RsEvent.search( extractQuery, [max:10, offset:10*page, sort:params.sort,order:params.order]).results
-				}
-				else {
-					eventList = []
-					page = 0;
-					totalPage = 1;
-				}
-			}
-		}
-		catch(Exception e) {
-			errorMessage = e.getMessage()
-			errorCaught = true
-		}
-	}
-
-	if(errorCaught) {
-		queryName = "Error";
-		eventList = []
-		total=0
-		page=0
-		totalPage=1
-	}
-	def i = 0
-	def j = 0
-	def link = "event.gsp?id=${params.id}&search=${params.search}&sort=${params.sort}&order=${params.order}"
-	def shortLink = "event.gsp?id=${params.id}&search=${params.search}&page=${params.page}"
+    def query = params.query ? params.query : "alias:*"
+    def events = RsEvent.search(query, params);
+    def total = events.total;
 %>
-<body>
-	<%-------------------------------------------------------------------------------
-										<Events>
-	 -------------------------------------------------------------------------------%>
-	<div id="event" title="${queryName}:Events"selected="true">
-		<%----------------------------------------------------------------
-		 						<Event Pagination>
-		 ----------------------------------------------------------------%>
-		<g:if test="${errorCaught == true}">
-			<div id="messageArea" class="error">
-				Error has occured <br> ${errorMessage}
-			</div>
-		</g:if>
-		<div class="paginate">
-			<table class="paginate-table">
-				<tr>
-					<g:if test="${page-1>=0}">
-						<td width="35"><a href="${link}&page=${page-1}" target="_temp"><</a></td>
-					</g:if>
-					<g:if test="${page-2 >= 0}">
-						<g:if test="${page-2 > 0}">
-							<td width="35"><b>...</b></td>
-						</g:if>
-						<td width="35"><a href="${link}&page=${page-2}" target="_temp">${page-1}</a></td>
-					 	<td width="35"><a href="${link}&page=${page-1}" target="_temp">${page}</a></td>
-		    		</g:if>
-					<g:elseif test="${page-1>=0}">
-						<td width="35"><a href="${link}&page=${page-1}" target="_temp">${page}</a></td>
-					</g:elseif>
-					<td width="35"><b> ${page+1} </b></td>
-					<g:if test="${page+2 < totalPage}">
-						<td width="35"><a href="${link}&page=${page+1}" target="_temp">${page+2}</a></td>
-					 	<td width="35"><a href="${link}&page=${page+2}" target="_temp">${page+3}</a></td>
-						<g:if test="${page+2 < totalPage-1}">
-							<td width="35"><b>...</b></td>
-						</g:if>
-		    		</g:if>
-					<g:elseif test="${page+1 < totalPage}">
-						<td width="35"><a href="${link}&page=${page+1}" target="_temp">${page+2}</a></td>
-					</g:elseif>
-					<g:if test="${page+1 < totalPage}">
-						<td width="35"><a href="${link}&page=${page+1}" target="_temp">></a></td>
-					</g:if>
-				<tr>
-			</table>
-		</div>
-		<%----------------------------------------------------------------
-		 						</Pagination>
-		 ----------------------------------------------------------------%>
+<div title="Events">
+<div class="table">
+    <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
+        <thead>
+            <tr>
+                <th></th>
+                <rui:sortableColumn property="name" title="Name" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
 
-		<%----------------------------------------------------------------
-		 						<Events Table>
-		 ----------------------------------------------------------------%>
-		<div class = "table">
-			<table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
-				<tr class="header">
-					<th width="1%"></th>
-					<th id="name" onclick="redirectEvent('name', '${shortLink}', '${params.sort}', '${params.order}'); return false">Name</th>
-					<th id="acknowledged" onclick="redirectEvent('acknowledged', '${shortLink}', '${params.sort}', '${params.order}'); return false">Ack</th>
-					<th id="owner" onclick="redirectEvent('owner', '${shortLink}', '${params.sort}', '${params.order}'); return false">Owner</th>
-					<th id="source" onclick="redirectEvent('source', '${shortLink}', '${params.sort}', '${params.order}'); return false">Source</th>
-				</tr>
+                <rui:sortableColumn property="acknowledged" title="Ack" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
 
-				<g:each var="event" in="${eventList}">
-				<tr class="${(i++ % 2) == 0 ? 'reg' : 'alt'}" onclick="window.iui.showPageByHref('eventdetails.gsp?name=${event.name}')">
-					<td><img src="../images/mobile/severity${event.severity}.png" height="25px" width="19px"/></td>
-					<td>${event.name}</td>
-					<td>${event.acknowledged}</td>
-					<td>${event.owner}</td>
-					<td>${event.source}</td>
-				</tr>
-				</g:each>
-			</table>
-		</div>
-		<%----------------------------------------------------------------
-		 						</Events Table>
-		 ----------------------------------------------------------------%>
-	</div>
-	<%-------------------------------------------------------------------------------
-	 								</Events>
-	 -------------------------------------------------------------------------------%>
-</body>
+                <rui:sortableColumn property="owner" title="Owner" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
+                <rui:sortableColumn property="source" title="Source" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
+
+            </tr>
+        </thead>
+        <tbody>
+            <g:each in="${events.results}" status="i" var="rsEvent">
+                <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
+                    <td width="1%"><img src="${createLinkTo(dir:SEVERITY_MAPPING[rsEvent.severity.toString()] ? SEVERITY_MAPPING[rsEvent.severity.toString()] : SEVERITY_MAPPING["0"])}" height="25px" width="19px"/></td>
+                    <td><rui:link url="mobile/eventDetails.gsp" params="${[name:rsEvent.name]}">${rsEvent.name?.encodeAsHTML()}</rui:link></td>
+
+                    <td>${rsEvent.acknowledged?.encodeAsHTML()}</td>
+
+                    <td>${rsEvent.owner?.encodeAsHTML()}</td>
+                    <td>${rsEvent.source?.encodeAsHTML()}</td>
+
+                </tr>
+            </g:each>
+        </tbody>
+    </table>
+</div>
+<div class="paginateButtons">
+    <rui:paginate total="${total}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5"/>
+</div>
+</div>

@@ -14,7 +14,7 @@
 	    	<li class="group"> ${group.name} </li>
 	    	<g:each var="query" in="${group.queries}">
 	    		<g:if test="${query.type == filterType || query.type == ''}">
-	    			<li><a href="event.gsp?id=${query.id}&page=0" target="_open" > ${query.name}</a></li>
+	    			<li><rui:link url="mobile/event.gsp" params="${[query:query.query]}" target="_open"> ${query.name}</rui:link></li>
 	    		</g:if>
 	    	</g:each>
 	    </g:each>

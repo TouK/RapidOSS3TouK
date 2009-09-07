@@ -191,7 +191,7 @@ a[target="_replace"] {
 }
 
 /************************************************************************************************/
-    
+
 body > .dialog {
     top: 0;
     width: 100%;
@@ -358,7 +358,7 @@ fieldset > .row:last-child {
     top: -1px;
     left: -1px;
     width: 40px;
-    height: 28px;    
+    height: 28px;
     border: 1px solid #888888;
     -webkit-border-radius: 6px;
     background: #ffffff url(../../images/mobile/thumb.png) repeat-x;
@@ -391,7 +391,7 @@ fieldset > .row:last-child {
 .itable tr.header th    { text-align: left; background-color:#C0C0C0; }
 .itable tr.alt          { background-color: #eff7ff; }
 .itable tr.reg          { background-color: #fff; }
-.itable tr.selected	{ 
+.itable tr.selected	{
 	background-color: #194fdb !important;
 	background-image: url(../../images/mobile/listArrowSel.png), url(../../images/mobile/selection.png) !important;
     background-repeat: no-repeat, repeat-x;
@@ -408,44 +408,46 @@ fieldset > .row:last-child {
 	text-decoration:none
 }
 
+th.asc a {
+    background-image:url(../../images/skin/sorted_asc.gif);
+}
+th.desc a {
+    background-image:url(../../images/skin/sorted_desc.gif);
+}
+th.asc a, th.desc a {
+    background-position:right center;
+    background-repeat:no-repeat;
+}
+th a:link, th a:visited, th a:hover {
+    display:block;
+    text-decoration:none;
+    width:100%;
+}
+
 /************************************************************************************************/
 
-.paginate	{
-	border-top: 1px solid #7d7d7d;
-    border-bottom: 1px solid #999999;
-    padding: 1px 10px;
+.paginateButtons	{
     background: url(../../images/mobile/listGroup.png) repeat-x;
-    color: #000000;
-    height:25px;
+    border-style:none solid solid;
+    border-width:0 1px 1px;
+    color:#666666;
+    font-size:10px;
+    overflow:hidden;
+    padding:7px 3px;
 }
 
-.paginate-table {
-	table-layout:fixed;
-	border-width: 0px 0px 0px 0px;
-	border-spacing: 0px 0px;
-	text-align: center;
+.paginateButtons a {
+    background:#FFFFFF none repeat scroll 0 0;
+    border-color:#CCCCCC #AAAAAA #AAAAAA #CCCCCC;
+    border-style:solid;
+    border-width:1px;
+    color:#666666;
+    margin:0 3px;
+    padding:2px 6px;
 }
 
-.paginate-talbe td {
-	border-width: 0px 0px 0px 0px;
-	padding: 1px 1px 1px 1px;
-}
-
-.paginate-table td > a {
-    font-size: 17px;
-    font-weight: bold;
-    text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
-	color: #F4FFFF;
-	text-decoration:none
-}
-
-.paginate-table td > a[selected], .paginate-table td > a:active {
-
-    background-color: transparent !important;
-    background-image: none, none !important;
-    background-repeat: no-repeat, no-repeat;
-    background-position: right center, left top;
-    color: #0101DF !important;
+.paginateButtons {
+    color:#000000;
 }
 
 
@@ -557,11 +559,11 @@ fieldset > .row:last-child {
 /************************************************************************************************/
 
 .error {
-	border-left: 3px solid #ff0000; 
-	border-right: 3px solid #ff0000; 
-	border-top: 3px solid #ff0000; 
+	border-left: 3px solid #ff0000;
+	border-right: 3px solid #ff0000;
+	border-top: 3px solid #ff0000;
 	border-bottom: 3px solid #ff0000;
-	
+
 	margin: 0px 0px 0px 0px;
 
     padding: 3px 3px;
@@ -572,7 +574,7 @@ fieldset > .row:last-child {
 }
 
 .success {
-	
+
 	margin: 0px 0px 0px 0px;
 
     padding: 3px 3px;

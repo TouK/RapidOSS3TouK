@@ -31,6 +31,7 @@ YAHOO.rapidjs.component.TimeRangeSelector = function(config) {
         'buttonClicked': new YAHOO.util.CustomEvent("buttonClicked")
     }
     YAHOO.rapidjs.TimeRangeSelectors[this.id] = this;
+    this.flexMethodCaller = new YAHOO.rapidjs.component.FlexApplicationMethodCaller(this.id, "embed"+this.id);
 }
 
 
@@ -44,15 +45,17 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
 							codebase='http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab'> \
 							<param name='movie' value='"+this.swfUrl+"' /> \
 							<param name='quality' value='high' /> \
-							<param name='allowScriptAccess' value='sameDomain' /> \
+							<param name='allowScriptAccess' value='always' /> \
+							<param name='swliveconnect' value='true' /> \
 							<param value='Transparent' name='wmode'/> \
 							<embed src='"+this.swfUrl+"' id='embed"+this.id+"' quality='high' \
 								width='100%' height='100%' name='embed"+this.id+"' align='middle' \
 								play='true'  \
 								loop='false' \
 								quality='high' \
+								swliveconnect='true' \
 								wmode = 'Transparent' \
-								allowScriptAccess='sameDomain' \
+								allowScriptAccess='always' \
 								type='application/x-shockwave-flash' \
 								pluginspage='http://www.adobe.com/go/getflashplayer'> \
 							</embed> \
@@ -61,45 +64,35 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
 		this.body.dom.innerHTML = objectString;
 
 
-		this.configurationTimer = new YAHOO.ext.util.DelayedTask(this.checkFlashLoaded, this);
+		this.configurationTimer = new YAHOO.ext.util.DelayedTask(this.loadConfiguration, this);
         this.configurationTimer.delay(300);
     },
     loadButtons: function(buttons)
     {
-        if(this.isFlashLoaded == false)
-        {
-            this.loadButtonsTimer = new YAHOO.ext.util.DelayedTask(this.loadButtons, this, buttons);
-            this.loadButtonsTimer.delay(300);
-        }
-        else
-        {
-            this.getFlexApp().loadButtons(buttons);
-        }
+        this.flexMethodCaller.callMethod("loadButtons", [buttons]);
     },
     loadData: function(responseXml)
     {
-        if(this.isFlashLoaded == false)
+        var rootTag = responseXml.getElementsByTagName(this.rootTag)[0];
+        var datum = rootTag.getElementsByTagName(this.dataTag)
+        var dataForFlex = [];
+        for(var i=0; i < datum.length; i++)
         {
-            this.loadDataTimer = new YAHOO.ext.util.DelayedTask(this.loadData, this, responseXml);
-            this.loadDataTimer.delay(300);
-        }
-        else
-        {
-            var rootTag = responseXml.getElementsByTagName(this.rootTag)[0];
-            var datum = rootTag.getElementsByTagName(this.dataTag)
-            var dataForFlex = [];
-            for(var i=0; i < datum.length; i++)
+            var nodeData = {};
+            var attributeNodes = datum[i].attributes;
+            if (attributeNodes != null)
             {
-                var xmlDataAttributes = datum[i].attributes
-                var nodeData = {};
-                for(var attrName in xmlDataAttributes)
-                {
-                    nodeData[attrName] = xmlDataAttributes[attrName];
+                var nOfAtts = attributeNodes.length
+                for (var index = 0; index < nOfAtts; index++) {
+                    var attNode = attributeNodes.item(index);
+                    nodeData[attNode.nodeName] = attNode.nodeValue;
                 }
-                dataForFlex[dataForFlex.length] = nodeData;
             }
-            this.getFlexApp().loadData(dataForFlex);
+
+            dataForFlex[dataForFlex.length] = nodeData;
         }
+        this.flexMethodCaller.callMethod("reset", []);
+        this.flexMethodCaller.callMethod("loadData", [dataForFlex]);
 
     },
     fireRangeChanged: function(fromDate, toDate){
@@ -108,44 +101,8 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
     fireButtonClicked: function(buttonData){
         this.events.buttonClicked.fireDirect(buttonData);
     },
-    getFlexApp: function(){
-      if (navigator.appName.indexOf ("Microsoft") !=-1)
-      {
-        var version = this.findVersion();
-        if (version>6 ){
-          return document[this.id];
-        }
-
-        return window[this.id];
-      }
-      else{
-        return document["embed"+this.id];
-      }
-
-    },
-    findVersion: function(){
-        var version = navigator.appVersion;
-        var versionArray = version.split(";");
-        for(var i=0; i<versionArray.length; i++){
-            if(versionArray[i].indexOf("MSIE") >-1){
-                version = versionArray[i];
-                version = version.replace("MSIE","");
-                version = parseFloat(version);
-                return version ;
-            }
-        }
-        return -1;
-    },
-    checkFlashLoaded: function(){
-        if(this.isFlashLoaded == true) return true
-        try{
-            var application = this.getFlexApp();
-            application.loadConfiguration(this.config);
-            this.isFlashLoaded = true;
-            return true;
-        }catch(e){
-            this.configurationTimer.delay(300);
-        }
+    loadConfiguration: function(){
+        this.flexMethodCaller.callMethod("loadConfiguration", [this.config, ]);
     }
 }
 

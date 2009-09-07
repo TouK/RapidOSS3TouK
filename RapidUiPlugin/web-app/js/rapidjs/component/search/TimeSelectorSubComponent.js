@@ -11,8 +11,10 @@ YAHOO.rapidjs.component.search.TimeSelectorSubComponent = function(searchList) {
     this.timeRangeSelector.events.rangeChanged.subscribe(this.rangeChaged, this, true)
     this.timeRangeSelector.events.buttonClicked.subscribe(this.buttonClicked, this, true)
     this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this);
-    this.buttonConfigrequester = new YAHOO.rapidjs.Requester(this.processButtonConfiguration, this.processFailure, this);
+    this.buttonConfigRequester = new YAHOO.rapidjs.Requester(this.processButtonConfiguration, this.processFailure, this);
     this.selectedButtonQuery = null;
+    this.lastSelectedButtonData = null;
+    this.buttonConfigRequester.doGetRequest(this.buttonConfigurationUrl, {}, null);
 };
 
 
@@ -24,16 +26,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     },
     buttonClicked: function(buttonData)
     {
-        if(buttonData.displayName == "All")
-        {
-            this.selectedButtonQuery = null;
-        }
-        else
+        this.lastSelectedButtonData = buttonData;
+        this.selectedButtonQuery = null
+        if(buttonData.displayName != "All")
         {
             this.selectedButtonQuery = this.fieldName+":"+buttonData.query;
         }
-        this.searchList.addFilter(this, this.selectedButtonQuery)  
-        this.searchList.poll();
+        this.searchList.addFilter(this, this.selectedButtonQuery)
+        this.searchList.handleSearch(null);
     },
     render : function(container) {
         var dh = YAHOO.ext.DomHelper;
@@ -42,7 +42,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     },
     processButtonConfiguration: function(response)
     {
-        var buttons = response.getElementsByTagName("Button")
+        var buttons = response.responseXML.getElementsByTagName("Button")
         var buttonsArray = [];
         for(var i=0; i < buttons.length; i++)
         {
@@ -50,7 +50,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
             var xmlAttributes = buttons[i].attributes
             for(var attribute in xmlAttributes)
             {
-                attributes[attribute] = xmlAttributes[attribute];
+                var item = xmlAttributes[attribute];
+                attributes[item.nodeName] = item.nodeValue;
             }
             buttonsArray[i] = attributes;
         }
@@ -65,9 +66,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
         this.firePollCompleted();
     },
     processFailure: function(errors, statusCodes){
-        this.searchList.events.processFailure(errors, statusCodes);
-        this.events.pollCompleted.fireDirect();
-        this.firePollCompleted();        
+        this.searchList.processFailure(errors, statusCodes);
+        this.firePollCompleted();
     },
     preparePoll: function()
     {
@@ -76,6 +76,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     poll: function()
     {
         this.firePollStarted();
-        this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery()})
+        if(this.lastSelectedButtonData == null || this.lastSelectedButtonData.displayName == "ALL")
+        {
+            this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery(), field:this.fieldName, searchClass:this.searchList.getSearchClass()})        
+        }
+        else
+        {
+            this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery(), lastSelectedButton:this.lastSelectedButtonData.displayName, field:this.fieldName, searchClass:this.searchList.getSearchClass()})
+        }
+
     }
 })

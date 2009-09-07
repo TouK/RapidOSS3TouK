@@ -19,10 +19,10 @@ class UiSearchListTimeRangeSelector {
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
 
     boolean isActive = true;
-    String url ="";
-    String buttonConfigurationUrl = "";
-    String timeProperty ="";
-    String valueProperties ="";
+    String url ="script/run/getTimeRangeData";
+    String buttonConfigurationUrl = "script/run/getTimeRangeButtonConfiguration";
+    String timeProperty ="time";
+    String valueProperties ="value";
 
     Long id ;
 

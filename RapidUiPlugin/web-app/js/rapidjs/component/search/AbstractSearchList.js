@@ -92,7 +92,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             var subComponent = this.subComponents[i]
             this.subComponentsContinuePolling[subComponent] = false;
             subComponent.events.pollCompleted.subscribe(this.subComponentPollFinished, this, true);
-            subComponent.events.pollCompleted.subscribe(this.subComponentPollStarted, this, true);
+            subComponent.events.pollStarted.subscribe(this.subComponentPollStarted, this, true);
         }
     },
     subComponentPollStarted: function(subComponent){

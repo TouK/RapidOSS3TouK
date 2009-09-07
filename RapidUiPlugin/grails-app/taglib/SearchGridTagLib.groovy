@@ -196,7 +196,7 @@ class SearchGridTagLib {
                 url:'${timeRangeSelector.@url.text()}',
                 buttonConfigurationUrl:'${timeRangeSelector.@buttonConfigurationUrl.text()}',
                 timeProperty:'${timeRangeSelector.@timeProperty.text()}',
-                valueProperties:['${timeRangeSelector.@timeProperty.text().replaceAll(",", "','")}']
+                valueProperties:['${timeRangeSelector.@valueProperties.text().replaceAll(",", "','")}']
             }""")
         }
         def images = xml.Images?.Image;

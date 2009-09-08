@@ -198,7 +198,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase {
         
         def newLookupName =  "newTrapCount";
         SeleniumTestUtils.createScriptFile(scriptName, connectorScriptContent.replaceAll(lookupName, newLookupName));
-        selenium.reloadSnmpConnectorById(connectorId, true);
+        selenium.reloadSnmpConnectorById(connectorId, scriptName, true);
         selenium.startSnmpConnectorById(connectorId, true);
         Thread.sleep(1000);
         selenium.executeScript(scriptContent);

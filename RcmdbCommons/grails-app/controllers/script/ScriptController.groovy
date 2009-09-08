@@ -148,7 +148,7 @@ class ScriptController {
             try
             {
                 script.reload();
-                flash.message = "Script reloaded successfully.";
+                flash.message = "Script ${script.name} reloaded successfully.";
                 if(params.targetURI){
                     redirect(uri:params.targetURI);
                 }
@@ -159,7 +159,7 @@ class ScriptController {
             }
             catch (t)
             {
-                flash.message = "Exception occurred while reloading. Reason : ${t.getMessage()}";
+                flash.message = "Exception occurred while reloading script ${script.name}. Reason : ${t.getMessage()}";
                 if(params.targetURI){
                     redirect(uri:params.targetURI);
                 }

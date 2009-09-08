@@ -16,7 +16,7 @@ class ScriptUiUtilities {
     public static executeScript(Selenium selenium, String scriptContent, Map params = [:], String timeout = "30000"){
         SeleniumTestUtils.createScriptFile(TEMP_SCRIPT_NAME, scriptContent);
         def scriptId = createOnDemandScript(selenium, TEMP_SCRIPT_NAME);
-        reloadScriptById(selenium, scriptId);
+        reloadScriptById(selenium, scriptId, TEMP_SCRIPT_NAME);
         runScriptById(selenium, scriptId, params, timeout);
     }
     public static createOnDemandScript(Selenium selenium, String scriptName, Map otherParams = [:], List allowedGroups = [], boolean validate = true)
@@ -139,7 +139,7 @@ class ScriptUiUtilities {
         def res = CommonUiTestUtils.search(selenium, "script.CmdbScript", "name:${scriptName}")
         if (res.size() == 1)
         {
-            reloadScriptById(selenium, res[0].id, validate)
+            reloadScriptById(selenium, res[0].id,scriptName, validate)
         }
         else
         {
@@ -149,14 +149,14 @@ class ScriptUiUtilities {
             }
         }
     }
-    public static reloadScriptById(Selenium selenium, String scriptId, boolean validate=true)
+    public static reloadScriptById(Selenium selenium, String scriptId, String scriptName, boolean validate=true)
     {
         selenium.openAndWait("/RapidSuite/script/show/" + scriptId);
         Assert.assertTrue ("Script ${scriptId} does not exist".toString(), selenium.getLocation().indexOf("/script/show") >= 0);
         selenium.clickAndWait("_action_Reload");
         if(validate)
         {
-            CommonUiTestUtils.assertPageMessage (selenium, "Script reloaded successfully.")
+            CommonUiTestUtils.assertPageMessage (selenium, "Script ${scriptName} reloaded successfully.")
         }
     }
 

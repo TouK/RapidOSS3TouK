@@ -28,13 +28,13 @@ def domainClass = web.grailsApplication.getDomainClass(domainClassName);
 try
 {
     domainClass.clazz."reloadOperations"()
-    web.flash.message = "Operation reloaded successfully"
+    web.flash.message = "Operation ${domainClass.clazz.name} reloaded successfully"
 }
 catch(Exception e)
 {
-    web.flash.message = "Operation could not be reloaded successfully. Reason :" + e.getMessage()
+    web.flash.message = "Operation ${domainClass.clazz.name} could not be reloaded successfully. Reason :" + e.getMessage()
     
-    logger.warn( "Operation could not be reloaded successfully. Reason :" + e.getMessage())
+    logger.warn( "Operation ${domainClass.clazz.name} could not be reloaded successfully. Reason :" + e.getMessage())
 }
 
 

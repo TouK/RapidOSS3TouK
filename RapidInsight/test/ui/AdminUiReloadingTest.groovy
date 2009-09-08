@@ -52,7 +52,7 @@ class AdminUiReloadingTest extends SeleniumTestCase
             selenium.select("domainClassName", "label=RsRiEvent");
             selenium.clickAndWait("_action_run");
 
-            assertTrue(selenium.isTextPresent("Operation reloaded successfully"));
+            assertTrue(selenium.isTextPresent("Operation RsRiEvent reloaded successfully"));
 
             selenium.runScriptByName("operationCheck");
             assertTrue("Operation is reloaded message should be visible", selenium.isTextPresent(message));

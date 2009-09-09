@@ -49,6 +49,7 @@
     def name = params.name
     def event = RsEvent.get(name: name)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
+    def actionGroupIdIndex = 0;
 %>
 
 <div id="eventdetails" title="Details of ${name}:Details">
@@ -62,20 +63,43 @@
     <%----------------------------------------------------------------
                         <Event Action Menu>
     ----------------------------------------------------------------%>
-        <div id="event${event.id}-menu" style="position: static; ">
+         <div id="event${event.id}-menu" style="position: static; ">
             <div id="menu${event.id}-header">
                 <div id="menu${event.id}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expandEventActionMenu('menu${event.id}-link', 'menu${event.id}-list'); return false">Event Actions</a></div>
             </div>
             <div id="menu${event.id}-list" style="display: none; ">
                 <ul class="items">
                     <g:each var="actionConf" in="${ACTIONS}">
-                        <g:if test="${!actionConf.visible || actionConf.visible(event)}">
-                            <%
-                                def scriptParams = actionConf.parameters ? actionConf.parameters(event) : [:]
-                                scriptParams["scriptName"] = actionConf.scriptName;
-                            %>
-                             <li><rui:link url="mobile/scriptExecuter.gsp" params="${scriptParams}" target="_open">${actionConf.title.encodeAsHTML()}</rui:link></li>
+                        <g:if test="${actionConf.type && actionConf.type == 'group'}">
+                            <li>
+                                <div id="menu-${actionGroupIdIndex++}-header">
+                                    <div id="menu-${actionGroupIdIndex}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expandEventActionMenu('menu-${actionGroupIdIndex}-link', 'menu-${actionGroupIdIndex}-list'); return false">${actionConf.title.encodeAsHTML()}</a></div>
+                                </div>
+                                <div id="menu-${actionGroupIdIndex}-list" style="display: none; ">
+                                    <ul class="items">
+                                        <g:each var="subActionConf" in="${actionConf.actions}">
+                                            <g:if test="${!subActionConf.visible || subActionConf.visible(event)}">
+                                                <%
+                                                    def subScriptParams = subActionConf.parameters ? subActionConf.parameters(event) : [:]
+                                                    subScriptParams["scriptName"] = subActionConf.scriptName;
+                                                %>
+                                                <li><rui:link url="mobile/scriptExecuter.gsp" params="${subScriptParams}" target="_open">${subActionConf.title.encodeAsHTML()}</rui:link></li>
+                                            </g:if>
+
+                                        </g:each>
+                                    </ul>
+                                </div>
+                            </li>
                         </g:if>
+                        <g:else>
+                            <g:if test="${!actionConf.visible || actionConf.visible(event)}">
+                                <%
+                                    def scriptParams = actionConf.parameters ? actionConf.parameters(event) : [:]
+                                    scriptParams["scriptName"] = actionConf.scriptName;
+                                %>
+                                <li><rui:link url="mobile/scriptExecuter.gsp" params="${scriptParams}" target="_open">${actionConf.title.encodeAsHTML()}</rui:link></li>
+                            </g:if>
+                        </g:else>
                     </g:each>
                 </ul>
             </div>

@@ -400,7 +400,7 @@ fieldset > .row:last-child {
 }
 .itable th              { background: url(../../images/mobile/blue_hd_bg.png) top left repeat-x; border-right: 1px solid gray; }
 .itable th:last-child   { border-right: none; }
-.itable td              { border-right: 1px solid gray;}
+.itable td              { border-right: 1px solid gray;font-size:12px}
 .itable tr:first-child  { white-space: nowrap; }
 .itable tr:last-child   { border-right: none; }
 

@@ -17,12 +17,19 @@
         ]
 
     ///////////////////////////////////////////////////////////////////////
+    def shortenProperty = {propValue ->
+        def sProp = propValue.toString();
+        if(sProp.length() > 15){
+            sProp = "${sProp.substring(0, 12)}.."
+        }
 
+        return sProp;
+    }
     def query = params.query ? params.query : "alias:*"
     def events = RsEvent.search(query, params);
     def total = events.total;
 %>
-<div title="Events">
+<div title="Events" id="eventList">
 <div class="table">
     <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
         <thead>
@@ -39,14 +46,14 @@
         </thead>
         <tbody>
             <g:each in="${events.results}" status="i" var="rsEvent">
-                <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
+                <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url:'mobile/eventDetails.gsp', params:[name:rsEvent.name])}')">
                     <td width="1%"><img src="${createLinkTo(dir:SEVERITY_MAPPING[rsEvent.severity.toString()] ? SEVERITY_MAPPING[rsEvent.severity.toString()] : SEVERITY_MAPPING["0"])}" height="25px" width="19px"/></td>
-                    <td><rui:link url="mobile/eventDetails.gsp" params="${[name:rsEvent.name]}">${rsEvent.name?.encodeAsHTML()}</rui:link></td>
+                    <td>${shortenProperty(rsEvent.name)?.encodeAsHTML()}</td>
 
                     <td>${rsEvent.acknowledged?.encodeAsHTML()}</td>
 
-                    <td>${rsEvent.owner?.encodeAsHTML()}</td>
-                    <td>${rsEvent.source?.encodeAsHTML()}</td>
+                    <td>${shortenProperty(rsEvent.owner)?.encodeAsHTML()}</td>
+                    <td>${shortenProperty(rsEvent.source)?.encodeAsHTML()}</td>
 
                 </tr>
             </g:each>

@@ -1,6 +1,7 @@
 <%@ page import="search.SearchQuery; search.SearchQueryGroup; auth.RsUser" %>
 <%
-	def filterType = 'event';
+	def filterType = params.filterType;
+	def listURI = params.listURI ? params.listURI : "mobile/event.gsp";
 	def user = RsUser.findByUsername(session.username);
 	def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
 %>
@@ -14,7 +15,7 @@
 	    	<li class="group"> ${group.name} </li>
 	    	<g:each var="query" in="${group.queries}">
 	    		<g:if test="${query.type == filterType || query.type == ''}">
-	    			<li><rui:link url="mobile/event.gsp" params="${[query:query.query]}" target="_open"> ${query.name}</rui:link></li>
+	    			<li><rui:link url="${listURI}" params="${[query:query.query]}" target="_open"> ${query.name}</rui:link></li>
 	    		</g:if>
 	    	</g:each>
 	    </g:each>

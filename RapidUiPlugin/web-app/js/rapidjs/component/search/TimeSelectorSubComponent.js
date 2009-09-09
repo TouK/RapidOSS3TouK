@@ -5,8 +5,14 @@ YAHOO.rapidjs.component.search.TimeSelectorSubComponent = function(searchList) {
     this.fieldName = "changedAt"
     this.url = this.config.url;
     this.buttonConfigurationUrl = this.config.buttonConfigurationUrl;
-    this.config.xField = this.config.timeProperty;
+    this.config.xField = this.config.fromTimeProperty;
+    this.config.categoryAxisLabelProperty = this.config.timeAxisLabelProperty;
+    this.config.initialTimeProperty = this.config.fromTimeProperty;
+    this.config.finalTimeProperty = this.config.toTimeProperty;
+    this.config.finalStringTimeProperty = this.config.stringToTimeProperty;
+    this.config.initialStringTimeProperty = this.config.stringFromTimeProperty;
     this.config.yFields = this.config.valueProperties;
+    this.config.id = this.searchList.id + "timeRangeSelector"
     this.timeRangeSelector = new YAHOO.rapidjs.component.TimeRangeSelector(this.config);
     this.timeRangeSelector.events.rangeChanged.subscribe(this.rangeChaged, this, true)
     this.timeRangeSelector.events.buttonClicked.subscribe(this.buttonClicked, this, true)
@@ -15,13 +21,14 @@ YAHOO.rapidjs.component.search.TimeSelectorSubComponent = function(searchList) {
     this.selectedButtonQuery = null;
     this.lastSelectedButtonData = null;
     this.buttonConfigRequester.doGetRequest(this.buttonConfigurationUrl, {}, null);
+    this.renderTask = new YAHOO.ext.util.DelayedTask(this._render, this);
 };
 
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO.rapidjs.component.search.SearchListSubComponent, {
-    rangeChaged: function(fromDate, toDate)
+    rangeChaged: function(leftData, rightData)
     {
-        this.searchList.addFilter(this, this.fieldName+":["+fromDate + " TO "+ toDate + "]")
+        this.searchList.addFilter(this, this.fieldName+":["+leftData[this.config.initialTimeProperty] + " TO "+ rightData[this.config.finalTimeProperty] + "]")
         this.searchList.poll();
     },
     buttonClicked: function(buttonData)
@@ -37,8 +44,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     },
     render : function(container) {
         var dh = YAHOO.ext.DomHelper;
-        var subComponentWrapper = dh.append(container, {tag:'div', cls:'rcmdb-search-time-range-selector'});
-        this.timeRangeSelector.render(subComponentWrapper);
+        this.subComponentWrapper = dh.append(container, {tag:'div', cls:'rcmdb-search-time-range-selector'});
+        this.renderTask.delay(1000);
+    },
+    _render: function()
+    {
+        this.timeRangeSelector.render(this.subComponentWrapper);    
     },
     processButtonConfiguration: function(response)
     {
@@ -48,10 +59,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
         {
             var attributes = {}
             var xmlAttributes = buttons[i].attributes
-            for(var attribute in xmlAttributes)
+            var xmlAttributes = buttons[i].attributes;
+            if (xmlAttributes != null)
             {
-                var item = xmlAttributes[attribute];
-                attributes[item.nodeName] = item.nodeValue;
+                var nOfAtts = xmlAttributes.length
+                for (var index = 0; index < nOfAtts; index++) {
+                    var attNode = xmlAttributes.item(index);
+                    attributes[attNode.nodeName] = attNode.nodeValue;
+                }
             }
             buttonsArray[i] = attributes;
         }

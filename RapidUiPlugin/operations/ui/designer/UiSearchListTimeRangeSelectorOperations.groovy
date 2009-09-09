@@ -23,8 +23,13 @@ class UiSearchListTimeRangeSelectorOperations extends AbstractDomainOperation{
                 propertyConfiguration: [
                         url:[descr:"The URL to be used for requests to the server to retrieve the data."],
                         buttonConfigurationUrl:[descr:"The URL to be used for requests to the server to retrieve the button configuration."],
-                        timeProperty:[descr:"The property name of time values."],
-                        valueProperties:[descr:"Comma seperated list of property names which will be shown as bar chart."]
+                        fromTimeProperty:[descr:"name of the property which specify start of timestamp interval of data"],
+                        toTimeProperty:[descr:"name of the property which specify end of timestamp interval of data"],
+                        stringFromTimeProperty:[descr:"name of the property which string representation of start of timestamp interval"],
+                        stringToTimeProperty:[descr:"name of the property which string representation of end of timestamp interval"],
+                        timeAxisLabelProperty:[descr:"Name of the property which will be used by horizontal axis to categorize data."],
+                        valueProperties:[descr:"Comma seperated list of property names which will be shown as bar chart."],
+                        tooltipProperty:[descr:"Tooltip property"]
                 ],
                 childrenConfiguration: []
         ];
@@ -38,7 +43,12 @@ class UiSearchListTimeRangeSelectorOperations extends AbstractDomainOperation{
         attributes.url = xmlNode.@url.text();
         attributes.buttonConfigurationUrl = xmlNode.@buttonConfigurationUrl.text();
         attributes.valueProperties = xmlNode.@valueProperties.text();
-        attributes.timeProperty = xmlNode.@timeProperty.text();
+        attributes.fromTimeProperty = xmlNode.@fromTimeProperty.text();
+        attributes.tooltipProperty = xmlNode.@tooltipProperty.text();
+        attributes.toTimeProperty = xmlNode.@toTimeProperty.text();
+        attributes.stringFromTimeProperty = xmlNode.@stringFromTimeProperty.text();
+        attributes.stringToTimeProperty = xmlNode.@stringToTimeProperty.text();
+        attributes.timeAxisLabelProperty = xmlNode.@timeAxisLabelProperty.text();
         if(parentElement instanceof UiSearchGrid)
         {
             attributes.grid = parentElement

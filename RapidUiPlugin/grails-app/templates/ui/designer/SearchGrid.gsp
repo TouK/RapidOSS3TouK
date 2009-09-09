@@ -16,7 +16,8 @@
             if(subComponent.class.name == "ui.designer.UiSearchListTimeRangeSelector")
             {
     %>
-    <rui:timeRangeSelector url="../${subComponent.url}" buttonConfigurationUrl="../${subComponent.buttonConfigurationUrl}" timeProperty="${subComponent.timeProperty}" valueProperties="${subComponent.valueProperties}">
+    <rui:timeRangeSelector url="../${subComponent.url}" buttonConfigurationUrl="../${subComponent.buttonConfigurationUrl}" fromTimeProperty="${subComponent.fromTimeProperty}"
+            tooltipProperty="${subComponent.tooltipProperty}" toTimeProperty="${subComponent.toTimeProperty}" stringToTimeProperty="${subComponent.stringToTimeProperty}" stringFromTimeProperty="${subComponent.stringFromTimeProperty}" timeAxisLabelProperty="${subComponent.timeAxisLabelProperty}" valueProperties="${subComponent.valueProperties}">
     </rui:timeRangeSelector>
     <%
             }

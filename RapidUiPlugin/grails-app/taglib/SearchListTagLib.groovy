@@ -249,8 +249,13 @@ class SearchListTagLib {
             cArray.add("""timeRangeConfig:{
                 url:'${timeRangeSelector.@url.text()}',
                 buttonConfigurationUrl:'${timeRangeSelector.@buttonConfigurationUrl.text()}',
-                timeProperty:'${timeRangeSelector.@timeProperty.text()}',
-                valueProperties:['${timeRangeSelector.@timeProperty.text().replaceAll(",", "','")}']
+                fromTimeProperty:'${timeRangeSelector.@fromTimeProperty.text()}',
+                toTimeProperty:'${timeRangeSelector.@toTimeProperty.text()}',
+                stringFromTimeProperty:'${timeRangeSelector.@stringFromTimeProperty.text()}',
+                tooltipProperty:'${timeRangeSelector.@tooltipProperty.text()}',
+                stringToTimeProperty:'${timeRangeSelector.@stringToTimeProperty.text()}',
+                timeAxisLabelProperty:'${timeRangeSelector.@timeAxisLabelProperty.text()}',
+                valueProperties:['${timeRangeSelector.@valueProperties.text().replaceAll(",", "','")}']
             }""")
         }
         def images = xml.Images?.Image;

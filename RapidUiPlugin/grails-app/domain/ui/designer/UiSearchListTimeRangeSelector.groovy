@@ -21,8 +21,13 @@ class UiSearchListTimeRangeSelector {
     boolean isActive = true;
     String url ="script/run/getTimeRangeData";
     String buttonConfigurationUrl = "script/run/getTimeRangeButtonConfiguration";
-    String timeProperty ="time";
+    String fromTimeProperty ="fromTime";
+    String toTimeProperty ="toTime";
+    String timeAxisLabelProperty ="timeAxisLabel";
+    String stringFromTimeProperty ="stringFromTime";
+    String stringToTimeProperty ="stringToTime";
     String valueProperties ="value";
+    String tooltipProperty = "tooltip";
 
     Long id ;
 
@@ -47,7 +52,12 @@ class UiSearchListTimeRangeSelector {
     static constraints={
     url(blank:false,nullable:false)
     buttonConfigurationUrl(blank:false,nullable:false)
-    timeProperty(blank:false,nullable:false)
+    fromTimeProperty(blank:false,nullable:false)
+    toTimeProperty(blank:false,nullable:false)
+    timeAxisLabelProperty(blank:false,nullable:false)
+    stringFromTimeProperty(blank:false,nullable:false)
+    stringToTimeProperty(blank:false,nullable:false)
+    tooltipProperty(blank:false,nullable:false)
     valueProperties(blank:false,nullable:false)
     grid(nullable:true)
     list(nullable:true)

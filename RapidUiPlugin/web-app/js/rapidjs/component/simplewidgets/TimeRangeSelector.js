@@ -6,9 +6,9 @@ function   timeRangeSelectorJsFunction(params)
     var functionName = params.functionName
     if(functionName == "intervalChanged")
     {
-        var fromDate = params.fromDate
-        var toDate = params.toDate
-        YAHOO.rapidjs.TimeRangeSelectors[componentId].fireRangeChanged(fromDate, toDate);
+        var leftData = params.leftData
+        var rightData = params.rightData
+        YAHOO.rapidjs.TimeRangeSelectors[componentId].fireRangeChanged(leftData, rightData);
     }
     else if(functionName == "buttonClicked"){
         YAHOO.rapidjs.TimeRangeSelectors[componentId].fireButtonClicked(params.data);
@@ -95,14 +95,14 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
         this.flexMethodCaller.callMethod("loadData", [dataForFlex]);
 
     },
-    fireRangeChanged: function(fromDate, toDate){
-        this.events.rangeChanged.fireDirect(fromDate, toDate);
+    fireRangeChanged: function(leftData, rightData){
+        this.events.rangeChanged.fireDirect(leftData, rightData);
     },
     fireButtonClicked: function(buttonData){
         this.events.buttonClicked.fireDirect(buttonData);
     },
     loadConfiguration: function(){
-        this.flexMethodCaller.callMethod("loadConfiguration", [this.config, ]);
+        this.flexMethodCaller.callMethod("loadConfiguration", [this.config]);
     }
 }
 

@@ -8,9 +8,9 @@ import groovy.xml.MarkupBuilder
 * To change this template use File | Settings | File Templates.
 */
 def buttons = [
-        [displayName:"Last Hour", query:"[currenttime-1HOURS TO currenttime]"],
-        [displayName:"Last Day", query:"[currenttime-1DAYS TO currenttime]"],
-        [displayName:"Last Month", query:"[currenttime-1MONTHS TO currenttime]"],
+        [displayName:"Last Hour", query:"[currenttime-1HOURS/HOUR TO currenttime]"],
+        [displayName:"Last Day", query:"[currenttime-1DAYS/DAY TO currenttime]"],
+        [displayName:"Last Month", query:"[currenttime-1MONTHS/MONTH TO currenttime]"],
 ]
 
 def sw = new StringWriter();

@@ -1,6 +1,25 @@
 import groovy.xml.MarkupBuilder
-import org.compass.core.converter.basic.DateMathParser
+import java.text.SimpleDateFormat
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+
+public static long MINUTE = 60*1000
+public static long HOUR = 60*MINUTE
+public static long DAY = 24*HOUR
+public static long MONTH = 30*DAY
+public static long YEAR = 12*MONTH
+public static SimpleDateFormat FULL_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+public static SimpleDateFormat TOOLTIP_DF = new SimpleDateFormat("HH:mm EE, MMM dd, yyyy");
+public static SimpleDateFormat YEAR_DF = new SimpleDateFormat("yyyy");
+public static SimpleDateFormat MONTH_DF = new SimpleDateFormat("yyyy-MM");
+public static SimpleDateFormat DAY_DF = new SimpleDateFormat("dd");
+public static SimpleDateFormat HOUR_DF = new SimpleDateFormat("HH:mm");
+public static SimpleDateFormat MINUTE_DF = new SimpleDateFormat("mm");
+public static SimpleDateFormat YEAR_START_DF = new SimpleDateFormat("yyyy-MM-01 00:00:00");
+public static SimpleDateFormat MONTH_START_DF = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+public static SimpleDateFormat DAY_START_DF = new SimpleDateFormat("yyyy-MM-dd HH:00:00");
+public static SimpleDateFormat HOUR_START_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:00");
+public static SimpleDateFormat MINUTE_START_DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 
 def buttonName = params.lastSelectedButton;
 def field = params.field;
@@ -10,45 +29,61 @@ if(query == "" || query == null)
 {
     query = "alias:*"
 }
-def incrementAmount = 1;
-def duration  = "hours"
-def numberOfIntervals = 60;
+def cTime = new Date();
 def searchDoaminClass = ApplicationHolder.application.getDomainClass(searchClassName)
 if(searchDoaminClass == null)
 {
     throw new Exception("searchClass with name ${searchClassName} could not be found.");
 }
 def searchClass = ApplicationHolder.application.getDomainClass(searchClassName).clazz;
-if(buttonName == null)
+
+if(buttonName == "Last Hour")
 {
-    duration = "months"
-}
-else if(buttonName == "Last Hour")
-{
-    duration = "minutes"
+    timeInterval = MINUTE
+    df = MINUTE_DF;
+    numberOfintervals = 60;
+    startDate = FULL_DF.parse(HOUR_START_DF.format(new Date(cTime.getTime()-numberOfintervals*timeInterval)));
 }
 else if(buttonName == "Last Day")
 {
-    duration = "hours"
-    numberOfIntervals = 24;
+    timeInterval = HOUR
+    df = HOUR_DF;
+    numberOfintervals = 24;
+    startDate = FULL_DF.parse(DAY_START_DF.format(new Date(cTime.getTime()-numberOfintervals*timeInterval)));
 }
 else if(buttonName == "Last Month")
 {
-    duration = "days"
-    numberOfIntervals = 30;
+    timeInterval = DAY
+    df = DAY_DF;
+    numberOfintervals = 30;
+    startDate = FULL_DF.parse(MONTH_START_DF.format(new Date(cTime.getTime()-numberOfintervals*timeInterval)));
+}
+else
+{
+    timeInterval = MONTH
+    df = MONTH_DF;
+    numberOfintervals = 30;
+    startDate = FULL_DF.parse(YEAR_START_DF.format(new Date(cTime.getTime()-numberOfintervals*timeInterval)));
 }
 
 def sw = new StringWriter();
 def mb = new MarkupBuilder(sw);
-def parser = new DateMathParser(TimeZone.getDefault(), Locale.getDefault());
-mb.Datum{
-    numberOfIntervals.times{
-        def timeToBeParsed = "-${it+1}${duration}";
-        def time = parser.parseMath(timeToBeParsed).getTime() 
-        def tmpQuery = "(${query}) AND ${field}:[currenttime-${it+1}${duration} TO currenttime-${it}${duration}]"
+long lowestTime = startDate.getTime();
+mb.Datum(interval:timeInterval){
+
+    def time = lowestTime;
+    def start = 0;
+    while(time <= cTime.getTime() || start < numberOfintervals){
+        long lowerTime = time
+        long upperTime = time+timeInterval;
+        def tmpQuery = "(${query}) AND ${field}:[${lowerTime} TO ${upperTime}]"
         def numberOfObjects = searchClass.countHits(tmpQuery);
-        mb.Data(time:time, value:numberOfObjects);
+        mb.Data(fromTime:lowerTime, toTime:upperTime, value:numberOfObjects, timeAxisLabel:start%3==0?df.format(new Date(lowerTime)):"",
+                stringFromTime:FULL_DF.format(new Date(lowerTime)), stringToTime:FULL_DF.format(new Date(upperTime)),
+                tooltip:"${numberOfObjects} events between ${TOOLTIP_DF.format(new Date(lowerTime))}  and ${TOOLTIP_DF.format(new Date(upperTime))}"
+        );
+        start++;
+        time = upperTime;
     }
 }
-println sw
 return sw.toString();

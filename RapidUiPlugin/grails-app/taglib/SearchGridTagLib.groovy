@@ -195,7 +195,12 @@ class SearchGridTagLib {
             cArray.add("""timeRangeConfig:{
                 url:'${timeRangeSelector.@url.text()}',
                 buttonConfigurationUrl:'${timeRangeSelector.@buttonConfigurationUrl.text()}',
-                timeProperty:'${timeRangeSelector.@timeProperty.text()}',
+                fromTimeProperty:'${timeRangeSelector.@fromTimeProperty.text()}',
+                toTimeProperty:'${timeRangeSelector.@toTimeProperty.text()}',
+                tooltipProperty:'${timeRangeSelector.@tooltipProperty.text()}',
+                stringFromTimeProperty:'${timeRangeSelector.@stringFromTimeProperty.text()}',
+                stringToTimeProperty:'${timeRangeSelector.@stringToTimeProperty.text()}',
+                timeAxisLabelProperty:'${timeRangeSelector.@timeAxisLabelProperty.text()}',
                 valueProperties:['${timeRangeSelector.@valueProperties.text().replaceAll(",", "','")}']
             }""")
         }
@@ -360,7 +365,7 @@ class SearchGridTagLib {
     }
 
     static def fTimeRangeSelector(attrs, bodyString) {
-        def validAttrs = ["url", "buttonConfigurationUrl", "timeProperty", "valueProperties"];
+        def validAttrs = ["url", "buttonConfigurationUrl", "tooltipProperty", "fromTimeProperty", "toTimeProperty", "valueProperties", "stringFromTimeProperty", "stringToTimeProperty", "timeAxisLabelProperty"];
         return TagLibUtils.getConfigAsXml("TimeRangeSelector", attrs, validAttrs)
     }
     def timeRangeSelector = {attrs, body ->

@@ -260,26 +260,29 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     poll: function() {
-        this.currentlyExecutingQuery = this.searchInput.value;
-        if (this.defaultFilter != null)
+        if(this.searchInput != null)
         {
-            this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, this.defaultFilter)
-        }
-        for(var i in this.filtersFromOtherComponents)
-        {
-            var filterQuery = this.filtersFromOtherComponents[i];
-            if(filterQuery)
+            this.currentlyExecutingQuery = this.searchInput.value;
+            if (this.defaultFilter != null)
             {
-                this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, filterQuery)
+                this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, this.defaultFilter)
             }
+            for(var i in this.filtersFromOtherComponents)
+            {
+                var filterQuery = this.filtersFromOtherComponents[i];
+                if(filterQuery)
+                {
+                    this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, filterQuery)
+                }
+            }
+            this.showMask();
+            this.params['offset'] = this.offset;
+            this.params[this.queryParameter] = this.currentlyExecutingQuery;
+            this.params['sort'] = this.lastSortAtt;
+            this.params['order'] = this.lastSortOrder;
+            this.params['searchIn'] = this.getSearchClass();
+            YAHOO.rapidjs.component.search.AbstractSearchList.superclass.poll.call(this);
         }
-        this.showMask();
-        this.params['offset'] = this.offset;
-        this.params[this.queryParameter] = this.currentlyExecutingQuery;
-        this.params['sort'] = this.lastSortAtt;
-        this.params['order'] = this.lastSortOrder;
-        this.params['searchIn'] = this.getSearchClass();
-        YAHOO.rapidjs.component.search.AbstractSearchList.superclass.poll.call(this);
     },
 
     loadData : function(data) {

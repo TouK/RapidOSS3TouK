@@ -23,6 +23,7 @@ YAHOO.rapidjs.component.search.TimeSelectorSubComponent = function(searchList) {
     this.lastSelectedButtonData = null;
     this.buttonConfigRequester.doGetRequest(this.buttonConfigurationUrl, {}, null);
     this.buttonConfigReceived = false;
+    this.pollTask = new YAHOO.ext.util.DelayedTask(this.poll, this);
 };
 
 
@@ -39,17 +40,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     fieldChanged: function(leftData, rightData, fieldData)
     {
         this.lastSelectedFieldData = fieldData;
-        this.buttonClicked(this.lastSelectedButtonData);   
+        this.buttonClicked(this.lastSelectedButtonData);
     },
     buttonClicked: function(buttonData)
     {
         if(this.lastSelectedFieldData == null || buttonData == null) return;
         this.lastSelectedButtonData = buttonData;
-        this.selectedButtonQuery = null
-        if(buttonData.displayName != "All")
-        {
-            this.selectedButtonQuery = this.lastSelectedFieldData.name+":"+buttonData.query;
-        }
+        this.buttonConfigReceived = true;
+        this.selectedButtonQuery = this.lastSelectedFieldData.name+":"+buttonData.query;
         this.searchList.addFilter(this, this.selectedButtonQuery)
         this.searchList.handleSearch(null);
     },
@@ -73,9 +71,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
         {
             fieldsArray[i] = YAHOO.rapidjs.data.DataUtils.convertToMap(fields[i]);
         }
-
-        buttonsArray[buttonsArray.length] = {displayName:"All", selected:true}
-
         this.timeRangeSelector.loadButtonsAndFields({buttons:buttonsArray, fields:fieldsArray});
 
     },
@@ -94,13 +89,18 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     poll: function()
     {
         this.firePollStarted();
-        if(this.lastSelectedButtonData == null || this.lastSelectedButtonData.displayName == "ALL")
+        if(!this.buttonConfigReceived)
         {
-            this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery(), searchClass:this.searchList.getSearchClass()})
+            this.pollTask.cancel();
+            this.pollTask = new YAHOO.ext.util.DelayedTask(this.poll, this);
+            this.pollTask.delay(100);
         }
         else
         {
-            this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery(), lastSelectedButton:this.lastSelectedButtonData.displayName, field:this.lastSelectedFieldData.name, searchClass:this.searchList.getSearchClass()})
+            if(this.lastSelectedFieldData != null && this.lastSelectedButtonData != null)
+            {
+                this.requester.doGetRequest(this.url, {query:this.searchList.getCurrentlyExecutingQuery(), lastSelectedButton:this.lastSelectedButtonData.displayName, field:this.lastSelectedFieldData.name, searchClass:this.searchList.getSearchClass()})
+            }
         }
 
     }

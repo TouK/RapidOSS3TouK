@@ -72,7 +72,7 @@ YAHOO.rapidjs.component.FlexApplicationMethodCaller.prototype =
 							</embed> \
 						</object>"
 		this.body.dom.innerHTML = objectString;
-        this.configureTimer(1000)
+        this.callMethods();
     },
     getFlexApp: function(){
       if (navigator.appName.indexOf ("Microsoft") !=-1)
@@ -135,7 +135,7 @@ YAHOO.rapidjs.component.FlexApplicationMethodCaller.prototype =
     {
         var allProcessed = true;
         var l =this.methodCallOrder.length;
-        var tmpMethodCallOrder = this.methodCallOrder.slice(0, l-1);
+        var tmpMethodCallOrder = this.methodCallOrder.slice(0, l);
         for(var i =0; i < tmpMethodCallOrder.length; i++)
         {
             var methodConf = this.methodsToBeCalled[tmpMethodCallOrder[i]]
@@ -166,7 +166,7 @@ YAHOO.rapidjs.component.FlexApplicationMethodCaller.prototype =
             this.calledForFirstTime = true;
             this.methodCallOrder.splice(0,l);
         }
-        else
+        if(this.methodCallOrder.length != 0)
         {
             this.configureTimer(300)
         }

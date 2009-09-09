@@ -11,6 +11,7 @@ def buttons = [
         [displayName:"Last Hour", query:"[currenttime-1HOURS/HOUR TO currenttime]"],
         [displayName:"Last Day", query:"[currenttime-1DAYS/DAY TO currenttime]"],
         [displayName:"Last Month", query:"[currenttime-1MONTHS/MONTH TO currenttime]"],
+        [displayName:"All", query:"[currenttime-30MONTHS/MONTH TO currenttime]", selected:true]
 ]
 
 def fields = [

@@ -243,7 +243,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         {
             query = queryToBeAppend;
         }
-        return queryToBeAppend;
+        return query;
     },
 
     getCurrentlyExecutingQuery: function()

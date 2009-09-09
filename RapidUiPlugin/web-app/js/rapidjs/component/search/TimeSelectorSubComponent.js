@@ -29,7 +29,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.TimeSelectorSubComponent, YAHOO
     rangeChaged: function(leftData, rightData)
     {
         this.searchList.addFilter(this, this.fieldName+":["+leftData[this.config.initialTimeProperty] + " TO "+ rightData[this.config.finalTimeProperty] + "]")
-        this.searchList.poll();
+        this.searchList._poll();
     },
     buttonClicked: function(buttonData)
     {

@@ -132,15 +132,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
     handleSearch: function(e) {
         this.offset = 0;
-        for(var i=0; i < this.subComponents.length; i++)
-        {
-            this.subComponents[i].preparePoll();    
-        }
         this.poll();
-        for(var i=0; i < this.subComponents.length; i++)
-        {
-            this.subComponents[i].poll();    
-        }
         this._changeScroll(0);
     },
 
@@ -260,6 +252,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     poll: function() {
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            this.subComponents[i].preparePoll();
+        }
+        this._poll();
+        for(var i=0; i < this.subComponents.length; i++)
+        {
+            this.subComponents[i].poll();
+        }
+    },
+    _poll: function() {
         if(this.searchInput != null)
         {
             this.currentlyExecutingQuery = this.searchInput.value;
@@ -347,7 +350,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;
         this.offset = 0;
-        this.poll();
+        this._poll();
     },
 
     handleScroll: function() {
@@ -362,7 +365,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     scrollPoll : function(offset) {
         this.offset = offset;
-        this.poll();
+        this._poll();
     },
 
     _verticalScrollChanged : function() {

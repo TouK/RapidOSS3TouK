@@ -8,7 +8,15 @@ function   timeRangeSelectorJsFunction(params)
     {
         var leftData = params.leftData
         var rightData = params.rightData
-        YAHOO.rapidjs.TimeRangeSelectors[componentId].fireRangeChanged(leftData, rightData);
+        var fieldData = params.selectedFieldData
+        YAHOO.rapidjs.TimeRangeSelectors[componentId].fireRangeChanged(leftData, rightData, fieldData);
+    }
+    else if(functionName == "fieldChanged")
+    {
+        var leftData = params.leftData
+        var rightData = params.rightData
+        var fieldData = params.selectedFieldData
+        YAHOO.rapidjs.TimeRangeSelectors[componentId].fireFieldChanged(leftData, rightData, fieldData);
     }
     else if(functionName == "buttonClicked"){
         YAHOO.rapidjs.TimeRangeSelectors[componentId].fireButtonClicked(params.data);
@@ -28,10 +36,11 @@ YAHOO.rapidjs.component.TimeRangeSelector = function(config) {
     this.swfUrl = "../images/rapidjs/component/timeRangeSelector/TimeRangeSelector.swf";
     this.events = {
         'rangeChanged': new YAHOO.util.CustomEvent("rangeChanged"),
+        'fieldChanged': new YAHOO.util.CustomEvent("fieldChanged"),
         'buttonClicked': new YAHOO.util.CustomEvent("buttonClicked")
     }
     YAHOO.rapidjs.TimeRangeSelectors[this.id] = this;
-    this.flexMethodCaller = new YAHOO.rapidjs.component.FlexApplicationMethodCaller(this.id, "embed"+this.id);
+    this.flexMethodCaller = new YAHOO.rapidjs.component.FlexApplicationMethodCaller(this.id, "embed"+this.id, this.swfUrl);
 }
 
 
@@ -39,37 +48,12 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
 {
     render: function(container) {
         this.container = container;
-        this.body = YAHOO.ext.DomHelper.append(this.container,{tag:'div'},true);
-        var objectString = "<object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' \
-							id='"+this.id+"' name='"+this.id+"' width='100%' height='100%' \
-							codebase='http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab'> \
-							<param name='movie' value='"+this.swfUrl+"' /> \
-							<param name='quality' value='high' /> \
-							<param name='allowScriptAccess' value='always' /> \
-							<param name='swliveconnect' value='true' /> \
-							<param value='Transparent' name='wmode'/> \
-							<embed src='"+this.swfUrl+"' id='embed"+this.id+"' quality='high' \
-								width='100%' height='100%' name='embed"+this.id+"' align='middle' \
-								play='true'  \
-								loop='false' \
-								quality='high' \
-								swliveconnect='true' \
-								wmode = 'Transparent' \
-								allowScriptAccess='always' \
-								type='application/x-shockwave-flash' \
-								pluginspage='http://www.adobe.com/go/getflashplayer'> \
-							</embed> \
-						</object>"
-
-		this.body.dom.innerHTML = objectString;
-
-
-		this.configurationTimer = new YAHOO.ext.util.DelayedTask(this.loadConfiguration, this);
-        this.configurationTimer.delay(300);
+        this.flexMethodCaller.render(this.container);
+        this.loadConfiguration();
     },
-    loadButtons: function(buttons)
+    loadButtonsAndFields: function(buttonsAndFields)
     {
-        this.flexMethodCaller.callMethod("loadButtons", [buttons]);
+        this.flexMethodCaller.callMethod("loadButtonsAndFields", [buttonsAndFields]);
     },
     loadData: function(responseXml)
     {
@@ -78,25 +62,17 @@ YAHOO.rapidjs.component.TimeRangeSelector.prototype =
         var dataForFlex = [];
         for(var i=0; i < datum.length; i++)
         {
-            var nodeData = {};
-            var attributeNodes = datum[i].attributes;
-            if (attributeNodes != null)
-            {
-                var nOfAtts = attributeNodes.length
-                for (var index = 0; index < nOfAtts; index++) {
-                    var attNode = attributeNodes.item(index);
-                    nodeData[attNode.nodeName] = attNode.nodeValue;
-                }
-            }
-
-            dataForFlex[dataForFlex.length] = nodeData;
+            dataForFlex[dataForFlex.length] = YAHOO.rapidjs.data.DataUtils.convertToMap(datum[i]);
         }
         this.flexMethodCaller.callMethod("reset", []);
         this.flexMethodCaller.callMethod("loadData", [dataForFlex]);
 
     },
-    fireRangeChanged: function(leftData, rightData){
-        this.events.rangeChanged.fireDirect(leftData, rightData);
+    fireRangeChanged: function(leftData, rightData, fieldChanged){
+        this.events.rangeChanged.fireDirect(leftData, rightData, fieldChanged);
+    },
+    fireFieldChanged: function(leftData, rightData, fieldChanged){
+        this.events.fieldChanged.fireDirect(leftData, rightData, fieldChanged);
     },
     fireButtonClicked: function(buttonData){
         this.events.buttonClicked.fireDirect(buttonData);

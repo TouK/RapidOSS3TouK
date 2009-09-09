@@ -17,6 +17,25 @@
 * USA.
 */
 YAHOO.namespace('rapidjs', 'rapidjs.data');
+
+
+YAHOO.rapidjs.data.DataUtils =  new function()
+{
+    this.convertToMap = function(node)
+    {
+        var attributes = {}
+        var xmlAttributes = node.attributes
+        if (xmlAttributes != null)
+        {
+            var nOfAtts = xmlAttributes.length
+            for (var index = 0; index < nOfAtts; index++) {
+                var attNode = xmlAttributes.item(index);
+                attributes[attNode.nodeName] = attNode.nodeValue;
+            }
+        }
+        return  attributes;
+    }
+}
 YAHOO.rapidjs.data.RapidXmlDocument = function(response, indexingAttributes)
 {
     this.response = response;

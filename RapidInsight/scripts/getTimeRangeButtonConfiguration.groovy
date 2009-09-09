@@ -13,12 +13,23 @@ def buttons = [
         [displayName:"Last Month", query:"[currenttime-1MONTHS/MONTH TO currenttime]"],
 ]
 
+def fields = [
+    [displayName:"changedAt", name:"changedAt"],
+    [displayName:"createdAt", name:"createdAt"]
+]
+
 def sw = new StringWriter();
 def mb = new MarkupBuilder(sw);
-
-mb.Buttons{
-    buttons.each{
-        mb.Button(it)
+mb.ButtonAndFieldsConfig(){
+    mb.Buttons{
+        buttons.each{
+            mb.Button(it)
+        }
+    }
+    mb.Fields{
+        fields.each{
+            mb.Field(it)
+        }
     }
 }
 

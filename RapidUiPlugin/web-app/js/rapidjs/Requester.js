@@ -33,8 +33,12 @@ YAHOO.rapidjs.Requester = function(successFunctionToCall, failureFunctionToCall,
     }
 }
 YAHOO.rapidjs.Requester.prototype = {
+    isRequesting: function()
+    {
+        return  this.lastConnection != null && YAHOO.util.Connect.isCallInProgress(this.lastConnection) == true
+    },
     processSuccess : function(response) {
-        if (this.lastConnection != null && YAHOO.util.Connect.isCallInProgress(this.lastConnection) == true) {
+        if (this.isRequesting()) {
             return;
         }
         YAHOO.rapidjs.ErrorManager.serverUp();
@@ -67,7 +71,7 @@ YAHOO.rapidjs.Requester.prototype = {
     },
     processFailure : function(response)
     {
-        if (this.lastConnection != null && YAHOO.util.Connect.isCallInProgress(this.lastConnection) == true) {
+        if (this.isRequesting()) {
             return;
         }
         var st = response.status;

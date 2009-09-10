@@ -207,7 +207,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.fireSaveQueryClick(this.searchInput.value);
         }
     },
-
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
@@ -537,7 +536,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     hideMask: function() {
-        if(this.isAllsubComponentsContinuePolling())
+        if(this.isAllsubComponentsContinuePolling() && this.requester.isRequesting() == false)
         {
             this.mask.hide();
             this.maskMessage.hide();

@@ -41,10 +41,19 @@ assert(maint1.ending.getTime()==0)
 def eventDuringMaintenance1 = RsEvent.add(name:"eventDuringMaintenance1", elementName:maint1.objectName)
 assert(eventDuringMaintenance1.inMaintenance)
 
+assert(RsHistoricalInMaintenance.count() == 0)
 RsInMaintenance.takeObjectOutOfMaintenance(maint1.objectName)
 assert(!RsInMaintenance.isObjectInMaintenance(maint1.objectName))
 assert(!RsEvent.get(name:event11.name).inMaintenance)
 assert(!RsEvent.get(name:event12.name).inMaintenance)
+def historicalMaintenance = RsHistoricalInMaintenance.search("objectName:${maint1.objectName}").results[0];
+assert(historicalMaintenance != null)
+def allActiveMaintenanceProps = maint1.asMap();
+allActiveMaintenanceProps.remove("id")
+def allHistoricalMaintenanceProps = maint1.asMap();
+allHistoricalMaintenanceProps.remove("id")
+assert(allActiveMaintenanceProps.equals(allHistoricalMaintenanceProps));
+
 
 def event13 = RsEvent.add(name:"Event13", elementName:maint1.objectName)
 assert(!event13.inMaintenance)

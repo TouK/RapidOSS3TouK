@@ -9,6 +9,15 @@
                 <Property Name="ending" Type="date"/>
    			</Properties>
 		</Model>
+		<Model Name="RsHistoricalInMaintenance" StorageType="File">
+   			<Properties>
+      			<Property Name="objectName" Type="string"/>
+                <Property Name="source" Type="string"/>
+                <Property Name="info" Type="string"/>
+                <Property Name="starting" Type="date"/>
+                <Property Name="ending" Type="date"/>
+   			</Properties>
+		</Model>
         <Model Name="RsInMaintenanceSchedule" StorageType="FileAndMemory">
    			<Properties>
       			<Property Name="objectName" Type="string"/>

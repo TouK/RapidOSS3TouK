@@ -52,6 +52,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     public static void takeObjectOutOfMaintenance(RsInMaintenance maintObj)
     {
         maintObj.remove()
+        RsHistoricalInMaintenance.add(maintObj.asMap());
         eventsInMaintenance(false, maintObj.objectName);
     }
 

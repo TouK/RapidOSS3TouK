@@ -103,16 +103,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.hideMask();
     },
 
-    isAllsubComponentsContinuePolling: function()
+    isSubComponentsContinuePolling: function()
     {
         for(var i=0; i < this.subComponents.length; i++)
         {
             if(this.subComponentsContinuePolling[this.subComponents[i]] == true)
             {
-                return false
+                return true
             }
         }
-        return true;
+        return false;
     },
     retrieveSearchClasses: function() {
         var urlAndParams = parseURL(this.searchClassesUrl);
@@ -536,7 +536,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     hideMask: function() {
-        if(this.isAllsubComponentsContinuePolling() && this.requester.isRequesting() == false)
+        if(this.isSubComponentsContinuePolling() == false && this.requester.isRequesting() == false)
         {
             this.mask.hide();
             this.maskMessage.hide();

@@ -23,7 +23,7 @@ YAHOO.rapidjs.component.search.SearchListSubComponent.prototype = {
 
     firePollStarted: function()
     {
-        this.events.pollCompleted.fireDirect(this);
+        this.events.pollStarted.fireDirect(this);
     },
     firePollCompleted: function()
     {

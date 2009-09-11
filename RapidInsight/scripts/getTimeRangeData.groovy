@@ -69,21 +69,34 @@ else
 def sw = new StringWriter();
 def mb = new MarkupBuilder(sw);
 long lowestTime = startDate.getTime();
-mb.Datum(interval:timeInterval){
+def time = lowestTime;
+def start = 0;
+def results = [];
+def queryThreads = Collections.synchronizedList([]);
+while(time <= cTime.getTime() || start < numberOfintervals){
 
-    def time = lowestTime;
-    def start = 0;
-    while(time <= cTime.getTime() || start < numberOfintervals){
-        long lowerTime = time
-        long upperTime = time+timeInterval;
+    long lowerTime = time
+    long upperTime = time+timeInterval;
+    def willShowLabel = start%3==0;
+    Thread t = Thread.start{
         def tmpQuery = "(${query}) AND ${field}:[${lowerTime} TO ${upperTime}]"
         def numberOfObjects = searchClass.countHits(tmpQuery);
-        mb.Data(fromTime:lowerTime, toTime:upperTime, value:numberOfObjects, timeAxisLabel:start%3==0?df.format(new Date(lowerTime)):"",
+        def data = [fromTime:lowerTime, toTime:upperTime, value:numberOfObjects, timeAxisLabel:willShowLabel?df.format(new Date(lowerTime)):"",
                 stringFromTime:FULL_DF.format(new Date(lowerTime)), stringToTime:FULL_DF.format(new Date(upperTime)),
-                tooltip:"${numberOfObjects} events between ${TOOLTIP_DF.format(new Date(lowerTime))}  and ${TOOLTIP_DF.format(new Date(upperTime))}"
-        );
-        start++;
-        time = upperTime;
+                tooltip:"${numberOfObjects} events between ${TOOLTIP_DF.format(new Date(lowerTime))}  and ${TOOLTIP_DF.format(new Date(upperTime))}"]
+        results.add(data);
+    }
+    queryThreads.add(t);
+    start++;
+    time = upperTime;
+}
+queryThreads.each {
+    it.join();
+}
+mb.Datum(interval:timeInterval){
+    results = results.sort {it.fromTime}
+    results.each{
+        mb.Data(it);
     }
 }
 return sw.toString();

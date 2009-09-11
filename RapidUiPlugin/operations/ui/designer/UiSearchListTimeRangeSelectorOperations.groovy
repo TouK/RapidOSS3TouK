@@ -51,11 +51,11 @@ class UiSearchListTimeRangeSelectorOperations extends AbstractDomainOperation{
         attributes.timeAxisLabelProperty = xmlNode.@timeAxisLabelProperty.text();
         if(parentElement instanceof UiSearchGrid)
         {
-            attributes.grid = parentElement
+            attributes.searchGrid = parentElement
         }
         else
         {
-            attributes.list = parentElement            
+            attributes.searchList = parentElement            
         }
         return DesignerUtils.addUiObject(UiSearchListTimeRangeSelector, attributes, xmlNode);
     }

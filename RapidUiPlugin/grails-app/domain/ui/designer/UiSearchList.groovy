@@ -42,7 +42,7 @@ class UiSearchList extends UiComponent{
             fields: [type: UiSearchListField, reverseName: "component", isMany: true],
             images: [type: UiImage, reverseName: "component", isMany: true],
             propertyMenuItems: [type: UiMenuItem, isMany: true],
-            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "list", isMany: true]
+            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "searchList", isMany: true]
     ]
 
     static constraints = {

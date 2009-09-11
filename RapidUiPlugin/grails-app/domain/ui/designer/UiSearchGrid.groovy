@@ -39,7 +39,7 @@ class UiSearchGrid extends UiComponent {
     static relations = [
             images: [type: UiImage, reverseName: "component", isMany: true],
             rowColors: [type: UiRowColor, reverseName: "grid", isMany: true],
-            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "grid", isMany: true]
+            subComponents: [type: UiSearchListTimeRangeSelector, reverseName: "searchGrid", isMany: true]
     ]
 
     static constraints = {

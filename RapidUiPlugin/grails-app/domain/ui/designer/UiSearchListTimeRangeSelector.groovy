@@ -10,7 +10,7 @@ class UiSearchListTimeRangeSelector {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "list", "grid"];
+        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "searchList", "searchGrid"];
 
 
         storageType "FileAndMemory"
@@ -38,15 +38,15 @@ class UiSearchListTimeRangeSelector {
 
     Object __is_federated_properties_loaded__ ;
 
-    UiSearchGrid grid =null;
-    UiSearchList list =null;
+    UiSearchGrid searchGrid;
+    UiSearchList searchList;
     Date rsInsertedAt = new Date(0);
 
     Date rsUpdatedAt  = new Date(0);
 
     static relations = [
-        grid:[type:UiSearchGrid, reverseName:"subComponents", isMany:false],
-        list:[type:UiSearchList, reverseName:"subComponents", isMany:false]
+        searchGrid:[type:UiSearchGrid, reverseName:"subComponents", isMany:false],
+        searchList:[type:UiSearchList, reverseName:"subComponents", isMany:false]
     ]
 
     static constraints={
@@ -59,8 +59,10 @@ class UiSearchListTimeRangeSelector {
     stringToTimeProperty(blank:false,nullable:false)
     tooltipProperty(blank:false,nullable:false)
     valueProperties(blank:false,nullable:false)
-    grid(nullable:true)
-    list(nullable:true)
+
+
+     searchGrid(nullable:true)
+     searchList(nullable:true)
      __operation_class__(nullable:true)
 
      __is_federated_properties_loaded__(nullable:true)
@@ -69,7 +71,7 @@ class UiSearchListTimeRangeSelector {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__","grid", "list"];
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__","searchGrid", "searchList"];
 
     public String toString()
     {

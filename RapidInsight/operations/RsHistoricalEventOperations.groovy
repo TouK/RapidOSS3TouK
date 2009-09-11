@@ -1,4 +1,6 @@
-/* 
+import java.text.SimpleDateFormat
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -17,8 +19,30 @@
 * USA.
 */
 
-    
-    public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+
+public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+{
+    public static final formatters = [
+                      year:new SimpleDateFormat("yyyy"),
+                      month:new SimpleDateFormat("yyyy-MM"),
+                      day:new SimpleDateFormat("yyyy-MM-dd"),
+                      hour:new SimpleDateFormat("yyyy-MM-dd-HH"),
+                      minute:new SimpleDateFormat("yyyy-MM-dd-HH-mm"),
+    ]
+    def beforeInsert()
     {
+        duration = calculateDuration();
+        def createdAtDate = new Date(createdAt)
+        formatters.each{String propName, formatter->
+            setProperty(propName, formatter.format(createdAtDate));
+        }
+        super.beforeInsert();
     }
+    
+    def calculateDuration()
+    {
+        def notificationDuration = clearedAt - createdAt;
+        return notificationDuration;
+    }
+}
     

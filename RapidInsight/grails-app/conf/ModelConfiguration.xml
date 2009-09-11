@@ -51,6 +51,12 @@
 				<Property Name="elementName" Type="string"/>
 				<Property Name="elementDisplayName" Type="string"/>
 				<Property Name="count" Type="number" Default="1" />
+                <Property Name="duration" Type="number"/>
+                <Property Name="hour" Type="string"/>
+                <Property Name="day" Type="string"/>
+                <Property Name="month" Type="string"/>
+                <Property Name="year" Type="string"/>
+                <Property Name="minute" Type="string"/>
 			</Properties>
 		</Model>
 		<Model Name="RsRiHistoricalEvent" Parent="RsHistoricalEvent">

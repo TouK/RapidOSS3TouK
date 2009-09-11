@@ -62,6 +62,18 @@ class RsHistoricalEvent {
     String elementDisplayName ="";
 
     Long count =1;
+    
+    Long duration =0;
+
+    String hour ="";
+
+    String day ="";
+
+    String month ="";
+
+    String year ="";
+
+    String minute ="";
 
     org.springframework.validation.Errors errors ;
 
@@ -112,6 +124,18 @@ class RsHistoricalEvent {
      elementDisplayName(blank:true,nullable:true)
 
      count(nullable:true)
+     
+     duration(nullable:true)
+
+     hour(blank:true,nullable:true)
+
+     day(blank:true,nullable:true)
+
+     month(blank:true,nullable:true)
+
+     year(blank:true,nullable:true)
+
+     minute(blank:true,nullable:true)
 
      errors(nullable:true)
 

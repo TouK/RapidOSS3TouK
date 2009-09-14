@@ -1,9 +1,6 @@
 <%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
 <%
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    PROPERTIES = ["name", "owner", "acknowledged", "inMaintenance", "severity", "source", "createdAt", "changedAt", "clearedAt",
-            "willExpireAt", "rsDatasource", "state", "elementName", "elementDisplayName"];
-
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"]
 
     ACTIONS = [
@@ -52,7 +49,7 @@
     def actionGroupIdIndex = 0;
 %>
 
-<div id="eventdetails" title="Details of ${name}:Details">
+<div id="eventDetails" title="Details of ${name}:Details">
 
     <g:if test="${!event}">
         <div id="messageArea" class="error">
@@ -63,12 +60,13 @@
     <%----------------------------------------------------------------
                         <Event Action Menu>
     ----------------------------------------------------------------%>
-         <div id="event${event.id}-menu" style="position: static; ">
+        <div id="event${event.id}-menu" style="position: static; ">
             <div id="menu${event.id}-header">
                 <div id="menu${event.id}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expandEventActionMenu('menu${event.id}-link', 'menu${event.id}-list'); return false">Event Actions</a></div>
             </div>
             <div id="menu${event.id}-list" style="display: none; ">
                 <ul class="items">
+
                     <g:each var="actionConf" in="${ACTIONS}">
                         <g:if test="${actionConf.type && actionConf.type == 'group'}">
                             <li>
@@ -107,15 +105,16 @@
     <%----------------------------------------------------------------
                         </Event Action Menu>
     ----------------------------------------------------------------%>
-
+        <g:set var="props" value="${event.asMap()}"></g:set>
         <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
-            <g:each var="prop" in="${PROPERTIES}" status="i">
-                <g:set var="propertyValue" value="${event[prop]}"></g:set>
+            <g:each var="propEntry" in="${props}" status="i">
+                <g:set var="propertyName" value="${propEntry.key}"></g:set>
+                <g:set var="propertyValue" value="${propEntry.value}"></g:set>
                 <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
-                    <td><b>${prop}</b></td>
-                    <g:if test="${DATE_PROPERTIES.contains(prop)}">
+                    <td><b>${propertyName}</b></td>
+                    <g:if test="${DATE_PROPERTIES.contains(propertyName)}">
                         <%
-                            propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))    
+                            propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))
                         %>
                     </g:if>
                     <td>${propertyValue}</td>

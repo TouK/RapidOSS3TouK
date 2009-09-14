@@ -16,6 +16,7 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
     def RsInMaintenance;
     def RsInMaintenanceSchedule;
     def RsEvent;
+    def RsHistoricalInMaintenance;
 
 
     def RsInMaintenanceOperations;
@@ -26,7 +27,7 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
         GroovyClassLoader loader = new GroovyClassLoader();
         def op_base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/inMaintenance/operations"
 
-        ["RsInMaintenance","RsInMaintenanceSchedule","RsEvent"].each{ className ->
+        ["RsInMaintenance","RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEvent"].each{ className ->
             setProperty(className,gcl.loadClass(className));
         }
         
@@ -36,7 +37,7 @@ class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
 
         initializeScriptManager();
 
-        initialize([RsInMaintenance, RsInMaintenanceSchedule,RsEvent], []);
+        initialize([RsInMaintenance, RsInMaintenanceSchedule,RsHistoricalInMaintenance,RsEvent], []);
         CompassForTests.addOperationSupport (RsInMaintenance,RsInMaintenanceOperations);
         CompassForTests.addOperationSupport (RsInMaintenanceSchedule,RsInMaintenanceScheduleOperations);
     }

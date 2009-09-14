@@ -46,6 +46,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def RsObjectState;
     def RsInMaintenance;
     def RsInMaintenanceSchedule;
+    def RsHistoricalInMaintenance;
     def RsEventJournal;
     def RsHistoricalEvent;
     def RsHeartBeat;
@@ -59,7 +60,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
 
-        ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
+        ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
               setProperty(className,gcl.loadClass(className));
         }
 
@@ -336,7 +337,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
 
 
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsApplication], []);
+        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RsApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
@@ -378,7 +379,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
 
 
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsApplication], []);
+        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RsApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);

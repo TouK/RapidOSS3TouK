@@ -60,9 +60,9 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         def currentTime = new Date().getTime()
         logger.debug("current time: $currentTime")
         def nullDate = new Date(0).getTime()
-        def scheduledItems = RsInMaintenanceSchedule.search("active:false")
-        logger.debug("scheduled item count: ${scheduledItems.total}")
-        scheduledItems.results.each{  schedule ->
+        def scheduledItems = RsInMaintenanceSchedule.searchEvery("active:false")
+        logger.debug("scheduled item count: ${scheduledItems.size()}")
+        scheduledItems.each{  schedule ->
             logger.debug("starting.getTime(): ${schedule.starting.getTime()}")
             if (schedule.starting.getTime()>nullDate && schedule.starting.getTime() <= currentTime){
                 schedule.active = true
@@ -82,10 +82,10 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
 
 
         def nullDate = new Date(0).getTime()
-        def activeItems = RsInMaintenanceSchedule.search("active:true")
-        logger.debug("active item count: ${activeItems.total}")
+        def activeItems = RsInMaintenanceSchedule.searchEvery("active:true")
+        logger.debug("active item count: ${activeItems.size()}")
 
-        activeItems.results.each{ schedule ->
+        activeItems.each{ schedule ->
             logger.debug("ending.getTime(): ${schedule.ending.getTime()}")
             if (schedule.ending.getTime()>nullDate && schedule.ending.getTime() <= currentTime){
                 logger.debug("removing schedule for: ${schedule.objectName}")

@@ -57,10 +57,9 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
     }
 
     public static void eventsInMaintenance(boolean maint, String objectName) {
-        def events = RsEvent.search("elementName:${objectName}")
-        events.results.each { event ->
-            if (event.inMaintenance != maint)
-                event.inMaintenance = maint
+        def events = RsEvent.searchEvery("elementName:${objectName}")
+        events.each { event ->
+              event.update(inMaintenance:maint);
         }
     }
 

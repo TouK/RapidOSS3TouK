@@ -15,7 +15,7 @@
 	    	<li class="group"> ${group.name} </li>
 	    	<g:each var="query" in="${group.queries}">
 	    		<g:if test="${query.type == filterType || query.type == ''}">
-	    			<li><rui:link url="${listURI}" params="${[query:query.query]}" target="_open"> ${query.name}</rui:link></li>
+	    			<li><rui:link url="${listURI}" params="${[query:query.query, searchIn:query.searchClass]}" target="_open"> ${query.name}</rui:link></li>
 	    		</g:if>
 	    	</g:each>
 	    </g:each>

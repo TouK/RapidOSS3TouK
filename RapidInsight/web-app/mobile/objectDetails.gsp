@@ -5,23 +5,22 @@
 <rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
 <%
     def name = params.name
-    def event = CONFIG.EVENT_CLASS.get(name: name)
+    def object = RsTopologyObject.get(name: name)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
-    def actionGroupIdIndex = 0;
 %>
 
-<div id="eventDetails" title="Details of ${name}:Details">
+<div id="objectDetails" title="Details of ${object.name}:Details">
 
-    <g:if test="${!event}">
+    <g:if test="${!object}">
         <div id="messageArea" class="error">
-            Event with name: ${name} does not exist
+            Object with name: ${name} does not exist
         </div>
     </g:if>
     <g:else>
     <%----------------------------------------------------------------
                         <Event Action Menu>
     ----------------------------------------------------------------%>
-        <g:if test="${CONFIG.EVENT_ACTIONS.size() > 0}">
+        <g:if test="${CONFIG.INVENTORY_ACTIONS.size() > 0}">
             <div id="event${event.id}-menu" style="position: static; ">
                 <div id="menu${event.id}-header">
                     <div id="menu${event.id}-link" class="menu-closed"><a href="home.gsp#_${event.id}" onclick="expandEventActionMenu('menu${event.id}-link', 'menu${event.id}-list'); return false">Event Actions</a></div>
@@ -29,7 +28,7 @@
                 <div id="menu${event.id}-list" style="display: none; ">
                     <ul class="items">
 
-                        <g:each var="actionConf" in="${CONFIG.EVENT_ACTIONS}">
+                        <g:each var="actionConf" in="${CONFIG.INVENTORY_ACTIONS}">
                             <g:if test="${actionConf.type && actionConf.type == 'group'}">
                                 <li>
                                     <div id="menu-${actionGroupIdIndex++}-header">
@@ -65,19 +64,17 @@
                 </div>
             </div>
         </g:if>
-
-
     <%----------------------------------------------------------------
                         </Event Action Menu>
     ----------------------------------------------------------------%>
-        <g:set var="props" value="${event.asMap()}"></g:set>
+        <g:set var="props" value="${object.asMap()}"></g:set>
         <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
             <g:each var="propEntry" in="${props}" status="i">
                 <g:set var="propertyName" value="${propEntry.key}"></g:set>
                 <g:set var="propertyValue" value="${propEntry.value}"></g:set>
                 <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                     <td><b>${propertyName}</b></td>
-                    <g:if test="${CONFIG.EVENT_DATE_PROPERTIES.contains(propertyName)}">
+                    <g:if test="${CONFIG.INVENTORY_DATE_PROPERTIES.contains(propertyName)}">
                         <%
                             propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))
                         %>

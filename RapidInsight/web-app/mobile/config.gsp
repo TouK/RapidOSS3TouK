@@ -18,6 +18,7 @@
     
     CONFIG.EVENT_DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"];
     CONFIG.HISTORICAL_EVENT_DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"];
+    CONFIG.INVENTORY_DATE_PROPERTIES = ["lastChangedAt", "consideredDownAt"];
 
     CONFIG.EVENT_COLUMNS = [
         [propertyName:"name", title:"Name"],
@@ -31,6 +32,13 @@
         [propertyName:"acknowledged", title:"Ack"],
         [propertyName:"owner", title:"Owner"],
         [propertyName:"source", title:"Source"]
+    ]
+
+    CONFIG.INVENTORY_COLUMNS = [
+        [propertyName:"className", title:"Class"],
+        [propertyName:"name", title:"Name"],
+        [propertyName:"description", title:"Descr"],
+        [propertyName:"isManaged", title:"Managed"]
     ]
     
     CONFIG.EVENT_CLASS = RsEvent;
@@ -73,4 +81,5 @@
         ]
 
     ];
+    CONFIG.INVENTORY_ACTIONS = [];
 %>

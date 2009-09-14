@@ -32,6 +32,14 @@
             <a class="button leftButton" type="cancel">Cancel</a>
             <a class="button blueButton" type="submit">Search</a>
             <input id="search" type="text" name="query"/>
+            <%
+                def domainClasses = [];
+                def domainClass = grailsApplication.getDomainClass("RsTopologyObject");
+                domainClasses.add(domainClass);
+                domainClasses.addAll(domainClass.getSubClasses());
+                domainClasses = domainClasses.sort {it.fullName}
+            %>
+            <g:select id="searchInSelect" name="searchIn" from="${domainClasses.fullName}" style="display:none"></g:select>
         </fieldset>
     </form>
     <%-------------------------------------------------------------------------------
@@ -42,8 +50,7 @@
 										<Home Page>
 	 -------------------------------------------------------------------------------%>
     <ul id="home" title="RI Mobile" selected="true">
-		<li><a href="queries.gsp?filterType=event&listURI=mobile/event.gsp" onclick="outFromMainPage();return false" target="_open"> Events </a></li>
-		<li><a href="queries.gsp?filterType=historicalEvent&listURI=mobile/historicalEvent.gsp" onclick="outFromMainPage();return false" target="_open"> Historical Events </a></li>
+        <rui:include template="mobile/pages.gsp" model="${binding.variables}"></rui:include>
 	</ul>
 	<%-------------------------------------------------------------------------------
 										</Home Page>
@@ -56,14 +63,20 @@
             if(page.id == 'searchForm'){
                 return;
             }
-             if(page.id == 'eventList' || page.id == 'historicalEventList'){
+             if(page.id == 'eventList' || page.id == 'historicalEventList' || page.id == 'inventoryList'){
                  document.getElementById('refreshButton').parentNode.style.display = '';
              }
              else{
                  document.getElementById('refreshButton').parentNode.style.display = 'none';
              }
+            if(page.id == 'inventoryList' || page.id == 'objectDetails' || (page.id == 'query' && href && href.indexOf('topology') > -1)){
+                document.getElementById('searchInSelect').style.display = '';
+            }
+            else{
+                document.getElementById('searchInSelect').style.display = 'none';
+            }
 
-            if(page.id == 'eventList' || page.id == 'historicalEventList' || page.id == 'query'){
+            if(page.id == 'eventList' || page.id == 'historicalEventList' || page.id == 'inventoryList' || page.id == 'query'){
                 document.getElementById('pageTitle').style.display = 'none'
                 var queriesButton = document.getElementById('queriesButton')
                 var homeButton = document.getElementById('homeButton')
@@ -78,8 +91,11 @@
                     if(page.id == 'eventList'){
                         queriesButton.setAttribute('href', queriesLinks[0].href)
                     }
-                    else{
+                    else if(page.id == 'historicalEventList'){
                         queriesButton.setAttribute('href', queriesLinks[1].href)
+                    }
+                    else{
+                        queriesButton.setAttribute('href', queriesLinks[2].href)
                     }
                 }
             }
@@ -93,6 +109,10 @@
                 if(href && href.indexOf('historicalEvent') > -1){
                      sForm.getElementsByTagName('h1')[0].innerHTML = 'Historical Event Search'
                      sForm.setAttribute('action', 'historicalEvent.gsp')
+                }
+                else if(href && href.indexOf('topology') > -1){
+                     sForm.getElementsByTagName('h1')[0].innerHTML = 'Inventory Search'
+                     sForm.setAttribute('action', 'inventory.gsp')
                 }
                 else{
                      sForm.getElementsByTagName('h1')[0].innerHTML = 'Event Search'

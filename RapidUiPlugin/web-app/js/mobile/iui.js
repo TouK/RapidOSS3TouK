@@ -59,20 +59,20 @@
             }
         },
 
-        pageShown: function(page, href, args){
+        pageShown: function(page, href, args) {
             var functions = iui.subscribers['pageShown'];
-            for(var index=0; index <functions.length; index ++){
+            for (var index = 0; index < functions.length; index ++) {
                 var func = functions[index];
                 func(page, href, args)
             }
         },
 
-        addSubscriber: function(event, func){
-            if(iui.subscribers[event]){
+        addSubscriber: function(event, func) {
+            if (iui.subscribers[event]) {
                 iui.subscribers[event].push(func);
             }
-            else{
-               throw new Error('No event is defined with name ' + event)
+            else {
+                throw new Error('No event is defined with name ' + event)
             }
         },
 
@@ -98,8 +98,8 @@
 
                 var index = 0;
                 var backwards = false;
-                while(index < pageHistory.length){
-                    if(pageHistory[index].pageId == pageId){
+                while (index < pageHistory.length) {
+                    if (pageHistory[index].pageId == pageId) {
                         backwards = true;
                         break;
                     }
@@ -110,6 +110,10 @@
 
                 iui.showPage(page, backwards);
             }
+        },
+
+        refreshPage: function() {
+
         },
 
 
@@ -190,14 +194,14 @@
             }
         },
 
-        pageContentReceived: function(href, args, responseText){
+        pageContentReceived: function(href, args, responseText) {
             var functions = iui.subscribers['pageContentReceived'];
-            for(var index=0; index <functions.length; index ++){
+            for (var index = 0; index < functions.length; index ++) {
                 var func = functions[index];
                 func(href, args, responseText)
             }
         },
-        
+
 
         isRequestInProgress:function(request)
         {
@@ -317,16 +321,16 @@
                  */
                 pageHistory.pop();
                 var pageObj = pageHistory.pop();
-                if(pageObj){
-                     if(pageObj.href){
+                if (pageObj) {
+                    if (pageObj.href) {
                         var page = document.getElementById(pageObj.pageId);
                         page.setAttribute("selected", "progress");
                         var selectedPage = currentPage;
                         iui.showPageByHref(pageObj.href, pageObj.args, null, null, null, true, failure);
-                     }
-                     else{
-                         iui.showPageById(pageObj.pageId);
-                     }
+                    }
+                    else {
+                        iui.showPageById(pageObj.pageId);
+                    }
                 }
             }
             else if (link.getAttribute("type") == "submit")
@@ -342,6 +346,18 @@
             {
                 link.setAttribute("selected", "progress");
                 iui.showPageByHref(link.href, null, null, null, unselect, false, failure);
+            }
+            else if (link.target == "_refresh")
+            {
+                var lastPage = iui.getLastPage(true);
+                if (lastPage && lastPage.href) {
+                    link.setAttribute("selected", "progress");
+                    iui.showPageByHref(lastPage.href, lastPage.args, null, null, unselect, false, failure);
+                }
+                else {
+                    pageHistory.push(lastPage);
+                }
+
             }
             else if (iui.isNativeUrl(link.href))
             {
@@ -451,7 +467,9 @@
         if (!page.id)
             page.id = "__" + (++newPageCount) + "__";
 
-        location.href = currentHash = hashPrefix + page.id;
+        if (currentHash != hashPrefix + page.id) {
+            location.href = currentHash = hashPrefix + page.id;
+        }
         pageHistory.push({pageId:page.id, href:href, args:args});
 
         var pageTitle = $("pageTitle");
@@ -477,7 +495,7 @@
         {
             var prevPage;
             var prevPageObj = pageHistory[pageHistory.length - 2];
-            if(prevPageObj){
+            if (prevPageObj) {
                 prevPage = $(prevPageObj.pageId)
             }
             if (prevPage && !page.getAttribute("hideBackButton"))
@@ -495,8 +513,8 @@
                     else
                         backButton.innerHTML = "Back";
                 }
-                else{
-                    backButton.innerHTML = "Back"; 
+                else {
+                    backButton.innerHTML = "Back";
                 }
             }
             else

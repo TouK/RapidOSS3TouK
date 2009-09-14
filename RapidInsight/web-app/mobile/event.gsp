@@ -1,3 +1,4 @@
+<%@ page import="java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
@@ -17,6 +18,7 @@
         ]
 
     ///////////////////////////////////////////////////////////////////////
+
     def shortenProperty = {propValue ->
         def sProp = propValue.toString();
         if(sProp.length() > 15){
@@ -26,8 +28,12 @@
         return sProp;
     }
     def query = params.query ? params.query : "alias:*"
+    if(params.max == null){
+    	params.max = 100
+    }
     def events = RsEvent.search(query, params);
     def total = events.total;
+    def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
 <div title="Events" id="eventList">
 <div class="table">
@@ -49,18 +55,15 @@
                 <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url:'mobile/eventDetails.gsp', params:[name:rsEvent.name])}')">
                     <td width="1%"><img src="${createLinkTo(dir:SEVERITY_MAPPING[rsEvent.severity.toString()] ? SEVERITY_MAPPING[rsEvent.severity.toString()] : SEVERITY_MAPPING["0"])}" height="25px" width="19px"/></td>
                     <td>${shortenProperty(rsEvent.name)?.encodeAsHTML()}</td>
-
-                    <td>${rsEvent.acknowledged?.encodeAsHTML()}</td>
-
+                    <td>${rsEvent.acknowledged.encodeAsHTML()}</td>
                     <td>${shortenProperty(rsEvent.owner)?.encodeAsHTML()}</td>
                     <td>${shortenProperty(rsEvent.source)?.encodeAsHTML()}</td>
-
                 </tr>
             </g:each>
         </tbody>
     </table>
 </div>
 <div class="paginateButtons">
-    <rui:paginate total="${total}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5"/>
+    <rui:paginate total="${total}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5" max="100"/>
 </div>
 </div>

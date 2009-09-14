@@ -1,50 +1,11 @@
 <%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
 <%
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"]
-
-    ACTIONS = [
-        [
-                scriptName:"acknowledge",
-                title:"Acknowledge",
-                visible:{event ->
-                    return event.acknowledged == false;
-                },
-                parameters:{event ->
-                     return [name:event.name, acknowledged:"true"]
-                }
-        ],
-        [
-                scriptName:"acknowledge",
-                title:"Unacknowledge",
-                visible:{event ->
-                    return event.acknowledged == true;
-                },
-                parameters:{event ->
-                     return [name:event.name, acknowledged:"false"]
-                }
-        ],
-        [
-                scriptName:"setOwnership",
-                title:"Take Ownership",
-                parameters:{event ->
-                     return [name:event.name, act:"true"]
-                }
-        ],
-        [
-                scriptName:"setOwnership",
-                title:"Release Ownership",
-                parameters:{event ->
-                     return [name:event.name, act:"false"]
-                }
-        ]
-
-    ];
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    CONFIG = [:]
+%>
+<rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
+<%
     def name = params.name
-    def event = RsEvent.get(name: name)
+    def event = CONFIG.EVENT_CLASS.get(name: name)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
     def actionGroupIdIndex = 0;
 %>
@@ -67,7 +28,7 @@
             <div id="menu${event.id}-list" style="display: none; ">
                 <ul class="items">
 
-                    <g:each var="actionConf" in="${ACTIONS}">
+                    <g:each var="actionConf" in="${CONFIG.EVENT_ACTIONS}">
                         <g:if test="${actionConf.type && actionConf.type == 'group'}">
                             <li>
                                 <div id="menu-${actionGroupIdIndex++}-header">
@@ -112,7 +73,7 @@
                 <g:set var="propertyValue" value="${propEntry.value}"></g:set>
                 <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                     <td><b>${propertyName}</b></td>
-                    <g:if test="${DATE_PROPERTIES.contains(propertyName)}">
+                    <g:if test="${CONFIG.EVENT_DATE_PROPERTIES.contains(propertyName)}">
                         <%
                             propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))
                         %>

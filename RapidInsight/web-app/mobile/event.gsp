@@ -7,63 +7,55 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%
-    //////////////////////////// SEVERITY MAPPING //////////////////////
-        SEVERITY_MAPPING = [
-                    "0":"images/mobile/states/green.png",
-                    "1":"images/mobile/states/purple.png",
-                    "2":"images/mobile/states/blue.png",
-                    "3":"images/mobile/states/yellow.png",
-                    "4":"images/mobile/states/orange.png",
-                    "5":"images/mobile/states/red.png"
-        ]
-
-    ///////////////////////////////////////////////////////////////////////
-
+    CONFIG = [:]
+%>
+<rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
+<%
     def shortenProperty = {propValue ->
         def sProp = propValue.toString();
-        if(sProp.length() > 15){
+        if (sProp.length() > 15) {
             sProp = "${sProp.substring(0, 12)}.."
         }
 
         return sProp;
     }
     def query = params.query ? params.query : "alias:*"
-    if(params.max == null){
-    	params.max = 100
+    if (params.max == null) {
+        params.max = 100
     }
-    def events = RsEvent.search(query, params);
+    def events = CONFIG.EVENT_CLASS.search(query, params);
     def total = events.total;
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
 <div title="Events" id="eventList">
-<div class="table">
-    <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
-        <thead>
-            <tr>
-                <th></th>
-                <rui:sortableColumn property="name" title="Name" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
-
-                <rui:sortableColumn property="acknowledged" title="Ack" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
-
-                <rui:sortableColumn property="owner" title="Owner" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
-                <rui:sortableColumn property="source" title="Source" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>
-
-            </tr>
-        </thead>
-        <tbody>
-            <g:each in="${events.results}" status="i" var="rsEvent">
-                <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url:'mobile/eventDetails.gsp', params:[name:rsEvent.name])}')">
-                    <td width="1%"><img src="${createLinkTo(dir:SEVERITY_MAPPING[rsEvent.severity.toString()] ? SEVERITY_MAPPING[rsEvent.severity.toString()] : SEVERITY_MAPPING["0"])}" height="25px" width="19px"/></td>
-                    <td>${shortenProperty(rsEvent.name)?.encodeAsHTML()}</td>
-                    <td>${rsEvent.acknowledged.encodeAsHTML()}</td>
-                    <td>${shortenProperty(rsEvent.owner)?.encodeAsHTML()}</td>
-                    <td>${shortenProperty(rsEvent.source)?.encodeAsHTML()}</td>
+    <div class="table">
+        <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
+            <thead>
+                <tr>
+                    <th></th>
+                    <g:each var="column" in="${CONFIG.EVENT_COLUMNS}">
+                        <rui:sortableColumn property="${column.propertyName}" title="${column.title}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}"/>    
+                    </g:each>
                 </tr>
-            </g:each>
-        </tbody>
-    </table>
-</div>
-<div class="paginateButtons">
-    <rui:paginate total="${total}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5" max="100"/>
-</div>
+            </thead>
+            <tbody>
+                <g:each in="${events.results}" status="i" var="rsEvent">
+                    <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url: 'mobile/eventDetails.gsp', params: [name: rsEvent.name])}')">
+                        <td width="1%"><img src="${createLinkTo(dir: CONFIG.SEVERITY_MAPPING[rsEvent.severity.toString()] ? CONFIG.SEVERITY_MAPPING[rsEvent.severity.toString()] : CONFIG.SEVERITY_MAPPING['default'])}" height="25px" width="19px"/></td>
+                        <g:each var="column" in="${CONFIG.EVENT_COLUMNS}">
+                            <g:if test="${CONFIG.EVENT_DATE_PROPERTIES.contains(column.propertyName)}">
+                                 <td>${format.format(rsEvent[column.propertyName])?.encodeAsHTML()}</td>
+                            </g:if>
+                            <g:else>
+                                 <td>${shortenProperty(rsEvent[column.propertyName])?.encodeAsHTML()}</td>
+                            </g:else>
+                        </g:each>
+                    </tr>
+                </g:each>
+            </tbody>
+        </table>
+    </div>
+    <div class="paginateButtons">
+        <rui:paginate total="${total}" url="mobile/event.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5" max="100"/>
+    </div>
 </div>

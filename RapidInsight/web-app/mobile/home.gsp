@@ -51,7 +51,6 @@
 
     <rui:include template="mobile/errors.gsp" model="${binding.variables}"></rui:include>
     <rui:include template="mobile/commonScripts.gsp"></rui:include>
-
     <script type="text/javascript">
         iui.addSubscriber('pageShown', function(page, href, args){
             if(page.id == 'searchForm'){

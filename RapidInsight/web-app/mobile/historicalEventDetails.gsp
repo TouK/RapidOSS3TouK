@@ -1,11 +1,11 @@
 <%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
 <%
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"]
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    CONFIG = [:]
+%>
+<rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
+<%
     def id = params.eventId
-    def event = RsHistoricalEvent.get(id: id)
+    def event = CONFIG.HISTORICAL_EVENT_CLASS.get(id: id)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
 
@@ -24,7 +24,7 @@
                 <g:set var="propertyValue" value="${propEntry.value}"></g:set>
                 <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                     <td><b>${propertyName}</b></td>
-                    <g:if test="${DATE_PROPERTIES.contains(propertyName)}">
+                    <g:if test="${CONFIG.HISTORICAL_EVENT_DATE_PROPERTIES.contains(propertyName)}">
                         <%
                             propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))
                         %>

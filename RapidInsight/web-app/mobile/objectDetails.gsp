@@ -8,7 +8,7 @@
     def object = RsTopologyObject.get(name: name)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
-<div id="objectDetails" title="Details of ${object.name}:Details">
+<div id="objectDetails">
 
     <g:if test="${!object}">
         <div id="messageArea" class="error">

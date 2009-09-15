@@ -10,7 +10,7 @@
     def actionGroupIdIndex = 0;
 %>
 
-<div id="eventDetails" title="Details of ${name}:Details">
+<div id="eventDetails">
 
     <g:if test="${!event}">
         <div class="error">

@@ -9,7 +9,7 @@
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
 
-<div id="historicalEventDetails" title="Details of ${event.name}:Details">
+<div id="historicalEventDetails">
 
     <g:if test="${!event}">
         <div id="messageArea" class="error">

@@ -27,7 +27,7 @@
     def total = events.total;
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
-<div title="Events" id="eventList">
+<div id="eventList">
     <div class="table">
         <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
             <thead>

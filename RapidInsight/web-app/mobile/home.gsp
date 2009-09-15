@@ -32,7 +32,7 @@
         	<li><a id="backButton" class="button" href="#">Back</a></li>
             <li><span class="button" style="display:none"><a id="refreshButton" href="#" target="_refresh">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></span></li>
         </ul>
-        <h1 id="pageTitle"></h1>
+        <h1 id="pageTitle" style="display:none"></h1>
         <ul class="rightButtons">
         	<a id="homeButton" class="button" href="#home" style="display:none">RI Mobile</a>
             <a id="queriesButton" class="button" href="#" style="display:none">Queries</a>
@@ -119,7 +119,6 @@
             }
 
             if(page.id == 'eventList' || page.id == 'historicalEventList' || page.id == 'inventoryList' || page.id == 'query'){
-                document.getElementById('pageTitle').style.display = 'none'
                 var queriesButton = document.getElementById('queriesButton')
                 var homeButton = document.getElementById('homeButton')
                 if(page.id == 'query'){
@@ -142,7 +141,6 @@
                 }
             }
             else{
-                document.getElementById('pageTitle').style.display = ''
                 document.getElementById('queriesButton').style.display = 'none';
                 document.getElementById('homeButton').style.display = 'none';
             }

@@ -10,7 +10,7 @@
 	<%-------------------------------------------------------------------------------
 										<Query Page>									
 	 -------------------------------------------------------------------------------%>
-	<ul id="query" title="Saved Queries:Query">
+	<ul id="query">
 	    <g:each var="group" in="${queryGroups}">
 	    	<li class="group"> ${group.name} </li>
 	    	<g:each var="query" in="${group.queries}">

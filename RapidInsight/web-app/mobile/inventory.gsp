@@ -29,7 +29,7 @@
     def total = objects.total;
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
-<div title="Inventory" id="inventoryList">
+<div id="inventoryList">
     <div class="table">
         <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
             <thead>

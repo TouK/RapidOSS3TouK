@@ -14,7 +14,7 @@
     def eventId = params.eventId;
     def domainObject = isHistorical == "true" ? CONFIG.HISTORICAL_EVENT_CLASS.get(id: eventId) : CONFIG.EVENT_CLASS.get(id: eventId);
 %>
-<div id="journals" title="">
+<div id="journals">
     <g:if test="${domainObject}">
         <%
             def format = new SimpleDateFormat("d MMM HH:mm:ss");
@@ -24,8 +24,8 @@
             def propertiesParams = isHistorical == "true" ? [eventId: domainObject.id] : [name: domainObject.name];
             def shortenProperty = {propValue ->
                 def sProp = propValue.toString();
-                if (sProp.length() > 15) {
-                    sProp = "${sProp.substring(0, 12)}.."
+                if (sProp.length() > 20) {
+                    sProp = "${sProp.substring(0, 17)}.."
                 }
 
                 return sProp;

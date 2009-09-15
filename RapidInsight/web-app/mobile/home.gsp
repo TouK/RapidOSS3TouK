@@ -34,7 +34,7 @@
         </ul>
         <h1 id="pageTitle" style="display:none"></h1>
         <ul class="rightButtons">
-        	<a id="homeButton" class="button" href="#home" style="display:none">RI Mobile</a>
+        	<a id="homeButton" class="button" href="#home" style="display:none">Home</a>
             <a id="queriesButton" class="button" href="#" style="display:none">Queries</a>
             <rui:link id="eventsButton" class="button" url="mobile/event.gsp" style="display:none">Events</rui:link>
             <rui:link id="hEventsButton" class="button" url="mobile/historicalEvent.gsp" style="display:none">H. Events</rui:link>
@@ -66,7 +66,7 @@
 	<%-------------------------------------------------------------------------------
 										<Home Page>
 	 -------------------------------------------------------------------------------%>
-    <ul id="home" title="RI Mobile" selected="true">
+    <ul id="home" selected="true">
         <rui:include template="mobile/pages.gsp" model="${binding.variables}"></rui:include>
 	</ul>
 	<%-------------------------------------------------------------------------------

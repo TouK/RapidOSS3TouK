@@ -22,14 +22,6 @@
             def journals = RsEventJournal.searchEvery("eventId:${eventId}", params)
             def propertiesUrl = isHistorical == "true" ? "mobile/historicalEventDetails.gsp" : "mobile/eventDetails.gsp";
             def propertiesParams = isHistorical == "true" ? [eventId: domainObject.id] : [name: domainObject.name];
-            def shortenProperty = {propValue ->
-                def sProp = propValue.toString();
-                if (sProp.length() > 20) {
-                    sProp = "${sProp.substring(0, 17)}.."
-                }
-
-                return sProp;
-            }
         %>
         <div class="ri-mobile-tab">
             <ul>
@@ -50,8 +42,8 @@
                     <g:each in="${journals}" status="i" var="journal">
                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                             <td>${format.format(journal.rsTime.getTime()).encodeAsHTML()}</td>
-                            <td>${shortenProperty(journal.eventName)?.encodeAsHTML()}</td>
-                            <td>${shortenProperty(journal.details)?.encodeAsHTML()}</td>
+                            <td>${journal.eventName?.encodeAsHTML()}</td>
+                            <td>${journal.details?.encodeAsHTML()}</td>
                         </tr>
                     </g:each>
                 </tbody>

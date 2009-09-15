@@ -54,7 +54,7 @@
                 domainClasses.addAll(domainClass.getSubClasses());
                 domainClasses = domainClasses.sort {it.fullName}
             %>
-            <g:select id="searchInSelect" name="searchIn" from="${domainClasses.fullName}" style="display:none"></g:select>
+            <div id="searchInSelect" style="display:none"><label style="color:white">In:</label><g:select name="searchIn" from="${domainClasses.fullName}"></g:select></div>
         </fieldset>
     </form>
     <%-------------------------------------------------------------------------------

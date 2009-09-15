@@ -21,11 +21,11 @@ class StateCalculator {
 
     }
     static def eventIsUpdated(event,changedProps){
-        def objects=getObjectsOfEvent(event);
-        objects.each{ object ->
-            if(changedProps.containsKey("severity"))
-            {
-                setObjectState(object,event.severity,changedProps.severity);
+        if(changedProps.containsKey("severity"))
+        {
+            def objects=getObjectsOfEvent(event);
+            objects.each{ object ->
+                    setObjectState(object,event.severity,changedProps.severity);
             }
         }
     }

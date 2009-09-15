@@ -41,9 +41,9 @@ class DefaultDomainClassPropertyInterceptorTest extends RapidCmdbTestCase{
 
         def instance = domainClass.newInstance();
         DefaultDomainClassPropertyInterceptor interceptor = new DefaultDomainClassPropertyInterceptor();
-        assertEquals(prop1Value, interceptor.getDomainClassProperty(instance, "prop1"));
-        interceptor.setDomainClassProperty(instance, "prop1", "updatedProp1Value")
-        assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance, "prop1"));
+        assertEquals(prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+        interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", "updatedProp1Value")
+        assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
     }
 
     public void testThrowsPropertyNotDefinedIfPropertyDoesnotExists()
@@ -59,7 +59,7 @@ class DefaultDomainClassPropertyInterceptorTest extends RapidCmdbTestCase{
         DefaultDomainClassPropertyInterceptor interceptor = new DefaultDomainClassPropertyInterceptor();
         try
         {
-            interceptor.getDomainClassProperty(instance, "prop1")
+            interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1")
             fail("Should throw exception");
         }
         catch(MissingPropertyException ex)
@@ -69,7 +69,7 @@ class DefaultDomainClassPropertyInterceptorTest extends RapidCmdbTestCase{
 
         try
         {
-            interceptor.setDomainClassProperty(instance, "prop1", "prop1Value")
+            interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", "prop1Value")
             fail("Should throw exception");
         }
         catch(MissingPropertyException ex)

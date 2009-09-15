@@ -75,7 +75,12 @@ class PropertyDatasourceManagerBean implements InitializingBean, FederatedProper
 
     public boolean isFederated(Class domainClass, String propName)
     {
-        return getPropertyConfigurations(domainClass)[propName]?.isFederated();
+        def propConfig = getPropertyConfigurations(domainClass)[propName];
+        if(propConfig != null)
+        {
+            return propConfig.isFederated();
+        }
+        return false;
     }
 
     public boolean isLazy(Class domainClass, String propName)

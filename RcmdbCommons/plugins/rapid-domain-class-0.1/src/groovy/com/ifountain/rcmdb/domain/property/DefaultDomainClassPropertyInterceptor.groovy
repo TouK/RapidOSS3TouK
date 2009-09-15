@@ -26,9 +26,9 @@ package com.ifountain.rcmdb.domain.property
  */
 class DefaultDomainClassPropertyInterceptor implements DomainClassPropertyInterceptor{
 
-    public void setDomainClassProperty(Object domainObject, String propertyName, Object value)
+    public void setDomainClassProperty(MetaClass domainMetaClass, Class domainClass, Object domainObject, String propertyName, Object value)
     {
-        def metaProp = domainObject.metaClass.getMetaProperty(propertyName);
+        def metaProp = domainMetaClass.getMetaProperty(propertyName);
         if(metaProp != null)
         {
             metaProp.setProperty(domainObject, value);
@@ -39,8 +39,8 @@ class DefaultDomainClassPropertyInterceptor implements DomainClassPropertyInterc
         }
     }
 
-    public Object getDomainClassProperty(Object domainObject, String propertyName) {
-        def metaProp = domainObject.metaClass.getMetaProperty(propertyName);
+    public Object getDomainClassProperty(MetaClass domainMetaClass, Class domainClass, Object domainObject, String propertyName) {
+        def metaProp = domainMetaClass.getMetaProperty(propertyName);
         if(metaProp != null)
         {
             return metaProp.getProperty(domainObject)

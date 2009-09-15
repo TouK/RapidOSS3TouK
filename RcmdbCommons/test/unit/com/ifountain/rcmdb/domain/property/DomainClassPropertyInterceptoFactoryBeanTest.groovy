@@ -73,10 +73,10 @@ class DomainClassPropertyInterceptoFactoryBeanTest extends RapidCmdbTestCase
 class DomainClassPropertyInterceptorMockImpl implements DomainClassPropertyInterceptor
 {
 
-    public void setDomainClassProperty(Object domainObject, String propertyName, Object value) {
+    public void setDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName, Object value) {
     }
 
-    public Object getDomainClassProperty(Object domainObject, String propertyName) {
+    public Object getDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName) {
     }
 
 }

@@ -740,14 +740,14 @@ class DomainPropertyInterceptorDomainClassGrailsPluginImpl extends DefaultDomain
 {
     def setPropertyList = []
     def getPropertyList = []
-    public void setDomainClassProperty(Object domainObject, String propertyName, Object value) {
-        super.setDomainClassProperty(domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
+    public void setDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName, Object value) {
+        super.setDomainClassProperty(metaClass, domainClass, domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
         setPropertyList += propertyName
     }
 
-    public Object getDomainClassProperty(Object domainObject, String propertyName) {
+    public Object getDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName) {
         getPropertyList += propertyName
-        return super.getDomainClassProperty(domainObject, propertyName); //To change body of overridden methods use File | Settings | File Templates.
+        return super.getDomainClassProperty(metaClass, domainClass, domainObject, propertyName); //To change body of overridden methods use File | Settings | File Templates.
     }
 
 }

@@ -26,6 +26,6 @@ package com.ifountain.rcmdb.domain.property
  */
 interface DomainClassPropertyInterceptor
 {
-    public void setDomainClassProperty(Object domainObject, String propertyName, Object value);
-    public Object getDomainClassProperty(Object domainObject, String propertyName);
+    public void setDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName, Object value);
+    public Object getDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName);
 }

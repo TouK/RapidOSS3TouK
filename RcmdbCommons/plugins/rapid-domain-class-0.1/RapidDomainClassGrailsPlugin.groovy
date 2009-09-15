@@ -314,6 +314,8 @@ class RapidDomainClassGrailsPlugin {
         def props =dc.getProperties();
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         def relations = DomainClassUtils.getRelations(dc);
+        MetaClass dcMetaCls = dc.metaClass;
+        Class dcClass = dc.clazz;
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
         dc.metaClass.setPropertyWithoutUpdate = {String name, Object value->
             delegate.setProperty(name, value, false);
@@ -330,7 +332,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
-                    propertyInterceptor.setDomainClassProperty (delegate, name, value);
+                    propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, name, value);
                 }
             }
             catch(MissingPropertyException propEx)
@@ -355,7 +357,7 @@ class RapidDomainClassGrailsPlugin {
         }
 
         dc.metaClass.getRealPropertyValue = {String name->
-            return propertyInterceptor.getDomainClassProperty (delegate, name);
+            return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, name);
         }
         dc.metaClass.getProperty = {String name->
             try
@@ -367,7 +369,7 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
-                    return propertyInterceptor.getDomainClassProperty (delegate, name);
+                    return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, name);
                 }
             }
             catch(MissingPropertyException propEx)

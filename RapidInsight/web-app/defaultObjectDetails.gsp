@@ -90,7 +90,7 @@
                                             <td width="100%">
                                                 <ul style="margin-left: 10px;">
                                                     <%
-                                                        def relatedObjects = domainObject[propertyName];
+                                                        def relatedObjects = domainObject.getRelatedModelPropertyValues(propertyName, ["className", "name"]);
                                                         def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
                                                     %>
                                                     <g:if test="${sortedRelatedObjects.size() > 10}">

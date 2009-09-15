@@ -17,6 +17,12 @@
         </div>
     </g:if>
     <g:else>
+        <div class="ri-mobile-tab">
+        <ul>
+            <li class="selected"><rui:link url="mobile/historicalEventDetails.gsp" params="${[eventId:event.id]}" target="_open">Properties</rui:link></li>
+            <li><rui:link url="mobile/getJournals.gsp" params="${[eventId:event.id, isHistorical:'true']}" target="_open">Journal</rui:link></li>
+        </ul>
+        </div>
         <g:set var="props" value="${event.asMap()}"></g:set>
         <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
             <g:each var="propEntry" in="${props}" status="i">

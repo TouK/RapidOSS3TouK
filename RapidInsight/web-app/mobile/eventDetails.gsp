@@ -13,11 +13,17 @@
 <div id="eventDetails" title="Details of ${name}:Details">
 
     <g:if test="${!event}">
-        <div id="messageArea" class="error">
+        <div class="error">
             Event with name: ${name} does not exist
         </div>
     </g:if>
     <g:else>
+        <div class="ri-mobile-tab">
+        <ul>
+            <li class="selected"><rui:link url="mobile/eventDetails.gsp" params="${[name:event.name]}" target="_open">Properties</rui:link></li>
+            <li><rui:link url="mobile/getJournals.gsp" params="${[eventId:event.id]}" target="_open">Journal</rui:link></li>
+        </ul>
+        </div>
     <%----------------------------------------------------------------
                         <Event Action Menu>
     ----------------------------------------------------------------%>

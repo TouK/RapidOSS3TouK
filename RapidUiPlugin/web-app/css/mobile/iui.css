@@ -471,13 +471,13 @@ th a:link, th a:visited, th a:hover {
 .menu-closed {
 	border-top: 1px solid #7d7d7d;
     border-bottom: 1px solid #999999;
-    padding: 1px 10px;
+    padding: 5px 10px;
     background: url(../../images/mobile/listGroup.png) repeat-x;
     font-size: 17px;
     font-weight: bold;
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
     color: #000000;
-    height:25px;
+    height:19px;
 }
 
 .menu-closed > a {
@@ -498,13 +498,13 @@ th a:link, th a:visited, th a:hover {
 .menu-open {
 	border-top: 1px solid #7d7d7d;
     border-bottom: 1px solid #999999;
-    padding: 1px 10px;
+    padding: 5px 10px;
     background: url(../../images/mobile/listGroup.png) repeat-x;
     font-size: 17px;
     font-weight: bold;
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
     color: #000000;
-    height:25px;
+    height:19px;
 }
 
 .menu-open > a {
@@ -598,6 +598,42 @@ th a:link, th a:visited, th a:hover {
     font-weight: bold;
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
 }
+.ri-mobile-tab{
+    background-color: rgb(247, 247, 247);
+    border-bottom-color: #AFAFAF;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: block;
+    font-size: 14px;
+    height: 29px;
+    font-weight:bold;
+    color: rgb(0, 94, 150);
+}
+.ri-mobile-tab ul{
+    list-style: none;
+    margin:0;
+    padding:0;
+    height:100%;
+}
+.ri-mobile-tab li{
+    display:inline;
+    -webkit-background-clip: border-box;
+    -webkit-background-origin: padding-box;
+
+}
+.ri-mobile-tab a{
+    border-right:1px solid #AFAFAF;
+    border-top:1px solid #AFAFAF;
+    float:left;
+    padding:6 14;
+    text-decoration:none;
+    
+}
+.ri-mobile-tab .selected a{
+   background-color:#B5C1CF;
+   color:white;
+}
+
 
 /************************************************************************************************/
 

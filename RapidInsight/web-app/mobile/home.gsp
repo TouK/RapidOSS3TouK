@@ -34,8 +34,10 @@
         </ul>
         <h1 id="pageTitle"></h1>
         <ul class="rightButtons">
-        	<a id="homeButton" class="button" href="#home" style="left:40%;text-align:center;display:none;width:60px;">RI Mobile</a>
-            <a id="queriesButton" class="button" href="#" style="display:none;left:40%;text-align:center;width:60px;">Queries</a>
+        	<a id="homeButton" class="button" href="#home" style="display:none">RI Mobile</a>
+            <a id="queriesButton" class="button" href="#" style="display:none">Queries</a>
+            <rui:link id="eventsButton" class="button" url="mobile/event.gsp" style="display:none">Events</rui:link>
+            <rui:link id="hEventsButton" class="button" url="mobile/historicalEvent.gsp" style="display:none">H. Events</rui:link>
             <a id="logoutButton" class="button" href="../auth/logout" target="_self">Logout</a>
             <a id="searchButton" class="button" href="#searchForm" style="display: none;" title="Search">Search</a>
         </ul>
@@ -102,6 +104,18 @@
             }
             else{
                 document.getElementById('searchInSelect').style.display = 'none';
+            }
+            if(page.id == 'eventDetails' || (page.id == 'journals' && href && href.indexOf('isHistorical=true')) < 0){
+                document.getElementById('eventsButton').style.display = '';
+            }
+            else{
+                document.getElementById('eventsButton').style.display = 'none';
+            }
+            if(page.id == 'historicalEventDetails' || (page.id == 'journals' && href && href.indexOf('isHistorical=true') > -1)){
+                 document.getElementById('hEventsButton').style.display = '';
+            }
+            else{
+                document.getElementById('hEventsButton').style.display = 'none';
             }
 
             if(page.id == 'eventList' || page.id == 'historicalEventList' || page.id == 'inventoryList' || page.id == 'query'){

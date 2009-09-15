@@ -417,6 +417,7 @@ fieldset > .row:last-child {
 .itable td              { border-right: 1px solid gray;font-size:12px}
 .itable tr:first-child  { white-space: nowrap; }
 .itable tr:last-child   { border-right: none; }
+.itable ul{padding:0; list-style:none}
 
 .a_table {
 	text-decoration:none

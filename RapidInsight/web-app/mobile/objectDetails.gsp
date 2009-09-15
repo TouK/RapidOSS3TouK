@@ -1,4 +1,4 @@
-<%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
+<%@ page import="com.ifountain.rcmdb.domain.util.DomainClassUtils; java.sql.Timestamp; search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
 <%
     CONFIG = [:]
 %>
@@ -8,7 +8,6 @@
     def object = RsTopologyObject.get(name: name)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 %>
-
 <div id="objectDetails" title="Details of ${object.name}:Details">
 
     <g:if test="${!object}">
@@ -67,21 +66,97 @@
     <%----------------------------------------------------------------
                         </Event Action Menu>
     ----------------------------------------------------------------%>
-        <g:set var="props" value="${object.asMap()}"></g:set>
-        <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
-            <g:each var="propEntry" in="${props}" status="i">
-                <g:set var="propertyName" value="${propEntry.key}"></g:set>
-                <g:set var="propertyValue" value="${propEntry.value}"></g:set>
-                <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
-                    <td><b>${propertyName}</b></td>
-                    <g:if test="${CONFIG.INVENTORY_DATE_PROPERTIES.contains(propertyName)}">
-                        <%
-                            propertyValue = (propertyValue == 0) ? 'never' : format.format(new Date(propertyValue))
-                        %>
-                    </g:if>
-                    <td>${propertyValue}</td>
-                </tr>
-            </g:each>
-        </table>
+        <%
+            String className = object.getClass().getName();
+            def allProperties = object.getPropertiesList();
+            def propertyNames = ["className", "name"];
+            allProperties.each {
+                def propName = it.name
+                if (propName != "className" && propName != "name") {
+                    propertyNames.add(propName)
+                }
+            }
+            def relations = DomainClassUtils.getRelations(className);
+        %>
+        <div class="ri-mobile-objectDetails">
+            <table class="itable" width="100%" cellspacing="1" cellpadding="1">
+                <tbody>
+                    <g:each var="propertyName" status="i" in="${propertyNames}">
+                        <g:if test="${propertyName != 'id' && propertyName != 'rsDatasource'}">
+                            <g:set var="propertyValue" value=""/>
+                            <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
+                                <td width="0%" style="font-weight:bold">${propertyName}</td>
+                                <g:if test="${!relations.containsKey(propertyName)}">
+                                    <%
+                                        propertyValue = object[propertyName];
+                                        if (CONFIG.INVENTORY_DATE_PROPERTIES.contains(propertyName))
+                                        {
+                                            propertyValue = format.format(new Timestamp(propertyValue))
+                                        }
+                                        def fieldHasError = object.hasErrors(propertyName)
+                                    %>
+                                    <td ${fieldHasError ? 'class="ri-field-error"' : ""}>
+                                        ${fieldHasError ? "InAccessible" : propertyValue}&nbsp;
+                                    </td>
+                                </g:if>
+                                <g:else>
+                                    <g:set var="relation" value="${relations[propertyName]}"></g:set>
+                                    <g:if test="${relation.isOneToOne() || relation.isManyToOne()}">
+                                        <g:set var="sObj" value="${object[propertyName]}"></g:set>
+                                        <g:if test="${sObj != null}">
+                                            <td>
+                                                <rui:link url="mobile/objectDetails.gsp" params="${[name:sObj.name]}" target="_open">${sObj.className} ${sObj.name}</rui:link>
+                                            </td>
+                                        </g:if>
+                                        <g:else>
+                                            <td></td>
+                                        </g:else>
+                                    </g:if>
+                                    <g:else>
+                                        <td width="100%">
+                                            <ul style="margin-left: 10px;">
+                                                <%
+                                                    def relatedObjects = object.getRelatedModelPropertyValues(propertyName, ["name", "className"]);
+                                                    def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                                                %>
+                                                <g:if test="${sortedRelatedObjects.size() > 10}">
+                                                    <div>
+                                                        <%
+                                                            for (j in 0..9) {
+                                                        %>                                                                                                                 
+                                                        <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
+                                                        <li><rui:link url="mobile/objectDetails.gsp" params="${[name:rObj.name]}" target="_open">${rObj.className} ${rObj.name}</rui:link></li>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </div>
+                                                    <div style="display:none" id="${propertyName}_hiddenObjects">
+                                                        <%
+                                                            for (int j = 10; j < sortedRelatedObjects.size(); j++) {
+                                                        %>
+                                                        <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
+                                                        <li><rui:link url="mobile/objectDetails.gsp" params="${[name:rObj.name]}" target="_open">${rObj.className} ${rObj.name}</rui:link></li>
+                                                        <%
+                                                            }
+                                                        %>
+                                                    </div>
+                                                    <div class="ri-objectdetails-expand" id="${propertyName}_expandButton" onclick="window.expandRelations('${propertyName}', ${sortedRelatedObjects.size()});">Expand (${sortedRelatedObjects.size() - 10})</div>
+                                                </g:if>
+                                                <g:else>
+                                                    <g:each var="rObj" in="${sortedRelatedObjects}">
+                                                        <li><rui:link url="mobile/objectDetails.gsp" params="${[name:rObj.name]}" target="_open">${rObj.className} ${rObj.name}</rui:link></li>
+                                                    </g:each>
+                                                </g:else>
+                                            </ul>
+                                        </td>
+                                    </g:else>
+
+                                </g:else>
+                            </tr>
+                        </g:if>
+                    </g:each>
+                </tbody>
+            </table>
+        </div>
     </g:else>
 </div>

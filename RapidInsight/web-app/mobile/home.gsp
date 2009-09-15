@@ -6,6 +6,21 @@
 <meta name="apple-touch-fullscreen" content="YES" />
 <style type="text/css" media="screen">@import "../css/mobile/iui.css";</style>
 <script type="application/x-javascript" src="../js/mobile/iui.js"></script>
+<style type="text/css">
+    .ri-objectdetails-expand{
+        border: 1px solid #CFB39B;
+        color: #666666;
+        font-size: 10px;
+        margin-top: 5px;
+        overflow: hidden;
+        padding: 0;
+        background: transparent url( /RapidSuite/js/yui/assets/skins/sam/sprite.png ) repeat-x scroll 0 -1300px;
+        border-color: #BFDAFF;
+        cursor: pointer;
+        width: 80px;
+    }
+
+</style>
 </head>
 
 <body>
@@ -15,7 +30,7 @@
     <div class="toolbar" id ="toolbar" name="toolbar">
         <ul class="leftButtons">
         	<li><a id="backButton" class="button" href="#">Back</a></li>
-            <li><span class="button" style="display:none"><a id="refreshButton" href="#" target="_refresh">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></span></li>
+            <li><span class="button" style="display:none"><a id="refreshButton" href="#" target="_refresh">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></span></li>
         </ul>
         <h1 id="pageTitle"></h1>
         <ul class="rightButtons">
@@ -59,6 +74,19 @@
     <rui:include template="mobile/errors.gsp" model="${binding.variables}"></rui:include>
     <rui:include template="mobile/commonScripts.gsp"></rui:include>
     <script type="text/javascript">
+        //Expand-Collapse javascript function for object details
+        window.expandRelations = function(propertyName, relCount){
+            var divEl = document.getElementById(propertyName + '_hiddenObjects');
+            var buttonEl = document.getElementById(propertyName + '_expandButton');
+            if(divEl.style.display == 'none'){
+                divEl.style.display = '';
+                buttonEl.innerHTML = 'Collapse'
+            }
+            else{
+                divEl.style.display = 'none';
+                buttonEl.innerHTML = 'Expand (' + (relCount - 10) + ')';
+            }
+         }
         iui.addSubscriber('pageShown', function(page, href, args){
             if(page.id == 'searchForm'){
                 return;

@@ -9,6 +9,8 @@ import search.SearchQuery
 import search.SearchQueryGroup
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import connection.SmsConnection
+import datasource.SmsDatasource
 
 /**
 * Created by IntelliJ IDEA.
@@ -449,11 +451,91 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         }
     }
 
+    void testShowDoesNotBringRelations() {
+        def connection = SmsConnection.add(name: "conn", host:"host", username:"user");
+        println connection.errors;
+        assertFalse(connection.hasErrors());
+        def ds1 = SmsDatasource.add(name:"ds1", connection:connection);
+        def ds2 = SmsDatasource.add(name:"ds2", connection:connection);
+        def controller = new RsBrowserController();
+        controller.params["id"] = "${connection.id}"
+        controller.params["domain"] = "smsConnection"
+        controller.params["format"] = "xml"
+        controller.show();
+
+        def relationProps = SmsConnection.getPropertiesList().findAll {it.isRelation};
+        assertTrue(relationProps.size() > 0);
+        def props = SmsConnection.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
+        def keySet = SmsConnection.keySet();
+        String content = controller.response.contentAsString;
+        def objectXml = new XmlSlurper().parseText(content);
+
+        def allNodes = objectXml.depthFirst().collect {it}
+        assertEquals((props.size() + keySet.size() + 1), allNodes.size() - 1) //all nodes includes the root node
+
+        assertEquals("id", allNodes[1].name())
+        assertEquals("${connection.id}", allNodes[1].text())
+        keySet.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[i + 2].name())
+            assertEquals("${connection[p.name]}", allNodes[i + 2].text())
+        }
+
+        props.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[keySet.size() + i + 2].name())
+            assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 2].text())
+        }
+        relationProps.each {p ->
+            assertTrue(content.indexOf(p.name) < 0)
+        }
+    }
+
+    void testShowWithRelationsIncluded() {
+        def connection = SmsConnection.add(name: "conn", host:"host", username:"user");
+        println connection.errors;
+        assertFalse(connection.hasErrors());
+        def ds1 = SmsDatasource.add(name:"ds1", connection:connection);
+        def ds2 = SmsDatasource.add(name:"ds2", connection:connection);
+        def controller = new RsBrowserController();
+        controller.params["id"] = "${connection.id}"
+        controller.params["domain"] = "smsConnection"
+        controller.params["relations"] = "true"
+        controller.params["format"] = "xml"
+        controller.show();
+
+        def relationProps = SmsConnection.getPropertiesList().findAll {it.isRelation};
+        assertTrue(relationProps.size() > 0);
+        def props = SmsConnection.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isOperationProperty};
+        def keySet = SmsConnection.keySet();
+        String content = controller.response.contentAsString;
+        def objectXml = new XmlSlurper().parseText(content);
+
+        def allNodes = objectXml.depthFirst().collect {it}.findAll{it.name() != 'Object'}
+        assertEquals((props.size() + keySet.size() + 1), allNodes.size()) 
+
+        assertEquals("id", allNodes[0].name())
+        assertEquals("${connection.id}", allNodes[0].text())
+        keySet.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[i + 1].name())
+            assertEquals("${connection[p.name]}", allNodes[i + 1].text())
+        }
+
+        props.eachWithIndex {p, i ->
+            assertEquals(p.name, allNodes[keySet.size() + i + 1].name())
+            if(!p.isRelation){
+                assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 1].text())    
+            }
+            else{
+                assertEquals(connection[p.name].size(), objectXml[p.name].Object.size())
+            }
+        }
+        
+    }
+
     void testSearchWithPublicSearchQuery() {
         Connection.add(name: "a1")
         Connection.add(name: "a2")
         Connection.add(name: "a3")
-        Connection.add(name: "b1")
+        relationProps.add(name: "b1")
         Connection.add(name: "b2")
         Connection.add(name: "b3");
         def searchQueryGroup = SearchQueryGroup.add(name: "querygroup", username: RsUser.RSADMIN, type: "connection")

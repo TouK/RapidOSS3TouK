@@ -132,7 +132,9 @@ class RsBrowserController {
                 def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
                 def includeFederated = params.federatedProperties != "false";
                 def incluedeOperational = params.operationalProperties == "true";
-                def properties = objectClass.clazz."getPropertiesList"().findAll {(includeFederated || !it.isFederated) && (incluedeOperational || !it.isOperationProperty)};
+                def incluedeRelations = params.relations == "true";
+                def properties = objectClass.clazz."getPropertiesList"().findAll {
+                    (includeFederated || !it.isFederated) && (incluedeOperational || !it.isOperationProperty) &&(incluedeRelations || !it.isRelation)};
                 def keySet = objectClass.clazz."keySet"();
                 if (params.format == 'xml') {
                     def sw = new StringWriter();
@@ -152,15 +154,15 @@ class RsBrowserController {
                                 else {
                                     if (p.isOneToMany() || p.isManyToMany()) {
                                         builder."${p.name}"() {
-                                            def relatedObjects = domainObject[p.name];
-                                            relatedObjects.each {relatedObject ->
-                                                builder.Object(relatedObject)
+                                            def relatedPropertyValues = getRelatedObjectProperties(domainObject, p)
+                                            relatedPropertyValues.each {relatedPropertyValue ->
+                                                builder.Object(relatedPropertyValue)
                                             }
                                         }
                                     }
                                     else {
-                                        def relatedObject = domainObject[p.name]
-                                        builder."${p.name}"(relatedObject ? relatedObject : "")
+                                        def relatedPropertyValues = getRelatedObjectProperties(domainObject, p)
+                                        builder."${p.name}"(relatedPropertyValues.size() > 0 ? relatedPropertyValues[0] : "")
                                     }
                                 }
                             }
@@ -194,6 +196,12 @@ class RsBrowserController {
                 redirect(action: classes);
             }
         }
+    }
+
+    def getRelatedObjectProperties(object, p){
+         def relatedDomainClass = grailsApplication.getDomainClass(p.relatedModel.name);
+         def propertyList = getPropertiesWhichCanBeListed(relatedDomainClass, 5);
+         return object.getRelatedModelPropertyValues(p.name, propertyList.name)
     }
 
     def searchWithQuery = {

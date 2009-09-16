@@ -122,7 +122,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     public void unsubscribe() throws Exception {
         synchronized (subscriptionLock) {
             this.stoppedByUser = true;
-            unsubscribeInternally();
+            unsubscribeInternally(true);
         }
     }
 
@@ -136,7 +136,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         }
     }
 
-    private void unsubscribeInternally() throws Exception {
+    private void unsubscribeInternally(boolean shouldWaitProcessingUpdates) throws Exception {
         try {
             if (isSubscribed()) {
                 try {
@@ -144,9 +144,12 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                 }
                 finally {
                     isSubscribed = false;
-                    synchronized (updateWaitLock) {
-                        if (isUpdateProcessing()) {
-                            updateWaitLock.wait();
+                    if(shouldWaitProcessingUpdates)
+                    {
+                        synchronized (updateWaitLock) {
+                            if (isUpdateProcessing()) {
+                                updateWaitLock.wait();
+                            }
                         }
                     }
                     releaseConnection();
@@ -162,7 +165,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     }
 
     protected void disconnectDetected() throws Exception {
-        unsubscribeInternally();
+        unsubscribeInternally(false);
         subscribeInternally();
     }
 

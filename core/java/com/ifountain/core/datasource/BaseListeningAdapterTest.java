@@ -210,6 +210,40 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         _testUnsubscribeWaitsToUpdateFinishItsJob(false);
     }
 
+    public void testUnsubscribeDosNotWaitToUpdateFinishItsJobIfDomainDisconnectIsCalledInside_Update() throws Exception {
+        final ObservableSource source = new ObservableSource();
+        listeningAdapter = new MockBaseListeningAdapter(connectionName) {
+            @Override
+            protected void _subscribe() throws Exception {
+                source.addObserver(this);
+            }
+
+            @Override
+            public Object _update(Observable o, Object arg) {
+                try{
+                    disconnectDetected();
+                }catch(Exception e)
+                {
+                }
+                return null;
+            }
+
+        };
+
+        listeningAdapter.subscribe();
+        final StringBuffer bf = new StringBuffer();
+        final String message = "thread finished";
+        Thread updateThread = new Thread() {
+            public void run() {
+                source.sourceChanged();
+                bf.append(message);
+            }
+        };
+        updateThread.start();
+        Thread.sleep(1000);
+        assertEquals(message, bf.toString());
+    }
+
 
     public void _testUnsubscribeWaitsToUpdateFinishItsJob(boolean willThrowException) throws Exception {
         final Object updateWaitLock = new Object();

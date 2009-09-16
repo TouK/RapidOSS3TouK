@@ -89,7 +89,8 @@ class RsBrowserController {
         def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
         if (domainClass) {
             def count = domainClass.clazz."count"();
-            def propertyList = getPropertiesWhichCanBeListed(domainClass, 5);
+            def isAll = params.all == "true"
+            def propertyList = getPropertiesWhichCanBeListed(domainClass, 5, isAll);
             def objectList = domainClass.clazz."list"(params)
 
             if (params.format == 'xml') {
@@ -129,7 +130,9 @@ class RsBrowserController {
             def domainObject = domainClass.clazz."get"(id: params.id);
             if (domainObject) {
                 def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
-                def properties = objectClass.clazz."getPropertiesList"().findAll{return !it.isFederated};
+                def includeFederated = params.federatedProperties != "false";
+                def incluedeOperational = params.operationalProperties == "true";
+                def properties = objectClass.clazz."getPropertiesList"().findAll {(includeFederated || !it.isFederated) && (incluedeOperational || !it.isOperationProperty)};
                 def keySet = objectClass.clazz."keySet"();
                 if (params.format == 'xml') {
                     def sw = new StringWriter();
@@ -313,20 +316,22 @@ class RsBrowserController {
                 builder.Class(name: it.fullName);
             }
         }
-        render(contentType: "text/xml", text:sw.toString())
+        render(contentType: "text/xml", text: sw.toString())
     }
-
     def getPropertiesWhichCanBeListed(domainClass, max) {
+        return getPropertiesWhichCanBeListed(domainClass, max, false)
+    }
+    def getPropertiesWhichCanBeListed(domainClass, max, isAll) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();
         def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty}
         def keySet = domainClass.clazz."keySet"();
-        if (propertiesCanBeListed.size() + keySet.size() > max) {
-            propertyList = keySet;
-        }
-        else {
+        if (isAll || (propertiesCanBeListed.size() + keySet.size() <= max)) {
             propertyList.addAll(keySet)
             propertyList.addAll(propertiesCanBeListed)
+        }
+        else {
+            propertyList = keySet;
         }
         return propertyList;
     }

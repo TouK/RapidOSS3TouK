@@ -27,5 +27,9 @@ class RiUrlMappings {
             controller = "rsBrowser"
             action = "show";
         }
+        "/rsBrowser/$domain/propertiesAndOperations" {
+            controller = "rsBrowser"
+            action = "propertiesAndOperations";
+        }
     }
 }

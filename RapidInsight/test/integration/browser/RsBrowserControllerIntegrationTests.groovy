@@ -150,7 +150,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         controller.params["format"] = "xml"
         controller.params["all"] = "true"
         controller.listDomain();
-        println  controller.response.contentAsString;
+        println controller.response.contentAsString;
         def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
         def objects = objectsXml.Object;
         assertEquals(10, objects.size());
@@ -391,7 +391,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def operationProps = BaseDatasource.getPropertiesList().findAll {it.isOperationProperty};
         assertTrue(operationProps.size() > 0);
-        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
+        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
         def keySet = BaseDatasource.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
@@ -427,7 +427,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def operationProps = BaseDatasource.getPropertiesList().findAll {it.isOperationProperty};
         assertTrue(operationProps.size() > 0);
-        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isRelation};
+        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation};
         def keySet = BaseDatasource.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
@@ -444,7 +444,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         props.eachWithIndex {p, i ->
             assertEquals(p.name, allNodes[keySet.size() + i + 2].name())
-            assertEquals("${ds[p.name]}", allNodes[keySet.size() + i + 2].text())
+            def text = ds[p.name] == null ? '' : "${ds[p.name]}";
+            assertEquals(text, allNodes[keySet.size() + i + 2].text())
         }
         operationProps.each {p ->
             assertTrue(content.indexOf(p.name) > -1)
@@ -452,11 +453,11 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testShowDoesNotBringRelations() {
-        def connection = SmsConnection.add(name: "conn", host:"host", username:"user");
+        def connection = SmsConnection.add(name: "conn", host: "host", username: "user");
         println connection.errors;
         assertFalse(connection.hasErrors());
-        def ds1 = SmsDatasource.add(name:"ds1", connection:connection);
-        def ds2 = SmsDatasource.add(name:"ds2", connection:connection);
+        def ds1 = SmsDatasource.add(name: "ds1", connection: connection);
+        def ds2 = SmsDatasource.add(name: "ds2", connection: connection);
         def controller = new RsBrowserController();
         controller.params["id"] = "${connection.id}"
         controller.params["domain"] = "smsConnection"
@@ -465,7 +466,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def relationProps = SmsConnection.getPropertiesList().findAll {it.isRelation};
         assertTrue(relationProps.size() > 0);
-        def props = SmsConnection.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
+        def props = SmsConnection.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
         def keySet = SmsConnection.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
@@ -490,11 +491,11 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testShowWithRelationsIncluded() {
-        def connection = SmsConnection.add(name: "conn", host:"host", username:"user");
+        def connection = SmsConnection.add(name: "conn", host: "host", username: "user");
         println connection.errors;
         assertFalse(connection.hasErrors());
-        def ds1 = SmsDatasource.add(name:"ds1", connection:connection);
-        def ds2 = SmsDatasource.add(name:"ds2", connection:connection);
+        def ds1 = SmsDatasource.add(name: "ds1", connection: connection);
+        def ds2 = SmsDatasource.add(name: "ds2", connection: connection);
         def controller = new RsBrowserController();
         controller.params["id"] = "${connection.id}"
         controller.params["domain"] = "smsConnection"
@@ -504,13 +505,13 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         def relationProps = SmsConnection.getPropertiesList().findAll {it.isRelation};
         assertTrue(relationProps.size() > 0);
-        def props = SmsConnection.getPropertiesList().findAll {!it.isKey  && it.name != 'id' && !it.isOperationProperty};
+        def props = SmsConnection.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isOperationProperty};
         def keySet = SmsConnection.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
 
-        def allNodes = objectXml.depthFirst().collect {it}.findAll{it.name() != 'Object'}
-        assertEquals((props.size() + keySet.size() + 1), allNodes.size()) 
+        def allNodes = objectXml.depthFirst().collect {it}.findAll {it.name() != 'Object'}
+        assertEquals((props.size() + keySet.size() + 1), allNodes.size())
 
         assertEquals("id", allNodes[0].name())
         assertEquals("${connection.id}", allNodes[0].text())
@@ -521,21 +522,21 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         props.eachWithIndex {p, i ->
             assertEquals(p.name, allNodes[keySet.size() + i + 1].name())
-            if(!p.isRelation){
-                assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 1].text())    
+            if (!p.isRelation) {
+                assertEquals("${connection[p.name]}", allNodes[keySet.size() + i + 1].text())
             }
-            else{
+            else {
                 assertEquals(connection[p.name].size(), objectXml[p.name].Object.size())
             }
         }
-        
+
     }
 
     void testSearchWithPublicSearchQuery() {
         Connection.add(name: "a1")
         Connection.add(name: "a2")
         Connection.add(name: "a3")
-        relationProps.add(name: "b1")
+        Connection.add(name: "b1")
         Connection.add(name: "b2")
         Connection.add(name: "b3");
         def searchQueryGroup = SearchQueryGroup.add(name: "querygroup", username: RsUser.RSADMIN, type: "connection")
@@ -702,7 +703,64 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
             assertEquals("${i}", object.@sortOrder.toString())
             assertEquals("0.0.0.0", object.@host.toString())
         }
+    }
 
+    void testPropertiesAndOperations() {
+        def controller = new RsBrowserController();
+        def params = [:]
+        params["domain"] = "baseDatasource"
+        controller._propertiesAndOperations(params);
+
+        def resultXml = new XmlSlurper().parseText(controller.response.contentAsString);
+
+        def operations = BaseDatasource.getOperations();
+        def keys = BaseDatasource.keySet();
+        def pureProps = BaseDatasource.getNonFederatedPropertyList().findAll {return !it.isKey}
+        def federatedProps = BaseDatasource.getFederatedPropertyList()
+        def relations = BaseDatasource.getRelationPropertyList();
+
+        def keyProps = resultXml.Properties.Keys.Property;
+        assertEquals(keys.size(), keyProps.size())
+        keys.eachWithIndex {p, i ->
+            assertEquals(p.name, keyProps[i].@name.toString())
+            if(p.isRelation){
+                assertEquals(p.relatedModel.name, keyProps[i].@type.toString())
+            }
+            else{
+               assertEquals(p.type.name, keyProps[i].@type.toString()) 
+            }
+
+        }
+
+        def simpleProps = resultXml.Properties.SimpleProperties.Property;
+        assertEquals(pureProps.size(), simpleProps.size())
+        pureProps.eachWithIndex {p, i ->
+            assertEquals(p.name, simpleProps[i].@name.toString())
+            assertEquals(p.type.name, simpleProps[i].@type.toString())
+        }
+
+        def federateds = resultXml.Properties.FederatedProperties.Property;
+        assertEquals(federatedProps.size(), federateds.size())
+        federatedProps.eachWithIndex {p, i ->
+            assertEquals(p.name, federateds[i].@name.toString())
+            assertEquals(p.type.name, federateds[i].@type.toString())
+        }
+
+        def relationProps = resultXml.Properties.Relation.Property;
+        assertEquals(relations.size(), relationProps.size())
+        relations.eachWithIndex {p, i ->
+            assertEquals(p.name, relationProps[i].@name.toString())
+            assertEquals(p.relatedModel.name, relationProps[i].@type.toString())
+        }
+
+        def operationProps = resultXml.Operations.Operation;
+        assertEquals(operations.size(), operationProps.size())
+        operations.eachWithIndex {op, i ->
+            assertEquals(op.name, operationProps[i].@name.toString())
+            assertEquals(op.description, operationProps[i].@description.toString())
+            assertEquals(op.returnType.toString(), operationProps[i].@returnType.toString())
+            assertEquals(op.parameters.name.join(","), operationProps[i].@parameters.toString())
+        }
     }
 
 }

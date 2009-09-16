@@ -131,10 +131,10 @@ class RsBrowserController {
             if (domainObject) {
                 def objectClass = grailsApplication.getDomainClass(domainObject.class.name)
                 def includeFederated = params.federatedProperties != "false";
-                def incluedeOperational = params.operationalProperties == "true";
-                def incluedeRelations = params.relations == "true";
+                def includeOperational = params.operationProperties == "true";
+                def includeRelations = params.relations == "true";
                 def properties = objectClass.clazz."getPropertiesList"().findAll {
-                    (includeFederated || !it.isFederated) && (incluedeOperational || !it.isOperationProperty) &&(incluedeRelations || !it.isRelation)};
+                    (includeFederated || !it.isFederated) && (includeOperational || !it.isOperationProperty) && (includeRelations || !it.isRelation)};
                 def keySet = objectClass.clazz."keySet"();
                 if (params.format == 'xml') {
                     def sw = new StringWriter();
@@ -198,10 +198,64 @@ class RsBrowserController {
         }
     }
 
-    def getRelatedObjectProperties(object, p){
-         def relatedDomainClass = grailsApplication.getDomainClass(p.relatedModel.name);
-         def propertyList = getPropertiesWhichCanBeListed(relatedDomainClass, 5);
-         return object.getRelatedModelPropertyValues(p.name, propertyList.name)
+    def getRelatedObjectProperties(object, p) {
+        def relatedDomainClass = grailsApplication.getDomainClass(p.relatedModel.name);
+        def propertyList = getPropertiesWhichCanBeListed(relatedDomainClass, 5);
+        return object.getRelatedModelPropertyValues(p.name, propertyList.name)
+    }
+
+    def propertiesAndOperations = {
+        return _propertiesAndOperations(params);
+    }
+
+    def _propertiesAndOperations(params) {
+        def domainClass = grailsApplication.getArtefactByLogicalPropertyName(DomainClassArtefactHandler.TYPE, params.domain)
+        if (domainClass) {
+            def operations = domainClass.clazz.getOperations();
+            def keys = domainClass.clazz.keySet();
+            def pureProps = domainClass.clazz.getNonFederatedPropertyList().findAll {return !it.isKey}
+            def federatedProps = domainClass.clazz.getFederatedPropertyList()
+            def relations = domainClass.clazz.getRelationPropertyList();
+            def sw = new StringWriter();
+            def builder = new MarkupBuilder(sw);
+            builder.Class(name: domainClass.clazz.name) {
+                builder.Properties() {
+                    builder.Keys() {
+                        keys.each {key ->
+                            def type = key.isRelation ? key.relatedModel.name : key.type.name
+                            builder.Property(name: key.name, type: type);
+                        }
+                    }
+                    builder.SimpleProperties() {
+                        pureProps.each {simpleProp ->
+                            builder.Property(name: simpleProp.name, type: simpleProp.type.name);
+                        }
+                    }
+                    builder.Relations() {
+                        relations.each {relation ->
+                            builder.Property(name: relation.name, type: relation.relatedModel.name);
+                        }
+                    }
+                    builder.FederatedProperties() {
+                        federatedProps.each{federatedProp ->
+                            builder.Property(name: federatedProp.name, type: federatedProp.type.name);
+                        }
+                    }
+                }
+                builder.Operations() {
+                    operations.each{operation ->
+                        builder.Operation(name:operation.name, description:operation.description, returnType:operation.returnType, parameters:operation.parameters.name.join(","))    
+                    }
+
+                }
+            }
+            render(text: sw.toString(), contentType: "text/xml")
+        }
+        else {
+            addError("default.class.not.found", [params.domain]);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+        }
+
     }
 
     def searchWithQuery = {

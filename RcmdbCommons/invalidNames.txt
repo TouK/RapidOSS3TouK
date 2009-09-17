@@ -82,3 +82,6 @@ metaClass
 rsSetPropertyWillUpdate
 rsUpdatedProps
 rsIsBeforeTriggerContinue
+action
+controller
+

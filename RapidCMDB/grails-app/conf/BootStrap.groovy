@@ -49,9 +49,11 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 * USA.
 */
 class BootStrap {
-    
+    def logPrefix="BootStrap : ";
+
     def init = {servletContext ->
-        log.warn("Starting Server");
+        log.warn(logPrefix+"Starting Server");
+
         initializeCaches();
         registerDatasourceConverters();
         initializeSessionManager();
@@ -64,32 +66,39 @@ class BootStrap {
         registerDefaultDatasources();
         corrrectModelData();
         initializeScripting();
-        log.warn("Server Started");
+
+        log.warn(logPrefix+"Server Started");
     }
 
     def initializeSegmentHelper(){
+        log.warn(logPrefix+"Initializing Segment Helper");
         SegmentQueryHelper.getInstance().initialize(ApplicationHolder.application.domainClasses.clazz.findAll{it.name.indexOf(".") < 0})
     }
     def initializeSessionManager()
     {
+        log.warn(logPrefix+"Initializing Session Manager");
         SessionManager.getInstance().addSessionListener (new FilterSessionListener());
     }
 
     def registerDatasourceConverters()
     {
+        log.warn(logPrefix+"Registering DatasourceConverters");
         DatasourceConversionUtils.registerDefaultConverters();
     }
     def initializeLockManager()
     {
+        log.warn(logPrefix+"Initializing Lock Manager");
         DomainLockManager.initialize(30000, Logger.getLogger(DomainLockManager.class));
         DomainMethodExecutor.setMaxNumberOfRetries(20); 
     }
     def initializeCaches()
     {
+        log.warn(logPrefix+"Initializing IDCache");
         IdCache.initialize(1000000);
     }
     def initializeModelGenerator()
     {
+        log.warn(logPrefix+"Initializing Model Generator");
         String baseDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.base.dir"];
         String tempDirectory = ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"];
         def invalidNames = [];
@@ -107,12 +116,15 @@ class BootStrap {
 
     def registerUtilities()
     {
+        log.warn(logPrefix+"Initializing Utilities");
         RapidStringUtilities.registerStringUtils();
         RapidDateUtilities.registerDateUtils();
     }
 
     def initializeScripting()
     {
+        log.warn(logPrefix+"Initializing Scripting");
+
         def defaultMethods = [
             "${MethodFactory.WITH_SESSION_METHOD}":MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD)
         ]
@@ -120,42 +132,50 @@ class BootStrap {
             CmdbScript.configureScriptLogger(it);
         }
         def baseDir = System.getProperty("base.dir");
-
+        
+        log.warn(logPrefix+"Initializing ListeningAdapterManager");
         //ListeningAdapterManager and  ScriptScheduler should be initialized in order for the startup scripts to use them
         def quartzScheduler = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("quartzScheduler")
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         ListeningAdapterManager.getInstance().initialize();
+
         
+        log.warn(logPrefix+"Initializing ScriptManager");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
         ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts, defaultMethods);
 
+        log.warn(logPrefix+"Scheduling Enabled Scripts");
 
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
                 CmdbScript.scheduleScript(it);                
             }
             catch (e) {
-                log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");
+                log.warn(logPrefix+"Error scheduling script ${it.name}: ${e.getMessage()}");
             }
 
         }
 
+        log.warn(logPrefix+"Initializing Listening Datasources");
         ListeningAdapterManager.getInstance().initializeListeningDatasources();
     }
 
     def corrrectModelData()
     {
+        log.warn(logPrefix+"Checking Reload Is Done and Correcting Model Data ");
         DataCorrectionUtilities.dataCorrectionAfterReloadStep();
     }
 
     def registerDefaultDatasources()
     {
+        log.warn(logPrefix+"Registering Default Datasources");
         RCMDBDatasource.add(name: RapidCMDBConstants.RCMDB);
         RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
     }
 
     def registerDefaultUsers()
     {
+        log.warn(logPrefix+"Registering Default Users");
         def userRole = Role.add(name: Role.USER);
         def adminRole = Role.add(name: Role.ADMINISTRATOR);
         def adminGroup = Group.add(name: RsUser.RSADMIN, role: adminRole);
@@ -169,6 +189,7 @@ class BootStrap {
 
     def registerDefaultConverters()
     {
+        log.warn(logPrefix+"Registering Default Converters");
         def dateFormat = ConfigurationHolder.getConfig().toProperties()["rapidcmdb.date.format"];
         RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), GString.class)
         RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
@@ -180,10 +201,18 @@ class BootStrap {
 
 
     def destroy = {
-        logger.warn("Stopping Server");
+        log.warn(logPrefix+"Stopping Server");
+        
+        log.warn(logPrefix+"Destroying ListeningAdapterManager");
         ListeningAdapterManager.destroyInstance();
+
+        log.warn(logPrefix+"Destroying ScriptManager");
         ScriptManager.destroyInstance();
+
+        log.warn(logPrefix+"Destroying SessionManager");
         SessionManager.destroyInstance();
+
+        log.warn(logPrefix+"Destroying Compass");
         def servletCtx = ServletContextHolder.getServletContext()
         def webAppCtx = WebApplicationContextUtils.getWebApplicationContext(servletCtx)
         Compass compass = webAppCtx.getBean("compass")
@@ -191,7 +220,8 @@ class BootStrap {
         {
             compass.close();
         }
-        logger.warn("Server Stopped");
+
+        log.warn(logPrefix+"Server Stopped");
     }
 
 }

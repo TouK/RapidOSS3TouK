@@ -365,7 +365,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         params.destinationType="email";
         params.searchQueryId=44;
         params.delay=5;
-        params.clearAction=true;
+        params.sendClearEventType=true;
         params.enabled=false;
 
         def username="testuser";
@@ -385,7 +385,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(params.destinationType,messageRule.destinationType);
         assertEquals(params.searchQueryId,messageRule.searchQueryId);
         assertEquals(params.delay,messageRule.delay);
-        assertEquals(params.clearAction,messageRule.clearAction);
+        assertEquals(params.sendClearEventType,messageRule.sendClearEventType);
         assertEquals(params.enabled,messageRule.enabled);
 
         //test update
@@ -393,7 +393,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         updateParams.destinationType="email";
         updateParams.searchQueryId=49;
         updateParams.delay=7;
-        updateParams.clearAction=false;
+        updateParams.sendClearEventType=false;
         updateParams.enabled=true;
 
         RsMessageRule.updateMessageRuleForUser(messageRule,updateParams,username);
@@ -407,7 +407,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(updateParams.destinationType,messageRule.destinationType);
         assertEquals(updateParams.searchQueryId,messageRule.searchQueryId);
         assertEquals(updateParams.delay,messageRule.delay);
-        assertEquals(updateParams.clearAction,messageRule.clearAction);
+        assertEquals(updateParams.sendClearEventType,messageRule.sendClearEventType);
         assertEquals(updateParams.enabled,messageRule.enabled);
     }
 
@@ -426,7 +426,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         params.destinationType="dest2";
         params.searchQueryId=44;
         params.delay=5;
-        params.clearAction=true;
+        params.sendClearEventType=true;
         params.enabled=false;
 
         def username="testuser";
@@ -447,7 +447,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(params.destinationType,messageRule.destinationType);
         assertEquals(params.searchQueryId,messageRule.searchQueryId);
         assertEquals(params.delay,messageRule.delay);
-        assertEquals(params.clearAction,messageRule.clearAction);
+        assertEquals(params.sendClearEventType,messageRule.sendClearEventType);
         assertEquals(params.enabled,messageRule.enabled);
 
 
@@ -456,7 +456,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         updateParams.destinationType="dest2";
         updateParams.searchQueryId=49;
         updateParams.delay=7;
-        updateParams.clearAction=false;
+        updateParams.sendClearEventType=false;
         updateParams.enabled=true;
 
         RsMessageRule.updateMessageRuleForUser(messageRule,updateParams,username);
@@ -470,7 +470,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(updateParams.destinationType,messageRule.destinationType);
         assertEquals(updateParams.searchQueryId,messageRule.searchQueryId);
         assertEquals(updateParams.delay,messageRule.delay);
-        assertEquals(updateParams.clearAction,messageRule.clearAction);
+        assertEquals(updateParams.sendClearEventType,messageRule.sendClearEventType);
         assertEquals(updateParams.enabled,messageRule.enabled);
 
     }

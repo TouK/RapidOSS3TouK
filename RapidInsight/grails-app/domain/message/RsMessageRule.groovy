@@ -18,7 +18,7 @@ class RsMessageRule {
     Long userId = 0;
     String destinationType = "";
     Long delay = 0;
-    Boolean clearAction = false;
+    Boolean sendClearEventType = false;
     Boolean enabled = true;
 
     Long id;
@@ -48,7 +48,7 @@ class RsMessageRule {
 
         delay(nullable: false)
 
-        clearAction(nullable: true)
+        sendClearEventType(nullable: true)
 
         __operation_class__(nullable: true)
 

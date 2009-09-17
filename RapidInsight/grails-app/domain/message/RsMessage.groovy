@@ -20,13 +20,13 @@ class RsMessage {
 
 
     };
-    static datasources = ["RCMDB":["keys":["eventId":["nameInDs":"eventId"], "destination":["nameInDs":"destination"], "destinationType":["nameInDs":"destinationType"], "action":["nameInDs":"action"]]]]
+    static datasources = ["RCMDB":["keys":["eventId":["nameInDs":"eventId"], "destination":["nameInDs":"destination"], "destinationType":["nameInDs":"destinationType"], "eventType":["nameInDs":"eventType"]]]]
 
     String rsOwner = "p"
     Long eventId =0;
     String destination ="";
     String destinationType ="";
-    String action ="";
+    String eventType ="";
     Long insertedAt =0;
     Long sendAfter =0;
     Long sendAt =0;
@@ -52,7 +52,7 @@ class RsMessage {
 
      destinationType(blank:false,nullable:false)
 
-     action(blank:false,nullable:false,key:["eventId", "destination", "destinationType"])
+     eventType(blank:false,nullable:false,key:["eventId", "destination", "destinationType"])
 
      insertedAt(nullable:true)
 
@@ -76,7 +76,7 @@ class RsMessage {
 
     public String toString()
     {
-    	return "${getClass().getName()}[action:${getProperty("action")}, destination:${getProperty("destination")}, destinationType:${getProperty("destinationType")}, eventId:${getProperty("eventId")}]";
+    	return "${getClass().getName()}[eventType:${getProperty("eventType")}, destination:${getProperty("destination")}, destinationType:${getProperty("destinationType")}, eventId:${getProperty("eventId")}]";
     }
 
     public boolean equals(Object obj) {

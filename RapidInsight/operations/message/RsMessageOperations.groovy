@@ -39,7 +39,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         {
             state = RsMessage.STATE_READY;
         }
-        def message = RsMessage.add(eventId: event.id, destination: destination, insertedAt: now, sendAfter: now + (delay * 1000), state: state, destinationType: destinationType, action: RsMessage.ACTION_CREATE)
+        def message = RsMessage.add(eventId: event.id, destination: destination, insertedAt: now, sendAfter: now + (delay * 1000), state: state, destinationType: destinationType, eventType: RsMessage.ACTION_CREATE)
         if (message.hasErrors())
         {
             getLogger().warn("Error occured while adding RsMessage. Reason : ${message.errors}")
@@ -57,7 +57,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
         def state = RsMessage.STATE_READY;
         def message = null;
 
-        def createMessage = RsMessage.get([eventId: historicalEvent.activeId, action: RsMessage.ACTION_CREATE, destination: destination, destinationType: destinationType])
+        def createMessage = RsMessage.get([eventId: historicalEvent.activeId, eventType: RsMessage.ACTION_CREATE, destination: destination, destinationType: destinationType])
         getLogger().debug("Checking whether create event exists");
         // if there is no create message then we will skip the clear message
         if (createMessage != null) {
@@ -70,7 +70,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
             }
             else
             {
-                message = RsMessage.add(eventId: historicalEvent.activeId, destination: destination, destinationType: destinationType, insertedAt: now, state: state, action: RsMessage.ACTION_CLEAR)
+                message = RsMessage.add(eventId: historicalEvent.activeId, destination: destination, destinationType: destinationType, insertedAt: now, state: state, eventType: RsMessage.ACTION_CLEAR)
                 if (message.hasErrors())
                 {
                     getLogger().warn("Error occured while adding RsMessage. Reason : ${message.errors}")
@@ -92,7 +92,7 @@ public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.Ab
     {
        def event=null;
 
-       if(action==RsMessage.ACTION_CREATE )
+       if(eventType==RsMessage.ACTION_CREATE )
        {
            event=_loadDomainClass("RsEvent").get(id:eventId);
        }

@@ -146,19 +146,19 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
 
 
         def connector=addEmailConnector();
@@ -186,7 +186,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
            assertEquals(message.destination,sendEmailParams[index].params.to)
            assertEquals("renderTestResult",sendEmailParams[index].params.body)
            assertEquals("text/html",sendEmailParams[index].params.contentType)
-            if(message.action==RsMessage.ACTION_CREATE)
+            if(message.eventType==RsMessage.ACTION_CREATE)
                 assertEquals("Event Created",sendEmailParams[index].params.subject)
             else
                 assertEquals("Event Cleared",sendEmailParams[index].params.subject)
@@ -208,19 +208,19 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
 
 
         def connector=addEmailConnector();
@@ -240,19 +240,19 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
 
 
         def connector=addEmailConnector();
@@ -294,14 +294,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
             RsMessage.addEventClearMessage([activeId:event.activeId],EMAIL_TYPE, destination)
         }
         assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.ACTION_CREATE}"),4)
         
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
         assertEquals(RsMessage.countHits("alias:*"),8)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND action:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.ACTION_CREATE}"),4)
 
 
     }
@@ -315,7 +315,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -329,7 +329,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
 
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -351,26 +351,26 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
 
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CREATE,state:RsMessage.STATE_READY);
         }
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,action:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.ACTION_CLEAR,state:RsMessage.STATE_READY);
         }
 
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
 
         def connector=addEmailConnector();
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
 
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CREATE}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND action:${RsMessage.ACTION_CLEAR}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CREATE}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.ACTION_CLEAR}"),0)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND action:${RsMessage.ACTION_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND action:${RsMessage.ACTION_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.ACTION_CREATE}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.ACTION_CLEAR}"),4)
     }
     
 

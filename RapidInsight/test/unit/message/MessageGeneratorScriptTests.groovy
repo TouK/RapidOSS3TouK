@@ -107,7 +107,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: EMAIL_TYPE, enabled: false, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: EMAIL_TYPE, enabled: false, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -141,10 +141,10 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
 
-        def ruleForAdmin = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def ruleForAdmin = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(ruleForAdmin.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 2)
@@ -192,11 +192,11 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def rule = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.errors.toString(),rule.hasErrors())
 
 
-        def ruleForUser = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def ruleForUser = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(ruleForUser.errors.toString(),ruleForUser.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 2)
@@ -234,7 +234,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: false)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: false)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -275,7 +275,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -317,8 +317,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         //run the script and check that only new events are processed
         CmdbScript.runScript(script, [:])
         assertEquals(4, RsMessage.countHits("alias:*"))
-        assertEquals(4, RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"))
-        RsMessage.searchEvery("action:${RsMessage.ACTION_CREATE}").each {mes ->
+        assertEquals(4, RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"))
+        RsMessage.searchEvery("eventType:${RsMessage.ACTION_CREATE}").each {mes ->
             assertEquals(mes.destination, destination)
             assertEquals(mes.destinationType, destinationType)
             def event = rsEventClass."get"(id: mes.eventId)
@@ -334,8 +334,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 8)
-        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CLEAR}"), 4)
-        RsMessage.searchEvery("action:${RsMessage.ACTION_CLEAR}").each {mes ->
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CLEAR}"), 4)
+        RsMessage.searchEvery("eventType:${RsMessage.ACTION_CLEAR}").each {mes ->
             assertEquals(mes.destination, destination)
             assertEquals(mes.destinationType, destinationType)
             def event = rsHistoricalEventClass."search"("activeId:${mes.eventId}").results[0]
@@ -354,7 +354,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         params.state = RsMessage.STATE_IN_DELAY
         params.destination = "xxx"
         params.destinationType = EMAIL_TYPE
-        params.action = RsMessage.ACTION_CREATE
+        params.eventType = RsMessage.ACTION_CREATE
         params.sendAfter = date.getTime() + delay
 
 
@@ -399,7 +399,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: user.username, isPublic: false, type: "event");
         assertFalse(searchQuery.hasErrors())
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, clearAction: true)
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -417,7 +417,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CmdbScript.runScript(script, [:])
 
         assertEquals(1, RsMessage.countHits("alias:*"))
-        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"), 1)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 1)
 
         newEvents.each {
             it.clear();
@@ -426,7 +426,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 2)
-        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CLEAR}"), 1)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CLEAR}"), 1)
 
         //now we change the segment filter and test again
         rsEventClass."removeAll"();
@@ -442,7 +442,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 2)
-        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"), 2)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 2)
 
         //now we remove the segment filter and test again
         rsEventClass."removeAll"();
@@ -458,7 +458,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 4)
-        assertEquals(RsMessage.countHits("action:${RsMessage.ACTION_CREATE}"), 4)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 4)
     }
 
     def addEvents(prefix, count)

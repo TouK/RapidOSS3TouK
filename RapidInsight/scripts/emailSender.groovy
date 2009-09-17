@@ -37,7 +37,7 @@ if(ds!=null)
                 def emailParams=[:]
                 emailParams.from=from
                 emailParams.to=message.destination
-                emailParams.subject= ( message.action  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
+                emailParams.subject= ( message.eventType  == RsMessage.ACTION_CREATE ? "Event Created" : "Event Cleared" )
                 emailParams.body=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
                 emailParams.contentType="text/html"
 

@@ -27,7 +27,7 @@
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="clearAction" colLabel="Send Clear Events" width="120"   sortType="string">
+        <rui:tgColumn type="text" attributeName="sendClearEventType" colLabel="Send Clear Events" width="120"   sortType="string">
 
         </rui:tgColumn>
 

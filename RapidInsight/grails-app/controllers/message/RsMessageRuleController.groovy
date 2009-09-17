@@ -43,7 +43,7 @@ class RsMessageRuleController {
             def ruleProps = [:]
             ruleProps.id = rule.id;
             ruleProps.delay = rule.delay;
-            ruleProps.clearAction = rule.clearAction;
+            ruleProps.sendClearEventType = rule.sendClearEventType;
             ruleProps.enabled = rule.enabled;
             ruleProps.name = searchQuery ? searchQuery.name : rule.searchQueryId;
             ruleProps.destinationType = rule.destinationType;

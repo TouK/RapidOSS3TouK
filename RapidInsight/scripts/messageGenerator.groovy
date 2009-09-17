@@ -58,7 +58,7 @@ users.each {user ->
             logger.debug("Going to search RsMessageRule for userId:${userId} ${user.username} with destinationType:${destinationType}");
             
             def createRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND enabled:true")
-            def clearRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND clearAction:true AND enabled:true")
+            def clearRules = RsMessageRule.searchEvery("userId:\"${userId}\" AND destinationType:${destinationType} AND sendClearEventType:true AND enabled:true")
             if(createRules.size()>0 || clearRules.size>0)
             {
                 def destination=RsMessageRule.getUserDestinationForChannel(user,channelType);

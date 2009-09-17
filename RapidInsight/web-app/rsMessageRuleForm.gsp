@@ -90,7 +90,7 @@
                 </tr>
                 <tr>
                     <td valign="top"><label>Notify about Clear Events:</label></td>
-                    <td ><g:checkBox name="clearAction" value="${rsMessageRule?.clearAction}"></g:checkBox></td>
+                    <td ><g:checkBox name="sendClearEventType" value="${rsMessageRule?.sendClearEventType}"></g:checkBox></td>
                 </tr>
                 <tr>
                     <td valign="top"><label>Enabled:</label></td>

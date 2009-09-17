@@ -4,8 +4,8 @@ import com.ifountain.core.domain.annotations.*;
 
 class RsMessage {
 
-    public static String ACTION_CREATE="create";
-    public static String ACTION_CLEAR="clear";
+    public static String EVENT_TYPE_CREATE="create";
+    public static String EVENT_TYPE_CLEAR="clear";
 
     public static Long STATE_IN_DELAY=0
     public static Long STATE_READY=1

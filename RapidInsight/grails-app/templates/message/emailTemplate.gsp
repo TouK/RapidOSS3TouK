@@ -1,7 +1,7 @@
 <%@ page import="message.RsMessage;" %>
 <html>
 <body>
-<g:if  test="${message.eventType==RsMessage.ACTION_CREATE}"><b>"Event Created"</b></g:if>
+<g:if  test="${message.eventType==RsMessage.EVENT_TYPE_CREATE}"><b>"Event Created"</b></g:if>
 <g:else><b>"Event Cleared"</b></g:else>
 
 <br><br>Event Properties

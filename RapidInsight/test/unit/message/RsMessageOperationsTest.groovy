@@ -44,7 +44,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         params.state=RsMessage.STATE_IN_DELAY
         params.destination="xxx"
         params.destinationType=EMAIL_TYPE
-        params.eventType=RsMessage.ACTION_CREATE
+        params.eventType=RsMessage.EVENT_TYPE_CREATE
         params.sendAfter=date.getTime()+delay
 
 
@@ -82,7 +82,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(undelayedMessage.state,RsMessage.STATE_READY)
         assertEquals(undelayedMessage.insertedAt,undelayedMessage.sendAfter)
         assertEquals(undelayedMessage.eventId,1)
-        assertEquals(undelayedMessage.eventType,RsMessage.ACTION_CREATE)
+        assertEquals(undelayedMessage.eventType,RsMessage.EVENT_TYPE_CREATE)
 
         Long delay2=2
         def delayedMessage=RsMessage.addEventCreateMessage([id:2],EMAIL_TYPE, "xxx",delay2)
@@ -91,7 +91,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(delayedMessage.state,RsMessage.STATE_IN_DELAY)
         assertEquals(delayedMessage.sendAfter,delayedMessage.insertedAt+(delay2*1000))
         assertEquals(delayedMessage.eventId,2)
-        assertEquals(delayedMessage.eventType,RsMessage.ACTION_CREATE)
+        assertEquals(delayedMessage.eventType,RsMessage.EVENT_TYPE_CREATE)
     }
 
     public void  testAddEventClearMessageDoesNotCreateClearMessageWhenCreateMessageIsMissing()
@@ -135,7 +135,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.count(),1)
         assertEquals(createMessage.state,RsMessage.STATE_READY)
         assertEquals(createMessage.eventId,params.id)
-        assertEquals(createMessage.eventType,RsMessage.ACTION_CREATE)
+        assertEquals(createMessage.eventType,RsMessage.EVENT_TYPE_CREATE)
 
 
         def clearMessage=RsMessage.addEventClearMessage([activeId:params.id],EMAIL_TYPE,params.destination)
@@ -143,7 +143,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         assertEquals(RsMessage.count(),2)
         assertEquals(clearMessage.state,RsMessage.STATE_READY)
         assertEquals(clearMessage.eventId,params.id)
-        assertEquals(clearMessage.eventType,RsMessage.ACTION_CLEAR)
+        assertEquals(clearMessage.eventType,RsMessage.EVENT_TYPE_CLEAR)
         
     }
 
@@ -154,12 +154,12 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
         def nonExistingEventId=4444444444;
 
-        def noEventMessage=RsMessage.add(eventType:RsMessage.ACTION_CREATE,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
+        def noEventMessage=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
         assertFalse(noEventMessage.hasErrors());
         assertNull(noEventMessage.retrieveEvent());
 
 
-        def noHistoricalEventMessage=RsMessage.add(eventType:RsMessage.ACTION_CLEAR,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
+        def noHistoricalEventMessage=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CLEAR,eventId:nonExistingEventId,destination:"dest",destinationType:"desttype");
         assertFalse(noHistoricalEventMessage.hasErrors());
         assertNull(noHistoricalEventMessage.retrieveEvent());
 
@@ -171,7 +171,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         def activeEvent=RsEvent.add(name:"testev");
         assertFalse(activeEvent.hasErrors());
 
-        def activeEventMessage=RsMessage.add(eventType:RsMessage.ACTION_CREATE,eventId:activeEvent.id,destination:"dest",destinationType:"desttype");
+        def activeEventMessage=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,eventId:activeEvent.id,destination:"dest",destinationType:"desttype");
         assertFalse(activeEventMessage.hasErrors());
 
         assertEquals(activeEvent.id,activeEventMessage.retrieveEvent().id);
@@ -179,7 +179,7 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
         def historicalEvent=RsHistoricalEvent.add(name:"testev3",activeId:55);
         assertFalse(historicalEvent.hasErrors());
 
-        def historicalEventMessage=RsMessage.add(eventType:RsMessage.ACTION_CLEAR,eventId:historicalEvent.activeId,destination:"dest",destinationType:"desttype");
+        def historicalEventMessage=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CLEAR,eventId:historicalEvent.activeId,destination:"dest",destinationType:"desttype");
         assertFalse(historicalEventMessage.hasErrors());
 
         assertEquals(historicalEvent.id,historicalEventMessage.retrieveEvent().id);

@@ -317,8 +317,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         //run the script and check that only new events are processed
         CmdbScript.runScript(script, [:])
         assertEquals(4, RsMessage.countHits("alias:*"))
-        assertEquals(4, RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"))
-        RsMessage.searchEvery("eventType:${RsMessage.ACTION_CREATE}").each {mes ->
+        assertEquals(4, RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"))
+        RsMessage.searchEvery("eventType:${RsMessage.EVENT_TYPE_CREATE}").each {mes ->
             assertEquals(mes.destination, destination)
             assertEquals(mes.destinationType, destinationType)
             def event = rsEventClass."get"(id: mes.eventId)
@@ -334,8 +334,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 8)
-        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CLEAR}"), 4)
-        RsMessage.searchEvery("eventType:${RsMessage.ACTION_CLEAR}").each {mes ->
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CLEAR}"), 4)
+        RsMessage.searchEvery("eventType:${RsMessage.EVENT_TYPE_CLEAR}").each {mes ->
             assertEquals(mes.destination, destination)
             assertEquals(mes.destinationType, destinationType)
             def event = rsHistoricalEventClass."search"("activeId:${mes.eventId}").results[0]
@@ -354,7 +354,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         params.state = RsMessage.STATE_IN_DELAY
         params.destination = "xxx"
         params.destinationType = EMAIL_TYPE
-        params.eventType = RsMessage.ACTION_CREATE
+        params.eventType = RsMessage.EVENT_TYPE_CREATE
         params.sendAfter = date.getTime() + delay
 
 
@@ -417,7 +417,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CmdbScript.runScript(script, [:])
 
         assertEquals(1, RsMessage.countHits("alias:*"))
-        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 1)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 1)
 
         newEvents.each {
             it.clear();
@@ -426,7 +426,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 2)
-        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CLEAR}"), 1)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CLEAR}"), 1)
 
         //now we change the segment filter and test again
         rsEventClass."removeAll"();
@@ -442,7 +442,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 2)
-        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 2)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 2)
 
         //now we remove the segment filter and test again
         rsEventClass."removeAll"();
@@ -458,7 +458,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 4)
-        assertEquals(RsMessage.countHits("eventType:${RsMessage.ACTION_CREATE}"), 4)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
     }
 
     def addEvents(prefix, count)

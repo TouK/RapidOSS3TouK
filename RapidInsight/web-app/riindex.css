@@ -116,6 +116,13 @@
     width: 80px;
 }
 
+.ri-object-details a{
+    color:#006DBA;
+    cursor:pointer;
+    display:block;
+    text-decoration:underline;
+}
+
 .yui-skin-sam .mask {
     background-color: #DAE8FB;
     opacity: 1;

@@ -5,14 +5,6 @@
   Time: 2:45:31 PM
   To change this template use File | Settings | File Templates.
 --%>
-<style>
-.yui-navset a{
-display:block;
-color:#006DBA;
-text-decoration:underline;
-cursor:pointer;
-}
-</style>
 <g:set var="id" value="${params.id}"></g:set>
 <g:set var="componentId" value="${params.componentId}"></g:set>
 <g:set var="domain" value="${params.domain}"></g:set>
@@ -28,6 +20,11 @@ cursor:pointer;
             def properties = domainObject.getPropertiesList().findAll{!it.isKey};
             def keySet = domainObject.keySet();
         %>
+        <script type="text/javascript">
+             window.showRO = function(objId, className){
+                YAHOO.rapidjs.Components['${componentId}'].show(createURL('browserArtifacts/browserObjectDetails.gsp', {id:objId, domain:className}), 'Details of ' + className + ' ' + objId);
+             }
+        </script>
         <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">
             <div style="display:block">
                 <div>
@@ -66,8 +63,7 @@ cursor:pointer;
                                             <td width="100%">
                                                 <ul style="margin-left: 10px;">
                                                     <g:each var="relatedObject" in="${domainObject[p.name]}">
-                                                       <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;"
-                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browserArtifacts/browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a></li>
+                                                       <li><a onclick="window.showRO('${relatedObject.id}', '${relatedObject.class.name}')">${relatedObject}<a></li>
                                                     </g:each>
                                                 </ul>
                                             </td>
@@ -76,8 +72,7 @@ cursor:pointer;
                                             <td>
                                                 <g:set var="relatedObject" value="${domainObject[p.name]}"></g:set>
                                                 <g:if test="${relatedObject}">
-                                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;"
-                                                    onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('browserArtifacts/browserObjectDetails.gsp', {id:'${relatedObject.id}', domain:'${relatedObject.class.name}'}), 'Details of ${relatedObject.class.name} ${relatedObject.id}');">${relatedObject}<a>
+                                                    <a onclick="window.showRO('${relatedObject.id}', '${relatedObject.class.name}')">${relatedObject}<a>
                                                 </g:if>
                                             </td>
                                         </g:else>

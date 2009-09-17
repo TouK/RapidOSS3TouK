@@ -27,14 +27,6 @@
         }
         def relations = DomainClassUtils.getRelations(className);
     %>
-    <style>
-    .yui-navset a{
-    display:block;
-    color:#006DBA;
-    text-decoration:underline;
-    cursor:pointer;
-    }
-    </style>
     <script type="text/javascript">
          window.expandRelations = function(propertyName, relCount){
             var divEl = document.getElementById(propertyName + '_hiddenObjects');
@@ -47,6 +39,9 @@
                 divEl.style.display = 'none';
                 buttonEl.innerHTML = 'Expand (' + (relCount - 10) + ')';
             }
+         }
+         window.showRO = function(objName, className){
+            YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:objName}), 'Details of ' + className + ' ' + objName);
          }
 
     </script>
@@ -79,7 +74,7 @@
                                             <g:set var="sObj" value="${domainObject[propertyName]}"></g:set>
                                             <g:if test="${sObj != null}">
                                                 <td>
-                                                    <a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${sObj.name}'}), 'Details of ${sObj.className} ${sObj.name}');">${sObj.className} ${sObj.name}</a>
+                                                    <a onclick="window.showRO('${sObj.name}', '${sObj.className}')">${sObj.className} ${sObj.name}</a>
                                                 </td>
                                             </g:if>
                                             <g:else>
@@ -99,7 +94,7 @@
                                                                 for (j in 0..9) {
                                                             %>
                                                             <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
-                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                            <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
                                                             <%
                                                                 }
                                                             %>
@@ -109,7 +104,7 @@
                                                                 for (int j=10; j< sortedRelatedObjects.size(); j++) {
                                                             %>
                                                             <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
-                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                            <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
                                                             <%
                                                                 }
                                                             %>
@@ -118,7 +113,7 @@
                                                     </g:if>
                                                     <g:else>
                                                         <g:each var="rObj" in="${sortedRelatedObjects}">
-                                                            <li><a style="color:#006DBA;cursor:pointer;display:block;text-decoration:underline;" onclick="YAHOO.rapidjs.Components['${componentId}'].show(createURL('getObjectDetails.gsp', {name:'${rObj.name}'}), 'Details of ${rObj.className} ${rObj.name}');">${rObj.className} ${rObj.name}</a></li>
+                                                            <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
                                                         </g:each>
                                                     </g:else>
                                                 </ul>

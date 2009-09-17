@@ -139,7 +139,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     addNodeContent: function(config){
         if(config.nodeContent == null)config.nodeContent= {};
         if(config.nodeContent.images == null)config.nodeContent.images= [];
-        config.nodeContent.images[config.nodeContent.images.length] = {id:"showMenu", clickable:"true", x:0, y:0, dataKey:"showMenu", images:{
+        config.nodeContent.images[config.nodeContent.images.length] = {id:"showMenu", clicable:"true", x:0, y:0, dataKey:"showMenu", images:{
             "default":"arrow_down2.png"
         }}
         config.nodeContent.images[config.nodeContent.images.length] = {id:"expand", clickable:"true", x:20, y:0, dataKey:"canExpand", images:{
@@ -626,6 +626,8 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             }
             this.url = this.dataURL;
             this.getData();
+            var comp = this;
+            setTimeout(comp.events["loadstatechanged"].fireDirect(comp, true), 100)
         }
 
 
@@ -782,7 +784,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     poll : function()
     {
-        this.getData();
+        if(this.isVisible()){
+            this.getData();    
+        }
     }
 
 });

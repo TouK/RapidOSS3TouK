@@ -40,22 +40,9 @@ class AdminUiDatabaseTabTest extends SeleniumTestCase {
         def username = CommonTestUtils.getTestProperty("MYSQL.DatabaseUsername")
         def password = CommonTestUtils.getTestProperty("MYSQL.DatabasePassword")
         def connName = "dbConn1";
-        selenium.createDatabaseConnection(connName, driver, url, username, password, true);
+        selenium.createDatabaseConnection(connName, driver, "invalidUrl", username, password, true);
         selenium.clickAndWait("link=DatabaseConnection List");
         selenium.clickAndWait("link=Test Connection");
         assertEquals("Cannot connect to [dbConn1]. Reason: [java.sql.SQLException: No suitable driver found for invalidUrl]", CommonUiTestUtils.getPageErrorMessage(selenium))
-    }
-
-    void testDeneme(){
-        def js = """
-            var wn = this.browserbot.getCurrentWindow()
-            var strArray = [];
-            for(var p in wn.sessionStorage){
-                strArray[strArray.length] = p;
-            }
-            strArray.join(',')
-        """
-        println selenium.getEval(js)
-        println selenium.getEval("this.browserbot.getCurrentWindow().UIComponents")
     }
 }

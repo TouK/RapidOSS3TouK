@@ -97,11 +97,12 @@ class GroupController {
         else {
             def availableUsers = RsUser.list();
             def groupUsers = [:];
-            group.users.each {
+            def users = group.users;
+            users.each {
                 groupUsers[it.username] = it;
             };
             availableUsers = availableUsers.findAll {!groupUsers.containsKey(it.username)}
-            return [group: group, availableUsers: availableUsers]
+            return [group: group, availableUsers: availableUsers, groupUsers:users]
         }
     }
 

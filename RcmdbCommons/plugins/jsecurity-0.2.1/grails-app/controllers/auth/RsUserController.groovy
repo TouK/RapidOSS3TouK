@@ -73,9 +73,10 @@ class RsUserController {
             redirect(action: list)
         }
         else {
-            def availableGroups = availableGroupsForUserGroups(rsUser.groups);
+            def userGroups =  rsUser.groups
+            def availableGroups = availableGroupsForUserGroups(userGroups);
             def userChannels=getChannelInformationsBeansForUpdate(rsUser);
-            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:rsUser.groups,userChannels:userChannels];
+            return [rsUser: rsUser, availableGroups: availableGroups,userGroups:userGroups,userChannels:userChannels];
         }
     }
 

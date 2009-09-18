@@ -77,14 +77,14 @@ class SnmpUiUtilities {
         }
     }
 
-    public static reloadSnmpConnectorById(Selenium selenium, String connectorId,String scriptName, boolean validate = true){
+    public static reloadSnmpConnectorById(Selenium selenium, String connectorId,String connectorName, boolean validate = true){
         selenium.openAndWait("/RapidSuite/snmpConnector/show/" + connectorId);
         Assert.assertTrue("Snmp connector ${connectorId} does not exist".toString(), selenium.getLocation().indexOf("/snmpConnector/show") >= 0);
         selenium.clickAndWait("_action_Reload");
         if (validate)
         {
             Assert.assertTrue("Expected to end with /RapidSuite/snmpConnector/show but was ${selenium.getLocation()}", selenium.getLocation().endsWith("/RapidSuite/snmpConnector/show/${connectorId}"));
-            CommonUiTestUtils.assertPageMessage(selenium, "Script ${scriptName} reloaded successfully.")
+            CommonUiTestUtils.assertPageMessage(selenium, "Script ${connectorName} reloaded successfully.")
         }
     }
 

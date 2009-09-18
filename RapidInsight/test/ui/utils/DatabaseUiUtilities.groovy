@@ -43,6 +43,7 @@ class DatabaseUiUtilities {
         selenium.type("userPassword", password);
         selenium.type("minTimeout", "20");
         selenium.clickAndWait("//input[@value='Create']");
+
         def dbId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation());
         if (validate)
         {

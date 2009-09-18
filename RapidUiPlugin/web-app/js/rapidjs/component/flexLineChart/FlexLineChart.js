@@ -108,7 +108,7 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
         }
         else{
 
-            setTimeout(this.handleSuccess.createDelegate(this, [response, keepExisting, removeAttribute], true),300);
+            setTimeout(this.handleSuccess.createDelegate(this, [response, keepExisting, removeAttribute]),300);
         }
     },
     loadRangeData: function(root){

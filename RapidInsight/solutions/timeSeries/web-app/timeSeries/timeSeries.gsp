@@ -138,18 +138,14 @@ releaseOwnershipVisible="true"
         swfURL="../images/rapidjs/component/chart/FlexLineChart.swf" title="FlexLineChartDialog" pollingInterval="0"
         durations=""
 
-        onItemClicked="${['showVariableDetails']}"
-    
-        onRangeChanged="${['showAnnotations']}"
-    
 >
 </rui:flexLineChart>
 
 <%
-functionActionCondition2370Condition="window.currentDevice=params.data.resource || window.currentDevice;params.data.nodeType != 'Container';"
+functionActionCondition3538Condition="window.currentDevice=params.data.resource || window.currentDevice;params.data.nodeType != 'Container';"
 %>
 
-<rui:action id="graph" type="function" function="refresh" componentId='FlexLineChart' condition="$functionActionCondition2370Condition"
+<rui:action id="graph" type="function" function="refresh" componentId='FlexLineChart' condition="$functionActionCondition3538Condition"
 
 >
     
@@ -160,7 +156,7 @@ functionActionCondition2370Condition="window.currentDevice=params.data.resource 
 </rui:action>
 
 <%
-functionActionCondition2380Condition=""
+functionActionCondition3548Condition=""
 %>
 
 <rui:action id="showVariableDetails" type="function" function="setQueryWithView" componentId='eventsGrid' 
@@ -180,7 +176,7 @@ functionActionCondition2380Condition=""
 </rui:action>
 
 <%
-functionActionCondition2399Condition=""
+functionActionCondition3564Condition=""
 %>
 
 <rui:action id="showAnnotations" type="function" function="setQueryWithView" componentId='eventsGrid' 
@@ -216,17 +212,17 @@ functionActionCondition2399Condition=""
         
 
 
-    <rui:innerLayout id="2332">
+    <rui:innerLayout id="3500">
         
-            <rui:layoutUnit position='center' gutter='0px' id='2421' isActive='true' rsInsertedAt='Thu Sep 17 17:26:55 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='FlexLineChart'>
-        
-            </rui:layoutUnit>
-        
-            <rui:layoutUnit position='left' gutter='0px' id='2427' isActive='true' resize='false' rsInsertedAt='Thu Sep 17 17:26:55 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' width='200' component='RRDVariables'>
+            <rui:layoutUnit position='center' gutter='0px' id='3583' isActive='true' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='FlexLineChart'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='2424' isActive='true' resize='false' rsInsertedAt='Thu Sep 17 17:26:55 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='eventsGrid'>
+            <rui:layoutUnit position='left' gutter='0px' id='3589' isActive='true' resize='false' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' width='200' component='RRDVariables'>
+        
+            </rui:layoutUnit>
+        
+            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='3586' isActive='true' resize='false' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='eventsGrid'>
         
             </rui:layoutUnit>
         

@@ -58,7 +58,8 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         method.operationClass = GetPropertiesMethodDomainObjectOperations;
 
         def allProperties = method.getDomainObjectProperties();
-        assertEquals(13, allProperties.size())
+        println allProperties.name
+        assertEquals(15, allProperties.size())
 
 
         RapidDomainClassProperty prop = allProperties[0] //propsMap["declaredProp1"];
@@ -161,6 +162,22 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals(RelationMethodDomainObject2, prop.relatedModel);
         assertEquals("revRel2", prop.reverseName);
 
+        prop = allProperties[13]
+        assertEquals("rsInsertedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        prop = allProperties[14]
+        assertEquals("rsUpdatedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
 
         try
         {
@@ -172,7 +189,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         }
         method.setOperationClass(null);
         allProperties = method.getDomainObjectProperties();
-        assertEquals(7, allProperties.size())
+        assertEquals(9, allProperties.size())
     }
 
     public void testGetFederatedProperties()
@@ -269,7 +286,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         method.operationClass = GetPropertiesMethodDomainObjectOperations;
 
         def simpleProperties = method.getNonFederatedProperties();
-        assertEquals(3, simpleProperties.size())
+        assertEquals(5, simpleProperties.size())
 
 
         RapidDomainClassProperty prop = simpleProperties[0]
@@ -295,6 +312,22 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
+        prop = simpleProperties[3]
+        assertEquals("rsInsertedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        prop = simpleProperties[4]
+        assertEquals("rsUpdatedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
         try
         {
             simpleProperties.remove(0)
@@ -312,7 +345,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObjectWithInvalidProperties);
         GetPropertiesMethod method = new GetPropertiesMethod(cls, manager);
         def allProperties = method.getDomainObjectProperties();
-        assertEquals(9, allProperties.size())
+        assertEquals(11, allProperties.size())
         RapidDomainClassProperty prop = allProperties[0]
         assertEquals("id", prop.name);
 
@@ -340,6 +373,12 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         prop = allProperties[8]
         assertEquals("rel2", prop.name);
 
+        prop = allProperties[9]
+        assertEquals("rsInsertedAt", prop.name);
+
+        prop = allProperties[10]
+        assertEquals("rsUpdatedAt", prop.name);
+
     }
 
     public void testGetPropertiesIgnoresIfPropertyHaveGetterInOperations()
@@ -355,7 +394,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
             println it.name + " : " + it.type + " : " + it.isOperationProperty
         }
 
-        assertEquals(6, allProperties.size());
+        assertEquals(8, allProperties.size());
 
         RapidDomainClassProperty prop = allProperties[0];
         assertEquals("id", prop.name);
@@ -406,6 +445,22 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals(RelationMethodDomainObject2, prop.relatedModel);
         assertEquals("revRel2", prop.reverseName);
 
+        prop = allProperties[6]
+        assertEquals("rsInsertedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        prop = allProperties[7]
+        assertEquals("rsUpdatedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
     }
     public void testGetPropertiesIgnoresStaticPropertyInOperations()
     {
@@ -420,7 +475,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
             println it.name + " : " + it.type + " : " + it.isOperationProperty
         }
 
-        assertEquals(4, allProperties.size());
+        assertEquals(6, allProperties.size());
 
         RapidDomainClassProperty prop = allProperties[0];
         assertEquals("id", prop.name);
@@ -450,6 +505,22 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertFalse(prop.isKey);
         assertEquals(String, prop.type);
         assertFalse(prop.isOperationProperty);
+
+        prop = allProperties[4]
+        assertEquals("rsInsertedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
+
+        prop = allProperties[5]
+        assertEquals("rsUpdatedAt", prop.name);
+        assertFalse(prop.isKey);
+        assertFalse(prop.isRelation);
+        assertEquals(Date, prop.type);
+        assertFalse(prop.isOperationProperty);
+        assertFalse(prop.isFederated);
 
     }
 }

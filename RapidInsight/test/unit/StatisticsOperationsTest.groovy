@@ -41,7 +41,7 @@ class StatisticsOperationsTest extends RapidCmdbWithCompassTestCase{
         assertFalse(stat1.timestamp<Date.now()-400)
 
         assertEquals("system",stat1.user);
-        assertEquals(description,stat1.description);
+        assertEquals("",stat1.description);
         assertEquals(duration.toString(),stat1.value);
 
         //add again

@@ -32,7 +32,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
     public void testSearch()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "sortOrder", "name"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "sortOrder", "name", "rsInsertedAt", "rsUpdatedAt"]
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -70,7 +70,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testExportAsXml()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "name"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "name", "rsInsertedAt", "rsUpdatedAt"]
         def expectedDatasources = []
         for (i in 0..9) {
             BaseDatasource ds = BaseDatasource.add(name: "ds${i}");
@@ -136,7 +136,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testExportAsCsv()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "name"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "name", "rsInsertedAt", "rsUpdatedAt"]
         def expectedDatasources = []
         for (i in 0..9) {
             BaseDatasource ds = BaseDatasource.add(name: "ds${i}");

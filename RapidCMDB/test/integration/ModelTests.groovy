@@ -142,7 +142,7 @@ class ModelTests extends RapidCmdbIntegrationTestCase {
         Developer dev1 = Developer.add(name:"ibrahim", bday:"01/01/1986")
         Map returnedMap = dev1.asMap()
 
-        assertEquals (6, returnedMap.size());
+        assertEquals (8, returnedMap.size());
         assertEquals("ibrahim", returnedMap.name)
         assertEquals("01/01/1986", returnedMap.bday)
         assertEquals("", returnedMap.language)

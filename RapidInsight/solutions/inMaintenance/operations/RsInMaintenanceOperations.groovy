@@ -4,7 +4,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 {
     public static boolean isObjectInMaintenance(objectName)
     {
-        return RsInMaintenance.countHits("objectName:${objectName.exactQuery()}");
+        return RsInMaintenance.countHits("objectName:${objectName.exactQuery()}")>0;
     }
     public static boolean isEventInMaintenance(event)
     {

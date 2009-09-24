@@ -42,7 +42,7 @@
     function getMapUpdateParams(mapId)
 	{
         var updateParams=getMapSaveParams();
-        updateParams["mapId"]=mapId;
+        updateParams["id"]=mapId;
         updateParams["mode"]='edit';
         return updateParams;
     }

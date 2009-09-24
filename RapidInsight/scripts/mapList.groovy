@@ -29,8 +29,8 @@ if (user == null) {
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-MapGroup.add(groupName: "Default", username: web.session.username);
-def mapGroups = MapGroup.searchEvery("username:${web.session.username.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)");
+MapGroup.add(groupName: MapGroup.MY_MAPS, username: web.session.username);
+def mapGroups = MapGroup.getVisibleGroupsForUser(web.session.username);
 
 mapBuilder.Maps
 {

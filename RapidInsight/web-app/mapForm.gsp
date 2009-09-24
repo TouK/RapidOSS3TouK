@@ -4,9 +4,9 @@
     def userName = session.username;
     def topoMap;
 %>
-<g:if test="${mode == 'edit' && (topoMap = TopoMap.get([id: params.mapId])) == null}">
+<g:if test="${mode == 'edit' && (topoMap = TopoMap.get([id: params.id])) == null}">
     <div style="height:100%; background-color:#fff3f3;color:#cc0000">
-        TopoMap with id ${params.mapId} does not exist.
+        TopoMap with id ${params.id} does not exist.
     </div>
 </g:if>
 <g:else>
@@ -17,7 +17,7 @@
     }
     </script>
     <%
-        def mapGroups = MapGroup.searchEvery("username:${userName.exactQuery()} AND isPublic:false")
+        def mapGroups = MapGroup.getSaveGroupsForUser(userName);
         def groupName = params.groupName ? params.groupName : mode == 'edit' ? topoMap.group.groupName : '';
         def mapName = params.mapName ? params.mapName : mode == 'edit' ? topoMap.mapName : '';
         def nodes = params.nodes ? params.nodes : ''
@@ -27,9 +27,11 @@
 
 
         def layout = params.layout ? params.layout : mode == 'edit' ? topoMap.layout : '0'
+
+        def url = mode == 'edit' ? "topoMap/update?format=xml":"topoMap/save?format=xml"
     %>
 
-    <rui:formRemote method="POST" action="script/run/saveMap?format=xml" componentId="${params.componentId}" onSuccess="window.refreshMapTree">
+    <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshMapTree">
         <table>
             <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="groupName" style="width:175px">
                 <g:each var="mapGroup" in="${mapGroups}">
@@ -46,7 +48,7 @@
         </table>
         <input type="hidden" name="nodes" value="${nodes.encodeAsHTML()}"/>
         <input type="hidden" name="layout" value="${layout.encodeAsHTML()}"/>
-        <input type="hidden" name="mapId" value="${mode == 'edit'? topoMap.id : ''}"/>
+        <input type="hidden" name="id" value="${mode == 'edit'? topoMap.id : ''}"/>
         <input type="hidden" name="mapProperties" value="${mapProperties.encodeAsHTML()}"/>
         <input type="hidden" name="mapPropertyList" value="${mapPropertyList.encodeAsHTML()}"/>
         <input type="hidden" name="nodePropertyList" value="${nodePropertyList.encodeAsHTML()}"/>

@@ -20,8 +20,7 @@ package ui.map
 
 import com.ifountain.core.domain.annotations.*;
 
-class MapGroup {
-    public static String MY_MAPS = "My Maps"
+class MapGroup {    
     //AUTO_GENERATED_CODE
 
     static searchable = {

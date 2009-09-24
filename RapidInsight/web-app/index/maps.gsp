@@ -3,7 +3,7 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<rui:treeGrid id="mapTree" url="../script/run/mapList?format=xml" rootTag="Maps" pollingInterval="0" timeout="30"
+<rui:treeGrid id="mapTree" url="../topoMap/listWithGroups?format=xml" rootTag="Maps" pollingInterval="0" timeout="30"
         keyAttribute="id" contentPath="Map" title="Saved Maps" expanded="true"
 
         onNodeClicked="${['requestMapAction']}"

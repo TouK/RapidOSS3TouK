@@ -28,7 +28,27 @@ class TopoMapController {
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [delete: ['POST', 'GET']]
 
+    def listWithGroups = {
+        def username =  session.username;
+        
+        def writer = new StringWriter();
+        def mapBuilder = new MarkupBuilder(writer);
 
+        MapGroup.add(groupName: MapGroup.MY_MAPS(), username: username);
+        def mapGroups = MapGroup.getVisibleGroupsForUser(username);
+
+        mapBuilder.Maps
+        {
+            mapGroups.each {MapGroup group ->
+                mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group", isPublic: group.isPublic) {
+                    group.maps.each {TopoMap topoMap ->
+                        mapBuilder.Map(id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic: topoMap.isPublic, layout: topoMap.layout)
+                    }
+                }
+            }
+        }        
+        render(text: writer.toString(), contentType: "text/xml")
+    }
     def delete = {
         def topoMap = TopoMap.get( [id:params.id])
         if(topoMap) {
@@ -58,8 +78,8 @@ class TopoMapController {
     def save= {
 
         def groupName =  params.groupName
-        if(!groupName || groupName == "" || groupName.equalsIgnoreCase(MapGroup.MY_MAPS)){
-            groupName = MapGroup.MY_MAPS;
+        if(!groupName || groupName == "" || groupName.equalsIgnoreCase(MapGroup.MY_MAPS())){
+            groupName = MapGroup.MY_MAPS();
         }
         def mapName =  params.mapName
         def layout =  params.layout
@@ -103,8 +123,8 @@ class TopoMapController {
             def nodes =  params.nodes;
             def username = session.username;
 
-            if(!groupName || groupName == "" || groupName.equalsIgnoreCase(MapGroup.MY_MAPS)){
-                groupName = MapGroup.MY_MAPS;
+            if(!groupName || groupName == "" || groupName.equalsIgnoreCase(MapGroup.MY_MAPS())){
+                groupName = MapGroup.MY_MAPS();
             }
             def group = MapGroup.get( groupName : groupName, username : username );
             if(group == null)

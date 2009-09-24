@@ -28,4 +28,9 @@ class MapGroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDo
     {
         return MapGroup.searchEvery("username:${username.exactQuery()} AND isPublic:false");    
     }
+
+    public static String MY_MAPS()
+    {
+        return "My Maps";
+    }
 }

@@ -64,7 +64,6 @@ scriptsToAdd.add([name:"getClassesForSearch", enabledForAllGroups:true])
 // topology scripts
 scriptsToAdd.add([name:"expandMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapData", enabledForAllGroups:true])
-scriptsToAdd.add([name:"mapList", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
 
 //instrumentation scripts

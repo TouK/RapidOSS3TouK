@@ -26,7 +26,14 @@ class MapGroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDo
     }
     static def getSaveGroupsForUser(username)
     {
-        return MapGroup.searchEvery("username:${username.exactQuery()} AND isPublic:false");    
+        if(username==RsUser.RSADMIN)
+        {
+            return MapGroup.searchEvery("username:${username.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)");
+        }
+        else
+        {
+            return MapGroup.searchEvery("username:${username.exactQuery()} AND isPublic:false");
+        }
     }
 
     public static String MY_MAPS()

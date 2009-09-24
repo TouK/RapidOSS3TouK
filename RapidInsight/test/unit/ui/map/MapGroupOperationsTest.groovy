@@ -130,8 +130,8 @@ class MapGroupOperationsTest  extends RapidCmdbWithCompassTestCase{
         assertEquals(0,visibleGroups.findAll{it.id==userPublicGroup.id}.size());
 
         saveGroups=MapGroup.getSaveGroupsForUser(RsUser.RSADMIN);
-        assertEquals(1,saveGroups.size());
-        assertEquals(0,saveGroups.findAll{it.id==adminPublicGroup.id}.size());
+        assertEquals(2,saveGroups.size());
+        assertEquals(1,saveGroups.findAll{it.id==adminPublicGroup.id}.size());
         assertEquals(1,saveGroups.findAll{it.id==adminNonPublicGroup.id}.size());
         assertEquals(0,saveGroups.findAll{it.id==userGroup.id}.size());
         assertEquals(0,saveGroups.findAll{it.id==userPublicGroup.id}.size());

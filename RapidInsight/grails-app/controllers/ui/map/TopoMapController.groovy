@@ -30,7 +30,7 @@ class TopoMapController {
 
     def listWithGroups = {
         def username =  session.username;
-        
+
         def writer = new StringWriter();
         def mapBuilder = new MarkupBuilder(writer);
 
@@ -40,14 +40,19 @@ class TopoMapController {
         mapBuilder.Maps
         {
             mapGroups.each {MapGroup group ->
-                mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group", isPublic: group.isPublic) {
+                def actionsAllowed=actionsAllowed(username,group.username);
+                mapBuilder.Map(id: group.id, name: group.groupName, nodeType: "group", isPublic: group.isPublic,actionsAllowed:actionsAllowed) {
                     group.maps.each {TopoMap topoMap ->
-                        mapBuilder.Map(id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic: topoMap.isPublic, layout: topoMap.layout)
+                        mapBuilder.Map(id: topoMap.id, name: topoMap.mapName, nodeType: "map", isPublic: topoMap.isPublic, layout: topoMap.layout,actionsAllowed:actionsAllowed)
                     }
                 }
             }
-        }        
+        }
         render(text: writer.toString(), contentType: "text/xml")
+    }
+    def actionsAllowed(currentUsername,ownerUsername)
+    {
+        return currentUsername==ownerUsername;
     }
     def delete = {
         def topoMap = TopoMap.get( [id:params.id])

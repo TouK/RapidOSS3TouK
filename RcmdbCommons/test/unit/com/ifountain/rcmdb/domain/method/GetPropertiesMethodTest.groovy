@@ -27,6 +27,7 @@ import com.ifountain.rcmdb.domain.constraints.KeyConstraint
 import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.domain.property.FederatedPropertyManager
+import java.lang.reflect.Method
 
 /**
 * Created by IntelliJ IDEA.
@@ -177,6 +178,11 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals(Date, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
+
+        //includes getHugeDataProperty in operation class but not returned with getProperties method
+        def methods = Arrays.asList(GetPropertiesMethodDomainObjectOperations.getMethods());
+        assertTrue(methods.name.contains("getHugeDataProperty"))
+
 
 
         try
@@ -587,7 +593,6 @@ class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParen
     private String privateProperty2;
 
 
-    //    @HideProperty
     //    String privateProperty4;
     def declaredProp2;
 
@@ -611,11 +616,11 @@ class GetPropertiesMethodDomainObjectOperations extends GetPropertiesMethodParen
     def getOprProp6(thisIsNotAProp)
     {
     }
-    //    @HideProperty
-    //    private String getPrivateProperty3()
-    //    {
-    //        return "";
-    //    }
+    @HideProperty
+    def getHugeDataProperty()
+    {
+        return "";
+    }
 }
 
 

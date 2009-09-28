@@ -20,6 +20,7 @@ package datasource
 
 import com.ifountain.comp.converter.ConverterRegistry
 import com.ifountain.core.datasource.BaseAdapter
+import com.ifountain.annotations.HideProperty
 
 /**
  * Created by IntelliJ IDEA.
@@ -55,7 +56,7 @@ class BaseDatasourceOperations extends com.ifountain.rcmdb.domain.operation.Abst
         return ds;
     }
 
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         null;
     }

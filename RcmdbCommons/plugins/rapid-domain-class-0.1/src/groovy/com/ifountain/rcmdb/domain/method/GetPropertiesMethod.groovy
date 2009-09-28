@@ -26,6 +26,8 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.lang.reflect.Modifier
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import java.lang.reflect.Method
+import com.ifountain.annotations.HideProperty
 
 /**
  * Created by IntelliJ IDEA.
@@ -120,15 +122,18 @@ class GetPropertiesMethod
                 {
                     def isPrivate = Modifier.isPrivate(prop.getModifiers())
                     def isMethodsPrivate = true;
+                    def isHidden = false;
                     if (prop.getter != null)
                     {
                         isMethodsPrivate = isMethodsPrivate && Modifier.isPrivate(prop.getGetter().getModifiers())
+                        Method m = operationClass.getMethod(prop.getGetter().getName(), prop.getGetter().getNativeParameterTypes())
+                        isHidden = m != null && m.isAnnotationPresent(HideProperty)
                     }
                     if (prop.setter != null)
                     {
                         isMethodsPrivate = isMethodsPrivate && Modifier.isPrivate(prop.getSetter().getModifiers())
                     }
-                    if (!isPrivate && !isMethodsPrivate && !Modifier.isStatic(prop.getModifiers()))
+                    if (!isPrivate && !isMethodsPrivate && !isHidden && !Modifier.isStatic(prop.getModifiers()))
                     {
                         allProperties.add(new RapidDomainClassProperty(name: prop.name, isRelation: false, isOperationProperty: true, type:prop.getType()));
                     }

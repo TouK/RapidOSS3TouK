@@ -18,7 +18,8 @@
 */
 package datasource
 import datasource.SingleTableDatabaseAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.annotations.HideProperty;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -36,7 +37,7 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
             this.adapter = new SingleTableDatabaseAdapter(ownConnection.name, tableName, tableKeys, reconnectInterval*1000, getLogger());
        }
     }
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         return [adapter];
     }
@@ -67,7 +68,7 @@ class SingleTableDatabaseDatasourceOperations extends BaseDatasourceOperations{
         return convert(adapter.getMultiKeyRecord(keymap, columnList));
     }
 
-    def getRecords(){
+    @HideProperty def getRecords(){
 		return convert(adapter.getRecords());
     }
 

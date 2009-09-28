@@ -2,6 +2,7 @@ package message
 
 import auth.Role
 import auth.RsUser
+import com.ifountain.annotations.HideProperty
 
 /**
 * Created by IntelliJ IDEA.
@@ -27,12 +28,12 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return getDestination(destinationType)?.channelType;
     }
 
-    public static List getDestinationNames() {
+    @HideProperty public static List getDestinationNames() {
         def destinationConfig = getDestinations();
         return destinationConfig.name;
     }
 
-    public static List getDesnitationGroups()
+    @HideProperty public static List getDesnitationGroups()
     {
         return  [
                  [name:"Channel",destinationNames:getChannelDestinationNames()],
@@ -56,10 +57,10 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return groups;
     }
 
-    public static List getChannelDestinationNames(){
+    @HideProperty public static List getChannelDestinationNames(){
        return RsMessageRuleOperations.getDestinations().findAll{isChannelType(it.channelType)}.name;
     }
-    public static List getNonChannelDestinationNames()
+    @HideProperty public static List getNonChannelDestinationNames()
     {
        return RsMessageRuleOperations.getDestinations().findAll{!isChannelType(it.channelType)}.name;
     }

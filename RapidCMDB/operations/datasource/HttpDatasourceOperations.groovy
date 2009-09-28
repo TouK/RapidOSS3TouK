@@ -18,7 +18,8 @@
 */
 package datasource
 import datasource.HttpAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.annotations.HideProperty;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -38,7 +39,7 @@ class HttpDatasourceOperations extends BaseDatasourceOperations{
        }
     }
 
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         return [adapter];
     }

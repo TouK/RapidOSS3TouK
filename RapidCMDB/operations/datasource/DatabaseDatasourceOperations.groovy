@@ -18,7 +18,8 @@
 */
 package datasource
 import datasource.DatabaseAdapter
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger
+import com.ifountain.annotations.HideProperty;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -35,7 +36,7 @@ class DatabaseDatasourceOperations extends BaseDatasourceOperations{
             this.adapter = new DatabaseAdapter(ownConnection.name, reconnectInterval*1000, getLogger());
        }
     }
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         return [adapter];
     }

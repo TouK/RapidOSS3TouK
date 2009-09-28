@@ -2,6 +2,7 @@ package datasource
 
 import datasource.JiraAdapter
 import org.apache.log4j.Logger
+import com.ifountain.annotations.HideProperty
 
 class JiraDatasourceOperations extends BaseDatasourceOperations {
     JiraAdapter adapter;
@@ -13,7 +14,7 @@ class JiraDatasourceOperations extends BaseDatasourceOperations {
        }
     }
 
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         return [adapter];
     }

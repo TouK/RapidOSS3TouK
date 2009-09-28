@@ -5,6 +5,7 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.support.*
 import org.codehaus.groovy.grails.web.context.*
 import com.ifountain.core.datasource.BaseAdapter
+import com.ifountain.annotations.HideProperty
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,7 +24,7 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
        }
     }
 
-    def getAdapters()
+    @HideProperty def getAdapters()
     {
         return [adapter];
     }
@@ -35,7 +36,7 @@ class EmailDatasourceOperations extends BaseDatasourceOperations{
        this.adapter.sendEmail(emailParams);
     }
 
-    public EmailAdapter getAdapter()
+    @HideProperty public EmailAdapter getAdapter()
     {
         return adapter;
     }

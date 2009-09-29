@@ -21,11 +21,10 @@ def objectName = params.name;
 def domainObject = RsTopologyObject.get(name: objectName)
 if(domainObject!=null)
 {
-	def query="";
+	def query="elementName:${domainObject.name.exactQuery()}";
 	if(domainObject instanceof RsComputerSystem)
 	{
-		def links = domainObject.connectedVia.name;
-        query = "elementName:${domainObject.name.exactQuery()}";
+		def links = domainObject.connectedVia.name;        
         if (links.size() > 0) {
             def queryArray = [];
             links.each {
@@ -34,10 +33,6 @@ if(domainObject!=null)
             query += " OR ${queryArray.join(' OR ')}";
         }
 
-	}
-	else
-	{
-		query="elementName:${domainObject.name.exactQuery()}";
 	}
 	eventSearchResults = RsEvent.search(query, params);
 }
@@ -52,6 +47,3 @@ builder.Objects(total: eventSearchResults.total, offset: eventSearchResults.offs
 
 
 return sw.toString();
-
-
-

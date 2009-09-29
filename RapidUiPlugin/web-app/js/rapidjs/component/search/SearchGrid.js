@@ -498,7 +498,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     handleViewChange: function(e) {
         this.viewChanged();
     },
-    viewChanged: function(newQuery, willSaveHistory) {
+    viewChanged: function(newQuery, willSaveHistory, extraSearchParams) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         if (view == 'default' || (viewNode && viewNode.getAttribute("updateAllowed") == "false")) {
@@ -509,7 +509,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.updateViewButton.enable();
             this.removeViewButton.enable();
         }
-        this.activateView(view, newQuery, willSaveHistory);
+        this.activateView(view, newQuery, willSaveHistory, extraSearchParams);
     },
     _clearBackgroundImages:function() {
         for (var i = 0; i < this.columns.length; i++) {
@@ -524,7 +524,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             }
         }
     },
-    activateView : function(view, newQuery, willSaveHistory) {
+    activateView : function(view, newQuery, willSaveHistory, extraSearchParams) {
         this.showMask();
         this._clearBackgroundImages();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
@@ -609,7 +609,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortAtt = column['attributeName'];
             sortOrder = column['sortOrder'] || 'asc';
         }
-        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.getSearchClass());
+        this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.getSearchClass(), extraSearchParams);
         this.handleSearch(null, willSaveHistory);
     },
     getColumnConfigFromViewNode: function(viewNode) {
@@ -689,7 +689,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         if (currentView != view) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
-            this.viewChanged(queryString);
+            this.viewChanged(queryString, true, extraParams);
         }
         else {
             this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.getSearchClass(), extraParams);

@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>RIMobile</title>
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+<meta name="viewport" content="width=device-width; initial-scale=1.0/>
 <link rel="apple-touch-icon" href="../images/mobile/iui-logo-touch-icon.png" />
 <meta name="apple-touch-fullscreen" content="YES" />
 <style type="text/css" media="screen">@import "../css/mobile/iui.css";</style>
@@ -38,6 +38,8 @@
             <a id="queriesButton" class="button" href="#" style="display:none">Queries</a>
             <rui:link id="eventsButton" class="button" url="mobile/event.gsp" style="display:none">Events</rui:link>
             <rui:link id="hEventsButton" class="button" url="mobile/historicalEvent.gsp" style="display:none">H. Events</rui:link>
+            <rui:link id="inventoryButton" class="button" url="mobile/inventory.gsp" style="display:none">Inventory</rui:link>
+            <rui:link id="objectReportsButton" class="button" url="mobile/objectReports.gsp" style="display:none">Reports</rui:link>
             <a id="logoutButton" class="button" href="../auth/logout" target="_self">Logout</a>
             <a id="searchButton" class="button" href="#searchForm" style="display: none;" title="Search">Search</a>
         </ul>
@@ -98,6 +100,28 @@
              }
              else{
                  document.getElementById('refreshButton').parentNode.style.display = 'none';
+             }
+             if(page.id == 'inventoryList'){
+                 window.inventoryListHref = href;
+             }
+             if(page.id == 'objectDetails' || page.id == 'objectReports'){
+                 var inventoryBtn = document.getElementById('inventoryButton');
+                 inventoryBtn.style.display = '';
+                 inventoryBtn.setAttribute('href', window.inventoryListHref)
+             }
+             else{
+                 document.getElementById('inventoryButton').style.display = 'none';
+             }
+             if(page.id == 'objectReports'){
+                 window.lastReportsHref = href;
+             }
+             if(page.id == 'objectReport'){
+                 var oReportsBtn = document.getElementById('objectReportsButton');
+                 oReportsBtn.style.display = '';
+                 oReportsBtn.setAttribute('href', window.lastReportsHref)
+             }
+             else{
+                 document.getElementById('objectReportsButton').style.display = 'none';
              }
             if(page.id == 'inventoryList' || page.id == 'objectDetails' || (page.id == 'query' && href && href.indexOf('topology') > -1)){
                 document.getElementById('searchInSelect').style.display = '';

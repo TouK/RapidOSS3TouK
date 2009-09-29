@@ -10,7 +10,7 @@ class MobileFilters {
     def filters = {
         allURIs(uri: '/**') {
             before = {
-                if(MobileUtils.isMobile(request)) {
+                if(MobileUtils.isMobile(request) && params.mobile != "true") {
                     if(request.getRequestURL().indexOf("/auth") < 0 && request.getRequestURL().indexOf("/layouts") < 0  && request.getRequestURL().indexOf("/mobile") < 0)
                     {
                     	response.sendRedirect("/RapidSuite/mobile/home.gsp");

@@ -634,6 +634,23 @@ th a:link, th a:visited, th a:hover {
    color:white;
 }
 
+.ri-report-next-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( ../../images/rapidjs/component/tools/page-next.gif ) no-repeat center;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration:none;
+}
+
+.ri-report-previous-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( ../../images/rapidjs/component/tools/page-prev.gif ) no-repeat center;
+    cursor: pointer;
+    margin-right: 5px;
+    text-decoration:none;
+}
 
 /************************************************************************************************/
 

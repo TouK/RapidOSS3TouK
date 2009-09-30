@@ -31,6 +31,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     init: function() {
         this.totalColumnWidth = null;
         this.viewBuilder = null;
+        this.viewsLoaded = false;
         this.currentView = 'default';
         this.defaultColumns = YAHOO.rapidjs.ObjectUtils.clone(this.columns, true);
         var defaultColumnMap = {};
@@ -459,6 +460,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var viewName = viewNode.getAttribute('name');
             SelectUtils.addOption(this.viewInput, viewName, viewName);
         }
+        this.viewsLoaded = true;
     },
     handleRemoveView: function() {
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
@@ -687,7 +689,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (this.searchClassesLoaded) {
             SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }
-        if (currentView != view) {
+        if (currentView != view && this.viewsLoaded) {
             SelectUtils.selectTheValue(this.viewInput, view, 0);
             this.viewChanged(queryString, true, extraParams);
         }

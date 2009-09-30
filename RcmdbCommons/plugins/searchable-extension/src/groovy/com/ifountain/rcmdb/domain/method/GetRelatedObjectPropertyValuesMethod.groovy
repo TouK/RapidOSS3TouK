@@ -31,6 +31,7 @@ import com.ifountain.rcmdb.util.CollectionUtils
  */
 class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod{
     Map relations;
+    public static final int BATCH_SIZE = 200;
     public GetRelatedObjectPropertyValuesMethod(MetaClass mcp, Map relations) {
         super(mcp);
         this.relations = relations;
@@ -47,11 +48,18 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
         {
             Map relatedObjectIds = RelationUtils.getRelatedObjectsIds(domainObject, relationMetaData.name, relationMetaData.otherSideName, source);
             def ids = new ArrayList(relatedObjectIds.keySet())
-            CollectionUtils.executeForEachBatch (ids, 200, ){List idsToBeProcessed->
+            CollectionUtils.executeForEachBatch (ids, BATCH_SIZE, ){List idsToBeProcessed->
                 StringBuffer query = new StringBuffer("id:");
                 query.append (idsToBeProcessed.join(" OR id:"));
-                results.addAll(relationMetaData.otherSideCls.'getPropertyValues'(query.toString(), propList, options));
+                if(options.max == null || results.size() < options.max)
+                {
+                    results.addAll(relationMetaData.otherSideCls.'getPropertyValues'(query.toString(), propList, options));
+                }
             }
+        }
+        if(options.max != null && results.size() >= options.max)
+        {
+            results = results.subList (0, options.max)
         }
         return results;
     }

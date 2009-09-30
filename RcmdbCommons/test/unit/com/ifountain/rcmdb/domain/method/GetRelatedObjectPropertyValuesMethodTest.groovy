@@ -180,6 +180,36 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
         }
     }
 
+    public void testGetRelatedObjectPropertiesWithHugeNumberOfObjectsAndOptions()
+    {
+        def defaultMaxCount = BooleanQuery.getMaxClauseCount();
+        try
+        {
+            def newMaxClause = GetRelatedObjectPropertyValuesMethod.BATCH_SIZE*2;
+            BooleanQuery.setMaxClauseCount (newMaxClause);
+            createModelClasses();
+            initialize([modelClass, relatedModelClass], [])
+
+            def relatedModels = [];
+            def numberOfRelatedObjects = GetRelatedObjectPropertyValuesMethod.BATCH_SIZE*4;
+            for(int i=0; i < numberOfRelatedObjects; i++)
+            {
+                def addedRelatedObject = relatedModelClass.'add'(keyProp: "relatedModel"+i, prop1: "instance1Prop1Value"+i, prop2: 5, prop3: "instance1Prop3Value");
+                assertFalse (addedRelatedObject.hasErrors());
+                relatedModels.add(addedRelatedObject);
+            }
+            def modelInstance1 = modelClass.'add'(keyProp: "model1", rel1: relatedModels);
+            assertFalse(modelInstance1.hasErrors());
+
+
+            List results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"], [max:1]);
+            assertEquals (1, results.size());
+        }
+        finally{
+            BooleanQuery.setMaxClauseCount (defaultMaxCount);
+        }
+    }
+
     public void testGetRelatedObjectPropertiesWithQueryOptions() {
         createModelClasses();
         initialize([modelClass, relatedModelClass], [])

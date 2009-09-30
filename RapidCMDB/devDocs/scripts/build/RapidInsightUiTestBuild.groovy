@@ -8,8 +8,8 @@ package build
  */
 class RapidInsightUiTestBuild extends Build {
     
-    def version = "$env.rapid_insight/RIVersion.txt";
-    def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
+    def version = "$env.rapid_insight/ROSSVersion.txt";
+    def versionInBuild = "$env.dist_rapid_suite/ROSSVersion.txt";
     def riZipFileName;
     static def buildOption;
     boolean RI_UNIX_OS, RI_WINDOWS_OS
@@ -17,8 +17,8 @@ class RapidInsightUiTestBuild extends Build {
     def setOption(options) {
         if (options != null) {
             buildOption = options;
-            RI_UNIX_OS = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
-            RI_WINDOWS_OS = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
+            RI_UNIX_OS = Boolean.parseBoolean(options.get("ROSS_UNIX", "false"));
+            RI_WINDOWS_OS = Boolean.parseBoolean(options.get("ROSS_WINDOWS", "true"));
         }
     }
 
@@ -97,7 +97,7 @@ class RapidInsightUiTestBuild extends Build {
         for (int i = 0; i < 50; i++)
         {
             try {
-                println("RI not started yet")
+                println("ROSS not started yet")
                 def url = new URL("http://localhost:12222/RapidSuite/")
                 Thread.sleep(10000);
                 def content = url.getText()
@@ -107,7 +107,7 @@ class RapidInsightUiTestBuild extends Build {
             {
                 if (i == 49)
                 {
-                    throw new Exception("RI server is not reachable.", e);
+                    throw new Exception("ROSS server is not reachable.", e);
                 }
             }
         }
@@ -218,7 +218,7 @@ class RapidInsightUiTestBuild extends Build {
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
         rapidInsightBuilder.setOptions(options);
         rapidInsightBuilder.build();
-        riZipFileName = "RI_Unix${rapidInsightBuilder.getVersionWithDate()}.zip"
+        riZipFileName = "ROSS_Unix${rapidInsightBuilder.getVersionWithDate()}.zip"
     }
 
 

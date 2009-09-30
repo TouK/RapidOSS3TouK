@@ -42,8 +42,8 @@ package build
 class RapidInsightBuild extends Build {
     boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, JIRA_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
     def JREDIR_OPT;
-    def version = "$env.rapid_insight/RIVersion.txt";
-    def versionInBuild = "$env.dist_rapid_suite/RIVersion.txt";
+    def version = "$env.rapid_insight/ROSSVersion.txt";
+    def versionInBuild = "$env.dist_rapid_suite/ROSSVersion.txt";
     static def buildOptions;
 
     def setOptions(options) {
@@ -115,11 +115,11 @@ class RapidInsightBuild extends Build {
     def build() {
         def t = System.currentTimeMillis();
         if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
-        if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("RI");
+        if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("ROSS");
         buildIntegrationPlugins();
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
-        println "RI Build Done in ${(System.currentTimeMillis()-t)/1000.0} secs.";
+        println "ROSS Build Done in ${(System.currentTimeMillis()-t)/1000.0} secs.";
     }
 
     def buildUnix() {
@@ -170,7 +170,7 @@ class RapidInsightBuild extends Build {
         }
         replaceJavascriptAndCss("${env.dist_rapid_suite}/web-app/designer.gsp", "designer_${buildNo}.js", "designer_${buildNo}.css")
         
-        ant.move(file: "${env.dist_rapid_server}/licenses/RapidCMDB_license.txt", toFile: "${env.dist_rapid_server}/licenses/RapidInsightCommunityLicense.txt");
+        ant.move(file: "${env.dist_rapid_server}/licenses/RapidCMDB_license.txt", toFile: "${env.dist_rapid_server}/licenses/RapidOSSCommunityLicense.txt");
         def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
         dbViews.each {
             ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true);
@@ -181,7 +181,7 @@ class RapidInsightBuild extends Build {
         }
         
         if (ZIP_OPT) {
-            def zipFileName = "${env.distribution}/RI_Unix$versionDate" + ".zip"
+            def zipFileName = "${env.distribution}/ROSS_Unix$versionDate" + ".zip"
             ant.zip(destfile: zipFileName) {
                 ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer", excludes:"**/*.vmoptions,**/*.exe,**/*.bat");
             }
@@ -224,20 +224,20 @@ class RapidInsightBuild extends Build {
 
     def makeWindowsEnterprise() {
         def versionDate = getVersionWithDate();
-        ant.unzip(src: "${env.distribution}/RI_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
-        ant.delete(file: env.distribution + "/WEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
+        ant.unzip(src: "${env.distribution}/ROSS_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
+        ant.delete(file: env.distribution + "/WEnt/RapidServer/licenses/RapidOSSCommunityLicense.txt");
         ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/WEnt/RapidServer/licenses", overwrite: true);
-        ant.zip(destfile: "${env.distribution}/RIE_Windows$versionDate" + ".zip") {
+        ant.zip(destfile: "${env.distribution}/ROSSE_Windows$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.distribution/WEnt")
         }
     }
 
     def makeUnixEnterprise() {
         def versionDate = getVersionWithDate();
-        ant.unzip(src: "${env.distribution}/RI_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
-        ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidInsightCommunityLicense.txt");
+        ant.unzip(src: "${env.distribution}/ROSS_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
+        ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidOSSCommunityLicense.txt");
         ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/UEnt/RapidServer/licenses", overwrite: true);
-        ant.zip(destfile: "${env.distribution}/RIE_Unix$versionDate" + ".zip") {
+        ant.zip(destfile: "${env.distribution}/ROSSE_Unix$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.distribution/UEnt")
         }
     }

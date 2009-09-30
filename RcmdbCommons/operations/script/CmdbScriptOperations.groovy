@@ -47,10 +47,16 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
     static def scheduleScript(CmdbScript script) {
         if (script.type == CmdbScript.SCHEDULED && script.enabled) {
             if (script.scheduleType == CmdbScript.CRON) {
-                ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
+                if(!ScriptScheduler.getInstance().isScheduled(script.name, script.startDelay, script.cronExpression))
+                {
+                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.cronExpression)
+                }
             }
             else {
-                ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
+                if(!ScriptScheduler.getInstance().isScheduled(script.name, script.startDelay, script.period))
+                {
+                    ScriptScheduler.getInstance().scheduleScript(script.name, script.startDelay, script.period)
+                }
             }
         }
     }
@@ -153,7 +159,10 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 destroyScriptLogger(oldLogger);
             }
             manageRepositoryDatasource(script, params["listenToRepository"] == true)
-            ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
+            if(scriptNameBeforeUpdate != script.name)
+            {
+                ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
+            }
             scheduleScript(script)
             configureScriptLogger(script);
         }

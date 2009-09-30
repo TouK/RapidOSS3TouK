@@ -221,13 +221,24 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
 
         def schedulerMap = [:];
-
+        def isScheduledMap = [:];
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, long period ->
+            isScheduledMap.scriptName = scriptName;
+            isScheduledMap.startDelay = startDelay;
+            isScheduledMap.period = period;
+            return false;
+        }
         ScriptScheduler.metaClass.scheduleScript = {String scriptName, long startDelay, long period ->
             schedulerMap.scriptName = scriptName
             schedulerMap.startDelay = startDelay
             schedulerMap.period = period
         }
-
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, String cronExp ->
+            isScheduledMap.scriptName = scriptName;
+            isScheduledMap.startDelay = startDelay;
+            isScheduledMap.cronExp = cronExp;
+            return false;
+        }
         ScriptScheduler.metaClass.scheduleScript = {String scriptName, long startDelay, String cronExp ->
             schedulerMap.scriptName = scriptName
             schedulerMap.startDelay = startDelay
@@ -250,7 +261,8 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         //testing for cron script
         schedulerMap = [:];
-        params = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 3, cronExpression: "* * * * * ?"]
+        isScheduledMap = [:];
+        params = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 3, cronExpression: "* * * * * ?"]
 
         script.update(params)
         assertFalse(script.hasErrors())
@@ -259,22 +271,96 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(params.name, schedulerMap.scriptName)
         assertEquals(params.startDelay, schedulerMap.startDelay)
         assertEquals(params.cronExpression, schedulerMap.cronExp)
+        
+        assertEquals(params.name, isScheduledMap.scriptName)
+        assertEquals(params.startDelay, isScheduledMap.startDelay)
+        assertEquals(params.cronExpression, isScheduledMap.cronExp)
 
         //testing if script is disabled
         schedulerMap = [:];
+        isScheduledMap = [:];
         script.update(enabled: false)
         CmdbScript.scheduleScript(script);
         assertEquals(schedulerMap.size(), 0);
 
         schedulerMap = [:];
+        isScheduledMap = [:];
         script.update(enabled: true)
         CmdbScript.scheduleScript(script);
         assertEquals(schedulerMap.size(), 3);
 
         schedulerMap = [:];
+        isScheduledMap = [:];
         script.update(type: CmdbScript.ONDEMAND)
         CmdbScript.scheduleScript(script);
         assertEquals(schedulerMap.size(), 0);
+    }
+
+    void testScheduleScriptWillNotCallSchedulerIfItIsAlreadyScheduledWithPeriodicScript() {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+
+        def schedulerMap = [:];
+        def isScheduledMap = [:];
+
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, long period ->
+            isScheduledMap.scriptName = scriptName;
+            isScheduledMap.startDelay = startDelay;
+            isScheduledMap.period = period;
+            return true;
+        }
+        ScriptScheduler.metaClass.scheduleScript = {String scriptName, long startDelay, long period ->
+            schedulerMap.scriptName = scriptName
+            schedulerMap.startDelay = startDelay
+            schedulerMap.period = period
+        }
+        //testing for periodic script
+        def params = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
+
+
+        def script = CmdbScript.add(params)
+        assertFalse(script.hasErrors())
+        CmdbScript.scheduleScript(script);
+
+        assertEquals (params.name, isScheduledMap.scriptName);
+        assertEquals (params.startDelay, isScheduledMap.startDelay);
+        assertEquals (params.period, isScheduledMap.period);
+        assertTrue(schedulerMap.isEmpty());
+        schedulerMap.clear();
+    }
+
+    void testScheduleScriptWillNotCallSchedulerIfItIsAlreadyScheduledWithCronExpression() {
+        initialize([CmdbScript, Group], []);
+        initializeForCmdbScript();
+
+
+        def schedulerMap = [:];
+        def isScheduledMap = [:];
+
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, String cronExp ->
+            isScheduledMap.scriptName = scriptName;
+            isScheduledMap.startDelay = startDelay;
+            isScheduledMap.cronExp = cronExp;
+            return true;
+        }
+        ScriptScheduler.metaClass.scheduleScript = {String scriptName, long startDelay, String cronExp ->
+            schedulerMap.scriptName = scriptName
+            schedulerMap.startDelay = startDelay
+            schedulerMap.cronExp = cronExp
+        }
+        def params = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 3, cronExpression: "* * * * * ?"]
+
+
+        def script = CmdbScript.add(params)
+        assertFalse(script.hasErrors())
+        CmdbScript.scheduleScript(script);
+
+        assertEquals (params.name, isScheduledMap.scriptName);
+        assertEquals (params.startDelay, isScheduledMap.startDelay);
+        assertEquals (params.cronExpression, isScheduledMap.cronExp);
+        assertTrue(schedulerMap.isEmpty());
+        schedulerMap.clear();
     }
     void testAddScriptCallsScheduleScript()
     {
@@ -529,7 +615,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
             fail("should not throw exception")
         }
     }
-    void testUpdateScriptCallsSchedulerUnscheduleAndThenScheduleScript()
+    void testUpdateScriptWillNotCallSchedulerUnscheduleIfNameIsNotChanged()
     {
         initialize([CmdbScript, Group], []);
         initializeScriptManager()
@@ -559,12 +645,11 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         def script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
         assertFalse(script.hasErrors())
         assertEquals(callParams.script.id, script.id)
-        assertEquals(unscheduleCallParams.scriptName, script.name)
-        assertTrue(unscheduleCallParams.time < callParams.time)
+        assertEquals(0, unscheduleCallParams.size())
 
         //testing for cron script
-        updateParams = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
-        params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        updateParams = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
+        params = [name: "cmyscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
         scriptToUpdate = CmdbScriptOperations.addScript(params);
         assertFalse(scriptToUpdate.hasErrors())
 
@@ -575,7 +660,53 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
         assertFalse(script.hasErrors())
         assertEquals(callParams.script.id, script.id)
-        assertEquals(unscheduleCallParams.scriptName, script.name)
+        assertEquals(0, unscheduleCallParams.size())
+    }
+    void testUpdateScriptCallsSchedulerUnscheduleAndThenScheduleScriptIfScriptNameIsChanged()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeScriptManager()
+
+        def callParams = [:]
+        CmdbScriptOperations.metaClass.static.scheduleScript = {CmdbScript script ->
+            callParams.script = script
+            callParams.time = System.nanoTime()
+
+        }
+        def unscheduleCallParams = [:]
+        ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->
+            unscheduleCallParams.scriptName = scriptName
+            unscheduleCallParams.time = System.nanoTime()
+        }
+
+        //testing for periodic script
+        def updateParams = [name: "myscript1", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
+        def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        def scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        def script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(callParams.script.id, script.id)
+        assertTrue(unscheduleCallParams.time < callParams.time)
+
+        //testing for cron script
+        updateParams = [name: "cmyscript1", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
+        params = [name: "cmyscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(callParams.script.id, script.id)
         assertTrue(unscheduleCallParams.time < callParams.time)
     }
     void testCreateStaticParamMap() {

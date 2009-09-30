@@ -30,69 +30,105 @@ import org.quartz.SimpleTrigger
  * Time: 3:01:55 PM
  */
 class ScriptScheduler {
-      private Scheduler qScheduler;
-      private static ScriptScheduler scheduler;
-      private Class scriptExecutorClass;
-      
-      private ScriptScheduler(){
-          this.scriptExecutorClass = QuartzScriptJob.class;
-      }
+    private Scheduler qScheduler;
+    private static ScriptScheduler scheduler;
+    private Class scriptExecutorClass;
 
-      public static ScriptScheduler getInstance(){
-           if(scheduler == null){
-                scheduler = new ScriptScheduler();
-           }
-           return scheduler;
-      }
+    private ScriptScheduler() {
+        this.scriptExecutorClass = QuartzScriptJob.class;
+    }
+
+    public static ScriptScheduler getInstance() {
+        if (scheduler == null) {
+            scheduler = new ScriptScheduler();
+        }
+        return scheduler;
+    }
 
 
-      public static void destroyInstance() {
-          if (scheduler != null) {              
-              scheduler = null;
-          }
-      }
+    public static void destroyInstance() {
+        if (scheduler != null) {
+            scheduler = null;
+        }
+    }
 
-      public void initialize(Scheduler qScheduler){
-            this.qScheduler = qScheduler;          
-      }
+    public void initialize(Scheduler qScheduler) {
+        this.qScheduler = qScheduler;
+    }
 
-      public synchronized void scheduleScript(String scriptName, long startDelay, long period){
-            JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
-            long startTime = System.currentTimeMillis() + (startDelay * 1000);
-            SimpleTrigger trigger = new SimpleTrigger(scriptName, null,
-                                            new Date(startTime),
-                                            null,
-                                            SimpleTrigger.REPEAT_INDEFINITELY,
-                                            period * 1000);
-            scheduleJob(jobDetail,trigger);
-      }
+    public synchronized boolean isScheduled(String scriptName, long startDelay, long period) {
+        def trigger = qScheduler.getTrigger(scriptName, null);
+        if (trigger instanceof SimpleTrigger)
+        {
+            return trigger.getRepeatInterval() == period * 1000 && trigger.startDelay == startDelay * 1000
+        }
+        return false;
+    }
 
-      public synchronized void scheduleScript(String scriptName, long startDelay, String cronExp){
-            JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
-            long startTime = System.currentTimeMillis() + (startDelay * 1000);
-            CronTrigger cronTrigger = new CronTrigger(scriptName, null, cronExp);
-            cronTrigger.setStartTime(new Date(startTime));
-            scheduleJob(jobDetail,cronTrigger);
 
-      }
-      private void scheduleJob(JobDetail jobDetail,Trigger trigger)
-      {             
-            try{
-                qScheduler.scheduleJob(jobDetail, trigger);
-            }
-            catch(org.quartz.ObjectAlreadyExistsException e)
-            {
-                org.apache.log4j.Logger.getRootLogger().info("[ScriptScheduler]: in scheduleJob, ${trigger.getName()} already scheduled, rescheduling it.");
-                qScheduler.rescheduleJob (trigger.getName(),null,trigger)
-            }
-      }
-      public synchronized void unscheduleScript(String scriptName){
-           qScheduler.deleteJob(scriptName, null);
-           
-      }
+    public synchronized boolean isScheduled(String scriptName) {
+        return qScheduler.getTrigger(scriptName, null) != null;
+    }
 
-      public void setScriptExecutorClass(Class newScriptExecutorClass){
-          this.scriptExecutorClass = newScriptExecutorClass;
-      }
+    public synchronized boolean isScheduled(String scriptName, long startDelay, String cronExp) {
+        def trigger = qScheduler.getTrigger(scriptName, null);
+        if (trigger instanceof CronTrigger)
+        {
+            return trigger.getCronExpression() == cronExp && trigger.startDelay == startDelay *1000    
+        }
+        return false;
+    }
+    public synchronized void scheduleScript(String scriptName, long startDelay, long period) {
+        JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
+        CustomSimpleTrigger trigger = new CustomSimpleTrigger(scriptName, startDelay * 1000, period * 1000);
+        scheduleJob(jobDetail, trigger);
+    }
+
+    public synchronized void scheduleScript(String scriptName, long startDelay, String cronExp) {
+        JobDetail jobDetail = new JobDetail(scriptName, null, scriptExecutorClass);
+        CustomCronTrigger cronTrigger = new CustomCronTrigger(scriptName, startDelay * 1000, cronExp);
+        scheduleJob(jobDetail, cronTrigger);
+
+    }
+    private void scheduleJob(JobDetail jobDetail, Trigger trigger)
+    {
+        try {
+            qScheduler.scheduleJob(jobDetail, trigger);
+        }
+        catch (org.quartz.ObjectAlreadyExistsException e)
+        {
+            org.apache.log4j.Logger.getRootLogger().info("[ScriptScheduler]: in scheduleJob, ${trigger.getName()} already scheduled, rescheduling it.");
+            qScheduler.rescheduleJob(trigger.getName(), null, trigger)
+        }
+    }
+    public synchronized void unscheduleScript(String scriptName) {
+        qScheduler.deleteJob(scriptName, null);
+
+    }
+
+    public void setScriptExecutorClass(Class newScriptExecutorClass) {
+        this.scriptExecutorClass = newScriptExecutorClass;
+    }
+
+}
+
+class CustomCronTrigger extends CronTrigger
+{
+    public long startDelay;
+    public CustomCronTrigger(String name, long startDelay, String cronExpression) {
+        super(name, null, cronExpression); //To change body of overridden methods use File | Settings | File Templates.
+        this.startDelay = startDelay;
+        setStartTime(new Date(System.currentTimeMillis() + startDelay));
+    }
+
+}
+class CustomSimpleTrigger extends SimpleTrigger
+{
+
+    public long startDelay;
+    public CustomSimpleTrigger(String name, long startDelay, long repeatInterval) {
+        super(name, null, new Date(System.currentTimeMillis() + startDelay), null, SimpleTrigger.REPEAT_INDEFINITELY, repeatInterval); //To change body of overridden methods use File | Settings | File Templates.
+        this.startDelay = startDelay;
+    }
 
 }

@@ -66,15 +66,26 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
 
     public void testScheduleScriptWithPeriodAndStartDelay()
     {
+        assertFalse (scriptScheduler.isScheduled("myScript", 1, 3));
+        assertFalse (scriptScheduler.isScheduled("myScript"));
         scriptScheduler.scheduleScript("myScript", 1, 3);
         Thread.sleep(200);
         assertEquals(0, executionCount);
         Thread.sleep(1000);
         assertEquals(1, executionCount);
+        assertTrue (scriptScheduler.isScheduled("myScript", 1, 3));
+        assertTrue (scriptScheduler.isScheduled("myScript"));
+        assertFalse (scriptScheduler.isScheduled("myScript", 1, 4));
+        assertFalse (scriptScheduler.isScheduled("myScript", 2, 3));
+        assertFalse (scriptScheduler.isScheduled("myScript", 2, "* * *"));
     }
 
     public void testScheduleScriptWithCronExpressionAndStartDelay()
     {
+        long startDelay =2;
+        def cronExp = "0/3 * * * * ?"
+        assertFalse (scriptScheduler.isScheduled("myScript", startDelay, cronExp));
+        assertFalse (scriptScheduler.isScheduled("myScript"));
         //Wait for next turn
         long threeSecsInNano = (long)(Math.pow(10,9)*3);
         long remainingTime=System.nanoTime()%threeSecsInNano;
@@ -84,7 +95,7 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         }
         def startTime=System.currentTimeMillis()
         println "before schedule : ${System.currentTimeMillis()-startTime}";
-        scriptScheduler.scheduleScript("myScript", 2, "0/3 * * * * ?");
+        scriptScheduler.scheduleScript("myScript", startDelay, cronExp);
         println "after schedule,before sleep 200 : ${System.currentTimeMillis()-startTime}"
         Thread.sleep(200);
         println "after sleep 200 : ${System.currentTimeMillis()-startTime}"
@@ -93,6 +104,13 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
         Thread.sleep(8000);
         println "after sleep 6500 : ${System.currentTimeMillis()-startTime}"
         assertEquals(2, executionCount);
+
+
+        assertTrue (scriptScheduler.isScheduled("myScript", startDelay, cronExp));
+        assertTrue (scriptScheduler.isScheduled("myScript"));
+        assertFalse (scriptScheduler.isScheduled("myScript", startDelay, "***"));
+        assertFalse (scriptScheduler.isScheduled("myScript", startDelay+1, cronExp));
+        assertFalse (scriptScheduler.isScheduled("myScript", startDelay, 3));
     }
 
 

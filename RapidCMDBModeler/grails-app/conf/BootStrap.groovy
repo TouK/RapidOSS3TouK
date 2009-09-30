@@ -109,23 +109,20 @@ class BootStrap {
         ]
         def baseDir = System.getProperty("base.dir");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts, defaultMethods);
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), defaultMethods);
         def quartzScheduler = ServletContextHolder.servletContext.getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("quartzScheduler")
         ScriptScheduler.getInstance().initialize(quartzScheduler);
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
             try {
-                if (it.scheduleType == CmdbScript.PERIODIC) {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.period)
-                }
-                else {
-                    ScriptScheduler.getInstance().scheduleScript(it.name, it.startDelay, it.cronExpression)
-                }
+                ScriptScheduler.getInstance().scheduleScript(it)
             }
             catch (e) {
                 log.warn("Error scheduling script ${it.name}: ${e.getMessage()}");
             }
 
         }
+        log.warn(logPrefix+"Running Startup scripts");
+        ScriptManager.getInstance().runStartupScripts (startupScripts);
     }
 
 

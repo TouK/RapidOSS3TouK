@@ -67,7 +67,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
             FileUtils.deleteDirectory(new File(base_directory));
         }
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [:]);
         testLogger = Logger.getLogger("scriptingtestlogger");
     }
     private void clearMetaClasses()
@@ -80,7 +80,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
     public void testAddScript()
     {
         ScriptManager.getInstance().destroy();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
         def scriptName = "script1.groovy";
         createSimpleScript(scriptName)
         manager.addScript(scriptName);
@@ -112,7 +112,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
 
     public void testAddScriptWithNoContent(){
         ScriptManager.getInstance().destroy();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
         def scriptName = "script1";
         createScript("${scriptName}.groovy", "");
         try{
@@ -127,7 +127,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
     public void testManagerGeneratesExceptionIfScriptIsMissingInScriptsFolderEvenIfScriptClassIsInLoader()
     {
         ScriptManager.getInstance().destroy();
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [method1: {param1 -> return param1;}, method2: {param1, param2 -> return param1 + param2}]);
         def scriptInOtherDirectory="scripting.ScriptingManagerTests";
 
         //first test that script can be loaded with ScriptManager classloader
@@ -510,7 +510,7 @@ return name""");
         createErrornousScript(script3);
         createSimpleScript(notScript)
         String expectedStringFromDefaultMethod = "expected";
-        manager.initialize(this.class.classLoader, base_directory, [], [method1: {param1 -> return param1 + expectedStringFromDefaultMethod;}]);
+        manager.initialize(this.class.classLoader, base_directory, [method1: {param1 -> return param1 + expectedStringFromDefaultMethod;}]);
         assertNotNull(manager.getScript(script1));
         assertEquals("script1", manager.getScript(script1).name);
 
@@ -529,19 +529,19 @@ return name""");
 
     }
 
-    public void testStartupScripts()
+    public void testRunStartupScripts()
     {
-
         def script1 = "script1.groovy";
         def script2 = "script2.groovy";
         def script3 = "script3.groovy";
         createStartupScriptScript(script1)
         createErrornousScript(script2)
         createStartupScriptScript(script3);
-        manager.initialize(ScriptingManagerTests.classLoader, base_directory, ["script1", "script2", "script3.groovy"], [:]);
+        manager.initialize(ScriptingManagerTests.classLoader, base_directory, [:]);
+        manager.runStartupScripts (["script1", "script2", "script3.groovy"]);
         assertEquals(2, TestDatastore.get(dsKey).size());
-
     }
+
     void testCallingDestroyInstanceWithoutInitializeDoesNotGenerateException() {
         //we should disgard previous initializes
         try {

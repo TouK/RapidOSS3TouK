@@ -67,7 +67,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         {
             FileUtils.deleteDirectory(new File(base_directory));
         }
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [:]);
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
         createSimpleScript(simpleScriptFile, expectedScriptMessage);
     }

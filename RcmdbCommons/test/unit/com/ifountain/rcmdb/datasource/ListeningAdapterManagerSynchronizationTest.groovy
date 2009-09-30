@@ -76,7 +76,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         
         """
         def logLevel = Level.DEBUG;
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir, [], [:]);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir, [:]);
         ListeningAdapterManager.getInstance().initialize();
         CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport(CmdbScript, script.CmdbScriptOperations);
@@ -176,7 +176,7 @@ class ListeningAdapterManagerSynchronizationTest extends RapidCmdbTestCase {
         }
         """
         def logLevel = Level.DEBUG;
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir, [], [:]);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), testOutputDir, [:]);
         ListeningAdapterManager.getInstance().initialize();
         CompassForTests.initialize([CmdbScript]);
         CompassForTests.addOperationSupport(CmdbScript, script.CmdbScriptOperations);

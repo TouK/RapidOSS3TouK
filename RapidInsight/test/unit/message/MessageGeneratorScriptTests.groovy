@@ -81,7 +81,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def defaultMethods = [
                 "${MethodFactory.WITH_SESSION_METHOD}": MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD)
         ]
-        manager.initialize(this.class.getClassLoader(), script_manager_directory, [], defaultMethods);
+        manager.initialize(this.class.getClassLoader(), script_manager_directory, defaultMethods);
         script_directory = "$script_manager_directory/$ScriptManager.SCRIPT_DIRECTORY";
         new File(script_directory).mkdirs();
     }

@@ -47,7 +47,7 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
         {
             FileUtils.deleteDirectory (new File(base_directory));
         }
-        manager.initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        manager.initialize(this.class.getClassLoader(), base_directory, [:]);
         
      }
      

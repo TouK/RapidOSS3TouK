@@ -142,8 +142,9 @@ class BootStrap {
         
         log.warn(logPrefix+"Initializing ScriptManager");
         def startupScripts = ScriptingUtils.getStartupScriptList(baseDir, ApplicationHolder.application.getClassLoader());
-        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), startupScripts, defaultMethods);
-
+        ScriptManager.getInstance().initialize(ApplicationHolder.application.classLoader, System.getProperty("base.dir"), defaultMethods);
+        log.warn(logPrefix+"Initializing Listening Datasources");
+        ListeningAdapterManager.getInstance().initializeListeningDatasources();
         log.warn(logPrefix+"Scheduling Enabled Scripts");
 
         CmdbScript.searchEvery("type:${CmdbScript.SCHEDULED} AND enabled:true").each {
@@ -155,9 +156,10 @@ class BootStrap {
             }
 
         }
+        log.warn(logPrefix+"Running Startup scripts");
+        ScriptManager.getInstance().runStartupScripts (startupScripts);
 
-        log.warn(logPrefix+"Initializing Listening Datasources");
-        ListeningAdapterManager.getInstance().initializeListeningDatasources();
+
     }
 
     def corrrectModelData()

@@ -67,7 +67,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         {
             FileUtils.deleteDirectory(new File(script_manager_directory));
         }
-        manager.initialize(this.class.getClassLoader(), script_manager_directory, [], [:]);
+        manager.initialize(this.class.getClassLoader(), script_manager_directory, [:]);
         script_directory = "$script_manager_directory/$ScriptManager.SCRIPT_DIRECTORY";
         new File(script_directory).mkdirs();
     }

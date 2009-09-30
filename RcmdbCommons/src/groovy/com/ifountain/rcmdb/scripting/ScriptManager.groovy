@@ -56,7 +56,7 @@ public class ScriptManager {
             manager = null;
         }
     }
-    public void initialize(ClassLoader parentClassLoader, String baseDir, List startupScriptList, Map defaultSupportedMethods) {
+    public void initialize(ClassLoader parentClassLoader, String baseDir, Map defaultSupportedMethods) {
         scripts = [:];
         ScriptStateManager.getInstance().initialize();
 
@@ -76,10 +76,13 @@ public class ScriptManager {
                 logger.warn ("An exception occurred while adding script ${script.name}.", t);
             }
         }
+    }
+
+    def synchronized runStartupScripts(List startupScriptList)
+    {
         startupScriptList.each{
             try
             {
-                addScript(it);
                 runScript(it, [:],Logger.getRootLogger());
             }
             catch (Throwable t)

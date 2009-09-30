@@ -69,7 +69,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
             FileUtils.deleteDirectory(new File(base_directory));
         }
         new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY").mkdirs();
-        ScriptManager.getInstance().initialize(this.class.getClassLoader(), base_directory, [], [:]);
+        ScriptManager.getInstance().initialize(this.class.getClassLoader(), base_directory, [:]);
         ListeningAdapterManager.getInstance().initialize();
 
 

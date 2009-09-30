@@ -19,6 +19,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/data', file:'NodeFactory.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/data', file:'RapidXmlDocument.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/utils', file:'FlexApplicationMethodCaller.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/utils', file:'FlexApplication.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'RapidElement.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'ComponentContainer.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs', file:'Requester.js')}"></script>

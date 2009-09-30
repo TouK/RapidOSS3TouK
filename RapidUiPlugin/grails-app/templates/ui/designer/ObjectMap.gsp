@@ -1,12 +1,24 @@
 <%
-    def getMap = {stringMap->
+    def getMap = {stringMap, correctPath->
         def mapArray = [];
         stringMap.split(",").each{entry->
             if(entry != "")
             {
                 def parts = entry.split(":");
                 def key = parts[0]
-                def value = parts[1]
+                def value = parts[1].trim();
+                if(correctPath)
+                {
+                    if(value.startsWith("'") || value.startsWith("\""))
+                    {
+                        value = value.substring(0,1) +"../"+value.substring(1)
+                    }
+                    else
+                    {
+                        value = "../"+value;
+                    }
+
+                }
                 mapArray.add("${key}:${value}")
             }
         }
@@ -14,7 +26,7 @@
         if(mapString == "") mapString = ":"
         return "\${["+mapString+"]}";
     }
-    def edgeColorString = getMap(uiElement.edgeColors);
+    def edgeColorString = getMap(uiElement.edgeColors, false);
     def contents = uiElement.nodeContents;
 %>
 <rui:objectMap id="${uiElement.name}" expandURL="../${uiElement.expandURL}" dataURL="../${uiElement.dataURL}" nodePropertyList="${uiElement.nodePropertyList}" mapPropertyList="${uiElement.mapPropertyList}" nodeSize="${uiElement.nodeSize}" edgeColorDataKey="${uiElement.edgeColorDataKey}" edgeColors="${edgeColorString}" timeout="${uiElement.timeout}"
@@ -71,7 +83,7 @@
                 contents.each{imageNodeContent->
                     if(imageNodeContent.type == "image")
                     {
-                        def mapString = getMap(imageNodeContent.mapping);
+                        def mapString = getMap(imageNodeContent.mapping, true);
             %>
             <rui:omImage id="${imageNodeContent.name}" x="${imageNodeContent.x}" y="${imageNodeContent.y}" width="${imageNodeContent.width}" height="${imageNodeContent.height}" dataKey="${imageNodeContent.dataKey}" mapping="${mapString}"></rui:omImage>
             <%

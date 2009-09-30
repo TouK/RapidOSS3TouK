@@ -40,6 +40,11 @@ function topologyMapComponentAdapter ( params )
   }
 }
 
+function callFunction(functionName, params)
+{
+    return window[functionName](params)
+}
+
 
 
 YAHOO.rapidjs.component.TopologyMap = function(container, config){
@@ -80,6 +85,11 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.menuBar = new YAHOO.widget.MenuBar(this.menuBarElement.id);
     this.menuBar.addItems(config.toolbarMenuItems);
     this.menuBar.render();
+    var childElements = YAHOO.util.Dom.getElementsByClassName("bd", "div", this.menuBarElement.dom);
+    for(var i=0; i < childElements.length; i++)
+    {
+        YAHOO.util.Dom.setStyle(childElements[i], "padding", "0px")
+    }
     this.menuBar.subscribe("click", this.menuClicked, this, true);
     this.layoutMenuItems = null;
     var subMenus = this.menuBar.getItems();
@@ -116,10 +126,20 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     YAHOO.ext.util.Config.apply(this.events,events);
     config.toolbarMenuItems = [];
     config.nodeMenuItems = [];
-    YAHOO.util.Event.addListener(window, "load", this.initializeFlash, this, true);
+    this.swfURL = "../images/rapidjs/component/topologyMap/TopologyMapping.swf";
+    this.flexApplication = new YAHOO.rapidjs.component.FlexApplication("flexObj"+this.id, this.swfURL, "getNodes");
+    YAHOO.util.Event.onDOMReady(function() {
+        this.flexApplication.render(this.body.dom);
+    },this, true);
+    this.flexApplication.events.ready.subscribe(this.flexAppIsReady, this, true);
 };
 
 YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.PollingComponentContainer, {
+    flexAppIsReady: function()
+    {
+        this.getFlashObject().initializeMap(this.config)
+        this.events.mapInitialized.fireDirect();
+    },
     configureMenuItemVisibility: function(itemsWillBeShown)
     {
         for(var i=0; i < this.allNodeMenuIds.length; i++)
@@ -140,10 +160,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         if(config.nodeContent == null)config.nodeContent= {};
         if(config.nodeContent.images == null)config.nodeContent.images= [];
         config.nodeContent.images[config.nodeContent.images.length] = {id:"showMenu", clickable:"true", x:0, y:0, dataKey:"showMenu", images:{
-            "default":"arrow_down2.png"
+            "default":getUrlPrefix()+"images/map/arrow_down2.png"
         }}
         config.nodeContent.images[config.nodeContent.images.length] = {id:"expand", clickable:"true", x:20, y:0, dataKey:"canExpand", images:{
-            "true":"plus.png"
+            "true":getUrlPrefix()+"images/map/plus.png"
         }}
     },
     showNodeMenu: function(x, y, data)
@@ -365,61 +385,8 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         layoutMenu.subMenu.itemdata[layoutMenu.subMenu.itemdata.length] = {id:"customLayout", text:"Custom Layout"};
 
     },
-
     getFlashObject: function(){
-        if(this.flashObject == null)
-        {
-            if(YAHOO.util.Event.isIE)
-            {
-                this.flashObject  = this.iframe.contentWindow.document.body.getElementsByTagName("object")[0];
-            }
-            else
-            {
-                this.flashObject  = this.iframe.contentDocument.body.getElementsByTagName("embed")[0];
-            }
-        }
-        return this.flashObject;
-    },
-    isFlashLoaded: function()
-    {
-        try
-        {
-            if(this.getFlashObject() != null)
-            {
-                this.getFlashObject().getNodes();
-                this.getFlashObject().initializeMap(this.config)
-                this.events.mapInitialized.fireDirect();
-            }
-            else
-            {
-                this.flashTimer.delay(100);
-            }
-        }catch(e)
-        {
-            this.flashTimer.delay(100);
-        }
-    },
-    initializeFlash: function()
-    {
-        var requiredMajorVersion = 9;
-        var requiredMinorVersion = 0;
-        var requiredRevision = 115;
-
-        var hasProductInstall = YAHOO.rapidjs.FlashUtils.DetectFlashVer(6, 0, 65);
-        var hasRequestedVersion = YAHOO.rapidjs.FlashUtils.DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
-        var containerElement = this.body.dom;
-        if (!hasProductInstall || !hasRequestedVersion)
-        {
-            containerElement.innerHTML = "This application requires Flash player version " + requiredMajorVersion + ". Click <a href='http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash'>here</a> to download";
-        }
-        else
-        {
-            this.body.dom.innerHTML = "<iframe id=\""+this.id+"frame\" name=\""+this.id+"frame\" src=\"" +  getUrlPrefix()+"images/rapidjs/component/topologyMap/topologymap.gsp?configFunction="+this.configFunctionName+"\" frameborder=\"0\" width=\"%100\" height=\"%100\" style=\"margin: 0px;width:100%;height:100%\">" +
-                                  "</iframe>"
-            this.iframe = this.body.dom.getElementsByTagName("iframe")[0];
-            this.flashTimer = new YAHOO.ext.util.DelayedTask(this.isFlashLoaded, this);
-            this.flashTimer.delay(100);
-        }
+        return this.flexApplication.getFlexApp();
     },
     getLayout : function( ) {
         return this.getFlashObject().getLayout();
@@ -491,18 +458,18 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
         if ( this.url == this.dataURL )
         {
-            this.handleLoadData(response);
+            this.flexApplication.executeMethod(this, this.handleLoadData, [response],"handleLoadData")
         }
         else
         {
-            this.handleLoadMap( response);
+            this.flexApplication.executeMethod(this, this.handleLoadMap, [response],"handleLoadMap")
         }
 
     },
     loadMap: function(response)
     {
         this.firstResponse = null;
-        this.handleLoadMap(response);
+        this.flexApplication.executeMethod(this, this.handleLoadMap, [response],"handleLoadMap")
     },
     handleLoadData : function (response) {
         var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response);
@@ -625,9 +592,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 this.loadGraphWithUserLayout(nodes, edges);
             }
             this.url = this.dataURL;
-            this.getData();
+            this._getData();
             var comp = this;
-            setTimeout(comp.events["loadstatechanged"].fireDirect(comp, true), 100)
+            comp.events["loadstatechanged"].fireDirect(comp, true);
         }
 
 
@@ -645,6 +612,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
     loadMapForNode : function( nodeParams,mapParams)
+    {
+        this.flexApplication.executeMethod(this, this._loadMapForNode, [nodeParams,mapParams],"_loadMapForNode")
+    },
+    _loadMapForNode : function( nodeParams,mapParams)
     {
         var loadMap=false;
         var nodePropertyListToCheck=this.getNodePropertyListToSend([]);
@@ -763,6 +734,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     expandNode : function( expandedNodeName)
     {
+        this.flexApplication.executeMethod(this, this._expandNode, [expandedNodeName],"_expandNode")
+    },
+    _expandNode : function( expandedNodeName)
+    {
         var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
         var edges = this.getPropertiesString(this.getEdges(), ["id", "source", "target"]);
@@ -774,6 +749,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
     getData : function()
+    {
+        this.flexApplication.executeMethod(this, this._getData, [],"_getData")    
+    },
+    _getData : function()
     {
       var nodePropertyList=this.getNodePropertyListToSend([]);
        var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);

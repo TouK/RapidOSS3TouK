@@ -14,7 +14,7 @@
                 }
             }
         }
-        return decodeURIComponent(strReturn);
+        return decodeURLParamValue(strReturn);
     }
 
     function getURLParams(){
@@ -27,10 +27,14 @@
             var aQueryString = strQueryString.split("&");
             for ( var iParam = 0; iParam < aQueryString.length; iParam++ ){
                     var aParam = aQueryString[iParam].split("=");
-                    paramMap[aParam[0]]=decodeURIComponent(aParam[1]);
+                    paramMap[aParam[0]]=decodeURLParamValue(aParam[1]);
             }
         }
         return paramMap;
+    }
+    function decodeURLParamValue(value)
+    {
+    	return decodeURIComponent(value).replace(/\+/g,"%20");
     }
 	function getMapSaveParams()
 	{

@@ -29,6 +29,7 @@ import groovy.xml.MarkupBuilder
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 */
+MARKER_URL_PREFIX="/RapidSuite/images/rapidjs/component/gmap/";
 
 def CONTAINER_PROPERTY = "rsDatasource"
 def nodeType = params.nodeType;
@@ -90,21 +91,21 @@ def getTooltip(address, location) {
 def getMarker(location) {
     def state = location.get("state");
     if (state == 5) {
-        return "http://www.mapbuilder.net/img/icons/marker_34_red.png";
+        return "${MARKER_URL_PREFIX}marker_34_red.png";
     }
     else if (state == 4) {
-        return "http://www.mapbuilder.net/img/icons/marker_34_orange.png";
+        return "${MARKER_URL_PREFIX}marker_34_orange.png";
     }
     else if (state == 3) {
-        return "http://www.mapbuilder.net/img/icons/marker_34_yellow.png";
+        return "${MARKER_URL_PREFIX}marker_34_yellow.png";
     }
     else if (state == 2) {
-        return "http://www.mapbuilder.net/img/icons/marker_34_blue.png";
+        return "${MARKER_URL_PREFIX}marker_34_blue.png";
     }
     else if (state == 1) {
-        return "http://www.mapbuilder.net/img/icons/marker_34_purple.png";
+        return "${MARKER_URL_PREFIX}marker_34_purple.png";
     }
     else {
-        return "http://www.mapbuilder.net/img/icons/marker_34_green.png";
+        return "${MARKER_URL_PREFIX}marker_34_green.png";
     }
 }

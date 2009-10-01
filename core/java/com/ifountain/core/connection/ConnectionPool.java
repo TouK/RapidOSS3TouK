@@ -42,6 +42,8 @@ public class ConnectionPool extends GenericObjectPool
     private Exception poolConnectionException = null;
     private List borrowedObjects = new ArrayList();
     private String connectionName;
+    private boolean willRunConnectionChecker = false;
+    private Object connectionCheckerRunnerLock = new Object();
     private long connectionCheckerThreadInterval = 0;
     private Object borrowedConnectionLock = new Object();
     private ScheduledExecutorService connectionCheckerService = Executors.newSingleThreadScheduledExecutor();
@@ -70,6 +72,13 @@ public class ConnectionPool extends GenericObjectPool
         super.setMaxIdle(i);
     }
     public Object borrowObject() throws Exception {
+        synchronized (connectionCheckerRunnerLock)
+        {
+            if(willRunConnectionChecker)
+            {
+                runConnectionChecker();
+            }
+        }
         if(!isPoolConnected)
         {
             if(!(poolConnectionException instanceof ConnectionException))
@@ -111,18 +120,13 @@ public class ConnectionPool extends GenericObjectPool
             throw e;
         }
     }
-    public void runConnectionChecker() throws InterruptedException
+    public void markConnectionCheckerToRun() throws InterruptedException
     {
-        Callable callable = new Callable(){
-            public Object call()
-            {
-                connectionChecker.run();
-                return null;
-            }
-        };
-        List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
-        tasks.add(callable);
-        connectionCheckerService.invokeAll(tasks);
+        willRunConnectionChecker = true;
+    }
+    private void runConnectionChecker() throws InterruptedException
+    {
+        connectionChecker.run();
     }
     public List getBorrowedConnections(){
         synchronized (borrowedConnectionLock)
@@ -190,78 +194,82 @@ public class ConnectionPool extends GenericObjectPool
         ExecutorService checkSingleConnectionService = Executors.newFixedThreadPool(5);
         public void run()
         {
-            logger.info("Checking status of connections in pool "+connectionName);
-            List allConnections = poolableObjectFactory.getAllConnections();
-            List validConnections = new ArrayList();
-            for(Iterator it=allConnections.iterator(); it.hasNext();)
+            synchronized (connectionCheckerRunnerLock)
             {
-                IConnection conn = (IConnection)it.next();
-                if(poolableObjectFactory.validateObject(conn))
-                {
-                    validConnections.add(conn);
-                }
-            }
-            if(validConnections.isEmpty())
-            {
-                try
-                {
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("Currently no connection exists in pool "+connectionName+". Trying to get one");
-                    }
-                    IConnection connection = (IConnection)_borrowObject();
-                    validConnections.add(connection);
-                    returnObject(connection);
-                }
-                catch(Exception e)
-                {
-                    setPoolConnectionStatus(false, e);
-                    if(logger.isDebugEnabled())
-                    {
-                        logger.debug("An exception occcurred while getting new connection from pool.", e);
-                    }
-                }
-            }
-            if(!validConnections.isEmpty())
-            {
-                List tasks = new ArrayList();
-                logger.info("Will check "+validConnections.size() +" number of connections in pool "+connectionName);
-                for(Iterator it = validConnections.iterator();it.hasNext();)
+                logger.info("Checking status of connections in pool "+connectionName);
+                List allConnections = poolableObjectFactory.getAllConnections();
+                List validConnections = new ArrayList();
+                for(Iterator it=allConnections.iterator(); it.hasNext();)
                 {
                     IConnection conn = (IConnection)it.next();
-                    tasks.add(new CheckSingleConnection(conn));
-                }
-                try
-                {
-                    List<Future> features = checkSingleConnectionService.invokeAll(tasks);
-                    boolean willDisconnectPool = true;
-                    for(int i=0; i < features.size(); i++)
+                    if(poolableObjectFactory.validateObject(conn))
                     {
-                        try
+                        validConnections.add(conn);
+                    }
+                }
+                if(validConnections.isEmpty())
+                {
+                    try
+                    {
+                        if(logger.isDebugEnabled())
                         {
-                            if(((Boolean)features.get(i).get()).booleanValue())
-                            {
-                                willDisconnectPool = false;
-                                break;
-                            }
+                            logger.debug("Currently no connection exists in pool "+connectionName+". Trying to get one");
                         }
-                        catch(ExecutionException ex)
+                        IConnection connection = (IConnection)_borrowObject();
+                        validConnections.add(connection);
+                        returnObject(connection);
+                    }
+                    catch(Exception e)
+                    {
+                        setPoolConnectionStatus(false, e);
+                        if(logger.isDebugEnabled())
                         {
-                            if(logger.isDebugEnabled())
-                            {
-                                logger.debug("An exception occcurred while checking connection status of "+connectionName, ex);
-                            }
+                            logger.debug("An exception occcurred while getting new connection from pool.", e);
                         }
                     }
-                    setPoolConnectionStatus(!willDisconnectPool);
-                }catch(InterruptedException ex)
-                {
-                    logger.warn("Connection checker tasks of "+connectionName+" pool are interrupted.");
                 }
-            }
+                if(!validConnections.isEmpty())
+                {
+                    List tasks = new ArrayList();
+                    logger.info("Will check "+validConnections.size() +" number of connections in pool "+connectionName);
+                    for(Iterator it = validConnections.iterator();it.hasNext();)
+                    {
+                        IConnection conn = (IConnection)it.next();
+                        tasks.add(new CheckSingleConnection(conn));
+                    }
+                    try
+                    {
+                        List<Future> features = checkSingleConnectionService.invokeAll(tasks);
+                        boolean willDisconnectPool = true;
+                        for(int i=0; i < features.size(); i++)
+                        {
+                            try
+                            {
+                                if(((Boolean)features.get(i).get()).booleanValue())
+                                {
+                                    willDisconnectPool = false;
+                                    break;
+                                }
+                            }
+                            catch(ExecutionException ex)
+                            {
+                                if(logger.isDebugEnabled())
+                                {
+                                    logger.debug("An exception occcurred while checking connection status of "+connectionName, ex);
+                                }
+                            }
+                        }
+                        setPoolConnectionStatus(!willDisconnectPool);
+                    }catch(InterruptedException ex)
+                    {
+                        logger.warn("Connection checker tasks of "+connectionName+" pool are interrupted.");
+                    }
+                }
 
-            poolableObjectFactory.calculateTimeout();
-            logger.info("Checked status of connections in pool "+connectionName);
+                poolableObjectFactory.calculateTimeout();
+                logger.info("Checked status of connections in pool "+connectionName);
+                willRunConnectionChecker = false;
+            }
         }
     }
 

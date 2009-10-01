@@ -237,7 +237,9 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     }
 
 
-    public void testRunConnectionChecker() throws Exception
+
+
+    public void testWillRunConnectionCheckerInNextBorrowObjectIfRunConnectionCheckerFlagIsSet() throws Exception
     {
         MockPoolableObjectFactory fact = new MockPoolableObjectFactory(null);
         String connectionName = "con1";
@@ -250,7 +252,24 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         MockConnection.checkConnectionResult = false;
         MockConnection.isConnected = false;
 
-        pool.runConnectionChecker();
+        pool.markConnectionCheckerToRun();
+        try{
+            pool.borrowObject();
+            fail("Should throw connection exception");
+        }catch(ConnectionException e)
+        {
+
+        }
+        assertFalse(pool.isPoolConnected());
+
+        MockConnection.checkConnectionResult = true;
+        MockConnection.isConnected = true;
+        try{
+            pool.borrowObject();
+            fail("Should throw connection exception");
+        }catch(ConnectionException e)
+        {
+        }
         assertFalse(pool.isPoolConnected());
     }
 

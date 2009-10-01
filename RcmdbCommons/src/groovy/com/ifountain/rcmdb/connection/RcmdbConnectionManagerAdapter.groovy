@@ -74,7 +74,7 @@ class RcmdbConnectionManagerAdapter implements ConnectionParameterSupplier{
 
     public synchronized void addConnection(Connection connection) throws Exception{
         connectionMap[connection.name] = createConnectionParamFromObject(connection);
-        ConnectionManager.runConnectionChecker (connection.name);
+        ConnectionManager.markConnectionCheckerToRun(connection.name);
     }
 
     private ConnectionParam createConnectionParamFromObject(Connection connection)

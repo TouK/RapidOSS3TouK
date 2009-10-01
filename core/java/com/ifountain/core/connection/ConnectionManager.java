@@ -67,11 +67,11 @@ public class ConnectionManager
         return connected;
     }
 
-    public static void runConnectionChecker(String connectionName) throws InterruptedException {
+    public static void markConnectionCheckerToRun(String connectionName) throws InterruptedException {
         ConnectionPool pool =pools.get(connectionName);
         if(pool != null)
         {
-            pool.runConnectionChecker();
+            pool.markConnectionCheckerToRun();
         }
     }
 

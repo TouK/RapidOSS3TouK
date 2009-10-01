@@ -40,7 +40,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${DatabaseConnection.list()}" status="i" var="databaseConnection">
+                                <g:each in="${DatabaseConnection.list([sort:'name'])}" status="i" var="databaseConnection">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td><g:link action="show" controller="databaseConnection" id="${databaseConnection.id}">${databaseConnection.name?.encodeAsHTML()}</g:link></td>
                                         <td>${databaseConnection?.driver?.encodeAsHTML()}</td>
@@ -77,7 +77,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${DatabaseDatasource.list()}" status="i" var="databaseDatasource">
+                                <g:each in="${DatabaseDatasource.list([sort:'name'])}" status="i" var="databaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td><g:link action="show" controller="databaseDatasource" id="${databaseDatasource.id}">${databaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${databaseDatasource.reconnectInterval.encodeAsHTML()}</td>
@@ -113,7 +113,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${SingleTableDatabaseDatasource.list()}" status="i" var="singleTableDatabaseDatasource">
+                                <g:each in="${SingleTableDatabaseDatasource.list([sort:'name'])}" status="i" var="singleTableDatabaseDatasource">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <td><g:link action="show" controller="singleTableDatabaseDatasource" id="${singleTableDatabaseDatasource.id}">${singleTableDatabaseDatasource.name?.encodeAsHTML()}</g:link></td>
                                         <td>${singleTableDatabaseDatasource.tableName.encodeAsHTML()}</td>

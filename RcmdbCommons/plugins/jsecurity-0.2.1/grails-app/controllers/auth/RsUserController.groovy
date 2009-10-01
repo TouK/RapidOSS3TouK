@@ -30,6 +30,7 @@ class RsUserController {
 
     def list = {
         if (!params.max) params.max = 100
+        if (!params.sort) params.sort = "username"
         [userList: RsUser.list(params)]
     }
 

@@ -14,7 +14,7 @@ class SmsDatasourceController {
     // the delete, save and update actions only accept POST requests
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
-        if (!params.max) params.max = 10
+        if (!params.sort) params.sort = "name"
         [smsDatasourceList: SmsDatasource.list(params)]
     }
 

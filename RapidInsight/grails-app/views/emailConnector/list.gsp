@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${EmailConnector.list()}" status="i" var="emailConnector">
+                <g:each in="${EmailConnector.list([sort:'name'])}" status="i" var="emailConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <g:set var="emailConnection" value="${emailConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>

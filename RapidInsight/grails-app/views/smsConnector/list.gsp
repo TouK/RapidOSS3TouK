@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${SmsConnector.list()}" status="i" var="smsConnector">
+                <g:each in="${SmsConnector.list([sort:'name'])}" status="i" var="smsConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <g:set var="smsConnection" value="${smsConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="smsConnector" id="${smsConnector.id}">${smsConnector.name?.encodeAsHTML()}</g:link></td>

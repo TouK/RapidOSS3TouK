@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${SametimeConnector.list()}" status="i" var="sametimeConnector">
+                <g:each in="${SametimeConnector.list([sort:'name'])}" status="i" var="sametimeConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <g:set var="sametimeConnection" value="${sametimeConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="sametimeConnector" id="${sametimeConnector.id}">${sametimeConnector.name?.encodeAsHTML()}</g:link></td>

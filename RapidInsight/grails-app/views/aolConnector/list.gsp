@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${AolConnector.list()}" status="i" var="aolConnector">
+                <g:each in="${AolConnector.list([sort:'name'])}" status="i" var="aolConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <g:set var="aolConnection" value="${aolConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="aolConnector" id="${aolConnector.id}">${aolConnector.name?.encodeAsHTML()}</g:link></td>

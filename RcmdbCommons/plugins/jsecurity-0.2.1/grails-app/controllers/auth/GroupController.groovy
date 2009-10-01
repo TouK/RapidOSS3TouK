@@ -36,6 +36,7 @@ class GroupController {
 
     def list = {
         if (!params.max) params.max = 100
+        if (!params.sort) params.sort = "name"
         [groupList: Group.list(params)]
     }
 

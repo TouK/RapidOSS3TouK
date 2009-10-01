@@ -29,7 +29,7 @@ class HttpConnectionController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
     def list = {
-        if (!params.max) params.max = 10
+        if (!params.sort) params.sort = "name"
         [httpConnectionList: HttpConnection.list(params)]
     }
 

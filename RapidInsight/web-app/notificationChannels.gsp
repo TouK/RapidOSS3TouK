@@ -32,7 +32,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${EmailConnector.list()}" status="i" var="emailConnector">
+                                <g:each in="${EmailConnector.list([sort:'name'])}" status="i" var="emailConnector">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <g:set var="emailConnection" value="${emailConnector?.ds?.connection}"></g:set>
                                         <td><g:link action="show" controller="emailConnector" id="${emailConnector.id}">${emailConnector.name?.encodeAsHTML()}</g:link></td>
@@ -74,7 +74,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${JabberConnector.list()}" status="i" var="jabberConnector">
+                                <g:each in="${JabberConnector.list([sort:'name'])}" status="i" var="jabberConnector">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <g:set var="jabberConnection" value="${jabberConnector?.ds?.connection}"></g:set>
                                         <td><g:link action="show" controller="jabberConnector" id="${jabberConnector.id}">${jabberConnector.name?.encodeAsHTML()}</g:link></td>
@@ -116,7 +116,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${AolConnector.list()}" status="i" var="aolConnector">
+                                <g:each in="${AolConnector.list([sort:'name'])}" status="i" var="aolConnector">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <g:set var="aolConnection" value="${aolConnector?.ds?.connection}"></g:set>
                                         <td><g:link action="show" controller="aolConnector" id="${aolConnector.id}">${aolConnector.name?.encodeAsHTML()}</g:link></td>
@@ -157,7 +157,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${SametimeConnector.list()}" status="i" var="sametimeConnector">
+                                <g:each in="${SametimeConnector.list([sort:'name'])}" status="i" var="sametimeConnector">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <g:set var="sametimeConnection" value="${sametimeConnector?.ds?.connection}"></g:set>
                                         <td><g:link action="show" controller="sametimeConnector" id="${sametimeConnector.id}">${sametimeConnector.name?.encodeAsHTML()}</g:link></td>
@@ -198,7 +198,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <g:each in="${SmsConnector.list()}" status="i" var="smsConnector">
+                                <g:each in="${SmsConnector.list([sort:'name'])}" status="i" var="smsConnector">
                                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                         <g:set var="smsConnection" value="${smsConnector?.ds?.connection}"></g:set>
                                         <td><g:link action="show" controller="smsConnector" id="${smsConnector.id}">${smsConnector.name?.encodeAsHTML()}</g:link></td>

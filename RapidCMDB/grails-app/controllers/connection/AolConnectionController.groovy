@@ -15,7 +15,7 @@ class AolConnectionController {
     def index = {redirect(action: list, params: params)}
 
     def list = {
-        if (!params.max) params.max = 10
+        if (!params.sort) params.sort = "name"
         [aolConnectionList: AolConnection.list(params)]
     }
 

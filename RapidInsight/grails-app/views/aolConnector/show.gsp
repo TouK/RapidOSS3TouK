@@ -7,8 +7,7 @@
     <title>Show AolConnector</title>
 </head>
 <body>
-<div class="nav">
-    <span class="menuButton"><a class="home" href="${createLinkTo(dir:'')}">Home</a></span>
+<div class="nav">    
     <span class="menuButton"><g:link class="list" action="list">AolConnector List</g:link></span>
     <span class="menuButton"><g:link class="create" action="create">New AolConnector</g:link></span>
 </div>

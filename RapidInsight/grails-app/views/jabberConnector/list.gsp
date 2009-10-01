@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                <g:each in="${JabberConnector.list()}" status="i" var="jabberConnector">
+                <g:each in="${JabberConnector.list([sort:'name'])}" status="i" var="jabberConnector">
                     <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <g:set var="jabberConnection" value="${jabberConnector?.ds?.connection}"></g:set>
                         <td><g:link action="show" controller="jabberConnector" id="${jabberConnector.id}">${jabberConnector.name?.encodeAsHTML()}</g:link></td>

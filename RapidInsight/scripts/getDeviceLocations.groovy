@@ -91,21 +91,21 @@ def getTooltip(address, location) {
 def getMarker(location) {
     def state = location.get("state");
     if (state == 5) {
-        return "${MARKER_URL_PREFIX}marker_34_red.png";
+        return "${MARKER_URL_PREFIX}marker_red.png";
     }
     else if (state == 4) {
-        return "${MARKER_URL_PREFIX}marker_34_orange.png";
+        return "${MARKER_URL_PREFIX}marker_orange.png";
     }
     else if (state == 3) {
-        return "${MARKER_URL_PREFIX}marker_34_yellow.png";
+        return "${MARKER_URL_PREFIX}marker_yellow.png";
     }
     else if (state == 2) {
-        return "${MARKER_URL_PREFIX}marker_34_blue.png";
+        return "${MARKER_URL_PREFIX}marker_blue.png";
     }
     else if (state == 1) {
-        return "${MARKER_URL_PREFIX}marker_34_purple.png";
+        return "${MARKER_URL_PREFIX}marker_purple.png";
     }
     else {
-        return "${MARKER_URL_PREFIX}marker_34_green.png";
+        return "${MARKER_URL_PREFIX}marker_green.png";
     }
 }

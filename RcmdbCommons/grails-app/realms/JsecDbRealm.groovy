@@ -58,7 +58,7 @@ class JsecDbRealm {
         String authenticationType = RsUser.getAuthenticationType();
 
 
-        if (authenticationType == "ldap" && username != "rsadmin")
+        if (authenticationType == "ldap" && username != RsUser.RSADMIN)
         {
             def ldapInformation = user.retrieveLdapInformation();
             if (ldapInformation != null)

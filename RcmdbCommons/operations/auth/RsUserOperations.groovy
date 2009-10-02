@@ -17,7 +17,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    static def getAuthenticationType()
+    public static def getAuthenticationType()
     {
         return ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
     }

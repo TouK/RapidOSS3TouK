@@ -6,6 +6,7 @@ import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.ControllerUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,6 +17,11 @@ import com.ifountain.rcmdb.domain.util.ControllerUtils
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    static def getAuthenticationType()
+    {
+        return ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
+    }
+
     def beforeDelete()
     {
        if(username.equalsIgnoreCase(getCurrentUserName()))

@@ -55,7 +55,7 @@ class JsecDbRealm {
         log.info "Found user '${user.username}' in DB"
 
         def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm")
-        String authenticationType = ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
+        String authenticationType = RsUser.getAuthenticationType();
 
 
         if (authenticationType == "ldap" && username != "rsadmin")

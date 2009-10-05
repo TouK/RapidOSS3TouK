@@ -91,16 +91,6 @@ class TopoMapController {
         def nodes =  params.nodes;
         def username = session.username;
 
-        def map=null;
-        if(username != RsUser.RSADMIN)
-        {
-            map = TopoMap.get(mapName:mapName, username:RsUser.RSADMIN, isPublic:true);
-            if(map){
-                render(text: ControllerUtils.convertErrorToXml("TopoMap ${map.id} created"), contentType: "text/xml");
-                return;
-            }
-        }
-
 
         def group = MapGroup.get( groupName : groupName, username : username );
         if(group == null)
@@ -108,7 +98,7 @@ class TopoMapController {
             group= MapGroup.add( groupName : groupName, username : username );
         }
 
-        map = TopoMap.add( mapName : mapName, username : username, layout : layout, group:group, mapProperties:params.mapProperties,mapPropertyList:params.mapPropertyList,nodePropertyList:params.nodePropertyList,nodes:nodes);
+        def map = TopoMap.addUnique( mapName : mapName, username : username, layout : layout, group:group, mapProperties:params.mapProperties,mapPropertyList:params.mapPropertyList,nodePropertyList:params.nodePropertyList,nodes:nodes);
         if(!map.hasErrors())
         {
             render(text: ControllerUtils.convertSuccessToXml("TopoMap ${map.id} created"), contentType: "text/xml")
@@ -128,6 +118,11 @@ class TopoMapController {
             def nodes =  params.nodes;
             def username = session.username;
 
+            if(map.username != username)
+            {
+               render(text: ControllerUtils.convertErrorToXml("TopoMap ${mapName} belongs to other user, you can not update it."), contentType: "text/xml");
+               return;
+            }
             if(!groupName || groupName == "" || groupName.equalsIgnoreCase(MapGroup.MY_MAPS())){
                 groupName = MapGroup.MY_MAPS();
             }

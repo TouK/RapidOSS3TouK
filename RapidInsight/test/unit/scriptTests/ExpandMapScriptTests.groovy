@@ -16,16 +16,18 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     def RsComputerSystem;
     def RsTopologyObject;
     def RsLink;
+    def RsMapConnection;
+    def RsEvent;
     
 
     public void setUp() {
         super.setUp();
 
-        ["RsComputerSystem","RsTopologyObject","RsLink"].each{ className ->
+        ["RsComputerSystem","RsTopologyObject","RsLink","RsMapConnection","RsEvent"].each{ className ->
              setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([RsComputerSystem,RsTopologyObject,RsLink], []);
+        initialize([RsComputerSystem,RsTopologyObject,RsLink,RsMapConnection,RsEvent], []);
 
         initializeScriptManager();
 
@@ -300,6 +302,121 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
     }
+    public void testExpandMapWithTriangleNodesAndMapType()
+    {
+        
+        def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
+        assertFalse(node1.hasErrors())
+        def node2=RsEvent.add(name:"node2");
+        assertFalse(node2.hasErrors())
+        def node3=RsEvent.add(name:"node3");
+        assertFalse(node3.hasErrors())
+        //this node  will not exist on the results, since connection is of other map type
+        def node4=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
+        assertFalse(node4.hasErrors());
+        
+        def link1=RsMapConnection.add(name:"l1",a_Name:node1.name,a_RsClassName:node1.class.name,z_Name:node2.name,z_RsClassName:node2.class.name,mapType:"sampleMap");
+        assertFalse(link1.hasErrors())
+        def link2=RsMapConnection.add(name:"l2",a_Name:node2.name,a_RsClassName:node2.class.name,z_Name:node3.name,z_RsClassName:node3.class.name,mapType:"sampleMap");
+        assertFalse(link2.hasErrors())
+        def link3=RsMapConnection.add(name:"l3",a_Name:node3.name,a_RsClassName:node3.class.name,z_Name:node1.name,z_RsClassName:node1.class.name,mapType:"sampleMap");
+        assertFalse(link3.hasErrors())
+        //this link will be ignored because have different mapType
+        def link4=RsMapConnection.add(name:"l4",a_Name:node1.name,a_RsClassName:node1.class.name,z_Name:node4.name,z_RsClassName:node4.class.name,mapType:"otherMap");
+        assertFalse(link3.hasErrors())
+
+        def params=[:];
+        params.nodes="node1,RsComputerSystem,false,,;"
+        params.expandedNodeName="node1";
+        params.nodePropertyList="name,rsClassName,expanded,x,y"
+        params.mapProperties="sampleMap";
+
+
+        def expandData=getExpandMapData(params);
+        assertEquals(3,expandData.nodes.size());
+        assertEquals(2,expandData.edges.size());
+
+
+        def node1NodeData=expandData.nodes[node1.name];
+        def node2NodeData=expandData.nodes[node2.name];
+        def node3NodeData=expandData.nodes[node3.name];
+        def link1Data=getEdgeFrom(expandData.edges,link1.name)
+        def link2Data=getEdgeFrom(expandData.edges,link3.name)
+
+        //check rsClassName
+        assertEquals("RsComputerSystem",node1NodeData.rsClassName);
+        assertEquals("RsEvent",node2NodeData.rsClassName);
+        assertEquals("RsEvent",node3NodeData.rsClassName);
+
+
+        checkNodeData(node1NodeData,node1,"true","true","","");
+        checkNodeData(node2NodeData,node2,"false","true","","");
+        checkNodeData(node3NodeData,node3,"false","true","","");
+        checkEdgeData(link1Data,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data,node1.name,node3.name,link3.name);
+
+
+        //expand node2
+        params.nodes="node1,RsComputerSystem,true,,;node2,RsEvent,false,,;node3,RsEvent,false,,"
+        params.expandedNodeName="node2";
+        def expandNode2Data=getExpandMapData(params);
+
+        assertEquals(3,expandNode2Data.nodes.size());
+        assertEquals(3,expandNode2Data.edges.size());
+
+
+        def node1NodeData2=expandNode2Data.nodes[node1.name];
+        def node2NodeData2=expandNode2Data.nodes[node2.name];
+        def node3NodeData2=expandNode2Data.nodes[node3.name];
+        def link1Data2=getEdgeFrom(expandNode2Data.edges,link1.name)
+        def link2Data2=getEdgeFrom(expandNode2Data.edges,link2.name)
+        def link3Data2=getEdgeFrom(expandNode2Data.edges,link3.name)
+
+
+        //check rsClassName
+        assertEquals("RsComputerSystem",node1NodeData.rsClassName);
+        assertEquals("RsEvent",node2NodeData.rsClassName);
+        assertEquals("RsEvent",node3NodeData.rsClassName);
+
+        checkNodeData(node1NodeData2,node1,"true","true","","");
+        checkNodeData(node2NodeData2,node2,"true","true","","");
+        checkNodeData(node3NodeData2,node3,"false","false","","");
+        checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
+        checkEdgeData(link3Data2,node1.name,node3.name,link3.name);
+
+
+        //expand node3
+        params.nodes="node1,RsComputerSystem,true,,;node2,RsEvent,false,,;node3,RsEvent,false,,"
+        params.expandedNodeName="node3";
+        def expandNode3Data=getExpandMapData(params);
+
+        assertEquals(3,expandNode3Data.nodes.size());
+        assertEquals(3,expandNode3Data.edges.size());
+
+
+        def node1NodeData3=expandNode3Data.nodes[node1.name];
+        def node2NodeData3=expandNode3Data.nodes[node2.name];
+        def node3NodeData3=expandNode3Data.nodes[node3.name];
+        def link1Data3=getEdgeFrom(expandNode3Data.edges,link1.name)
+        def link2Data3=getEdgeFrom(expandNode3Data.edges,link2.name)
+        def link3Data3=getEdgeFrom(expandNode3Data.edges,link3.name)
+
+
+        //check rsClassName
+        assertEquals("RsComputerSystem",node1NodeData.rsClassName);
+        assertEquals("RsEvent",node2NodeData.rsClassName);
+        assertEquals("RsEvent",node3NodeData.rsClassName);
+
+        checkNodeData(node1NodeData3,node1,"true","true","","");
+        checkNodeData(node2NodeData3,node2,"false","false","","");
+        checkNodeData(node3NodeData3,node3,"true","true","","");
+        checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data3,node2.name,node3.name,link2.name);
+        checkEdgeData(link3Data3,node1.name,node3.name,link3.name);
+
+
+    }
     public void  testExpandMapWith1ToNToMNodes()
     {
         def sourceNode=RsComputerSystem.add(name:"sourceNode",model:"model1",className:"class1");
@@ -523,8 +640,11 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
      def getExpandMapData(params){
-        params.nodePropertyList="name,expanded,x,y"
+        if(!params.containsKey("nodePropertyList"))
+            params.nodePropertyList="name,expanded,x,y"
 
+        if(!params.containsKey("mapPropertyList"))            
+            params.mapPropertyList="mapType";
 
         def scriptResult=ScriptManagerForTest.runScript("expandMap",["params":params]);
 
@@ -538,22 +658,13 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def nodeList=[];
         def edgeList=[];
 
-        def nodeProps=["id","expanded","expandable","x","y","displayName"];
-
         resultXml.node.each {    dataRow->
-            def nodeData=[:];
-            nodeProps.each{ propName ->
-                nodeData[propName]=dataRow.@"${propName}".toString();
-            }
+            def nodeData=dataRow.attributes();                        
             results.nodes.put(nodeData.id,nodeData);
             nodeList.add(nodeData);
         }
-        def edgeProps=["source","target","id"];
         resultXml.edge.each {    dataRow->
-            def edgeData=[:];
-            edgeProps.each{ propName ->
-                edgeData[propName]=dataRow.@"${propName}".toString();
-            }
+            def edgeData=dataRow.attributes();
             results.edges.put(edgeData.id,edgeData);
             edgeList.add(edgeData);
         }

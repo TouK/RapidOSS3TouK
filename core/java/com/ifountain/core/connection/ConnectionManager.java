@@ -175,6 +175,16 @@ public class ConnectionManager
         return -1;
     }
 
+    public static Object getConnectionCount(String connectionName)
+    {
+        ObjectPool pool = pools.get(connectionName);
+        if(pool != null)
+        {
+            return pool.getNumActive()+pool.getNumIdle();
+        }
+        return -1;
+    }
+
     public static void destroy()
     {
         logger.info("Destroying ConnectionManager having " + pools.size() + " number of pools.");

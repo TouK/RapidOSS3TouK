@@ -67,6 +67,8 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         //we get first connection to initialize pool
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertNotNull(conn);
+        assertEquals(1, ConnectionManager.getActiveCount(connectionName));
+        assertEquals(1, ConnectionManager.getConnectionCount(connectionName));
         Thread.sleep(500);
         assertFalse(MockTimeoutStrategy.connectionParameterList.isEmpty());
         //all subsequent connections will get new timeout value
@@ -126,7 +128,8 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         MockConnectionImpl conn1 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertTrue(conn1.isConnected());
         assertEquals(param, conn1.getParam());
-
+        assertEquals(1, ConnectionManager.getActiveCount(connectionName));
+        assertEquals(1, ConnectionManager.getConnectionCount(connectionName));
         assertEquals(1,ConnectionManager.getBorrowedConnections(connectionName).size());
         assertTrue(ConnectionManager.getBorrowedConnections(connectionName).contains(conn1));
 
@@ -134,18 +137,23 @@ public class ConnectionManagerTest extends RapidCoreTestCase
         assertTrue(conn2.isConnected());
 
         assertNotSame(conn1, conn2);
-
+        assertEquals(2, ConnectionManager.getActiveCount(connectionName));
+        assertEquals(2, ConnectionManager.getConnectionCount(connectionName));
         assertEquals(2,ConnectionManager.getBorrowedConnections(connectionName).size());
         assertTrue(ConnectionManager.getBorrowedConnections(connectionName).contains(conn1));
         assertTrue(ConnectionManager.getBorrowedConnections(connectionName).contains(conn2));
 
 
         ConnectionManager.releaseConnection(conn1);
-        
+        assertEquals(1, ConnectionManager.getActiveCount(connectionName));
+        assertEquals(2, ConnectionManager.getConnectionCount(connectionName));
+
         IConnection conn3 = (MockConnectionImpl) ConnectionManager.getConnection(connectionName);
         assertSame(conn1, conn3);
 
         assertEquals(2,ConnectionManager.getBorrowedConnections(connectionName).size());
+        assertEquals(2, ConnectionManager.getActiveCount(connectionName));
+        assertEquals(2, ConnectionManager.getConnectionCount(connectionName));
         assertTrue(ConnectionManager.getBorrowedConnections(connectionName).contains(conn2));
         assertTrue(ConnectionManager.getBorrowedConnections(connectionName).contains(conn3));
 

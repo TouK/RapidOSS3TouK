@@ -43,7 +43,6 @@ public class HttpUtils {
 
     private static MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
     private HttpClient httpClient = new HttpClient(manager);
-    private HttpClient clientForBasicAuth = new HttpClient(manager);
     private static int INITIAL_BUFFER_SIZE = 4 * 1024;//4K
     public void setTimeout(int timeout)
     {
@@ -90,10 +89,17 @@ public class HttpUtils {
     }
 
     public String doGetWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
-        URL url = new URL(urlStr);
         GetMethod get = prepareGetForBasicAuth(urlStr, params);
-        clientForBasicAuth.getState().setCredentials(new AuthScope(url.getHost(), -1), new UsernamePasswordCredentials(userName, password));
-        return executeGetMethod(get, clientForBasicAuth);
+        httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
+        httpClient.getParams().setAuthenticationPreemptive(true);
+        return executeGetMethod(get, httpClient);
+    }
+
+     public String doPostWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
+        PostMethod post = preparePostForBasicAuth(urlStr, params);
+        httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
+        httpClient.getParams().setAuthenticationPreemptive(true);
+        return executePostMethod(post, httpClient);
     }
 
     public String executeGetMethod(GetMethod get, HttpClient client) throws HttpStatusException, IOException {
@@ -133,6 +139,12 @@ public class HttpUtils {
         GetMethod get = prepareGetMethod(urlString, params);
         get.setDoAuthentication(true);
         return get;
+    }
+
+     public PostMethod preparePostForBasicAuth(String urlString, Map params) {
+        PostMethod post = preparePostMethod(urlString, params);
+        post.setDoAuthentication(true);
+        return post;
     }
 
     private NameValuePair[] getNameValuePairsFromMap(Map params) {

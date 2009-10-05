@@ -52,6 +52,11 @@ public class HttpAdapter extends BaseAdapter{
         executeAction(action);
         return action.getResponse();
     }
+    public String doRequestWithBasicAuth(String url, Map params, int type, String username, String password) throws Exception{
+        DoRequestAction action = new DoRequestAction(logger, url, params, type, username, password);
+        executeAction(action);
+        return action.getResponse();
+    }
     public BufferedImage getImage(String url, Map params) throws Exception{
         GetImageAction action = new GetImageAction(url, params);
         executeAction(action);
@@ -69,6 +74,14 @@ public class HttpAdapter extends BaseAdapter{
     
     public String doGetRequest(String url, Map params) throws Exception{
         return doRequest(url, params, DoRequestAction.GET);
+    }
+    
+    public String doGetRequestWithBasicAuth(String url, Map params, String username, String password) throws Exception{
+        return doRequestWithBasicAuth(url, params, DoRequestAction.GET, username, password);
+    }
+
+     public String doPostRequestWithBasicAuth(String url, Map params, String username, String password) throws Exception{
+        return doRequestWithBasicAuth(url, params, DoRequestAction.POST, username, password);
     }
 
     public void uploadFile(String url, String fieldName, File fileTobeUploaded, String fileName, Map params=[:]) throws Exception{

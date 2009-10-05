@@ -25,7 +25,7 @@ package build
  * To change this template use File | Settings | File Templates.
  */
 class HypericBuild extends Build {
-	def version = "$env.rapid_hyperic/RIHypericVersion.txt";
+	def version = "$env.rapid_hyperic/ROSSHypericVersion.txt";
 	
     static void main(String[] args) {
         HypericBuild hypericBuild = new HypericBuild();
@@ -45,7 +45,7 @@ class HypericBuild extends Build {
     
     def build(distDir) {
     	def rapidSuiteDir = "${distDir}/RapidSuite";
-    	def versionInBuild = "${rapidSuiteDir}/RIHypericVersion.txt";
+    	def versionInBuild = "${rapidSuiteDir}/ROSSHypericVersion.txt";
     	clean(distDir);
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);

@@ -35,12 +35,19 @@ public class DoRequestAction implements Action {
     private String url;
     private Map params;
     private String response = "";
-    
+    private String username;
+    private String password;
+
     public DoRequestAction(Logger logger, String url, Map params, int type) {
         this.logger = logger;
         this.url = url;
         this.params = params;
         this.type = type;
+    }
+    public DoRequestAction(Logger logger, String url, Map params, int type, String username, String password) {
+        this(logger, url, params, type);
+        this.username = username;
+        this.password = password;
     }
 
     public void execute(IConnection conn) throws Exception {
@@ -49,12 +56,24 @@ public class DoRequestAction implements Action {
         logger.debug("Making the request:\n" + completeUrl);
         if(type == POST)
         {
-            response =  conn.getHttpConnection().doPostRequest(completeUrl, params);
+            if(username != null){
+                response =  conn.getHttpConnection().doPostWithBasicAuth(completeUrl, username, password, params);
+            }
+            else{
+                response =  conn.getHttpConnection().doPostRequest(completeUrl, params);    
+            }
+
         }
         else
         {
-            response =  conn.getHttpConnection().doGetRequest(completeUrl, params);
+            if(username != null){
+                response =  conn.getHttpConnection().doGetWithBasicAuth(completeUrl, username, password, params);
+            }
+            else{
+                response =  conn.getHttpConnection().doGetRequest(completeUrl, params);
+            }
         }
+
         logger.debug("Response received:\n"+completeUrl);
     }
 

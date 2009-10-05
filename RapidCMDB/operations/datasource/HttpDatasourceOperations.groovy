@@ -48,6 +48,13 @@ class HttpDatasourceOperations extends BaseDatasourceOperations{
         return adapter.doRequest(url, params, type);
     }
 
+    def doRequestWithBasicAuth(String url, Map params, String username, String password, int type){
+        return adapter.doRequestWithBasicAuth(url, params, type, username, password);
+    }
+    def doRequestWithBasicAuth(String url, Map params, String username, String password){
+        return doRequestWithBasicAuth(url, params, username, password, DoRequestAction.GET);
+    }
+
     def doRequest(String url, Map params){
         return adapter.doRequest(url, params);
     }
@@ -55,9 +62,16 @@ class HttpDatasourceOperations extends BaseDatasourceOperations{
     def doGetRequest(String url, Map params){
         return adapter.doGetRequest(url, params);
     }
+    def doGetRequestWithBasicAuth(String url, Map params, String username, String password){
+        return doRequestWithBasicAuth(url, params, username, password, DoRequestAction.GET);
+    }
 
     def doPostRequest(String url, Map params){
         return adapter.doPostRequest(url, params);
+    }
+
+    def doPostRequestWithBasicAuth(String url, Map params, String username, String password){
+        return doRequestWithBasicAuth(url, params, username, password, DoRequestAction.POST);
     }
 
     def uploadFile(String url, String fieldName, String file, String fileName, Map params=[:])

@@ -78,11 +78,17 @@ class SmartsModuleBuild extends Build {
                 ant.exclude(name: "**/overridenOperations/**")
             }
         }
+        //copy RI solutions
         ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
             ant.fileset(file: "${env.rapid_insight}/solutions/**");
         }
+        //copy Smarts solutions
         ant.copy(toDir: "${rapidSuiteDir}/../solutions",overwrite:true) {
             ant.fileset(file: "${env.rapid_smarts}/applications/solutions/**");
+        }
+        //activate State Calculation Solution For Smarts
+        ant.copy(toDir: "${rapidSuiteDir}",overwrite:true) {
+            ant.fileset(file: "${rapidSuiteDir}/../solutions/stateCalculation/**");
         }
         
         if(!TEST){            

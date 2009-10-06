@@ -18,11 +18,16 @@ import org.compass.core.spi.InternalCompass
  */
 class BackupAction implements IndexSnapshotAction {
 
-    Logger logger = Logger.getLogger(BackupAction.class)
+    Logger logger;
     private Map directoryToSubindexMap = [:]
     private String destinationDirectory;
     public BackupAction(InternalCompass compass, List domainClasses, String destinationDirectory)
     {
+        this(compass, domainClasses, destinationDirectory, Logger.getLogger(BackupAction.class));
+    }
+    public BackupAction(InternalCompass compass, List domainClasses, String destinationDirectory, Logger logger)
+    {
+        this.logger = logger;
         logger.warn("Initialized a backup action");
         domainClasses.each {domainClass ->
             def session = compass.openSession();
@@ -55,6 +60,7 @@ class BackupAction implements IndexSnapshotAction {
             String fileName = it.next();
             backupFile(indexDir, fileName, dirDestFilePath + fileName);
         }
+        logger.warn("Backup action completed for ${subIndex}");
     }
 
     private void backupFile(Directory dir, String fileName, String backupFilePath) throws IOException {

@@ -113,7 +113,7 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     {
         InternalCompass c = ServletContextHolder.getServletContext().getAttribute(GrailsApplicationAttributes.APPLICATION_CONTEXT).getBean("compass");
         List domainClasses = ApplicationHolder.application.getDomainClasses().clazz;
-        BackupAction action = new BackupAction(c, domainClasses, directory);
+        BackupAction action = new BackupAction(c, domainClasses, directory, getLogger());
         WrapperIndexDeletionPolicy.takeGlobalSnapshot(action); 
     }
 

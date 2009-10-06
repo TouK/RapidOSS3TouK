@@ -1,3 +1,7 @@
+//overwritten to resolve CMDB-1662. This functionality is reimplemented in dialog.js
+YAHOO.widget.Panel.prototype.focusFirst = function (type, args, obj) {
+    
+}
 YAHOO.widget.Layout.prototype.destroy = function(willRemoveElement) {
     var Event = YAHOO.util.Event,
             Lang = YAHOO.lang;

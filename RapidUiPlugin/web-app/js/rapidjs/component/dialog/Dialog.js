@@ -46,6 +46,13 @@ YAHOO.rapidjs.component.Dialog = function(config)
 };
 
 YAHOO.rapidjs.component.Dialog.prototype = {
+    focusFirst: function () {
+        try{
+            this.panel.firstElement.focus();
+        }catch(err) {
+            // Ignore
+        }
+    },
     render: function()
     {
         var dh = YAHOO.ext.DomHelper;
@@ -199,6 +206,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         this.panel.show();
 
         YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.panel);
+        this.focusFirst();
     },
     hide: function()
     {

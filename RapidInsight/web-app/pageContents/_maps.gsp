@@ -51,29 +51,7 @@
         return updateParams;
     }
 
-
     var eventsGrid = YAHOO.rapidjs.Components['eventsGrid'];
-    eventsGrid.renderCellFunction = function(key, value, data, el){
-        if(key == "lastNotifiedAt" || key == "changedAt" || key == 'createdAt' || key == 'clearedAt' || key == 'willExpireAt'){
-            if(value == "0" || value == "")
-            {
-                return "never"
-            }
-            else
-            {
-                try
-                {
-                    var d = new Date();
-                    d.setTime(parseFloat(value))
-                    return d.format("d M H:i:s");
-                }
-                catch(e)
-                {}
-            }
-        }
-        return value;
-     }
-    
     var tree = YAHOO.rapidjs.Components['mapTree'];
     var topologyMap = YAHOO.rapidjs.Components['topologyMap'];
     tree.addToolbarButton({
@@ -98,3 +76,5 @@
     });
     tree.poll();
 </script>
+
+<rui:include template="pageContents/renderer/_renderCommonEventsListCellFunction.gsp" model="[componentName:'eventsGrid']"></rui:include>

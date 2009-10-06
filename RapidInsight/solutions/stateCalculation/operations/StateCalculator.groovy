@@ -207,6 +207,7 @@ class StateCalculator {
         def condition2 = newPropagatedState > currentState
         // this event might have determined the current state (was the event with the max severity)
         def condition3 = currentState == oldPropagatedState && newPropagatedState < currentState
+        
         if (condition1 || condition2 || condition3)
             return true;
         else

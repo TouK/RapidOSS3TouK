@@ -18,6 +18,7 @@ class UiSearchGrid extends UiComponent {
     String rootTag = "Objects";
     String contentPath = "Object";
     String keyAttribute = "id";
+    String defaultView = "default";
     String fieldsUrl = "script/run/getViewFields?format=xml";
     String queryParameter = "query";
     String totalCountAttribute = "total";
@@ -46,6 +47,7 @@ class UiSearchGrid extends UiComponent {
         url(blank:false)
         rootTag(blank:false)
         contentPath(blank:false)
+        defaultView(nullable: true)
         keyAttribute(blank:false)
         fieldsUrl(blank:false)
         totalCountAttribute(blank:false)

@@ -31,6 +31,7 @@ class UiSearchGridOperations extends UiComponentOperations {
                         offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query."],
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query."],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
+                        defaultView: [descr: "The view which will be shown when the search grid is shown."],
                         queryParameter: [descr: "The url parameter to send the query to the server."],
                         queryEnabled: [descr: "Parameter to determine whether the quick filtering is enabled or not."],
                         searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],

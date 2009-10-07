@@ -33,6 +33,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder = null;
         this.viewsLoaded = false;
         this.currentView = 'default';
+        if(this.config.defaultView != null)
+        {
+            this.currentView = this.config.defaultView;
+        }
+
         this.defaultColumns = YAHOO.rapidjs.ObjectUtils.clone(this.columns, true);
         var defaultColumnMap = {};
         for (var index = 0; index < this.defaultColumns.length; index ++) {
@@ -460,7 +465,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             var viewName = viewNode.getAttribute('name');
             SelectUtils.addOption(this.viewInput, viewName, viewName);
         }
+        this.selectDefaultView();
         this.viewsLoaded = true;
+    },
+    selectDefaultView: function()
+    {
+        var options = this.viewInput.options
+        YAHOO.rapidjs.SelectUtils.selectTheValue(this.viewInput, this.currentView, 0);
+        this.viewChanged();
     },
     handleRemoveView: function() {
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;

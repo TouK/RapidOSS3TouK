@@ -166,6 +166,8 @@ class SearchGridTagLib {
         cArray.add("offsetAttribute: '${config["offsetAttribute"]}'")
         cArray.add("sortOrderAttribute: '${config["sortOrderAttribute"]}'")
         cArray.add("defaultSearchClass: '${config["defaultSearchClass"]}'")
+        if (config["defaultView"])
+            cArray.add("defaultView:'${config['defaultView']}'")
         if (config["title"])
             cArray.add("title:'${config['title']}'")
         if (config["queryEnabled"])

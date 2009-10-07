@@ -24,6 +24,7 @@ class UiTreeGridOperations extends UiComponentOperations{
                         rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data."],
                         contentPath: [descr: "The node names of AJAX response which will be used as row data."],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node."],
+                        expandAttribute: [descr: "The attribute name of the row node which shows current row as expanded."],
                         pollingInterval: [descr: "Time delay between two server requests.", required:true],
                         expanded: [descr: "Parameter to display TreeGrid branches either expanded or collapsed"],
                         tooltip: [descr: "Parameter to display a tooltip over rows."],

@@ -29,7 +29,7 @@ import ui.map.MapGroup
 */
 
 def adminUser = RsUser.RSADMIN;
-def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"event");
+def defaultEventGroup = SearchQueryGroup.add(name: "Default", username:adminUser, isPublic:true, type:"event", expanded:true);
 
 SearchQuery.add(group: defaultEventGroup, name: "All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event", searchClass:'RsEvent');
 SearchQuery.add(group: defaultEventGroup, name: "Critical Events", query: "severity:5", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event", searchClass:'RsEvent');

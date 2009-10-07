@@ -112,7 +112,7 @@ image4821Visible="params.data.severity == '0'"
 </rui:searchGrid>
 
 <rui:treeGrid id="filterTree" url="../script/run/queryList?format=xml&type=event" rootTag="Filters" pollingInterval="0" timeout="30"
-        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="true"
+        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="false" expandAttribute="expanded"
 
         onNodeClicked="${['setQueryAction']}"
     
@@ -429,7 +429,7 @@ x='85' y='50'
   title='Save query'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="140" resizable="false"
  
  
   title='Save group'

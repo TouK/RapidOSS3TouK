@@ -25,6 +25,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
     this.rootImages = null;
     this.contentPath = null;
     this.hideAttribute = null;
+    this.expandNodeAttribute = null;
     this.expandedNodes = [];
     this.events = {
         'selectionchanged' : new YAHOO.util.CustomEvent('selectionchanged'),
@@ -153,7 +154,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         if (this.rootNode) {
             this.rootNode.destroy();
         }
-        this.rootNode = new YAHOO.rapidjs.component.treegrid.TreeRootNode(data, this.contentPath, this.hideAttribute);
+        this.rootNode = new YAHOO.rapidjs.component.treegrid.TreeRootNode(data, this.contentPath, this.hideAttribute, this.expandNodeAttribute);
         if (expandAll == true) {
             this.expandAll();
         }
@@ -220,8 +221,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             treeNode = this.rootNode;
             expandedRowIndex = -1;
         }
-        if (!treeNode.isExpanded) {
-            this.updateIcon(treeRow, true);
+        if (!treeNode.isExpanded && treeNode.isLeaf == false) {
+            this.updateIcon(treeRow, treeNode);
             treeNode.isExpanded = true;
             this.updateExpandedNodes(treeNode, expandedRowIndex, true);
             this.updateBodyHeight();
@@ -229,8 +230,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
     },
 
     collapseNode : function(treeNode, treeRow, collapsedRowIndex) {
-        if (treeNode.childNodes.length != 0) {
-            this.updateIcon(treeRow, false);
+        if (treeNode.isLeaf == false) {
+            this.updateIcon(treeRow, treeNode);
             this.updateExpandedNodes(treeNode, collapsedRowIndex, false);
             treeNode.isExpanded = false;
             this.updateBodyHeight();
@@ -294,9 +295,9 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
         return lastIndex;
     },
-    updateIcon : function(treeRow, isExpanded) {
-        if (treeRow && treeRow.icon) {
-            if (isExpanded == true)
+    updateIcon : function(treeRow, treeNode) {
+        if (treeRow && treeRow.icon && treeNode) {
+            if (treeNode.isExpanded == true || treeNode.isLeaf == true)
             {
                 YAHOO.util.Dom.replaceClass(treeRow.icon, 'r-tree-treerowicon-collapsed', 'r-tree-treerowicon-expanded');
             }
@@ -488,7 +489,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             firstCell['wrapper'].value = value;
             YAHOO.util.Dom.setStyle(cellBody.firstChild, 'left', (treeNode.level * 20) + 'px');
 
-            this.updateIcon(row, treeNode.isExpanded);
+            this.updateIcon(row, treeNode);
             this.setCellWidth(firstCell, this.columns[0]['width']);
             for (var colIndex = 1; colIndex < row.cells.length; colIndex++) {
                 var columnConfig = this.columns[colIndex];
@@ -717,10 +718,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
 
             }
         }
-        treeNode.childNodes = tempNodes;
-        if (tempNodes.length == 0) {
-            treeNode.isExpanded = true;
-        }
+        treeNode.setChildNodes(tempNodes);
     },
 
     clear: function() {

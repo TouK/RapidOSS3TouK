@@ -39,6 +39,7 @@ class SearchQueryGroup {
     Date rsInsertedAt = new Date(0);
     Date rsUpdatedAt  = new Date(0);
     String username;
+    Boolean expanded = false;
     String rsOwner = "p"
     String name;
     List queries = [];

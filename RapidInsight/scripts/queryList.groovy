@@ -42,7 +42,7 @@ queryBuilder.Filters
 {
     queryGroups.each {SearchQueryGroup group ->
         def userName = group.username;
-           queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic) {
+           queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic, expanded:group.expanded) {
               group.queries.each {SearchQuery query ->
                   if(query.type == filterType || query.type == ""){
                         queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName:query.viewName, group:group.name, searchClass:query.searchClass,

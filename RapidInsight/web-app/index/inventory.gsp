@@ -100,7 +100,7 @@ fieldExpression5624Visible="params.data.rsAlias == 'RsLink'"
 </rui:searchList>
 
 <rui:treeGrid id="filterTree" url="../script/run/queryList?format=xml&type=topology" rootTag="Filters" pollingInterval="0" timeout="30"
-        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="true"
+        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="false" expandAttribute="expanded"
 
         onNodeClicked="${['setQueryAction']}"
     
@@ -405,7 +405,7 @@ functionActionCondition5836Condition=""
     
 </rui:action>
 
-<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="140" resizable="false"
  
  
   title='Save group'

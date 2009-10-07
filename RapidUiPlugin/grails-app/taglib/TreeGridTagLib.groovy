@@ -110,6 +110,8 @@ class TreeGridTagLib {
             cArray.add("title:'${config['title']}'")
         if (config["expanded"])
             cArray.add("expanded:${config['expanded']}")
+        if (config["expandAttribute"])
+            cArray.add("expandNodeAttribute:'${config['expandAttribute']}'")
         if (config["tooltip"])
             cArray.add("tooltip:${config['tooltip']}")
         if (config["pollingInterval"])

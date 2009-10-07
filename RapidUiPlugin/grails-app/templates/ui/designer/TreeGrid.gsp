@@ -1,5 +1,5 @@
 <rui:treeGrid id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" pollingInterval="${uiElement.pollingInterval}" timeout="${uiElement.timeout}"
-        keyAttribute="${uiElement.keyAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}" expanded="${uiElement.expanded}"
+        keyAttribute="${uiElement.keyAttribute}" expandAttribute="${uiElement.expandAttribute}" contentPath="${uiElement.contentPath}" title="${uiElement.title}" expanded="${uiElement.expanded}"
 <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->
          def actionString = uiElement.getActionsString(actionTriggers);

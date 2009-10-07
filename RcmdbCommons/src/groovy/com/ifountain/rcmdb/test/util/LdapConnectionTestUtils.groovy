@@ -34,7 +34,7 @@ class LdapConnectionTestUtils {
         def password = CommonTestUtils.getTestProperty("Ldap.Password");
         return ["url":url,"username":username,"userPassword":password];
     }
-    public static Map getAuthorizationParams(){
+    public static Map getAuthenticationParams(){
         def url = CommonTestUtils.getTestProperty("Ldap.URL");
         def username = CommonTestUtils.getTestProperty("Ldap.AuthUsername");
         def password = CommonTestUtils.getTestProperty("Ldap.AuthPassword");

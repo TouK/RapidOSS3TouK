@@ -21,142 +21,185 @@ import javax.naming.NamingException
 import connection.LdapConnection
 import auth.RsUser
 
+////////////////////////////////
+//    LDAP CONFIGURATION
+////////////////////////////////
+
+// If group in localGroupName does not exist , please create it first from admin ui 
+
+//sample configuration  for ms ds
+//userSearchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
+//Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
+def ldapConnectionName = "ldapConnection"
+userSearchBase = "CN=Users,DC=molkay,DC=selfip,DC=net"
+userSearchFilter = "objectClass=user"
+userSearchSubDirectories = true
+userNameAttribute = "name"
+localGroupName = "rsuser"
 
 
-def output = " "
+/*
+//sample configuration for apache ds
+//Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
+def ldapConnectionName="ldapConnection"
+userSearchBase = "ou=system"
+userSearchFilter="objectClass=person"
+userSearchSubDirectories=true
+usernameAttribute="uid"
+localGroupName="userGroup"
+*/
 
-try {
-    // LDAP CONFIGURATION
-    // Don't forget to create the group configured in localGroupName property
-    //
-    /*
-	//for apache ds
-	//Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
-    def ldapConnectionName="apache ds"
-    def searchBase = "ou=system"
-    def searchFilter="objectClass=person"    
-    def searchSubDirectories=true
-    def usernameAttribute="uid"
-    def localGroupName="userGroup"
-    */
+////////////////////////////////
+//    LDAP CONFIGURATION ENDED
+////////////////////////////////
 
-    //for ms ds
-    //searchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
-    //Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
-    def ldapConnectionName = "ms active directory"
-    def searchBase = "CN=Users,DC=molkay,DC=selfip,DC=net"
-    def searchFilter = "objectClass=user"
-    def searchSubDirectories = true
-    def usernameAttribute = "name"
-    def localGroupName = "userGroup"
+// BELOW IMPLEMENTATION IS TO TRANSFER USERS
 
-    // BELOW IMPLEMENTATION IS TO TRANSFER USERS
 
-    def ldapConnection = LdapConnection.get(name: ldapConnectionName)
-    if (ldapConnection == null)
-    {
-        logger.warn("No connection found with id ${ldapConnectionName}");
+OUTPUT = " "
 
-        output += "No connection found with id ${ldapConnectionName}"
-        return output
+ldapConnection = LdapConnection.get(name: ldapConnectionName)
+if (ldapConnection == null)
+{
+    logWarn("No connection found with id ${ldapConnectionName}");
+    return OUTPUT
+}
+
+connectoToLdap();
+try{
+    createUsers();
+    //def result=doLdapQuery(userSearchBase,userSearchFilter,userSearchSubDirectories);
+	//printLdapQueryResult(result);
+}
+catch(e)
+{
+    logWarn("Exception occured ${e}");
+}
+finally
+{
+    disconnectFromLdap();
+}
+
+return OUTPUT
+
+def createUsers()
+{
+    def result=doLdapQuery(userSearchBase,userSearchFilter,userSearchSubDirectories);
+    //printLdapQueryResult(result);
+     while (result.hasMore()) {
+        def searchResult = result.next();
+        def resultAttributes = searchResult.attributes;
+        def entryDn=searchResult.nameInNamespace;
+
+        def userName=resultAttributes.get(userNameAttribute).get();
+        if (userName != "rsadmin")
+        {
+            logInfo("found user ${userName} : ${entryDn} , with username : ${userName}")
+
+            def user=RsUser.addUser([username:userName,password:"",groups:[localGroupName]]);
+            if(!user.hasErrors())
+            {
+                logInfo("Added user ${userName}");
+
+                def oldLdapInformation = user.retrieveLdapInformation()?.remove();
+                def ldapInformation=user.addLdapInformation(userdn: entryDn, ldapConnection: ldapConnection)
+                if(!ldapInformation.hasErrors())
+                {
+                    logInfo("Added ldapInformation for ${userName}");
+                }
+                else
+                {
+                    logWarn("Error occured while adding ldapInformation for user ${userName}. Reason ${ldapInformation.errors}");
+                }
+            }
+            else
+            {
+                logWarn("Error occured while adding user ${userName}. Reason ${user.errors}");
+            }
+        }
+     }
+}
+
+
+
+def doLdapQuery(searchBase,searchFilter,searchSubDirectories)
+{
+    def result=null;
+    try {
+        logDebug("executing query searchBase ${searchBase} , searchFilter ${searchFilter}, searchSubDirectories : ${searchSubDirectories}")
+        result = ldapConnection.query(searchBase, searchFilter, searchSubDirectories);
     }
+    catch (NamingException ex) {
+        logWarn("Exception occured while searching Ldap Server : ${ex}");
+        throw ex;
+    }
+    return result;
+}
 
+def printLdapQueryResult(result)
+{
+    while (result.hasMore()) {
+        def searchResult = result.next()
+        def resultAttributes = searchResult.attributes;
+        logDebug("Found entry  : ${searchResult.nameInNamespace}")
+        printLdapAttributes(resultAttributes);
 
+    }
+}
+def printLdapAttributes(resultAttributes)
+{
+    resultAttributes.getAll().each{ attribute ->
+        logDebug("attribute : ${attribute.getID()}");
+        attribute.getAll().each{ value ->
+            logDebug( "----- value ${value}");
+        }
+    }
+}
+
+def connectoToLdap()
+{
 
     try {
         ldapConnection.connect()
-        output += "Connected to Ldap"
+        logInfo("Connected to Ldap");
     }
     catch (NamingException e) {
-        logger.warn("Could not connect to LDAP: ${e}");
-
-        output += "Could not connect to LDAP: ${e}"
+        logWarn("Could not connect to LDAP: ${e}");
         throw e
     }
-
-
-    // Look up the DN for the LDAP entry that has a 'uid' value
-    // matching the given username.
-
-
-
-    def result
-    try {
-        result = ldapConnection.query(searchBase, searchFilter, searchSubDirectories)
-        while (result.hasMore()) {
-            def searchResult = result.next()
-            def resultAttributes = searchResult.attributes
-
-            def username = resultAttributes.get(usernameAttribute).get()
-            def userdn = searchResult.nameInNamespace
-
-
-            output += " <br> Found userdn  : ${userdn} with username : ${username}"
-
-            if (username != "rsadmin")
-            {
-
-                def oldUser = RsUser.get(username: username)
-                if (oldUser != null)
-                {
-                    def oldLdapInformation = oldUser.retrieveLdapInformation();
-                    if (oldLdapInformation != null)
-                    {
-                        oldLdapInformation.remove()
-                    }
-
-                }
-
-
-                try {
-                    def rsUser = RsUser.addUser([username: username, password: "",groups:[localGroupName]])
-                    if (!rsUser.hasErrors()) {
-                        output += "<br>User ${rsUser.username} created"
-                        rsUser.addLdapInformation(userdn: userdn, ldapConnection: ldapConnection)
-                    }
-                    else
-                    {
-                        logger.warn("User ${username} can not be created. Reason : ${rsUser.errors}");
-
-                        output += "<br> User ${username} can not be created. Reason : ${rsUser.errors}";
-
-                    }
-
-                }
-                catch (e)
-                {
-                    logger.warn("User ${username} can not be created. Reason : ${e}");
-
-                    output += "<br> User ${username} can not be created. Reason : ${e}";
-                }
-
-            }
-
-        }
-    }
-    catch (NamingException ex) {
-        logger.warn("Exception occured while searching Ldap Server : ${ex}");
-
-        output += "<br> Exception occured while searching Ldap Server : ${ex}"
-    }
-
-    /*
-    LdapUserInformation.list().each{
-        output+="<br> ${it.userdn} ${it.ldapConnection}"
-    }
-    */
-
-
-    ldapConnection.disconnect()
-    output += "<br> Closed Ldap connection"
-
 }
-catch (Exception e)
+def disconnectFromLdap()
 {
-    logger.warn("Got Exception ${e} ");
 
-    output += "<br> Got Exception ${e} "
+    try {
+        ldapConnection.disconnect()
+        logInfo("Closed Ldap connection");
+    }
+    catch(e)
+    {
+        logWarn("Could not disconnect from Ldap: ${e}");
+    }
+}
+
+def logWarn(message)
+{
+   logger.warn(message);
+   OUTPUT += "<br> WARN : ${message}";
+}
+
+def logInfo(message)
+{
+   logger.info(message);
+   OUTPUT += "<br> INFO : ${message}";
+}
+
+def logDebug(message)
+{
+   logger.debug(message);
+   if(logger.isDebugEnabled())
+   {
+        OUTPUT += "<br> DEBUG : ${message}";
+   }
 }
 
 
-return output

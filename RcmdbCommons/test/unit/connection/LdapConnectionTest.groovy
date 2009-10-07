@@ -52,7 +52,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
     }
     public void testAuthentication()
     {
-        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        Map params = LdapConnectionTestUtils.getAuthenticationParams();
         //Map params = LdapConnectionTestUtils.getConnectionParams();
         /*
         //ms params
@@ -73,7 +73,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
 
     public void testAuthenticationFailsWhenParametersInvalid()
     {
-        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        Map params = LdapConnectionTestUtils.getAuthenticationParams();
 
         LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url)
 
@@ -126,14 +126,14 @@ class LdapConnectionTest extends RapidCoreTestCase{
     }
     public void testCheckConnection()
     {
-        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        Map params = LdapConnectionTestUtils.getAuthenticationParams();
         LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url,username:params.username,userPassword:params.userPassword)
 
         assertTrue(oper.checkConnection())
     }
      public void testCheckConnectionGeneratesExceptionWhenParametersInvalid()
     {
-        Map params = LdapConnectionTestUtils.getAuthorizationParams();
+        Map params = LdapConnectionTestUtils.getAuthenticationParams();
         LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url,username:params.username,userPassword:params.userPassword+"extra")
 
         try{

@@ -37,12 +37,6 @@ class LdapConnectionTest extends RapidCoreTestCase{
     {
         Map params = LdapConnectionTestUtils.getConnectionParams();
 
-        //ms params
-        //def params=["url":"ldap://192.168.1.178","username":"ldapuser@molkay.selfip.net","userPassword":"123"]
-        //apache params
-        //def params=["url":"ldap://localhost:10389/","username":"uid=admin,ou=system","userPassword":"123"]
-
-
         LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(params);
         assertFalse (oper.isConnected());
         oper.connect();
@@ -53,19 +47,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
     public void testAuthentication()
     {
         Map params = LdapConnectionTestUtils.getAuthenticationParams();
-        //Map params = LdapConnectionTestUtils.getConnectionParams();
-        /*
-        //ms params
-        def params=["url":"ldap://192.168.1.178"]
-        def username="cn=ldapuser,cn=users,DC=molkay,DC=selfip,DC=net";
-        def password="123"
-        */
-        /*
-        //apache params
-        def params=["url":"ldap://localhost:10389/"]
-        def username="uid=tempuser,ou=users,ou=system";
-        def password="123"
-        */
+
         LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(url:params.url)
 
         assertTrue(oper.checkAuthentication(params.username,params.userPassword))

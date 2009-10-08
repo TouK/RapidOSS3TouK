@@ -22,6 +22,8 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper;
 */
 class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
 
+     def ROOT_DN="DC=molkay,DC=selfip,DC=net";
+
      public void setUp() {
         super.setUp();
 
@@ -58,13 +60,20 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
         def ldapConnection=LdapConnection.add(connectionParams);
         assertFalse(ldapConnection.hasErrors());
 
-        def group=Group.add(name:RsUser.RSUSER);
+        def role=Role.add(name:Role.USER);
+        assertFalse(role.hasErrors())
+
+        def group=Group.add(name:RsUser.RSUSER,role:role);
         assertFalse(group.hasErrors());
 
-        
         def scriptResult=ScriptManagerForTest.runScript("TransferLdapUsers",[:]);
         println scriptResult.replace("<br>","\n<br>")
 
+        //no Exceptions in result
+        assertTrue(scriptResult.indexOf("Exception")<0)
+
+        //check users
+        
         //admin and ldapuser should exist and there may be other users
         assertTrue(RsUser.count()>=2);
 
@@ -76,7 +85,7 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
 
         def ldapUserInformation=ldapUser.retrieveLdapInformation();
         assertNotNull(ldapUserInformation);
-        assertEquals("CN=ldapuser,CN=Users,DC=molkay,DC=selfip,DC=net",ldapUserInformation.userdn);
+        assertEquals("CN=ldapuser,CN=Users,${ROOT_DN}",ldapUserInformation.userdn);
         assertEquals(ldapConnection.id,ldapUserInformation.ldapConnection.id);
 
         //check adminUser
@@ -87,8 +96,61 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
 
         def adminUserInformation=adminUser.retrieveLdapInformation();
         assertNotNull(adminUserInformation);
-        assertEquals("CN=admin,CN=Users,DC=molkay,DC=selfip,DC=net",adminUserInformation.userdn);
+        assertEquals("CN=admin,CN=Users,${ROOT_DN}",adminUserInformation.userdn);
         assertEquals(ldapConnection.id,adminUserInformation.ldapConnection.id);
+
+
+        //check groups , rsuser already exists at leasts users and administrators groups should be added
+        assertTrue(Group.count()>=3);
+
+        //check Users group
+        def usersGroup=Group.get(name:"Users");
+        assertNotNull (usersGroup);
+        def usersGroup_users=usersGroup.users;
+        assertTrue(usersGroup_users.size()>=1);
+        assertTrue(usersGroup_users.findAll{it.id==ldapUser.id}.size()==1)
+        assertTrue(usersGroup_users.findAll{it.id==adminUser.id}.size()==0)
+
+        //check administratorsGroup
+        def administratorsGroup=Group.get(name:"Administrators");
+        assertNotNull(administratorsGroup);
+
+        def administratorsGroup_users=administratorsGroup.users;
+        assertTrue(administratorsGroup_users.size()>=1);
+        assertTrue(administratorsGroup_users.findAll{it.id==ldapUser.id}.size()==0)
+        assertTrue(administratorsGroup_users.findAll{it.id==adminUser.id}.size()==1)
+
+        
+    }
+
+    public void testScriptDoesNotThrowExceptionIfLdapConnectionObjectIsMissing()
+    {
+        def scriptResult=ScriptManagerForTest.runScript("TransferLdapUsers",[:]);
+        println scriptResult.replace("<br>","\n<br>")
+
+        assertTrue(scriptResult.indexOf("No connection found with id")>=0)
+    }
+
+    public void testScriptThrowsExceptionIfLdapConnectionIsWrong()
+    {
+        Map params = LdapConnectionTestUtils.getConnectionParams();
+        def connectionParams=[name:"ldapConnection"];
+        connectionParams.putAll (params);
+        connectionParams.username="nosuch_user_343434";
+
+        def ldapConnection=LdapConnection.add(connectionParams);
+        assertFalse(ldapConnection.hasErrors());
+
+        try{
+            def scriptResult=ScriptManagerForTest.runScript("TransferLdapUsers",[:]);
+            println scriptResult.replace("<br>","\n<br>")
+
+            fail("should throw AuthenticationException");
+        }
+        catch(Exception e)
+        {
+            assertTrue(e.getMessage().indexOf("Exception occured while connecting to ldap")>=0);
+        }
 
     }
 

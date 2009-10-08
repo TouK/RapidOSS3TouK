@@ -20,8 +20,12 @@ package connection
 
 import javax.naming.Context
 import javax.naming.NamingException
+import javax.naming.directory.DirContext
 import javax.naming.directory.InitialDirContext
 import javax.naming.directory.SearchControls
+import javax.naming.directory.Attributes
+import javax.naming.directory.BasicAttributes
+import javax.naming.directory.BasicAttribute
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +36,7 @@ import javax.naming.directory.SearchControls
  */
 class LdapConnectionOperations extends ConnectionOperations
 {
-    def context;
+    InitialDirContext context;
     
     def checkAuthentication(String authUsername,String authPassword)
     {
@@ -76,51 +80,16 @@ class LdapConnectionOperations extends ConnectionOperations
     def connect()
     {
         context = _connect(username, userPassword);
-
     }
     def disconnect()
     {
-       if(isConnected())
-       {
-            context.close();
-            context=null; 
-       }
-       else
-       {
-           throw new NamingException("Connection is not open");
-       }
-
+        _throwExceptionIfNotConnected();
+        context.close();
+        context=null;
     }
     def isConnected()
     {
         return context != null;
-    }
-    def query(searchBase,searchFilter,searchSubDirectories)
-    {
-        if(isConnected())
-        {
-            if( searchFilter==null)
-                searchFilter=""
-
-            SearchControls searchControls = new SearchControls();
-            if ( searchSubDirectories )
-            {
-                searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE )
-            }
-
-            return context.search(searchBase, searchFilter , searchControls)
-        }
-        else
-        {
-            throw new NamingException("Connection is not open");
-        }
-        /*
-        def matchAttributes = new BasicAttributes(true)
-        if(searchAttribute!="" && searchAttribute!=null &&  searchValue!="" && searchValue!=null )
-        {
-            matchAttributes.put(new BasicAttribute(searchAttribute, searchValue))
-        }
-        */
     }
     public boolean checkConnection()
     {
@@ -135,5 +104,115 @@ class LdapConnectionOperations extends ConnectionOperations
             throw e
         }
 
+    }     
+    def query(searchBase,searchFilter,searchSubDirectories)
+    {
+        _throwExceptionIfNotConnected();
+
+        if( searchFilter==null)
+            searchFilter=""
+
+        SearchControls searchControls = new SearchControls();
+        if ( searchSubDirectories )
+        {
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE )
+        }
+        def results=[];
+        def queryResult=context.search(searchBase, searchFilter , searchControls)
+        while(queryResult.hasMore())
+        {
+              def searchResult = queryResult.next();              
+              def searchResultProps=convertAttributesToProps(searchResult.getAttributes());
+              searchResultProps.nameInNamespace=searchResult.nameInNamespace;
+              results.add(searchResultProps);
+
+        }
+        return results;
+        /*
+        def matchAttributes = new BasicAttributes(true)
+        if(searchAttribute!="" && searchAttribute!=null &&  searchValue!="" && searchValue!=null )
+        {
+            matchAttributes.put(new BasicAttribute(searchAttribute, searchValue))
+        }
+        */
+    }
+
+
+    public def getEntry(String dn)
+    {
+        _throwExceptionIfNotConnected();
+        try{
+            return convertAttributesToProps(context.getAttributes(dn));
+        }
+        catch(javax.naming.NameNotFoundException e)
+        {
+           throw new Exception("The name ${dn} not found in ldap server.",e); 
+        }
+    }
+
+    public void addEntry(String dn,props)
+    {
+        _throwExceptionIfNotConnected();
+        def attributes=convertPropsToAttributes(props);
+        context.bind (dn,null,attributes);
+    }
+    public void updateEntry(String dn,props)
+    {
+        _throwExceptionIfNotConnected();
+        def attributes=convertPropsToAttributes(props);
+        context.modifyAttributes(dn,DirContext.REPLACE_ATTRIBUTE,attributes);
+    }
+    public void removeEntry(String dn)
+    {
+        _throwExceptionIfNotConnected();
+        context.unbind(dn);
+    }
+
+    private void _throwExceptionIfNotConnected()
+    {
+        if(!isConnected())        
+        {
+            throw new NamingException("Connection is not open");
+        }
+    }
+
+    private def convertAttributesToProps(Attributes attributes)
+    {
+        def props=[:];
+         attributes.getAll().each{ attr ->
+            def values=[];
+            attr.getAll().each{ value ->
+                values.add(value);
+            }
+            if(values.size()==1)
+            {
+                props.put(attr.getID(),values[0]);
+            }
+            else
+            {
+                props.put(attr.getID(),values);
+            }
+        }
+        return props;
+    }
+    private Attributes convertPropsToAttributes(props)
+    {
+        Attributes attributes = new BasicAttributes();
+        props.each { propName , propValue ->
+            BasicAttribute attr = new BasicAttribute(propName);
+            if(propValue instanceof List)
+            {
+                propValue.each{ propValueInList ->
+                    attr.add(propValueInList);
+                }
+            }
+            else
+            {
+                attr.add(propValue);
+            }
+
+            attributes.put(attr);
+        }
+        return attributes;
     }
 }

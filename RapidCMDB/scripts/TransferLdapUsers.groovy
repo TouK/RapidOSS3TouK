@@ -20,6 +20,9 @@
 import javax.naming.NamingException
 import connection.LdapConnection
 import auth.RsUser
+import auth.Group
+import auth.Role
+import auth.LdapUserInformation
 
 ////////////////////////////////
 //    LDAP CONFIGURATION
@@ -37,6 +40,12 @@ userSearchSubDirectories = true
 userNameAttribute = "name"
 localGroupName = "rsuser"
 
+
+groupSearchBase = "CN=Builtin,DC=molkay,DC=selfip,DC=net"
+groupSearchFilter = "objectClass=group"
+groupSearchSubDirectories = true
+groupNameAttribute = "cn"
+groupUsersAttribute="member"
 
 /*
 //sample configuration for apache ds
@@ -68,6 +77,7 @@ if (ldapConnection == null)
 connectoToLdap();
 try{
     createUsers();
+    createGroups();
     //def result=doLdapQuery(userSearchBase,userSearchFilter,userSearchSubDirectories);
 	//printLdapQueryResult(result);
 }
@@ -82,16 +92,16 @@ finally
 
 return OUTPUT
 
+
+
 def createUsers()
 {
-    def result=doLdapQuery(userSearchBase,userSearchFilter,userSearchSubDirectories);
+    def results=doLdapQuery(userSearchBase,userSearchFilter,userSearchSubDirectories);
     //printLdapQueryResult(result);
-     while (result.hasMore()) {
-        def searchResult = result.next();
-        def resultAttributes = searchResult.attributes;
+    results.each{  searchResult ->
         def entryDn=searchResult.nameInNamespace;
 
-        def userName=resultAttributes.get(userNameAttribute).get();
+        def userName=searchResult.get(userNameAttribute);
         if (userName != "rsadmin")
         {
             logInfo("found user ${userName} : ${entryDn} , with username : ${userName}")
@@ -121,6 +131,55 @@ def createUsers()
 }
 
 
+def createGroups()
+{
+    def userRole=Role.get(name:Role.USER);
+    def results=doLdapQuery(groupSearchBase,groupSearchFilter,groupSearchSubDirectories);
+    //printLdapQueryResult(result);
+    results.each{  searchResult ->
+        def entryDn=searchResult.nameInNamespace;
+
+        def groupName=searchResult.get(groupNameAttribute);
+
+        def groupUserDns=[];
+        def groupUsers=[];
+        if(searchResult.containsKey(groupUsersAttribute))
+        {
+            groupUserDns=searchResult.get(groupUsersAttribute);
+            if(! (groupUserDns instanceof List) )
+            {
+               groupUserDns=[groupUserDns]; 
+            }
+
+            groupUserDns.each{ groupUserDn ->
+                def userIds=LdapUserInformation.getPropertyValues("userdn:${groupUserDn}",["userId"]);
+                if(userIds.size()>0)
+                {
+                    def user=RsUser.get(id:userIds[0].userId);
+                    if(user!=null)
+                    {
+                        groupUsers.add(user);
+                    }
+                }
+            }
+        }
+
+
+
+        logInfo("found group ${groupName} : ${entryDn} , group Users in ldap : ${groupUserDns}");
+        logInfo("found users in RI for group ${groupName} : ${groupUsers.username}}")
+
+        def group=Group.addGroup([name:groupName,role:userRole,users:groupUsers]);
+        if(!group.hasErrors())
+        {
+            logInfo("Added group ${group.name}");
+        }
+        else
+        {
+            logWarn("Error occured while adding group ${groupName}. Reason ${group.errors}");
+        }
+     }
+}
 
 def doLdapQuery(searchBase,searchFilter,searchSubDirectories)
 {
@@ -165,7 +224,7 @@ def connectoToLdap()
     }
     catch (NamingException e) {
         logWarn("Could not connect to LDAP: ${e}");
-        throw e
+        throw new Exception("Exception occured while connecting to ldap. Reason ${e}",e);
     }
 }
 def disconnectFromLdap()

@@ -42,8 +42,6 @@ class LdapConnectionTestUtils {
     }
     public static Map getQueryParams(){
         def searchBase = CommonTestUtils.getTestProperty("Ldap.SearchBase");
-        def searchFilter = CommonTestUtils.getTestProperty("Ldap.SearchFilter");
-        def searchSubDirectories = CommonTestUtils.getTestProperty("Ldap.SearchSubDirectories")=="1";
-        return ["searchBase":searchBase,"searchFilter":searchFilter,"searchSubDirectories":searchSubDirectories];
+        return ["searchBase":searchBase];
     }
 }

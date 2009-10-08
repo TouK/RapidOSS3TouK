@@ -33,6 +33,8 @@ import auth.LdapUserInformation
 //sample configuration  for ms ds
 //userSearchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
 //Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
+
+//user data configuration
 def ldapConnectionName = "ldapConnection"
 userSearchBase = "CN=Users,DC=molkay,DC=selfip,DC=net"
 userSearchFilter = "objectClass=user"
@@ -40,7 +42,7 @@ userSearchSubDirectories = true
 userNameAttribute = "name"
 localGroupName = "rsuser"
 
-
+//group data configuration 
 groupSearchBase = "CN=Builtin,DC=molkay,DC=selfip,DC=net"
 groupSearchFilter = "objectClass=group"
 groupSearchSubDirectories = true

@@ -195,6 +195,14 @@ class LdapConnectionOperations extends ConnectionOperations
         Attributes metaAttrs = metaSchema.getAttributes("",["SINGLE-VALUE"] as String[]);
         return metaAttrs?.get("SINGLE-VALUE")?.get() == "true";
     }
+    /*
+    //hardcoded decision for multiple attributes
+    protected boolean isSingleAttribute(attr)
+    {
+        def multiAttributes=["objectClass":true,"anotherProperty":true];
+        return multiAttributes.containsKey(attr.getID());
+    }
+    */
     
     protected Attributes convertPropsToAttributes(props)
     {

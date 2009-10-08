@@ -128,13 +128,6 @@ class LdapConnectionOperations extends ConnectionOperations
 
         }
         return results;
-        /*
-        def matchAttributes = new BasicAttributes(true)
-        if(searchAttribute!="" && searchAttribute!=null &&  searchValue!="" && searchValue!=null )
-        {
-            matchAttributes.put(new BasicAttribute(searchAttribute, searchValue))
-        }
-        */
     }
 
 

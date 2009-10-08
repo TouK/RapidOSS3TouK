@@ -17,8 +17,8 @@ class RapidInsightUiTestBuild extends Build {
     def setOption(options) {
         if (options != null) {
             buildOption = options;
-            RI_UNIX_OS = Boolean.parseBoolean(options.get("ROSS_UNIX", "false"));
-            RI_WINDOWS_OS = Boolean.parseBoolean(options.get("ROSS_WINDOWS", "true"));
+            RI_UNIX_OS = Boolean.parseBoolean(options.get("RI_UNIX", "false"));
+            RI_WINDOWS_OS = Boolean.parseBoolean(options.get("RI_WINDOWS", "true"));
         }
     }
 

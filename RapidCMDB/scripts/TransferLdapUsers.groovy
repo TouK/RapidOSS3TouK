@@ -146,11 +146,7 @@ def createGroups()
         if(searchResult.containsKey(groupUsersAttribute))
         {
             groupUserDns=searchResult.get(groupUsersAttribute);
-            if(! (groupUserDns instanceof List) )
-            {
-               groupUserDns=[groupUserDns]; 
-            }
-
+            
             groupUserDns.each{ groupUserDn ->
                 def userIds=LdapUserInformation.getPropertyValues("userdn:${groupUserDn}",["userId"]);
                 if(userIds.size()>0)

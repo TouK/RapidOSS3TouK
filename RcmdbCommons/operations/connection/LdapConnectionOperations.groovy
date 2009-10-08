@@ -57,7 +57,7 @@ class LdapConnectionOperations extends ConnectionOperations
 
     }
 
-    private InitialDirContext _connect(String username, String password)
+    protected InitialDirContext _connect(String username, String password)
     {
         def env = new Hashtable()
         env[Context.INITIAL_CONTEXT_FACTORY] = contextFactory
@@ -168,7 +168,7 @@ class LdapConnectionOperations extends ConnectionOperations
         context.unbind(dn);
     }
 
-    private void _throwExceptionIfNotConnected()
+    protected void _throwExceptionIfNotConnected()
     {
         if(!isConnected())        
         {
@@ -176,15 +176,16 @@ class LdapConnectionOperations extends ConnectionOperations
         }
     }
 
-    private def convertAttributesToProps(Attributes attributes)
+    protected def convertAttributesToProps(Attributes attributes)
     {
         def props=[:];
          attributes.getAll().each{ attr ->
+
             def values=[];
             attr.getAll().each{ value ->
                 values.add(value);
             }
-            if(values.size()==1)
+            if(isSingleAttribute(attr))
             {
                 props.put(attr.getID(),values[0]);
             }
@@ -195,7 +196,14 @@ class LdapConnectionOperations extends ConnectionOperations
         }
         return props;
     }
-    private Attributes convertPropsToAttributes(props)
+    protected boolean isSingleAttribute(attr)
+    {
+        DirContext metaSchema = attr.getAttributeDefinition();
+        Attributes metaAttrs = metaSchema.getAttributes("",["SINGLE-VALUE"] as String[]);
+        return metaAttrs?.get("SINGLE-VALUE")?.get() == "true";
+    }
+    
+    protected Attributes convertPropsToAttributes(props)
     {
         Attributes attributes = new BasicAttributes();
         props.each { propName , propValue ->

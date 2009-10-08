@@ -681,7 +681,58 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         //testing for periodic script
         def updateParams = [name: "myscript1", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
-        def params = [name: "myscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        def params = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
+        def scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        def script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(params.name, unscheduleCallParams.scriptName)
+        assertEquals(callParams.script.id, script.id)
+        assertTrue(unscheduleCallParams.time < callParams.time)
+
+        //testing for cron script
+        updateParams = [name: "cmyscript1", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
+        params = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
+        scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(params.name, unscheduleCallParams.scriptName)
+        assertEquals(callParams.script.id, script.id)
+        assertTrue(unscheduleCallParams.time < callParams.time)
+    }
+
+
+    void testUpdateScriptCallsSchedulerUnschedulIfScriptIsDisabled()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeScriptManager()
+
+        def callParams = [:]
+        CmdbScriptOperations.metaClass.static.scheduleScript = {CmdbScript script ->
+            callParams.script = script
+            callParams.time = System.nanoTime()
+
+        }
+        def unscheduleCallParams = [:]
+        ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->
+            unscheduleCallParams.scriptName = scriptName
+            unscheduleCallParams.time = System.nanoTime()
+        }
+
+        //testing for periodic script
+        def updateParams = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: false, startDelay: 10, period: 20]
+        def params = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
         def scriptToUpdate = CmdbScriptOperations.addScript(params);
         assertFalse(scriptToUpdate.hasErrors())
 
@@ -692,11 +743,12 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         def script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
         assertFalse(script.hasErrors())
         assertEquals(callParams.script.id, script.id)
+        assertEquals(params.name, unscheduleCallParams.scriptName)
         assertTrue(unscheduleCallParams.time < callParams.time)
 
         //testing for cron script
-        updateParams = [name: "cmyscript1", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
-        params = [name: "cmyscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile]
+        updateParams = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: false, startDelay: 10, cronExpression: "* * * * * ?"]
+        params = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
         scriptToUpdate = CmdbScriptOperations.addScript(params);
         assertFalse(scriptToUpdate.hasErrors())
 
@@ -706,6 +758,57 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(unscheduleCallParams.size(), 0)
         script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
         assertFalse(script.hasErrors())
+        assertEquals(params.name, unscheduleCallParams.scriptName)
+        assertEquals(callParams.script.id, script.id)
+        assertTrue(unscheduleCallParams.time < callParams.time)
+    }
+
+    void testUpdateScriptCallsSchedulerUnschedulIfScriptTypeIsChanged()
+    {
+        initialize([CmdbScript, Group], []);
+        initializeScriptManager()
+
+        def callParams = [:]
+        CmdbScriptOperations.metaClass.static.scheduleScript = {CmdbScript script ->
+            callParams.script = script
+            callParams.time = System.nanoTime()
+
+        }
+        def unscheduleCallParams = [:]
+        ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->
+            unscheduleCallParams.scriptName = scriptName
+            unscheduleCallParams.time = System.nanoTime()
+        }
+
+        //testing for periodic script
+        def updateParams = [name: "myscript", type: CmdbScript.ONDEMAND, enabled:true]
+        def params = [name: "myscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.PERIODIC, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, period: 20]
+        def scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        def script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(callParams.script.id, script.id)
+        assertEquals(params.name, unscheduleCallParams.scriptName)
+        assertTrue(unscheduleCallParams.time < callParams.time)
+
+        //testing for cron script
+        updateParams = [name: "cmyscript", type: CmdbScript.ONDEMAND, enabled:true]
+        params = [name: "cmyscript", type: CmdbScript.SCHEDULED, scheduleType: CmdbScript.CRON, scriptFile: simpleScriptFile, enabled: true, startDelay: 10, cronExpression: "* * * * * ?"]
+        scriptToUpdate = CmdbScriptOperations.addScript(params);
+        assertFalse(scriptToUpdate.hasErrors())
+
+        callParams = [:];
+        unscheduleCallParams = [:];
+        assertEquals(callParams.size(), 0)
+        assertEquals(unscheduleCallParams.size(), 0)
+        script = CmdbScriptOperations.updateScript(scriptToUpdate, updateParams, false)
+        assertFalse(script.hasErrors())
+        assertEquals(params.name, unscheduleCallParams.scriptName)
         assertEquals(callParams.script.id, script.id)
         assertTrue(unscheduleCallParams.time < callParams.time)
     }

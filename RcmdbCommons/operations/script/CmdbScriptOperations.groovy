@@ -159,7 +159,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
                 destroyScriptLogger(oldLogger);
             }
             manageRepositoryDatasource(script, params["listenToRepository"] == true)
-            if(scriptNameBeforeUpdate != script.name)
+            if(scriptNameBeforeUpdate != script.name || !script.enabled || script.type != CmdbScript.SCHEDULED)
             {
                 ScriptScheduler.getInstance().unscheduleScript(scriptNameBeforeUpdate)
             }

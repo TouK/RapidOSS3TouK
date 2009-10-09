@@ -57,6 +57,9 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         ScriptManager.metaClass.removeScript = {String script ->}
         ScriptScheduler.metaClass.scheduleScript = {String scriptName, long startDelay, long period ->}
         ScriptScheduler.metaClass.unscheduleScript = {String scriptName ->}
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, long period ->}
+        ScriptScheduler.metaClass.isScheduled = {String scriptName, long startDelay, String cronExp ->}
+
         ListeningAdapterManager.metaClass.startAdapter = {BaseListeningDatasource listeningDatasource ->}
         ListeningAdapterManager.metaClass.stopAdapter = {BaseListeningDatasource listeningDatasource ->}
         ListeningAdapterManager.metaClass.isFree = {BaseListeningDatasource listeningDatasource -> return true;}

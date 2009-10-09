@@ -34,6 +34,7 @@ public class DefaultCompassConfiguration {
                 "compass.engine.store.wrapper.wrapper1.awaitTermination": "10000000",
                 "compass.cache.first": "org.compass.core.cache.first.NullFirstLevelCache",
                 "compass.transaction.lockTimeout": "3600",
+                "compass.registerShutdownHook":"false",
                 "compass.engine.store.indexDeletionPolicy.type": WrapperIndexDeletionPolicy.name,
                 "compass.engine.queryParser.default.type": RapidLuceneQueryParser.class.name ,
                 "compass.engine.maxBufferedDocs":"1000",

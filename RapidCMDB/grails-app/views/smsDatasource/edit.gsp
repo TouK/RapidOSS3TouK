@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit SmsDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${smsDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${smsDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[smsDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${smsDatasource?.id}" />
                 <div class="dialog">

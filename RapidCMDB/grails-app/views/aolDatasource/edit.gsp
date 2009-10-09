@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit AolDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${aolDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${aolDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[aolDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${aolDatasource?.id}" />
                 <div class="dialog">

@@ -12,14 +12,7 @@
         </div>
         <div class="body">
             <h1>Create DatabaseConnection</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${databaseConnection}">
-            <div class="errors">
-                <g:renderErrors bean="${databaseConnection}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[databaseConnection]]"></g:render>
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>

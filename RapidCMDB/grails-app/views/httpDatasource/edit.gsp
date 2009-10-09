@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit HttpDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${httpDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${httpDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[httpDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${httpDatasource?.id}" />
                 <div class="dialog">

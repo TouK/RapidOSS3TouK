@@ -14,19 +14,7 @@
 </div>
 <div class="body">
     <h1>Edit EmailDatasource</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${emailDatasource}">
-        <div class="errors">
-            <g:renderErrors bean="${emailDatasource}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[emailDatasource]]"></g:render>
     <g:form method="post" >
         <input type="hidden" name="id" value="${emailDatasource?.id}"/>
         <div class="dialog">

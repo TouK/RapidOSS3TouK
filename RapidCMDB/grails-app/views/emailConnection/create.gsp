@@ -13,19 +13,7 @@
 </div>
 <div class="body">
     <h1>Create EmailConnection</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${emailConnection}">
-        <div class="errors">
-            <g:renderErrors bean="${emailConnection}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[emailConnection]]"></g:render>
     <g:form action="save" method="post" >
         <div class="dialog">
             <table>

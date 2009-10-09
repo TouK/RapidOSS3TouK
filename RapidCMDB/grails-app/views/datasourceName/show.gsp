@@ -14,9 +14,7 @@
         </div>
         <div class="body">
             <h1>Show DatasourceName</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
+            <g:render template="/common/messages" model="[flash:flash]"></g:render>
             <div class="dialog">
                 <table>
                     <tbody>

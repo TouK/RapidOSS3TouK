@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit JabberDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${jabberDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${jabberDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[jabberDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${jabberDatasource?.id}" />
                 <div class="dialog">

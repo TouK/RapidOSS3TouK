@@ -12,15 +12,8 @@
             <span class="menuButton"><g:link class="list" action="list">AolConnection List</g:link></span>
         </div>
         <div class="body">
-            <h1>Create AolConnection</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${aolConnection}">
-            <div class="errors">
-                <g:renderErrors bean="${aolConnection}" as="list" />
-            </div>
-            </g:hasErrors>
+            <h1>Create AolConnection</h1>      
+            <g:render template="/common/messages" model="[flash:flash, beans:[aolConnection]]"></g:render>
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>

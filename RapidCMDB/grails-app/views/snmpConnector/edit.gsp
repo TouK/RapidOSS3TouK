@@ -11,29 +11,7 @@
 </div>
 <div class="body">
     <h1>Edit SnmpConnector</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${snmpConnector}">
-        <div class="errors">
-            <g:renderErrors bean="${snmpConnector}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${script}">
-        <div class="errors">
-            <g:renderErrors bean="${script}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${snmpConnection}">
-        <div class="errors">
-            <g:renderErrors bean="${snmpConnection}" as="list"/>
-        </div>
-    </g:hasErrors>
-    <g:hasErrors bean="${flash.errors}">
-       <div class="errors">
-            <g:renderErrors bean="${flash.errors}"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[snmpConnector,snmpConnection,script,datasource]]"></g:render>    
     <g:form method="post" >
         <input type="hidden" name="id" value="${snmpConnector?.id}"/>
         <div class="dialog">

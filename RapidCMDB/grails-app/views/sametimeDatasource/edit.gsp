@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit SametimeDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${sametimeDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${sametimeDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[sametimeDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${sametimeDatasource?.id}" />
                 <div class="dialog">

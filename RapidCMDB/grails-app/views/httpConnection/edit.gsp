@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit HttpConnection</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${httpConnection}">
-            <div class="errors">
-                <g:renderErrors bean="${httpConnection}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[httpConnection]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${httpConnection?.id}" />
                 <div class="dialog">

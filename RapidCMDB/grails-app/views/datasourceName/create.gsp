@@ -13,14 +13,7 @@
         </div>
         <div class="body">
             <h1>Create DatasourceName</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${datasourceName}">
-            <div class="errors">
-                <g:renderErrors bean="${datasourceName}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[datasourceName]]"></g:render>
             <g:form action="save" method="post" >
                 <div class="dialog">
                     <table>

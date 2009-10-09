@@ -12,7 +12,7 @@
     <meta name="layout" content="adminLayout"/>
 </head>
 <body>
-<g:render template="/common/messages" model="[flash:flash, beans:[]]"></g:render>
+<g:render template="/common/messages" model="[flash:flash]"></g:render>
 <div class="body">
     <br>
     <div style="margin-top:0px;">

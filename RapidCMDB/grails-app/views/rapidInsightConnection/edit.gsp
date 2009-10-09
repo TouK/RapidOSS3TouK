@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit RapidInsightConnection</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${rapidInsightConnection}">
-            <div class="errors">
-                <g:renderErrors bean="${rapidInsightConnection}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[rapidInsightConnection]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${rapidInsightConnection?.id}" />
                 <div class="dialog">

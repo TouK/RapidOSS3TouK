@@ -14,14 +14,7 @@
         </div>
         <div class="body">
             <h1>Edit RapidInsightDatasource</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${rapidInsightDatasource}">
-            <div class="errors">
-                <g:renderErrors bean="${rapidInsightDatasource}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[rapidInsightDatasource]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${rapidInsightDatasource?.id}" />
                 <div class="dialog">

@@ -1,5 +1,6 @@
 import com.ifountain.compass.DefaultCompassConfiguration
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import org.compass.core.config.CompassEnvironment
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -31,6 +32,7 @@ class SearchableConfiguration {
         {
             compassSettings.put("compass.transaction.lockTimeout", System.getProperty("compass.transaction.lockTimeout"));
         }
+        compassSettings.put (CompassEnvironment.REGISTER_SHUTDOWN_HOOK, "false");
         compassSettings.put(org.compass.core.lucene.LuceneEnvironment.LockFactory.TYPE, org.compass.core.lucene.LuceneEnvironment.LockFactory.Type.SINGLE_INSTANCE);
     }
     /**

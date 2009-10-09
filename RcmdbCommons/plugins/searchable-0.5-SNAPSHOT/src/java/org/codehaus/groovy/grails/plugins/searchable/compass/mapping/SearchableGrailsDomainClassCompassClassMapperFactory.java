@@ -19,8 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper;
 import org.compass.core.config.CompassConfigurationFactory;
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.config.CompassEnvironment;
 import org.compass.core.converter.ConverterLookup;
 import org.compass.core.spi.InternalCompass;
+import org.compass.core.Compass;
 import org.springframework.util.ClassUtils;
 
 import java.util.List;
@@ -34,7 +37,16 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
 
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats) {
 
-        return getDefaultSearchableGrailsDomainClassCompassClassMapper(defaultExcludedProperties, defaultFormats, ((InternalCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
+        CompassConfiguration conf = CompassConfigurationFactory.newConfiguration();
+        conf.setConnection("ram://dummy");
+        conf.getSettings().setSetting(CompassEnvironment.REGISTER_SHUTDOWN_HOOK, "false");
+        InternalCompass compass = ((InternalCompass) conf.buildCompass());
+        try{
+            ConverterLookup lookup = compass.getConverterLookup();
+            return getDefaultSearchableGrailsDomainClassCompassClassMapper(defaultExcludedProperties, defaultFormats, lookup);
+        }finally{
+            compass.close();
+        }
     }
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats, ConverterLookup lookup) {
         DefaultCompassConverterLookupHelper converterLookupHelper = new DefaultCompassConverterLookupHelper();

@@ -13,14 +13,7 @@
         </div>
         <div class="body">
             <h1>Edit RepositoryConnection</h1>
-            <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
-            </g:if>
-            <g:hasErrors bean="${repositoryConnection}">
-            <div class="errors">
-                <g:renderErrors bean="${repositoryConnection}" as="list" />
-            </div>
-            </g:hasErrors>
+            <g:render template="/common/messages" model="[flash:flash, beans:[repositoryConnection]]"></g:render>
             <g:form method="post" >
                 <input type="hidden" name="id" value="${repositoryConnection?.id}" />
                 <div class="dialog">

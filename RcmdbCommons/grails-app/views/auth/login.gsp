@@ -9,9 +9,7 @@
     document.getElementById('logoutwrp').style.display = 'none';
 </script>
 <div class="front"><h1 >Login</h1></div>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
+  <g:render template="/common/messages" model="[flash:flash]"></g:render>
   <g:form action="signIn">
     <input type="hidden" name="targetUri" value="${targetUri}" />
   <center>

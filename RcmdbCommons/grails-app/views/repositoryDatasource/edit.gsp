@@ -12,14 +12,7 @@
 </div>
 <div class="body">
     <h1>Edit RepositoryDatasource</h1>
-    <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-    </g:if>
-    <g:hasErrors bean="${repositoryDatasource}">
-        <div class="errors">
-            <g:renderErrors bean="${repositoryDatasource}" as="list"/>
-        </div>
-    </g:hasErrors>
+    <g:render template="/common/messages" model="[flash:flash, beans:[repositoryDatasource]]"></g:render>
     <g:form method="post">
         <input type="hidden" name="id" value="${repositoryDatasource?.id}"/>
         <div class="dialog">

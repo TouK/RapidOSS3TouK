@@ -142,7 +142,7 @@ runGrailsTests() {
 #    fi
 #    mv test/reports/*.xml $WORKSPACE/TestResults/Modeler
 
-#    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1024"/g" rsmodeler.sh
+#    sed -i "s/MAX_MEMORY_SIZE="512"/MAX_MEMORY_SIZE="1408"/g" rsmodeler.sh
 #    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-integration-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
 #    rm -rf $WORKSPACE/Distribution/RapidServer/temp
 #    rm -rf $WORKSPACE/Distribution/RapidServer/Modeler/test/unit/*
@@ -162,7 +162,7 @@ runGrailsTests() {
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
 
-    sed -i "s/-Xmx512m/-Xmx1024m/g" rs.sh
+    sed -i "s/-Xmx512m/-Xmx1408m/g" rs.sh
     sed -i "s/MaxPermSize=128m/MaxPermSize=256m/g" rs.sh
 
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf

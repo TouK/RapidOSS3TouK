@@ -7,14 +7,7 @@
     <span class="menuButton"><g:link class="refresh" action="reload" controller="application" params="['targetURI':'/reload.gsp']" onclick="return confirm('Are you sure?');">Reload App.</g:link></span>
     <span class="menuButton"><g:link class="refresh" action="reloadViewsAndControllers" controller="application" params="['targetURI':'/reload.gsp']">Reload Web UI</g:link></span>
 </div>
-<g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-</g:if>
-<g:hasErrors bean="${flash.errors}">
-    <div class="errors">
-        <g:renderErrors bean="${flash.errors}"/>
-    </div>
-</g:hasErrors>
+<g:render template="/common/messages" model="[flash:flash]"></g:render>
 <div class="body">
 	<br>
     <g:form method="post" controller="script">

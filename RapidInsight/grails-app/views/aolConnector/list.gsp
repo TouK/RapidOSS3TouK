@@ -10,14 +10,7 @@
 </div>
 <body class="body">
 <h1>AolConnector List</h1>
-<g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-</g:if>
-<g:hasErrors bean="${flash.errors}">
-    <div class="errors">
-        <g:renderErrors bean="${flash.errors}"/>
-    </div>
-</g:hasErrors>
+<g:render template="/common/messages" model="[flash:flash]"></g:render>
 
 
     <div class="list">

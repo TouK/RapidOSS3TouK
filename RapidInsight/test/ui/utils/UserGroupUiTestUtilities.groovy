@@ -2,6 +2,8 @@ package utils
 
 import com.thoughtworks.selenium.Selenium
 import junit.framework.Assert
+import org.apache.commons.lang.StringUtils
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,7 +32,8 @@ class UserGroupUiTestUtilities {
         selenium.clickAndWait("//input[@value='Sign in']");
         if (validate)
         {
-            Assert.assertTrue("Expected to end with /RapidSuite${targetUri} but was ${selenium.getLocation()}", selenium.getLocation().endsWith("/RapidSuite${targetUri}"));
+            def location=StringUtils.substringBefore(selenium.getLocation(),"#");
+            Assert.assertTrue("Expected to end with /RapidSuite${targetUri} but was ${location}", location.endsWith("/RapidSuite${targetUri}"));
         }
     }
 

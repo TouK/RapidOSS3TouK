@@ -38,7 +38,7 @@ class RapidInsightUiTestBuild extends Build {
         options.put("E_WINDOWS", "false")
         options.put("E_UNIX", "false")
         options.put("ZIP", "true")
-        options.put("TEST", "false")
+        options.put("TEST", "true")
         options.put("JREDIR", "C:/Program Files/Java/jdk1.6.0_04/jre")
         return options;
     }

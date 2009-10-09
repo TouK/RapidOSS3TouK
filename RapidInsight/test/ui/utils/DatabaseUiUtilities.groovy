@@ -45,6 +45,7 @@ class DatabaseUiUtilities {
         selenium.clickAndWait("//input[@value='Create']");
 
         def dbId = CommonUiTestUtils.getIdFromlocation(selenium.getLocation());
+        println "dbId found ${dbId} from location ${selenium.getLocation()}"
         if (validate)
         {
             CommonUiTestUtils.assertPageMessage (selenium, "DatabaseConnection " + dbId + " created")

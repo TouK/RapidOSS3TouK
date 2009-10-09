@@ -14,6 +14,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         initialize([RsTopologyObject,RsApplication], []);
         CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
@@ -21,9 +22,15 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
-       super.tearDown();
+       super.tearDown();       
     }
-
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObject);
+        GroovySystem.metaClassRegistry.removeMetaClass(RsTopologyObjectOperations);
+        ExpandoMetaClass.enableGlobally();
+    }
     public void testGetState()
     {
         def object=RsTopologyObject.add(name:"testobj");

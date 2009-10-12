@@ -28,3 +28,5 @@ ApplicationHolder.application.getDomainClasses().each {grailsDomainClass ->
         }
     }
 }
+
+return "Script executed successfully"

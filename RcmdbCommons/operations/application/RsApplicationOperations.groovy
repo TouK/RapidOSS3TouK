@@ -34,6 +34,7 @@ import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.compass.core.spi.InternalCompass
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
 
 
 /**
@@ -58,7 +59,10 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     {
         OperationStatistics.getInstance().reset();
     }
-
+    public static executeBatch(Closure closure)
+    {
+        RapidCmdbTransactionManager.executeWithGlobalTransaction(closure);        
+    }
     public static Map applicationInfo()
     {
       def appInfo = new CaseInsensitiveMap()

@@ -193,26 +193,12 @@ def doLdapQuery(searchBase,searchFilter,searchSubDirectories)
     return result;
 }
 
-def printLdapQueryResult(result)
+def printLdapQueryResult(results)
 {
-    while (result.hasMore()) {
-        def searchResult = result.next()
-        def resultAttributes = searchResult.attributes;
-        logDebug("Found entry  : ${searchResult.nameInNamespace}")
-        printLdapAttributes(resultAttributes);
-
+    results.each{ searchResult ->
+        logDebug("Found entry  : ${searchResult}")
     }
 }
-def printLdapAttributes(resultAttributes)
-{
-    resultAttributes.getAll().each{ attribute ->
-        logDebug("attribute : ${attribute.getID()}");
-        attribute.getAll().each{ value ->
-            logDebug( "----- value ${value}");
-        }
-    }
-}
-
 def connectoToLdap()
 {
 

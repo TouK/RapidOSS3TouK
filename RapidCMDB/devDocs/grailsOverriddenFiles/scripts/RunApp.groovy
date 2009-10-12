@@ -6,6 +6,8 @@ import org.mortbay.jetty.nio.SelectChannelConnector
 import org.mortbay.jetty.security.SslSocketConnector
 import org.mortbay.jetty.webapp.WebAppContext
 import sun.security.tools.KeyTool
+import org.apache.commons.io.FileUtils
+import java.util.Map.Entry
 
 /*
 * Copyright 2004-2005 the original author or authors.
@@ -61,7 +63,12 @@ recompileFrequency = recompileFrequency ? recompileFrequency.toInteger() : 3
 
 includeTargets << new File ( "${grailsHome}/scripts/Init.groovy" )
 includeTargets << new File ( "${grailsHome}/scripts/Package.groovy" )
-
+rootSrcDirs = [
+        new File("${grailsHome}/scripts"),
+        new File("${grailsHome}/RapidSuite/src"),
+        new File("${grailsHome}/RapidSuite/grails-app"),
+        new File("${grailsHome}/RapidSuite/plugins")
+];
 
 shouldPackageTemplates=true
 
@@ -70,10 +77,92 @@ def getHttpsPort()
 {
     return System.getProperty("server.https.port");
 }
+def getSourceFileList()
+{
+    def allSourceFiles = [:]
+    rootSrcDirs.each{srcDir->
+        def files = FileUtils.listFiles (srcDir, ["groovy", "java"] as String[], true);
+        files.each{File srcFile->
+            allSourceFiles[srcFile.canonicalPath] = [updateTime:srcFile.lastModified()]
+        }
+    }
+    return allSourceFiles;
+}
 
+def isChanged(Map oldFiles, Map newFiles)
+{
+    def iter = newFiles.entrySet().iterator();
+    while(iter.hasNext()){
+        Entry entry = iter.next();
+        def filePath = entry.getKey();
+        def fileConf = entry.getValue();
+        def oldFileConf = oldFiles.remove (filePath)
+        if(oldFileConf == null)
+        {
+            return true;
+        }
+        else if(oldFileConf.updateTime != fileConf.updateTime)
+        {
+            return true;      
+        }
+    }
+    return !oldFiles.isEmpty();
+}
+def saveSourceFileList(Map allSourceFiles)
+{
+
+    File sourceListFile = new File("${projectWorkDir}/rsSources.bin");
+    println "Saving current source file configuration to ${sourceListFile.path}"
+    sourceListFile.parentFile.mkdirs();
+    sourceListFile.delete();
+    FileOutputStream fout = new FileOutputStream(sourceListFile);
+    ObjectOutputStream out = new ObjectOutputStream(fout)
+    try{
+        out.writeObject (allSourceFiles);
+    }
+    catch(e){
+        println "Could not save source file configuration to file ${sourceListFile.path}. Reason: ${e.toString()}"
+    }
+    finally {
+        out.close();
+        fout.close();
+    }
+}
+def loadOldSourceFileConfiguration()
+{
+    File sourceListFile = new File("${projectWorkDir}/rsSources.bin");
+    println "Loading old source file configuration from ${sourceListFile.path}"
+    if(sourceListFile.exists())
+    {
+        try{
+            FileInputStream fin = new FileInputStream(sourceListFile);
+            ObjectInputStream objIn = new ObjectInputStream(fin)
+            return objIn.readObject();
+        }catch(e){
+            //ignore
+        }
+
+    }
+    else
+    {
+        println "No old source file configuration exist"
+    }
+    return [:];
+}
 target ('default': "Run's a Grails application in Jetty") {
-    Ant.delete(dir : projectWorkDir);
+    def oldSourceFileConfiguration = loadOldSourceFileConfiguration();
+    def newSourceFileConfiguration = getSourceFileList();
+    if(isChanged(oldSourceFileConfiguration, newSourceFileConfiguration))
+    {
+        println "At least one of the source files is changed. Source files will be recompiled."
+        Ant.delete(dir : projectWorkDir);
+    }
+    else
+    {
+        println "No source file modification. No recompilation is required."   
+    }
     depends( checkVersion, configureProxy, packageApp )
+    saveSourceFileList (newSourceFileConfiguration);
     Runtime.getRuntime().addShutdownHook(new Thread({
     	if(grailsServer != null)
     	{
@@ -82,6 +171,7 @@ target ('default': "Run's a Grails application in Jetty") {
     }));
     runApp()
 	watchContext()
+
 }
 target ( runApp : "Main implementation that executes a Grails application") {
 	System.setProperty('org.mortbay.xml.XmlParser.NotValidating', 'true')

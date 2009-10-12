@@ -70,6 +70,7 @@ rootSrcDirs = [
         new File("${grailsHome}/RapidSuite/plugins")
 ];
 
+
 shouldPackageTemplates=true
 
 
@@ -79,11 +80,20 @@ def getHttpsPort()
 }
 def getSourceFileList()
 {
+    def excludedDirs =  [
+            new File("${grailsHome}/RapidSuite/grails-app/templates"),
+            new File("${grailsHome}/RapidSuite/grails-app/i18n"),
+            new File("${grailsHome}/RapidSuite/grails-app/views")
+    ];
     def allSourceFiles = [:]
     rootSrcDirs.each{srcDir->
         def files = FileUtils.listFiles (srcDir, ["groovy", "java"] as String[], true);
         files.each{File srcFile->
-            allSourceFiles[srcFile.canonicalPath] = [updateTime:srcFile.lastModified()]
+            def isExcludedFile = excludedDirs.find{srcFile.canonicalPath.startsWith (it.canonicalPath)};
+            if(!isExcludedFile)
+            {
+                allSourceFiles[srcFile.canonicalPath] = [updateTime:srcFile.lastModified()]
+            }
         }
     }
     return allSourceFiles;

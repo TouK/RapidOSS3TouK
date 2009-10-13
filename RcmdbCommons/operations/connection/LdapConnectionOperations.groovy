@@ -70,7 +70,8 @@ class LdapConnectionOperations extends ConnectionOperations
 
             env[Context.SECURITY_AUTHENTICATION] = "simple"
             env[Context.SECURITY_PRINCIPAL] = username;
-            env[Context.SECURITY_CREDENTIALS] = password;    
+            env[Context.SECURITY_CREDENTIALS] = password;
+            env[Context.REFERRAL]="follow";
         }
 
         InitialDirContext ctx = new InitialDirContext(env)

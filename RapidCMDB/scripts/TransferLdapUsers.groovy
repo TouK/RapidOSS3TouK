@@ -30,8 +30,8 @@ import auth.LdapUserInformation
 
 // If group in localGroupName does not exist , please create it first from admin ui 
 
-//sample configuration  for ms ds
-//userSearchBase : dont specify root DN for microsoft active directory server, PartialResultException may occur
+//sample configuration  for Microsoft Active Directory ds
+//Please connect to port 3268 if you want to search from root DN, otherwise PartialResultException will occur with   userSearchBase: root DN
 //Searching with username : when "(|(cn=ldapuser)(cn=Administrator))" used for searchFilter only users specified will be searched
 
 //user data configuration

@@ -15,7 +15,8 @@ class SametimeConnector {
     };
     static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
 
-
+    String rsOwner = "p";
+    
     String name = "";
 
     Long id;

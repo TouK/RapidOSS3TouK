@@ -28,6 +28,9 @@ class ComponentConfig {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
+
+    String rsOwner = "p";
+    
     String name = "";
     String username = "";
     String url = ""

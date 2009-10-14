@@ -29,6 +29,8 @@ class GridView {
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
 
+    String rsOwner = "p";
+
     String name = "";
     String defaultSortColumn = "";
     String sortOrder = "asc";

@@ -28,6 +28,9 @@ class GridColumn {
         except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["attributeName": ["nameInDs": "attributeName"]]]]
+
+    String rsOwner = "p";
+
     Long columnIndex = 0;
     String attributeName = "";
     String header = "";

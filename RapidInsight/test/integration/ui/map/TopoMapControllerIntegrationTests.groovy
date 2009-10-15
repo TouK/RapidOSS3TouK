@@ -4,6 +4,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import auth.RsUser
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.domain.util.ControllerUtils
+import script.CmdbScript
 
 /**
 * Created by IntelliJ IDEA.

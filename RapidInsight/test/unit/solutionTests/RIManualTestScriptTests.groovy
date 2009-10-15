@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
 import datasource.BaseListeningDatasource
 import datasource.BaseListeningDatasourceOperations
 import com.ifountain.comp.test.util.CommonTestUtils
+import org.apache.log4j.Logger
 
 
 /**
@@ -59,6 +60,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        TestLogUtils.enableLogger(Logger.getLogger("scripting"));
 
         ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
               setProperty(className,gcl.loadClass(className));
@@ -86,6 +88,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         if(ConnectionManager.isInitialized()){
             ConnectionManager.destroy();
         }
+        TestLogUtils.disableLogger(Logger.getLogger("scripting"));
         super.tearDown();
 
     }
@@ -199,6 +202,9 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true,logFileOwn:true], true)
         def script = CmdbScript.addScript([name: "findMaxTest", type: CmdbScript.ONDEMAND], true)
 
+        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(listeningscript));
+        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(script));
+
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
             assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(listeningscript.listeningDatasource));
@@ -213,6 +219,9 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
         finally {
             CmdbScript.stopListening(listeningscript);
+
+            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(listeningscript));
+            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(script));
         }
 
     }
@@ -279,6 +288,9 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)
         def script = CmdbScript.addScript([name: "criticalPercentTest", type: CmdbScript.ONDEMAND], true)
 
+        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(listeningscript));
+        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(script));
+
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
             assertEquals(AdapterStateProvider.STARTED, ListeningAdapterManager.getInstance().getState(listeningscript.listeningDatasource));
@@ -293,6 +305,9 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
         finally {
             CmdbScript.stopListening(listeningscript);
+
+            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(listeningscript));
+            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(script));
         }
 
     }

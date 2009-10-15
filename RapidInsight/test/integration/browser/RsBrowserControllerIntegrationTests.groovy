@@ -23,10 +23,14 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
     def RsEventJournal;
     def SmartsObjectModel = null;
+    def RsTopologyObject;
+
     void setUp() throws Exception {
         super.setUp();
+
         RsEventJournal = ApplicationHolder.application.classLoader.loadClass("RsEventJournal")
         SmartsObjectModel = ApplicationHolder.application.classLoader.loadClass("SmartsObject")
+        RsTopologyObject = ApplicationHolder.application.classLoader.loadClass("RsTopologyObject")
         BaseDatasource.removeAll();
         RsEventJournal.removeAll();
         Connection.removeAll();
@@ -381,18 +385,18 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testShowDoesNotBringOperationProperties() {
-        def ds = BaseDatasource.add(name: "ds1");
+        def ds = RsTopologyObject.add(name: "ds1");
         assertFalse(ds.hasErrors());
         def controller = new RsBrowserController();
         controller.params["id"] = "${ds.id}"
-        controller.params["domain"] = "baseDatasource"
+        controller.params["domain"] = "rsTopologyObject"
         controller.params["format"] = "xml"
         controller.show();
 
-        def operationProps = BaseDatasource.getPropertiesList().findAll {it.isOperationProperty};
+        def operationProps = RsTopologyObject.getPropertiesList().findAll {it.isOperationProperty};
         assertTrue(operationProps.size() > 0);
-        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
-        def keySet = BaseDatasource.keySet();
+        def props = RsTopologyObject.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation && !it.isOperationProperty};
+        def keySet = RsTopologyObject.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
 
@@ -416,19 +420,19 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     }
 
     void testShowWithOperationPropertiesIncluded() {
-        def ds = BaseDatasource.add(name: "ds1");
+        def ds = RsTopologyObject.add(name: "ds1");
         assertFalse(ds.hasErrors());
         def controller = new RsBrowserController();
         controller.params["id"] = "${ds.id}"
-        controller.params["domain"] = "baseDatasource"
+        controller.params["domain"] = "rsTopologyObject"
         controller.params["format"] = "xml"
         controller.params["operationProperties"] = "true"
         controller.show();
 
-        def operationProps = BaseDatasource.getPropertiesList().findAll {it.isOperationProperty};
+        def operationProps = RsTopologyObject.getPropertiesList().findAll {it.isOperationProperty};
         assertTrue(operationProps.size() > 0);
-        def props = BaseDatasource.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation};
-        def keySet = BaseDatasource.keySet();
+        def props = RsTopologyObject.getPropertiesList().findAll {!it.isKey && it.name != 'id' && !it.isRelation};
+        def keySet = RsTopologyObject.keySet();
         String content = controller.response.contentAsString;
         def objectXml = new XmlSlurper().parseText(content);
 

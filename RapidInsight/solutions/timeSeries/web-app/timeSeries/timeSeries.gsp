@@ -214,15 +214,15 @@ functionActionCondition3564Condition=""
 
     <rui:innerLayout id="3500">
         
-            <rui:layoutUnit position='center' gutter='0px' id='3583' isActive='true' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='FlexLineChart'>
+            <rui:layoutUnit position='center' gutter='0px' id='3583' isActive='true' scroll='false' useShim='false' component='FlexLineChart'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='left' gutter='0px' id='3589' isActive='true' resize='false' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' width='200' component='RRDVariables'>
+            <rui:layoutUnit position='left' gutter='0px' id='3589' isActive='true' resize='false' scroll='false' useShim='false' width='200' component='RRDVariables'>
         
             </rui:layoutUnit>
         
-            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='3586' isActive='true' resize='false' rsInsertedAt='Fri Sep 18 09:30:57 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='eventsGrid'>
+            <rui:layoutUnit position='bottom' gutter='0px' height='200' id='3586' isActive='true' resize='false' scroll='false' useShim='false' component='eventsGrid'>
         
             </rui:layoutUnit>
         

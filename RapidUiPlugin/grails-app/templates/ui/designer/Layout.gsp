@@ -11,8 +11,11 @@
                 def className = layoutUnit.getClass().simpleName;
                 def unitPosition = className.substring(2, className.length()-4).toLowerCase();
                 def attributes = ["position='${unitPosition}'"];
+                def excludedPropertyNames=[:];
+                excludedPropertyNames.put(com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME,"");
+                excludedPropertyNames.put(com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME,"");
                 layoutUnit.getPropertiesList().each{prop->
-                    if(!prop.isRelation && !prop.isOperationProperty)
+                    if(!prop.isRelation && !prop.isOperationProperty && !excludedPropertyNames.containsKey(prop.name) )
                     {
                         def propValue = layoutUnit[prop.name]
                         if(propValue != "" && propValue != "0" && propValue != 0 && propValue != null)

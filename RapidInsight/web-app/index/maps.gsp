@@ -437,11 +437,11 @@ x='50' y='85'
 
     <rui:innerLayout id="15013">
 
-            <rui:layoutUnit position='center' gutter='0px' id='15227' isActive='true' rsInsertedAt='Wed Sep 30 11:18:36 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' component='topologyMap'>
+            <rui:layoutUnit position='center' gutter='0px' id='15227' isActive='true' scroll='false' useShim='false' component='topologyMap'>
 
             </rui:layoutUnit>
 
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='15230' isActive='true' resize='true' rsInsertedAt='Wed Sep 30 11:18:36 EEST 2009' rsUpdatedAt='Thu Jan 01 02:00:00 EET 1970' scroll='false' useShim='false' width='255' component='mapTree'>
+            <rui:layoutUnit position='left' gutter='0 5 0 0' id='15230' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='mapTree'>
 
             </rui:layoutUnit>
 

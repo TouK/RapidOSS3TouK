@@ -25,6 +25,10 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         MapGroup.removeAll();
         RsComputerSystem.removeAll();
         RsLink.removeAll();
+        CmdbScript.list().each {
+            CmdbScript.deleteScript(it);
+        }
+        CmdbScript.addScript(name:"expandMap");
     }
     public void tearDown() {
            super.tearDown();

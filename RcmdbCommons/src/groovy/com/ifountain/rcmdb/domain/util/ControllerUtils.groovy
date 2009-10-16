@@ -185,9 +185,22 @@ class ControllerUtils {
         return returnedParams;
     }
 
+    private static Field getField(Class cls, String fieldName)
+    {
+        while(cls != null)
+        {
+            try{
+                return cls.getDeclaredField(fieldName);
+            }catch(java.lang.NoSuchFieldException e){
+                //ignore
+            }
+            cls = cls.superclass;
+        }
+        return null;
+    }
     private static Object getPropertyValue(Object instance, String propName)
     {
-        Field f = instance.getClass().getDeclaredField(propName);
+        Field f = getField(instance.getClass(), propName);
         f.setAccessible (true);
         return f.get(instance)
     }

@@ -29,6 +29,7 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
 
     public void testGetClassProperties()
     {
+        def parentModelName = "ParentModel"
         def modelName = "ChildModel";
         def relatedModelName = "RelatedModel";
         def keyProp = [name:"keyProp", type:ModelGenerator.STRING_TYPE, blank:false];
@@ -39,12 +40,14 @@ class ControllerUtilsTest extends RapidCmdbWithCompassTestCase
         def revrel1 = [name:"revrel1",  reverseName:"rel1", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_ONE, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
         def revrel2 = [name:"revrel2",  reverseName:"rel2", toModel:modelName, cardinality:ModelGenerator.RELATION_TYPE_MANY, reverseCardinality:ModelGenerator.RELATION_TYPE_MANY, isOwner:false];
 
-        def modelMetaProps = [name:modelName]
+        def parentModelMetaProps = [name:parentModelName]
+        def modelMetaProps = [name:modelName, parentModel:parentModelName]
         def relatedModelMetaProps = [name:relatedModelName]
         def keyPropList = [keyProp];
-        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, [keyProp, prop1,prop2], keyPropList, [rel1, rel2])
+        String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, [keyProp, prop1], keyPropList, [rel1])
+        String modelString = ModelGenerationTestUtils.getModelText(modelMetaProps, [prop2], [], [rel2])
         String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [keyProp], keyPropList, [revrel1, revrel2])
-        this.gcl.parseClass(modelString+relatedModelString);
+        this.gcl.parseClass(parentModelString+modelString+relatedModelString);
         Class modelClass = this.gcl.loadClass(modelName);
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
         initialize([modelClass, relatedModelClass], [])

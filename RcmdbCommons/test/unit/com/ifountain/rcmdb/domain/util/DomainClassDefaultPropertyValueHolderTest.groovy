@@ -35,11 +35,6 @@ class DomainClassDefaultPropertyValueHolderTest extends RapidCmdbTestCase
         class ${class1Name}{
             String prop1 = "${prop1Value}";
             Long prop2 = ${prop2Value};
-
-            def getRealPropertyValue(String propName)
-            {
-                return getProperty(propName);
-            }
         }
         """)
 
@@ -48,11 +43,6 @@ class DomainClassDefaultPropertyValueHolderTest extends RapidCmdbTestCase
         class ${class2Name}{
             String prop1 = "default";
             Long prop3 = 5;
-            //this method should be added to domain object. It is currently injected by RapidDomainClassGrailsPlugin
-            def getRealPropertyValue(String propName)
-            {
-                return getProperty(propName);
-            }
         }
         """)
         def domainClasses = [class1, class2];

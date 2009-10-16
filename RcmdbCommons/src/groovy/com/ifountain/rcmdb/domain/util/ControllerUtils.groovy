@@ -25,6 +25,7 @@ import javax.imageio.ImageIO
 import com.ifountain.rcmdb.execution.ExecutionContext
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import java.lang.reflect.Field
 
 /**
  * Created by IntelliJ IDEA.
@@ -167,7 +168,7 @@ class ControllerUtils {
         domainObjectpropertyNames = domainObjectpropertyNames.unique().findAll {(domainProperties.containsKey (it) || relations.containsKey(it)) && !returnedParams.containsKey(it)}
         DataBindingUtils.bindObjectToInstance(instance, clonedMap);
         domainObjectpropertyNames.each {
-            def propValue = instance.getRealPropertyValue(it);
+            def propValue = getPropertyValue(instance, it);
             if (relations.containsKey(it) && !(propValue instanceof Collection) && propValue.id == -1l)
             {
                 returnedParams.put(it, null);
@@ -182,5 +183,12 @@ class ControllerUtils {
             }
         }
         return returnedParams;
+    }
+
+    private static Object getPropertyValue(Object instance, String propName)
+    {
+        Field f = instance.getClass().getDeclaredField(propName);
+        f.setAccessible (true);
+        return f.get(instance)
     }
 }

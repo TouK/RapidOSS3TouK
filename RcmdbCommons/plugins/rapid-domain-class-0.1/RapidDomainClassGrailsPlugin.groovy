@@ -18,6 +18,8 @@ import org.codehaus.groovy.grails.validation.ConstrainedProperty
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.Errors
 import org.springframework.validation.FieldError
+import org.codehaus.groovy.runtime.InvokerHelper
+import com.ifountain.rcmdb.domain.util.RelationMetaData
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -223,6 +225,14 @@ class RapidDomainClassGrailsPlugin {
             mc.invokeOperation =  {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
+            mc.propertyMissing = {String name->
+                def domainObject = delegate;
+                def getterName = GrailsClassUtils.getGetterName(name);
+                return convertPropertyMissingException(delegate.class, name, getterName){
+                    return InvokeOperationUtils.invokeMethod(domainObject, getterName, InvokerHelper.EMPTY_ARGS, manager.getOperationClass(), manager.getOperationClassMethods());
+                }
+
+            }
             mc.methodMissing =  {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
@@ -308,9 +318,28 @@ class RapidDomainClassGrailsPlugin {
             }
         }
     }
-
+    def convertPropertyMissingException(Class expectedExceptionClass, String propertyName, String expectedMethodName, Closure closureToBeInvoked)
+    {
+        try
+        {
+            return closureToBeInvoked();
+        }
+        catch(MissingMethodException ex)
+        {
+            if(ex.getType().name == expectedExceptionClass.name && ex.getMethod() == expectedMethodName)
+            {
+                throw new MissingPropertyException(propertyName, expectedExceptionClass);
+            }
+            else
+            {
+                throw ex;
+            }
+        }
+    }
     def addPropertyInterceptors(GrailsDomainClass dc, application, ctx)
     {
+        FederatedPropertyManager impl = ctx.getBean(PropertyDatasourceManagerBean.BEAN_ID)
+        GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc, impl);
         def props =dc.getProperties();
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         def relations = DomainClassUtils.getRelations(dc);
@@ -332,66 +361,56 @@ class RapidDomainClassGrailsPlugin {
                 }
                 else
                 {
-                    propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, name, value);
+                    if(relations[name] == null)
+                    {
+                        propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, name, value);
+                    }
+                    else
+                    {
+                        def dynamicPropertyStorage = delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+                        if(dynamicPropertyStorage == null)
+                        {
+                            dynamicPropertyStorage = [:]
+                            delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = dynamicPropertyStorage;
+                        }
+                        dynamicPropertyStorage[name] = value;
+                    }
                 }
             }
             catch(MissingPropertyException propEx)
             {
+
                 def setterName = GrailsClassUtils.getSetterName(name);
-                try
-                {
+                convertPropertyMissingException(delegate.class, name, setterName){
                     delegate.methodMissing(GrailsClassUtils.getSetterName(name), [value] as Object[]);
                 }
-                catch(MissingMethodException ex)
-                {
-                    if(ex.getType().name == delegate.class.name && ex.getMethod() == setterName)
-                    {
-                        throw propEx
-                    }
-                    else
-                    {
-                        throw ex;
-                    }
-                }
             }
+
         }
 
-        dc.metaClass.getRealPropertyValue = {String name->
-            return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, name);
+        getPropertiesMethod.getFederatedProperties().name.each{propName->
+            dc.metaClass."${GrailsClassUtils.getGetterName(propName)}" = {->
+                return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, propName);
+            }
+            dc.metaClass."${GrailsClassUtils.getSetterName(propName)}" = {value->
+                propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, propName, value);
+            }
         }
-        dc.metaClass.getProperty = {String name->
-            try
-            {
-                def relation = relations[name];
-                if(relation)
+        relations.each{relName, metaData->
+            dc.metaClass."${GrailsClassUtils.getGetterName(relName)}" = {->
+                def dynamicPropertyStorage = delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+                if(dynamicPropertyStorage != null && dynamicPropertyStorage.containsKey(relName))
                 {
-                    return RelationUtils.getRelatedObjects(delegate, relation);
+                    return dynamicPropertyStorage.get(relName);
                 }
                 else
                 {
-                    return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, name);
+                    return RelationUtils.getRelatedObjects(delegate, metaData);
                 }
             }
-            catch(MissingPropertyException propEx)
-            {
-                def getterName = GrailsClassUtils.getGetterName(name);
-                try
-                {
-                    return delegate.methodMissing(getterName, null);
-                }
-                catch(MissingMethodException ex)
-                {
-                    if(ex.getType().name == delegate.class.name && ex.getMethod() == getterName)
-                    {
-                        throw propEx
-                    }
-                    else
-                    {
-                        throw ex;
-                    }
-                }
+            dc.metaClass."${GrailsClassUtils.getSetterName(relName)}" = {value->
+                delegate.invokeCompassOperation("updateForSetProperty", [["$relName":value]]);
             }
         }
-     
     }
 }

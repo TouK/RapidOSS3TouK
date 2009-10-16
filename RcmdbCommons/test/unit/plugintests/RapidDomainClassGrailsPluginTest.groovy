@@ -51,6 +51,8 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         DataStore.clear()
+        DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyList = [];
+        DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyStorage = [:];
     }
 
     public void tearDown() {
@@ -115,8 +117,45 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         instance.prop1 = "prop1Value";
         assertEquals("prop1Value", instance.prop1);
         def interceptor = appCtx.getBean("domainPropertyInterceptor");
-        assertEquals(1, interceptor.getPropertyList.size());
+        assertEquals("normal properties get request will not be send to property interceptor", 0, interceptor.getPropertyList.size());
         assertEquals(1, interceptor.setPropertyList.size());
+    }
+
+
+    public void testPropertyInterceptingWithFederatedProperties()
+    {
+        def model1Name = "Model1";
+        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE, datasource:"ds1"];
+        def model1MetaProps = [name: model1Name]
+
+        def modelProps = [prop1, prop2];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, [datasource], modelProps, keyPropList, []);
+
+        gcl.parseClass(model1Text)
+        def model1Class = gcl.loadClass(model1Name)
+        def classesTobeLoaded = [model1Class];
+        configParams[RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME] = DomainPropertyInterceptorDomainClassGrailsPluginImpl.name;
+        def pluginsToLoad = [gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+        def federatedProps = model1Class.getFederatedPropertyList()
+        assertEquals ("prop2", federatedProps[0].name)
+
+        DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyList.add("prop2");
+        DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyStorage["prop2"] = "prop2value";
+
+        def instance = model1Class.newInstance();
+        assertEquals("prop2value", instance.prop2);
+        def interceptor = appCtx.getBean("domainPropertyInterceptor");
+        assertEquals(1, interceptor.getPropertyList.size());
+        instance.prop2 = "updated prop2 value"
+        assertEquals(1, interceptor.setPropertyList.size());
+        assertEquals ("updated prop2 value", DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyStorage["prop2"])
     }
 
     public void testHasErrorsWithFieldName()
@@ -181,6 +220,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+                Object ${RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED};
                 static searchable = {
                     except=["rel1"]
                 }
@@ -194,6 +234,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             }
             class ${domainClassName2}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+                Object ${RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED};
                 static searchable = {
                     except=["revRel1"]
                 }
@@ -220,11 +261,14 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         assertEquals(domainClass1Instance1.id, domainClass2Instance1.revRel1[0].id);
         assertNotSame(domainClass1Instance1.rel1, domainClass1Instance1.rel1);
 
-        //When we need to hold relation data temporarily such as in ControllerUtils we will set
-        //relation data to object and this data will be given to requester directly
-        def realPropValue = ["nonemptyulist"];
-        domainClass1Instance1.setProperty("rel1", realPropValue, false);
-        assertSame(realPropValue, domainClass1Instance1.getRealPropertyValue("rel1"));
+        //test setPropertyWithoutUpdate
+        def domainClass2Instance3 = loadedDomainClass2.metaClass.invokeStaticMethod(loadedDomainClass2, "add", [[prop1: "obj3Prop1Value"]] as Object[]);
+        assertEquals([], domainClass2Instance3.revRel1)
+        domainClass2Instance3.setPropertyWithoutUpdate("revRel1", [domainClass1Instance1]);
+        assertEquals([domainClass1Instance1], domainClass2Instance3.revRel1)
+        domainClass2Instance3 = loadedDomainClass2.metaClass.invokeStaticMethod(loadedDomainClass2, "search", ["prop1: obj3Prop1Value"] as Object[]).results[0];
+        assertEquals([], domainClass2Instance3.revRel1)
+        
     }
 
     public void testInitializesDefaultPropertyManager()
@@ -738,16 +782,32 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
 
 class DomainPropertyInterceptorDomainClassGrailsPluginImpl extends DefaultDomainClassPropertyInterceptor
 {
+    public static federatedPropertyList = []
+    public static federatedPropertyStorage = [:]
     def setPropertyList = []
     def getPropertyList = []
     public void setDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName, Object value) {
-        super.setDomainClassProperty(metaClass, domainClass, domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
+        if(federatedPropertyList.contains(propertyName))
+        {
+            federatedPropertyStorage[propertyName] = value
+        }
+        else
+        {
+            super.setDomainClassProperty(metaClass, domainClass, domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
+        }
         setPropertyList += propertyName
     }
 
     public Object getDomainClassProperty(MetaClass metaClass, Class domainClass, Object domainObject, String propertyName) {
         getPropertyList += propertyName
-        return super.getDomainClassProperty(metaClass, domainClass, domainObject, propertyName); //To change body of overridden methods use File | Settings | File Templates.
+        if(federatedPropertyList.contains(propertyName))
+        {
+            return federatedPropertyStorage[propertyName];
+        }
+        else
+        {
+            return super.getDomainClassProperty(metaClass, domainClass, domainObject, propertyName); //To change body of overridden methods use File | Settings | File Templates.
+        }
     }
 
 }

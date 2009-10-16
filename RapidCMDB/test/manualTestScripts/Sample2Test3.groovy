@@ -39,7 +39,7 @@ Cust Info: ["manager1"]
 
  */
 
-def service = Service.findByName(params.Service);
+def service = Service.get(name:params.Service);
 def slaLevel = params.Servicelevel;
 def operationalState = params.State;
 

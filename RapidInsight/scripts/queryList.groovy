@@ -28,7 +28,7 @@ import search.SearchQuery
 import search.SearchQueryGroup
 
 def filterType = params.type;
-def user = RsUser.findByUsername(web.session.username);
+def user = RsUser.get(username:web.session.username);
 if(user == null){
     throw new Exception("User ${web.session.username} does not exist");
 }

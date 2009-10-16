@@ -2,7 +2,7 @@
 <%
 	def filterType = params.filterType;
 	def listURI = params.listURI ? params.listURI : "mobile/event.gsp";
-	def user = RsUser.findByUsername(session.username);
+	def user = RsUser.get(username:session.username);
 	def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
 %>
 

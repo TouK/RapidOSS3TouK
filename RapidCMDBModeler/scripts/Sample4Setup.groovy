@@ -24,13 +24,13 @@ def props = [];
 
 // ModelHelper is the utility class to make the model generation  from script easier.
 
-Model.findByName("Port_S4")?.remove();
-Model.findByName("DeviceAdapter_S4")?.remove();
-Model.findByName("DeviceComponent_S4")?.remove();
-Model.findByName("SmartsObject_S4")?.remove();
-Model.findByName("Model1")?.remove();
-Model.findByName("Model2")?.remove();
-Model.findByName("Model3")?.remove();
+Model.get(name:"Port_S4")?.remove();
+Model.get(name:"DeviceAdapter_S4")?.remove();
+Model.get(name:"DeviceComponent_S4")?.remove();
+Model.get(name:"SmartsObject_S4")?.remove();
+Model.get(name:"Model1")?.remove();
+Model.get(name:"Model2")?.remove();
+Model.get(name:"Model3")?.remove();
 
 /* Define properties. Note that :
 1. 'propertyDatasource' takes the Datasource name
@@ -45,7 +45,7 @@ props.add(prop1);
 props.add(prop2);
 
 // Identify the datasource names. 
-def rcmdbDs = DatasourceName.findByName("RCMDB");
+def rcmdbDs = DatasourceName.get(name:"RCMDB");
 if(rcmdbDs == null){
     rcmdbDs = DatasourceName.add(name: "RCMDB");
 }
@@ -101,7 +101,7 @@ datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey1, rcmdbKey2]]);
 
 // Specify keys to datasources. nameInDs is optional. If not given, it is assumed that 
 // the name is the same as nameInDs
-def eastRegionDs = DatasourceName.findByName("eastRegionDs");
+def eastRegionDs = DatasourceName.get(name:"eastRegionDs");
 if(eastRegionDs == null){
     eastRegionDs = DatasourceName.add(name: "eastRegionDs");
 }
@@ -109,7 +109,7 @@ def eastRegionDsKey1 = [name:"name",nameInDs:"Name"];
 def eastRegionDsKey2 = [name:"creationClassName",nameInDs:"CreationClassName"];
 datasources.add([datasource:eastRegionDs, master:false, keys:[eastRegionDsKey1, eastRegionDsKey2]]);
 
-def westRegionDs = DatasourceName.findByName("westRegionDs");
+def westRegionDs = DatasourceName.get(name:"westRegionDs");
 if(westRegionDs == null){
     westRegionDs = DatasourceName.add(name: "westRegionDs");
 }

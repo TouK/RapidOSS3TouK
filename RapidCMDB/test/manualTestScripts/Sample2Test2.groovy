@@ -35,7 +35,7 @@ Customer info
     
 */
 def slaLevel = params.Servicelevel;
-def slas = Sla.findAllByLevel(slaLevel);
+def slas = Sla.searchEvery("level:${slaLevel}");
 def custInfo = [:];
 slas.each {
    custInfo.put(it.service.name, it.customer.accountmanager)

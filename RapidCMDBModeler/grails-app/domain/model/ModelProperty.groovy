@@ -133,7 +133,7 @@ class ModelProperty {
         blank(validator:{val, obj ->
              if(val){
                  def isValid = true;
-                 def props = ModelProperty.findByName(obj.name);
+                 def props = ModelProperty.search("name:${obj.name.exactQuery()}").results[0];
                  ModelProperty existingProp = null;
                  props.each{
                      if(it.model.id == obj.model.id)

@@ -40,7 +40,7 @@ class ModelHelper{
 	
 	ModelHelper(modelName, parentModelName){
 
-		def parent = Model.findByName(parentModelName);
+		def parent = Model.get(name:parentModelName);
 		model = Model.add(name:modelName, parentModel:parent);
 		if (model.hasErrors()) {
 			throw new Exception(model.errors.toString());
@@ -48,9 +48,9 @@ class ModelHelper{
 		def tempParent = parent;
 		while (tempParent!=null){
 			// find parent's datasources
-			def allparentds = tempParent.datasources; //ModelDatasource.findAllByModel(tempParent);
+			def allparentds = tempParent.datasources;
 			for (ds in allparentds){
-				def dskeys = ds.keyMappings; //ModelDatasourceKeyMapping.findAllByDatasource(ds);
+				def dskeys = ds.keyMappings; 
 				def keys =[];
 				for (key in dskeys){
 					keys.add(["name":key.property.name, "nameInDs":key.nameInDatasource]);
@@ -59,7 +59,7 @@ class ModelHelper{
 			}
 			
 			// find parent's properties
-			def allprops = tempParent.modelProperties; // ModelProperty.findAllByModel(tempParent);
+			def allprops = tempParent.modelProperties; 
 			for (prop in allprops){
 				props.put(prop.name, prop);	
 			}

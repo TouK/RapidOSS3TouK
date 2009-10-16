@@ -31,13 +31,13 @@ def props = [];
 
 def datasourceNames = checkDatasourceNames(); 
 
-Model.findByName("Customer")?.remove();
-Model.findByName("Service")?.remove();
-Model.findByName("Event")?.remove();
-Model.findByName("Sla")?.remove();
-Model.findByName("Device")?.remove();
-Model.findByName("Link")?.remove();
-Model.findByName("Resource")?.remove();
+Model.get(name:"Customer")?.remove();
+Model.get(name:"Service")?.remove();
+Model.get(name:"Event")?.remove();
+Model.get(name:"Sla")?.remove();
+Model.get(name:"Device")?.remove();
+Model.get(name:"Link")?.remove();
+Model.get(name:"Resource")?.remove();
 
 /* Define properties. Note that :
 1. 'propertyDatasource' takes the Datasource name
@@ -54,9 +54,9 @@ props.add(name);
 props.add(accountmanager);
 
 // Identify the datasource names. 
-def rcmdbDs = DatasourceName.findByName("RCMDB");
+def rcmdbDs = DatasourceName.get(name:"RCMDB");
 def rcmdbKey = [name:"name"];
-def custDs = DatasourceName.findByName(datasourceNames.customer);
+def custDs = DatasourceName.get(name:datasourceNames.customer);
 def custdbKey = [name:"name"];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
 datasources.add([datasource:custDs, master:false, keys:[custdbKey]]);
@@ -105,9 +105,9 @@ props.add(location);
 props.add(model);
 
 datasources = [];
-def resourceDs1 = DatasourceName.findByName(datasourceNames.resource1);
+def resourceDs1 = DatasourceName.get(name:datasourceNames.resource1);
 def resourcedbKey1 = [name:"name"];
-def resourceDs2 = DatasourceName.findByName(datasourceNames.resource2);
+def resourceDs2 = DatasourceName.get(name:datasourceNames.resource2);
 def resourcedbKey2 = [name:"name", nameInDs:"ID"];
 
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
@@ -126,7 +126,7 @@ props = [];
 props.add(ipaddress);
 
 datasources = [];
-def deviceDs = DatasourceName.findByName(datasourceNames.device);
+def deviceDs = DatasourceName.get(name:datasourceNames.device);
 def devicedbKey = [name:"name", nameInDs:"ID"];
 datasources.add([datasource:deviceDs, master:false, keys:[devicedbKey]]);
 
@@ -142,7 +142,7 @@ props = [];
 props.add(memberof);
 
 datasources = [];
-def linkDs = DatasourceName.findByName(datasourceNames.link);
+def linkDs = DatasourceName.get(name:datasourceNames.link);
 def linkdbKey = [name:"name", nameInDs:"ID"];
 datasources.add([datasource:linkDs, master:false, keys:[linkdbKey]]);
 
@@ -171,7 +171,7 @@ props.add(lastChanged);
 
 datasources = [];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
-def eventDs = DatasourceName.findByName(datasourceNames.event);
+def eventDs = DatasourceName.get(name:datasourceNames.event);
 def eventdbKey = [name:"name"];
 
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
@@ -217,37 +217,37 @@ def checkDatasourceNames(){
 
 	def datasources =[:];
 
-	dsCustomer = DatasourceName.findByName("dsCustomer");
+	dsCustomer = DatasourceName.get(name:"dsCustomer");
 	if (dsCustomer == null){
 	    dsCustomer = DatasourceName.add(name:"dsCustomer");
 	}
 	datasources.put("customer",dsCustomer.name);
 
-	dsEvent = DatasourceName.findByName("dsEvent");
+	dsEvent = DatasourceName.get(name:"dsEvent");
 	if (dsEvent == null){
 	    dsEvent= DatasourceName.add(name:"dsEvent");
 	}
 	datasources.put("event",dsEvent.name);
 
-	dsDevice = DatasourceName.findByName("dsDevice");
+	dsDevice = DatasourceName.get(name:"dsDevice");
 	if (dsDevice == null){
 	    dsDevice = DatasourceName.add(name:"dsDevice");
 	}
 	datasources.put("device",dsDevice.name);
 
-	dsLink = DatasourceName.findByName("dsLink");
+	dsLink = DatasourceName.get(name:"dsLink");
 	if (dsLink == null){
 	    dsLink = DatasourceName.add(name:"dsLink");
 	}
 	datasources.put("link",dsLink.name);
 
-	dsResource1 = DatasourceName.findByName("dsResource1");
+	dsResource1 = DatasourceName.get(name:"dsResource1");
 	if (dsResource1 == null){
 	    dsResource1 = DatasourceName.add(name:"dsResource1");
 	}
 	datasources.put("resource1",dsResource1.name);
 
-	dsResource2 = DatasourceName.findByName("dsResource2");
+	dsResource2 = DatasourceName.get(name:"dsResource2");
 	if (dsResource2 == null){
 	    dsResource2 = DatasourceName.add(name:"dsResource2");
 	}

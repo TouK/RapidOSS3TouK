@@ -142,7 +142,7 @@ class ScriptController {
     }
 
     def reload = {
-        def script = CmdbScript.findByName(params.id);
+        def script = CmdbScript.get(name:params.id);
         if (script)
         {
             try
@@ -178,7 +178,7 @@ class ScriptController {
     }
     def run =
     {
-        def script = CmdbScript.findByName(params.id);
+        def script = CmdbScript.get(name:params.id);
         if (script)
         {
             try
@@ -232,7 +232,7 @@ class ScriptController {
     }
 
     def start = {
-        CmdbScript script = CmdbScript.findByName(params.id);
+        CmdbScript script = CmdbScript.get(name:params.id);
         if (script)
         {
             try {
@@ -265,7 +265,7 @@ class ScriptController {
     }
 
     def stop = {
-        CmdbScript script = CmdbScript.findByName(params.id);
+        CmdbScript script = CmdbScript.get(name:params.id);
         if (script)
         {
             try {
@@ -299,7 +299,7 @@ class ScriptController {
     }
 
     def stopRunningScripts = {
-        CmdbScript script = CmdbScript.findByName(params.id);
+        CmdbScript script = CmdbScript.get(name:params.id);
         if (script)
         {
             CmdbScript.stopRunningScripts(script);
@@ -345,7 +345,7 @@ class ScriptController {
     {
         def testDir = "test/reports"
         new AntBuilder().mkdir(dir: testDir);
-        def script = CmdbScript.findByName(params.id);
+        def script = CmdbScript.get(name:params.id);
         if (script)
         {
             def bindings = ["params": params]

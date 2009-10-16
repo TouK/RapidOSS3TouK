@@ -109,29 +109,6 @@ class SearchableExtensionGrailsPlugin {
         addBasicPersistenceMethods(dc, application, ctx)
         addQueryMethods(dc, application, ctx)
         def cls = dc.clazz;
-        mc.'static'.methodMissing = {String methodName, args ->
-            if (methodName.startsWith("findBy"))
-            {
-                def searchKeyMap = [:]
-                def propName = StringUtils.substringAfter(methodName, "findBy");
-                propName = propName.substring(0, 1).toLowerCase() + propName.substring(1, propName.length());
-                searchKeyMap[propName] = args[0];
-                return CompassMethodInvoker.search(mc, searchKeyMap).results[0];
-            }
-            else if (methodName.startsWith("findAllBy"))
-            {
-                def searchKeyMap = [:]
-                def propName = StringUtils.substringAfter(methodName, "findAllBy");
-                propName = propName.substring(0, 1).toLowerCase() + propName.substring(1, propName.length());
-                searchKeyMap[propName] = args[0];
-                return CompassMethodInvoker.search(mc, searchKeyMap).results;
-            }
-            return cls._methodMissing(methodName, args);
-        }
-
-        mc.'static'._methodMissing = {String methodName, args ->
-            throw new MissingMethodException(methodName, mc.theClass, args);
-        }
         for (subClass in dc.subClasses)
         {
             if (subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)

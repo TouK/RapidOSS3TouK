@@ -32,7 +32,7 @@ Device device = Device.get(["name":name]);
 def oldip = device.ipaddress;
 def deviceId = device.id;
 
-SingleTableDatabaseDatasource ds = SingleTableDatabaseDatasource.findByName("dsDevice");
+SingleTableDatabaseDatasource ds = SingleTableDatabaseDatasource.get(name:"dsDevice");
 SingleTableDatabaseAdapter adapter = ds.adapter;
 adapter.updateRecord(['ID':name, 'ip':'bogus ip']);
 def record = adapter.getRecord(name);

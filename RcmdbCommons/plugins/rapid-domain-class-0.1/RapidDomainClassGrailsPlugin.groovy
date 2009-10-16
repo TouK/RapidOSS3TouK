@@ -239,7 +239,7 @@ class RapidDomainClassGrailsPlugin {
             mc.'static'.invokeStaticOperation = {String methodName, args ->
                 return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
-            mc.'static'._methodMissing = {String methodName, args ->
+            mc.'static'.methodMissing = {String methodName, args ->
                 return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.reloadOperations = {

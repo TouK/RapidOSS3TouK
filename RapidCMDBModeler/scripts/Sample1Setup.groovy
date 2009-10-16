@@ -28,11 +28,11 @@ import model.*;
 def datasources = [];
 def props = [];
 
-Model.findByName("Developer")?.remove();
-Model.findByName("Employee")?.remove();
-Model.findByName("Person")?.remove();
-Model.findByName("Team")?.remove();
-Model.findByName("Task")?.remove();
+Model.get(name:"Developer")?.remove();
+Model.get(name:"Employee")?.remove();
+Model.get(name:"Person")?.remove();
+Model.get(name:"Team")?.remove();
+Model.get(name:"Task")?.remove();
 
 /* Define properties. Note that :
 1. 'propertyDatasource' takes the Datasource name
@@ -47,7 +47,7 @@ props.add(name);
 props.add(bday);
 
 // Identify the datasource names. 
-def rcmdbDs = DatasourceName.findByName("RCMDB");
+def rcmdbDs = DatasourceName.get(name:"RCMDB");
 def rcmdbKey = [name:"name"];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
 
@@ -79,7 +79,7 @@ props = [];
 props.add(name);
 props.add(mascot);
 
-rcmdbDs = DatasourceName.findByName("RCMDB");
+rcmdbDs = DatasourceName.get(name:"RCMDB");
 rcmdbKey = [name:"name"];
 datasources = [];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);
@@ -94,7 +94,7 @@ name = [name:"name", type:ModelProperty.stringType, blank:false, lazy:false, pro
 props = [];
 props.add(name);
 
-rcmdbDs = DatasourceName.findByName("RCMDB");
+rcmdbDs = DatasourceName.get(name:"RCMDB");
 rcmdbKey = [name:"name"];
 datasources = [];
 datasources.add([datasource:rcmdbDs, master:true, keys:[rcmdbKey]]);

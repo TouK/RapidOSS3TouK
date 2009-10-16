@@ -84,7 +84,7 @@ class ModelPropertyControllerIntegrationTests extends RapidCmdbIntegrationTestCa
 
         modelProps = ModelProperty.list();
         assertEquals(2, modelProps.size());
-        modelProp = ModelProperty.findByName("prop2");
+        modelProp = ModelProperty.search("name:prop2").results[0];
 
         assertEquals(model.id, modelProp.model?.id);
         assertEquals(ds1ModelDatasource.id, modelProp.propertyDatasource?.id);

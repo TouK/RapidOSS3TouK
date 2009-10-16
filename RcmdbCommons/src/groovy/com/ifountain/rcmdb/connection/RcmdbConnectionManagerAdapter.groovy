@@ -39,7 +39,7 @@ class RcmdbConnectionManagerAdapter implements ConnectionParameterSupplier{
         ConnectionParam connParam =  connectionMap[connConfigName]
         if(connParam == null)
         {
-            Connection conn = Connection.findByName(connConfigName);
+            Connection conn = Connection.get(name:connConfigName);
             if(conn != null)
             {
                 connParam =  createConnectionParamFromObject(conn)

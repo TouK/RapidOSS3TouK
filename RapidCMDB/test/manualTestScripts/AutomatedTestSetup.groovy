@@ -28,17 +28,17 @@ PSW = 'rcpass';
 DS1 = 'eastRegionDs';
 DS2 = 'westRegionDs';
 
-def conn1 = SmartsConnection.findByName(CONNAME);
+def conn1 = SmartsConnection.get(name:CONNAME);
 if(conn1 == null){
     conn1 = SmartsConnection.add(name:CONNAME, broker:BROKER, domain:DOMAIN, username:USERNAME, userPassword:PSW);
 }
 
-def eastRegionDs= SmartsTopologyDatasource.findByName(DS1);
+def eastRegionDs= SmartsTopologyDatasource.get(name:DS1);
 if (eastRegionDs == null){
     eastRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:DS1);
 }
 
-def westRegionDs= SmartsTopologyDatasource.findByName(DS2);
+def westRegionDs= SmartsTopologyDatasource.get(name:DS2);
 if (westRegionDs == null){
     westRegionDs = SmartsTopologyDatasource.add(connection:conn1, name:DS2);
 }

@@ -80,7 +80,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            CmdbScript script = CmdbScript.findByName(scriptName);
+            CmdbScript script = CmdbScript.get(name:scriptName);
             assertNotNull (script);
             assertEquals (scriptName, script.scriptFile);
             assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
@@ -108,7 +108,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["allowedGroups.id"] = "${gr1.id},${gr2.id}";
             scriptController.save();
 
-            CmdbScript script = CmdbScript.findByName(scriptName);
+            CmdbScript script = CmdbScript.get(name:scriptName);
             assertNotNull (script);
             assertEquals (scriptName, script.scriptFile);
             def groups = script.allowedGroups.sort{it.name}
@@ -136,7 +136,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["scriptFile"] = scriptFileName;
             scriptController.save();
 
-            CmdbScript script = CmdbScript.findByName(scriptName);
+            CmdbScript script = CmdbScript.get(name:scriptName);
             assertNotNull (script);
             assertEquals (scriptFileName, script.scriptFile);
             assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
@@ -158,7 +158,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["scriptFile"] = scriptFileName;
             scriptController.save();
 
-            def script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.get(name:scriptName);
             assertNull (script);
             assertEquals(scriptName, scriptController.modelAndView.model.cmdbScript.name);
         }
@@ -178,7 +178,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            def script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.get(name:scriptName);
 
             IntegrationTestUtils.resetController (scriptController);
             scriptController.params["id"] = script.name;
@@ -229,7 +229,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             scriptController.params["name"] = scriptName;
             scriptController.save();
 
-            def script = CmdbScript.findByName(scriptName);
+            def script = CmdbScript.get(name:scriptName);
 
             createErrornousScript(scriptName);
             IntegrationTestUtils.resetController (scriptController);

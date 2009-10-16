@@ -25,9 +25,9 @@ class JiraConnectorController {
         }
         else {
         	def connectionName = JiraConnector.getConnectionName(jiraConnector.name);
-            def jiraConnection = JiraConnection.findByName(connectionName);
+            def jiraConnection = JiraConnection.get(name:connectionName);
             def dsName = JiraConnector.getDatasourceName(jiraConnector.name);
-            def jiraDatasource = JiraDatasource.findByName(dsName);
+            def jiraDatasource = JiraDatasource.get(name:dsName);
             return [jiraConnector: jiraConnector, jiraDatasource:jiraDatasource, jiraConnection:jiraConnection ]
         }
     }
@@ -65,9 +65,9 @@ class JiraConnectorController {
         }
         else {
         	def connectionName = JiraConnector.getConnectionName(jiraConnector.name);
-            def jiraConnection = JiraConnection.findByName(connectionName);
+            def jiraConnection = JiraConnection.get(name:connectionName);
             def dsName = JiraConnector.getDatasourceName(jiraConnector.name);
-            def jiraDatasource = JiraDatasource.findByName(dsName);
+            def jiraDatasource = JiraDatasource.get(name:dsName);
             return [jiraConnector: jiraConnector, jiraDatasource:jiraDatasource, jiraConnection:jiraConnection ]
         }
     }

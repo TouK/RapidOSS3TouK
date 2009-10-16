@@ -48,7 +48,7 @@ class InvokeOperationUtils {
         if(willProcess(methodName, operationClass, domainOperationMethods))
         {
             try {
-                return operationClass.metaClass.invokeStaticMethod(operationClass, methodName, args);
+                return operationClass."${methodName}"(*args)
             } catch (MissingMethodException e) {
                 processMissingMethodException(e, operationClass, methodName);
             }

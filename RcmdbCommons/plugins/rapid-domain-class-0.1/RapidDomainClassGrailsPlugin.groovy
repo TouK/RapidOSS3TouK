@@ -222,6 +222,7 @@ class RapidDomainClassGrailsPlugin {
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods, application.classLoader);
             operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod reloadOperationsMethod = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
+            def cls = mc.theClass;
             mc.invokeOperation =  {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
@@ -240,7 +241,7 @@ class RapidDomainClassGrailsPlugin {
                 return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.methodMissing = {String methodName, args ->
-                return InvokeOperationUtils.invokeStaticMethod(mc.theClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
+                return InvokeOperationUtils.invokeStaticMethod(cls, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.reloadOperations = {
                 mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);

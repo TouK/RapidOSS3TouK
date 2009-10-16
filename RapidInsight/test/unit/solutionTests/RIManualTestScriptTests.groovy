@@ -23,6 +23,9 @@ import datasource.BaseListeningDatasource
 import datasource.BaseListeningDatasourceOperations
 import com.ifountain.comp.test.util.CommonTestUtils
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.datasource.RunnerObject
+import com.ifountain.rcmdb.datasource.ListeningAdapterRunner
+import com.ifountain.rcmdb.datasource.AdapterRunnerThread
 
 
 /**
@@ -98,7 +101,14 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
+        GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningDatasource);
+        GroovySystem.metaClassRegistry.removeMetaClass(RepositoryDatasource);
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
+        GroovySystem.metaClassRegistry.removeMetaClass(RunnerObject);
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterRunner);
+        GroovySystem.metaClassRegistry.removeMetaClass(AdapterRunnerThread);
+
+
         ExpandoMetaClass.enableGlobally();
     }
 

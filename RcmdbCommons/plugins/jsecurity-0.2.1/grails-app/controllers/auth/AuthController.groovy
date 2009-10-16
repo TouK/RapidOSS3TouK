@@ -5,6 +5,7 @@ import org.jsecurity.authc.AuthenticationException
 import org.jsecurity.authc.UsernamePasswordToken
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.mobile.MobileUtils
+import com.ifountain.rcmdb.domain.util.ControllerUtils
 
 class AuthController {
     def jsecSecurityManager
@@ -101,9 +102,7 @@ class AuthController {
 
             // Now redirect back to the login page.
             if(params.format == "xml"){
-                render(contentType:'text/xml') {
-                    Error("Invalid username or password.")
-                }
+                render(text: ControllerUtils.convertErrorToXml("Invalid username or password."), contentType: "text/xml");
             }
             else{
                 redirect(action: 'login', params: m)

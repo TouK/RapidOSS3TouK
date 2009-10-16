@@ -60,6 +60,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        clearMetaClasses()
         TestLogUtils.enableLogger(Logger.getLogger("scripting"));
 
         ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
@@ -89,9 +90,18 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
             ConnectionManager.destroy();
         }
         TestLogUtils.disableLogger(Logger.getLogger("scripting"));
+        clearMetaClasses()
         super.tearDown();
 
     }
+     public static void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
+        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
+        ExpandoMetaClass.enableGlobally();
+    }
+
     void initializeScriptManager()
     {
         //def script_base_directory= base_directory+"/test/manualTestScripts/${script_directory}";
@@ -198,12 +208,14 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
+
+        CmdbScript.metaClass.'static'.getScriptLogger={ aScript -> return Logger.getLogger("scripting")};
+
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true,logFileOwn:true], true)
         def script = CmdbScript.addScript([name: "findMaxTest", type: CmdbScript.ONDEMAND], true)
 
-        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(listeningscript));
-        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(script));
+
 
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
@@ -219,9 +231,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
         finally {
             CmdbScript.stopListening(listeningscript);
-
-            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(listeningscript));
-            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(script));
         }
 
     }
@@ -284,12 +293,14 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
+
+        CmdbScript.metaClass.'static'.getScriptLogger={ aScript -> return Logger.getLogger("scripting")};
+
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)
         def script = CmdbScript.addScript([name: "criticalPercentTest", type: CmdbScript.ONDEMAND], true)
 
-        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(listeningscript));
-        TestLogUtils.enableLogger(CmdbScript.getScriptLogger(script));
+
 
         CmdbScript.startListening(listeningscript);
         CommonTestUtils.waitFor(new ClosureWaitAction({
@@ -305,9 +316,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
         finally {
             CmdbScript.stopListening(listeningscript);
-
-            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(listeningscript));
-            TestLogUtils.disableLogger(CmdbScript.getScriptLogger(script));
         }
 
     }

@@ -21,7 +21,7 @@ import com.ifountain.core.domain.annotations.*;
 
 class Developer extends Employee  
 {
-    
+
     //AUTO_GENERATED_CODE
 
     static searchable = {

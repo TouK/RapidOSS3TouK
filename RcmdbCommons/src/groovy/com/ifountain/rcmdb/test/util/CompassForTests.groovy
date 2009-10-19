@@ -21,13 +21,18 @@ package com.ifountain.rcmdb.test.util
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import org.codehaus.groovy.grails.commons.GrailsClassUtils
+import com.ifountain.rcmdb.domain.util.InvokeOperationUtils
+import org.codehaus.groovy.runtime.InvokerHelper
+
 /**
- * Created by IntelliJ IDEA.
- * User: iFountain
- * Date: Oct 23, 2008
- * Time: 3:48:45 PM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: iFountain
+* Date: Oct 23, 2008
+* Time: 3:48:45 PM
+* To change this template use File | Settings | File Templates.
+*/
 class CompassForTests {
 //    static List classesToBeInitialized;
     static List injectedClasses = [];
@@ -120,7 +125,22 @@ class CompassForTests {
         ExpandoMetaClass.enableGlobally();
         injectedClasses.add(domainClass);
         MetaClass mc = domainClass.metaClass;
-        domainClass.setOperationClass(operationClass);
+        DomainOperationManager manager = new DomainOperationManager(domainClass, "${System.getProperty("base.dir")}/operations".toString(), null, [:], domainClass.classLoader);
+        manager.setOperationClass (operationClass)
+        mc.propertyMissing = {String name->
+            def domainObject = delegate;
+            def getterName = GrailsClassUtils.getGetterName(name);
+            return convertPropertyMissingException(delegate.class, name, getterName){
+                return InvokeOperationUtils.invokeMethod(domainObject, getterName, InvokerHelper.EMPTY_ARGS, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
+
+        }
+        mc.methodMissing =  {String name, args ->
+            return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
+        }
+        mc.'static'.methodMissing = {String methodName, args ->
+            return InvokeOperationUtils.invokeStaticMethod(domainClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
+        }
     }
 }
 

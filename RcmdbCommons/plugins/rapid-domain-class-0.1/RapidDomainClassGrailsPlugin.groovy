@@ -227,10 +227,6 @@ class RapidDomainClassGrailsPlugin {
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
 
-            //for testing
-            mc.'static'.setOperationClass =  {Class operationClass ->
-                manager.setOperationClass (operationClass)
-            }
             mc.propertyMissing = {String name->
                 def domainObject = delegate;
                 def getterName = GrailsClassUtils.getGetterName(name);

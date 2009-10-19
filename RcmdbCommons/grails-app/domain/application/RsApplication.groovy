@@ -30,6 +30,8 @@ class RsApplication {
         except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
+    Long id;
+    Long version;
     String rsOwner = "p"
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;

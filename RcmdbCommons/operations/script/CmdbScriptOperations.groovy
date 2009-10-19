@@ -295,7 +295,7 @@ class CmdbScriptOperations extends com.ifountain.rcmdb.domain.operation.Abstract
         ScriptStateManager.getInstance().stopRunningScripts(script.name);
     }
 
-    protected static def manageRepositoryDatasource(CmdbScript script, boolean willListen) {
+    static def manageRepositoryDatasource(CmdbScript script, boolean willListen) {
         if (!willListen || script.type != CmdbScript.LISTENING) {
             if (script.listeningDatasource instanceof RepositoryDatasource) {
                 script.listeningDatasource.remove();

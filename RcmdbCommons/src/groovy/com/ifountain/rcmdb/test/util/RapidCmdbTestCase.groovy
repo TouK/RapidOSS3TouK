@@ -55,6 +55,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
         IdCache.clearCache();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);
+        CompassForTests.destroy();
     }
 
     public String getWorkspacePath() throws Exception

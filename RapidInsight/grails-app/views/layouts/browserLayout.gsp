@@ -8,6 +8,7 @@
     window.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     window.loadingMask.show();
 </script>
+<g:render template="/layouts/commonLayout"></g:render>
 <div id="top" style="background-color:#BBD4F6;">
     <table style="height:100%" cellspacing="0" cellpadding="0"><tbody><tr>
         <td width="0%" style="padding-left:10px;padding-top:5px;padding-right:60px;">

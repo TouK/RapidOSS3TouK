@@ -124,22 +124,27 @@ class CompassForTests {
     {
         ExpandoMetaClass.enableGlobally();
         injectedClasses.add(domainClass);
-        MetaClass mc = domainClass.metaClass;
-        DomainOperationManager manager = new DomainOperationManager(domainClass, "${System.getProperty("base.dir")}/operations".toString(), null, [:], domainClass.classLoader);
-        manager.setOperationClass (operationClass)
-        mc.propertyMissing = {String name->
-            def domainObject = delegate;
-            def getterName = GrailsClassUtils.getGetterName(name);
-            return convertPropertyMissingException(delegate.class, name, getterName){
+        try{
+            domainClass._setDomainOperation(operationClass);    
+        }
+        catch(MissingMethodException m)
+        {
+            if(m.method == "_setDomainOperation") throw m;
+            MetaClass mc = domainClass.metaClass;
+            DomainOperationManager manager = new DomainOperationManager(domainClass, "${System.getProperty("base.dir")}/operations".toString(), null, [:], domainClass.classLoader);
+            manager.setOperationClass (operationClass)
+            mc.propertyMissing = {String name->
+                def domainObject = delegate;
+                def getterName = GrailsClassUtils.getGetterName(name);
                 return InvokeOperationUtils.invokeMethod(domainObject, getterName, InvokerHelper.EMPTY_ARGS, manager.getOperationClass(), manager.getOperationClassMethods());
-            }
 
-        }
-        mc.methodMissing =  {String name, args ->
-            return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
-        }
-        mc.'static'.methodMissing = {String methodName, args ->
-            return InvokeOperationUtils.invokeStaticMethod(domainClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
+            mc.methodMissing =  {String name, args ->
+                return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
+            mc.'static'.methodMissing = {String methodName, args ->
+                return InvokeOperationUtils.invokeStaticMethod(domainClass, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
+            }
         }
     }
 }

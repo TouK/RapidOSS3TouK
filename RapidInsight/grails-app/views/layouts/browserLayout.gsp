@@ -1,9 +1,3 @@
-<%@ page import="auth.Role" %>
-<jsec:lacksRole name="${Role.ADMINISTRATOR}">
-     <%
-         response.sendRedirect("/RapidSuite/auth/unauthorized");
-     %>
-</jsec:lacksRole>
 <html>
 <head>
     <g:render template="/layouts/layoutHeader"></g:render>

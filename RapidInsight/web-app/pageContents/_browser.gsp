@@ -1,3 +1,9 @@
+<%@ page import="auth.Role" %>
+<jsec:lacksRole name="${Role.ADMINISTRATOR}">
+     <%
+         response.sendRedirect("/RapidSuite/auth/unauthorized");
+     %>
+</jsec:lacksRole>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'browserArtifacts', file:'browser.css')}"/>
 <script>
     var classTree = YAHOO.rapidjs.Components["classTree"];

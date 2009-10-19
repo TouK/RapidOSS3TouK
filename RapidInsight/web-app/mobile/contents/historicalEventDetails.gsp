@@ -1,9 +1,13 @@
-<%@ page import="search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
+<%@ page import="com.ifountain.rcmdb.mobile.MobileUtils; search.SearchQuery; auth.RsUser; java.text.SimpleDateFormat" %>
 <%
     CONFIG = [:]
 %>
 <rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
 <%
+     def gspFolder = "simple"
+    if(MobileUtils.isIphone(request)){
+        gspFolder = "iphone";
+    }
     def id = params.eventId
     def event = CONFIG.HISTORICAL_EVENT_CLASS.get(id: id)
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
@@ -19,7 +23,7 @@
     <g:else>
         <div class="ri-mobile-tab">
         <ul>
-            <li class="selected"><rui:link url="mobile/historicalEventDetails.gsp" params="${[eventId:event.id]}" target="_open">Properties</rui:link></li>
+            <li class="selected"><rui:link url="mobile/${gspFolder}/historicalEventDetails.gsp" params="${[eventId:event.id]}" target="_open">Properties</rui:link></li>
             <li><rui:link url="mobile/getJournals.gsp" params="${[eventId:event.id, isHistorical:'true']}" target="_open">Journal</rui:link></li>
         </ul>
         </div>

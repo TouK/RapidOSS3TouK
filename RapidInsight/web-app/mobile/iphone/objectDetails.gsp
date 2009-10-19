@@ -40,6 +40,7 @@
                                                     <%
                                                         def subScriptParams = subActionConf.parameters ? subActionConf.parameters(event) : [:]
                                                         subScriptParams["scriptName"] = subActionConf.scriptName;
+                                                        subScriptParams["redirectUrl"] = rui.createLink(url:"mobile/iphone/objectDetails.gsp", params:[name:params.name]);
                                                     %>
                                                     <li><rui:link url="mobile/scriptExecuter.gsp" params="${subScriptParams}" target="_open">${subActionConf.title.encodeAsHTML()}</rui:link></li>
                                                 </g:if>
@@ -54,6 +55,7 @@
                                     <%
                                         def scriptParams = actionConf.parameters ? actionConf.parameters(event) : [:]
                                         scriptParams["scriptName"] = actionConf.scriptName;
+                                        scriptParams["redirectUrl"] = rui.createLink(url:"mobile/iphone/objectDetails.gsp", params:[name:params.name]);
                                     %>
                                     <li><rui:link url="mobile/scriptExecuter.gsp" params="${scriptParams}" target="_open">${actionConf.title.encodeAsHTML()}</rui:link></li>
                                 </g:if>

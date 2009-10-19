@@ -10,10 +10,26 @@ class MobileUtils {
 
     public static def isMobile(request) {
         String userAgent = String.valueOf(request.getHeader("user-agent")).toLowerCase();
-    	if(userAgent.indexOf("mobile") >= 0 || userAgent.indexOf("ipod") >= 0 || userAgent.indexOf("iphone") >= 0)         {
-        	return true;
+        if (userAgent.indexOf("mobile") > -1
+                || userAgent.indexOf("ipod") > -1
+                || userAgent.indexOf("iphone") > -1
+                || userAgent.indexOf("blackberry") > -1
+                || userAgent.indexOf("iemobile") > -1
+                || userAgent.indexOf("opera mini") > -1
+                || userAgent.indexOf("opera mobi") > -1) {
+            return true;
         }
+
         return false;
-    }  
+    }
+
+    public static def isIphone(request) {
+        String userAgent = String.valueOf(request.getHeader("user-agent")).toLowerCase();
+        if (userAgent.indexOf("ipod") > -1 || userAgent.indexOf("iphone") > -1) {
+            return true;
+        }
+
+        return false;
+    }
 
 }

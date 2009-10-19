@@ -1,0 +1,1 @@
+<rui:include template="mobile/contents/queries.gsp" model="${binding.variables}"></rui:include>

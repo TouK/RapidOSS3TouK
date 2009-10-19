@@ -1,4 +1,4 @@
-<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.ifountain.rcmdb.mobile.MobileUtils; java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
@@ -11,6 +11,14 @@
 %>
 <rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
 <%
+    def gspFolder = "simple"
+     def severityMapping = CONFIG.SEVERITY_MAPPING;
+     def resultPerPage = CONFIG.RESULT_PER_PAGE;
+    if(MobileUtils.isIphone(request)){
+        gspFolder = "iphone";
+        severityMapping = CONFIG.IPHONE_SEVERITY_MAPPING;
+        resultPerPage = CONFIG.IPHONE_RESULT_PER_PAGE;
+    }
     def shortenProperty = {propValue ->
         def sProp = propValue.toString();
         if (sProp.length() > 15) {
@@ -29,19 +37,24 @@
 %>
 <div id="historicalEventList">
     <div class="table">
-        <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
+        <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>&nbsp;</th>
                     <g:each var="column" in="${CONFIG.HISTORICAL_EVENT_COLUMNS}">
-                        <rui:sortableColumn property="${column.propertyName}" title="${column.title}" url="mobile/historicalEvent.gsp" linkAttrs="${[params:[query:query]]}"/>
+                        <rui:sortableColumn property="${column.propertyName}" title="${column.title}" url="mobile/${gspFolder}/historicalEvent.gsp" linkAttrs="${[params:[query:query]]}"/>
                     </g:each>
                 </tr>
             </thead>
             <tbody>
                 <g:each in="${events.results}" status="i" var="rsEvent">
-                    <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url: 'mobile/historicalEventDetails.gsp', params: [eventId: rsEvent.id])}')">
-                        <td width="1%"><img src="${createLinkTo(dir: CONFIG.SEVERITY_MAPPING[rsEvent.severity.toString()] ? CONFIG.SEVERITY_MAPPING[rsEvent.severity.toString()] : CONFIG.SEVERITY_MAPPING['default'])}" height="25px" width="19px"/></td>
+                     <g:if test="${MobileUtils.isIphone(request)}">
+                        <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url: 'mobile/' + gspFolder+'/historicalEventDetails.gsp', params: [eventId: rsEvent.id])}')">
+                    </g:if>
+                    <g:else>
+                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.location = '${rui.createLink(url: 'mobile/' + gspFolder+'/historicalEventDetails.gsp', params: [eventId: rsEvent.id])}'">
+                    </g:else>
+                        <td width="1%"><img src="${createLinkTo(dir: severityMapping[rsEvent.severity.toString()] ? severityMapping[rsEvent.severity.toString()] : severityMapping['default'])}"/></td>
                         <g:each var="column" in="${CONFIG.HISTORICAL_EVENT_COLUMNS}">
                             <g:if test="${CONFIG.HISTORICAL_EVENT_DATE_PROPERTIES.contains(column.propertyName)}">
                                 <td>${format.format(rsEvent[column.propertyName])?.encodeAsHTML()}</td>
@@ -56,6 +69,6 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <rui:paginate total="${total}" url="mobile/historicalEvent.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5" max="100"/>
+        <rui:paginate total="${total}" url="mobile/${gspFolder}/historicalEvent.gsp" linkAttrs="${[params:[query:query]]}" maxsteps="5" max="${resultPerPage}"/>
     </div>
 </div>

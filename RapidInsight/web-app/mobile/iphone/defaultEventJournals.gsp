@@ -1,0 +1,1 @@
+<rui:include template="mobile/contents/defaultEventJournals.gsp" model="${binding.variables}"></rui:include>

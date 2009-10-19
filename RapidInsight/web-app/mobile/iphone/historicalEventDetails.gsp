@@ -1,0 +1,1 @@
+<rui:include template="mobile/contents/historicalEventDetails.gsp" model="${binding.variables}"></rui:include>

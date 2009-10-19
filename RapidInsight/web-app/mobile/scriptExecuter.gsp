@@ -5,23 +5,12 @@
     def scriptName = params.scriptName;
     try{
        CmdbScript.runScript(scriptName, [params:params, web:[session:session]]);
+       flash.message = successMessage;
     }
     catch(e){
-       errorMessage = e.getMessage(); 
+       errorMessage = e.getMessage();
+       flash.errors = new RapidBindException(flash, "flash");
+       flash.errors.reject("default.custom.error", [errorMessage] as Object[],"")
     }
+    response.sendRedirect(params.redirectUrl);
 %>
-
-<g:if test="${errorMessage}">
-	<div>
-	<div id="messageArea" class="error">
-		${errorMessage.encodeAsHTML()}
-	</div>
-	</div>
-</g:if>
-<g:else>
-	<div>
-	<div id="messageArea" class="success">
-		${successMessage.encodeAsHTML()}
-	</div>
-	</div>
-</g:else>

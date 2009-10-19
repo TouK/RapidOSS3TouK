@@ -9,9 +9,7 @@
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
     def actionGroupIdIndex = 0;
 %>
-
 <div id="eventDetails">
-
     <g:if test="${!event}">
         <div class="error">
             Event with name: ${name} does not exist
@@ -20,10 +18,11 @@
     <g:else>
         <div class="ri-mobile-tab">
         <ul>
-            <li class="selected"><rui:link url="mobile/eventDetails.gsp" params="${[name:event.name]}" target="_open">Properties</rui:link></li>
+            <li class="selected"><rui:link url="mobile/iphone/eventDetails.gsp" params="${[name:event.name]}" target="_open">Properties</rui:link></li>
             <li><rui:link url="mobile/getJournals.gsp" params="${[eventId:event.id]}" target="_open">Journal</rui:link></li>
         </ul>
         </div>
+        <g:render template="/common/messages" model="[flash:flash, beans:[]]"></g:render>
     <%----------------------------------------------------------------
                         <Event Action Menu>
     ----------------------------------------------------------------%>
@@ -48,6 +47,7 @@
                                                     <%
                                                         def subScriptParams = subActionConf.parameters ? subActionConf.parameters(event) : [:]
                                                         subScriptParams["scriptName"] = subActionConf.scriptName;
+                                                        subScriptParams["redirectUrl"] = rui.createLink(url:"mobile/iphone/eventDetails.gsp", params:[name:params.name]);
                                                     %>
                                                     <li><rui:link url="mobile/scriptExecuter.gsp" params="${subScriptParams}" target="_open">${subActionConf.title.encodeAsHTML()}</rui:link></li>
                                                 </g:if>
@@ -62,6 +62,7 @@
                                     <%
                                         def scriptParams = actionConf.parameters ? actionConf.parameters(event) : [:]
                                         scriptParams["scriptName"] = actionConf.scriptName;
+                                        scriptParams["redirectUrl"] = rui.createLink(url:"mobile/iphone/eventDetails.gsp", params:[name:params.name]);
                                     %>
                                     <li><rui:link url="mobile/scriptExecuter.gsp" params="${scriptParams}" target="_open">${actionConf.title.encodeAsHTML()}</rui:link></li>
                                 </g:if>

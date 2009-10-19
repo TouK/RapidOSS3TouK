@@ -15,10 +15,22 @@
             "4": "images/mobile/states/orange.png",
             "5": "images/mobile/states/red.png"
     ]
+    CONFIG.IPHONE_SEVERITY_MAPPING = [
+            "default": "images/mobile/states/iphone/green.png",
+            "0": "images/mobile/states/iphone/green.png",
+            "1": "images/mobile/states/iphone/purple.png",
+            "2": "images/mobile/states/iphone/blue.png",
+            "3": "images/mobile/states/iphone/yellow.png",
+            "4": "images/mobile/states/iphone/orange.png",
+            "5": "images/mobile/states/iphone/red.png"
+    ]
     
     CONFIG.EVENT_DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"];
     CONFIG.HISTORICAL_EVENT_DATE_PROPERTIES = ["createdAt", "changedAt", "clearedAt", "willExpireAt"];
     CONFIG.INVENTORY_DATE_PROPERTIES = ["lastChangedAt", "consideredDownAt"];
+
+    CONFIG.IPHONE_RESULT_PER_PAGE = 100;
+    CONFIG.RESULT_PER_PAGE = 30;
 
     CONFIG.EVENT_COLUMNS = [
         [propertyName:"name", title:"Name"],

@@ -424,10 +424,10 @@ fieldset > .row:last-child {
 }
 
 th.asc a {
-    background-image:url(../../images/skin/sorted_asc.gif);
+    background-image:url(../../images/rapidjs/component/treegrid/sort_asc.gif);
 }
 th.desc a {
-    background-image:url(../../images/skin/sorted_desc.gif);
+    background-image:url(../../images/rapidjs/component/treegrid/sort_desc.gif);
 }
 th.asc a, th.desc a {
     background-position:right center;
@@ -573,7 +573,7 @@ th a:link, th a:visited, th a:hover {
 
 /************************************************************************************************/
 
-.error {
+.error, .errors {
 	border-left: 3px solid #ff0000;
 	border-right: 3px solid #ff0000;
 	border-top: 3px solid #ff0000;
@@ -588,10 +588,9 @@ th a:link, th a:visited, th a:hover {
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
 }
 
-.success {
+.message {
 
 	margin: 0px 0px 0px 0px;
-
     padding: 3px 3px;
     font-size: 18px;
     color: #009900;

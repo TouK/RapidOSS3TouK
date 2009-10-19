@@ -1,0 +1,244 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Helvetica;
+}
+
+.toolbar {
+    background-color: #839DBF;
+    border-bottom: 1px solid #2d3642;
+    border-top: 1px solid #6d84a2;
+    padding: 10;
+}
+
+.toolbar  h1 {
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #FFFFFF;
+}
+
+.toolbarLinks {
+    color: #FFFFFF;
+    font-size: 10px;
+    margin-top: 5px;
+}
+
+.toolbarLinks a {
+    color: #FFFFFF;
+    text-decoration: underline;
+    font-size: 12px;
+    padding: 3;
+    font-weight: bold;
+}
+
+.footer {
+    padding: 10;
+}
+
+.footer a {
+    color: #0033CC;
+    text-decoration: underline;
+    font-size: 12px;
+}
+
+.form-wrp {
+    margin-top: 10;
+    padding: 10;
+    background-color: #E0E7EF;
+    border-bottom: 1px solid #8EAACF;
+    border-top: 1px solid #8EAACF;
+}
+
+#loginButton, #searchButton {
+    width: 80px;
+    padding: 3 5;
+    color: #74788F;
+    font-weight: bold;
+}
+
+.row {
+    padding: 2 0;
+}
+
+.row label {
+    font-weight: bold;
+    color: #74788F;
+}
+
+.list li {
+    position: relative;
+    margin: 0;
+    border-bottom: 1px solid #E0E0E0;
+    padding: 8px 0 8px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    list-style: none;
+}
+
+.list  li  a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: url( ../../images/mobile/listArrow.png ) no-repeat right center;
+}
+
+.group {
+    padding: 1px 10px;
+    background: url( ../../images/mobile/listGroup.png ) repeat-x;
+    font-weight: bold;
+    color: #FFFFFF;
+    border-bottom: 1px solid #999999;
+}
+
+.itable {
+    border: 1px solid gray;
+}
+
+.itable tr.alt {
+    background-color: #eff7ff;
+}
+
+.itable tr.reg {
+    background-color: #fff;
+}
+
+.itable th {
+    background: url( ../../images/mobile/blue_hd_bg.png ) top left repeat-x;
+    border-right: 1px solid gray;
+    vertical-align: top;
+    font-size: 12px
+}
+
+.itable td {
+    border-right: 1px solid gray;
+    font-size: 10px
+}
+
+.itable tr:first-child {
+    white-space: nowrap;
+}
+
+.itable ul {
+    padding: 0;
+    list-style: none
+}
+
+th.asc a {
+    background-image: url( ../../images/rapidjs/component/treegrid/sort_asc.gif );
+}
+
+th.desc a {
+    background-image: url( ../../images/rapidjs/component/treegrid/sort_desc.gif );
+}
+
+th.asc a, th.desc a {
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+
+th a:link, th a:visited, th a:hover {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+}
+
+.paginateButtons {
+    background: url( ../../images/mobile/listGroup.png ) repeat-x;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+    color: #666666;
+    font-size: 16px;
+    overflow: hidden;
+    padding: 4px 3px;
+}
+
+.paginateButtons a {
+    background: #FFFFFF none repeat scroll 0 0;
+    border-color: #CCCCCC #AAAAAA #AAAAAA #CCCCCC;
+    border-style: solid;
+    border-width: 1px;
+    color: #666666;
+    margin: 0 3px;
+    padding: 2px 6px;
+}
+
+.error, .errors {
+    border: 2px solid #ff0000;
+    margin: 0;
+    padding: 2px;
+    font-size: 14px;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.message {
+	margin: 0;
+    padding: 2;
+    font-size: 14px;
+    color: #009900;
+    font-weight: bold;
+}
+
+.ri-mobile-tab {
+    background-color: rgb( 247, 247, 247 );
+    border-bottom-color: #AFAFAF;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    display: block;
+    font-size: 14px;
+    height: 29px;
+    font-weight: bold;
+    color: rgb( 0, 94, 150 );
+}
+
+.ri-mobile-tab ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.ri-mobile-tab li {
+    display: inline;
+    -webkit-background-clip: border-box;
+    -webkit-background-origin: padding-box;
+
+}
+
+.ri-mobile-tab a {
+    border-right: 1px solid #AFAFAF;
+    border-top: 1px solid #AFAFAF;
+    float: left;
+    padding: 6 14;
+    text-decoration: none;
+
+}
+
+.ri-mobile-tab .selected a {
+    background-color: #B5C1CF;
+    color: white;
+}
+.ri-report-next-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( ../../images/rapidjs/component/tools/page-next.gif ) no-repeat center;
+    cursor: pointer;
+    margin-left: 5px;
+    text-decoration:none;
+}
+
+.ri-report-previous-range {
+    width: 16px;
+    height: 16px;
+    background: transparent url( ../../images/rapidjs/component/tools/page-prev.gif ) no-repeat center;
+    cursor: pointer;
+    margin-right: 5px;
+    text-decoration:none;
+}

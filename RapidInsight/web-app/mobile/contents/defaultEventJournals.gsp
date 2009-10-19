@@ -1,4 +1,4 @@
-<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.ifountain.rcmdb.mobile.MobileUtils; java.text.SimpleDateFormat" %>
 <%--
   Created by IntelliJ IDEA.
   User: Sezgin Kucukkaraaslan
@@ -17,10 +17,14 @@
 <div id="journals">
     <g:if test="${domainObject}">
         <%
+            def gspFolder = "simple"
+            if (MobileUtils.isIphone(request)) {
+                gspFolder = "iphone";
+            }
             def format = new SimpleDateFormat("d MMM HH:mm:ss");
             eventId = isHistorical == "true" ? domainObject.activeId : eventId;
             def journals = RsEventJournal.searchEvery("eventId:${eventId}", params)
-            def propertiesUrl = isHistorical == "true" ? "mobile/historicalEventDetails.gsp" : "mobile/eventDetails.gsp";
+            def propertiesUrl = isHistorical == "true" ? "mobile/${gspFolder}/historicalEventDetails.gsp" : "mobile/${gspFolder}/eventDetails.gsp";
             def propertiesParams = isHistorical == "true" ? [eventId: domainObject.id] : [name: domainObject.name];
         %>
         <div class="ri-mobile-tab">
@@ -30,7 +34,7 @@
             </ul>
         </div>
         <div class="table">
-            <table class="itable" height="100%" width="100%" border="0" cellspacing="0" cellpadding="3">
+            <table class="itable" width="100%" border="0" cellspacing="0" cellpadding="3">
                 <thead>
                     <tr>
                         <rui:sortableColumn property="rsTime" title="Date" url="mobile/getJournals.gsp" linkAttrs="${[params:[isHistorical:params.isHistorical, eventId:params.eventId]]}"/>

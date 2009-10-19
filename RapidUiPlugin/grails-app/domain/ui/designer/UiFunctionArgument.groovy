@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiFunctionArgument {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "action"];
         storageType "FileAndMemory"
     };
     static datasources = ["RCMDB":["keys":["id":["nameInDs":"id"]]]]
@@ -23,7 +23,7 @@ class UiFunctionArgument {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     UiRequestAction action;
 
@@ -33,11 +33,11 @@ class UiFunctionArgument {
     static constraints={
      value(blank:true, nullable:true)
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
     }
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "action"];
 
     public String toString()
     {

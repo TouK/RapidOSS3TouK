@@ -26,7 +26,7 @@ package application
  */
 class ObjectId {
     static searchable = {
-        except=["errors", "__operation_class__", "__is_federated_properties_loaded__"]
+        except=["errors", "__operation_class__", "__dynamic_property_storage__"]
     };
     Long id;
     String rsOwner = "p"
@@ -39,11 +39,11 @@ class ObjectId {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"]
+    Object __dynamic_property_storage__;
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"]
     static constraints = {
         errors(nullable:true)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
     }
 }

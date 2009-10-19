@@ -25,7 +25,7 @@ class DeviceComponent extends SmartsObject
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["partOf", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["partOf", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
 
@@ -38,7 +38,7 @@ class DeviceComponent extends SmartsObject
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     Device partOf ;
     
@@ -47,7 +47,7 @@ class DeviceComponent extends SmartsObject
     static constraints={
     __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -57,7 +57,7 @@ class DeviceComponent extends SmartsObject
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     //AUTO_GENERATED_CODE
 }

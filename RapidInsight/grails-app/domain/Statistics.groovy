@@ -7,7 +7,7 @@ class Statistics
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     
     };
@@ -35,7 +35,7 @@ class Statistics
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     
     static relations = [:]    
@@ -54,13 +54,13 @@ class Statistics
         
      __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     public String toString()
     {

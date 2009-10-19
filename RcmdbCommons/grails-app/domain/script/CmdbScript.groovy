@@ -33,7 +33,7 @@ class CmdbScript {
     public static String SCHEDULED = "Scheduled";
     public static String LISTENING = "Listening";
     static searchable = {
-        except = ["listeningDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__","messageService", "allowedGroups"];
+        except = ["listeningDatasource", "errors", "__operation_class__", "__dynamic_property_storage__","messageService", "allowedGroups"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
     Long id;
@@ -63,13 +63,13 @@ class CmdbScript {
     List allowedGroups = [];
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static relations = [
             listeningDatasource:[type:BaseListeningDatasource, reverseName:"listeningScript", isMany:false],
             allowedGroups:[type:Group, isMany:true]
     ]
 
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "messageService"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "messageService"];
 
     static constraints = {
         name(blank: false, key: []);
@@ -102,7 +102,7 @@ class CmdbScript {
         })
         staticParam(blank:true, nullable:true)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         errors(nullable:true)
         logLevel(inList:[Level.ALL.toString(),Level.DEBUG.toString(),Level.INFO.toString(),
               Level.WARN.toString(), Level.ERROR.toString(), Level.FATAL.toString(), Level.OFF.toString()])

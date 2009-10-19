@@ -21,7 +21,7 @@ class SnmpUtils {
     public static final int VERSION_2c = SnmpConstants.version2c;
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
     Date rsInsertedAt = new Date(0);
@@ -29,13 +29,13 @@ class SnmpUtils {
     String rsOwner = "p"
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
 
     static constraints = {
         __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
     };
 
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 }

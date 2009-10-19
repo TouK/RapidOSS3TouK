@@ -106,10 +106,10 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
                 {
                     baseDatasourceName = super.getDomainClassProperty(mtCls, cls, domainObject, baseDatasourceName);
                 }
-                def isPropsLoadedMap = domainObject[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+                def isPropsLoadedMap = domainObject[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
                 if (isPropsLoadedMap == null) {
                     isPropsLoadedMap = [:];
-                    super.setDomainClassProperty(mtCls, cls, domainObject, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, isPropsLoadedMap);
+                    super.setDomainClassProperty(mtCls, cls, domainObject, RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE, isPropsLoadedMap);
                 }
                 if (requestedPropertyConfiguration.isLazy) {
                     def datsourceKeys = bean.getDatasourceKeys(cls, realDsName)

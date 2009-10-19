@@ -24,7 +24,7 @@ class MapGroup {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["maps","errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["maps","errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = ["RCMDB":["keys":["groupName":["nameInDs":"groupName"], "username":["nameInDs":"username"]]]]
 
@@ -46,7 +46,7 @@ class MapGroup {
 
     Object __operation_class__ ;
 
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     List maps =[];
 
@@ -59,7 +59,7 @@ class MapGroup {
 
      __operation_class__(nullable:true)
 
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
 
      errors(nullable:true)
 
@@ -67,7 +67,7 @@ class MapGroup {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 
     public String toString()
     {

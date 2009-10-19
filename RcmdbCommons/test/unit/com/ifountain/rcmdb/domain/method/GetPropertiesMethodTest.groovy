@@ -534,7 +534,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
 class GetPropertiesMethodDomainObject
 {
     static searchable = {
-        except = ["rel1", "rel2", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["rel1", "rel2", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static cascaded = ["rel2": true]
     static datasources = [:]
@@ -553,10 +553,10 @@ class GetPropertiesMethodDomainObject
 
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     static constraints = {
         __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         prop1(key: ["prop2", "rel1"]);
         errors(nullable: true)
         rel1(nullable: true)
@@ -567,7 +567,7 @@ class GetPropertiesMethodDomainObject
             rel2: [isMany: true, reverseName: "revRel2", type: RelationMethodDomainObject2],
     ]
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     //AUTO_GENERATED_CODE
 }
 

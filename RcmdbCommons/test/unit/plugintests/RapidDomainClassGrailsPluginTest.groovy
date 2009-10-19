@@ -220,7 +220,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         loadedDomainClass = gcl.parseClass("""
             class ${domainClassName}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
-                Object ${RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED};
+                Object ${RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE};
                 static searchable = {
                     except=["rel1"]
                 }
@@ -234,7 +234,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
             }
             class ${domainClassName2}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME};
-                Object ${RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED};
+                Object ${RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE};
                 static searchable = {
                     except=["revRel1"]
                 }

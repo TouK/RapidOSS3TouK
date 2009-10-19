@@ -109,7 +109,7 @@ class SortTestParentObject {
     static relations = [:]
     org.springframework.validation.Errors errors;
     def __operation_class__;
-    def __is_federated_properties_loaded__;
+    def __dynamic_property_storage__;
     Long id
     Long version
     Date rsInsertedAt = new Date(0);
@@ -118,7 +118,7 @@ class SortTestParentObject {
     static constraints = {
         errors(nullable:true);
         __operation_class__(nullable:true);
-        __is_federated_properties_loaded__(nullable:true);
+        __dynamic_property_storage__(nullable:true);
     }
 }
 

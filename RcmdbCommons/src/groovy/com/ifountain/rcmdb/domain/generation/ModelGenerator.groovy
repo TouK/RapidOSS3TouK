@@ -435,11 +435,11 @@ class ModelMetaData
             propertyList += [type:Date.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, defaultValue:"new Date(0)"];
             propertyList += [type:Date.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, defaultValue:"new Date(0)"];
             propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
-            propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+            propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
             constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
-            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
+            constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];
             transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME;
-            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
+            transientProps += com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE;
             propertyList.each{propConfig->
                 propertyMap[propConfig.name] = propConfig;
             }

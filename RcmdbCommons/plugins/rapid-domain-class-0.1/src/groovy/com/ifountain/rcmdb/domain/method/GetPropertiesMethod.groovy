@@ -48,7 +48,7 @@ class GetPropertiesMethod
         this.dc = dc;
         def grailsDomainClassProperties = dc.getProperties();
         def relations = DomainClassUtils.getRelations(dc);
-        def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED, ""]
+        def propsToBeFiltered = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME, RapidCMDBConstants.OPERATION_PROPERTY_NAME, RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE, ""]
         def keyProps = DomainClassUtils.getKeys(dc);
         grailsDomainClassProperties.each {GrailsDomainClassProperty prop ->
             if (!propsToBeFiltered.contains(prop.name))

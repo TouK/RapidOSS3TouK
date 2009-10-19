@@ -8,7 +8,7 @@ class UiComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
     
     
         storageType "FileAndMemory"
@@ -33,7 +33,7 @@ class UiComponent
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     Long tabId ;
     UiTab tab ;
@@ -66,7 +66,7 @@ class UiComponent
         
      __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -78,7 +78,7 @@ class UiComponent
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "tab", "layoutUnit", "dialog", "events", "menuItems", "images", "columns"];
     
     public String toString()
     {

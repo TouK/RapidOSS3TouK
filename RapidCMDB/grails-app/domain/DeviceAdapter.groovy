@@ -25,7 +25,7 @@ class DeviceAdapter extends DeviceComponent
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["realizedBy", "connectedVia", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["realizedBy", "connectedVia", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
 
@@ -66,7 +66,7 @@ class DeviceAdapter extends DeviceComponent
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     Card realizedBy ;
     
@@ -108,7 +108,7 @@ class DeviceAdapter extends DeviceComponent
         
      __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -120,7 +120,7 @@ class DeviceAdapter extends DeviceComponent
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 
     //AUTO_GENERATED_CODE
 }

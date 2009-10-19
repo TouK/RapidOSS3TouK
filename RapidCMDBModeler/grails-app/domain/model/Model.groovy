@@ -23,7 +23,7 @@ import com.ifountain.compass.CompositeDirectoryWrapperProvider
 
 class Model {
     static searchable = {
-        except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["fromRelations", "toRelations", "modelProperties", "datasources", "parentModel", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     Long id;
     Long version;
@@ -31,7 +31,7 @@ class Model {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     String name;
     String indexName = "";
     String storageType = CompositeDirectoryWrapperProvider.FILE_DIR_TYPE;
@@ -66,7 +66,7 @@ class Model {
         resourcesWillBeGenerated(nullable:true);
         storageType(inList:[CompositeDirectoryWrapperProvider.FILE_DIR_TYPE, CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, CompositeDirectoryWrapperProvider.MIRRORED_DIR_TYPE]);
          __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
     }
 //

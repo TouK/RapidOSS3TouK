@@ -89,7 +89,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME]);
         assertEquals (new Date(0), object[com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME]);
         assertEquals (new Date(0), object[com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
-        assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED]);
+        assertNull (object[com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE]);
         assertEquals (Object.class, object.metaClass.getMetaProperty(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME).type);
         assertEquals ("Class1[keyprop:keypropvalue]", object.toString());
         Closure searchable = object.searchable;
@@ -99,7 +99,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals(3, closureGetter.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
         assertEquals(CompositeDirectoryWrapperProvider.RAM_DIR_TYPE, closureGetter.propertiesSetByClosure["storageType"]);
 
         ModelGenerator.DEFAULT_IMPORTS.each {
@@ -220,11 +220,11 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
             assertEquals(3, closureGetter.propertiesSetByClosure["except"].size());
             assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
             assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-            assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+            assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
             assertEquals(3, object.transients.size());
             assertTrue(object.transients.contains("errors"));
             assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-            assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+            assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
 
             assertEquals("prop1 default value", object.prop1);
             assertEquals(1, object.prop2);
@@ -389,7 +389,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(transients.contains("prop6"));
         assertTrue(transients.contains("errors"));
         assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
 
         Closure searchable = object.searchable;
         ClosurePropertyGetter closureGetter = new ClosurePropertyGetter();
@@ -402,7 +402,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("prop6"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
 
         def propertyConfiguration = object.propertyConfiguration;
 
@@ -510,7 +510,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals(7, closureGetter.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation1.firstName));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation2.secondName));
         assertTrue(closureGetter.propertiesSetByClosure["except"].contains(relation3.firstName));
@@ -564,7 +564,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         assertEquals(7, closureGetter2.propertiesSetByClosure["except"].size());
         assertTrue(closureGetter2.propertiesSetByClosure["except"].contains("errors"));
         assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+        assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
         assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation1.secondName));
         assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation2.firstName));
         assertTrue(closureGetter2.propertiesSetByClosure["except"].contains(relation3.secondName));
@@ -793,7 +793,7 @@ class ModelGeneratorTest extends RapidCmdbTestCase{
         if(object.class.superclass.name == Object.class.name)
         {
           assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME));
-          assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED));
+          assertTrue(object.transients.contains(com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE));
         }
         assertTrue(object.relations instanceof Map);
         assertTrue(object.relations.isEmpty());

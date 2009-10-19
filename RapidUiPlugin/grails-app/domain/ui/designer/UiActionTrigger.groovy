@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiActionTrigger{
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction", "menu"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "component", "action", "triggeringAction", "menu"];
         storageType "FileAndMemory"
     };
     public static final String MENU_TYPE = "Menu"
@@ -30,7 +30,7 @@ class UiActionTrigger{
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
 
     static relations = [
@@ -47,10 +47,10 @@ class UiActionTrigger{
         triggeringAction(nullable:true)
         type(blank:false, inList:[MENU_TYPE, COMPONENT_TYPE, ACTION_TYPE, GLOBAL_TYPE])
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         errors(nullable:true)
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "action", "triggeringAction", "menu"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "component", "action", "triggeringAction", "menu"];
 }

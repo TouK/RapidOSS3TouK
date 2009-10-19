@@ -122,7 +122,7 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
 class PropertySummaryMethodDomainObject1 {
     //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static cascaded = [:]
     static datasources = [:]
@@ -139,10 +139,10 @@ class PropertySummaryMethodDomainObject1 {
 
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
      prop1(nullable:true)
      prop2(nullable:true)
@@ -150,7 +150,7 @@ class PropertySummaryMethodDomainObject1 {
     }
     static relations = [:]
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     //AUTO_GENERATED_CODE
 
     public boolean equals(Object obj) {

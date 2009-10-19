@@ -27,7 +27,7 @@ package com.ifountain.rcmdb.domain.method
 class RelationMethodDomainObject1 {
     //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["rel1", "rel2", "rel3", "rel4", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["rel1", "rel2", "rel3", "rel4", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static cascaded = ["rel2":true]
     static datasources = [:]
@@ -49,10 +49,10 @@ class RelationMethodDomainObject1 {
 
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
      rel1(nullable:true)
      rel2(nullable:true)
@@ -74,7 +74,7 @@ class RelationMethodDomainObject1 {
             noOtherSideRel4:[isMany:true, type:RelationMethodDomainObject2]
     ]
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     //AUTO_GENERATED_CODE
 
     public boolean equals(Object obj) {

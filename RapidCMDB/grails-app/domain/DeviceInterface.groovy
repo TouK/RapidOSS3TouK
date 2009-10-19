@@ -25,7 +25,7 @@ class DeviceInterface extends DeviceAdapter
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "underlying"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "underlying"];
     };
     static datasources = [:]
 
@@ -38,7 +38,7 @@ class DeviceInterface extends DeviceAdapter
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     Ip underlying ;
     
@@ -47,7 +47,7 @@ class DeviceInterface extends DeviceAdapter
     static constraints={
     __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -57,7 +57,7 @@ class DeviceInterface extends DeviceAdapter
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     //AUTO_GENERATED_CODE
 }

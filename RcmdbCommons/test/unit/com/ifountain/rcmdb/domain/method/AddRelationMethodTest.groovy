@@ -290,7 +290,7 @@ class RelationMethodDomainObject3 extends RelationMethodDomainObject2{
 
 class RelationMethodDomainObject4{
      static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
     Long id ;
@@ -301,14 +301,14 @@ class RelationMethodDomainObject4{
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
     }
 
     static relations = [:];
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 }

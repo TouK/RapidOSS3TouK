@@ -25,7 +25,7 @@ class Fiction extends Book
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "mainCharacter"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "mainCharacter"];
     
     
     };
@@ -42,7 +42,7 @@ class Fiction extends Book
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     Person mainCharacter ;
     
@@ -58,7 +58,7 @@ class Fiction extends Book
         
      __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -68,7 +68,7 @@ class Fiction extends Book
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "mainCharacter"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "mainCharacter"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;

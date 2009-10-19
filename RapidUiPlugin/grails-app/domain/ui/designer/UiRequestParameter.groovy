@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiRequestParameter {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "action"];
 
         storageType "FileAndMemory"
 
@@ -26,7 +26,7 @@ class UiRequestParameter {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     UiRequestAction action;
     Long actionId;
@@ -38,13 +38,13 @@ class UiRequestParameter {
      key(blank:false,nullable:false,key:["isActive","actionId"])
      value(blank:true,nullable:true)
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
 
 
     }
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "action"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "action"];
 
     public String toString()
     {

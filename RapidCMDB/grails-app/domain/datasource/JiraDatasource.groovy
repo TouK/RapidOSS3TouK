@@ -4,14 +4,14 @@ import connection.JiraConnection
 
 class JiraDatasource extends BaseDatasource{
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "connection"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "connection"];
     };
     static datasources = [:]
     Long id;
     Long version;
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     JiraConnection connection;
     Long reconnectInterval = 0;
     
@@ -21,8 +21,8 @@ class JiraDatasource extends BaseDatasource{
     static constraints = {
         connection(nullable: true)
         __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
     }
-    static transients = ["connection","errors", "__operation_class__", "__is_federated_properties_loaded__"]
+    static transients = ["connection","errors", "__operation_class__", "__dynamic_property_storage__"]
 }

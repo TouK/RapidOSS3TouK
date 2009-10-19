@@ -95,7 +95,7 @@ class CompassTestObject {
     String prop57 = "";
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
 
     static constraints = {
         prop48(nullable:true);
@@ -105,7 +105,7 @@ class CompassTestObject {
         prop55(nullable:true);
         errors(nullable:true);
         __operation_class__(nullable:true);
-        __is_federated_properties_loaded__(nullable:true);
+        __dynamic_property_storage__(nullable:true);
     }
 
 

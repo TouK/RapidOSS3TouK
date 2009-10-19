@@ -26,7 +26,7 @@ package auth
  */
 class RsUserInformation {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "userInformations"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "userInformations"];
     };
     RsUser rsUser;
     Long userId;
@@ -40,19 +40,19 @@ class RsUserInformation {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     static constraints = {
         userId(key: ["type"], nullable: false)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         errors(nullable:true)
         rsUser(nullable:true)
     };
      static relations = [
             rsUser:[isMany:false, reverseName:"userInformations", type:RsUser]
     ]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "userInformations"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "userInformations"];
 
 
     public String toString()

@@ -20,7 +20,7 @@ package model
 
 class ModelDatasource {
     static searchable = {
-        except=["model","keyMappings","datasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
+        except=["model","keyMappings","datasource", "errors", "__operation_class__", "__dynamic_property_storage__"]
     };
     Long id;
     Long version;
@@ -28,7 +28,7 @@ class ModelDatasource {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     DatasourceName datasource;
     Model model;
     String rsOwner = "p"
@@ -41,7 +41,7 @@ class ModelDatasource {
     static cascaded = ["keyMappings":true]
     static constraints = {
          __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
         model(key:["datasource"], validator: {val, obj ->
             def error = null;

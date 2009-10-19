@@ -6,7 +6,7 @@ class RrdArchive
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "variables"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "variables"];
 
 
     };
@@ -32,7 +32,7 @@ class RrdArchive
 
     Object __operation_class__ ;
 
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     List variables =[];
 
@@ -57,13 +57,13 @@ class RrdArchive
 
      __operation_class__(nullable:true)
 
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
 
 
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "variables"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "variables"];
 
     public String toString()
     {

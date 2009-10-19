@@ -24,7 +24,7 @@ class RsEvent {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedEventTickets"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "relatedEventTickets"];
     
     
         storageType "FileAndMemory"
@@ -71,7 +71,7 @@ class RsEvent {
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     List relatedEventTickets =[];
 
@@ -121,13 +121,13 @@ class RsEvent {
         
      __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "relatedEventTickets"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "relatedEventTickets"];
     
     public String toString()
     {

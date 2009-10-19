@@ -30,13 +30,13 @@ class BaseListeningDatasource extends BaseDatasource
 {
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "listeningScript"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "listeningScript"];
     };
     static datasources = [:]
     CmdbScript listeningScript;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     boolean isSubscribed = false;
 
     static relations = [
@@ -45,8 +45,8 @@ class BaseListeningDatasource extends BaseDatasource
     static constraints={
         listeningScript(nullable:true)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         errors(nullable:true)
     }
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 }

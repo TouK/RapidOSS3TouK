@@ -29,7 +29,7 @@ class Group
     public static final String GLOBAL_FILTER = "Global"
     public static final String CLASS_BASED_FILTER = "Class Based"
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role", "filters"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "users", "role", "filters"];
     };
     static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
     String name = "";
@@ -44,7 +44,7 @@ class Group
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     List users = [];
     List filters = [];
     Role role;
@@ -57,14 +57,14 @@ class Group
         name(key:[],blank: false, nullable: false)
         segmentFilter(blank: true, nullable: true)
         __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
         role(nullable: true)
         segmentFilterType(inList:[GLOBAL_FILTER, CLASS_BASED_FILTER])
     }
 
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "users", "role", "filters"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "users", "role", "filters"];
 
     public String toString()
     {

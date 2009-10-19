@@ -36,7 +36,7 @@
             <table>
                 <tbody>
                     <%
-                        excludedProps = ['version','errors', '__operation_class__', "__is_federated_properties_loaded__",
+                        excludedProps = ['version','errors', '__operation_class__', "__dynamic_property_storage__",
                                 'id',
                                 Events.ONLOAD_EVENT,
                                 Events.BEFORE_DELETE_EVENT,

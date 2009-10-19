@@ -19,7 +19,7 @@
 package model;
 class DatasourceName {
     static searchable = {
-        except = ["modelDatasources", "__operation_class__", "errors", "__is_federated_properties_loaded__"]
+        except = ["modelDatasources", "__operation_class__", "errors", "__dynamic_property_storage__"]
     };
     static cascaded = [modelDatasources: true]
     static relations = [modelDatasources: [type: ModelDatasource, reverseName: "datasource", isMany: true]]
@@ -33,15 +33,15 @@ class DatasourceName {
     List modelDatasources = [];
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"]
+    Object __dynamic_property_storage__;
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"]
     static constraints = {
         name(blank: false, nullable: false, key: []);
         mappedName(blank: true, nullable: true, key: []);
         mappedNameProperty(blank: true, nullable: true, key: []);
         errors(nullable: true);
         __operation_class__(nullable: true);
-        __is_federated_properties_loaded__(nullable: true);
+        __dynamic_property_storage__(nullable: true);
     };
 
     String toString() {

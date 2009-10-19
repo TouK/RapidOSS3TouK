@@ -235,7 +235,7 @@ class DomainClassUtils
     def static getFilteredProperties(String domainClassName, List extraFilters, boolean excludeTransients) {
         def excludedProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME,
                 RapidCMDBConstants.OPERATION_PROPERTY_NAME,
-                RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED,
+                RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE,
                 ClosureEventTriggeringInterceptor.ONLOAD_EVENT,
                 ClosureEventTriggeringInterceptor.BEFORE_DELETE_EVENT,
                 ClosureEventTriggeringInterceptor.BEFORE_INSERT_EVENT,

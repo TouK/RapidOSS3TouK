@@ -45,7 +45,7 @@ class RapidDomainClassGrailsPlugin {
         EXCLUDED_PROPERTIES["id"] = "id";
         EXCLUDED_PROPERTIES["version"] = "version";
         EXCLUDED_PROPERTIES["errors"] = "errors";
-        EXCLUDED_PROPERTIES[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED;
+        EXCLUDED_PROPERTIES[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE] = RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE;
         EXCLUDED_PROPERTIES[RapidCMDBConstants.OPERATION_PROPERTY_NAME] = RapidCMDBConstants.OPERATION_PROPERTY_NAME;
     }
     def logger = Logger.getLogger("grails.app.plugins.RapidDomainClass")
@@ -373,11 +373,11 @@ class RapidDomainClassGrailsPlugin {
                     }
                     else
                     {
-                        def dynamicPropertyStorage = delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+                        def dynamicPropertyStorage = delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
                         if(dynamicPropertyStorage == null)
                         {
                             dynamicPropertyStorage = [:]
-                            delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED] = dynamicPropertyStorage;
+                            delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE] = dynamicPropertyStorage;
                         }
                         dynamicPropertyStorage[name] = value;
                     }
@@ -404,7 +404,7 @@ class RapidDomainClassGrailsPlugin {
         }
         relations.each{relName, metaData->
             dc.metaClass."${GrailsClassUtils.getGetterName(relName)}" = {->
-                def dynamicPropertyStorage = delegate[RapidCMDBConstants.IS_FEDERATED_PROPERTIES_LOADED];
+                def dynamicPropertyStorage = delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
                 if(dynamicPropertyStorage != null && dynamicPropertyStorage.containsKey(relName))
                 {
                     return dynamicPropertyStorage.get(relName);

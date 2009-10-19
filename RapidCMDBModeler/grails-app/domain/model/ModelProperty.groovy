@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelProperty {
     static searchable = {
-        except=["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
+        except=["model", "mappedKeys", "propertyDatasource", "propertySpecifyingDatasource", "errors", "__operation_class__", "__dynamic_property_storage__"]
     };
     def static final String stringType = "string";
     def static final String numberType = "number";
@@ -46,14 +46,14 @@ class ModelProperty {
     boolean lazy = true;
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     static relations = [
             propertySpecifyingDatasource:[type:ModelProperty,  isMany:false],
             propertyDatasource:[type:ModelDatasource, isMany:false],
             model:[type:Model, reverseName:"modelProperties", isMany:false],
             mappedKeys:[type:ModelDatasourceKeyMapping, reverseName:"property", isMany:true],
     ]
-    static transients = ["errors", "__operation_class__","__is_federated_properties_loaded__"]
+    static transients = ["errors", "__operation_class__","__dynamic_property_storage__"]
     static constraints = {
         name(blank:false, key:['model'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){
@@ -123,7 +123,7 @@ class ModelProperty {
         });
         errors(nullable:true)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         propertySpecifyingDatasource(nullable:true);
         type(inList:[stringType, numberType, dateType, floatType, booleanType]);
         lazy(validator:{val, obj ->

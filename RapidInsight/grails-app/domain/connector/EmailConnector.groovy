@@ -11,7 +11,7 @@ import datasource.EmailDatasource
 
 class EmailConnector {
    static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ds"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "ds"];
     };
     static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
 
@@ -31,7 +31,7 @@ class EmailConnector {
 
     Object __operation_class__;
 
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
 
 
     EmailDatasource ds;
@@ -46,7 +46,7 @@ class EmailConnector {
         name(blank: false, nullable: false, key: [])
         __operation_class__(nullable: true)
 
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
 
         errors(nullable: true)
 
@@ -54,7 +54,7 @@ class EmailConnector {
     }
 
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "ds"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "ds"];
 
     public String toString()
     {

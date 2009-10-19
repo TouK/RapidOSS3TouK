@@ -27,7 +27,7 @@ package com.ifountain.rcmdb.domain.method
 public class RelationMethodDomainObject2 {
      //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["revRel1", "revRel2", "revRel3", "revRel4", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["revRel1", "revRel2", "revRel3", "revRel4", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
     String prop1 ="1";
@@ -41,11 +41,11 @@ public class RelationMethodDomainObject2 {
     List revRel3 = [];
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
     prop1(blank:true,nullable:true)
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
      revRel1(nullable:true)
      revRel2(nullable:true)
@@ -59,7 +59,7 @@ public class RelationMethodDomainObject2 {
             revRel4:[isMany:true, reverseName:"rel4", type:RelationMethodDomainObject1]
     ];
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 
     //AUTO_GENERATED_CODE
 

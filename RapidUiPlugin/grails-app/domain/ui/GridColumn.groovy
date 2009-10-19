@@ -25,7 +25,7 @@ package ui
  */
 class GridColumn {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["attributeName": ["nameInDs": "attributeName"]]]]
 
@@ -44,7 +44,7 @@ class GridColumn {
 
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     static constraints = {
         attributeName(blank: false, nullable: false, key: ["gridViewId"])
@@ -52,14 +52,14 @@ class GridColumn {
         columnIndex(nullable: true)
         width(nullable: true)
         __operation_class__(nullable:true)
-        __is_federated_properties_loaded__(nullable:true)
+        __dynamic_property_storage__(nullable:true)
         errors(nullable:true)
     };
     static relations = [
             gridView:[isMany:false, reverseName:"gridColumns", type:GridView]
     ]
 
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 
     String toString() {
         return "$attributeName";

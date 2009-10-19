@@ -8,7 +8,7 @@ package ui.designer
  */
 class UiRowColor {
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "grid"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "grid"];
 
 
         storageType "FileAndMemory"
@@ -28,7 +28,7 @@ class UiRowColor {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     UiSearchGrid grid;
 
 
@@ -42,7 +42,7 @@ class UiRowColor {
      textColor(blank:true,nullable:true);
      __operation_class__(nullable:true)
 
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
 
      errors(nullable:true)
 
@@ -51,7 +51,7 @@ class UiRowColor {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "grid"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "grid"];
 
     public String toString()
     {

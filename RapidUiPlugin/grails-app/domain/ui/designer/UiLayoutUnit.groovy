@@ -6,7 +6,7 @@ class UiLayoutUnit
 
     //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "parentLayout", "childLayout", "component"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "parentLayout", "childLayout", "component"];
 
 
         storageType "FileAndMemory"
@@ -32,7 +32,7 @@ class UiLayoutUnit
 
     Object __operation_class__ ;
 
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
 
     UiLayout parentLayout ;
 
@@ -54,7 +54,7 @@ class UiLayoutUnit
       scroll(nullable:true)
      __operation_class__(nullable:true)
 
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
 
      errors(nullable:true)
 
@@ -66,7 +66,7 @@ class UiLayoutUnit
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "parentLayout", "childLayout", "component"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "parentLayout", "childLayout", "component"];
 
     public String toString()
     {

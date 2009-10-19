@@ -24,7 +24,7 @@ class Team {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["managedBy", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["managedBy", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = ["RCMDB":["master":true, "keys":["name":["nameInDs":"name"]]]]
 
@@ -39,7 +39,7 @@ class Team {
     Employee managedBy ;
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
 
     static relations = [managedBy:[isMany:false, type:Employee, reverseName:"manages"]
     ]
@@ -55,7 +55,7 @@ class Team {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     public String toString()
     {

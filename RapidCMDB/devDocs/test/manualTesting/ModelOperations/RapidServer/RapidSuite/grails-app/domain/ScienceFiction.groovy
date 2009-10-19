@@ -25,7 +25,7 @@ class ScienceFiction extends Fiction
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     
     };
@@ -40,7 +40,7 @@ class ScienceFiction extends Fiction
     
     Object __operation_class__ ;
     
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     
     
     static relations = [:]    
@@ -48,7 +48,7 @@ class ScienceFiction extends Fiction
     static constraints={
     __operation_class__(nullable:true)
         
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
         
      errors(nullable:true)
         
@@ -56,7 +56,7 @@ class ScienceFiction extends Fiction
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;

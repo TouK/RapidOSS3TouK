@@ -99,7 +99,7 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
 class FilterManagerTestDomainObject2 {
     //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["revRel1", "revRel2", "revRel3", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["revRel1", "revRel2", "revRel3", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
     Long id ;
@@ -116,10 +116,10 @@ class FilterManagerTestDomainObject2 {
     FilterManagerTestDomainObject1 revRel3;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
      revRel1(nullable:true)
      revRel2(nullable:true)
@@ -131,7 +131,7 @@ class FilterManagerTestDomainObject2 {
             revRel3:[isMany:false, reverseName:"rel3", type:FilterManagerTestDomainObject1],
     ]
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     //AUTO_GENERATED_CODE
     public boolean equals(Object obj) {
         if(obj instanceof FilterManagerTestDomainObject2)
@@ -146,7 +146,7 @@ class FilterManagerTestDomainObject2 {
 class FilterManagerTestDomainObject1 {
     //AUTO_GENERATED_CODE
     static searchable = {
-        except = ["rel1", "rel2","rel3", "errors", "__operation_class__", "__is_federated_properties_loaded__"];
+        except = ["rel1", "rel2","rel3", "errors", "__operation_class__", "__dynamic_property_storage__"];
     };
     static datasources = [:]
     Long id ;
@@ -163,10 +163,10 @@ class FilterManagerTestDomainObject1 {
     FilterManagerTestDomainObject2 rel3;
     org.springframework.validation.Errors errors ;
     Object __operation_class__ ;
-    Object __is_federated_properties_loaded__ ;
+    Object __dynamic_property_storage__ ;
     static constraints={
      __operation_class__(nullable:true)
-     __is_federated_properties_loaded__(nullable:true)
+     __dynamic_property_storage__(nullable:true)
      errors(nullable:true)
      rel1(nullable:true)
      rel2(nullable:true)
@@ -178,7 +178,7 @@ class FilterManagerTestDomainObject1 {
             rel3:[isMany:false, reverseName:"revRel3", type:FilterManagerTestDomainObject2],
     ]
     static propertyConfiguration= [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     //AUTO_GENERATED_CODE
     public boolean equals(Object obj) {
         if(obj instanceof FilterManagerTestDomainObject1)

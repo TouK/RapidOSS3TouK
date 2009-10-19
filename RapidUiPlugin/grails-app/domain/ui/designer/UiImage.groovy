@@ -10,7 +10,7 @@ class UiImage {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "column"];
+        except = ["errors", "__operation_class__", "__dynamic_property_storage__", "component", "column"];
         storageType "FileAndMemory"
 
     };
@@ -28,7 +28,7 @@ class UiImage {
     Date rsUpdatedAt  = new Date(0);
     org.springframework.validation.Errors errors;
     Object __operation_class__;
-    Object __is_federated_properties_loaded__;
+    Object __dynamic_property_storage__;
     UiComponent component;
     UiColumn column;
     static relations = [
@@ -41,12 +41,12 @@ class UiImage {
         visible(blank: true, nullable: true)
         align(blank: true, nullable: true, inList:["left", "right", "center"])
         __operation_class__(nullable: true)
-        __is_federated_properties_loaded__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
         errors(nullable: true)
     }
 
     static propertyConfiguration = [:]
-    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__", "component", "column"];
+    static transients = ["errors", "__operation_class__", "__dynamic_property_storage__", "component", "column"];
 
     public String toString()
     {

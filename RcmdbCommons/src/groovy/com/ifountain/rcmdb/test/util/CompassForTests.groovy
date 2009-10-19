@@ -120,38 +120,7 @@ class CompassForTests {
         ExpandoMetaClass.enableGlobally();
         injectedClasses.add(domainClass);
         MetaClass mc = domainClass.metaClass;
-        if (mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
-        {
-            mc.methodMissing = {String name, args ->
-                def oprInstance = delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME];
-                if (oprInstance == null)
-                {
-                    oprInstance = operationClass.newInstance();
-                    operationClass.metaClass.getMetaProperty("domainObject").setProperty(oprInstance, delegate);
-                    delegate[RapidCMDBConstants.OPERATION_PROPERTY_NAME] = oprInstance;
-                }
-                try {
-                    return oprInstance.invokeMethod(name, args)
-                } catch (MissingMethodException e) {
-                    if (e.getType().name != oprInstance.class.name || e.getMethod() != name)
-                    {
-                        throw e;
-                    }
-                }
-                throw new MissingMethodException(name, mc.theClass, args);
-            }
-            mc.'static'.methodMissing = {String methodName, args ->
-                try {
-                    return operationClass.metaClass.invokeStaticMethod(operationClass, methodName, args);
-                } catch (MissingMethodException e) {
-                    if (e.getType().name != operationClass.name || e.getMethod() != methodName)
-                    {
-                        throw e;
-                    }
-                }
-                throw new MissingMethodException(methodName, mc.theClass, args);
-            }
-        }
+        domainClass.setOperationClass(operationClass);
     }
 }
 

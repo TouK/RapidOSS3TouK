@@ -115,16 +115,21 @@ class DomainOperationManager {
             {
                 throw DomainOperationLoadException.shouldInheritAbstractDomainOperation();   
             }
-            operationClass = cls;
-            operationClassMethods.clear();
-            operationClass.metaClass.methods.each{MetaMethod method->
-                operationClassMethods[method.name] = method.name;
-            };
+            setOperationClass (cls);
             return operationClass;
         }
         else{
             throw DomainOperationLoadException.operationFileDoesnotExist(operationFile.path);
         }
+    }
+
+    public void setOperationClass(Class cls)
+    {
+        operationClass = cls;
+        operationClassMethods.clear();
+        operationClass.metaClass.methods.each{MetaMethod method->
+            operationClassMethods[method.name] = method.name;
+        };
     }
 
     private String getOperationClassName()

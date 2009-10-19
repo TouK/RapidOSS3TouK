@@ -49,6 +49,7 @@ class CompassForTests {
             GroovySystem.getMetaClassRegistry().removeMetaClass (cls);
         }
         ExpandoMetaClass.disableGlobally();
+        injectedClasses.clear();
     }
     public static void initialize(List classesToBeInitialized)
     {
@@ -129,7 +130,7 @@ class CompassForTests {
         }
         catch(MissingMethodException m)
         {
-            if(m.method == "_setDomainOperation") throw m;
+            if(m.method != "_setDomainOperation") throw m;
             MetaClass mc = domainClass.metaClass;
             DomainOperationManager manager = new DomainOperationManager(domainClass, "${System.getProperty("base.dir")}/operations".toString(), null, [:], domainClass.classLoader);
             manager.setOperationClass (operationClass)

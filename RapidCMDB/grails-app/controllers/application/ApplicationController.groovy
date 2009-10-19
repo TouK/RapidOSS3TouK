@@ -102,8 +102,8 @@ class ApplicationController {
                             if (syntaxError != null && exception.startColumn > 0 && exception.startColumn <= syntaxError.length())
                             {
                                 syntaxError = syntaxError.substring(exception.startColumn - 1);
-                            }
-                            def errors = [message(code: "default.property.name.invalid", args: [syntaxError, modelName])]
+                            }                            
+                            addError("default.property.name.invalid", [syntaxError, modelName]);
                             flash.errors = errors;
                             return;
                         }

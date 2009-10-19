@@ -19,7 +19,7 @@
 package auth;
 class UserPermissionRel {
     static searchable = {
-        except=["permission", "rsUser", "errors", "__operation_class__"]
+        except=["permission", "rsUser", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
      };
 
     Date rsInsertedAt = new Date(0);
@@ -32,6 +32,7 @@ class UserPermissionRel {
     String actions
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
+    Object __is_federated_properties_loaded__;
     static relations = [
             permission:[type:Permission, reverseName:"userRelations", isMany:false],
             rsUser:[isMany:false, reverseName:"permissionRelations", type:RsUser]
@@ -43,6 +44,7 @@ class UserPermissionRel {
         rsUser(nullable: true, key:["permission"])
         errors(nullable:true)
         __operation_class__(nullable:true)
+        __is_federated_properties_loaded__(nullable:true)
     }
-    static transients = ["errors", "__operation_class__"]
+    static transients = ["errors", "__operation_class__","__is_federated_properties_loaded__"]
 }

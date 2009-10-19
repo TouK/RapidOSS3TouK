@@ -22,7 +22,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class ModelRelation {
      static searchable = {
-         except=["firstModel", "secondModel", "errors", "__operation_class__"]
+         except=["firstModel", "secondModel", "errors", "__operation_class__", "__is_federated_properties_loaded__"]
      };
      public static String ONE = "One";
      public static String MANY = "Many";
@@ -37,18 +37,20 @@ class ModelRelation {
      String secondCardinality;
      org.springframework.validation.Errors errors ;
      Object __operation_class__;
-     
+     Object __is_federated_properties_loaded__;
+
      static relations = [
             secondModel:[type:Model, reverseName:"toRelations", isMany:false],
             firstModel:[type:Model, reverseName:"fromRelations", isMany:false],
      ]
 
-     static transients = ["errors", "__operation_class__"];
+     static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"];
 
      static constraints = {
          firstCardinality(inList:[ONE, MANY]);
          errors(nullable:true);
          __operation_class__(nullable:true);
+         __is_federated_properties_loaded__(nullable:true);
          secondCardinality(inList:[ONE, MANY]);
          firstName(blank:false, key:['firstModel', 'secondName','secondModel'], validator:{val, obj ->
             if(!val.matches(ConfigurationHolder.config.toProperties()["rapidcmdb.property.validname"])){

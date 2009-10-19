@@ -19,7 +19,7 @@
 package auth;
 class Permission {
      static searchable = {
-        except=["userRelations", "roleRelations", "errors", "__operation_class__"]    
+        except=["userRelations", "roleRelations", "errors", "__operation_class__", "__is_federated_properties_loaded__"]    
      };
     String type
     String rsOwner = "p"
@@ -32,13 +32,15 @@ class Permission {
     List roleRelations = [];
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
+    Object __is_federated_properties_loaded__;
     static cascaded = ["userRelations":true, "roleRelations":true]
     static relations = [userRelations:[type:UserPermissionRel, reverseName:"permission", isMany:true], roleRelations:[isMany:true, reverseName:"permission", type:RolePermissionRel]]
-    static transients = ["errors", "__operation_class__"]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"]
     static constraints = {
         type(nullable: false, blank: false, key: [])
         possibleActions(nullable:false, blank: false)
         errors(nullable:true)
         __operation_class__(nullable:true)
+        __is_federated_properties_loaded__(nullable:true)
     }
 }

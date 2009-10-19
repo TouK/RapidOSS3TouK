@@ -21,7 +21,7 @@ package model
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 class ModelDatasourceKeyMapping {
     static searchable = {
-        except=["datasource", "property", "__operation_class__", "errors"]
+        except=["datasource", "property", "__operation_class__", "errors", "__is_federated_properties_loaded__"]
     };
 
     Date rsInsertedAt = new Date(0);
@@ -32,6 +32,7 @@ class ModelDatasourceKeyMapping {
     String nameInDatasource;
     org.springframework.validation.Errors errors ;
     Object __operation_class__;
+    Object __is_federated_properties_loaded__;
     static relations = [
             datasource:[type:ModelDatasource, reverseName:"keyMappings", isMany:false],
             property:[type:ModelProperty, reverseName:"mappedKeys", isMany:false]
@@ -44,9 +45,10 @@ class ModelDatasourceKeyMapping {
         });
         nameInDatasource(nullable:true);
         __operation_class__(nullable:true);
+        __is_federated_properties_loaded__(nullable:true);
         errors(nullable:true);
     }
-    static transients = ["errors", "__operation_class__"];
+    static transients = ["errors", "__operation_class__","__is_federated_properties_loaded__"];
     String toString(){
         return getProperty("property").name;
     }

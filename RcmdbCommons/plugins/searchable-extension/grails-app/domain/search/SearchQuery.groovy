@@ -28,7 +28,7 @@ import auth.RsUser;
 */
 class SearchQuery {
     static searchable = {
-        except=["group", "errors","__operation_class__"]
+        except=["group", "errors","__operation_class__", "__is_federated_properties_loaded__"]
     };
     Long id;
     Long version;
@@ -49,6 +49,7 @@ class SearchQuery {
     String sortOrder = "asc";
     org.springframework.validation.Errors errors;
     Object __operation_class__;
+    Object __is_federated_properties_loaded__;
     static relations = [
             group: [type: SearchQueryGroup, reverseName: "queries", isMany: false]
     ]
@@ -59,6 +60,7 @@ class SearchQuery {
         sortProperty(blank: true, nullable: true);
         errors(nullable: true)
         __operation_class__(nullable: true)
+        __is_federated_properties_loaded__(nullable: true)
     }
-    static transients = ["errors", "__operation_class__"]
+    static transients = ["errors", "__operation_class__", "__is_federated_properties_loaded__"]
 }

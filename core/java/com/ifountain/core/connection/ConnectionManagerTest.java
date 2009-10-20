@@ -246,32 +246,40 @@ public class ConnectionManagerTest extends RapidCoreTestCase
 
         List threadList=new ArrayList();
         List connectionList=new ArrayList();
+        try{
+            for(int x=1;x<=threadLimit;x++)
+            {
+                GetConnectionThread t1=new GetConnectionThread(connectionName,getConnectionLimit,threadSleepTime);
+                threadList.add(t1);
+                t1.start();
 
-        for(int x=1;x<=threadLimit;x++)
+            }
+
+            Thread.sleep(threadSleepTime*(getConnectionLimit+2));
+            ListIterator listItr = threadList.listIterator();
+            while(listItr.hasNext()) {
+                GetConnectionThread t1 = (GetConnectionThread)listItr.next();
+                connectionList.addAll(t1.connections);
+            }
+
+            List borrowedConnectionList=ConnectionManager.getBorrowedConnections(connectionName);
+            System.out.println (borrowedConnectionList);
+            assertEquals(borrowedConnectionList.size(),threadLimit*getConnectionLimit);
+
+            ListIterator listItr2 = connectionList.listIterator();
+            while(listItr2.hasNext()) {
+                MockConnectionImpl conn1 = (MockConnectionImpl)listItr2.next();
+                assertTrue(conn1.isConnected());
+                assertEquals(param, conn1.getParam());
+                assertTrue(borrowedConnectionList.contains(conn1));
+            }
+        }
+        catch(Throwable t)
         {
-            GetConnectionThread t1=new GetConnectionThread(connectionName,getConnectionLimit,threadSleepTime);
-            threadList.add(t1);
-            t1.start();
-
-        }
-
-        Thread.sleep(threadSleepTime*(getConnectionLimit+2));
-        ListIterator listItr = threadList.listIterator();
-        while(listItr.hasNext()) {
-            GetConnectionThread t1 = (GetConnectionThread)listItr.next();
-            connectionList.addAll(t1.connections);
-        }
-
-        List borrowedConnectionList=ConnectionManager.getBorrowedConnections(connectionName);
-        System.out.println (borrowedConnectionList);
-        assertEquals(borrowedConnectionList.size(),threadLimit*getConnectionLimit);
-        
-        ListIterator listItr2 = connectionList.listIterator();
-        while(listItr2.hasNext()) {
-            MockConnectionImpl conn1 = (MockConnectionImpl)listItr2.next();
-            assertTrue(conn1.isConnected());
-            assertEquals(param, conn1.getParam());
-            assertTrue(borrowedConnectionList.contains(conn1));
+            for(int i=0; i < threadList.size(); i++)
+            {
+                ((Thread)threadList.get(i)).join();
+            }
         }
 
     }

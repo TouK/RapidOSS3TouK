@@ -321,6 +321,103 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         assertTrue(MockConnection.disconnectCalledFor.get(conn3.id) == 0);
     }
 
+    public void testIfCheckConnectionIsBlockedConnectionCheckerWillNotBeBlocked() throws Exception
+    {
+        final Object checkConnWaitLock = new Object();
+        try{
+            MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
+            ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+            connParam.setMinTimeout(100);
+            connParam.setMaxTimeout(250);
+            supp.setParam(connParam);
+
+            MockPoolableObjectFactory fact = new MockPoolableObjectFactory(supp, MockTimeoutStrategy.class)
+            {
+                public IConnection _makeObject(long timeout) throws Exception {
+                    MockConnection conn = new MockConnection(connectionId++)
+                    {
+                        public boolean checkConnection() {
+
+                            synchronized (checkConnWaitLock)
+                            {
+                                try {
+                                    checkConnWaitLock.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                            return super.checkConnection();    //To change body of overridden methods use File | Settings | File Templates.
+                        }
+                    };
+                    conn.setTimeout(timeout);
+                    return conn;
+                }
+            };
+            String connectionName = "con1";
+            pool = new ConnectionPool(connectionName, fact, 10, 100);
+            MockConnection conn1 = (MockConnection)pool.borrowObject();
+            MockConnection conn2 = (MockConnection)pool.borrowObject();
+            MockConnection conn3 = (MockConnection)pool.borrowObject();
+            Thread.sleep(500);
+            assertTrue(pool.isPoolConnected());
+            Thread.sleep(2500);
+            assertFalse(pool.isPoolConnected());
+        }finally {
+            synchronized (checkConnWaitLock)
+            {
+                checkConnWaitLock.notifyAll();
+            }
+        }
+    }
+
+    public void testIfCheckConnectionIsBlockedConnectionCheckerWillNotBeBlockedEvenTheMaxTimeoutIsZero() throws Exception
+    {
+        final Object checkConnWaitLock = new Object();
+        try{
+            MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
+            ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+            connParam.setMinTimeout(0);
+            connParam.setMaxTimeout(0);
+            connParam.setConnectionCheckerTimeout(2000);
+            supp.setParam(connParam);
+
+            MockPoolableObjectFactory fact = new MockPoolableObjectFactory(supp, MockTimeoutStrategy.class)
+            {
+                public IConnection _makeObject(long timeout) throws Exception {
+                    MockConnection conn = new MockConnection(connectionId++)
+                    {
+                        public boolean checkConnection() {
+
+                            synchronized (checkConnWaitLock)
+                            {
+                                try {
+                                    checkConnWaitLock.wait();
+                                } catch (InterruptedException e) {
+                                }
+                            }
+                            return super.checkConnection();    //To change body of overridden methods use File | Settings | File Templates.
+                        }
+                    };
+                    conn.setTimeout(timeout);
+                    return conn;
+                }
+            };
+            String connectionName = "con1";
+            pool = new ConnectionPool(connectionName, fact, 10, 100);
+            MockConnection conn1 = (MockConnection)pool.borrowObject();
+            MockConnection conn2 = (MockConnection)pool.borrowObject();
+            MockConnection conn3 = (MockConnection)pool.borrowObject();
+            Thread.sleep(1000);
+            assertTrue(pool.isPoolConnected());
+            Thread.sleep(3000);
+            assertFalse(pool.isPoolConnected());
+        }finally {
+            synchronized (checkConnWaitLock)
+            {
+                checkConnWaitLock.notifyAll();
+            }
+        }
+    }
+
     public void testTimeoutMechanism() throws Exception
     {
         MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
@@ -413,7 +510,7 @@ class MockPoolableObjectFactory extends BaseConnectionFactory
     int connectionId = 0;
     List invalidConnections = new ArrayList();
     MockPoolableObjectFactory(Class timeoutStrategyClass) {
-        super("factory1", null, timeoutStrategyClass);
+        super("factory1", new MockConnectionParameterSupplierImpl(), timeoutStrategyClass);
     }
 
     MockPoolableObjectFactory(ConnectionParameterSupplier paramSuplier, Class timeoutStrategyClass) {

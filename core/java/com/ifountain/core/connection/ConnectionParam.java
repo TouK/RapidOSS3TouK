@@ -32,6 +32,7 @@ public class ConnectionParam
     private int maxNumberOfConnectionsInPool;
     private int minTimeout;
     private int maxTimeout;
+    private long connectionCheckerTimeout = 3600000l;
     private Map<String, Object> otherParams;
     
     public ConnectionParam(String type, String name, String connClass,
@@ -61,6 +62,14 @@ public class ConnectionParam
 
     public int getMaxTimeout() {
         return maxTimeout;
+    }
+
+    public long getConnectionCheckerTimeout() {
+        return connectionCheckerTimeout;
+    }
+
+    public void setConnectionCheckerTimeout(long connectionCheckerTimeout) {
+        this.connectionCheckerTimeout = connectionCheckerTimeout;
     }
 
     public void setMaxTimeout(int maxTimeout) {

@@ -191,7 +191,19 @@ public class ConnectionPool extends GenericObjectPool
 
     private class ConnectionChecker implements Runnable
     {
-        ExecutorService checkSingleConnectionService = Executors.newFixedThreadPool(5);
+        int numberOfThreads = getMaxActive();
+        ExecutorService checkSingleConnectionService = Executors.newFixedThreadPool(numberOfThreads != 0? numberOfThreads:5);
+
+        private long getConnectionCheckerTimeoutValue(int numberOfActiveConnections)
+        {
+            if(poolableObjectFactory.getConnectionParameter() == null) return 0;
+            long invokeOperationResultWaitTime = 2*poolableObjectFactory.getConnectionParameter().getMaxTimeout()*numberOfActiveConnections;
+            if(invokeOperationResultWaitTime == 0)
+            {
+                return poolableObjectFactory.getConnectionParameter().getConnectionCheckerTimeout();
+            }
+            return invokeOperationResultWaitTime;
+        }
         public void run()
         {
             synchronized (connectionCheckerRunnerLock)
@@ -239,13 +251,23 @@ public class ConnectionPool extends GenericObjectPool
                     }
                     try
                     {
-                        List<Future> features = checkSingleConnectionService.invokeAll(tasks);
+                        long invokeOperationResultWaitTime = getConnectionCheckerTimeoutValue(validConnections.size());
+
+                        List<Future> features = null;
+                        if(invokeOperationResultWaitTime != 0)
+                        {
+                            features = checkSingleConnectionService.invokeAll(tasks, invokeOperationResultWaitTime, TimeUnit.MILLISECONDS);
+                        }
+                        else
+                        {
+                            features = checkSingleConnectionService.invokeAll(tasks);                            
+                        }
                         boolean willDisconnectPool = true;
                         for(int i=0; i < features.size(); i++)
                         {
                             try
                             {
-                                if(((Boolean)features.get(i).get()).booleanValue())
+                                if(!features.get(i).isCancelled() && ((Boolean)features.get(i).get()).booleanValue())
                                 {
                                     willDisconnectPool = false;
                                     break;

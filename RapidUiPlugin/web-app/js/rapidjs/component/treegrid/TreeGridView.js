@@ -194,7 +194,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 }
                 this.selectedRow = row;
             }
-            else if(event.ctrlKey){
+            else if(event && event.ctrlKey){
                YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
                this.selectedNode = null; 
                this.selectedRow = null; 

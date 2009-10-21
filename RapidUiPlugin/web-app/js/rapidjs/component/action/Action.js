@@ -72,6 +72,17 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
         else {
             this.requester.doPostRequest(urlAndParams.url, params);
         }
+        this.setComponentLoadState(true);
+
+    },
+    setComponentLoadState: function(loadState)
+    {
+        var componentList = this.components;
+        if (componentList && componentList.length) {
+            for (var i = 0; i < componentList.length; i++) {
+                componentList[i].events['loadstatechanged'].fireDirect(componentList[i], loadState);
+            }
+        }    
     },
     processSuccess: function(response)
     {
@@ -84,6 +95,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
             {
                 this.handleSuccess(response);
                 this.events['success'].fireDirect(response);
+                this.setComponentLoadState(false);
             }
 
     },
@@ -91,6 +103,7 @@ YAHOO.rapidjs.component.action.RequestAction.prototype = {
     {
         this.events['error'].fireDirect();
         this._fireErrors(errors);
+        this.setComponentLoadState(false);
     },
     handleSuccess: function(response) {
         var componentList = this.components;

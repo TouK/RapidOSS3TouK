@@ -156,7 +156,7 @@ class JiraConnectorController {
             }
             catch (Throwable t){
                 addError("connection.test.exception", [jiraConnector.ds.connection.name, t.toString()]);
-                log.warn("", org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
+                log.warn(this.errors.getAllErrors()[0]?.toString(), org.codehaus.groovy.runtime.StackTraceUtils.deepSanitize(t));
                 flash.errors = this.errors;
             }
             redirect(action:list);

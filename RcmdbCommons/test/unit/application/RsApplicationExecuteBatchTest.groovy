@@ -66,6 +66,27 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase{
         println "${System.currentTimeMillis()-t}"
     }
 
+    public void testUpdateInExecuteBatchWithModelWhichHasKeys()
+    {
+        def executed = false
+        long t = System.currentTimeMillis();
+        RsApplication.executeBatch{
+            300.times{
+                models.Model1.add(prop1:"prop1val"+it);
+            }
+            assertEquals (300, models.Model1.count());
+            assertEquals (0, models.Model1.search("prop2:prop2Val").total);
+
+            300.times{
+                models.Model1.add(prop1:"prop1val"+it, prop2:"prop2Val");
+            }
+            assertEquals (300, models.Model1.search("prop2:prop2Val").total);
+            executed = true;
+        }
+        assertTrue (executed)
+        println "${System.currentTimeMillis()-t}"
+    }
+
     def initialize()
     {
         models = [:];

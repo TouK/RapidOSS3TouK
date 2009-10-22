@@ -68,13 +68,14 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
-
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
-        assertEquals("1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", "updatedProp1Value")
-        assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        assertEquals (0, DataStore.get("getOnDemand").size());
-        assertNull (instance.errors);
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+            assertEquals("1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", "updatedProp1Value")
+            assertEquals("updatedProp1Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            assertEquals (0, DataStore.get("getOnDemand").size());
+            assertFalse(instance.hasErrors());
+        }
     }
 
     public void testPropertyAccessPerformance()
@@ -85,17 +86,18 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
-
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
-        MetaClass mtcls = instance.metaClass;
-        Class instanceCls = instance.class
-        long t = System.nanoTime();
-        100000.times{
-            interceptor.getDomainClassProperty(mtcls, instanceCls, instance, "prop1");
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+            MetaClass mtcls = instance.metaClass;
+            Class instanceCls = instance.class
+            long t = System.nanoTime();
+            100000.times{
+                interceptor.getDomainClassProperty(mtcls, instanceCls, instance, "prop1");
+            }
+            def totalDuration = (System.nanoTime()-t) / Math.pow(10,9);
+            println totalDuration
+            assertTrue (totalDuration < 1.2);
         }
-        def totalDuration = (System.nanoTime()-t) / Math.pow(10,9);
-        println totalDuration
-        assertTrue (totalDuration < 1.2);
 
 
     }
@@ -115,22 +117,25 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
-        instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            instance.errors = new BeanPropertyBindingResult(instance, domainClass.name)
 
-        DataStore.put("result", [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"abcd"]);
-        assertEquals (new Long(1), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
-        assertEquals(1, instance.errors.allErrors.size());
-        FieldError error = instance.errors.allErrors[0]
-        assertEquals ("default.federation.property.conversion.exception", error.getCode());
-        assertEquals ("prop4", error.getField());
-
+            DataStore.put("result", [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"abcd"]);
+            assertEquals (new Long(1), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            assertEquals(1, instance.errors.allErrors.size());
+            FieldError error = instance.errors.allErrors[0]
+            assertEquals ("default.federation.property.conversion.exception", error.getCode());
+            assertEquals ("prop4", error.getField());
+        }
         instance = domainClass.newInstance();
-        assertEquals (new Long(1), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
-        assertEquals(1, instance.errors.allErrors.size());
-        error = instance.errors.allErrors[0]
-        assertEquals ("default.federation.property.conversion.exception", error.getCode());
-        assertEquals ("prop4", error.getField());
+        instance.invokeBeforeEventTriggerOperation{
+            assertEquals (new Long(1), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            assertEquals(1, instance.errors.allErrors.size());
+            def error = instance.errors.allErrors[0]
+            assertEquals ("default.federation.property.conversion.exception", error.getCode());
+            assertEquals ("prop4", error.getField());
+        }
     }
     
     public void testInterceptorWithFederatedProperties()
@@ -147,37 +152,39 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)       
         def instance = domainClass.newInstance();
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
-        def prop1Value = "prop1Value";
-        interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", prop1Value);
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            def prop1Value = "prop1Value";
+            interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", prop1Value);
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
 
-        DataStore.put("result", [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"15.88"]);
-        
-        assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            DataStore.put("result", [prop2SeverName:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded",prop4:"15.88"]);
 
-        assertEquals ("Should call getOnDemand to get a on demand datasource", 1, DataStore.get("getOnDemand").size());
-        assertEquals ([name:"ds1"], DataStore.get("getOnDemand")[0]);
-        assertEquals (1, DataStore.get("getProperties").size());
-        assertEquals (1, DataStore.get("getProperties")[0][0].size());
-        assertEquals (prop1Value, DataStore.get("getProperties")[0][0]["prop1"]);
-        assertEquals (3, DataStore.get("getProperties")[0][1].size());
-        assertTrue(DataStore.get("getProperties")[0][1].contains("prop2SeverName"));
-        assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
+            assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+
+            assertEquals ("Should call getOnDemand to get a on demand datasource", 1, DataStore.get("getOnDemand").size());
+            assertEquals ([name:"ds1"], DataStore.get("getOnDemand")[0]);
+            assertEquals (1, DataStore.get("getProperties").size());
+            assertEquals (1, DataStore.get("getProperties")[0][0].size());
+            assertEquals (prop1Value, DataStore.get("getProperties")[0][0]["prop1"]);
+            assertEquals (3, DataStore.get("getProperties")[0][1].size());
+            assertTrue(DataStore.get("getProperties")[0][1].contains("prop2SeverName"));
+            assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
 
 
-        DataStore.put("result", [prop2SeverName:"updatedServerValue", prop3:"updatedServerValue", prop1:"updatedServerValue"]);
+            DataStore.put("result", [prop2SeverName:"updatedServerValue", prop3:"updatedServerValue", prop1:"updatedServerValue"]);
 
-        assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        assertEquals (1, DataStore.get("getProperties").size());
+            assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            assertEquals (1, DataStore.get("getProperties").size());
 
-        assertNull (instance.errors);
+            assertFalse(instance.hasErrors());
+        }
     }
 
 
@@ -194,10 +201,12 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
         RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
 
-        DataStore.put("result", [prop2SeverName:null]);
+            DataStore.put("result", [prop2SeverName:null]);
 
-        assertEquals (instance.prop2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals (instance.prop2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+        }
     }
 
 
@@ -215,47 +224,49 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
-        def prop1Value = "prop1Value";
-        interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", prop1Value);
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            def prop1Value = "prop1Value";
+            interceptor.setDomainClassProperty(instance.metaClass, instance.class, instance, "prop1", prop1Value);
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
 
-        DataStore.put("result", "prop2Value");
+            DataStore.put("result", "prop2Value");
 
-        assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded"]);
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        DataStore.put("result", "15.88");
-        assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
-        
-        assertEquals (1, DataStore.get("getProperties").size());
-        assertEquals (1, DataStore.get("getProperties")[0][0].size());
-        assertEquals (prop1Value, DataStore.get("getProperties")[0][0]["prop1"]);
-        assertEquals (1, DataStore.get("getProperties")[0][1].size());
-        assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
+            assertEquals ("prop2Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop1:"thisWillBeDiscarded"]);
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            DataStore.put("result", "15.88");
+            assertEquals (new Double(15.88), interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
 
-        assertEquals (2, DataStore.get("getProperty").size());
-        assertEquals (1, DataStore.get("getProperty")[0][0].size());
-        assertEquals (prop1Value, DataStore.get("getProperty")[0][0]["prop1"]);
-        assertEquals ("prop2", DataStore.get("getProperty")[0][1]);
+            assertEquals (1, DataStore.get("getProperties").size());
+            assertEquals (1, DataStore.get("getProperties")[0][0].size());
+            assertEquals (prop1Value, DataStore.get("getProperties")[0][0]["prop1"]);
+            assertEquals (1, DataStore.get("getProperties")[0][1].size());
+            assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
 
-        assertEquals (1, DataStore.get("getProperty")[1][0].size());
-        assertEquals (prop1Value, DataStore.get("getProperty")[1][0]["prop1"]);
-        assertEquals ("prop4", DataStore.get("getProperty")[1][1]);
+            assertEquals (2, DataStore.get("getProperty").size());
+            assertEquals (1, DataStore.get("getProperty")[0][0].size());
+            assertEquals (prop1Value, DataStore.get("getProperty")[0][0]["prop1"]);
+            assertEquals ("prop2", DataStore.get("getProperty")[0][1]);
+
+            assertEquals (1, DataStore.get("getProperty")[1][0].size());
+            assertEquals (prop1Value, DataStore.get("getProperty")[1][0]["prop1"]);
+            assertEquals ("prop4", DataStore.get("getProperty")[1][1]);
 
 
-        DataStore.put("result", "updatedServerValue");
-        DataStore.get("getOnDemand").clear();
-        assertEquals ("updatedServerValue", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("Should call getOnDemand to get a on demand datasource", [name:"ds1"], DataStore.get("getOnDemand")[0]);
-        DataStore.put("result", [prop2:"updatedServerValue", prop3:"updatedServerValue", prop1:"updatedServerValue"]);
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
-        assertEquals (1, DataStore.get("getProperties").size());
+            DataStore.put("result", "updatedServerValue");
+            DataStore.get("getOnDemand").clear();
+            assertEquals ("updatedServerValue", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("Should call getOnDemand to get a on demand datasource", [name:"ds1"], DataStore.get("getOnDemand")[0]);
+            DataStore.put("result", [prop2:"updatedServerValue", prop3:"updatedServerValue", prop1:"updatedServerValue"]);
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals (prop1Value, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop1"));
+            assertEquals (1, DataStore.get("getProperties").size());
 
-        assertNull (instance.errors);
+            assertFalse(instance.hasErrors());
+        }
     }
 
     public void testInterceptorWithDynamicDatasourceName()
@@ -272,27 +283,29 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
-        instance.prop2 = "ds1";
+            instance.prop2 = "ds1";
 
-        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        DataStore.put("result", "prop4Value")
-        assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            DataStore.put("result", "prop4Value")
+            assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
 
-        assertEquals (1, DataStore.get("getProperties").size());
-        assertEquals (1, DataStore.get("getProperties")[0][0].size());
-        assertEquals ("1", DataStore.get("getProperties")[0][0]["prop1"]);
-        assertEquals (1, DataStore.get("getProperties")[0][1].size());
-        assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
+            assertEquals (1, DataStore.get("getProperties").size());
+            assertEquals (1, DataStore.get("getProperties")[0][0].size());
+            assertEquals ("1", DataStore.get("getProperties")[0][0]["prop1"]);
+            assertEquals (1, DataStore.get("getProperties")[0][1].size());
+            assertTrue(DataStore.get("getProperties")[0][1].contains("prop3"));
 
-        assertEquals (1, DataStore.get("getProperty").size());
-        assertEquals (1, DataStore.get("getProperty")[0][0].size());
-        assertEquals ("1", DataStore.get("getProperty")[0][0]["prop1"]);
-        assertEquals ("prop4", DataStore.get("getProperty")[0][1]);
-        assertNull (instance.errors);
+            assertEquals (1, DataStore.get("getProperty").size());
+            assertEquals (1, DataStore.get("getProperty")[0][0].size());
+            assertEquals ("1", DataStore.get("getProperty")[0][0]["prop1"]);
+            assertEquals ("prop4", DataStore.get("getProperty")[0][1]);
+            assertFalse(instance.hasErrors());
+        }
     }
 
 
@@ -308,17 +321,19 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
 
         def instance = domainClass.newInstance();
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
-        instance.prop2 = "ds1";
-        instance.prop3 = "defaultValue";
+            instance.prop2 = "ds1";
+            instance.prop3 = "defaultValue";
 
-        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals(instance.prop3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertTrue(instance.errors.hasErrors());
-        def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
-        assertEquals ("default.federation.property.datasource.definition.exception", prop3Error.code);
+            DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals(instance.prop3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertTrue(instance.errors.hasErrors());
+            def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
+            assertEquals ("default.federation.property.datasource.definition.exception", prop3Error.code);
+        }
     }
 
 
@@ -340,17 +355,21 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
 
         def instance = domainClass.newInstance();
-        instance.prop2 = "ds1";
-        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+        instance.invokeBeforeEventTriggerOperation{
+            instance.prop2 = "ds1";
+            DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+        }
         
         instance = domainClass.newInstance();
-        instance.prop2 = "ds1";
-        DataStore.put("result", "prop4Value");
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
-        assertNull (instance.errors);
+        instance.invokeBeforeEventTriggerOperation{
+            instance.prop2 = "ds1";
+            DataStore.put("result", "prop4Value");
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            assertFalse(instance.hasErrors());
+        }
     }
 
     public void testInterceptorWithMappedNamePropertyAndDynamicDatasourceProperty()
@@ -372,20 +391,23 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
 
 
         def instance = domainClass.newInstance();
-        instance.prop2 = "ds1";
-        instance.prop5 = "datasourceAliasName";
-        DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertNull (instance.errors);
-
+        instance.invokeBeforeEventTriggerOperation{
+            instance.prop2 = "ds1";
+            instance.prop5 = "datasourceAliasName";
+            DataStore.put("result", [prop2:"prop2Value", prop3:"prop3Value", prop4:"prop4Value", prop1:"thisWillBeDiscarded"]);
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop3Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertFalse(instance.hasErrors());
+        }
         instance = domainClass.newInstance();
-        instance.prop2 = "ds1";
-        instance.prop5 = "datasourceAliasName";
-        DataStore.put("result", "prop4Value");
-        assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
-        assertNull (instance.errors);
+        instance.invokeBeforeEventTriggerOperation{
+            instance.prop2 = "ds1";
+            instance.prop5 = "datasourceAliasName";
+            DataStore.put("result", "prop4Value");
+            assertEquals ("ds1", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals ("prop4Value", interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop4"));
+            assertFalse(instance.hasErrors());
+        }
     }
 
 
@@ -403,23 +425,25 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"undefinedDatasource"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
-        def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
-        instance.errors = errorsBeforeFederationException
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+        instance.invokeBeforeEventTriggerOperation{
+            def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+            instance.errors = errorsBeforeFederationException
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
 
-        assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertEquals(1, instance.errors.allErrors.size());
-        FieldError prop2Error = instance.errors.allErrors.find{it.getField() == "prop2"}
-        assertEquals ("default.federation.property.datasource.not.exist", prop2Error.code);
-        assertNotSame (errorsBeforeFederationException, instance.errors);
+            assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertEquals(1, instance.errors.allErrors.size());
+            FieldError prop2Error = instance.errors.allErrors.find{it.getField() == "prop2"}
+            assertEquals ("default.federation.property.datasource.not.exist", prop2Error.code);
+            assertNotSame (errorsBeforeFederationException, instance.errors);
 
-        errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
-        instance.errors = errorsBeforeFederationException
-        assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals(1, instance.errors.allErrors.size());
-        def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
-        assertEquals ("default.federation.property.datasource.not.exist", prop3Error.code);
-        assertNotSame (errorsBeforeFederationException, instance.errors);
+            errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+            instance.errors = errorsBeforeFederationException
+            assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals(1, instance.errors.allErrors.size());
+            def prop3Error = instance.errors.allErrors.find{it.getField() == "prop3"}
+            assertEquals ("default.federation.property.datasource.not.exist", prop3Error.code);
+            assertNotSame (errorsBeforeFederationException, instance.errors);
+        }
 
 
     }
@@ -438,24 +462,26 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         [name:"prop3", lazy:true, type:ModelGenerator.STRING_TYPE, blank:false, defaultValue:defaultValueForProp3, datasource:"ds1"]];
         Class domainClass = createModelAndInitializeCompass(modelName, datasources, properties)
         def instance = domainClass.newInstance();
-        def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
-        instance.errors = errorsBeforeFederationException
-        RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
-        DataStore.put("exception", new Exception("An exception occurred"));
-        assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
-        assertNotSame (errorsBeforeFederationException, instance.errors);
-        assertEquals(1, instance.errors.allErrors.size());
-        FieldError getPropertiesError = instance.errors.allErrors[0]
-        assertEquals ("default.federation.property.get.properties.exception", getPropertiesError.code);
+        instance.invokeBeforeEventTriggerOperation{
+            def errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+            instance.errors = errorsBeforeFederationException
+            RapidCmdbDomainPropertyInterceptor interceptor = new RapidCmdbDomainPropertyInterceptor();
+            DataStore.put("exception", new Exception("An exception occurred"));
+            assertEquals (defaultValueForProp2, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop2"));
+            assertNotSame (errorsBeforeFederationException, instance.errors);
+            assertEquals(1, instance.errors.allErrors.size());
+            FieldError getPropertiesError = instance.errors.allErrors[0]
+            assertEquals ("default.federation.property.get.properties.exception", getPropertiesError.code);
 
-        errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
-        instance.errors = errorsBeforeFederationException
-        assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
-        assertEquals(1, instance.errors.allErrors.size());
-        assertNotSame (errorsBeforeFederationException, instance.errors);
-        def getPropertyError = instance.errors.allErrors[0]
-        assertEquals ("default.federation.property.datasource.exception", getPropertyError.code);
-        assertEquals ("prop3", getPropertyError.getField());
+            errorsBeforeFederationException = new BeanPropertyBindingResult(instance, domainClass.name);
+            instance.errors = errorsBeforeFederationException
+            assertEquals (defaultValueForProp3, interceptor.getDomainClassProperty(instance.metaClass, instance.class, instance, "prop3"));
+            assertEquals(1, instance.errors.allErrors.size());
+            assertNotSame (errorsBeforeFederationException, instance.errors);
+            def getPropertyError = instance.errors.allErrors[0]
+            assertEquals ("default.federation.property.datasource.exception", getPropertyError.code);
+            assertEquals ("prop3", getPropertyError.getField());
+        }
     }
 
 
@@ -488,6 +514,14 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         def classesTobeLoaded = [];
         classesTobeLoaded << BaseDatasource;
         classesTobeLoaded << datasourceClass;
+
+
+
+
+        
+        def modelText = ModelGenerator.getInstance().getModelText(createModel(modelName,datasources, properties))
+        Class domainClass = gcl.parseClass(modelText);
+        classesTobeLoaded.add (domainClass)
         initialize(classesTobeLoaded, []);
         BaseDatasource.metaClass.static.getOnDemand = {params->
             DataStore.get("getOnDemand").add(params);
@@ -496,13 +530,7 @@ class RapidCmdbDomainPropertyInterceptorTest extends RapidCmdbWithCompassTestCas
         def propertyDatasourceManagerBean = new PropertyDatasourceManagerBean();
         propertyDatasourceManagerBean.afterPropertiesSet();
         ctx.registerMockBean(RapidCMDBConstants.PROPERTY_DATASOURCE_MANAGER_BEAN, propertyDatasourceManagerBean)
-
-
         datasourceClass.metaClass.invokeStaticMethod(datasourceClass, "add", [[name:"ds1"]] as Object[]);
-        
-        def modelText = ModelGenerator.getInstance().getModelText(createModel(modelName,datasources, properties))
-        GroovyClassLoader gcl = new GroovyClassLoader();
-        Class domainClass = gcl.parseClass(modelText);
         return domainClass;
     }
 

@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.validation.BeanPropertyBindingResult
 import org.springframework.validation.BindingResult
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,6 +48,13 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
             return getFederatedProperty(domainMetaClass, domainClass, domainObject, bean, propertyName);
         }
         return super.getDomainClassProperty(domainMetaClass, domainClass, domainObject, propertyName);
+    }
+
+    public void setDomainClassProperty(MetaClass domainMetaClass, Class domainClass, Object domainObject, String propertyName, Object value) {
+        PropertyDatasourceManagerBean bean = getBean();
+        if (!bean.isFederated(domainClass, propertyName)) {
+            super.setDomainClassProperty(domainMetaClass, domainClass, domainObject, propertyName, value); //To change body of overridden methods use File | Settings | File Templates.
+        }
     }
 
     private PropertyDatasourceManagerBean getBean()
@@ -200,7 +208,7 @@ public class RapidCmdbDomainPropertyInterceptor extends DefaultDomainClassProper
         {
             domainObject.errors = bindingResult;
         }
-        return super.getDomainClassProperty(mtCls, cls, domainObject, propName);
+        return DomainClassDefaultPropertyValueHolder.getDefaultPropery(cls.getName(), propName);
     }
 
 }

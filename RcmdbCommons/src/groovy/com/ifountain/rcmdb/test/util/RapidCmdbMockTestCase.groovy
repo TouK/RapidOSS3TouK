@@ -48,6 +48,7 @@ import org.compass.core.Compass
 import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
+import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
 
 /**
  * Created by IntelliJ IDEA.
@@ -151,7 +152,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         ServletContextHolder.setServletContext(servletContext);
         if(!configParams.containsKey(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME))
         {
-            ConfigurationHolder.config.setProperty (RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME, DefaultDomainClassPropertyInterceptor.class.name);
+            ConfigurationHolder.config.setProperty (RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME, RapidCmdbDomainPropertyInterceptor.class.name);
         }
 
         if(!configParams.containsKey("rapidcmdb.date.format"))

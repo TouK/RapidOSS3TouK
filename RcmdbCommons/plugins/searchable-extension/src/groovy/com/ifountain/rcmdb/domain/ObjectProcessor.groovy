@@ -12,14 +12,18 @@ class ObjectProcessor extends Observable {
     public static final String UPDATED_PROPERTIES = "updatedProps";
 
     private static objectProcessor;
+    private static Object getInstanceLock = new Object();
     private ObjectProcessor() {
     }
 
     public static ObjectProcessor getInstance() {
-        if (objectProcessor == null) {
-            objectProcessor = new ObjectProcessor();
+        synchronized (getInstanceLock)
+        {
+            if (objectProcessor == null) {
+                objectProcessor = new ObjectProcessor();
+            }
+            return objectProcessor;
         }
-        return objectProcessor;
     }
 
     public void repositoryChanged(String eventName, Object domainObject, Map updateParams) {

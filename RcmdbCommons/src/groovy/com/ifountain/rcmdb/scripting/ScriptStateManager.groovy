@@ -12,6 +12,7 @@ class ScriptStateManager {
     private static final String STATE_OBJECT_PROPERTY="STATE_OBJECT";
 
     private static ScriptStateManager manager;
+    private static Object getInstanceLock = new Object();
 
     private Map scriptStopStates;
     private Object stopStateLock;
@@ -21,15 +22,21 @@ class ScriptStateManager {
     }
 
     public static ScriptStateManager getInstance() {
-        if (manager == null) {
-            manager = new ScriptStateManager();
+        synchronized (getInstanceLock)
+        {
+            if (manager == null) {
+                manager = new ScriptStateManager();
+            }
+            return manager;
         }
-        return manager;
     }
     public static void destroyInstance() {
-        if (manager != null) {
-            manager.destroy();
-            manager = null;
+        synchronized (getInstanceLock)
+        {
+            if (manager != null) {
+                manager.destroy();
+                manager = null;
+            }
         }
     }
 

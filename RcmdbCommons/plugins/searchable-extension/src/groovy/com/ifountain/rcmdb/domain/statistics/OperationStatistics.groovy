@@ -38,6 +38,7 @@ class OperationStatistics {
     public static final SEARCH_TOP_OPERATION_NAME = "SearchTop";
     public static final COUNT_HITS_OPERATION_NAME = "CountHits";
     private static OperationStatistics operationStatisticsObject;
+    private static Object getInstanceLock = new Object();
     Map operationStatistics = [:];
     Map modelStatistics = [:];
     private OperationStatistics()
@@ -47,16 +48,22 @@ class OperationStatistics {
 
     public static OperationStatistics getInstance()
     {
-        if(operationStatisticsObject == null)
+        synchronized (getInstanceLock)
         {
-            operationStatisticsObject = new OperationStatistics();
+            if(operationStatisticsObject == null)
+            {
+                operationStatisticsObject = new OperationStatistics();
+            }
+            return operationStatisticsObject;
         }
-        return operationStatisticsObject;
     }
 
     public static void destroyInstance()
     {
-        operationStatisticsObject = null;
+        synchronized (getInstanceLock)
+        {
+            operationStatisticsObject = null;
+        }
     }
 
     public void reset()

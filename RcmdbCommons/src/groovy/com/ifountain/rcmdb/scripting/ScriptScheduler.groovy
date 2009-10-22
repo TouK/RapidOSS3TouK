@@ -32,6 +32,7 @@ import org.quartz.SimpleTrigger
 class ScriptScheduler {
     private Scheduler qScheduler;
     private static ScriptScheduler scheduler;
+    private static Object getInstanceLock = new Object();
     private Class scriptExecutorClass;
 
     private ScriptScheduler() {
@@ -39,16 +40,22 @@ class ScriptScheduler {
     }
 
     public static ScriptScheduler getInstance() {
-        if (scheduler == null) {
-            scheduler = new ScriptScheduler();
+        synchronized (getInstanceLock)
+        {
+            if (scheduler == null) {
+                scheduler = new ScriptScheduler();
+            }
+            return scheduler;
         }
-        return scheduler;
     }
 
 
     public static void destroyInstance() {
-        if (scheduler != null) {
-            scheduler = null;
+        synchronized (getInstanceLock)
+        {
+            if (scheduler != null) {
+                scheduler = null;
+            }
         }
     }
 

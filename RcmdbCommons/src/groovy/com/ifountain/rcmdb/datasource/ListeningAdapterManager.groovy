@@ -29,23 +29,30 @@ import script.CmdbScript
  */
 class ListeningAdapterManager {
     private static ListeningAdapterManager manager;
+    private static Object getInstanceLock = new Object();
     private Map listeningAdapterRunners;
     private def adapterLock = new Object();
     private Thread listeningScriptInitializerThread;
 
     Logger logger = Logger.getLogger("scripting");
     public static ListeningAdapterManager getInstance() {
-        if (manager == null) {
-            manager = new ListeningAdapterManager();
+        synchronized (getInstanceLock)
+        {
+            if (manager == null) {
+                manager = new ListeningAdapterManager();
 
+            }
+            return manager;
         }
-        return manager;
     }
 
     public static void destroyInstance() {
-        if (manager != null) {
-            manager.destroy();
-            manager = null;
+        synchronized (getInstanceLock)
+        {
+            if (manager != null) {
+                manager.destroy();
+                manager = null;
+            }
         }
     }
     private ListeningAdapterManager() {

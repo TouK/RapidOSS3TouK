@@ -29,17 +29,21 @@ import org.apache.commons.beanutils.ConvertUtilsBean
 */
 class RapidConvertUtils extends ConvertUtilsBean{
     private static RapidConvertUtils convertUtils;
+    private static Object getInstanceLock = new Object();
     public RapidConvertUtils() {
         super(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
     public static RapidConvertUtils getInstance()
     {
-        if(convertUtils == null)
+        synchronized (getInstanceLock)
         {
-            convertUtils = new RapidConvertUtils();
-            convertUtils.deregister();
+            if(convertUtils == null)
+            {
+                convertUtils = new RapidConvertUtils();
+                convertUtils.deregister();
+            }
+            return convertUtils;
         }
-        return convertUtils;
     }
 }

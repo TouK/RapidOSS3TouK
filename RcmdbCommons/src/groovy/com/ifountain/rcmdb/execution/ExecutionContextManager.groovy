@@ -9,20 +9,27 @@ package com.ifountain.rcmdb.execution
 class ExecutionContextManager {
     ExecutionContextThreadLock<Stack<ExecutionContext>> contextStack = new ExecutionContextThreadLock<Stack<ExecutionContext>>();
     private static ExecutionContextManager manager;
+    private static Object getInstanceLock = new Object();
     protected ExecutionContextManager()
     {
     }
     public static ExecutionContextManager getInstance()
     {
-        if(manager == null)
+        synchronized (getInstanceLock)
         {
-            manager = new ExecutionContextManager();
+            if(manager == null)
+            {
+                manager = new ExecutionContextManager();
+            }
+            return manager;
         }
-        return manager;
     }
     public static void destroy()
     {
-        manager = null;   
+        synchronized (getInstanceLock)
+        {
+            manager = null;
+        }
     }
     public synchronized ExecutionContext getExecutionContext()
     {

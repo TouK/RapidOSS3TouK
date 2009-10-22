@@ -17,20 +17,27 @@ import org.apache.log4j.Logger
 class RcmdbConnectionManagerAdapter implements ConnectionParameterSupplier{
     private Map connectionMap = [:]
     private static RcmdbConnectionManagerAdapter adapter;
+    private static Object getInstanceLock = new Object();
     public static com.ifountain.rcmdb.connection.RcmdbConnectionManagerAdapter getInstance()
     {
-        if(adapter == null)
+        synchronized (getInstanceLock)
         {
-            adapter = new RcmdbConnectionManagerAdapter();
+            if(adapter == null)
+            {
+                adapter = new RcmdbConnectionManagerAdapter();
+            }
+            return adapter
         }
-        return adapter
     }
     public static com.ifountain.rcmdb.connection.RcmdbConnectionManagerAdapter destroyInstance()
     {
-        if(adapter != null)
+        synchronized (getInstanceLock)
         {
-            adapter.destroy();
-            adapter = null;
+            if(adapter != null)
+            {
+                adapter.destroy();
+                adapter = null;
+            }
         }
     }
 

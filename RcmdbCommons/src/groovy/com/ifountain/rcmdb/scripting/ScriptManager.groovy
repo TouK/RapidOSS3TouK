@@ -34,6 +34,7 @@ public class ScriptManager {
     Logger logger = Logger.getLogger("scripting");
     public static final String SCRIPT_DIRECTORY = "scripts";
     private static ScriptManager manager;
+    private static Object getInstanceLock = new Object();
     private def scripts;
     private def classLoader;
     private def baseDirectory;
@@ -45,15 +46,21 @@ public class ScriptManager {
     }
 
     public static ScriptManager getInstance() {
-        if (manager == null) {
-            manager = new ScriptManager();
+        synchronized (getInstanceLock)
+        {
+            if (manager == null) {
+                manager = new ScriptManager();
+            }
+            return manager;
         }
-        return manager;
     }
     public static void destroyInstance() {
-        if (manager != null) {
-            manager.destroy();
-            manager = null;
+        synchronized (getInstanceLock)
+        {
+            if (manager != null) {
+                manager.destroy();
+                manager = null;
+            }
         }
     }
     public void initialize(ClassLoader parentClassLoader, String baseDir, Map defaultSupportedMethods) {

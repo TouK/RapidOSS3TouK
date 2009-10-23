@@ -98,7 +98,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         TestCompassUtils.withCompassQueryBuilder(compass, {CompassQueryBuilder builder ->
             CompassQuery query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1}\"").toQuery();
             CompassHits hits = query.hits();
-            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "version" && it.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME&& it.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME};
+            def propList = application.getDomainClass(CompassTestObject.name).getProperties().findAll {it.name != "version" && it.name != RapidCMDBConstants.ERRORS_PROPERTY_NAME&& it.name != RapidCMDBConstants.OPERATION_PROPERTY_NAME&& it.name != RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE};
             hits.iterator().each {CompassHit hit->
                 Resource res = hit.getResource();
                 propList.each{domainProp->

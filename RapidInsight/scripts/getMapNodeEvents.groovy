@@ -41,7 +41,7 @@ def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 builder.Objects(total: eventSearchResults.total, offset: eventSearchResults.offset) {
 	eventSearchResults.results.each{ event ->
-		builder.Object(event.asMap());
+		builder.Object(event.asStringMap(event.getNonFederatedPropertyList().name));
 	}
 }
 

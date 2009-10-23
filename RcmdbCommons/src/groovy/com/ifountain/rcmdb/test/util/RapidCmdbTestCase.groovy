@@ -23,6 +23,7 @@ import com.ifountain.rcmdb.domain.DomainLockManager
 import org.apache.log4j.Logger
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,6 +36,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
     public static boolean isSetupCompleted = false;
     protected void setUp() {
+        RapidConvertUtils.destroyInstance();
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;

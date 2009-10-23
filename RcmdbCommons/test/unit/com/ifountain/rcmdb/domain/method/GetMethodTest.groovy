@@ -196,13 +196,21 @@ class GetMethodTest extends RapidCmdbTestCase {
         def result = get.invoke(GetMethodChildDomainObjectWithDateProp, [propValues] as Object[]);
         assertNull(result);
         assertEquals("prop1:${RapidStringUtilities.exactQuery(propValues.prop1)} AND prop4:${RapidStringUtilities.exactQuery(df.format(datePropVal1))} AND prop5:${RapidStringUtilities.exactQuery(df.format(datePropVal2))}", GetMethodDomainObject.query);
+
+        dateFormat = "yyyy-MM-dd"
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
+        df = new SimpleDateFormat(dateFormat);
+        result = get.invoke(GetMethodChildDomainObjectWithDateProp, [propValues] as Object[]);
+        assertNull(result);
+        assertEquals("prop1:${RapidStringUtilities.exactQuery(propValues.prop1)} AND prop4:${RapidStringUtilities.exactQuery(df.format(datePropVal1))} AND prop5:${RapidStringUtilities.exactQuery(df.format(datePropVal2))}", GetMethodDomainObject.query);
     }
 
 
     public void testGetMethodWithNullDateKey()
     {
         def dateFormat = "yyyy-MM-dd HH:mm:ss"
-        RapidConvertUtils.getInstance().register(new DateConverter(dateFormat), Date.class)
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), String.class)
+        RapidConvertUtils.getInstance().register(new StringConverter(dateFormat), GString.class)
         def df = new SimpleDateFormat(dateFormat);
 
         def keys = ["prop1", "prop4", "prop5"]

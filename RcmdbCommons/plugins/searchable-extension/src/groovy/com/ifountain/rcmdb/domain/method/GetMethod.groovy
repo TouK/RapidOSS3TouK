@@ -32,11 +32,10 @@ class GetMethod extends AbstractRapidDomainReadMethod{
     List propKeys;
     List relationKeys;
     Map relations
-    Converter stringConverter;
     public GetMethod(MetaClass mcp, List keys, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         propKeys = [];
-        stringConverter = RapidConvertUtils.getInstance().lookup(String.class);
+
         relationKeys = [];
         keys.each{
             if(relations.containsKey(it))
@@ -77,6 +76,7 @@ class GetMethod extends AbstractRapidDomainReadMethod{
             }
             else
             {
+                def stringConverter = RapidConvertUtils.getInstance().lookup(String.class);
                 propKeys.each{
                     keyMap[it] = stringConverter.convert(String, searchParams[it]);
                 }

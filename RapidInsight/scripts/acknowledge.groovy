@@ -31,7 +31,7 @@ if (rsEvent) {
     else if (acknowledged == "false")
         rsEvent.acknowledge(false, user.username);
 
-    def props = rsEvent.asMap(rsEvent.getNonFederatedPropertyList().name);
+    def props = rsEvent.asStringMap(rsEvent.getNonFederatedPropertyList().name);
     def sw = new StringWriter();
     def builder = new MarkupBuilder(sw);
     builder.Objects() {

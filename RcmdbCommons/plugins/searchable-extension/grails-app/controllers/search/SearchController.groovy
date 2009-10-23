@@ -44,15 +44,11 @@ class SearchController {
         StringWriter sw = new StringWriter();
         def builder = new MarkupBuilder(sw);
         def sortOrder = 0;
-        def stringConverter = RapidConvertUtils.getInstance().lookup(String);
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {result ->
                 def className = result.getClass().name;
-                def grailsObjectProps = result.getNonFederatedPropertyList();
-                def props = [:];
-                grailsObjectProps.each {resultProperty ->
-                    props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
-                }
+                def grailsObjectProps = result.getNonFederatedPropertyList().name;
+                def props = result.asStringMap(grailsObjectProps);
                 props.put("sortOrder", sortOrder++)
                 props.put("rsAlias", result.getClass().name)
                 builder.Object(props);
@@ -82,11 +78,8 @@ class SearchController {
             builder.Objects(total: searchResults.total, offset: searchResults.offset) {
                 searchResults.results.each {result ->
                     def className = result.getClass().name;
-                    def grailsObjectProps = result.getNonFederatedPropertyList();
-                    def props = [:];
-                    grailsObjectProps.each {resultProperty ->
-                        props[resultProperty.name] = result[resultProperty.name];
-                    }
+                    def grailsObjectProps = result.getNonFederatedPropertyList().name;
+                    def props = result.asStringMap(grailsObjectProps);
                     props.put("rsAlias", result.getClass().name)
                     builder.Object(props);
                 }

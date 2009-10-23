@@ -229,7 +229,7 @@ class RapidDomainClassGrailsPlugin {
 
             //for testing
             mc.'static'._setDomainOperation = {Class oprClass->
-                manager.setOperationClass (oprClass);                
+                manager.setOperationClass (oprClass);
             }
             mc.propertyMissing = {String name->
                 def domainObject = delegate;
@@ -282,11 +282,18 @@ class RapidDomainClassGrailsPlugin {
     {
         def mc = dc.metaClass;
         def asMapMethod = new AsMapMethod(mc, dc.clazz, logger);
+        def asStringMapMethod = new AsStringMapMethod(mc, dc.clazz, logger);
         mc.asMap = {->
             return asMapMethod.invoke(delegate, null);
         };
         mc.asMap = {List requestedProperties->
             return asMapMethod.invoke(delegate, [requestedProperties] as Object[]);
+        };
+        mc.asStringMap = {->
+            return asStringMapMethod.invoke(delegate, null);
+        };
+        mc.asStringMap = {List requestedProperties->
+            return asStringMapMethod.invoke(delegate, [requestedProperties] as Object[]);
         };
         mc.cloneObject = {->
             def cloned = dc.clazz.newInstance();

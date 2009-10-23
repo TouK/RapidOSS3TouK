@@ -362,18 +362,7 @@ class FullExportImportUtility {
     }
     protected def getObjectAsMapForExport(object,nonFederatedPropNames)
     {
-        def props=object.asMap(nonFederatedPropNames);
-        props.each{ propName , propVal ->
-            try{
-                props[propName]=convertProperty(String, propVal);
-            }
-            catch(ConversionException exception)
-            {
-                logger.warn("fullExport : cannot convert property ${modelName}.${propName} with val ${propVal} to String ");
-                throw new Exception("fullExport : cannot convert property ${modelName}.${propName} with val ${propVal} to String",exception);
-            }
-
-        }
+        def props=object.asStringMap(nonFederatedPropNames);
         return props;
     }
     protected def markRelationsOfObjectIds(objectIds)

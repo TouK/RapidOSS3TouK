@@ -34,6 +34,13 @@ class RapidConvertUtils extends ConvertUtilsBean{
         super(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
+    public static RapidConvertUtils destroyInstance()
+    {
+        synchronized (getInstanceLock)
+        {
+            convertUtils = null;
+        }
+    }
     public static RapidConvertUtils getInstance()
     {
         synchronized (getInstanceLock)

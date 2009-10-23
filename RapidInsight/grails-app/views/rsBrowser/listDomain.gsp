@@ -15,16 +15,8 @@
         <table>
             <thead>
                 <tr>
-                    <g:sortableColumn property="id" title="id" action="${params.domain}"/>
                     <g:each in="${propertyList}" var="p">
-                        <g:if test="${p.name != 'id'}">
-                            <g:if test="${!p.isRelation}">
-                                <g:sortableColumn property="${p.name}" title="${p.name}" action="${params.domain}"/>
-                            </g:if>
-                            <g:else>
-                                <th>${p.name}</th>
-                            </g:else>
-                        </g:if>
+                        <g:sortableColumn property="${p.name}" title="${p.name}" action="${params.domain}"/>
                     </g:each>
                 </tr>
             </thead>

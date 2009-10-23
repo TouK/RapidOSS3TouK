@@ -22,13 +22,17 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.converter.StringConverter
+import org.apache.commons.beanutils.Converter
+
 /**
- * Created by IntelliJ IDEA.
- * User: Administrator
- * Date: Jun 25, 2008
- * Time: 9:17:31 AM
- * To change this template use File | Settings | File Templates.
- */
+* Created by IntelliJ IDEA.
+* User: Administrator
+* Date: Jun 25, 2008
+* Time: 9:17:31 AM
+* To change this template use File | Settings | File Templates.
+*/
 class AsMapMethodTest extends RapidCmdbTestCase{
     public void testAsMap()
     {
@@ -40,6 +44,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         def modelProps = [keyProp];
         modelProps.add([name:"pagecount", type:ModelGenerator.NUMBER_TYPE, blank:false]);
         modelProps.add([name:"isForChildren", type:ModelGenerator.BOOLEAN_TYPE, blank:false]);
+        modelProps.add([name:"dateProp", type:ModelGenerator.DATE_TYPE, blank:false]);
 
 
 
@@ -52,6 +57,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         propList.add(new RapidDomainClassProperty(name:"name",isRelation:false,isKey:true,isOperationProperty:false))
         propList.add(new RapidDomainClassProperty(name:"pagecount",isRelation:false,isKey:false,isOperationProperty:false))
         propList.add(new RapidDomainClassProperty(name:"isForChildren",isRelation:false,isKey:false,isOperationProperty:false))
+        propList.add(new RapidDomainClassProperty(name:"dateProp",isRelation:false,isKey:false,isOperationProperty:false))
 
         modelClass.metaClass.'static'.getPropertiesList = {->
             return propList
@@ -61,6 +67,7 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         instance.name="testcraft"
         instance.pagecount=888
         instance.isForChildren=true
+        instance.dateProp=new Date()
 
         
 
@@ -72,9 +79,39 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         for(prop in propList){
             assertTrue(instanceAsMap.containsKey(prop.name))
         }
-        assertEquals(instanceAsMap.name,"testcraft")
-        assertEquals(instanceAsMap.pagecount,888)
-        assertEquals(instanceAsMap.isForChildren,true)
+        assertEquals("testcraft", instanceAsMap.name)
+        assertEquals(888, instanceAsMap.pagecount)
+        assertEquals(true, instanceAsMap.isForChildren)
+
+
+        //string as map method
+        Converter previousConverter = RapidConvertUtils.getInstance().lookup(String);
+        AsStringMapMethod asStringMap = new AsStringMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger())
+        instanceAsMap=asStringMap.invoke(instance,null);
+
+        assertEquals(propList.size(),instanceAsMap.size())
+        for(prop in propList){
+            assertTrue(instanceAsMap.containsKey(prop.name))
+        }
+        assertEquals("testcraft", instanceAsMap.name)
+        assertEquals("888", instanceAsMap.pagecount)
+        assertEquals("true", instanceAsMap.isForChildren)
+        assertEquals(previousConverter.convert(String, instance.dateProp), instanceAsMap.dateProp)
+        try{
+            def newStringConverter = new StringConverter("yyyy-dd");
+            assertTrue (!(previousConverter instanceof StringConverter) || newStringConverter.dateFormat != previousConverter.dateFormat);
+            RapidConvertUtils.getInstance().register (newStringConverter, String);
+            instanceAsMap=asStringMap.invoke(instance,null);
+
+            assertEquals(propList.size(),instanceAsMap.size())
+            for(prop in propList){
+                assertTrue(instanceAsMap.containsKey(prop.name))
+            }
+            assertEquals(newStringConverter.convert(String, instance.dateProp), instanceAsMap.dateProp)
+        }finally{
+            RapidConvertUtils.getInstance().register (previousConverter, String);    
+        }
+
     }
 
     public void testAsMapExcludesRelationAndOperationProperties()
@@ -175,8 +212,21 @@ class AsMapMethodTest extends RapidCmdbTestCase{
         for(prop in requestedProps){
             assertTrue(instanceAsMap.containsKey(prop))
         }
-        assertEquals(instanceAsMap.name,"testcraft")
-        assertEquals(instanceAsMap.pagecount,888)
+        assertEquals("testcraft", instanceAsMap.name)
+        assertEquals(888, instanceAsMap.pagecount)
+
+
+        //string as map method
+        AsStringMapMethod asStringMap = new AsStringMapMethod(modelClass.metaClass,modelClass, Logger.getRootLogger())
+        requestedProps=["name","pagecount"]
+        instanceAsMap=asStringMap.invoke(instance,requestedProps);
+
+        assertEquals(requestedProps.size(),instanceAsMap.size())
+        for(prop in requestedProps){
+            assertTrue(instanceAsMap.containsKey(prop))
+        }
+        assertEquals("testcraft", instanceAsMap.name)
+        assertEquals("888", instanceAsMap.pagecount)
         
     }
    

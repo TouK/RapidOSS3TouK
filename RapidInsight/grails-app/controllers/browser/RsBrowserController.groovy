@@ -82,7 +82,6 @@ class RsBrowserController {
     }
 
     def listDomain = {
-        def stringConverter = RapidConvertUtils.getInstance().lookup(String)
         if (params.max == null) {
             params.max = 20;
         }
@@ -91,6 +90,7 @@ class RsBrowserController {
             def count = domainClass.clazz."count"();
             def isAll = params.all == "true"
             def propertyList = getPropertiesWhichCanBeListed(domainClass, 5, isAll);
+            def propertyNames = propertyList.name;
             def objectList = domainClass.clazz."list"(params)
 
             if (params.format == 'xml') {
@@ -98,11 +98,7 @@ class RsBrowserController {
                 def builder = new MarkupBuilder(sw);
                 builder.Objects(total: count, offset: params.offset ? params.offset : 0) {
                     objectList.each {object ->
-                        def props = ["id": object.id]
-                        propertyList.each {p ->
-                            props.put(p.name, stringConverter.convert(String, object[p.name]))
-                        }
-                        builder.Object(props)
+                        builder.Object(object.asStringMap(propertyNames))
                     }
                 }
                 render(contentType: "text/xml", text: sw.toString())
@@ -314,26 +310,24 @@ class RsBrowserController {
                 def objectList = searchResults.results
                 if (params.format == 'xml') {
                     def grailsClassProperties = [:]
+                    def grailsClassPropertyNames = [:]
                     def sortOrder = 0;
                     def sw = new StringWriter();
                     def builder = new MarkupBuilder(sw);
-                    def stringConverter = RapidConvertUtils.getInstance().lookup(String)
                     builder.Objects(total: searchResults.total, offset: searchResults.offset) {
                         searchResults.results.each {result ->
                             def className = result.getClass().name;
                             def grailsObjectProps = grailsClassProperties[className]
+                            def grailsObjectPropNames = grailsClassPropertyNames[className]
                             if (grailsObjectProps == null)
                             {
                                 def objectDomainClass = grailsApplication.getDomainClass(className);
                                 grailsObjectProps = getPropertiesWhichCanBeListed(objectDomainClass, 10)
                                 grailsClassProperties[result.getClass().name] = grailsObjectProps;
+                                grailsObjectPropNames = grailsObjectProps.name;
+                                grailsClassPropertyNames[result.getClass().name] = grailsObjectPropNames;
                             }
-                            def props = ["id": result.id];
-                            grailsObjectProps.each {resultProperty ->
-                                if (resultProperty.name != "id") {
-                                    props[resultProperty.name] = stringConverter.convert(String, result[resultProperty.name]);
-                                }
-                            }
+                            def props =  result.asStringMap(grailsObjectPropNames);
                             props.put("rsAlias", className)
                             props.put("sortOrder", sortOrder++)
                             builder.Object(props);
@@ -386,14 +380,16 @@ class RsBrowserController {
     def getPropertiesWhichCanBeListed(domainClass, max, isAll) {
         def propertyList = [];
         def properties = domainClass.clazz."getPropertiesList"();
-        def propertiesCanBeListed = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty}
-        def keySet = domainClass.clazz."keySet"();
-        if (isAll || (propertiesCanBeListed.size() + keySet.size() <= max)) {
+        def idProperty = properties.find {it.name == "id"}
+        propertyList.add(idProperty);
+        def nonKeyProps = properties.findAll {it.name != "id" && !it.isFederated && !it.isKey && !it.isRelation && !it.isOperationProperty}
+        def keySet = domainClass.clazz."keySet"(); 
+        if (isAll || (nonKeyProps.size() + keySet.size() <= max)) {
             propertyList.addAll(keySet)
-            propertyList.addAll(propertiesCanBeListed)
+            propertyList.addAll(nonKeyProps)
         }
         else {
-            propertyList = keySet;
+            propertyList.addAll(keySet);
         }
         return propertyList;
     }

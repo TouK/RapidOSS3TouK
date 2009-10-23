@@ -36,6 +36,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.BeanPropertyBindingResult
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -156,6 +157,64 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         instance.prop2 = "updated prop2 value"
         assertEquals(1, interceptor.setPropertyList.size());
         assertEquals ("updated prop2 value", DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyStorage["prop2"])
+    }
+
+    public void testAsMapMethods()
+    {
+        def model1Name = "Model1";
+        def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE];
+        def prop2 = [name: "prop2", type: ModelGenerator.NUMBER_TYPE];
+        def model1MetaProps = [name: model1Name]
+
+        def modelProps = [prop1, prop2];
+        def keyPropList = [prop1];
+
+
+        def model1Text = ModelGenerationTestUtils.getModelText(model1MetaProps, [], modelProps, keyPropList, []);
+
+        gcl.parseClass(model1Text)
+        def model1Class = gcl.loadClass(model1Name)
+        def classesTobeLoaded = [model1Class];
+        def pluginsToLoad = [gcl.loadClass("RapidDomainClassGrailsPlugin")];
+        initialize(classesTobeLoaded, pluginsToLoad)
+
+
+        def instance = model1Class.newInstance();
+        instance.prop1 = "prop1Value"
+        instance.prop2 = 5
+
+        def props = instance.getPropertiesList().name;
+        def instanceAsMap = instance.asMap();
+
+        assertEquals (props.size(), instanceAsMap.size());
+        props.each{
+            assertEquals (instance[it], instanceAsMap[it]);
+        }
+
+        props = ["prop1", "prop2"]
+        instanceAsMap = instance.asMap(props);
+
+        assertEquals (props.size(), instanceAsMap.size());
+        props.each{
+            assertEquals (instance[it], instanceAsMap[it]);
+        }
+
+        def strConverter = RapidConvertUtils.getInstance().lookup(String)    
+        props = instance.getPropertiesList().name;
+        instanceAsMap = instance.asStringMap();
+
+        assertEquals (props.size(), instanceAsMap.size());
+        props.each{
+            assertEquals (strConverter.convert(String, instance[it]), instanceAsMap[it]);
+        }
+
+        props = ["prop1", "prop2"]
+        instanceAsMap = instance.asStringMap(props);
+
+        assertEquals (props.size(), instanceAsMap.size());
+        props.each{
+            assertEquals (strConverter.convert(String, instance[it]), instanceAsMap[it]);
+        }
     }
 
     public void testHasErrorsWithFieldName()

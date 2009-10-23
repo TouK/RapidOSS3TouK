@@ -15,16 +15,8 @@
         <table>
             <thead>
                 <tr>
-                    <g:sortableColumn property="id" title="id" action="${params.domain}" params="${[id:'search', query:params.query, searchQuery:params.searchQuery]}"/>
                     <g:each in="${propertyList}" var="p">
-                        <g:if test="${p.name != 'id'}">
-                            <g:if test="${!p.isRelation}">
-                                <g:sortableColumn property="${p.name}" title="${p.name}" action="${params.domain}" params="${[id:'search', query:params.query, searchQuery:params.searchQuery]}"/>
-                            </g:if>
-                            <g:else>
-                                <th>${p.name}</th>
-                            </g:else>
-                        </g:if>
+                        <g:sortableColumn property="${p.name}" title="${p.name}" action="${params.domain}" params="${[id:'search', query:params.query, searchQuery:params.searchQuery]}"/>
                     </g:each>
                 </tr>
             </thead>

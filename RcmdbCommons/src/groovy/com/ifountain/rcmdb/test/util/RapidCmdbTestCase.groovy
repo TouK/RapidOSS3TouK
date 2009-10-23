@@ -36,7 +36,6 @@ public class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
     public static boolean isSetupCompleted = false;
     protected void setUp() {
-        RapidConvertUtils.destroyInstance();
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;

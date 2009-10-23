@@ -85,6 +85,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     static indexCount = 0;
     public void setUp() {
         super.setUp();
+        RapidConvertUtils.destroyInstance();
         indexCount++;
         indexDir = "${rootIndexDir}/${this.class.simpleName}${indexCount}";
         System.clearProperty("index.dir")

@@ -134,7 +134,6 @@ class BaseListeningDatasourceOperationsTest extends RapidCmdbWithCompassTestCase
 
      public void testStartListeningChangesTheLoggerOfTheAdaptersToScriptLogger()
      {
-         initialize();
          CompassForTests.addOperationSupport (BaseListeningDatasource, BaseListeningDatasourceOperationsLoggerMock);
          
          ListeningAdapterManager.metaClass.startAdapter={ BaseListeningDatasource listeningDatasource ->

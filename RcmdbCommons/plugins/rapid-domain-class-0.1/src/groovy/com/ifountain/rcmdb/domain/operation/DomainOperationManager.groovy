@@ -50,32 +50,32 @@ class DomainOperationManager {
 
     public synchronized Class getOperationClass()
     {
-        if(operationClass == null && parentOperationManager != null)
+        if(operationClass != null)
+        {
+            return operationClass;
+        }
+        if(parentOperationManager != null)
         {
             return parentOperationManager.getOperationClass();
         }
-        else if(operationClass == null)
-        {
-            return AbstractDomainOperation;
-        }
         else
         {
-            return operationClass;
+            return AbstractDomainOperation;
         }
     }
     public synchronized Map getOperationClassMethods()
     {
-        if(operationClass == null && parentOperationManager != null)
+        if(operationClass != null)
+        {
+            return operationClassMethods;
+        }
+        else if(parentOperationManager != null)
         {
             return parentOperationManager.getOperationClassMethods();
         }
-        else if(operationClass == null)
-        {
-            return ABSTRACT_DOMAIN_OPERATION_METHODS;
-        }
         else
         {
-            return operationClassMethods;
+            return ABSTRACT_DOMAIN_OPERATION_METHODS;
         }
     }
     public synchronized Class loadOperation()

@@ -47,47 +47,13 @@ class JsecDbRealm {
         // found, then they don't have an account and we throw an
         // exception.
 
-        def user = RsUser.get(username:username)
+        def user = RsUser.authenticateUser(username,new String(authToken.password))
         if (!user) {
             throw new UnknownAccountException("No account found for user [${username}]")
         }
         username = user.username;
-        log.info "Found user '${user.username}' in DB"
-
-        def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm")
-        String authenticationType = RsUser.getAuthenticationType();
-
-
-        if (authenticationType == "ldap" && username != RsUser.RSADMIN)
-        {
-            def ldapInformation = user.retrieveLdapInformation();
-            if (ldapInformation != null)
-            {
-
-                def ldapConnection = ldapInformation.ldapConnection
-
-                log.info 'gonna try ldap auth from realm'
-                if (!ldapConnection.checkAuthentication(ldapInformation.userdn, new String(authToken.password)))
-                {
-                    log.info 'Invalid password (DB realm - LDAP)'
-                    throw new IncorrectCredentialsException("Invalid password for user '${username}'")
-                }
-            }
-            else
-            {
-                throw new UnknownAccountException("Ldap Information could not be found for [${username}]")
-            }
-        }
-        else //do local authentication
-        {
-            // Now check the user's password against the hashed value stored
-            // in the database.
-            if (!credentialMatcher.doCredentialsMatch(authToken, account)) {
-                log.info 'Invalid password (DB realm)'
-                throw new IncorrectCredentialsException("Invalid password for user '${username}'")
-            }
-        }
-
+        
+        def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm");
         return account
     }
     def hasRole(principal, roleName) {

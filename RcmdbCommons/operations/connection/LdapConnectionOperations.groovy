@@ -50,7 +50,7 @@ class LdapConnectionOperations extends ConnectionOperations
         catch(NamingException e)
         {
             result=false
-            logger.error "Could not connect to LDAP for user authentication : ${e}"
+            logger.error "Could not connect to LDAP for user authentication  with username '${username}'. Reason : ${e}"
         }
 
         return result
@@ -101,7 +101,7 @@ class LdapConnectionOperations extends ConnectionOperations
         }
         catch(NamingException e)
         {
-            logger.error "Could not connect to LDAP for checkConnection : ${e}"
+            logger.error "Could not connect to LDAP for checkConnection with username '${username}'. Reason : ${e}"
             throw e
         }
 

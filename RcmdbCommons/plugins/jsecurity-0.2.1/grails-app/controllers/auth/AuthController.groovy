@@ -82,7 +82,7 @@ class AuthController {
             // Authentication failed, so display the appropriate message
             // on the login page.
             log.info "Authentication failure for user '${params.login}'."
-            flash.message = message(code: "login.failed")
+            flash.message = message(code: "default.custom.error",args:["Login Failed : ${ex.getMessage()}"])
 
 
             // Keep the username and "remember me" setting so that the
@@ -102,7 +102,7 @@ class AuthController {
 
             // Now redirect back to the login page.
             if(params.format == "xml"){
-                render(text: ControllerUtils.convertErrorToXml("Invalid username or password."), contentType: "text/xml");
+                render(text: ControllerUtils.convertErrorToXml("Login Failed : ${ex.getMessage()}"), contentType: "text/xml");
             }
             else{
                 redirect(action: 'login', params: m)

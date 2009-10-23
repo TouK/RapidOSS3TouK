@@ -8,6 +8,9 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 
+
+import org.jsecurity.authc.IncorrectCredentialsException
+import org.jsecurity.authc.UnknownAccountException
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa sener
@@ -17,9 +20,72 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    public static List getChannelTypes()
+    {
+        return ["email"];
+    }
+    public static List getEditableChannelTypes()
+    {
+        return ["email"];
+    }
+    
     public static def getAuthenticationType()
     {
         return ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
+    }
+    public static RsUser authenticateUser(String username,String password)
+    {
+        def authLogPrefix="User Authentication : ";
+        getLogger().info(authLogPrefix+"Authenticating User '${username}'");
+        
+
+        // Get the user with the given username. If the user is not found than exception is thrown
+        def user = RsUser.get(username:username)
+        if (!user) {
+            getLogger().warn(authLogPrefix+"No account found for user '${username}'");
+            throw new UnknownAccountException("No account found for user ${username}");
+        }
+
+        username = user.username;
+        getLogger().info(authLogPrefix+"Found user '${user.username}' in Repository");
+        
+        String authenticationType = RsUser.getAuthenticationType();
+
+        //do ldap authentication  
+        if (authenticationType == "ldap" && username != RsUser.RSADMIN)
+        {
+            def ldapInformation = user.retrieveLdapInformation();
+            if (ldapInformation == null)
+            {
+                getLogger().warn(authLogPrefix+"Ldap Information could not be found for '${username}'");
+                throw new UnknownAccountException("Ldap Information could not be found for '${username}'");
+            }
+
+            def ldapConnection = ldapInformation.ldapConnection
+            if (ldapConnection == null)
+            {
+                getLogger().warn(authLogPrefix+"LdapInformation is not bound with an LdapConnection for user '${username}'");
+                throw new UnknownAccountException("LdapInformation is not bound with an LdapConnection for user '${username}'");
+            }
+            
+            getLogger().info(authLogPrefix+"Authenticating User '${username}' against Ldap");
+            if (!ldapConnection.checkAuthentication(ldapInformation.userdn, new String(password)))
+            {
+                getLogger().warn(authLogPrefix+"Ldap Authentication failed for user '${username}'");
+                throw new IncorrectCredentialsException("Invalid Ldap password for user '${username}'");
+            }
+        }
+        else //do local authentication
+        {
+            // Now check the user's password against the hashed value stored in the database.
+            if (!user.isPasswordSame(password)) {
+                getLogger().warn(authLogPrefix+"Invalid password for user '${username}'");
+                throw new IncorrectCredentialsException("Invalid password for user '${username}'");
+            }
+        }
+        getLogger().info(authLogPrefix+"Authentication successfully done for user '${username}' ");
+
+        return user;
     }
 
     def beforeDelete()
@@ -150,15 +216,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
     }
 
-
-    public static List getChannelTypes()
-    {
-        return ["email"];
-    }
-    public static List getEditableChannelTypes()
-    {
-        return ["email"];
-    }
 
     def addChannelInformation(channelParams) {
         def channelInformation = ChannelUserInformation.add(userId: id, type:channelParams.type, destination: channelParams.destination)

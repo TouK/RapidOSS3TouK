@@ -8,6 +8,10 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import connection.LdapConnection
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import connection.LdapConnectionOperations
+import com.ifountain.core.connection.ConnectionManager
+import com.ifountain.core.test.util.DatasourceTestUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,6 +29,9 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
+        CompassForTests.addOperationSupport (LdapConnection, LdapConnectionOperations);
+
+        ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
     }
 
     public void tearDown() {
@@ -36,6 +43,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsUser);
+        GroovySystem.metaClassRegistry.removeMetaClass(LdapConnection);
         ExpandoMetaClass.enableGlobally();
     }
     public void testAddUser()
@@ -607,5 +615,102 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         assertEquals(["email"],RsUser.getChannelTypes());
         assertEquals(["email"],RsUser.getEditableChannelTypes());
 
+    }
+
+
+    public void testAuthenticateUserWithLocal()
+    {
+        RsUser.metaClass.'static'.getAuthenticationType={return "local"};
+
+        //no user case
+        try{
+            RsUser.authenticateUser("nouser","123");
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.UnknownAccountException e)
+        {
+            assertTrue(e.getMessage().indexOf("No account found for user nouser")>=0);
+        }
+
+        //wrong password case
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+        def userProps = [username:"user1", password:"123",groups:[group1,group2]];
+        RsUser user = RsUser.addUser(userProps);
+
+        
+        try{
+            RsUser.authenticateUser("user1","12345");
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.IncorrectCredentialsException e)
+        {
+            assertTrue(e.getMessage().indexOf("Invalid password for user 'user1'")>=0);
+        }
+
+        //successfull login case
+        def userFromAuth=RsUser.authenticateUser("user1","123");
+        assertEquals(user.id,userFromAuth.id);
+    }
+
+    public void testAuthenticateUserWithLdap()
+    {
+        RsUser.metaClass.'static'.getAuthenticationType={return "ldap"};
+        
+        //no ldap information for user case
+        def group1 = Group.add(name:"group1");
+        def group2 = Group.add(name:"group2");
+
+        def userProps = [username:"user1", password:"123",groups:[group1,group2]];
+        RsUser user = RsUser.addUser(userProps);
+
+
+        try{
+            RsUser.authenticateUser("user1","12345");
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.UnknownAccountException e)
+        {
+            assertTrue(e.getMessage().indexOf("Ldap Information could not be found for 'user1'")>=0);
+        }
+
+        //no ldapConnection in user ldapInformation
+        def ldapInformation=user.addLdapInformation(userdn: "ldapDn");
+        try{
+            RsUser.authenticateUser("user1","12345");
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.UnknownAccountException e)
+        {
+            assertTrue("Wrong message ${e.getMessage()}",e.getMessage().indexOf("LdapInformation is not bound with an LdapConnection for user 'user1'")>=0);
+        }
+
+        //ldap checkAuthentication fails
+        def ldapConnection=LdapConnection.add(name:"ldapcon",url:"aaa");
+        assertFalse(ldapConnection.hasErrors());
+                
+
+        LdapConnection.metaClass.checkAuthentication={ String authUsername,String authPassword ->
+            return false;
+        }
+        
+        ldapInformation=user.addLdapInformation(userdn: "ldapDn",ldapConnection:ldapConnection);
+        try{
+            RsUser.authenticateUser("user1","12345");
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.IncorrectCredentialsException e)
+        {
+            assertTrue("Wrong message ${e.getMessage()}",e.getMessage().indexOf("Invalid Ldap password for user 'user1'")>=0);
+        }
+        
+        //successfull login case
+        LdapConnection.metaClass.checkAuthentication={ String authUsername,String authPassword ->
+            return true;
+        }
+
+        def userFromAuth=RsUser.authenticateUser("user1","123");
+        assertEquals(user.id,userFromAuth.id);
     }
 }

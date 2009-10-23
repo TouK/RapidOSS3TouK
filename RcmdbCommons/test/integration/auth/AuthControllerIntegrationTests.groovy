@@ -159,9 +159,8 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         controller.signIn();
 
-        println controller.response.redirectedUrl 
-        assertEquals("/auth/login?login=testuser&rememberMe=true&targetUri=test.gsp&flash=Invalid+username+and%2For+password",controller.response.redirectedUrl);
-
+        println controller.response.redirectedUrl
+        assertTrue(controller.response.redirectedUrl.indexOf("/auth/login?login=testuser&rememberMe=true&targetUri=test.gsp&flash=Error%3A+Login+Failed")>=0)
         
     }
     public void testSignInFailureWithFormatXml()
@@ -184,8 +183,8 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
         controller.signIn();
 
-        
-        assertEquals(ControllerUtils.convertErrorToXml("Invalid username or password."),controller.response.getContentAsString());
+        assertTrue(controller.response.getContentAsString().indexOf("Login Failed")>=0);
+        assertTrue(controller.response.getContentAsString().indexOf("<Errors>")>=0);
 
     }
 

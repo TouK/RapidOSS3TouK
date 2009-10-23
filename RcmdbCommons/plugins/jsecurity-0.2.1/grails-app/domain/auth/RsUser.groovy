@@ -34,6 +34,7 @@ class RsUser {
     String username
     String rsOwner = "p"
     String passwordHash
+    String authenticationServer ="local"
     List groups = [];
     List permissionRelations = [];
     List userInformations = [];

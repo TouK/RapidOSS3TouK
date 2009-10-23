@@ -51,15 +51,31 @@
                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url: 'mobile/' + gspFolder + '/objectDetails.gsp', params: [name: obj.name])}')">
                     </g:if>
                     <g:else>
-                        <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.location = '${rui.createLink(url: 'mobile/' + gspFolder + '/objectDetails.gsp', params: [name: obj.name])}'">
+                        <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                     </g:else>
+                    <%def isFirstColProcessed = false;%>
                     <g:each var="column" in="${CONFIG.INVENTORY_COLUMNS}">
                         <g:if test="${CONFIG.INVENTORY_DATE_PROPERTIES.contains(column.propertyName)}">
-                            <td>${format.format(obj[column.propertyName])?.encodeAsHTML()}</td>
+                            <td>
+                                <g:if test="${MobileUtils.isIphone(request) || isFirstColProcessed}">
+                                    ${format.format(obj[column.propertyName])?.encodeAsHTML()}
+                                </g:if>
+                                <g:else>
+                                    <a href="${rui.createLink(url: 'mobile/' + gspFolder + '/objectDetails.gsp', params: [name: obj.name])}">${format.format(obj[column.propertyName])?.encodeAsHTML()}</a>
+                                </g:else>
+                            </td>
                         </g:if>
                         <g:else>
-                            <td>${shortenProperty(obj[column.propertyName])?.encodeAsHTML()}</td>
+                            <td>
+                                <g:if test="${MobileUtils.isIphone(request) || isFirstColProcessed}">
+                                    ${shortenProperty(obj[column.propertyName])?.encodeAsHTML()}
+                                </g:if>
+                                <g:else>
+                                    <a href="${rui.createLink(url: 'mobile/' + gspFolder + '/objectDetails.gsp', params: [name: obj.name])}">${shortenProperty(obj[column.propertyName])?.encodeAsHTML()}</a>
+                                </g:else>
+                            </td>
                         </g:else>
+                        <%isFirstColProcessed = true;%>
                     </g:each>
                     </tr>
                 </g:each>

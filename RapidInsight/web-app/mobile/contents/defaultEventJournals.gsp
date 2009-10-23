@@ -29,8 +29,8 @@
         %>
         <div class="ri-mobile-tab">
             <ul>
-                <li><rui:link url="${propertiesUrl}" params="${propertiesParams}" target="_open">Properties</rui:link></li>
-                <li class="selected"><rui:link url="mobile/getJournals.gsp" params="${[eventId:params.eventId]}" target="_open">Journal</rui:link></li>
+                <li><rui:link url="${propertiesUrl}" params="${propertiesParams}">Properties</rui:link></li>
+                <li class="selected"><rui:link url="mobile/getJournals.gsp" params="${[eventId:params.eventId]}">Journal</rui:link></li>
             </ul>
         </div>
         <div class="table">

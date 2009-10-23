@@ -51,16 +51,32 @@
                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.iui.showPageByHref('${rui.createLink(url: 'mobile/' + gspFolder + '/eventDetails.gsp', params: [name: rsEvent.name])}')">
                     </g:if>
                     <g:else>
-                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}" onclick="window.location = '${rui.createLink(url: 'mobile/' + gspFolder+ '/eventDetails.gsp', params: [name: rsEvent.name])}'">
+                         <tr class="${(i % 2) == 0 ? 'alt' : 'reg'}">
                     </g:else>
                         <td width="1%"><img src="${createLinkTo(dir: severityMapping[rsEvent.severity.toString()] ? severityMapping[rsEvent.severity.toString()] : severityMapping['default'])}"/></td>
+                        <%def isFirstColProcessed = false;%>
                         <g:each var="column" in="${CONFIG.EVENT_COLUMNS}">
                             <g:if test="${CONFIG.EVENT_DATE_PROPERTIES.contains(column.propertyName)}">
-                                 <td>${format.format(rsEvent[column.propertyName])?.encodeAsHTML()}</td>
+                                 <td>
+                                     <g:if test="${MobileUtils.isIphone(request) || isFirstColProcessed == true}">
+                                        ${format.format(rsEvent[column.propertyName])?.encodeAsHTML()}
+                                     </g:if>
+                                     <g:else>
+                                         <a href="${rui.createLink(url: 'mobile/' + gspFolder + '/eventDetails.gsp', params: [name: rsEvent.name])}">${format.format(rsEvent[column.propertyName])?.encodeAsHTML()}</a>
+                                    </g:else>
+                                 </td>
                             </g:if>
                             <g:else>
-                                 <td>${shortenProperty(rsEvent[column.propertyName])?.encodeAsHTML()}</td>
+                                <td>
+                                     <g:if test="${MobileUtils.isIphone(request) || isFirstColProcessed == true}">
+                                        ${shortenProperty(rsEvent[column.propertyName])?.encodeAsHTML()}
+                                     </g:if>
+                                     <g:else>
+                                         <a href="${rui.createLink(url: 'mobile/' + gspFolder + '/eventDetails.gsp', params: [name: rsEvent.name])}">${shortenProperty(rsEvent[column.propertyName])?.encodeAsHTML()}</a>
+                                    </g:else>
+                                </td>
                             </g:else>
+                            <%isFirstColProcessed = true;%>
                         </g:each>
                     </tr>
                 </g:each>

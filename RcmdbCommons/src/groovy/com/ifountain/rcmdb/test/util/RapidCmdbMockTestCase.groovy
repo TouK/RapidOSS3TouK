@@ -49,6 +49,7 @@ import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.

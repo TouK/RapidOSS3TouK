@@ -41,6 +41,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
         def loadedDomainClass1 = gcl.parseClass("""
             class ${domainClassName1}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
+                Object ${RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE}
                 static searchable = {
                     except=["rel1"]
                 }
@@ -54,6 +55,7 @@ class RelationOperationPerformanceTest extends RapidCmdbWithCompassTestCase
             }
             class ${domainClassName2}{
                 Object ${RapidCMDBConstants.OPERATION_PROPERTY_NAME}
+                Object ${RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE}
                 static searchable = {
                     except=["revRel1"]
                 }

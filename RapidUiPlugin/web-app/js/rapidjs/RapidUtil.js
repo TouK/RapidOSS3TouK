@@ -81,6 +81,9 @@ String.prototype.trim = function() {
     return a.replace(/\s+$/, '');
 };
 String.prototype.toQuery = function() {
+    return  '"'+this.escapeQuery()+'"';
+}
+String.prototype.escapeQuery = function() {
     var a = this.replace(/\\/g, '\\\\');
     var a = a.replace(/"/g, '\\"');
     var a = a.replace(/\(/g, '\\(');

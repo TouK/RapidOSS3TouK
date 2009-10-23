@@ -59,8 +59,6 @@ rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toStrin
 rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss.SSS";
 
-//user authentication type local or ldap , any value other than ldap is evaluated as local
-rapidCMDB.authentication.type="local"; 
 
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true

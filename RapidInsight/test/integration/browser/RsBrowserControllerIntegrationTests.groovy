@@ -114,7 +114,7 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
 
     void testListDomainWithAllProperties() {
 
-        def expectedProperties = BaseDatasource.getPropertiesList().findAll {it.name != "id" && !it.isRelation && !it.isOperationProperty}
+        def expectedProperties = BaseDatasource.getPropertiesList().findAll {!it.isRelation && !it.isOperationProperty}
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -225,7 +225,8 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         assertEquals("conn9", datasources[0].name)
 
         def propertyList = model.propertyList;
-        assertEquals(BaseDatasource.keySet().size(), propertyList.size())
+        //keyset plus id property
+        assertEquals(BaseDatasource.keySet().size()+1, propertyList.size())
         assertEquals(10, model.count)
     }
 

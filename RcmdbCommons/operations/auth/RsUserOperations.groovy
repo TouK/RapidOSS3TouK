@@ -31,13 +31,14 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     
     public static def getAuthenticationType()
     {
-        return ApplicationHolder.application.config.toProperties()["rapidCMDB.authentication.type"];
+        return "local";
     }
     public static RsUser authenticateUser(String username,String password)
     {
         def authLogPrefix="User Authentication : ";
         getLogger().info(authLogPrefix+"Authenticating User '${username}'");
-        
+
+        String authenticationType = RsUser.getAuthenticationType();
 
         // Get the user with the given username. If the user is not found than exception is thrown
         def user = RsUser.get(username:username)
@@ -49,7 +50,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         username = user.username;
         getLogger().info(authLogPrefix+"Found user '${user.username}' in Repository");
         
-        String authenticationType = RsUser.getAuthenticationType();
+
 
         //do ldap authentication  
         if (authenticationType == "ldap" && username != RsUser.RSADMIN)
@@ -59,21 +60,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             {
                 getLogger().warn(authLogPrefix+"Ldap Information could not be found for '${username}'");
                 throw new UnknownAccountException("Ldap Information could not be found for '${username}'");
-            }
-
-            def ldapConnection = ldapInformation.ldapConnection
-            if (ldapConnection == null)
-            {
-                getLogger().warn(authLogPrefix+"LdapInformation is not bound with an LdapConnection for user '${username}'");
-                throw new UnknownAccountException("LdapInformation is not bound with an LdapConnection for user '${username}'");
-            }
-            
-            getLogger().info(authLogPrefix+"Authenticating User '${username}' against Ldap");
-            if (!ldapConnection.checkAuthentication(ldapInformation.userdn, new String(password)))
-            {
-                getLogger().warn(authLogPrefix+"Ldap Authentication failed for user '${username}'");
-                throw new IncorrectCredentialsException("Invalid Ldap password for user '${username}'");
-            }
+            }            
+            authenticateWithLdap(ldapInformation.ldapConnection,ldapInformation.userdn,password,username);
         }
         else //do local authentication
         {
@@ -87,7 +75,22 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         return user;
     }
+    private static void authenticateWithLdap(ldapConnection,String ldapUserdn,String ldapPassword,String username)
+    {
+        def authLogPrefix="User Authentication : ";
+        if (ldapConnection == null)
+        {
+            getLogger().warn(authLogPrefix+"LdapInformation is not bound with an LdapConnection for user '${username}'");
+            throw new UnknownAccountException("LdapInformation is not bound with an LdapConnection for user '${username}'");
+        }
 
+        getLogger().info(authLogPrefix+"Authenticating User '${username}' against Ldap");
+        if (!ldapConnection.checkAuthentication(ldapUserdn, ldapPassword))
+        {
+            getLogger().warn(authLogPrefix+"Ldap Authentication failed for user '${username}'");
+            throw new IncorrectCredentialsException("Invalid Ldap password for user '${username}'");
+        }
+    }
     def beforeDelete()
     {
        if(username.equalsIgnoreCase(getCurrentUserName()))

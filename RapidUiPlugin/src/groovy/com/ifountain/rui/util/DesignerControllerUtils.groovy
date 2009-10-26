@@ -64,7 +64,13 @@ class DesignerControllerUtils {
                     originalBackupFile.setText(configFile.getText());
                 }
             }
-            configFile.setText(uiConfigXml);
+            def stringWriter = new StringWriter()
+            def printWriter = new PrintWriter(stringWriter)
+
+            def node = new XmlParser().parseText(uiConfigXml)
+            new XmlNodePrinter(printWriter).print(node)
+            uiConfigXml = stringWriter.toString()
+            configFile.setText(uiConfigXml)
             new File("${backupDirPath}/${fileNamePrefix}_${new SimpleDateFormat('yyMMddHHmm').format(System.currentTimeMillis())}.xml").setText(uiConfigXml)
         }
         finally {

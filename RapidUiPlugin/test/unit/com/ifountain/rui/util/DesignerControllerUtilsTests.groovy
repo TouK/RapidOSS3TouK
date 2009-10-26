@@ -289,14 +289,6 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
         assertFalse(new File(DesignerControllerUtils.getTabFilePath(DIR, "page2", "tab5")).exists())
     }
 
-    void testDeneme(){
-//          def filePath = "D:/IdeaWorkspace/RapidModules/RapidInsight/grails-app/conf/uiconfiguration.xml"
-//          DesignerControllerUtils.save(new File(filePath).getText(), filePath, TestFile.TESTOUTPUT_DIR)
-        DesignerControllerUtils.reloadTemplates("D:/IdeaWorkspace/RapidModules/RapidUiPlugin/grails-app/templates/ui/designer");
-        DesignerControllerUtils.generate("D:/RapidServer/RapidSuite/grails-app/conf/uiconfiguration.xml", "D:/IdeaWorkspace/RapidModules/RapidUiPlugin/grails-app/templates/ui/designer", "RapidInsight/designer")
-
-    }
-
     private void createTemplates() {
         if (!templatesDir.exists()) {
             templatesDir.mkdirs();

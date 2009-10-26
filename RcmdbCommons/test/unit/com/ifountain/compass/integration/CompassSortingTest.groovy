@@ -3,6 +3,9 @@ package com.ifountain.compass.integration
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
+import application.RsApplication
+import com.ifountain.rcmdb.test.util.CompassForTests
+import application.RsApplicationOperations
 
 /**
 * Created by IntelliJ IDEA.
@@ -83,6 +86,26 @@ class CompassSortingTest extends RapidCmdbWithCompassTestCase{
         assertEquals (insts[0].id, returnedObjects[2].id);
     }
 
+    public void testSortingWithNumberProperty()
+    {
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+        def insts =[
+                SortTestoLevel2Child1.add(propInt: 1111),
+                SortTestoLevel2Child1.add(propInt: 112),
+                SortTestoLevel2Child1.add(propInt: 12),
+        ]
+        assertEquals (insts.size(), SortTestParentObject.count());
+        def returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"asc"]).results
+        assertEquals (insts[2].id, returnedObjects[0].id);
+        assertEquals (insts[1].id, returnedObjects[1].id);
+        assertEquals (insts[0].id, returnedObjects[2].id);
+
+        returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"desc"]).results
+        assertEquals (insts[0].id, returnedObjects[0].id);
+        assertEquals (insts[1].id, returnedObjects[1].id);
+        assertEquals (insts[2].id, returnedObjects[2].id);
+    }
+
     public void testSortingWithNonExistingProperty()
     {
         initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
@@ -100,6 +123,21 @@ class CompassSortingTest extends RapidCmdbWithCompassTestCase{
         returnedObjects = SortTestParentObject.search("alias:*", [sort:"propInt", order:"asc"]).results
         assertEquals (0, returnedObjects.size())
     }
+
+    public void testSortingCastExceptionDoesNotOccur()
+    {
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+
+        1.times{
+            SortTestoLevel2Child1.add(d:System.currentTimeMillis());
+        }
+        def add = SortTestParentObject.add([:]);
+
+        def returnedObjects = SortTestParentObject.search("alias:*").total
+        assertEquals (2, returnedObjects)
+        returnedObjects = SortTestParentObject.search("alias:*", [sort:"d"]).total
+        assertEquals (2, returnedObjects)
+    }
 }
 
 class SortTestParentObject {
@@ -112,6 +150,7 @@ class SortTestParentObject {
     def __dynamic_property_storage__;
     Long id
     Long version
+    Long d = new Long(0);
     Date rsInsertedAt = new Date(0);
     Date rsUpdatedAt  = new Date(0);
 

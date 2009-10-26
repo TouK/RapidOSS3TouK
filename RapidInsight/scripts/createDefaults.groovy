@@ -48,7 +48,6 @@ scriptsToAdd.add([name: "sametimeSender", type:CmdbScript.SCHEDULED, scheduleTyp
 scriptsToAdd.add([name: "smsSender", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true,staticParam:"connectorName:smsConnector"]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);
-scriptsToAdd.add([name: "importUiConfiguration"]);
 
 scriptsToAdd.add([name:"autocomplete", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getHierarchy", enabledForAllGroups:true])

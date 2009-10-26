@@ -15,7 +15,7 @@
 </head>
 <body>
 <div class="toolbar">
-    <h1>ROSS</h1>
+    <img src="${createLinkTo(dir:'images', file:'RapidOSSsmall.png')}"/>
     <div class="toolbarLinks">
         <a href="${createLinkTo(dir:'mobile/simple', file:'home.gsp')}">Home</a>|
         <rui:link url="mobile/simple/queries.gsp" params="${[filterType:'event', listURI:'mobile/simple/event.gsp']}">Queries</rui:link>|

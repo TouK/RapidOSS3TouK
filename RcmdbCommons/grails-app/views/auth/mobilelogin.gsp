@@ -24,7 +24,7 @@
 <body>
 
 <div class="toolbar">
-    <h1 id="pageTitle">ROSS</h1>
+     <img src="${createLinkTo(dir:'images', file:'RapidOSSsmall.png')}"/>
 </div>
 
 <g:if test="${MobileUtils.isIphone(request)}">

@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="toolbar">
-    <h1>ROSS</h1>
+    <img src="${createLinkTo(dir:'images', file:'RapidOSSsmall.png')}"/>
 </div>
 <ul class="list">
     <rui:include template="mobile/contents/pages.gsp" model="${binding.variables}"></rui:include>

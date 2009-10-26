@@ -1,6 +1,5 @@
 package com.ifountain.rui.util
 
-import ui.designer.UiLayoutUnit
 
 /**
 * Created by IntelliJ IDEA.

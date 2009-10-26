@@ -1,11 +1,11 @@
 <html>
 <head>
-    <meta name="layout" content="${tab.webPage.name}Layout" />
+    <meta name="layout" content="${tab.getPage().name}Layout" />
 </head>
 <body>
 <%
     print tabContent;
-    def layoutUnitsHavingContentFile = ui.designer.UiLayoutUnit.getLayoutUnitHavingContentFile(tab.layout);
+    def layoutUnitsHavingContentFile = com.ifountain.rui.designer.model.UiLayoutUnit.getLayoutUnitHavingContentFile(tab.layout);
 %>
 
 <%

@@ -13,7 +13,7 @@
 >
     <%
         uiElement.subComponents.each{subComponent->
-            if(subComponent.class.name == "ui.designer.UiSearchListTimeRangeSelector")
+            if(subComponent.class.name == "com.ifountain.rui.designer.model.UiSearchListTimeRangeSelector")
             {
     %>
     <rui:timeRangeSelector url="../${subComponent.url}" buttonConfigurationUrl="../${subComponent.buttonConfigurationUrl}" fromTimeProperty="${subComponent.fromTimeProperty}"
@@ -26,7 +26,7 @@
     <rui:sgMenuItems>
     <%
         uiElement.menuItems.each{menuItem->
-            if(menuItem.parentMenuItem == null){
+            if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                 def visiblePropertyName = menuItem.name+ "Visible";
@@ -63,7 +63,7 @@
     <rui:sgImages>
     <%
         uiElement.images.each{image->
-            def imageVisiblePropertyName = "image"+image.id+ "Visible";
+            def imageVisiblePropertyName = "image"+image._designerKey+ "Visible";
             println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(imageVisiblePropertyName, image.visible, true);
     %>
         <rui:sgImage visible="\${${imageVisiblePropertyName}}" src="../${image.src}"></rui:sgImage>
@@ -86,7 +86,7 @@
             <rui:sgColumnImages>
                 <%
                     column.images.each{colImage->
-                        def colImageMenuItemVisiblePropertyName = "image"+colImage.id+ "Visible";
+                        def colImageMenuItemVisiblePropertyName = "image"+colImage._designerKey+ "Visible";
                         println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(colImageMenuItemVisiblePropertyName, colImage.visible, true);
                 %>
                 <rui:sgColumnImage src="../${colImage.src}" visible="\${${colImageMenuItemVisiblePropertyName}}" align="${colImage.align}"></rui:sgColumnImage>
@@ -107,7 +107,7 @@
     <%
         uiElement.rowColors.each{rowColor->
             def textColor = rowColor.textColor;
-            def rowColorVisiblePropertyName = "rowColor"+rowColor.id+ "Visible";
+            def rowColorVisiblePropertyName = "rowColor"+rowColor._designerKey+ "Visible";
             println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(rowColorVisiblePropertyName, rowColor.visible, true);
     %>
         <rui:sgRowColor color="${rowColor.color}" visible="\${${rowColorVisiblePropertyName}}" ${textColor?"textColor='"+textColor+"'":""}></rui:sgRowColor>

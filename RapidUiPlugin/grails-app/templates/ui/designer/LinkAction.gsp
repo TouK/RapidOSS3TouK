@@ -1,7 +1,7 @@
 <%
-    def urlVisiblePropertyName = "linkUrl"+uiElement.id+ "Visible";
+    def urlVisiblePropertyName = "linkUrl"+uiElement._designerKey+ "Visible";
     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(urlVisiblePropertyName, uiElement.url, true);
-    def linkActionConditionPropertyName = "linkActionCondition"+uiElement.id+ "Condition";
+    def linkActionConditionPropertyName = "linkActionCondition"+uiElement._designerKey+ "Condition";
     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(linkActionConditionPropertyName, uiElement.condition, true);
 %>
 <rui:action id="${uiElement.name}" type="link" url="\${${urlVisiblePropertyName}}" target="${uiElement.target}" ${uiElement.condition != ""?"condition=\"\$"+linkActionConditionPropertyName+"\"":""}

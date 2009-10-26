@@ -25,7 +25,7 @@
             <rui:tgImages>
                 <%
                     column.images.each{colImage->
-                        def colImageMenuItemVisiblePropertyName = "image"+colImage.id+ "Visible";
+                        def colImageMenuItemVisiblePropertyName = "image"+colImage._designerKey+ "Visible";
                         println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(colImageMenuItemVisiblePropertyName, colImage.visible, true);
                 %>
                 <rui:tgImage src="../${colImage.src}" visible="\${${colImageMenuItemVisiblePropertyName}}" align="${colImage.align}"></rui:tgImage>
@@ -58,11 +58,12 @@
                     <rui:tgSubmenuItems>
                         <%
                             menuItem.childMenuItems.each{subMenuItem->
-                                def subMenuAction = subMenuItem.getAction();
+                                def subMenuActionString = subMenuItem.getActionString();
+                                def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
                                 def subMenuItemVisiblePropertyName = subMenuItem.name+ "Visible";
                                 println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
                         %>
-                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subMenuAction?"action='"+subMenuAction.name+"'":""} visible="\${${subMenuItemVisiblePropertyName}}"></rui:tgMenuItem>
+                            <rui:tgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuItemVisiblePropertyName}}"></rui:tgMenuItem>
                         <%
                                 }
                         %>
@@ -79,7 +80,7 @@
     <rui:tgRootImages>
         <%
             uiElement.rootImages.each{rootImage->
-                def rootImageVisiblePropertyName = "rootImage"+rootImage.id+ "Visible";
+                def rootImageVisiblePropertyName = "rootImage"+rootImage._designerKey+ "Visible";
                 println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(rootImageVisiblePropertyName, rootImage.visible, true);
         %>
         <rui:tgRootImage visible="\${${rootImageVisiblePropertyName}}" expanded="../${rootImage.expanded}" collapsed="../${rootImage.collapsed}"></rui:tgRootImage>

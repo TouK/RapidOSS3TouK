@@ -82,48 +82,51 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.requester.doGetRequest(this.metaDataUrl, null, this.loadMetaData)
     },
     loadMetaData: function(response) {
-        UIConfig.loadMetaData(response);
-        var modifyTreeConfig = function() {
-            var stringToAddToUrl = getUrlPrefix();
-            var rootImages = [];
-            var menuItems = [];
-            window.designerMenuEvaluate = function(dataNode, parentType, itemType, typeAttribute) {
-                var childNodes = dataNode.childNodes();
-                for (var i = 0; i < childNodes.length; i++) {
-                    var iType = childNodes[i].getAttribute(typeAttribute)
-                    if (iType == itemType && !UIConfig.isChildMultiple(parentType, itemType)) {
-                        return false;
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            UIConfig.loadMetaData(response);
+            var modifyTreeConfig = function() {
+                var stringToAddToUrl = getUrlPrefix();
+                var rootImages = [];
+                var menuItems = [];
+                window.designerMenuEvaluate = function(dataNode, parentType, itemType, typeAttribute) {
+                    var childNodes = dataNode.childNodes();
+                    for (var i = 0; i < childNodes.length; i++) {
+                        var iType = childNodes[i].getAttribute(typeAttribute)
+                        if (iType == itemType && !UIConfig.isChildMultiple(parentType, itemType)) {
+                            return false;
+                        }
                     }
+                    return true;
                 }
-                return true;
-            }
-            var configItems = UIConfig.getConfig()
-            for (var item in configItems) {
-                var imageConfig = UIConfig.getImageConfig(item);
-                if (imageConfig) {
-                    var expanded = stringToAddToUrl + imageConfig['expanded']
-                    var collapsed = stringToAddToUrl + imageConfig['collapsed']
-                    rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
-                }
-                var children = UIConfig.getChildren(item);
-                if (children) {
-                    for (var childType in children) {
-                        if (UIConfig.canBeDeleted(childType)) {
-                            var displayName = UIConfig.getDisplayName(childType);
+                var configItems = UIConfig.getConfig()
+                for (var item in configItems) {
+                    var imageConfig = UIConfig.getImageConfig(item);
+                    if (imageConfig) {
+                        var expanded = stringToAddToUrl + imageConfig['expanded']
+                        var collapsed = stringToAddToUrl + imageConfig['collapsed']
+                        rootImages.push({visible:"params.data." + this.treeTypeAttribute + " == '" + item + "'", expanded:expanded, collapsed:collapsed})
+                    }
+                    var children = UIConfig.getChildren(item);
+                    if (children) {
+                        for (var childType in children) {
+                            if (UIConfig.canBeDeleted(childType)) {
+                                var displayName = UIConfig.getDisplayName(childType);
 
-                            var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
-                            menuItems.push({id:'add_' + childType, label:'Add ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
+                                var addExpr = "window.designerMenuEvaluate(params.dataNode, '" + item + "', '" + childType + "', '" + this.treeTypeAttribute + "')"
+                                menuItems.push({id:'add_' + childType, label:'Add ' + displayName, visible:"params.data." + this.treeTypeAttribute + " =='" + item + "' && " + addExpr});
+                            }
                         }
                     }
                 }
+                menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && params.data." + this.treeTypeAttribute + " != 'Layout'"});
+                menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
+                this.tree.treeGridView.setMenuItems(menuItems);
+                this.tree.treeGridView.rootImages = rootImages;
             }
-            menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && params.data." + this.treeTypeAttribute + " != 'Layout'"});
-            menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
-            this.tree.treeGridView.setMenuItems(menuItems);
-            this.tree.treeGridView.rootImages = rootImages;
+            modifyTreeConfig.call(this)
+            this.getHelp();
         }
-        modifyTreeConfig.call(this)
-        this.getHelp();
+
     },
     getHelp: function() {
         this.requester.doGetRequest(this.helpUrl, null, this.loadHelp)
@@ -131,24 +134,28 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     getData: function() {
         this.requester.doGetRequest(this.url, null, this.loadData)
     },
-    loadHelp: function(response){
-        UIConfig.loadHelp(response);
-        this.getData();
+    loadHelp: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            UIConfig.loadHelp(response);
+            this.getData();
+        }
     },
     loadData: function(response) {
-        var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
-        var rootNode = data.getRootNode(this.rootTag)
-        this.addExtraAttributesToChildNodes(rootNode);
-        this.data = data;
-        this.tree.loadData(this.data);
-        var defferedExpandNode = function() {
-            var rows = this.tree.treeGridView.bufferView.rows;
-            if (rows.length > 0) {
-                this.expandTreeNode(rows[0])
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
+            var rootNode = data.getRootNode(this.rootTag)
+            this.addExtraAttributesToChildNodes(rootNode);
+            this.data = data;
+            this.tree.loadData(this.data);
+            var defferedExpandNode = function() {
+                var rows = this.tree.treeGridView.bufferView.rows;
+                if (rows.length > 0) {
+                    this.expandTreeNode(rows[0])
+                }
             }
+            defferedExpandNode.defer(100, this, []);
+            this.loadingMask.hide();
         }
-        defferedExpandNode.defer(100, this, []);
-        this.loadingMask.hide();
     },
 
     processSuccess: function(response) {
@@ -167,7 +174,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     handleFailure: function(errors, statusCodes) {
         this.loadingMask.hide();
-        this.tree.processFailure(errors, statusCodes)
+        this.tree.events["error"].fireDirect(this.tree, errors);
     },
 
     treeSelectionChanged:function(xmlData) {
@@ -407,7 +414,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
     save : function() {
         this.loadingMask.show("Saving, please wait...");
-        this.requester.doPostRequest(this.saveUrl, {configuration:this.data.firstChild().toString()}, this.saveSuccess);
+        this.requester.doPostRequest(this.saveUrl, {configuration:this.data.firstChild().toString()}, this.saveReturned);
     },
     confirmBoxHandler: function() {
         this.confirmBox.hide();
@@ -423,22 +430,26 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     },
     _generate : function() {
         this.loadingMask.show("Generating, please wait...");
-        this.requester.doGetRequest(this.generateUrl, {}, this.generateSuccess);
+        this.requester.doGetRequest(this.generateUrl, {}, this.generateReturned);
     },
-    saveSuccess: function(response) {
-        this.loadingMask.show("Successfully saved.");
-        this.dataChanged = false;
-        var self = this;
-        setTimeout(function() {
-            self.loadingMask.hide();
-        }, 1000)
+    saveReturned: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            this.loadingMask.show("Successfully saved.");
+            this.dataChanged = false;
+            var self = this;
+            setTimeout(function() {
+                self.loadingMask.hide();
+            }, 1000)
+        }
     },
-    generateSuccess: function(response) {
-        this.loadingMask.show("Successfully generated.");
-        var self = this;
-        setTimeout(function() {
-            self.loadingMask.hide();
-        }, 1000)
+    generateReturned: function(response) {
+        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+            this.loadingMask.show("Successfully generated.");
+            var self = this;
+            setTimeout(function() {
+                self.loadingMask.hide();
+            }, 1000)
+        }
     },
     render: function() {
         YAHOO.util.Dom.addClass(document.body, 'r-designer');

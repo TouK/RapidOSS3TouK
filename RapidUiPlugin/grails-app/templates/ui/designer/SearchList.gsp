@@ -17,7 +17,7 @@
 >
     <%
         uiElement.subComponents.each{subComponent->
-            if(subComponent.class.name == "ui.designer.UiSearchListTimeRangeSelector")
+            if(subComponent.class.name == "com.ifountain.rui.designer.model.UiSearchListTimeRangeSelector")
             {
     %>
         <rui:timeRangeSelector url="../${subComponent.url}" buttonConfigurationUrl="../${subComponent.buttonConfigurationUrl}" fromTimeProperty="${subComponent.fromTimeProperty}"
@@ -30,7 +30,7 @@
     <rui:slMenuItems>
         <%
             uiElement.getRowMenuItems().each{menuItem->
-                if(menuItem.parentMenuItem == null){
+                if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
                 def menuItemVisiblePropertyName = menuItem.name+ "Visible";
@@ -106,7 +106,7 @@
         uiElement.fields.each{field->
             def fieldsString = field.fields.split(",").toString();
             fieldsString = fieldsString.substring(1, fieldsString.length()-1);
-            def expVisiblePropertyName = "fieldExpression"+field.id+ "Visible";
+            def expVisiblePropertyName = "fieldExpression"+field._designerKey+ "Visible";
             println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(expVisiblePropertyName, field.exp, true);
     %>
         <rui:slField exp="\${${expVisiblePropertyName}}" fields='\${[${fieldsString}]}'></rui:slField>
@@ -117,7 +117,7 @@
     <rui:slImages>
     <%
         uiElement.images.each{image->
-            def imageMenuItemVisiblePropertyName = "image"+image.id+ "Visible";
+            def imageMenuItemVisiblePropertyName = "image"+image._designerKey+ "Visible";
             println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(imageMenuItemVisiblePropertyName, image.visible, true);
     %>
         <rui:slImage visible="\${${imageMenuItemVisiblePropertyName}}" src="../${image.src}"></rui:slImage>

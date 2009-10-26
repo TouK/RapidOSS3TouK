@@ -417,7 +417,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         if (addArchive(oneHour,12) == 1) return;
     }
 
-    private def createDBConfig() {
+    def createDBConfig() {
         def dbConfig = [:]
 
         //there could be change in file name

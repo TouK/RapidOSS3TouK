@@ -91,7 +91,7 @@ String.prototype.escapeQuery = function() {
     return a;
 };
 String.prototype.toExactQuery = function() {
-    var a = '"(' + this.toQuery() + ')"'
+    var a = '"(' + this.escapeQuery() + ')"'
     return a;
 };
 YAHOO.rapidjs.ArrayUtils = new function()

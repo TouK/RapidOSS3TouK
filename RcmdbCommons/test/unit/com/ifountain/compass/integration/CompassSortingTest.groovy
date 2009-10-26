@@ -128,10 +128,8 @@ class CompassSortingTest extends RapidCmdbWithCompassTestCase{
     {
         initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
 
-        1.times{
-            SortTestoLevel2Child1.add(d:System.currentTimeMillis());
-        }
-        def add = SortTestParentObject.add([:]);
+        SortTestoLevel2Child1.add(d:System.currentTimeMillis());
+        SortTestParentObject.add([:]);
 
         def returnedObjects = SortTestParentObject.search("alias:*").total
         assertEquals (2, returnedObjects)

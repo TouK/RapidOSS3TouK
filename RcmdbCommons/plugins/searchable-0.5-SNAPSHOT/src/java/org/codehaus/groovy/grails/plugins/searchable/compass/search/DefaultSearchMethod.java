@@ -135,13 +135,22 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             }
         }
         public Object doInCompass(CompassSession session) throws CompassException {
-            //TODO:if compass cannot determine sort type, it throws exception as cast exception. We will perform
-            // string sort on every field. This will give correct results since all of the values are formatted with same formatter
-            if(options.get("sortType") == null)
+            try
             {
-                options.put("sortType", "string");
+                return _doInCompass(session);
             }
-            return _doInCompass(session);
+            catch(RuntimeException t)
+            {
+                //TODO:if compass cannot determine sort type, it throws exception. In this case, we will try to perform
+                // string sort. This will give correct results since all of the values are formatted with same formatter
+                t.printStackTrace();
+                if(options.get("sortType") == null && (t.toString().indexOf("does not appear to be indexed") >= 0 || t.toString().indexOf("java.lang.ClassCastException") >= 0))
+                {
+                    options.put("sortType", "string");
+                    return _doInCompass(session);
+                }
+                throw t;
+            }
         }
 
         public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult, Map searchOptions) {

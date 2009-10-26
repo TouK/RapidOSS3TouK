@@ -399,7 +399,7 @@ public class RrdVariableOperations extends com.ifountain.rcmdb.domain.operation.
         return arcStep;
     }
 
-    private def createDefaultArchives(){
+    def createDefaultArchives(){
         if(archives.size()>0) return;
 
         long oneMinute = 60L

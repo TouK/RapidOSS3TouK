@@ -158,6 +158,7 @@ class RapidCmdbBuild extends Build {
         if (TEST) {
             ant.copy(file: "${env.third_party}/lib/javamail/pop3.jar", toDir: dirToCopyTo);            
             ant.copy(file: "${env.third_party}/lib/selenium/selenium-java-client-driver.jar", toDir: dirToCopyTo);
+            ant.copy(file: "${env.licenced_jars}/lib/jdbc/mysql-connector-java-3.1.8-bin.jar", toDir: dirToCopyTo);
         }
         
 

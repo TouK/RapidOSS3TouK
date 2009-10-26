@@ -3,7 +3,7 @@ package ui.designer
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import groovy.xml.MarkupBuilder
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,23 +16,12 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
 
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll {
-            if (it.clazz.name.startsWith(UiWebPage.getPackage().name))
-            {
-                it.clazz.'removeAll'();
-            }
-        }
         DesignerTrashPage.removeAll();
     }
 
     public void tearDown() {
+        DesignerSpace.destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        def uiDomainClasses = ApplicationHolder.application.getDomainClasses().findAll {
-            if (it.clazz.name.startsWith(UiWebPage.getPackage().name))
-            {
-                it.clazz.'removeAll'();
-            }
-        }
     }
 
     public void testUiDesignerControllerCachesTemplates()
@@ -49,15 +38,12 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         UiDesignerController controller = new UiDesignerController();
         controller.params.configuration = sw.toString()
         controller.save();
-        def url1 = UiWebPage.get(name: url1Props.name, isActive: true);
-        assertNotNull(url1);
         assertEqualsXML("<Successful>UI configuration saved successfully</Successful>", controller.response.contentAsString);
 
         File uiUrlTemplate = new File("${System.getProperty("base.dir")}/${UiDesignerController.TEMPLATES_DIRECTORY}/WebPage.gsp");
         assertTrue(uiUrlTemplate.exists());
         def originalTemplate = uiUrlTemplate.getText();
         //test generate gsp files
-        deleteGeneratedFiles();
         IntegrationTestUtils.resetController(controller);
         controller.generate();
         assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);

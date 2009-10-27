@@ -103,7 +103,7 @@ class CompassTransactionFactoryTest extends AbstractSearchableCompassTests {
         {
         }
         searchTransaction = factory.createTransaction();
-        assertEquals("Global transaction rollbackGlobalTransaction method will rollback transaction",1, searchTransaction.getSession().queryBuilder().queryString ("id:0").toQuery().hits().length());
+        assertEquals("Global transaction rollbackGlobalTransaction method will not rollback transaction",0, searchTransaction.getSession().queryBuilder().queryString ("id:0").toQuery().hits().length());
         searchTransaction.commit();
 
         tr = factory.createGlobalTransaction();

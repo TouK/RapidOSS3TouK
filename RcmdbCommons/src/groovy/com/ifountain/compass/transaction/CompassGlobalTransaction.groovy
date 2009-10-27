@@ -28,7 +28,7 @@ class CompassGlobalTransaction extends AbstractGlobalTransaction implements ICom
     }
 
     public void rollbackGlobalTransaction() {
-        tr.rollback()
+        tr.commit();
     }
 
     public org.compass.core.CompassSession getSession()

@@ -230,6 +230,8 @@ class RapidDomainClassGrailsPlugin {
             //for testing
             mc.'static'._setDomainOperation = {Class oprClass->
                 manager.setOperationClass (oprClass);
+                getPropertiesMethod.setOperationClass (manager.getOperationClass());
+                getOperationsMethod.setOperationClass (manager.getOperationClass());
             }
             mc.propertyMissing = {String name->
                 def domainObject = delegate;

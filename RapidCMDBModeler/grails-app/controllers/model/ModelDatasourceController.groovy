@@ -23,7 +23,7 @@ class ModelDatasourceController {
     def index = {redirect(action: list, params: params)}
     def list = {
         if (!params.max) params.max = 10
-        [modelDatasourceList: ModelDatasource.list(params)]
+        [modelDatasourceList: ModelDatasource.search("alias:*", params).results]
     }
 
     def edit = {

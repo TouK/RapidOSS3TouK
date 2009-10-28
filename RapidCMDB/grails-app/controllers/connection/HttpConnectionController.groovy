@@ -30,7 +30,7 @@ class HttpConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [httpConnectionList: HttpConnection.list(params)]
+        [httpConnectionList: HttpConnection.search("alias:*", params).results]
     }
 
     def show = {

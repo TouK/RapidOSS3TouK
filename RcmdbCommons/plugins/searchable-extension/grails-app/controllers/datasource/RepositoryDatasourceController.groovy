@@ -16,7 +16,7 @@ class RepositoryDatasourceController {
 
     def list = {
         if (!params.max) params.max = 10
-        [repositoryDatasourceList: RepositoryDatasource.list(params)]
+        [repositoryDatasourceList: RepositoryDatasource.search("alias:*", params).results]
     }
 
     def show = {

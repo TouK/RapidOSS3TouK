@@ -266,7 +266,7 @@ class SearchableExtensionGrailsPlugin {
         }
 
         mc.'static'.list = {Map options ->
-            return CompassMethodInvoker.search(mc, "alias:*", options).results;
+            return CompassMethodInvoker.searchEvery(mc, "alias:*", options);
         }
 
         mc.'static'.count = {->

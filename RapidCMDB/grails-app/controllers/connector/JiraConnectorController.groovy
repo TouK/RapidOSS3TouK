@@ -14,7 +14,7 @@ class JiraConnectorController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [jiraConnectorList: JiraConnector.list(params)]
+        [jiraConnectorList: JiraConnector.search("alias:*", params).results]
     }
 
     def show = {

@@ -15,7 +15,7 @@ class SametimeConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [sametimeConnectionList: SametimeConnection.list(params)]
+        [sametimeConnectionList: SametimeConnection.search("alias:*", params).results]
     }
 
     def show = {

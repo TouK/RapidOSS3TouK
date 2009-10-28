@@ -26,7 +26,7 @@ class SearchQueryController {
     def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
     def list = {
         if (!params.max) params.max = 10
-        def searchQueries = SearchQuery.list(params);
+        def searchQueries = SearchQuery.search("alias:*", params).results;
         withFormat {
             html searchQueryList: searchQueries
             xml {render searchQueries as XML}

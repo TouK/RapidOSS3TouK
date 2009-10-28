@@ -29,7 +29,7 @@ class MapGroupController {
     def list = {
         if (!params.max) params.max = 10
         //[ mapGroupList: MapGroup.list( params ) ]
-        def mapGroups = MapGroup.list(params);
+        def mapGroups = MapGroup.search("alias:*", params).results;
         withFormat {
             html mapGroupList: mapGroups
             xml {render mapGroups as XML}

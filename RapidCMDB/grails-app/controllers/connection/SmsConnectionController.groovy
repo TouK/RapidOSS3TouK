@@ -16,7 +16,7 @@ class SmsConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [smsConnectionList: SmsConnection.list(params)]
+        [smsConnectionList: SmsConnection.search("alias:*", params).results]
     }
 
     def show = {

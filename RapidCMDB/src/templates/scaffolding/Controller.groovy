@@ -29,7 +29,7 @@ class ${className}Controller {
 
     def list = {
         if(!params.max) params.max = 10
-        [ ${propertyName}List: ${className}.list( params ) ]
+        [ ${propertyName}List: ${className}.search("alias:*", params).results ]
     }
 
     def show = {

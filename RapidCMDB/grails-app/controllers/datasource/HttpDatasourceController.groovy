@@ -30,7 +30,7 @@ class HttpDatasourceController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [httpDatasourceList: HttpDatasource.list(params)]
+        [httpDatasourceList: HttpDatasource.search("alias:*", params).results]
     }
 
     def show = {

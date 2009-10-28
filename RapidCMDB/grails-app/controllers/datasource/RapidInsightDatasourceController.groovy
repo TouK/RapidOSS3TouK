@@ -30,7 +30,7 @@ class RapidInsightDatasourceController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [rapidInsightDatasourceList: RapidInsightDatasource.list(params)]
+        [rapidInsightDatasourceList: RapidInsightDatasource.search("alias:*", params).results]
     }
 
     def show = {

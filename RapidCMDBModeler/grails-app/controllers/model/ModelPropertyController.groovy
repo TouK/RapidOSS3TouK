@@ -25,7 +25,7 @@ class ModelPropertyController {
     def index = {redirect(action: list, params: params)}
     def list = {
         if (!params.max) params.max = 10
-        [modelPropertyList: ModelProperty.list(params)]
+        [modelPropertyList: ModelProperty.search("alias:*", params).results]
     }
 
     def edit = {

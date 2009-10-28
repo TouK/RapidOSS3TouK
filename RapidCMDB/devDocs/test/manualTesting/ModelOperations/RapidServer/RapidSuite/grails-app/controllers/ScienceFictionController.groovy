@@ -30,7 +30,7 @@ class ScienceFictionController {
 
     def list = {
         if (!params.max) params.max = 10
-        [scienceFictionList: ScienceFiction.list(params)]
+        [scienceFictionList: ScienceFiction.search("alias:*", params).results]
     }
 
     def show = {

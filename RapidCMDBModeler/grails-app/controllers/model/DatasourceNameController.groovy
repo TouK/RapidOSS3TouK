@@ -30,7 +30,7 @@ class DatasourceNameController {
 
     def list = {
         if (!params.max) params.max = 10
-        [datasourceNameList: DatasourceName.list(params)]
+        [datasourceNameList: DatasourceName.search("alias:*", params).results]
     }
 
     def show = {

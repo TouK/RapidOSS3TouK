@@ -30,7 +30,7 @@ class RapidInsightConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [rapidInsightConnectionList: RapidInsightConnection.list(params)]
+        [rapidInsightConnectionList: RapidInsightConnection.search("alias:*", params).results]
     }
 
     def show = {

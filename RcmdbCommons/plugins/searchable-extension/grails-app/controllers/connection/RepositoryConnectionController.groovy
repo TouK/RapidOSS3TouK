@@ -16,7 +16,7 @@ class RepositoryConnectionController {
 
     def list = {
         if (!params.max) params.max = 10
-        [repositoryConnectionList: RepositoryConnection.list(params)]
+        [repositoryConnectionList: RepositoryConnection.search("alias:*", params).results]
     }
 
     def show = {

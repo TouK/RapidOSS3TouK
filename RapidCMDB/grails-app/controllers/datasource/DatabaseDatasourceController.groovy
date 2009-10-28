@@ -30,7 +30,7 @@ class DatabaseDatasourceController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [databaseDatasourceList: DatabaseDatasource.list(params)]
+        [databaseDatasourceList: DatabaseDatasource.search("alias:*", params).results]
     }
 
     def show = {

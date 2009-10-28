@@ -30,7 +30,7 @@ class AuthorController {
 
     def list = {
         if (!params.max) params.max = 10
-        [authorList: Author.list(params)]
+        [authorList: Author.search("alias:*", params).results]
     }
 
     def show = {

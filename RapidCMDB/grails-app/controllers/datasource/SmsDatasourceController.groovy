@@ -15,7 +15,7 @@ class SmsDatasourceController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
         if (!params.sort) params.sort = "name"
-        [smsDatasourceList: SmsDatasource.list(params)]
+        [smsDatasourceList: SmsDatasource.search("alias:*", params).results]
     }
 
     def show = {

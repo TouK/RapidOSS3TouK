@@ -32,12 +32,12 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
     {
         Map classes = initializePluginAndClasses([:], true);
         def datePropValue = new Date();
-        def addedObjectProps = [dateProp:datePropValue]
+        def addedObjectProps = [dateProp: datePropValue]
         def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
         def objectInRepo = classes.modelWithDateKeyProp.search("id:${addedObject.id}").results[0];
-        assertNotNull (objectInRepo);
-        
+        assertNotNull(objectInRepo);
+
         addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
         println addedObject.errors
         assertFalse(addedObject.hasErrors());
@@ -46,41 +46,41 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
     public void testAddMethodWithInvalidPropertyValue()
     {
         Map classes = initializePluginAndClasses([:], true);
-        def addedObjectProps = [dateProp:""]
+        def addedObjectProps = [dateProp: ""]
         def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
         assertTrue(addedObject.hasErrors());
-        assertEquals (1, addedObject.errors.allErrors.size());
-        assertEquals ("rapidcmdb.invalid.property.type", addedObject.errors.allErrors[0].code);
+        assertEquals(1, addedObject.errors.allErrors.size());
+        assertEquals("rapidcmdb.invalid.property.type", addedObject.errors.allErrors[0].code);
     }
 
     public void testUpdateMethodWithInvalidPropertyValue()
     {
         Map classes = initializePluginAndClasses([:], true);
         def datePropValue = new Date();
-        def addedObjectProps = [dateProp:datePropValue]
+        def addedObjectProps = [dateProp: datePropValue]
         def addedObject = classes.modelWithDateKeyProp.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
 
 
-        def updateProps = [dateProp:""]
+        def updateProps = [dateProp: ""]
         def updatedObject = addedObject.update(updateProps);
         assertTrue(updatedObject.hasErrors());
-        assertEquals (1, updatedObject.errors.allErrors.size());
-        assertEquals ("rapidcmdb.invalid.property.type", updatedObject.errors.allErrors[0].code);
+        assertEquals(1, updatedObject.errors.allErrors.size());
+        assertEquals("rapidcmdb.invalid.property.type", updatedObject.errors.allErrors[0].code);
 
         assertEquals(1, classes.modelWithDateKeyProp.count());
-        assertNotNull(classes.modelWithDateKeyProp.get(dateProp:datePropValue));
+        assertNotNull(classes.modelWithDateKeyProp.get(dateProp: datePropValue));
     }
 
 
     public void testAddMethodWithFederatedProperty()
     {
         Map classes = initializePluginAndClassesForFederationTest();
-        def addedObjectProps = [keyProp:"key", prop1:"prop1Value", prop2:"invalid date prop value"]
+        def addedObjectProps = [keyProp: "key", prop1: "prop1Value", prop2: "invalid date prop value"]
         def addedObject = classes.federatedModel.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
         def objectInRepo = classes.federatedModel.search("id:${addedObject.id}").results[0];
-        assertNotNull (objectInRepo);
+        assertNotNull(objectInRepo);
     }
 
 
@@ -157,21 +157,20 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertFalse(addedObject.hasErrors());
 
         DataStore.clear();
-        assertNotNull(classes.child.get(keyProp:"object1"));
-        assertTrue (DataStore.get("onLoad"));
+        assertNotNull(classes.child.get(keyProp: "object1"));
+        assertTrue(DataStore.get("onLoad"));
 
         DataStore.clear();
-        assertNotNull(classes.child.getFromHierarchy(keyProp:"object1"));
-        assertTrue (DataStore.get("onLoad"));
+        assertNotNull(classes.child.getFromHierarchy(keyProp: "object1"));
+        assertTrue(DataStore.get("onLoad"));
 
         DataStore.clear();
-        assertNotNull(classes.child.get([keyProp:"object1"], false));
-        assertNull (DataStore.get("onLoad"));
+        assertNotNull(classes.child.get([keyProp: "object1"], false));
+        assertNull(DataStore.get("onLoad"));
 
         DataStore.clear();
-        assertNotNull(classes.child.getFromHierarchy([keyProp:"object1"], false));
-        assertNull (DataStore.get("onLoad"));
-
+        assertNotNull(classes.child.getFromHierarchy([keyProp: "object1"], false));
+        assertNull(DataStore.get("onLoad"));
 
     }
 
@@ -348,6 +347,29 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         addedObject1.removeRelation("rel1": relatedObject1);
         assertEquals(0, addedObject1.rel1.size())
         assertEquals(0, relatedObject1.revrel1.size())
+    }
+
+    public void testListMethod() {
+        Map classes = initializePluginAndClasses();
+        def addedObject1 = classes.parent.add(keyProp: "object1")
+        def addedObject2 = classes.parent.add(keyProp: "object2")
+        def addedObject3 = classes.parent.add(keyProp: "object3")
+        assertFalse(addedObject1.hasErrors());
+        assertFalse(addedObject2.hasErrors());
+        assertFalse(addedObject3.hasErrors());
+
+        def objects = classes.parent.list();
+        assertEquals(3, objects.size())
+        assertTrue(objects.contains(addedObject1))
+        assertTrue(objects.contains(addedObject2))
+        assertTrue(objects.contains(addedObject3))
+
+        //list with options (ignores max)
+        objects = classes.parent.list([sort:"keyProp", order:"desc", max:1]);
+        assertEquals(3, objects.size())
+        assertEquals("object3", objects[0].keyProp)
+        assertEquals("object2", objects[1].keyProp)
+        assertEquals("object1", objects[2].keyProp)
 
     }
 
@@ -380,14 +402,14 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         String childModel2String = ModelGenerationTestUtils.getModelText(childModel2MetaProps, [], [], [], [rel1], additionalParts["child2"])
         String relatedModelString = ModelGenerationTestUtils.getModelText(relatedModelMetaProps, [], modelProps, keyPropList, [revrel1], additionalParts["related"])
         String modelWithDateKeyPropString = ModelGenerationTestUtils.getModelText(modelWithDateKeyPropMetaData, [dateProp], [dateProp], [])
-        this.gcl.parseClass(parentModelString + childModelString + relatedModelString + childModel2String+modelWithDateKeyPropString);
+        this.gcl.parseClass(parentModelString + childModelString + relatedModelString + childModel2String + modelWithDateKeyPropString);
         Class parentModelClass = this.gcl.loadClass(parentModelName);
         Class childModelClass = this.gcl.loadClass(childModelName);
         Class childModel2Class = this.gcl.loadClass(childModel2Name);
         Class relatedModelClass = this.gcl.loadClass(relatedModelName);
         Class modelWithDateKeyPropClass = this.gcl.loadClass(modelWithDateKeyPropName);
         initialize([parentModelClass, childModelClass, relatedModelClass, childModel2Class, modelWithDateKeyPropClass], [], isPersisted)
-        return [parent: parentModelClass, child: childModelClass, related: relatedModelClass, child2: childModel2Class, modelWithDateKeyProp:modelWithDateKeyPropClass];
+        return [parent: parentModelClass, child: childModelClass, related: relatedModelClass, child2: childModel2Class, modelWithDateKeyProp: modelWithDateKeyPropClass];
     }
 
     private Map initializePluginAndClassesForFederationTest()
@@ -395,9 +417,9 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def modelName = "FederatedModel";
         def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
         def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE, blank: false];
-        def prop2 = [name: "prop2", type: ModelGenerator.DATE_TYPE, blank: false, datasource:"ds1"];
+        def prop2 = [name: "prop2", type: ModelGenerator.DATE_TYPE, blank: false, datasource: "ds1"];
 
-        def datasource = [name:"ds1", keys:[[propertyName:"prop1"]]]
+        def datasource = [name: "ds1", keys: [[propertyName: "prop1"]]]
 
         def modelMetaProps = [name: modelName]
         def modelProps = [keyProp, prop1, prop2];

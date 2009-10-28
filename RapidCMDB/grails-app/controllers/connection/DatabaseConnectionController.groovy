@@ -30,7 +30,7 @@ class DatabaseConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [databaseConnectionList: DatabaseConnection.list(params)]
+        [databaseConnectionList: DatabaseConnection.search("alias:*", params).results]
     }
 
     def show = {

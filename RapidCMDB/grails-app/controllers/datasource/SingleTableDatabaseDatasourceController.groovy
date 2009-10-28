@@ -30,7 +30,7 @@ class SingleTableDatabaseDatasourceController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [singleTableDatabaseDatasourceList: SingleTableDatabaseDatasource.list(params)]
+        [singleTableDatabaseDatasourceList: SingleTableDatabaseDatasource.search("alias:*", params).results]
     }
 
     def show = {

@@ -16,7 +16,7 @@ class JabberConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [jabberConnectionList: JabberConnection.list(params)]
+        [jabberConnectionList: JabberConnection.search("alias:*", params).results]
     }
 
     def show = {

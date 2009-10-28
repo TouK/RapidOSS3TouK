@@ -31,7 +31,7 @@ class EmailDatasourceController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [emailDatasourceList: EmailDatasource.list(params)]
+        [emailDatasourceList: EmailDatasource.search("alias:*", params).results]
     }
 
     def show = {

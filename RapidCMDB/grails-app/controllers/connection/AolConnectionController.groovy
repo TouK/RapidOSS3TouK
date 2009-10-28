@@ -16,7 +16,7 @@ class AolConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [aolConnectionList: AolConnection.list(params)]
+        [aolConnectionList: AolConnection.search("alias:*", params).results]
     }
 
     def show = {

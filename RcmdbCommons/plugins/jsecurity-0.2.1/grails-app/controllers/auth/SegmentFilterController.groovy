@@ -14,7 +14,7 @@ class SegmentFilterController {
 
     def list = {
         if (!params.max) params.max = 10
-        [segmentFilterList: SegmentFilter.list(params)]
+        [segmentFilterList: SegmentFilter.search("alias:*", params).results]
     }
 
     def show = {

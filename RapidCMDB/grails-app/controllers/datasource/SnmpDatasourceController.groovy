@@ -30,7 +30,7 @@ class SnmpDatasourceController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
         if (!params.sort) params.sort = "name"
-        [snmpDatasourceList: SnmpDatasource.list(params)]
+        [snmpDatasourceList: SnmpDatasource.search("alias:*", params).results]
     }
 
     def show = {

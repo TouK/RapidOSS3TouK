@@ -28,7 +28,7 @@ class LdapConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [ldapConnectionList: LdapConnection.list(params)]
+        [ldapConnectionList: LdapConnection.search("alias:*", params).results]
     }
 
     def show = {

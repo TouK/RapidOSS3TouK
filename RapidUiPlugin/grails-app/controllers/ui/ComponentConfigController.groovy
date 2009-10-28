@@ -27,7 +27,7 @@ class ComponentConfigController {
 
     def list = {
         if (!params.max) params.max = 10
-        [componentConfigList: ComponentConfig.list(params)]
+        [componentConfigList: ComponentConfig.search("alias:*", params).results]
     }
 
     def show = {

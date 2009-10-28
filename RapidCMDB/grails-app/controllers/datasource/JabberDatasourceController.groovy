@@ -15,7 +15,7 @@ class JabberDatasourceController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
         if (!params.sort) params.sort = "name"
-        [jabberDatasourceList: JabberDatasource.list(params)]
+        [jabberDatasourceList: JabberDatasource.search("alias:*", params).results]
     }
 
     def show = {

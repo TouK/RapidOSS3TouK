@@ -23,7 +23,7 @@ class ModelDatasourceKeyMappingController {
     def index = {redirect(action: list, params: params)}
     def list = {
         if (!params.max) params.max = 10
-        [modelDatasourceKeyMappingList: ModelDatasourceKeyMapping.list(params)]
+        [modelDatasourceKeyMappingList: ModelDatasourceKeyMapping.search("alias:*", params).results]
     }
 
     def edit = {

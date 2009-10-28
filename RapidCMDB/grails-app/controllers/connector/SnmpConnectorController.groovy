@@ -39,7 +39,7 @@ class SnmpConnectorController {
 
     def list = {        
         if (!params.sort) params.sort = "name"
-        [snmpConnectorList: SnmpConnector.list(params)]
+        [snmpConnectorList: SnmpConnector.search("alias:*", params).results]
     }
 
     def show = {

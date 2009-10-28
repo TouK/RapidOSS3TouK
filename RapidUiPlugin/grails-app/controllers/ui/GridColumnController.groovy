@@ -27,7 +27,7 @@ class GridColumnController {
 
     def list = {
         if (!params.max) params.max = 10
-        [gridColumnList: GridColumn.list(params)]
+        [gridColumnList: GridColumn.search("alias:*", params).results]
     }
 
     def show = {

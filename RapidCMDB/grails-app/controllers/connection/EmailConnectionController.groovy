@@ -32,7 +32,7 @@ class EmailConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [emailConnectionList: EmailConnection.list(params)]
+        [emailConnectionList: EmailConnection.search("alias:*", params).results]
     }
 
     def show = {

@@ -15,7 +15,7 @@ class AolDatasourceController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
         if (!params.sort) params.sort = "name"
-        [aolDatasourceList: AolDatasource.list(params)]
+        [aolDatasourceList: AolDatasource.search("alias:*", params).results]
     }
 
     def show = {

@@ -30,7 +30,7 @@ class SnmpConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [snmpConnectionList: SnmpConnection.list(params)]
+        [snmpConnectionList: SnmpConnection.search("alias:*", params).results]
     }
 
     def show = {

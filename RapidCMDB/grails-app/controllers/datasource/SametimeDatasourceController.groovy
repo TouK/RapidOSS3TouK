@@ -15,7 +15,7 @@ class SametimeDatasourceController {
     def allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
     def list = {
         if (!params.sort) params.sort = "name"
-        [sametimeDatasourceList: SametimeDatasource.list(params)]
+        [sametimeDatasourceList: SametimeDatasource.search("alias:*", params).results]
     }
 
     def show = {

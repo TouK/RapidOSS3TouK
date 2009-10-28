@@ -25,7 +25,7 @@ class SearchQueryGroupController {
     def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
     def list = {
         if (!params.max) params.max = 10
-        def searchQueryGroups = SearchQueryGroup.list(params);
+        def searchQueryGroups = SearchQueryGroup.search("alias:*", params).results;
         withFormat {
             html searchQueryGroupList: searchQueryGroups
             xml {render searchQueryGroups as XML}

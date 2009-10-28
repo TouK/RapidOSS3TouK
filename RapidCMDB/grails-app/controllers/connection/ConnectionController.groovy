@@ -30,7 +30,7 @@ class ConnectionController {
 
     def list = {
         if (!params.sort) params.sort = "name"
-        [connectionList: Connection.list(params)]
+        [connectionList: Connection.search("alias:*", params).results]
     }
 
     def show = {

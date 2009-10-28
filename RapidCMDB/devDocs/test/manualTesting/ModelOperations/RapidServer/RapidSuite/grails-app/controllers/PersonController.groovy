@@ -30,7 +30,7 @@ class PersonController {
 
     def list = {
         if (!params.max) params.max = 10
-        [personList: Person.list(params)]
+        [personList: Person.search("alias:*", params).results]
     }
 
     def show = {

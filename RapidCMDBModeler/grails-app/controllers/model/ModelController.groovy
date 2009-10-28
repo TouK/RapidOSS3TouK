@@ -27,7 +27,7 @@ class ModelController {
     def index = {redirect(action: list, params: params)}
     def list = {
         if (!params.max) params.max = 10
-        [modelList: Model.list(params)]
+        [modelList: Model.search("alias:*", params).results]
     }
 
     def edit = {

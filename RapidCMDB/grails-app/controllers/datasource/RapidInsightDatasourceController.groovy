@@ -19,9 +19,7 @@
 package datasource
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import java.text.SimpleDateFormat;
 class RapidInsightDatasourceController {
-    def final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm")
 
     def index = {redirect(action: list, params: params)}
 

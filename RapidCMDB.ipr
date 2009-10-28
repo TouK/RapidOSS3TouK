@@ -651,6 +651,7 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/sms" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/selenium" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/jrobin" />
+        <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/joda/joda-time-1.6.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>

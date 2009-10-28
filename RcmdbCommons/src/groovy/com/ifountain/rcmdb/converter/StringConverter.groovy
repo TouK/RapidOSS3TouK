@@ -3,6 +3,9 @@ package com.ifountain.rcmdb.converter
 import org.apache.commons.beanutils.Converter
 import java.text.SimpleDateFormat
 import java.text.DecimalFormat
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.DateTime
 
 /**
 * Created by IntelliJ IDEA.
@@ -13,7 +16,7 @@ import java.text.DecimalFormat
 */
 class StringConverter implements Converter {
     public static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
-    SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+    DateTimeFormatter dateFormat;
     DecimalFormat decimalFormat = new DecimalFormat();
     public StringConverter(String dateFormatStr)
     {
@@ -22,7 +25,7 @@ class StringConverter implements Converter {
     public Object convert(Class aClass, Object o) {
         if (o instanceof Date)
         {
-            return dateFormat.format (o);
+            return dateFormat.print(new DateTime(o.getTime()));
         }
         else if(o instanceof BigDecimal)
         {
@@ -33,7 +36,7 @@ class StringConverter implements Converter {
 
     public void setDateFormat(String dateFormatString)
     {
-        dateFormat =  new SimpleDateFormat(dateFormatString);
+        dateFormat =  DateTimeFormat.forPattern(dateFormatString);
     }
 
 }

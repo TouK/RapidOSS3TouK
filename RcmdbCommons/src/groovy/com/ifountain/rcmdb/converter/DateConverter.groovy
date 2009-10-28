@@ -21,6 +21,9 @@ package com.ifountain.rcmdb.converter
 import java.text.SimpleDateFormat
 import org.apache.commons.beanutils.ConversionException
 import org.apache.commons.beanutils.Converter
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
+import org.joda.time.DateTime
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,18 +33,18 @@ import org.apache.commons.beanutils.Converter
 * To change this template use File | Settings | File Templates.
 */
 class DateConverter implements Converter{
-    SimpleDateFormat formater;
+    DateTimeFormatter formater;
     String format;
     public DateConverter(String format)
     {
         this.format = format;
-        formater = new SimpleDateFormat(format);
+        formater = DateTimeFormat.forPattern(format);
     }
     public Object convert(Class aClass, Object o) {
         if(o == null) return null;
         if(aClass == String)
         {
-            if(o instanceof Date) return formater.format(o);
+            if(o instanceof Date) return formater.print(new DateTime(o.getTime()));
             throw new ConversionException ("Value is not a date object") ;
         }
         else
@@ -49,11 +52,11 @@ class DateConverter implements Converter{
             if(o instanceof Date) return o;
             try
             {
-                return formater.parse(o); //To change body of implemented methods use File | Settings | File Templates.
+                return new Date(formater.parseDateTime(o).getMillis()); //To change body of implemented methods use File | Settings | File Templates.
             }
-            catch(java.text.ParseException e)
+            catch(Throwable e)
             {
-                throw new ConversionException (e.getMessage()) ;
+                throw new ConversionException (e.getMessage(), e) ;
             }
         }
     }

@@ -135,6 +135,7 @@ class RapidCmdbBuild extends Build {
     }
 
     def copyDependentJars(dirToCopyTo) {
+        ant.copy(file: (String) classpath.getProperty("joda-time-1_6_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-transaction-1_2_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: dirToCopyTo);

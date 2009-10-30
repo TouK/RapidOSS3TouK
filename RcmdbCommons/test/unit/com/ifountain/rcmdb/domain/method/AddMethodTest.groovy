@@ -62,11 +62,13 @@ class AddMethodTest extends RapidCmdbTestCase {
         ChildAddMethodDomainObject.updateCacheCallParams.clear();
         ChildAddMethodDomainObject.idCache = [:];
         ChildAddMethodDomainObject.cacheEntryParams = [];
+        MockValidator.closureToBeInvokedInValidate=null;
         validator = new MockValidator();
     }
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
+        MockValidator.closureToBeInvokedInValidate=null;
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
         ObjectProcessor.getInstance().deleteObservers();
@@ -149,6 +151,39 @@ class AddMethodTest extends RapidCmdbTestCase {
         def props = [prop1: expectedDomainObject1.prop1, nullableProp:null];
         AddMethodDomainObject1 addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
         assertEquals ("defaultValue", addedObject.nullableProp);
+    }
+
+    public void testAddMethodWithNullPropetyValueChangedInBeforeInsertEvent()
+    {
+        def propValueUpdatedInBeforeInsert = "prop2ValueSetInBeforeInsert";
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject ->
+            domainObject.setProperty("nullableProp", propValueUpdatedInBeforeInsert, false);
+        }
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+        def props = [prop1: expectedDomainObject1.prop1,nullableProp:null];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(propValueUpdatedInBeforeInsert, addedObject.nullableProp);
+        assertEquals(propValueUpdatedInBeforeInsert, validator.validatedObject.nullableProp);
+    }
+    public void testAddMethodWithNullPropertyValueSetInBeforeInsert()
+    {
+        def propValueUpdatedInBeforeInsert = "prop2ValueSetInBeforeInsert";
+        AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject ->
+            domainObject.setProperty("nullableProp", null, false);
+            domainObject.updatedPropsMap=[nullableProp:null];
+        }
+        def nullablePropValueInValidate="notnulllll";
+        MockValidator.closureToBeInvokedInValidate = { _validator, _wrapper, _object , _errors  ->
+            nullablePropValueInValidate=_object.nullableProp;
+        }
+        AddMethodDomainObjectWithEvents expectedDomainObject1 = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value");
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+        def props = [prop1: expectedDomainObject1.prop1];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);        
+        assertEquals("defaultValue", addedObject.nullableProp);
+        assertEquals("defaultValue", validator.validatedObject.nullableProp);
+        assertEquals(null, nullablePropValueInValidate);
     }
 
 
@@ -620,6 +655,14 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
             this.isFlushedByProperty += flush;
         }
     }
+
+    def beforeInsertWrapper() {
+        return [:];
+    }
+    def beforeUpdateWrapper(params) {
+        return [:];
+    }
+
 }
 
 
@@ -701,12 +744,13 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
     }
 
 
-    def beforeInsertWrapper() {
+    def beforeInsertWrapper() {        
         eventCalls.add("beforeInsert");
         if (closureToBeInvokedBeforeInsert)
         {
             closureToBeInvokedBeforeInsert(this);
         }
+        return updatedPropsMap;
     }
     def beforeUpdateWrapper(params) {
         eventCalls.add("beforeUpdate");
@@ -736,6 +780,7 @@ class AddMethodDomainObjectWithEvents extends AddMethodDomainObject1
 }
 
 class MockValidator implements IRapidValidator {
+    def static closureToBeInvokedInValidate;
     boolean supports = false;
     FieldError error;
     def validatedObject;
@@ -744,6 +789,10 @@ class MockValidator implements IRapidValidator {
     }
 
     public void validate(wrapper, Object o, Errors errors) {
+        if (closureToBeInvokedInValidate)
+        {
+            closureToBeInvokedInValidate(this,wrapper,o,errors);
+        }
         validatedObject = wrapper;
         if (error)
         {

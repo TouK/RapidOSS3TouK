@@ -127,7 +127,16 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 {
                     existingInstanceEntry.clear();
                     nullProps.each{propName->
-                        domainObject.setProperty (propName, defaultValues[propName], false);
+                        if(domainObject.getProperty(propName) == null)
+                        {
+                            domainObject.setProperty (propName, defaultValues[propName], false);
+                        }
+                    }
+                    updatedPropsFromBeforeUpdate.each{ propName,propValue ->
+                        if(propValue == null)
+                        {
+                            domainObject.setProperty (propName, defaultValues[propName], false);
+                        }
                     }
                     domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
                     domainObject.index(domainObject);

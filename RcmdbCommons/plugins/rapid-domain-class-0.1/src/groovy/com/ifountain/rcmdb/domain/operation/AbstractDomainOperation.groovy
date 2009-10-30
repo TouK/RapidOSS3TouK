@@ -164,7 +164,7 @@ public class AbstractDomainOperation {
         onLoad();
     }
 
-    Map beforeUpdateWrapper(Map params)
+    public Map beforeUpdateWrapper(Map params)
     {
         rsUpdatedProps = [:]
         invokeBeforeEventTriggerOperation {
@@ -178,11 +178,13 @@ public class AbstractDomainOperation {
         afterUpdate(params);
     }
 
-    public void beforeInsertWrapper()
+    public Map beforeInsertWrapper()
     {
+        rsUpdatedProps = [:]
         invokeBeforeEventTriggerOperation {
             beforeInsert();
         }
+        return rsUpdatedProps;
     }
 
     public void afterInsertWrapper()

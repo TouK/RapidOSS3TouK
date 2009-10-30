@@ -419,6 +419,47 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         assertEquals(prop1ValueBeforeUpdate, updatedProps.get("prop1"));
     }
 
+    public void testBeforeInsertWrapperWillReturnUpdatedPropsList()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+        }
+        """
+        DataStore.put("methodCalls", [])
+        def newOprClassStr = """
+            class NewOpr extends ${AbstractDomainOperation.class.name}
+            {
+                def beforeInsert()
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("beforeInsert")
+                    rsUpdatedProps["prop1"] = "prop1Value"
+                }
+                def afterInsert()
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("afterInsert");
+                }
+            }
+        """
+
+        def newOprClass = gcl.parseClass(newOprClassStr);
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def prop1ValueBeforeInsert = "prop1Value";
+        def domainInstance = domainClass.newInstance();
+        domainInstance.prop1 = prop1ValueBeforeInsert;
+
+        AbstractDomainOperation domainOpr = newOprClass.newInstance();
+        domainOpr.domainObject = domainInstance;
+
+        Map updatedProps = domainOpr.beforeInsertWrapper();
+
+        assertEquals (1, updatedProps.size());
+        assertTrue(updatedProps.containsKey("prop1"));
+        assertEquals(prop1ValueBeforeInsert, updatedProps.get("prop1"));
+    }
+
     public void testBeforeUpdateWrapperWillNotReturnNameOfNotUpdatedPropsEvenIfSetPropertyIsCalled()
     {
         def gcl = new GroovyClassLoader();
@@ -458,6 +499,49 @@ class AbstractDomainOperationTest extends RapidCmdbTestCase
         domainOpr.domainObject = domainInstance;
 
         Map updatedProps = domainOpr.beforeUpdateWrapper([:]);
+
+        assertEquals ("Since prop1 value didnot changed updated props will not contain property name", 0, updatedProps.size());
+    }
+
+    public void testBeforeInsertWrapperWillNotReturnNameOfNotUpdatedPropsEvenIfSetPropertyIsCalled()
+    {
+        def gcl = new GroovyClassLoader();
+        def domainClassStr = """
+        class DomainClass1{
+            String prop1;
+            public void setProperty(String propName, String propValue, boolean willPersist)
+            {
+                ${DataStore.class.name}.put("setProperty", [propName, propValue, willPersist]);
+            }
+        }
+        """
+        def prop1Value = "prop1Value"
+        DataStore.put("methodCalls", [])
+        def newOprClassStr = """
+            class NewOpr extends ${AbstractDomainOperation.class.name}
+            {
+                def beforeInsert()
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("beforeUpdate")
+                    prop1 = "${prop1Value}"
+                }
+                def afterInsert()
+                {
+                    ${DataStore.class.name}.get("methodCalls").add("afterUpdate");
+                }
+            }
+        """
+
+        def newOprClass = gcl.parseClass(newOprClassStr);
+        def domainClass = gcl.parseClass (domainClassStr);
+
+        def domainInstance = domainClass.newInstance();
+        domainInstance.prop1 = prop1Value;
+
+        AbstractDomainOperation domainOpr = newOprClass.newInstance();
+        domainOpr.domainObject = domainInstance;
+
+        Map updatedProps = domainOpr.beforeInsertWrapper();
 
         assertEquals ("Since prop1 value didnot changed updated props will not contain property name", 0, updatedProps.size());
     }

@@ -60,11 +60,14 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         ChildAddMethodDomainObject.metaClass.'static'.keySet = {
             return []
         }
+
+        MockValidator.closureToBeInvokedInValidate=null;
     }
 
     protected void tearDown() {
         AddMethodDomainObjectWithEvents.eventCalls = [];
         ObjectProcessor.getInstance().deleteObservers();
+        MockValidator.closureToBeInvokedInValidate=null;
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
 
     }
@@ -134,6 +137,69 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         UpdateMethod update = new UpdateMethod(AddMethodDomainObject1.metaClass, new MockValidator(), AddMethodDomainObject1.allFields, relations);
         AddMethodDomainObject1 updatedObject = update.invoke(addedObject, [props] as Object[]);
         assertEquals ("defaultValue", updatedObject.nullableProp);
+    }
+
+
+    public void testUpdateMethodWithNullPropetyValueChangedInBeforeUpdateEvent()
+    {
+
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+
+        AddMethodDomainObjectWithEvents addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
+
+        AddMethodDomainObject1.indexList.clear();
+
+        def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
+        addedObject.closureToBeInvokedBeforeUpdate = {params ->
+            addedObject.setProperty("nullableProp", "updatedValueInBeforeUpdate", false);
+        }
+
+        props = [prop1: objectBeforeAdd.prop1,nullableProp:null];
+        MockValidator validator = new MockValidator();
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, validator, AddMethodDomainObject1.allFields, [:]);
+        def updatedObject = update.invoke(addedObject, [props] as Object[]);
+
+        assertEquals(propvalueToBeUpdatedInBeforeUpdate, updatedObject.nullableProp);
+        assertEquals(propvalueToBeUpdatedInBeforeUpdate, validator.validatedObject.nullableProp);
+
+    }
+
+    public void testUpdateMethodWithNullPropertyValueSetInBeforeInsert()
+    {
+        AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", nullableProp: "notnulll");
+
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObject1, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, [:], ["prop1"]);
+
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, nullableProp: objectBeforeAdd.nullableProp];
+
+        AddMethodDomainObjectWithEvents addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
+
+        AddMethodDomainObject1.indexList.clear();
+
+        def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
+        addedObject.closureToBeInvokedBeforeUpdate = {params ->
+            addedObject.setProperty("nullableProp", null, false);
+            addedObject.updatedPropsMap=[nullableProp:null];
+        }
+        def nullablePropValueInValidate="notnulllll";
+        MockValidator.closureToBeInvokedInValidate = { _validator, _wrapper, _object , _errors  ->
+            nullablePropValueInValidate=_object.nullableProp;
+        }
+        props = [prop1: objectBeforeAdd.prop1,nullableProp:"notnull222"];
+        MockValidator validator = new MockValidator();
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, validator, AddMethodDomainObject1.allFields, [:]);
+        def updatedObject = update.invoke(addedObject, [props] as Object[]);
+
+        assertEquals("defaultValue", updatedObject.nullableProp);
+        assertEquals("defaultValue", validator.validatedObject.nullableProp);
+        assertEquals(null, nullablePropValueInValidate);
+
     }
 
     public void testUpdateMethodWithKeyProperties()

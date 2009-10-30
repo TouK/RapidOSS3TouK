@@ -138,7 +138,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
             return sampleBean;
         }
-        EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
+        def updatedPropsFromBeforeInsert=EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
         validator.validate (new DomainClassValidationWrapper(sampleBean, addedprops), sampleBean, errors)
 
         if(errors. hasErrors())
@@ -149,8 +149,18 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         {
             sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
             nullProps.each{propName->
-                sampleBean.setProperty (propName, defaultValues[propName], false);                
+                if(sampleBean.getProperty(propName) == null)
+                {
+                    sampleBean.setProperty (propName, defaultValues[propName], false);
+                }
             }
+            updatedPropsFromBeforeInsert.each{ propName,propValue ->
+                if(propValue == null)
+                {
+                    sampleBean.setProperty (propName, defaultValues[propName], false);
+                }
+            }
+
             sampleBean.setProperty(RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, new Date(), false);
             CompassMethodInvoker.index (mc, sampleBean);
             sampleBean.updateCacheEntry(sampleBean, true);

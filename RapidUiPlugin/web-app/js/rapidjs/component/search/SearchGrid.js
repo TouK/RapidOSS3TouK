@@ -698,7 +698,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (title) {
             this.setTitle(title);
         }
-        var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
+        var currentView =  this.viewsLoaded ? this.viewInput.options[this.viewInput.selectedIndex].value : 'default';
         if (this.searchClassesLoaded) {
             SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }

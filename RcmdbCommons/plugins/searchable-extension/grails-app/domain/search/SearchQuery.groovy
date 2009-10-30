@@ -58,6 +58,7 @@ class SearchQuery {
         sortOrder(inList: ["asc", "desc"]);
         viewName(blank: true, nullable: true);
         sortProperty(blank: true, nullable: true);
+        searchClass(blank: true, nullable: true);
         errors(nullable: true)
         __operation_class__(nullable: true)
         __dynamic_property_storage__(nullable: true)

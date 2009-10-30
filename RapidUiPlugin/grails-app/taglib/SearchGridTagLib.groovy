@@ -182,6 +182,8 @@ class SearchGridTagLib {
             cArray.add("defaultFilter:'${config['defaultQuery']}'")
         if (config["searchClassesUrl"])
             cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
+        if (config["searchInEnabled"] != null)
+            cArray.add("searchInEnabled:${config['searchInEnabled']}")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

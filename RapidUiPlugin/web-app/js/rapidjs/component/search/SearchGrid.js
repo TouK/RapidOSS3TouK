@@ -105,6 +105,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             YAHOO.util.Dom.setStyle(wrps[8], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[9], 'display', 'none')
         }
+        else if(!this.searchInEnabled){
+            YAHOO.util.Dom.setStyle(wrps[5], 'display', 'none')
+            YAHOO.util.Dom.setStyle(wrps[6], 'display', 'none')
+        }
         this.body.dom.id = this.bodyId;
         this.pwrap = dh.append(this.body.dom, {tag: 'div', cls: 'rcmdb-searchgrid-positioner'});
         this.hwrap = dh.append(this.pwrap, {tag: 'div', cls: 'rcmdb-searchgrid-wrap-headers'}, true);
@@ -162,11 +166,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder.events['success'].subscribe(this.viewBuilderSuccess, this, true);
         this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
 
-        if (this.queryEnabled) {
+        if (this.queryEnabled && this.searchInEnabled) {
             this.retrieveSearchClasses();
-        }
-        else {
-            SelectUtils.addOption(this.classesInput, this.defaultSearchClass, this.defaultSearchClass);
         }
     },
 

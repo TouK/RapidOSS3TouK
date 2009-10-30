@@ -20,6 +20,7 @@ class UiSearchList extends UiComponent {
     String offsetAttribute = "offset";
     String sortOrderAttribute = "sortOrder";
     String defaultFields = "";
+    Boolean searchInEnabled = true;
     Long showMax = 0;
     Long lineSize = 3;
     Long pollingInterval = 0;
@@ -44,12 +45,13 @@ class UiSearchList extends UiComponent {
                         contentPath: [descr: "The node names of AJAX response which will be used as row data.", validators: [blank: false, nullable: false]],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node.", validators: [blank: false, nullable: false]],
                         defaultSearchClass: [descr: "Default class that the search will be applied.", validators: [blank: false, nullable: false]],
-                        searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes.", validators: [blank: false, nullable: false]],
                         totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query.", validators: [blank: false, nullable: false]],
                         offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query.", validators: [blank: false, nullable: false]],
                         sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query.", validators: [blank: false, nullable: false]],
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],
+                        searchInEnabled: [descr: "Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.", validators: [blank: false, nullable: false]],
+                        searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         defaultFields: [descr: "Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided."],
                         showMax: [descr: "Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations."],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
@@ -131,6 +133,9 @@ class UiSearchList extends UiComponent {
     {
         def attributes = xmlNode.attributes();
         attributes.tabId = parentElement._designerKey;
+        if(attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)){
+            throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
+        }
         def searchList = DesignerSpace.getInstance().addUiElement(UiSearchList, attributes);
 
         def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};

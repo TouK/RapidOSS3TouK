@@ -29,11 +29,12 @@
             case 'historicalEvent': className = 'RsHistoricalEvent'; break;
             case 'topology': className = 'RsTopologyObject'; break;
         }
-        if(className == null){
+        if (className == null) {
             className = params.rootClass;
         }
         def allProps = [];
         def classes = [];
+        def searchInEnabled = params.searchInEnabled != 'false' ? true : false;
         def domainClass = grailsApplication.getDomainClass(className);
         classes.add(domainClass);
         allProps.addAll(domainClass.clazz.getNonFederatedPropertyList());
@@ -41,7 +42,9 @@
             classes.add(it);
             allProps.addAll(it.clazz.getNonFederatedPropertyList());
         }
-        classes = classes.sort{it.fullName};
+        if (searchInEnabled) {
+            classes = classes.sort {it.fullName};
+        }
         def sortedProps = allProps.sort {it.name}
         def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
             queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type == "default")
@@ -76,16 +79,18 @@
             <tr><td width="50%"><label>Query Name:</label></td><td width="50%">
                 <input type="textbox" name="name" style="width:175px" value="${queryName.encodeAsHTML()}">
             </td></tr>
-             <tr><td width="50%"><label>Search Class:</label></td><td width="50%"><select name="searchClass" style="width:175px">
-                <g:each var="currentClass" in="${classes}">
-                    <g:if test="${searchClass == currentClass.fullName}">
-                        <option name="${currentClass.fullName}" selected="true">${currentClass.fullName}</option>
-                    </g:if>
-                    <g:else>
-                        <option name="${currentClass.fullName}">${currentClass.fullName}</option>
-                    </g:else>
-                </g:each>
-            </select></td></tr>
+            <g:if test="${searchInEnabled}">
+                <tr><td width="50%"><label>Search Class:</label></td><td width="50%"><select name="searchClass" style="width:175px">
+                    <g:each var="currentClass" in="${classes}">
+                        <g:if test="${searchClass == currentClass.fullName}">
+                            <option name="${currentClass.fullName}" selected="true">${currentClass.fullName}</option>
+                        </g:if>
+                        <g:else>
+                            <option name="${currentClass.fullName}">${currentClass.fullName}</option>
+                        </g:else>
+                    </g:each>
+                </select></td></tr>
+            </g:if>
             <tr><td width="50%"><label>Query:</label></td><td width="50%">
                 <input type="textbox" name="query" style="width:175px" value="${query.encodeAsHTML()}">
             </td></tr>

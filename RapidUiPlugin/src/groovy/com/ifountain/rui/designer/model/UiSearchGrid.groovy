@@ -25,6 +25,7 @@ class UiSearchGrid extends UiComponent {
     String searchClassesUrl = "script/run/getClassesForSearch?rootClass=RsEvent&format=xml"
     Long pollingInterval = 0;
     Long timeout = 30;
+    Boolean searchInEnabled = true;
     Boolean queryEnabled = true;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
@@ -52,6 +53,7 @@ class UiSearchGrid extends UiComponent {
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         defaultView: [descr: "The view which will be shown when the search grid is shown."],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],
+                        searchInEnabled: [descr: "Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.", validators: [blank: false, nullable: false]],
                         queryEnabled: [descr: "Parameter to determine whether the quick filtering is enabled or not."],
                         searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
@@ -132,6 +134,9 @@ class UiSearchGrid extends UiComponent {
     {
         def attributes = xmlNode.attributes();
         attributes.tabId = parentElement._designerKey;
+        if(attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)){
+            throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
+        }
         def searchGrid = DesignerSpace.getInstance().addUiElement(UiSearchGrid, attributes);
         def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};

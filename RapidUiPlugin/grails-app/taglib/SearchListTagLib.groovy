@@ -199,7 +199,6 @@ class SearchListTagLib {
         cArray.add("contentPath: '${config["contentPath"]}'")
         cArray.add("keyAttribute: '${config["keyAttribute"]}'")
         cArray.add("defaultSearchClass: '${config["defaultSearchClass"]}'")
-        cArray.add("searchClassesUrl: '${config["searchClassesUrl"]}'")
         cArray.add("queryParameter: '${config["queryParameter"]}'")
         cArray.add("totalCountAttribute: '${config["totalCountAttribute"]}'")
         cArray.add("offsetAttribute: '${config["offsetAttribute"]}'")
@@ -227,6 +226,10 @@ class SearchListTagLib {
             cArray.add("lineSize:${config['lineSize']}")
         if (config["rowHeaderAttribute"])
             cArray.add("rowHeaderAttribute:'${config['rowHeaderAttribute']}'")
+        if (config["searchInEnabled"] != null)
+            cArray.add("searchInEnabled:${config['searchInEnabled']}")
+        if (config["searchClassesUrl"] != null)
+            cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

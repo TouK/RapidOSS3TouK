@@ -16,7 +16,7 @@
         tooltip: 'Add query',
         click:function() {
             var queryForm = YAHOO.rapidjs.Components['saveQueryForm'];
-            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'${queryType}', searchComponentType:'${searchComponentType}'}));
+            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'${queryType}', searchComponentType:'${searchComponentType}', searchInEnabled:'${searchInEnabled != null ? searchInEnabled:true}'}));
             queryForm.popupWindow.show();
         }
     });

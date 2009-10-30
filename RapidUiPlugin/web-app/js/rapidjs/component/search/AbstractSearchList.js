@@ -35,6 +35,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.defaultFilter = null;
     this.searchClassesUrl = null;
     this.defaultSearchClass = null;
+    this.searchInEnabled = true;
     YAHOO.ext.util.Config.apply(this, config);
     this.configureTimeout(config);
     this.searchInput = null;

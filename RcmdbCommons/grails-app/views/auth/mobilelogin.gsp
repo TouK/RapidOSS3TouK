@@ -24,7 +24,12 @@
 <body>
 
 <div class="toolbar">
-     <img src="${createLinkTo(dir:'images', file:'RapidOSSsmall.png')}"/>
+    <g:if test="${MobileUtils.isIphone(request)}">
+        <h1>RapidOSS</h1>
+    </g:if>
+    <g:else>
+        <img src="${createLinkTo(dir: 'images', file: 'RapidOSSsmall.png')}"/>
+    </g:else>
 </div>
 
 <g:if test="${MobileUtils.isIphone(request)}">

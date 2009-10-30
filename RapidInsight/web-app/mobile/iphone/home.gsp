@@ -162,8 +162,10 @@
                  window.inventoryListHref = href;
              }
              if(page.id == 'objectDetails' || page.id == 'objectReports'){
-                 var inventoryBtn = document.getElementById('inventoryButton');
-                 inventoryBtn.setAttribute('href', window.inventoryListHref)
+                 if(window.inventoryListHref){
+                    var inventoryBtn = document.getElementById('inventoryButton');
+                    inventoryBtn.setAttribute('href', window.inventoryListHref)
+                 }
              }
              if(page.id == 'objectReports'){
                  window.lastReportsHref = href;

@@ -473,7 +473,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     {
         var options = this.viewInput.options
         YAHOO.rapidjs.SelectUtils.selectTheValue(this.viewInput, this.currentView, 0);
-        this.viewChanged();
+        this.viewChanged(null, null, null, false);
     },
     handleRemoveView: function() {
         var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
@@ -513,7 +513,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     handleViewChange: function(e) {
         this.viewChanged();
     },
-    viewChanged: function(newQuery, willSaveHistory, extraSearchParams) {
+    viewChanged: function(newQuery, willSaveHistory, extraSearchParams, willPoll) {
         var view = this.viewInput.options[this.viewInput.selectedIndex].value;
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
         if (view == 'default' || (viewNode && viewNode.getAttribute("updateAllowed") == "false")) {
@@ -524,7 +524,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.updateViewButton.enable();
             this.removeViewButton.enable();
         }
-        this.activateView(view, newQuery, willSaveHistory, extraSearchParams);
+        this.activateView(view, newQuery, willSaveHistory, extraSearchParams, willPoll);
     },
     _clearBackgroundImages:function() {
         for (var i = 0; i < this.columns.length; i++) {
@@ -539,7 +539,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             }
         }
     },
-    activateView : function(view, newQuery, willSaveHistory, extraSearchParams) {
+    activateView : function(view, newQuery, willSaveHistory, extraSearchParams, willPoll) {
         this.showMask();
         this._clearBackgroundImages();
         var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
@@ -625,7 +625,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortOrder = column['sortOrder'] || 'asc';
         }
         this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.getSearchClass(), extraSearchParams);
-        this.handleSearch(null, willSaveHistory);
+        if(willPoll !== false){
+            this.handleSearch(null, willSaveHistory);    
+        }
     },
     getColumnConfigFromViewNode: function(viewNode) {
         var sortColumn = viewNode.getAttribute('defaultSortColumn');

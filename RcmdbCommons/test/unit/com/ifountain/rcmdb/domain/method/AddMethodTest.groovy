@@ -171,7 +171,8 @@ class AddMethodTest extends RapidCmdbTestCase {
         def propValueUpdatedInBeforeInsert = "prop2ValueSetInBeforeInsert";
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = {domainObject ->
             domainObject.setProperty("nullableProp", null, false);
-            domainObject.updatedPropsMap=[nullableProp:null];
+            //only map is key used for changed props value should be ignored
+            domainObject.updatedPropsMap=[nullableProp:"notNullValue"];
         }
         def nullablePropValueInValidate="notnulllll";
         MockValidator.closureToBeInvokedInValidate = { _validator, _wrapper, _object , _errors  ->

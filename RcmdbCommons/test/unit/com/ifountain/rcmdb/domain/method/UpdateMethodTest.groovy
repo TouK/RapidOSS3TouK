@@ -185,7 +185,8 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         def propvalueToBeUpdatedInBeforeUpdate = "updatedValueInBeforeUpdate";
         addedObject.closureToBeInvokedBeforeUpdate = {params ->
             addedObject.setProperty("nullableProp", null, false);
-            addedObject.updatedPropsMap=[nullableProp:null];
+            //only map key is used for changed props value should be ignored
+            addedObject.updatedPropsMap=[nullableProp:"notNullValue"];
         }
         def nullablePropValueInValidate="notnulllll";
         MockValidator.closureToBeInvokedInValidate = { _validator, _wrapper, _object , _errors  ->

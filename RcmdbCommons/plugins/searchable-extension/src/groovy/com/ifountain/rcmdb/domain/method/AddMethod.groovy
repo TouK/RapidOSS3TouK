@@ -154,8 +154,8 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                     sampleBean.setProperty (propName, defaultValues[propName], false);
                 }
             }
-            updatedPropsFromBeforeInsert.each{ propName,propValue ->
-                if(propValue == null)
+            updatedPropsFromBeforeInsert.each{ propName,oldPropValue ->
+                if(sampleBean.getProperty(propName) == null)
                 {
                     sampleBean.setProperty (propName, defaultValues[propName], false);
                 }

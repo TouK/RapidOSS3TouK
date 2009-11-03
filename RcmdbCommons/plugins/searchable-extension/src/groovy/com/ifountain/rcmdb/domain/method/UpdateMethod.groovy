@@ -132,8 +132,8 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                             domainObject.setProperty (propName, defaultValues[propName], false);
                         }
                     }
-                    updatedPropsFromBeforeUpdate.each{ propName,propValue ->
-                        if(propValue == null)
+                    updatedPropsFromBeforeUpdate.each{ propName,oldPropValue ->
+                        if(domainObject.getProperty(propName) == null)
                         {
                             domainObject.setProperty (propName, defaultValues[propName], false);
                         }

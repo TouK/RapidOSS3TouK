@@ -2,7 +2,7 @@ package auth
 
 import org.jsecurity.SecurityUtils
 import org.jsecurity.authc.AuthenticationException
-import org.jsecurity.authc.UsernamePasswordToken
+import org.jsecurity.authc.UsernamePasswordTokenWithParams
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.mobile.MobileUtils
 import com.ifountain.rcmdb.domain.util.ControllerUtils
@@ -33,24 +33,8 @@ class AuthController {
     def mobilelogin = {
     	return[username:params.login, targetUri: params.targetUri, flash : params.flash]
     }
-
     def signIn = {
-        if(params.login==null)
-        {
-            params.login="";
-        }
-        if(params.password==null)
-        {
-           params.password="";
-        }
-        
-        def authToken = new UsernamePasswordToken(params.login, params.password)
-
-        // Support for "remember me"
-        if (params.rememberMe) {
-            authToken.rememberMe = true
-        }
-
+        def authToken = new UsernamePasswordTokenWithParams(params)
         try{
             // Perform the actual login. An AuthenticationException
             // will be thrown if the username is unrecognised or the

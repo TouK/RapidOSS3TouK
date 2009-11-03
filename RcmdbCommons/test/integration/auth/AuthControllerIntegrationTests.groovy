@@ -4,7 +4,7 @@ import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 import org.springframework.mock.web.HeaderValueHolder
 import com.ifountain.rcmdb.test.util.IntegrationTestUtils
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import org.jsecurity.authc.UsernamePasswordToken
+import org.jsecurity.authc.UsernamePasswordTokenWithParams
 import org.jsecurity.authc.AuthenticationException
 
 /**
@@ -87,7 +87,7 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     public void testSignInSuccessfully()
     {
         def loginMock=[:];        
-        loginMock.login={ UsernamePasswordToken authToken ->
+        loginMock.login={ UsernamePasswordTokenWithParams authToken ->
             assertEquals("testuser",authToken.username)
             assertEquals("123",new String(authToken.password))
             assertEquals(true,authToken.isRememberMe())
@@ -120,7 +120,7 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     {
 
         def loginMock=[:];        
-        loginMock.login={UsernamePasswordToken authToken ->
+        loginMock.login={UsernamePasswordTokenWithParams authToken ->
             assertEquals("testuser",authToken.username)
             assertEquals("123",new String(authToken.password))
             assertEquals(false,authToken.isRememberMe())
@@ -144,7 +144,7 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     {
 
        def loginMock=[:];
-       loginMock.login={UsernamePasswordToken authToken ->
+       loginMock.login={UsernamePasswordTokenWithParams authToken ->
             assertEquals("testuser",authToken.username)
             assertEquals("123",new String(authToken.password))
             assertEquals(true,authToken.isRememberMe())
@@ -167,7 +167,7 @@ class AuthControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
     {
 
        def loginMock=[:];
-       loginMock.login={UsernamePasswordToken authToken ->
+       loginMock.login={UsernamePasswordTokenWithParams authToken ->
             assertEquals("testuser",authToken.username)
             assertEquals("123",new String(authToken.password))
             assertEquals(true,authToken.isRememberMe())

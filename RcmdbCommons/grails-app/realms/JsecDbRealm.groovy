@@ -29,31 +29,23 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import javax.naming.NamingException
 
 class JsecDbRealm {
-    static authTokenClass = org.jsecurity.authc.UsernamePasswordToken
+    static authTokenClass = org.jsecurity.authc.UsernamePasswordTokenWithParams
 
     def credentialMatcher
 
     def authenticate(authToken) {
-        log.info "Attempting to authenticate ${authToken.username} in DB realm..."
-        def username = authToken.username
-
-        // Null username is invalid
-        if (username == null) {
-            throw new AccountException('Null usernames are not allowed by this realm.')
-        }
-
+        log.info "Attempting to authenticate login:${authToken.username} in DB realm..."
 
         // Get the user with the given username. If the user is not
         // found, then they don't have an account and we throw an
         // exception.
 
-        def user = RsUser.authenticateUser(username,new String(authToken.password))
+        def user = RsUser.authenticateUser(authToken.params)
         if (!user) {
-            throw new UnknownAccountException("No account found for user [${username}]")
+            throw new UnknownAccountException("No account found for user [${authToken.username}]")
         }
-        username = user.username;
-        
-        def account = new SimpleAccount(username, user.passwordHash, "JsecDbRealm");
+
+        def account = new SimpleAccount(user.username, user.passwordHash, "JsecDbRealm");
         return account
     }
     def hasRole(principal, roleName) {

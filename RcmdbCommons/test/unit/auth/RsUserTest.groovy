@@ -12,6 +12,8 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 import connection.LdapConnectionOperations
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.test.util.DatasourceTestUtils
+import application.RsApplication
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils;
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,12 +27,12 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         clearMetaClasses();
 
-        initialize([RsUser,Group,Role, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation], []);
+        initialize([RsUser,Group,Role, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation,RsApplication], []);
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
         CompassForTests.addOperationSupport (LdapConnection, LdapConnectionOperations);
-
+        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
     }
 
@@ -43,7 +45,6 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsUser);
-        GroovySystem.metaClassRegistry.removeMetaClass(LdapConnection);
         ExpandoMetaClass.enableGlobally();
     }
     public void testAddUser()
@@ -618,13 +619,33 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
     }
 
 
-    public void testAuthenticateUserWithLocal()
+    public void testAuthenticateUser()
     {
         RsUser.metaClass.'static'.getAuthenticationType={return "local"};
 
-        //no user case
+        //no user and no loginToken case
         try{
-            RsUser.authenticateUser("nouser","123");
+            RsUser.authenticateUser([:]);
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.AccountException e)
+        {
+            println e.getMessage();
+            assertTrue(e.getMessage().indexOf("Login or LoginToken must be specified for authentication")>=0);
+        }
+
+        try{
+            RsUser.authenticateUser([login:"",loginToken:""]);
+            fail("should throw Exception");
+        }
+        catch(org.jsecurity.authc.AccountException e)
+        {
+            assertTrue(e.getMessage().indexOf("Login or LoginToken must be specified for authentication")>=0);
+        }
+
+        //no user case, exception is thrown
+        try{
+            RsUser.authenticateUser([login:"nouser",password:"123"]);
             fail("should throw Exception");
         }
         catch(org.jsecurity.authc.UnknownAccountException e)
@@ -632,85 +653,45 @@ class RsUserTest extends RapidCmdbWithCompassTestCase{
             assertTrue(e.getMessage().indexOf("No account found for user nouser")>=0);
         }
 
-        //wrong password case
+        //local user successfull case
         def group1 = Group.add(name:"group1");
         def group2 = Group.add(name:"group2");
 
         def userProps = [username:"user1", password:"123",groups:[group1,group2]];
         RsUser user = RsUser.addUser(userProps);
 
-        
-        try{
-            RsUser.authenticateUser("user1","12345");
-            fail("should throw Exception");
-        }
-        catch(org.jsecurity.authc.IncorrectCredentialsException e)
-        {
-            assertTrue(e.getMessage().indexOf("Invalid password for user 'user1'")>=0);
-        }
-
-        //successfull login case
-        def userFromAuth=RsUser.authenticateUser("user1","123");
+        def userFromAuth=RsUser.authenticateUser([login:"user1",password:"123"]);
         assertEquals(user.id,userFromAuth.id);
-    }
 
-    public void testAuthenticateUserWithLdap()
-    {
+        //test ldap case
         RsUser.metaClass.'static'.getAuthenticationType={return "ldap"};
+
+        def base_directory = getWorkspacePath()+"/RapidModules/RcmdbCommons/test/unit/auth/"
+
+        RsApplicationTestUtils.clearUtilityPaths();
+        RsApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
         
-        //no ldap information for user case
-        def group1 = Group.add(name:"group1");
-        def group2 = Group.add(name:"group2");
+        userFromAuth=RsUser.authenticateUser([login:"nouser",password:"123"]);
+        assertEquals(user.id,userFromAuth.id);
 
-        def userProps = [username:"user1", password:"123",groups:[group1,group2]];
-        RsUser user = RsUser.addUser(userProps);
-
-
+        //rsadmin will be done with local and will throw exception even on Ldap case
         try{
-            RsUser.authenticateUser("user1","12345");
+            RsUser.authenticateUser([login:RsUser.RSADMIN,password:"123"]);
             fail("should throw Exception");
         }
         catch(org.jsecurity.authc.UnknownAccountException e)
         {
-            assertTrue(e.getMessage().indexOf("Ldap Information could not be found for 'user1'")>=0);
+            assertTrue(e.getMessage().indexOf("No account found for user ${RsUser.RSADMIN}")>=0);
         }
 
-        //no ldapConnection in user ldapInformation
-        def ldapInformation=user.addLdapInformation(userdn: "ldapDn");
-        try{
-            RsUser.authenticateUser("user1","12345");
-            fail("should throw Exception");
-        }
-        catch(org.jsecurity.authc.UnknownAccountException e)
-        {
-            assertTrue("Wrong message ${e.getMessage()}",e.getMessage().indexOf("LdapInformation is not bound with an LdapConnection for user 'user1'")>=0);
-        }
+        //test loginTokenCase
+        RsUser.metaClass.'static'.getAuthenticationType={return "normal"};
 
-        //ldap checkAuthentication fails
-        def ldapConnection=LdapConnection.add(name:"ldapcon",url:"aaa");
-        assertFalse(ldapConnection.hasErrors());
-                
-
-        LdapConnection.metaClass.checkAuthentication={ String authUsername,String authPassword ->
-            return false;
-        }
+        RsApplicationTestUtils.clearUtilityPaths();
+        RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
         
-        ldapInformation=user.addLdapInformation(userdn: "ldapDn",ldapConnection:ldapConnection);
-        try{
-            RsUser.authenticateUser("user1","12345");
-            fail("should throw Exception");
-        }
-        catch(org.jsecurity.authc.IncorrectCredentialsException e)
-        {
-            assertTrue("Wrong message ${e.getMessage()}",e.getMessage().indexOf("Invalid Ldap password for user 'user1'")>=0);
-        }
-        
-        //successfull login case
-        LdapConnection.metaClass.checkAuthentication={ String authUsername,String authPassword ->
-            return true;
-        }
-
-        def userFromAuth=RsUser.authenticateUser("user1","123");
+        userFromAuth=RsUser.authenticateUser([loginToken:"asdasd"]);
         assertEquals(user.id,userFromAuth.id);
     }
+
 }

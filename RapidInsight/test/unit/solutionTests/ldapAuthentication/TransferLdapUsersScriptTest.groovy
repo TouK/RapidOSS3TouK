@@ -1,4 +1,4 @@
-package scriptTests
+package solutionTests.ldapAuthentication
 
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
@@ -44,7 +44,7 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
 
     void initializeScriptManager()
     {
-        def base_directory = getWorkspacePath()+"/RapidModules/RapidCMDB/scripts"
+        def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/ldapAuthentication/scripts"
         println "base path is :"+new File(base_directory).getCanonicalPath();
         ScriptManagerForTest.initialize(gcl,base_directory);
         ScriptManagerForTest.addScript('TransferLdapUsers');
@@ -73,7 +73,7 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
         assertTrue(scriptResult.indexOf("Exception")<0)
 
         //check users
-        
+
         //admin and ldapuser should exist and there may be other users
         assertTrue(RsUser.count()>=2);
 
@@ -120,7 +120,7 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
         assertTrue(administratorsGroup_users.findAll{it.id==ldapUser.id}.size()==0)
         assertTrue(administratorsGroup_users.findAll{it.id==adminUser.id}.size()==1)
 
-        
+
     }
 
     public void testScriptDoesNotThrowExceptionIfLdapConnectionObjectIsMissing()

@@ -28,7 +28,7 @@ import auth.LdapUserInformation
 //    LDAP CONFIGURATION
 ////////////////////////////////
 
-// If group in localGroupName does not exist , please create it first from admin ui 
+// If group in localGroupName does not exist , please create it first from admin ui
 
 //sample configuration  for Microsoft Active Directory ds
 //Please connect to port 3268 if you want to search from root DN, otherwise PartialResultException will occur with   userSearchBase: root DN
@@ -42,7 +42,7 @@ userSearchSubDirectories = true
 userNameAttribute = "name"
 localGroupName = "rsuser"
 
-//group data configuration 
+//group data configuration
 groupSearchBase = "CN=Builtin,DC=molkay,DC=selfip,DC=net"
 groupSearchFilter = "objectClass=group"
 groupSearchSubDirectories = true
@@ -104,7 +104,7 @@ def createUsers()
         def entryDn=searchResult.nameInNamespace;
 
         def userName=searchResult.get(userNameAttribute);
-        if (userName != "rsadmin")
+        if (userName != RsUser.RSADMIN)
         {
             logInfo("found user ${userName} : ${entryDn} , with username : ${userName}")
 
@@ -148,7 +148,7 @@ def createGroups()
         if(searchResult.containsKey(groupUsersAttribute))
         {
             groupUserDns=searchResult.get(groupUsersAttribute);
-            
+
             groupUserDns.each{ groupUserDn ->
                 def userIds=LdapUserInformation.getPropertyValues("userdn:${groupUserDn}",["userId"]);
                 if(userIds.size()>0)

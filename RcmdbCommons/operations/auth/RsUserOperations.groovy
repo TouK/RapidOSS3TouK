@@ -11,6 +11,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 import org.jsecurity.authc.IncorrectCredentialsException
 import org.jsecurity.authc.UnknownAccountException
+import org.jsecurity.authc.AccountException
+import application.RsApplication;
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa sener
@@ -33,64 +35,33 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         return "local";
     }
-    public static RsUser authenticateUser(String username,String password)
+    public static RsUser authenticateUser(params)
     {
-        def authLogPrefix="User Authentication : ";
-        getLogger().info(authLogPrefix+"Authenticating User '${username}'");
+        String username=params.login;
+        String loginToken=params.loginToken;
 
-        String authenticationType = RsUser.getAuthenticationType();
-
-        // Get the user with the given username. If the user is not found than exception is thrown
-        def user = RsUser.get(username:username)
-        if (!user) {
-            getLogger().warn(authLogPrefix+"No account found for user '${username}'");
-            throw new UnknownAccountException("No account found for user ${username}");
-        }
-
-        username = user.username;
-        getLogger().info(authLogPrefix+"Found user '${user.username}' in Repository");
-        
-
-
-        //do ldap authentication  
-        if (authenticationType == "ldap" && username != RsUser.RSADMIN)
+        if(username)
         {
-            def ldapInformation = user.retrieveLdapInformation();
-            if (ldapInformation == null)
+            String authenticationType = RsUser.getAuthenticationType();
+            if(authenticationType == "local" || username == RsUser.RSADMIN)
             {
-                getLogger().warn(authLogPrefix+"Ldap Information could not be found for '${username}'");
-                throw new UnknownAccountException("Ldap Information could not be found for '${username}'");
-            }            
-            authenticateWithLdap(ldapInformation.ldapConnection,ldapInformation.userdn,password,username);
-        }
-        else //do local authentication
-        {
-            // Now check the user's password against the hashed value stored in the database.
-            if (!user.isPasswordSame(password)) {
-                getLogger().warn(authLogPrefix+"Invalid password for user '${username}'");
-                throw new IncorrectCredentialsException("Invalid password for user '${username}'");
+                return RsApplication.getUtility("auth.RsUserLocalAuthenticator")?.authenticateUser(params);
+            }
+            else if(authenticationType == "ldap")
+            {
+                return RsApplication.getUtility("auth.RsUserLdapAuthenticator")?.authenticateUser(params);
             }
         }
-        getLogger().info(authLogPrefix+"Authentication successfully done for user '${username}' ");
-
-        return user;
-    }
-    private static void authenticateWithLdap(ldapConnection,String ldapUserdn,String ldapPassword,String username)
-    {
-        def authLogPrefix="User Authentication : ";
-        if (ldapConnection == null)
+        else if(loginToken)
         {
-            getLogger().warn(authLogPrefix+"LdapInformation is not bound with an LdapConnection for user '${username}'");
-            throw new UnknownAccountException("LdapInformation is not bound with an LdapConnection for user '${username}'");
+            return RsApplication.getUtility("auth.RsUserTokenAuthenticator")?.authenticateUser(params);
         }
-
-        getLogger().info(authLogPrefix+"Authenticating User '${username}' against Ldap");
-        if (!ldapConnection.checkAuthentication(ldapUserdn, ldapPassword))
+        else
         {
-            getLogger().warn(authLogPrefix+"Ldap Authentication failed for user '${username}'");
-            throw new IncorrectCredentialsException("Invalid Ldap password for user '${username}'");
+            throw new AccountException('Login or LoginToken must be specified for authentication.');
         }
     }
+
     def beforeDelete()
     {
        if(username.equalsIgnoreCase(getCurrentUserName()))

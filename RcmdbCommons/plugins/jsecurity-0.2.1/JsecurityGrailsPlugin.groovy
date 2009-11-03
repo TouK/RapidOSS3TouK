@@ -9,7 +9,7 @@ import org.jsecurity.realm.Realm
 import org.jsecurity.subject.DelegatingSubject
 import org.jsecurity.web.DefaultWebSecurityManager
 import org.springframework.beans.factory.config.MethodInvokingFactoryBean
-import org.jsecurity.authc.UsernamePasswordToken
+import org.jsecurity.authc.UsernamePasswordTokenWithParams
 import org.jsecurity.authc.AuthenticationException
 import auth.Group
 import auth.RsUser
@@ -160,12 +160,9 @@ protect pages based on a user's roles and/or permissions.
 
             // First check that the user is authenticated.
             def subject = SecurityUtils.subject
-            if (!subject.authenticated && params.login != null && params.password != null) {
+            if (!subject.authenticated) {
                 def mgr = applicationContext.getBean('jsecSecurityManager');
-                def authToken = new UsernamePasswordToken(params.login, params.password)
-                if (params.rememberMe) {
-                    authToken.rememberMe = true
-                }
+                def authToken = new UsernamePasswordTokenWithParams(params)                
                 try {
                     def delagateObject = mgr.login(authToken)
                     session.username = delagateObject.principal;

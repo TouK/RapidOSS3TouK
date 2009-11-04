@@ -143,7 +143,6 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             {
                 //TODO:if compass cannot determine sort type, it throws exception. In this case, we will try to perform
                 // string sort. This will give correct results since all of the values are formatted with same formatter
-                t.printStackTrace();
                 if(options.get("sortType") == null && (t.toString().indexOf("does not appear to be indexed") >= 0 || t.toString().indexOf("java.lang.ClassCastException") >= 0))
                 {
                     options.put("sortType", "string");

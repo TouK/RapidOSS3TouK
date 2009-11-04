@@ -198,6 +198,22 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals(9, allProperties.size())
     }
 
+    public void testGetPropertiesWithPrivateGetterOperation()
+    {
+        FederatedPropertyManagerImpl manager = new FederatedPropertyManagerImpl();
+        ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
+        GrailsDomainClass cls = new DefaultGrailsDomainClass(GetPropertiesMethodDomainObject);
+
+        GetPropertiesMethod method = new GetPropertiesMethod(cls, manager);
+        method.operationClass = GetPropertiesMethodWithPrivateGetterOperations;
+
+        def allProperties = method.getDomainObjectProperties();
+        println allProperties.name
+        assertEquals(9, allProperties.size())
+        assertNull (allProperties.find {it.name == "oprProp2"});
+
+    }
+
     public void testGetFederatedProperties()
     {
         FederatedPropertyManagerImpl manager = new FederatedPropertyManagerImpl();
@@ -585,6 +601,13 @@ class GetPropertiesMethodParentDomainObjectOperations extends AbstractDomainOper
     private String privateProperty;
     def declaredProp1;
     def getOprProp2()
+    {
+    }
+}
+
+class GetPropertiesMethodWithPrivateGetterOperations extends AbstractDomainOperation
+{
+    private Object getOprProp2()
     {
     }
 }

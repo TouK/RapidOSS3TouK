@@ -255,8 +255,14 @@ class RapidDomainClassGrailsPlugin {
             }
             mc.'static'.reloadOperations = {reloadSubclasses->
                 reloadOperationsMethod.invoke(mc.theClass, [reloadSubclasses] as Object[]);
-                getPropertiesMethod.setOperationClass (manager.getOperationClass());
-                getOperationsMethod.setOperationClass (manager.getOperationClass());
+                try{
+                    getPropertiesMethod.setOperationClass (manager.getOperationClass());
+                    getOperationsMethod.setOperationClass (manager.getOperationClass());
+                }catch(Throwable e)
+                {
+                    logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}.", e);
+                    throw e;
+                }
             }
               
             try

@@ -125,9 +125,13 @@ class GetPropertiesMethod
                     def isHidden = false;
                     if (prop.getter != null)
                     {
-                        isMethodsPrivate = isMethodsPrivate && Modifier.isPrivate(prop.getGetter().getModifiers())
-                        Method m = operationClass.getMethod(prop.getGetter().getName(), prop.getGetter().getNativeParameterTypes())
-                        isHidden = m != null && m.isAnnotationPresent(HideProperty)
+
+                        isMethodsPrivate = isMethodsPrivate && !prop.getGetter().isPublic()
+                        if(!isMethodsPrivate)
+                        {
+                            Method m = operationClass.getMethod(prop.getGetter().getName(), prop.getGetter().getNativeParameterTypes())
+                            isHidden = m != null && m.isAnnotationPresent(HideProperty)
+                        }
                     }
                     if (prop.setter != null)
                     {

@@ -59,7 +59,7 @@ class CompassStringConverter extends AbstractCompassConverterWrapper{
 
     protected Object convertNullProperty(String alias, String propName) {
         def value = super.convertNullProperty(alias, propName); //To change body of overridden methods use File | Settings | File Templates.
-        if(value == "")
+        if(StringUtils.isBlank(value))
         {
             return EMPTY_VALUE;
         }

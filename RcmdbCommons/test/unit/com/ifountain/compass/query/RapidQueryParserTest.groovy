@@ -145,15 +145,15 @@ class RapidQueryParserTest extends RapidCmdbTestCase
         String queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1}${QueryParserUtils.EXACT_QUERY_END}\"";
         Query queryFromQueryParser = qp.parse(queryString);
         Query queryFromMultiQueryParser = mqp.parse(queryString);
-        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromQueryParser.toString());
-        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromMultiQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1}".toString(), queryFromQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1}".toString(), queryFromMultiQueryParser.toString());
 
 
         queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1.toUpperCase()}${QueryParserUtils.EXACT_QUERY_END}\"";
         queryFromQueryParser = qp.parse(queryString);
         queryFromMultiQueryParser = mqp.parse(queryString);
-        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromQueryParser.toString());
-        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()}".toString(), queryFromMultiQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toUpperCase()}".toString(), queryFromQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toUpperCase()}".toString(), queryFromMultiQueryParser.toString());
 
         String field2 = "prop2"
         String untokenizedField2 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}";
@@ -161,7 +161,7 @@ class RapidQueryParserTest extends RapidCmdbTestCase
         mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
         queryString = "${field1}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried1}${QueryParserUtils.EXACT_QUERY_END}\" ${field2}:\"${QueryParserUtils.EXACT_QUERY_START}${fieldValueToBeQueried2}${QueryParserUtils.EXACT_QUERY_END}\"";
         queryFromQueryParser = mqp.parse(queryString);
-        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1.toLowerCase()} ${untokenizedField2}:${fieldValueToBeQueried2.toLowerCase()}".toString(), queryFromQueryParser.toString());
+        assertEquals ("${untokenizedField1}:${fieldValueToBeQueried1} ${untokenizedField2}:${fieldValueToBeQueried2}".toString(), queryFromQueryParser.toString());
     }
 
     public void testLowerCaseUntokenizedFieldQueries()
@@ -174,14 +174,14 @@ class RapidQueryParserTest extends RapidCmdbTestCase
         QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
         Query q = qp.parse("${untokenizedField1}:\"${givenFieldQuery}\"");
         String fieldQuery = q.toString();
-        assertEquals ("${untokenizedField1}:${givenFieldQuery.toLowerCase()}".toString(), fieldQuery);
+        assertEquals ("${untokenizedField1}:${givenFieldQuery}".toString(), fieldQuery);
 
         String field2 = "field2";
         String untokenizedField2 = "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field2}";
         RapidMultiQueryParser mqp = RapidMultiQueryParser.newInstance([field1, field2] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
         q = qp.parse("${untokenizedField1}:\"${givenFieldQuery}\"");
         fieldQuery = q.toString();
-        assertEquals ("${untokenizedField1}:${givenFieldQuery.toLowerCase()}".toString(), fieldQuery);   
+        assertEquals ("${untokenizedField1}:${givenFieldQuery}".toString(), fieldQuery);
     }
 
 

@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.util
 
 import java.lang.reflect.Field
+import com.ifountain.compass.CompassConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,7 +20,18 @@ class DomainClassDefaultPropertyValueHolder {
         domainClasses.each{Class domainClass->
             Map fields = [:]
             getDeclaredFields(domainClass, fields)
-            classInstances[domainClass.name] = [fields:fields,instance:domainClass.newInstance()];
+
+            def instance = domainClass.newInstance();
+            def propDefaultValues = [:]
+            def fieldNames = [:]
+            fields.each{fieldName, field->
+                propDefaultValues[fieldName] = instance[fieldName];                
+                fieldNames[fieldName] = fieldName;
+                def untokenizedFieldName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+fieldName;
+                fieldNames[untokenizedFieldName] = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+fieldName;
+                propDefaultValues[untokenizedFieldName] = instance[fieldName];
+            }
+            classInstances[domainClass.name] = [fields:fieldNames,instance:propDefaultValues, instanceClass:domainClass];
             classSimpleNames[domainClass.simpleName] = domainClass.name;
         }
     }
@@ -47,12 +59,11 @@ class DomainClassDefaultPropertyValueHolder {
         if(classConfig != null)
         {
             def instance =  classConfig.instance;
-            Field f = classConfig.fields[propName]
-            if(f == null)
+            if(classConfig.fields[propName] == null)
             {
-                throw new MissingPropertyException(propName, instance.getClass())
+                throw new MissingPropertyException(propName, classConfig.instanceClass)
             }
-            return f.get (instance);
+            return instance[propName];
         }
         else {
             throw new Exception(DOMAIN_NOT_FOUND_EXCEPTION_MESSAGE);

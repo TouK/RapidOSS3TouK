@@ -111,7 +111,6 @@ class CompassConvertersTest extends AbstractSearchableCompassTests {
         })
     }
 
-
     public void testDateMarshallingUnmarshalling()
     {
         DomainClassDefaultPropertyValueHolder.initialize ([CompassTestObject]);

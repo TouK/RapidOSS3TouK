@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.domain.util
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.compass.CompassConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -48,16 +49,24 @@ class DomainClassDefaultPropertyValueHolderTest extends RapidCmdbTestCase
         def domainClasses = [class1, class2];
         DomainClassDefaultPropertyValueHolder.initialize(domainClasses);
         assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class1.name, "prop1"));
+        assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class1.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop1"));
         assertEquals (prop2Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class1.name, "prop2"));
+        assertEquals (prop2Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class1.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop2"));
         assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class2.name, "prop1"));
+        assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class2.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop1"));
         assertEquals (prop3Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class2.name, "prop3"));
+        assertEquals (prop3Value, DomainClassDefaultPropertyValueHolder.getDefaultPropery(class2.name, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop3"));
 
 
         //test get value with simple name
         assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class1.simpleName, "prop1"));
+        assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class1.simpleName, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop1"));
         assertEquals (prop2Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class1.simpleName, "prop2"));
+        assertEquals (prop2Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class1.simpleName, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop2"));
         assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class2.simpleName, "prop1"));
+        assertEquals (prop1Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class2.simpleName, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop1"));
         assertEquals (prop3Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class2.simpleName, "prop3"));
+        assertEquals (prop3Value, DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(class2.simpleName, CompassConstants.UN_TOKENIZED_FIELD_PREFIX+"prop3"));
 
         try
         {

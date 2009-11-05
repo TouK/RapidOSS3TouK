@@ -79,8 +79,8 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     def idMetaDataAttributes =[:];
                     'meta-data'(idMetaDataAttributes, idPropName);
                     def untokenizedMetaDataAttributes = new HashMap(idMetaDataAttributes);
-                    untokenizedMetaDataAttributes.put("index", "un_tokenized");
                     untokenizedMetaDataAttributes.put("exclude-from-all", "true");
+                    untokenizedMetaDataAttributes.put("analyzer", "lowercase");
                     String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+idPropName
                     "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)
                 }
@@ -131,7 +131,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                         property(attrs) {
                             "meta-data"(metaDataAttrs, propertyName)
                             def untokenizedMetaDataAttributes = new HashMap(metaDataAttrs);
-                            untokenizedMetaDataAttributes.put("index", "un_tokenized");
+                            untokenizedMetaDataAttributes.put("analyzer", "lowercase");
                             untokenizedMetaDataAttributes.put("exclude-from-all", "true");
                             String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+propertyName
                             "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)

@@ -7,6 +7,7 @@ import com.ifountain.compass.query.RapidLuceneQueryParser
 import org.compass.core.lucene.LuceneEnvironment
 import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessor
 import com.ifountain.compass.transaction.processor.SingleCompassSessionTransactionProcessorFactory
+import com.ifountain.compass.analyzer.LowerCaseAnalyzer
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,6 +31,7 @@ public class DefaultCompassConfiguration {
                 "compass.converter.double.type": CompassDoubleConverter.class.name,
                 "compass.converter.double.format": "#000000000000000000000000000000.00000000000000",
                 "compass.engine.analyzer.default.type": WhiteSpaceLowerCaseAnalyzer.class.name,
+                "compass.engine.analyzer.lowercase.type": LowerCaseAnalyzer.class.name,
                 "compass.engine.store.wrapper.wrapper1.type": "com.ifountain.compass.CompositeDirectoryWrapperProvider",
                 "compass.engine.store.wrapper.wrapper1.awaitTermination": "10000000",
                 "compass.cache.first": "org.compass.core.cache.first.NullFirstLevelCache",

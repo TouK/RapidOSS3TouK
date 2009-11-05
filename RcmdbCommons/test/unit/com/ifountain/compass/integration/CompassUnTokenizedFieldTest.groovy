@@ -41,7 +41,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
         Map mappings = [:];
 
-        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
+        compass = TestCompassFactory.getCompass(application, null, true, DefaultCompassConfiguration.getDefaultSettings(null));
         def id = 0;
         def instancesToBeSaved = [
                 new CompassTestObject(id: id++, prop1: "propertytoken1 propertytoken2 propertytoken3 propertytoken4"),
@@ -62,13 +62,13 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
             assertEquals(3, hits.length());
             CompassHit hit = hits.hit(0);
             assertEquals(instancesToBeSaved[0].prop1, hit.getData().prop1);
-            assertEquals("untokenized field should be lowercased", instancesToBeSaved[0].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals(instancesToBeSaved[0].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
             hit = hits.hit(1);
             assertEquals(instancesToBeSaved[1].prop1, hit.getData().prop1);
-            assertEquals("untokenized field should be lowercased", instancesToBeSaved[1].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals(instancesToBeSaved[1].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
             hit = hits.hit(2);
             assertEquals(instancesToBeSaved[2].prop1, hit.getData().prop1);
-            assertEquals("untokenized field should be lowercased", instancesToBeSaved[2].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals(instancesToBeSaved[2].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
 
             //queried data should be lowercased too
             query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1.toUpperCase()}\"").toQuery();

@@ -8,6 +8,7 @@ import org.compass.core.mapping.ResourcePropertyMapping
 import org.compass.core.marshall.MarshallingContext
 import com.ifountain.compass.CompassConstants
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import org.apache.commons.lang.StringUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -33,13 +34,10 @@ class CompassStringConverter extends AbstractCompassConverterWrapper{
         String propName = mapping.getName();
         if(o != null)
         {
-            if(String.valueOf(objectToBePassed).trim().length() == 0)
+            def objectToBePassedStr = String.valueOf(objectToBePassed);
+            if(StringUtils.isBlank(objectToBePassedStr))
             {
                 objectToBePassed = EMPTY_VALUE;
-            }
-            else if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
-            {
-                objectToBePassed = String.valueOf(objectToBePassed).toLowerCase();
             }
         }
         return super.marshall(resource, objectToBePassed, mapping, marshallingContext);
@@ -64,10 +62,6 @@ class CompassStringConverter extends AbstractCompassConverterWrapper{
         if(value == "")
         {
             return EMPTY_VALUE;
-        }
-        else if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
-        {
-            return value.toLowerCase();
         }
         return value;
     }

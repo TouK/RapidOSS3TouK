@@ -28,7 +28,8 @@ import org.compass.core.CompassTemplate
 import org.compass.core.config.CompassConfiguration
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
-import org.compass.core.config.CompassEnvironment;
+import org.compass.core.config.CompassEnvironment
+import com.ifountain.compass.analyzer.LowerCaseAnalyzer;
 /**
  *
  * @author Maurice Nicholson
@@ -81,6 +82,7 @@ class TestCompassFactory {
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
+        config.getSettings().setSetting ("compass.engine.analyzer.lowercase.type", LowerCaseAnalyzer.class.name,);
         config.getSettings().setSetting ("compass.engine.store.indexDeletionPolicy.type", WrapperIndexDeletionPolicy.name);
         if(additionalSettings)
         {

@@ -32,7 +32,8 @@
                     </div>
                 </div>
        <%
-        def journals = RsEventJournal.searchEvery("eventId:${eventId}", [sort:"rsTime", order:"asc"])
+        def journals = RsEventJournal.searchEvery("eventId:${eventId}")
+        journals = journals.sort{it.rsTime}
          %>
             <script>
                  YAHOO.util.Event.onDOMReady(function() {

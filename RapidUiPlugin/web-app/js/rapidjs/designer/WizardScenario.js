@@ -102,6 +102,20 @@ YAHOO.rapidjs.designer.WizardScenario.prototype = {
         }
         return itemName;
     },
+    getUrlExpression: function(url, paramsString){
+        var params = paramsString.split(",");
+        var paramsHtml = [];
+        for(var i=0; i<params.length; i++){
+            var param = params[i].trim();
+            if(param != ''){
+                if(param == 'id'){
+                    param = 'objectId'
+                }
+                paramsHtml.push(param + ':params.data.' + param)
+            }
+        }
+        return "createURL('" + url+ "', {" + paramsHtml.join(', ')+ "})";
+    },
     finishScenario:function() {
     },
     clearInputFields: function() {
@@ -124,6 +138,7 @@ YAHOO.rapidjs.designer.MenuItemToHtmlScenario = function(container) {
     this.steps = [this.stepWithNoAction, this.renderSummary]
     this.labelInput = null;
     this.urlInput = null;
+    this.paramsInput = null;
     this.isDialogResizable = 'true';
     this.urlLabel = ''
 };
@@ -154,7 +169,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
             'component':this.itemNames.htmlComponent, 'function':'show', name:this.itemNames.action
         });
         var argumentsNode = DesignerUtils.findFunctionArgumentsNode(actionNode);
-        var urlArg = designer.createTreeNode(argumentsNode, "FunctionArgument", {value:this.urlInput.value});
+        var url = this.getUrlExpression(this.getUrlPrefix() + this.urlInput.value, this.paramsInput.value)
+        var urlArg = designer.createTreeNode(argumentsNode, "FunctionArgument", {value:url});
         var titleArg = designer.createTreeNode(argumentsNode, "FunctionArgument");
         var triggersNode = DesignerUtils.findActionTriggersNode(actionNode);
         var trigger = designer.createTreeNode(triggersNode, "ActionTrigger", {
@@ -176,11 +192,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
                          '</tr>' +
                          '<tr class="prop">' +
                          '<td class="name" valign="top"><label>' + this.urlLabel +':</label></td>' +
-                         '<td valign="top"><textarea></textarea></td>' +
+                         '<td valign="top"><input></input></td>' +
+                         '</tr>' +
+                         '<tr class="prop">' +
+                         '<td class="name" valign="top"><label>Parameters:</label></td>' +
+                         '<td valign="top"><input></input></td>' +
                          '</tr>' +
                          '</tbody></table>'});
-                this.labelInput = stepEl.getElementsByTagName('input')[0]
-                this.urlInput = stepEl.getElementsByTagName('textarea')[0]
+                var inputs = stepEl.getElementsByTagName('input')
+                this.labelInput = inputs[0]
+                this.urlInput = inputs[1]
+                this.paramsInput = inputs[2]
                 break;
             case 1:
                 stepEl = dh.append(this.htmlEl, {tag:'div', cls:'step', id:this.getStepId()})
@@ -205,6 +227,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
     clearInputFields: function() {
         this.labelInput.value = '';
         this.urlInput.value = '';
+        this.paramsInput.value = '';
     },
     _generateItemNames: function() {
         this.itemNames = {
@@ -212,22 +235,29 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
             htmlComponent:this.generateComponentName('html'),
             action: this.generateActionName()
         }
+    },
+    getUrlPrefix: function(){
+        return '';
     }
 });
 
 YAHOO.rapidjs.designer.ShellScriptScenario = function(container) {
     YAHOO.rapidjs.designer.ShellScriptScenario.superclass.constructor.call(this, container);
     this.name = "shellscriptscenario"
-    this.urlLabel = "Script Url"
+    this.urlLabel = "Script"
 };
 
-YAHOO.lang.extend(YAHOO.rapidjs.designer.ShellScriptScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {});
+YAHOO.lang.extend(YAHOO.rapidjs.designer.ShellScriptScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {
+    getUrlPrefix: function(){
+        return 'script/run/';
+    }
+});
 
 YAHOO.rapidjs.designer.MenuToFormScenario = function(container) {
     YAHOO.rapidjs.designer.MenuToFormScenario.superclass.constructor.call(this, container);
     this.name = "menutoformscenario"
     this.isDialogResizable = "false"
-    this.urlLabel = "Form Url"
+    this.urlLabel = "Form Gsp"
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToFormScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {});
@@ -238,6 +268,7 @@ YAHOO.rapidjs.designer.MenuToLinkScenario = function(container) {
     this.steps = [this.stepWithNoAction, this.renderSummary]
     this.labelInput = null;
     this.urlInput = null;
+    this.paramsInput = null;
 };
 YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToLinkScenario, YAHOO.rapidjs.designer.WizardScenario, {
     finishScenario: function() {
@@ -252,8 +283,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToLinkScenario, YAHOO.rapidjs.desig
 
         //link action
         var actionsNode = DesignerUtils.findActionsNode(compNode)
+        var url = this.getUrlExpression(this.urlInput.value, this.paramsInput.value);
         var actionNode = designer.createTreeNode(actionsNode, "LinkAction", {
-            'url':this.urlInput.value, 'target':'blank', name:this.itemNames.action
+            'url':url, 'target':'blank', name:this.itemNames.action
         });
         var triggersNode = DesignerUtils.findActionTriggersNode(actionNode);
         var trigger = designer.createTreeNode(triggersNode, "ActionTrigger", {
@@ -275,11 +307,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToLinkScenario, YAHOO.rapidjs.desig
                          '</tr>' +
                          '<tr class="prop">' +
                          '<td class="name" valign="top"><label>Url:</label></td>' +
-                         '<td valign="top"><textarea></textarea></td>' +
+                         '<td valign="top"><input></input></td>' +
+                         '</tr>' +
+                         '<tr class="prop">' +
+                         '<td class="name" valign="top"><label>Parameters:</label></td>' +
+                         '<td valign="top"><input></input></td>' +
                          '</tr>' +
                          '</tbody></table>'});
-                this.labelInput = stepEl.getElementsByTagName('input')[0]
-                this.urlInput = stepEl.getElementsByTagName('textarea')[0]
+                var inputs = stepEl.getElementsByTagName('input')
+                this.labelInput = inputs[0]
+                this.urlInput = inputs[1]
+                this.paramsInput = inputs[2]
                 break;
             case 1:
                 stepEl = dh.append(this.htmlEl, {tag:'div', cls:'step', id:this.getStepId()})
@@ -301,6 +339,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToLinkScenario, YAHOO.rapidjs.desig
     clearInputFields: function() {
         this.labelInput.value = '';
         this.urlInput.value = '';
+        this.paramsInput.value = '';
     },
     _generateItemNames: function() {
         this.itemNames = {
@@ -315,6 +354,7 @@ YAHOO.rapidjs.designer.ColumnLinkScenario = function(container) {
     this.steps = [this.renderColumns, this.renderSummary]
     this.columnSelect = null;
     this.urlInput = null;
+    this.paramsInput = null;
 };
 YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.designer.WizardScenario, {
     finishScenario: function() {
@@ -336,8 +376,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
         }
         //link action
         var actionsNode = DesignerUtils.findActionsNode(compNode)
+        var url = this.getUrlExpression(this.urlInput.value, this.paramsInput.value);
         var actionNode = designer.createTreeNode(actionsNode, "LinkAction", {
-            'url':this.urlInput.value, 'target':'blank', name:this.itemNames.action,
+            'url':url, 'target':'blank', name:this.itemNames.action,
             condition: columnName ? "params.key == '" + columnName + "'" :"false"
         });
         var triggersNode = DesignerUtils.findActionTriggersNode(actionNode);
@@ -368,11 +409,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
                          '</tr>' +
                          '<tr class="prop">' +
                          '<td class="name" valign="top"><label>Url:</label></td>' +
-                         '<td valign="top"><textarea></textarea></td>' +
+                         '<td valign="top"><input></input></td>' +
+                         '</tr>' +
+                         '<tr class="prop">' +
+                         '<td class="name" valign="top"><label>Parameters:</label></td>' +
+                         '<td valign="top"><input></input></td>' +
                          '</tr>' +
                          '</tbody></table>'});
+                var inputs = stepEl.getElementsByTagName('input')
                 this.columnSelect = stepEl.getElementsByTagName('select')[0]
-                this.urlInput = stepEl.getElementsByTagName('textarea')[0]
+                this.urlInput = inputs[0]
+                this.paramsInput = inputs[1]
                 break;
             case 1:
                 stepEl = dh.append(this.htmlEl, {tag:'div', cls:'step', id:this.getStepId()})
@@ -391,6 +438,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
     clearInputFields: function() {
         SelectUtils.clear(this.columnSelect);
         this.urlInput.value = '';
+        this.paramsInput.value = '';
     },
     _generateItemNames: function() {
         this.itemNames = {

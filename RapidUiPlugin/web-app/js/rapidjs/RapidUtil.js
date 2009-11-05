@@ -50,7 +50,10 @@ function createURL(url, params)
             url = url + "?" + postData;
         }
     }
-    return getUrlPrefix() + url;
+    if(url.indexOf('http') != 0 && url.indexOf('www') != 0){
+        return getUrlPrefix() + url;
+    }
+    return url
 }
 
 function parseURL(completeUrl) {

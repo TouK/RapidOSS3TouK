@@ -77,8 +77,10 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                 def idPropName = "id";
                 id(name: idPropName, "managed-id":"true"){
                     def idMetaDataAttributes =[:];
+                    idMetaDataAttributes.converter = "unformattedlong"
                     'meta-data'(idMetaDataAttributes, idPropName);
                     def untokenizedMetaDataAttributes = new HashMap(idMetaDataAttributes);
+                    untokenizedMetaDataAttributes.put("converter", "long");
                     untokenizedMetaDataAttributes.put("exclude-from-all", "true");
                     untokenizedMetaDataAttributes.put("analyzer", "lowercase");
                     String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+idPropName
@@ -98,7 +100,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
 
-                for (propertyMapping in description.propertyMappings) {
+                for (CompassClassPropertyMapping propertyMapping in description.propertyMappings) {
                     def propertyName = propertyMapping.propertyName
                     def attributes = propertyMapping.attributes
                     LOG.debug("Mapping '${className}.${propertyName}' with attributes ${attributes}")
@@ -128,12 +130,20 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                                 attrs[k] = v
                             }
                         }
+                        def converterName = getConverterName(propertyMapping.propertyType, propertyName)
+                        if(converterName != null){
+                            metaDataAttrs["converter"] = converterName;
+                        }
                         property(attrs) {
                             "meta-data"(metaDataAttrs, propertyName)
                             def untokenizedMetaDataAttributes = new HashMap(metaDataAttrs);
                             untokenizedMetaDataAttributes.put("analyzer", "lowercase");
                             untokenizedMetaDataAttributes.put("exclude-from-all", "true");
                             String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+propertyName
+                            converterName = getConverterName(propertyMapping.propertyType, untokenizedPropertyName)
+                            if(converterName != null){
+                                untokenizedMetaDataAttributes["converter"] = converterName;
+                            }
                             "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)
                         }
                     }
@@ -150,6 +160,33 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
 //       System.out.println("${className} xml [${xml}]")
        LOG.debug("${className} xml [${xml}]")
        return new ByteArrayInputStream(xml.getBytes())
+    }
+
+    private getConverterName(Class propertyType, String propName)
+    {
+        if(propertyType.name == Double.name || propertyType.name == double.name || propertyType.name == Float.name || propertyType.name == float.name)
+        {
+            if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                return  "double";
+            }
+            else
+            {
+                return "unformatteddouble"
+            }
+        }
+        else if(Number.isAssignableFrom(propertyType))
+        {
+            if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                return  "long";
+            }
+            else
+            {
+                return "unformattedlong"
+            }
+        }
+        return null;
     }
 
     private validateAttributes(elementName, attributeMap, validAttrNames) {

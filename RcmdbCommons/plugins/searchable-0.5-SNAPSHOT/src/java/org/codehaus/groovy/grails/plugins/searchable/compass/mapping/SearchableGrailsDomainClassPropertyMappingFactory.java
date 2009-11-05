@@ -45,7 +45,9 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
             if (defaultFormats != null) {
                 format = (String) defaultFormats.get(propertyType); // TODO use class distance algorithm
             }
-            return propertyCompassClassPropertyMapping(propertyName, format);
+            CompassClassPropertyMapping propMap =  propertyCompassClassPropertyMapping(propertyName, format);
+            propMap.setPropertyType(propertyType);
+            return propMap;
         }
 
         propertyType = SearchableUtils.getSearchablePropertyAssociatedClass(domainClassProperty, searchableGrailsDomainClasses);

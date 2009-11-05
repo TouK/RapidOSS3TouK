@@ -88,7 +88,7 @@ class CompassSortingTest extends RapidCmdbWithCompassTestCase{
 
     public void testSortingWithNumberProperty()
     {
-        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], false);
+        initialize ([SortTestParentObject, SortTestoLevel2Child1, SortTestoLevel2Child2, SortTestoLevel1Child1,SortTestoLevel1Child2], [], true);
         def insts =[
                 SortTestoLevel2Child1.add(propInt: 1111),
                 SortTestoLevel2Child1.add(propInt: 112),
@@ -179,7 +179,7 @@ class SortTestoLevel1Child2 extends SortTestParentObject {
 }
 class SortTestoLevel2Child1 extends SortTestoLevel1Child1 {
     static searchable = {
-        storageType CompositeDirectoryWrapperProvider.RAM_DIR_TYPE
+        storageType CompositeDirectoryWrapperProvider.FILE_DIR_TYPE
     }
     static relations = [:]
     Long id

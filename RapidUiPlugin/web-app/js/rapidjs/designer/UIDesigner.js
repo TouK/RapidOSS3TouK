@@ -461,7 +461,6 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var dh = YAHOO.ext.DomHelper;
         var treeConfig = {
             id:'componentTree',
-            expanded:true,
             url:'',
             title:'',
             hideAttribute: this.treeHideAttribute,

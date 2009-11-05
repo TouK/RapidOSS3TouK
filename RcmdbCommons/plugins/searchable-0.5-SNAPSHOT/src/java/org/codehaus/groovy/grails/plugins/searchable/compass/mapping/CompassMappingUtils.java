@@ -39,9 +39,10 @@ public class CompassMappingUtils {
      * @param clazz the class
      * @return the Compass alias
      */
+    //TODO:class name with package is specified as alias name instead of short class name
     public static String getDefaultAlias(Class clazz) {
         Assert.notNull(clazz, "clazz cannot be null");
-        return ClassUtils.getShortName(clazz);
+        return clazz.getName();
     }
 
     /**

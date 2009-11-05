@@ -49,6 +49,7 @@ YAHOO.rapidjs.designer.UIDesigner = function(config) {
     this.loadingMask = new YAHOO.rapidjs.component.LoadingMask({});
     this.confirmBox = new YAHOO.rapidjs.component.ConfirmBox({handler:this.confirmBoxHandler, scope:this});
     this.render();
+    this.wizards = new YAHOO.rapidjs.designer.DesignerWizard();
     this.loadingMask.show("Loading...")
     this.getMetaData();
 };
@@ -118,6 +119,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
                         }
                     }
                 }
+                menuItems.push({id:"byWizard", label:"By Wizard", visible:"UIConfig.isWizardAvailable(params.data." + this.treeTypeAttribute + ")"});
                 menuItems.push({id:"clone", label:"Clone", visible:"params.data.canBeDeleted && params.data." + this.treeTypeAttribute + " != 'Layout'"});
                 menuItems.push({id:"delete", label:"Delete", visible:"params.data.canBeDeleted && !(params.data." + this.treeTypeAttribute + " == 'Layout' && params.dataNode.parentNode().getAttribute('" + this.treeTypeAttribute + "') == 'Tab')"});
                 this.tree.treeGridView.setMenuItems(menuItems);
@@ -185,10 +187,10 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
 
     displayItemProperties: function(xmlData) {
         this.currentDisplayedItemData = xmlData;
-        var itemType = DesignerUtils.getItemType(this, xmlData);
+        var itemType = DesignerUtils.getItemType(xmlData);
         var properties = UIConfig.getProperties(itemType)
         var data = [];
-        if (itemType == "Layout" && DesignerUtils.getItemType(this, xmlData.parentNode()) == "Tab") {
+        if (itemType == "Layout" && DesignerUtils.getItemType(xmlData.parentNode()) == "Tab") {
             data[data.length] = {name:"type", value:xmlData.getAttribute("type") || ""}
         }
         SelectUtils.clear(this.propertySelect);
@@ -254,14 +256,14 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.currentLayoutNode = null;
     },
     refreshLayout: function(xmlData) {
-        var layoutNode = DesignerUtils.getCurrentLayoutNode(this, xmlData);
+        var layoutNode = DesignerUtils.getCurrentLayoutNode(xmlData);
         this.destroyCurrentLayout();
         if (layoutNode) {
             RenderUtils.renderLayout.call(this, layoutNode)
         }
     },
     changeLayout: function(xmlData) {
-        var layoutNode = DesignerUtils.getCurrentLayoutNode(this, xmlData);
+        var layoutNode = DesignerUtils.getCurrentLayoutNode(xmlData);
         if ((!layoutNode && this.currentLayout) || layoutNode != this.currentLayoutNode) {
             this.destroyCurrentLayout();
         }
@@ -315,7 +317,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var childNodes = this.currentDisplayedItemData.childNodes();
         for (var i = childNodes.length - 1; i >= 0; i--) {
             var unitNode = childNodes[i]
-            var nodeType = DesignerUtils.getItemType(this, unitNode);
+            var nodeType = DesignerUtils.getItemType(unitNode);
             if (nodeType != "CenterUnit") {
                 this.currentDisplayedItemData.removeChild(unitNode);
             }
@@ -351,8 +353,8 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
     treeMenuClicked: function(xmlData, id, parentId, row) {
         var isClickedDataInCurrentTab = function(xmlData) {
             if (this.currentDisplayedItemData) {
-                var currentTab = DesignerUtils.getTabNodeFromNode(this, this.currentDisplayedItemData)
-                var clickedTab = DesignerUtils.getTabNodeFromNode(this, xmlData)
+                var currentTab = DesignerUtils.getTabNodeFromNode(this.currentDisplayedItemData)
+                var clickedTab = DesignerUtils.getTabNodeFromNode(xmlData)
                 return currentTab && currentTab == clickedTab;
             }
             return false;
@@ -372,9 +374,9 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
             }
         }
         else if (id == "delete") {
-            var itemType = DesignerUtils.getItemType(this, xmlData);
+            var itemType = DesignerUtils.getItemType(xmlData);
             if (this.currentDisplayedItemData) {
-                var currentTabNode = DesignerUtils.getTabNodeFromNode(this, this.currentDisplayedItemData);
+                var currentTabNode = DesignerUtils.getTabNodeFromNode(this.currentDisplayedItemData);
                 if ((itemType == 'WebPage' && currentTabNode && currentTabNode.parentNode().parentNode() == xmlData)
                         || (itemType == 'Tab' && currentTabNode == xmlData)) {
                     this.destroyCurrentLayout();
@@ -396,13 +398,16 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         else if (id == 'clone') {
             var clonedNode = xmlData.cloneNode(true, true);
-            if (DesignerUtils.getItemType(this, clonedNode) == 'Tab') {
+            if (DesignerUtils.getItemType(clonedNode) == 'Tab') {
                 clonedNode.setAttribute(this.itemTabAtt, clonedNode.getAttribute(this.keyAttribute));
             }
             xmlData.parentNode().appendChild(clonedNode);
             var currentTab = clonedNode.getAttribute(this.itemTabAtt);
             this.addExtraAttributesToChildNodes(clonedNode, currentTab);
             this.refreshTree();
+        }
+        else if (id == 'byWizard') {
+            this.wizards.show(xmlData);
         }
     },
 
@@ -456,6 +461,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         var dh = YAHOO.ext.DomHelper;
         var treeConfig = {
             id:'componentTree',
+            expanded:true,
             url:'',
             title:'',
             hideAttribute: this.treeHideAttribute,
@@ -466,7 +472,7 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         }
         this.tree = new YAHOO.rapidjs.component.TreeGrid(dh.append(document.body, {tag:'div'}), treeConfig);
         var toolsWrp = dh.append(this.tree.toolbar.el, {tag:'div', cls:'r-designer-tools',
-            html:'<table><tbody><tr><td><div class="wrp"></td><td></div><div class="wrp"></div></td></tr></tbody></table>'});
+            html:'<table cellspacing="0" cellpadding="0"><tbody><tr><td><div class="wrp"></td><td><div class="wrp"></div></td></tr></tbody></table>'});
         var wrps = YAHOO.util.Dom.getElementsByClassName('wrp', 'div', toolsWrp);
         new YAHOO.rapidjs.component.Button(wrps[0], {className:'r-designer-saveButton', scope:this, click:this.save, text:'Save'});
         new YAHOO.rapidjs.component.Button(wrps[1], {className:'r-designer-generateButton', scope:this, click:this.generate, text:'Generate'});

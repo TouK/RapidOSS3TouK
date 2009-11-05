@@ -34,7 +34,7 @@
 
 .rapid-context-menu-text {
     text-align: justify;
-    font-family: Arial, Tahoma, Verdana, Helvetica;
+    font-family: Tahoma, Verdana, Helvetica;
     font-size: 11px;
     line-height: 20px;
     text-indent: 30px;
@@ -135,7 +135,7 @@
 }
 
 td, textarea, input, div, span, a, a:visited, a:hover, a:active, select {
-    font-family: Arial, Tahoma, Verdana, Helvetica;
+    font-family: Tahoma, Verdana, Helvetica;
     font-size: 11px;
 }
 

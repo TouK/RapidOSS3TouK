@@ -5,9 +5,12 @@
     <script type="text/javascript" src="js/rapidjs/designer/UIDesigner.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/DesignerUtils.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/DesignerRenderUtils.js"></script>
+    <script type="text/javascript" src="js/rapidjs/designer/WizardScenario.js"></script>
     <script type="text/javascript" src="js/rapidjs/designer/Config.js"></script>
+    <script type="text/javascript" src="js/rapidjs/designer/DesignerWizard.js"></script>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/designer/designer.css"/>
     <link rel="stylesheet" type="text/css" href="css/rapidjs/designer/help.css"/>
+    <link rel="stylesheet" type="text/css" href="css/rapidjs/designer/wizard.css"/>
 </head>
 <body class="yui-skin-sam">
     <script>
@@ -23,7 +26,7 @@
             helpUrl : "uiDesigner/help?format=xml",
             metaDataUrl : "uiDesigner/metaData?format=xml"
         }
-        var uiDesigner = new YAHOO.rapidjs.designer.UIDesigner(config);
+        window.designer = new YAHOO.rapidjs.designer.UIDesigner(config);
     </script>
 </body>
 </html>

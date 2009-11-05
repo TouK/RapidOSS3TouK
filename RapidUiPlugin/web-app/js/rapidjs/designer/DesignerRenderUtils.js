@@ -32,7 +32,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             for (var i = 0; i < unitNodes.length; i++) {
                 var unitConfig = {};
                 var unitNode = unitNodes[i];
-                var unitType = DesignerUtils.getItemType(this, unitNode);
+                var unitType = DesignerUtils.getItemType(unitNode);
                 var unitPosition = unitType.substring(0, unitType.length - 4).toLowerCase();
                 unitConfig['position'] = unitPosition;
                 unitConfig['height'] = getUnitHeight.call(this, unitNode, wrpUnit);
@@ -55,7 +55,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var childUnits = lNode.childNodes();
                 for (var i = 0; i < childUnits.length; i++) {
                     var childUnitNode = childUnits[i];
-                    var unitType = DesignerUtils.getItemType(this, childUnitNode);
+                    var unitType = DesignerUtils.getItemType(childUnitNode);
                     var unitPosition = unitType.substring(0, unitType.length - 4).toLowerCase();
                     if (childUnitNode.childNodes().length > 0) {
                         renderLayoutToParent.call(this, childUnitNode.childNodes()[0], layout, unitPosition);
@@ -72,7 +72,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         var childUnitNodes = layoutNode.childNodes();
         for (var i = 0; i < childUnitNodes.length; i++) {
             var cUnitNode = childUnitNodes[i];
-            var uType = DesignerUtils.getItemType(this, cUnitNode);
+            var uType = DesignerUtils.getItemType(cUnitNode);
             var uPosition = uType.substring(0, uType.length - 4).toLowerCase();
             if (cUnitNode.childNodes().length > 0) {
                 renderLayoutToParent.call(this, cUnitNode.childNodes()[0], curLay, uPosition);
@@ -114,7 +114,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
     this.propertySelectedToBeAdded = function() {
         if (this.propertySelect.selectedIndex > 0) {
             var prop = this.propertySelect.options[this.propertySelect.selectedIndex].value;
-            var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+            var itemType = DesignerUtils.getItemType(this.currentDisplayedItemData);
             var defaultValue = UIConfig.getPropertyDefaultValue(itemType, prop);
             var propValue = this.currentDisplayedItemData.getAttribute(prop);
             var gridValue = "";
@@ -137,16 +137,8 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             return null;
         }
         var createFunctionArgutments = function() {
-            var argumentsNode;
-            var childNodes = this.currentDisplayedItemData.childNodes();
-            for (var i = 0; i < childNodes.length; i++) {
-                var itemType = DesignerUtils.getItemType(this, childNodes[i])
-                if (itemType == "FunctionArguments") {
-                    argumentsNode = childNodes[i];
-                    break;
-                }
-            }
-            childNodes = argumentsNode.childNodes();
+            var argumentsNode = DesignerUtils.findFunctionArgumentsNode(this.currentDisplayedItemData);
+            var childNodes = argumentsNode.childNodes();
             for (var i = childNodes.length - 1; i >= 0; i--) {
                 argumentsNode.removeChild(childNodes[i]);
             }
@@ -159,7 +151,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             var method = this.currentDisplayedItemData.getAttribute("function");
             var compName = this.currentDisplayedItemData.getAttribute("component");
-            var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+            var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData);
             var args = UIConfig.getMethodArguments(currentComponents[compName], method);
             var argIndex = 0;
             for (var argName in args) {
@@ -173,7 +165,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         var record = oArgs.editor.getRecord();
         var propName = record.getData("name")
         var propValue = record.getData("value")
-        var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+        var itemType = DesignerUtils.getItemType(this.currentDisplayedItemData);
         if (itemType == "Layout" && propName == "type") {
             this.createLayoutNode(propValue);
             var currentTab = this.currentDisplayedItemData.getAttribute(this.itemTabAtt);
@@ -187,7 +179,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 this.clearPropertyGrid();
                 if (propValue == "Action event") {
                     var oldTriggeringAction = this.currentDisplayedItemData.getAttribute("triggeringAction");
-                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this.currentDisplayedItemData);
                     var triggeringAction = oldTriggeringAction;
                     var eventName = "";
                     triggeringAction = "";
@@ -202,7 +194,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 }
                 else if (propValue == "Component event") {
                     var oldComponent = this.currentDisplayedItemData.getAttribute("component");
-                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData);
                     var component = oldComponent;
                     var eventName = "";
                     component = "";
@@ -217,7 +209,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 }
                 else if (propValue == "Menu") {
                     var oldComponent = this.currentDisplayedItemData.getAttribute("component");
-                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this.currentDisplayedItemData);
                     var component = oldComponent;
                     var eventName = "";
                     component = "";
@@ -249,7 +241,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         else if (itemType == "ActionTrigger" && propName == "triggeringAction") {
             var oldAction = this.currentDisplayedItemData.getAttribute("triggeringAction")
             if (propValue != oldAction) {
-                var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData)
+                var currentActions = DesignerUtils.getActionsOfCurrentTab(this.currentDisplayedItemData)
                 var eventName = getFirstItem(UIConfig.getItemEvents(currentActions[propValue]))
                 var eventRecord = this.propertyGrid.findRecord("name", "event");
                 this.propertyGrid.updateCell(eventRecord, "value", eventName)
@@ -264,7 +256,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var triggerType = this.currentDisplayedItemData.getAttribute("type")
                 var eventName;
                 if (triggerType == "Menu") {
-                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var currentComponents = DesignerUtils.getComponentsWithMenuItems(this.currentDisplayedItemData);
                     var compMenuConfig = currentComponents[propValue];
                     for (var menuType in compMenuConfig) {
                         var menuNames = compMenuConfig[menuType];
@@ -275,7 +267,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                     }
                 }
                 else {
-                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData)
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData)
                     eventName = getFirstItem(UIConfig.getItemEvents(currentComponents[propValue])) || "";
                 }
                 var eventRecord = this.propertyGrid.findRecord("name", "event");
@@ -292,7 +284,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         else if (itemType == "FunctionAction" && propName == "component") {
             var oldComponent = this.currentDisplayedItemData.getAttribute("component");
             if (propValue != oldComponent) {
-                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData);
                 this.currentDisplayedItemData.setAttribute(propName, propValue);
                 var componentMethods = UIConfig.getComponentMethods(currentComponents[propValue])
                 var method = getFirstItem(componentMethods);
@@ -316,16 +308,8 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         else if (itemType == "FunctionAction" && propName.match(/arg\d+/)) {
             var matchValues = propName.match(/arg\d+/);
             var argIndex = parseInt(matchValues[0].substring(3), 10)
-            var argumentsNode;
-            var childNodes = this.currentDisplayedItemData.childNodes();
-            for (var i = 0; i < childNodes.length; i++) {
-                var itemType = DesignerUtils.getItemType(this, childNodes[i])
-                if (itemType == "FunctionArguments") {
-                    argumentsNode = childNodes[i];
-                    break;
-                }
-            }
-            childNodes = argumentsNode.childNodes();
+            var argumentsNode = DesignerUtils.findFunctionArgumentsNode(this.currentDisplayedItemData);
+            var childNodes = argumentsNode.childNodes();
             childNodes[argIndex].setAttribute("value", propValue);
             willBeSavedInTreeData = false;
         }
@@ -343,20 +327,12 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         var component = xmlData.getAttribute("component");
         var method = xmlData.getAttribute("function");
         if (component && component != "") {
-            var currentCompoents = DesignerUtils.getComponentsOfCurrentTab(this, xmlData);
+            var currentCompoents = DesignerUtils.getComponentsOfCurrentTab(xmlData);
             var compMethods = UIConfig.getComponentMethods(currentCompoents[component]);
             if (compMethods && compMethods[method]) {
                 var args = UIConfig.getMethodArguments(currentCompoents[component], method);
-                var argumentsNode;
-                var childNodes = xmlData.childNodes();
-                for (var i = 0; i < childNodes.length; i++) {
-                    var itemType = DesignerUtils.getItemType(this, childNodes[i])
-                    if (itemType == "FunctionArguments") {
-                        argumentsNode = childNodes[i];
-                        break;
-                    }
-                }
-                childNodes = argumentsNode.childNodes();
+                var argumentsNode = DesignerUtils.findFunctionArgumentsNode(this.currentDisplayedItemData);;
+                var childNodes = argumentsNode.childNodes();
                 var argIndex = 0;
                 for (var argName in args) {
                     this.propertyGrid.addRow({name:"arg" + argIndex + ":" + argName, value:childNodes[argIndex].getAttribute("value") || ""})
@@ -371,9 +347,9 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 column = this.propertyGrid.getColumn(target),
                 propertyName = record.getData("name");
         if (column.getKey() == "value") {
-            var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+            var itemType = DesignerUtils.getItemType(this.currentDisplayedItemData);
             var editor;
-            if (itemType == "Layout" && DesignerUtils.getItemType(this, this.currentDisplayedItemData.parentNode()) == "Tab") {
+            if (itemType == "Layout" && DesignerUtils.getItemType(this.currentDisplayedItemData.parentNode()) == "Tab") {
                 editor = this.editors["InList"];
                 editor.dropdownOptions = UIConfig.getLayoutTypeNames();
                 editor.renderForm();
@@ -382,14 +358,14 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                                                      itemType == "TopUnit" || itemType == "RightUnit" ||
                                                      itemType == "BottomUnit" || itemType == "Dialog" || itemType == "FunctionAction")) {
                 editor = this.editors["InList"];
-                var dropDownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                var dropDownOptions = DesignerUtils.getComponentNamesOfCurrentTab(this.currentDisplayedItemData);
                 dropDownOptions.splice(0, 0, '');
                 editor.dropdownOptions = dropDownOptions;
                 editor.renderForm();
             }
             else if (propertyName == "function" && itemType == "FunctionAction") {
                 var componentName = this.currentDisplayedItemData.getAttribute('component')
-                var comps = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                var comps = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData);
                 editor = this.editors["InList"];
                 if (comps[componentName]) {
                     var methods = UIConfig.getComponentMethods(comps[componentName]);
@@ -406,7 +382,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             else if (itemType == "ActionTrigger" && propertyName == 'triggeringAction') {
                 editor = this.editors["InList"];
-                var currentActions = DesignerUtils.getActionNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                var currentActions = DesignerUtils.getActionNamesOfCurrentTab(this.currentDisplayedItemData);
                 editor.dropdownOptions = currentActions;
                 editor.renderForm();
             }
@@ -415,14 +391,14 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var currentComponents;
                 var triggerType = this.currentDisplayedItemData.getAttribute("type")
                 if (triggerType == "Menu") {
-                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this.currentDisplayedItemData);
                     currentComponents = [];
                     for (var compName in menuConfig) {
                         currentComponents.push(compName);
                     }
                 }
                 else {
-                    currentComponents = DesignerUtils.getComponentNamesOfCurrentTab(this, this.currentDisplayedItemData);
+                    currentComponents = DesignerUtils.getComponentNamesOfCurrentTab(this.currentDisplayedItemData);
                 }
                 editor.dropdownOptions = currentComponents;
                 editor.renderForm();
@@ -431,7 +407,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var triggerType = this.currentDisplayedItemData.getAttribute("type")
                 var eventNames = [];
                 if (triggerType == "Component event") {
-                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData);
                     var component = this.currentDisplayedItemData.getAttribute("component");
                     if (currentComponents[component]) {
                         var events = UIConfig.getItemEvents(currentComponents[component]);
@@ -441,7 +417,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                     }
                 }
                 else if (triggerType == "Menu") {
-                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this, this.currentDisplayedItemData);
+                    var menuConfig = DesignerUtils.getComponentsWithMenuItems(this.currentDisplayedItemData);
                     var component = this.currentDisplayedItemData.getAttribute("component");
                     if (menuConfig[component]) {
                         var compMenuConfig = menuConfig[component]
@@ -455,7 +431,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 }
                 else if (triggerType == "Action event") {
                     var triggeringAction = this.currentDisplayedItemData.getAttribute("triggeringAction");
-                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, this.currentDisplayedItemData);
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this.currentDisplayedItemData);
                     if (currentActions[triggeringAction]) {
                         var events = UIConfig.getItemEvents(currentActions[triggeringAction]);
                         for (var event in events) {
@@ -612,7 +588,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
 
             }
             var getMenuHelp = function(compName, menuType, menuName) {
-                var compType = DesignerUtils.getComponentsOfCurrentTab(this, this.currentDisplayedItemData)[compName]
+                var compType = DesignerUtils.getComponentsOfCurrentTab(this.currentDisplayedItemData)[compName]
                 var menuParameters = UIConfig.getMenuParameters(compType, menuType);
                 var menuHelpArray = [];
                 menuHelpArray.push("<div><h4>" + compName + " : " + menuName + "</h4>")
@@ -631,7 +607,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var triggeringAction = xmlData.getAttribute("triggeringAction");
                 var actionEvent = xmlData.getAttribute("event");
                 if (triggeringAction && actionEvent) {
-                    var currentActions = DesignerUtils.getActionsOfCurrentTab(this, xmlData);
+                    var currentActions = DesignerUtils.getActionsOfCurrentTab(xmlData);
                     var actionType = currentActions[triggeringAction];
                     help += getEventHelp(actionType, actionEvent)
                 }
@@ -640,7 +616,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var component = xmlData.getAttribute("component");
                 var event = xmlData.getAttribute("event");
                 if (component && event) {
-                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, xmlData);
+                    var currentComponents = DesignerUtils.getComponentsOfCurrentTab(xmlData);
                     var compType = currentComponents[component];
                     help += getEventHelp(compType, event);
                 }
@@ -649,7 +625,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
                 var component = xmlData.getAttribute("component");
                 var menuItem = xmlData.getAttribute("event");
                 if (component && menuItem) {
-                    var currentMenuConfig = DesignerUtils.getComponentsWithMenuItems(this, xmlData);
+                    var currentMenuConfig = DesignerUtils.getComponentsWithMenuItems(xmlData);
                     var compMenuConfig = currentMenuConfig[component];
                     if (compMenuConfig) {
                         var menuType;
@@ -679,7 +655,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             var triggersNode;
             var childNodes = actionNode.childNodes();
             for (var i = 0; i < childNodes.length; i++) {
-                var itemType = DesignerUtils.getItemType(this, childNodes[i]);
+                var itemType = DesignerUtils.getItemType(childNodes[i]);
                 if (itemType == "ActionTriggers") {
                     triggersNode = childNodes[i]
                     break;
@@ -706,7 +682,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             var method = actionNode.getAttribute("function");
             var help = "";
             if (component && method) {
-                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(this, actionNode);
+                var currentComponents = DesignerUtils.getComponentsOfCurrentTab(actionNode);
                 var compType = currentComponents[component];
                 if (compType) {
                     var methodDesc = UIConfig.getMethodDescription(compType, method);
@@ -732,7 +708,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
             }
             return help;
         };
-        var itemType = DesignerUtils.getItemType(this, this.currentDisplayedItemData);
+        var itemType = DesignerUtils.getItemType(this.currentDisplayedItemData);
         var helpText = UIConfig.getHelp(itemType);
         if (itemType == "ActionTrigger") {
             helpText += "<h3>Event Description</h3>" + getTriggerHelp.call(this, this.currentDisplayedItemData)

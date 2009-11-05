@@ -21,10 +21,11 @@ YAHOO.rapidjs.component.Dialog = function(config)
 {
     this.width = null;
     this.height = null;
-    this.minHeight = 300;
+    this.minHeight = 50;
     this.minWidth = 100;
     this.maxWidth = null;
     this.maxHeight = null;
+    this.effect = null;
     this.close = false;
     this.title = "&#160;";
     this.buttons = null;
@@ -72,7 +73,8 @@ YAHOO.rapidjs.component.Dialog.prototype = {
             autofillheight:false,
             modal:this.modal,
             x:this.x,
-            y:this.y
+            y:this.y,
+            effect:this.effect
         };
 
 
@@ -93,6 +95,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
                 {
                     type: "button",
                     label: this.buttons[i].text,
+                    disabled: this.buttons[i].disabled,
                     container: this.footer
                 });
                 if (YAHOO.lang.isFunction(this.buttons[i].handler))
@@ -223,21 +226,23 @@ YAHOO.rapidjs.component.Dialog.prototype = {
         var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
         var bodyWidth = (panelWidth - 20);
         YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
-
+        var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border
+        var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
         if (contentHeight != null) {
-            this.bodyEl.setHeight(contentHeight);
             var panelBodyEl = getEl(this.panel.body);
+            var totalHeight = headerHeight + footerHeight + panelBodyEl.getPadding('tb');
+            if(this.minHeight != null && (totalHeight + contentHeight) < this.minHeight){
+                 contentHeight = this.minHeight - totalHeight
+            }
+            if(this.maxHeight != null && (totalHeight + contentHeight) > this.maxHeight){
+                 contentHeight = this.maxHeight - totalHeight
+            }
+            this.bodyEl.setHeight(contentHeight);
             panelBodyEl.setHeight(contentHeight + panelBodyEl.getPadding('tb'));
-            var totalHeight = this.panel.header.offsetHeight +
-                              this.panel.footer.offsetHeight +
-                              contentHeight +
-                              panelBodyEl.getPadding('tb');
+            totalHeight = totalHeight + contentHeight;
             this.panel.cfg.setProperty("height", totalHeight);
         }
         else {
-            var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border
-            var footerHeight = this.panel.footer.offsetHeight; // Content + Padding + Border
-
             var bodyHeight = (panelHeight - headerHeight - footerHeight - 1);
             var panelBodyEl = getEl(this.panel.body);
             panelBodyEl.setHeight(bodyHeight);

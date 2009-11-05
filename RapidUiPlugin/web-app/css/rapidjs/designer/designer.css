@@ -28,7 +28,13 @@
 }
 
 .r-designer-tools .wrp {
-    padding: 0px 1px;
+    padding: 0px 2px;
+}
+
+.r-designer-tools .wrp .r-button-inner{
+    color:#083772;
+    font-size:13px;
+    font-weight:bold;
 }
 
 .r-designer-tools .r-button {
@@ -48,7 +54,7 @@
 }
 
 .r-designer-generateButton {
-    background: transparent url( ../../../images/rapidjs/designer/star.png ) no-repeat scroll 0% 50%;
+    background: transparent url( ../../../images/rapidjs/designer/printer.png ) no-repeat scroll 0% 50%;
     padding-left: 20px;
     height: 16px;
 }
@@ -62,50 +68,6 @@
     border-color: #2F6EBF;
 }
 
-.r-designer-actdlg-wrp {
-}
-
-.r-designer-actdlg-eventdef {
-    background-color: #C9DEFA;
-    border: 1px solid #8EAACF;
-    margin: 10px;
-    padding: 3px 0pt 3px 20px;
-}
-
-.r-designer-actdlg-methoddef {
-    background-color: #C9DEFA;
-    border: 1px solid #8EAACF;
-    margin: 10px;
-    padding: 3px 0pt 3px 20px;
-}
-
-.r-designer-actdlg-btnwrp {
-    text-align: center;
-}
-
-.r-designer-actdlg-wrp td {
-    padding: 2px 3px;
-    font-family: verdana, arial, helvetica, sans-serif;
-}
-
-.r-designer-actdlg-wrp .field-name {
-    width: 105px;
-}
-
-.r-designer-actdlg-wrp input, select {
-    margin: 1px 0pt;
-    padding: 1px 1px;
-}
-
-.r-designer-actdlg-wrp .grid-def {
-    font-family: verdana;
-    padding: 5px 5px
-}
-
-.r-designer-actdlg-wrp textarea {
-    height: 31px;
-    font-size: 12px;
-}
 
 .r-designer-layout-top {
     height: 100%;

@@ -1,0 +1,70 @@
+.r-designer-wizard {
+    background-color: #FFFFEF !important;
+    border: #DFDFDF 1px solid
+}
+
+.r-designer-wizards-wrp {
+    padding: 15px;
+}
+.r-designer-wizard ul{
+    padding-left:10px;
+}
+.r-designer-wizards-links a {
+    color: #00459F;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: underline;
+}
+.r-designer-wizards-links li {
+    padding: 2px 0px;
+}
+
+.r-designer-wizard-scwrp input, .r-designer-wizard-scwrp textarea, .r-designer-wizard-scwrp select {
+    margin: 2px 0pt;
+    padding: 2px 4px;
+    font-family: verdana, arial, helvetica, sans-serif;
+    font-size: 11px;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: normal;
+    width:200px;
+}
+.r-designer-wizard-scwrp textarea{
+    height:75px;
+}
+
+.r-designer-wizard-scwrp .prop .name {
+    white-space: nowrap;
+    width: 15%;
+    line-height: 12px;
+    padding: 5px 6px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.r-designer-wizard-scwrp .prop .value {
+    width: 85%;
+    line-height: 12px;
+    padding: 5px 6px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.r-designer-wizard-scwrp select {
+    padding: 2px 2px 2px 0pt;
+}
+.r-designer-wizard-scwrp li{
+    font-size:14px;
+    padding:2px 0px;
+    font-family:verdana;
+}
+.r-designer-wizard-scwrp p{
+    font-weight:bold;
+    color:#083772;
+    font-size:14px;
+    font-family:verdana;
+}

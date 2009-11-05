@@ -3,6 +3,7 @@ YAHOO.namespace("rapidjs", "rapidjs.designer");
 YAHOO.rapidjs.designer.Config = new function() {
     this.config = {};
     this.helpConfig = {};
+    this.componentWizardScenarioMap = null;
     this.loadMetaData = function(response) {
         var getAttributes = function(xmlNode) {
             var atts = {};
@@ -143,6 +144,33 @@ YAHOO.rapidjs.designer.Config = new function() {
     };
     this.getConfig = function() {
         return this.config;
+    };
+    this.createComponentWizardScenarioMap = function() {
+        if (!this.componentWizardScenarioMap) {
+            var cMap = {};
+            for (var scenario in this.wizardScenarios) {
+                var components = this.wizardScenarios[scenario]['components'];
+                for (var i = 0; i < components.length; i++) {
+                    var component = components[i];
+                    if (!cMap[component]) {
+                        cMap[component] = [];
+                    }
+                    cMap[component].push(scenario);
+                }
+            }
+            this.componentWizardScenarioMap = cMap;
+        }
+    };
+    this.isWizardAvailable = function(itemType) {
+        this.createComponentWizardScenarioMap();
+        return this.componentWizardScenarioMap[itemType] != null
+    };
+    this.getWizardScenariosForComponent = function(itemType) {
+        this.createComponentWizardScenarioMap();
+        return this.componentWizardScenarioMap[itemType]
+    };
+    this.getWizardScenarios = function() {
+        return this.wizardScenarios;
     };
     this.getLayoutTypeNames = function() {
         var names = [];
@@ -840,6 +868,24 @@ YAHOO.rapidjs.designer.Config = new function() {
                 "params.menuId": "Name of the menu item."
             }
 
+        }
+    }
+    this.wizardScenarios = {
+        'Add a menu item to execute a shell script':{
+            constructor: YAHOO.rapidjs.designer.ShellScriptScenario,
+            components: ['SearchGrid', 'SearchList', 'TreeGrid', 'ObjectMap']
+        },
+        'Add a menu item to pop up a form':{
+            constructor: YAHOO.rapidjs.designer.MenuToFormScenario,
+            components: ['SearchGrid', 'SearchList', 'TreeGrid', 'ObjectMap']
+        },
+        'Add a menu item to launch an external web page':{
+            constructor: YAHOO.rapidjs.designer.MenuToLinkScenario,
+            components: ['SearchGrid', 'SearchList', 'TreeGrid', 'ObjectMap']
+        },
+        'Make grid column hyperlink':{
+            constructor: YAHOO.rapidjs.designer.ColumnLinkScenario,
+            components: ['SearchGrid']
         }
     }
 }

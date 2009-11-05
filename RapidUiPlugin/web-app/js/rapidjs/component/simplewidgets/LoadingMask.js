@@ -4,7 +4,6 @@ YAHOO.rapidjs.component.LoadingMask = function(config) {
     this.width = 240;
     this.text = "Loading, please wait...";
     YAHOO.ext.util.Config.apply(this, config);
-
 }
 
 YAHOO.rapidjs.component.LoadingMask.prototype = {
@@ -33,10 +32,11 @@ YAHOO.rapidjs.component.LoadingMask.prototype = {
             this.textEl.innerHTML = text;
         }
         this.panel.show();
+        YAHOO.util.Dom.setStyle(this.panel.mask, 'r-loadingmask-mask');
     },
     hide:function() {
         if(this.panel){
-            this.panel.hide();    
+            this.panel.hide();
         }
     }
 

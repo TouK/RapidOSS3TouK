@@ -102,19 +102,19 @@ YAHOO.rapidjs.designer.WizardScenario.prototype = {
         }
         return itemName;
     },
-    getUrlExpression: function(url, paramsString){
+    getUrlExpression: function(url, paramsString) {
         var params = paramsString.split(",");
         var paramsHtml = [];
-        for(var i=0; i<params.length; i++){
+        for (var i = 0; i < params.length; i++) {
             var param = params[i].trim();
-            if(param != ''){
-                if(param == 'id'){
+            if (param != '') {
+                if (param == 'id') {
                     param = 'objectId'
                 }
                 paramsHtml.push(param + ':params.data.' + param)
             }
         }
-        return "createURL('" + url+ "', {" + paramsHtml.join(', ')+ "})";
+        return "createURL('" + url + "', {" + paramsHtml.join(', ') + "})";
     },
     finishScenario:function() {
     },
@@ -191,14 +191,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
                          '<td valign="top"><input></input></td>' +
                          '</tr>' +
                          '<tr class="prop">' +
-                         '<td class="name" valign="top"><label>' + this.urlLabel +':</label></td>' +
+                         '<td class="name" valign="top"><label>' + this.urlLabel + ':</label></td>' +
                          '<td valign="top"><input></input></td>' +
                          '</tr>' +
                          '<tr class="prop">' +
                          '<td class="name" valign="top"><label>Parameters:</label></td>' +
                          '<td valign="top"><input></input></td>' +
                          '</tr>' +
-                         '</tbody></table>'});
+                         '</tbody></table><div style="padding:5px;">' + this.getDescription() + '</div>'});
                 var inputs = stepEl.getElementsByTagName('input')
                 this.labelInput = inputs[0]
                 this.urlInput = inputs[1]
@@ -236,8 +236,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuItemToHtmlScenario, YAHOO.rapidjs.d
             action: this.generateActionName()
         }
     },
-    getUrlPrefix: function(){
+    getUrlPrefix: function() {
         return '';
+    },
+    getDescription: function() {
     }
 });
 
@@ -248,8 +250,15 @@ YAHOO.rapidjs.designer.ShellScriptScenario = function(container) {
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.designer.ShellScriptScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {
-    getUrlPrefix: function(){
+    getUrlPrefix: function() {
         return 'script/run/';
+    },
+    getDescription: function() {
+        return 'Provide a label for your menu item and write down the server side groovy script you want to execute. As a starting point you can use ' +
+               '<strong>executeShell</strong> script which is already deployed in RapidOSS server. Specify the script parameters as comma seperated values ' +
+               '(name,severity,etc.) which can be selected from the data in the execution context. If your script requires different parameter keys you can modify it in ' +
+               '<strong>arg0:url</strong> property of Function Action <strong>' + this.itemNames.action + '</strong> when you finished with the configuration.'
+
     }
 });
 
@@ -260,7 +269,15 @@ YAHOO.rapidjs.designer.MenuToFormScenario = function(container) {
     this.urlLabel = "Form Gsp"
 };
 
-YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToFormScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {});
+YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToFormScenario, YAHOO.rapidjs.designer.MenuItemToHtmlScenario, {
+    getDescription: function() {
+        return 'Provide a label for your menu item and write down the server side .gsp file path (relative to web-app directory) which you build your form. ' +
+               'Specify the form parameters as comma seperated values (name,severity,etc.) which can be selected from the data in the execution context. ' +
+               'If your form requires different parameter keys you can modify it in <strong>arg0:url</strong> property of Function Action ' +
+               '<strong>' + this.itemNames.action + '</strong> when you finished with the configuration.'
+
+    }
+});
 
 YAHOO.rapidjs.designer.MenuToLinkScenario = function(container) {
     YAHOO.rapidjs.designer.MenuToLinkScenario.superclass.constructor.call(this, container);
@@ -313,7 +330,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.MenuToLinkScenario, YAHOO.rapidjs.desig
                          '<td class="name" valign="top"><label>Parameters:</label></td>' +
                          '<td valign="top"><input></input></td>' +
                          '</tr>' +
-                         '</tbody></table>'});
+                         '</tbody></table>' +
+                         '<div style="padding:5;">Provide a label for your menu item ' +
+                         'and write down the URL you want to launch. Specify the URL parameters as comma seperated values (name,severity,etc.) which can be ' +
+                         'selected from the data in the execution context. If your URL requires different parameter keys you can modify it in <strong>url</strong> ' +
+                         'property of Link Action <strong>' + this.itemNames.action + '</strong> when you finished with the configuration.' +
+                         '</div>'});
                 var inputs = stepEl.getElementsByTagName('input')
                 this.labelInput = inputs[0]
                 this.urlInput = inputs[1]
@@ -363,12 +385,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
         var compName = this.componentNode.getAttribute('name');
         var currentTab = compNode.getAttribute(designer.itemTabAtt);
         var columnName = this.columnSelect.selectedIndex > -1 ? this.columnSelect.options[this.columnSelect.selectedIndex].value : null;
-        if(columnName){
+        if (columnName) {
             var columnsNode = DesignerUtils.findColumnsNode(this.componentNode);
             var columns = columnsNode.childNodes();
-            for(var i=0; i< columns.length; i++){
+            for (var i = 0; i < columns.length; i++) {
                 var column = columns[i];
-                if(column.getAttribute('attributeName') == columnName){
+                if (column.getAttribute('attributeName') == columnName) {
                     column.setAttribute('type', 'link');
                     break;
                 }
@@ -379,7 +401,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
         var url = this.getUrlExpression(this.urlInput.value, this.paramsInput.value);
         var actionNode = designer.createTreeNode(actionsNode, "LinkAction", {
             'url':url, 'target':'blank', name:this.itemNames.action,
-            condition: columnName ? "params.key == '" + columnName + "'" :"false"
+            condition: columnName ? "params.key == '" + columnName + "'" : "false"
         });
         var triggersNode = DesignerUtils.findActionTriggersNode(actionNode);
         var trigger = designer.createTreeNode(triggersNode, "ActionTrigger", {
@@ -389,15 +411,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
         designer.refreshTree();
     },
 
-    renderColumns: function(){
+    renderColumns: function() {
         var columnNames = DesignerUtils.getColumnNames(this.componentNode);
-        for(var i=0; i < columnNames.length; i++){
+        for (var i = 0; i < columnNames.length; i++) {
             var columnName = columnNames[i];
             SelectUtils.addOption(this.columnSelect, columnName, columnName);
         }
     },
     renderCurrentStep: function() {
         var dh = YAHOO.ext.DomHelper
+        var compName = this.componentNode.getAttribute('name');
         var stepEl;
         switch (this.currentStep) {
             case 0:
@@ -415,7 +438,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.designer.ColumnLinkScenario, YAHOO.rapidjs.desig
                          '<td class="name" valign="top"><label>Parameters:</label></td>' +
                          '<td valign="top"><input></input></td>' +
                          '</tr>' +
-                         '</tbody></table>'});
+                         '</tbody></table>' +
+                         '<div style="padding:5;">Select a column which you have already defined for component <strong>' + compName + '</strong> ' +
+                         'and write down the URL you want to launch. Specify the URL parameters as comma seperated values (name,severity,etc.) which can be ' +
+                         'selected from the row data. If your URL requires different parameter keys you can modify it in <strong>url</strong> ' +
+                         'property of Link Action <strong>' + this.itemNames.action + '</strong> when you finished with the configuration.' +
+                         '</div>'});
                 var inputs = stepEl.getElementsByTagName('input')
                 this.columnSelect = stepEl.getElementsByTagName('select')[0]
                 this.urlInput = inputs[0]

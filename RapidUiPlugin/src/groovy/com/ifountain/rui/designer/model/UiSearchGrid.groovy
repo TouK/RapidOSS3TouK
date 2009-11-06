@@ -134,7 +134,7 @@ class UiSearchGrid extends UiComponent {
     {
         def attributes = xmlNode.attributes();
         attributes.tabId = parentElement._designerKey;
-        if(attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)){
+        if(attributes.searchInEnabled == "true" && attributes.searchClassesUrl == ""){
             throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
         }
         def searchGrid = DesignerSpace.getInstance().addUiElement(UiSearchGrid, attributes);

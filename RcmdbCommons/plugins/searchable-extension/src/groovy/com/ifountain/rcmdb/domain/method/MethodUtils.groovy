@@ -40,20 +40,14 @@ class MethodUtils {
         def maxOption = options["max"]
         int offset = MapUtils.getIntValue(options, "offset");
         int max = MapUtils.getIntValue(options, "max");
-        if (maxOption == null || max > compassHits.length())
+        if(max == 0)
         {
             max = compassHits.length();
         }
         int low = offset;
         int high = Math.min(low + max, compassHits.length());
-        Iterator hitIterator = compassHits.iterator();
-        for (int i = 0; i < low && i < high; i++) {
-            hitIterator.next();
-        }
-        while (low < high) {
-
-            hitIteratorClosure(hitIterator.next());
-            low++
+        for (int i = low; i < high; i++) {
+            hitIteratorClosure(compassHits.hit(i));
         }
     }
 }

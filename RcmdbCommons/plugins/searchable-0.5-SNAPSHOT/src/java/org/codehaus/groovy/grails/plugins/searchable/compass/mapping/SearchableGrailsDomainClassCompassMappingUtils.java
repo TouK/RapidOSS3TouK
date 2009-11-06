@@ -92,7 +92,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         for (int i = 0, max = selfProps.size(); i < max; i++) {
             GrailsDomainClassProperty property = (GrailsDomainClassProperty)selfProps.get(i);
             String propertyName = property.getName();
-            if (propertyName.equals("id")) { // TODO refactor with specific id mapping
+            if (propertyName.equals("id") || propertyName.equals("version")) { // TODO refactor with specific id mapping
                 continue;
             }
             if (!SearchableUtils.isIncludedProperty(propertyName, searchableValue)) {

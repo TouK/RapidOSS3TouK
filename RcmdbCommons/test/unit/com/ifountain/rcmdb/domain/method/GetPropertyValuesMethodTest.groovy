@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -21,6 +21,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.converter.RapidConvertUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -210,6 +211,16 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase {
         assertEquals(modelInstance3.prop2, res[0].prop2);
         assertEquals(modelInstance2.prop2, res[1].prop2);
         assertEquals(modelInstance1.prop2, res[2].prop2);
+
+        res = modelClass.'getPropertyValues'("alias:*", ["prop1", "prop2"], [sort: "id", max:1]);
+        assertEquals(1, res.size());
+        assertEquals(4, res[0].size())
+        assertEquals(modelInstance1.id, res[0].id);
+
+        res = modelClass.'getPropertyValues'("alias:*", ["prop1", "prop2"], [sort: "id", offset:1, max:1]);
+        assertEquals(1, res.size());
+        assertEquals(4, res[0].size())
+        assertEquals(modelInstance2.id, res[0].id);
     }
 
     public void testGetPropertyValuesWithQueryOptions() {

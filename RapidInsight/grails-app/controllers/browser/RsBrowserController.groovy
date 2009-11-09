@@ -91,7 +91,7 @@ class RsBrowserController {
             def isAll = params.all == "true"
             def propertyList = getPropertiesWhichCanBeListed(domainClass, 5, isAll);
             def propertyNames = propertyList.name;
-            def objectList = domainClass.clazz."list"(params)
+            def objectList = domainClass.clazz."search"(params).results
 
             if (params.format == 'xml') {
                 def sw = new StringWriter();

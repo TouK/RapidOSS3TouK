@@ -17,7 +17,7 @@ public class SessionManager
     private SessionStorage<Session> storage = new SessionStorage<Session>();
     private List<SessionListener> listeners = new ArrayList<SessionListener>();
     private static SessionManager manager;
-    public static SessionManager getInstance()
+    public synchronized static SessionManager getInstance()
     {
         if(manager == null)
         {
@@ -51,7 +51,7 @@ public class SessionManager
 
     
 
-    public synchronized Session getSession()
+    public Session getSession()
     {
         Session session = storage.get();
         if(session == null)
@@ -62,7 +62,7 @@ public class SessionManager
         return session;
     }
     
-    public synchronized Session startSession(String username)
+    public Session startSession(String username)
     {
         Session session = storage.get();
         if(session != null)
@@ -85,7 +85,7 @@ public class SessionManager
         return session;
     }
 
-    public synchronized void endSession()
+    public void endSession()
     {
         Session currentSession = storage.get();
         if(currentSession != null)

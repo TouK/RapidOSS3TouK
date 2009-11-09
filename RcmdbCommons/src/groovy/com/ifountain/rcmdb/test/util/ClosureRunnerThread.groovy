@@ -40,7 +40,7 @@ class ClosureRunnerThread extends Thread{
         }
         catch(Throwable t)
         {
-            exception = t;
+            this.exception = t;
         }
         isFinished = true;
 

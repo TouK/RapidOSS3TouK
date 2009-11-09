@@ -3,6 +3,18 @@ package com.ifountain.rcmdb.auth
 import auth.Group
 import auth.SegmentFilter
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.compass.search.FilterSessionListener
+import com.ifountain.session.SessionManager
+import com.ifountain.rcmdb.test.util.ClosureRunnerThread
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import com.ifountain.rcmdb.domain.property.RelationUtils
+import auth.Role
+import auth.RsUser
+import auth.RsUserOperations
+import com.ifountain.rcmdb.test.util.CompassForTests
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,7 +27,10 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
-        initialize([SegmentFilter, Group], []);
+        initialize([SegmentFilter, Group, Role, RsUser], []);
+        CompassForTests.addOperationSupport(RsUser, RsUserOperations)
+        SessionManager.destroyInstance();
+        SessionManager.getInstance().addSessionListener(new FilterSessionListener());
     }
 
     public void tearDown() {
@@ -100,13 +115,13 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(2, classesFilters.size());
-        String parentQuery ="(alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${query}))";
+        String parentQuery = "(alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${query}))";
         String childQuery = "alias:${RuntimeException.class.name} AND (${parentQuery})"
         assertEquals(parentQuery, classesFilters[Exception.class.name])
         assertEquals(childQuery, classesFilters[RuntimeException.class.name])
     }
 
-    public void testParentClassHavingSegmentFilter(){
+    public void testParentClassHavingSegmentFilter() {
         def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
         SegmentQueryHelper.getInstance().initialize(classes);
 
@@ -117,7 +132,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         assertFalse(filter1.hasErrors());
 
         SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
-        
+
         def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName);
         assertEquals("", groupFilters[SegmentQueryHelper.SEGMENT_FILTER]);
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
@@ -128,7 +143,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         assertEquals("alias:${ClassNotFoundException.class.name} AND (${query})", classesFilters[ClassNotFoundException.class.name])
     }
 
-    public void testBothChildAndParentClassHavingSegmentFilter(){
+    public void testBothChildAndParentClassHavingSegmentFilter() {
         def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
         SegmentQueryHelper.getInstance().initialize(classes);
 
@@ -149,13 +164,13 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         def classesFilters = groupFilters[SegmentQueryHelper.CLASSES];
 
         assertEquals(3, classesFilters.size());
-        def exClassQuery = "${parentQuery} AND ((alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${childQuery})))"; 
+        def exClassQuery = "${parentQuery} AND ((alias:* NOT alias:${RuntimeException.class.name}) OR (alias:${RuntimeException.class.name} AND (${childQuery})))";
         assertEquals(exClassQuery, classesFilters[Exception.class.name])
         assertEquals("alias:${RuntimeException.class.name} AND (${exClassQuery})", classesFilters[RuntimeException.class.name])
         assertEquals("alias:${ClassNotFoundException.class.name} AND (${parentQuery})", classesFilters[ClassNotFoundException.class.name])
     }
 
-    public void testThreeLevelHierarchyAllHavingFilters(){
+    public void testThreeLevelHierarchyAllHavingFilters() {
         def classes = [Exception.class, IOException.class, RuntimeException.class, ConcurrentModificationException.class, IllegalArgumentException.class, InvalidPropertiesFormatException.class]
         SegmentQueryHelper.getInstance().initialize(classes)
         def groupName = "group1"
@@ -195,7 +210,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         assertEquals("alias:${IllegalArgumentException.class.name} AND (${exClassQuery})", classesFilters[IllegalArgumentException.class.name])
     }
 
-    public void testThreeLevelHieararchFirstAndSecondLevelHavingFilters(){
+    public void testThreeLevelHieararchFirstAndSecondLevelHavingFilters() {
         def classes = [Exception.class, IOException.class, RuntimeException.class, ConcurrentModificationException.class, IllegalArgumentException.class, InvalidPropertiesFormatException.class]
         SegmentQueryHelper.getInstance().initialize(classes)
         def groupName = "group1"
@@ -235,7 +250,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         assertEquals("alias:${InvalidPropertiesFormatException.class.name} AND (${exQuery})", classesFilters[InvalidPropertiesFormatException.class.name])
     }
 
-     public void testThreeLevelHieararchSecondAndThirdLevelHavingFilters(){
+    public void testThreeLevelHieararchSecondAndThirdLevelHavingFilters() {
         def classes = [Exception.class, IOException.class, RuntimeException.class, ConcurrentModificationException.class, IllegalArgumentException.class, InvalidPropertiesFormatException.class]
         SegmentQueryHelper.getInstance().initialize(classes)
         def groupName = "group1"
@@ -274,18 +289,73 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         runtimeQuery = "alias:${RuntimeException.class.name} AND (${parentQuery}) AND ((alias:* NOT alias:${IllegalArgumentException.class.name}) OR (${illQuery}))"
         exQuery = "(alias:* NOT alias:${RuntimeException.class.name} NOT alias:${IllegalArgumentException.class.name}) OR (${runtimeQuery})"
         assertEquals("alias:${IllegalArgumentException.class.name} AND (${exQuery})", classesFilters[IllegalArgumentException.class.name])
-     }
+    }
 
-    public void testInitialize(){
+    public void testCalculateGroupFiltersDoesNotCauseDeadlockWithSessionMechanism() {
+        def userRole=Role.add(name:Role.USER)
+        assertFalse(userRole.hasErrors())
+
+
+        def classes = [Exception.class, RuntimeException.class, ClassNotFoundException.class]
+        SegmentQueryHelper.getInstance().initialize(classes);
+
+        def groupName = "group1"
+        def parentQuery = "name:a*";
+        def group = Group.add(name: groupName, segmentFilterType: Group.CLASS_BASED_FILTER, role:userRole);
+        def user = RsUser.addUser(username: "user1", password: "changeme", groups: [group]);
+        def filter1 = SegmentFilter.add(className: Exception.class.name, groupId: group.id, filter: parentQuery, group: [group])
+        assertFalse(filter1.hasErrors());
+
+        def childQuery = "displayName:b*";
+        def filter2 = SegmentFilter.add(className: RuntimeException.class.name, groupId: group.id, filter: childQuery, group: [group])
+        assertFalse(filter2.hasErrors());
+        
+        def threads = []
+        Object waitLock = new Object();
+        Object filtersWaitLock = new Object();
+        def relMetadata = DomainClassUtils.getRelations(ApplicationHolder.application.getDomainClass(Group.class.name)).get("filters")
+        def isGetFiltersExecuted = false;
+        Group.metaClass.getFilters = {->
+            synchronized (filtersWaitLock) {
+                if (!isGetFiltersExecuted) {
+                    isGetFiltersExecuted = true;
+                    filtersWaitLock.wait();
+                }
+            }
+            return RelationUtils.getRelatedObjects(delegate, relMetadata)
+        }
+        Thread t1 = new ClosureRunnerThread(closure: {
+            SegmentQueryHelper.getInstance().calculateGroupFilters(groupName);
+        })
+        t1.start();
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertTrue(isGetFiltersExecuted);
+        }))
+        Thread t2 = new ClosureRunnerThread(closure: {
+            SessionManager.getInstance().startSession(user.username);
+        })
+        t2.start();
+        Thread.sleep(1000);
+        synchronized (filtersWaitLock) {
+            filtersWaitLock.notifyAll();
+        }
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertTrue(t1.isFinished);
+            assertTrue(t2.isFinished);
+        }))
+
+    }
+
+    public void testInitialize() {
         def groupName = "group"
-        for(i in 0..3){
+        for (i in 0..3) {
             def group = Group.add(name: groupName + i, segmentFilterType: Group.CLASS_BASED_FILTER);
             assertFalse(group.hasErrors())
         }
 
         SegmentQueryHelper.getInstance().initialize([]);
 
-        for(i in 0..3){
+        for (i in 0..3) {
             def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName + i);
             assertNotNull(groupFilters)
             assertEquals("", groupFilters[SegmentQueryHelper.SEGMENT_FILTER])

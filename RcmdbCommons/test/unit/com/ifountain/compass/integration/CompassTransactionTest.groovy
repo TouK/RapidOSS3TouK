@@ -68,7 +68,7 @@ class CompassTransactionTest extends AbstractSearchableCompassTests {
         def usedMemInMb = usedMemory/Math.pow(2,20);
         assertTrue ("${numberOfObjectsToBeInserted} should use memory less than ${expectedMemoryUsage} but was ${usedMemInMb}", usedMemInMb < expectedMemoryUsage);
         def numberOfInsertedObjects = TestCompassUtils.countHits (compass){CompassQueryBuilder queryBuilder->
-            return queryBuilder.queryString ("alias:*").toQuery();                        
+            return queryBuilder.queryString ("alias:*").toQuery();
         }
         assertEquals (numberOfObjectsToBeInserted, numberOfInsertedObjects);
     }
@@ -135,7 +135,7 @@ class CompassTransactionTest extends AbstractSearchableCompassTests {
                 session.save (new CompassTestObject(id:id++));
                 synchronized (lock)
                 {
-                    lock.wait ();                    
+                    lock.wait ();
                 }
                 assertEquals(1, session.queryBuilder().queryString ("id:0").toQuery().hits().length());
             }
@@ -147,7 +147,7 @@ class CompassTransactionTest extends AbstractSearchableCompassTests {
         assertEquals (0, foundObjects);
         synchronized (lock)
         {
-            lock.notifyAll ();                    
+            lock.notifyAll ();
         }
         t.join ();
 

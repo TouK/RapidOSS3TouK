@@ -11,6 +11,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.compass.core.*
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.compass.converter.CompassStringConverter
 
 /**
 * Created by IntelliJ IDEA.
@@ -41,7 +42,7 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
         CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
         Map mappings = [:];
 
-        compass = TestCompassFactory.getCompass(application, null, true, DefaultCompassConfiguration.getDefaultSettings(null));
+        compass = TestCompassFactory.getCompass(application, null, false, DefaultCompassConfiguration.getDefaultSettings(null));
         def id = 0;
         def instancesToBeSaved = [
                 new CompassTestObject(id: id++, prop1: "propertytoken1 propertytoken2 propertytoken3 propertytoken4"),
@@ -50,7 +51,8 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
                 new CompassTestObject(id: id++, prop1: "propertytoken2 propertytoken3 propertytoken4"),
                 new CompassTestObject(id: id++, prop1: "propertytoken3 propertytoken4"),
                 new CompassTestObject(id: id++, prop1: "propertytoken4"),
-                new CompassTestObject(id: id++, prop1: "")
+                new CompassTestObject(id: id++, prop1: ""),
+                new CompassTestObject(id: id++, prop1: null)
         ] as Object[];
         TestCompassUtils.saveToCompass(compass, instancesToBeSaved)
 
@@ -62,19 +64,34 @@ class CompassUnTokenizedFieldTest extends AbstractSearchableCompassTests {
             assertEquals(3, hits.length());
             CompassHit hit = hits.hit(0);
             assertEquals(instancesToBeSaved[0].prop1, hit.getData().prop1);
-            assertEquals(instancesToBeSaved[0].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals("untokenized field should be lowercased", instancesToBeSaved[0].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
             hit = hits.hit(1);
             assertEquals(instancesToBeSaved[1].prop1, hit.getData().prop1);
-            assertEquals(instancesToBeSaved[1].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals("untokenized field should be lowercased", instancesToBeSaved[1].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
             hit = hits.hit(2);
             assertEquals(instancesToBeSaved[2].prop1, hit.getData().prop1);
-            assertEquals(instancesToBeSaved[2].prop1, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            assertEquals("untokenized field should be lowercased", instancesToBeSaved[2].prop1.toLowerCase(), hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
 
             //queried data should be lowercased too
             query = builder.queryString("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1:\"${instancesToBeSaved[0].prop1.toUpperCase()}\"").toQuery();
             query.addSort("id", CompassQuery.SortPropertyType.STRING);
             hits = query.hits();
             assertEquals("query should be lower cased for untokenized fields", 3, hits.length());
+
+        })
+
+        //test empty and null untokenized property is saved as _e
+        TestCompassUtils.withCompassQueryBuilder(compass, {CompassQueryBuilder builder ->
+            CompassQuery query = builder.queryString("prop1:\"\"").toQuery();
+            query.addSort("id", CompassQuery.SortPropertyType.STRING);
+            CompassHits hits = query.hits();
+            assertEquals(2, hits.length());
+            CompassHit hit = hits.hit(0);
+            assertEquals(instancesToBeSaved[6].prop1, hit.getData().prop1);
+            assertEquals(CompassStringConverter.EMPTY_VALUE, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
+            hit = hits.hit(1);
+            assertEquals("", hit.getData().prop1);
+            assertEquals(CompassStringConverter.EMPTY_VALUE, hit.getResource().getValue("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1"));
 
         })
 

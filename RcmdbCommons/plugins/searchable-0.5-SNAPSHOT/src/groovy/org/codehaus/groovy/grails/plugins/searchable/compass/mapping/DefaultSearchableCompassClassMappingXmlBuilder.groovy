@@ -81,8 +81,9 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     'meta-data'(idMetaDataAttributes, idPropName);
                     def untokenizedMetaDataAttributes = new HashMap(idMetaDataAttributes);
                     untokenizedMetaDataAttributes.put("converter", "long");
+                    untokenizedMetaDataAttributes.remove ("analyzer");
                     untokenizedMetaDataAttributes.put("exclude-from-all", "true");
-                    untokenizedMetaDataAttributes.put("analyzer", "lowercase");
+                    untokenizedMetaDataAttributes.put("index", "un_tokenized");
                     String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+idPropName
                     "meta-data"(untokenizedMetaDataAttributes, untokenizedPropertyName)
                 }
@@ -137,7 +138,8 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                         property(attrs) {
                             "meta-data"(metaDataAttrs, propertyName)
                             def untokenizedMetaDataAttributes = new HashMap(metaDataAttrs);
-                            untokenizedMetaDataAttributes.put("analyzer", "lowercase");
+                            untokenizedMetaDataAttributes.remove ("analyzer");
+                            untokenizedMetaDataAttributes.put("index", "un_tokenized");
                             untokenizedMetaDataAttributes.put("exclude-from-all", "true");
                             String untokenizedPropertyName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+propertyName
                             converterName = getConverterName(propertyMapping.propertyType, untokenizedPropertyName)
@@ -184,6 +186,13 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
             else
             {
                 return "unformattedlong"
+            }
+        }
+        else if(propertyType.name == String.class.name)
+        {
+            if(propName.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                return  "lowercasedstring";
             }
         }
         return null;

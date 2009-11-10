@@ -140,6 +140,10 @@ public class QueryParserUtils {
                 queryText = QueryParserUtils.replaceEmptyStringQuery(queryText, QueryParserUtils.EMPTY_STRING_FOR_FIELD_QUERY);
                 field = getUntokenizedFieldName(field);
             }
+            if(field.startsWith(CompassConstants.UN_TOKENIZED_FIELD_PREFIX))
+            {
+                queryText = queryText.toLowerCase();
+            }
         }
         return new FieldQueryParameter(field, queryText);
     }

@@ -15,7 +15,7 @@ class CompassConverterUtils {
     {
         def value = null;
         try{
-            value = DomainClassDefaultPropertyValueHolder.getDefaultProperyWithSimpleName(alias, propName);
+            value = DomainClassDefaultPropertyValueHolder.getDefaultPropery(alias, propName);
         }catch(Exception e){/*this exception should be ignored*/}
         if(value == null){
             value = converterDefaultValue;

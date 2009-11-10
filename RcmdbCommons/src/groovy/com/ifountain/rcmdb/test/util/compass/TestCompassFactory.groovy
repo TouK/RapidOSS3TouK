@@ -29,7 +29,10 @@ import org.compass.core.config.CompassConfiguration
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import org.compass.core.config.CompassEnvironment
-import com.ifountain.compass.analyzer.LowerCaseAnalyzer;
+import com.ifountain.compass.analyzer.LowerCaseAnalyzer
+import com.ifountain.compass.converter.CompassDoubleConverter
+import com.ifountain.compass.converter.CompassLongConverter
+import com.ifountain.compass.converter.CompassLowerCaseStringConverter;
 /**
  *
  * @author Maurice Nicholson
@@ -82,7 +85,11 @@ class TestCompassFactory {
         config.getSettings().setSetting ("compass.cache.first", "org.compass.core.cache.first.NullFirstLevelCache");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.type", "com.ifountain.compass.CompositeDirectoryWrapperProvider");
         config.getSettings().setSetting ("compass.engine.store.wrapper.wrapper1.awaitTermination", "10000000");
-        config.getSettings().setSetting ("compass.engine.analyzer.lowercase.type", LowerCaseAnalyzer.class.name,);
+        config.getSettings().setSetting ("compass.converter.lowercasedstring.type", CompassLowerCaseStringConverter.class.name);
+        config.getSettings().setSetting ("compass.converter.unformattedlong.type", CompassLongConverter.class.name);
+        config.getSettings().setSetting ("compass.converter.unformattedlong.format", "#")
+        config.getSettings().setSetting ("compass.converter.unformatteddouble.type", CompassDoubleConverter.class.name)
+        config.getSettings().setSetting ("compass.converter.unformatteddouble.format", "#.00000000000000");
         config.getSettings().setSetting ("compass.engine.store.indexDeletionPolicy.type", WrapperIndexDeletionPolicy.name);
         if(additionalSettings)
         {

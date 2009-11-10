@@ -15,9 +15,10 @@ class SearchWithAliasTest extends RapidCmdbWithCompassTestCase {
     static def classes = [:];
     public void setUp() {
         super.setUp();
-        classes.RsTopologyObject=this.class.classLoader.loadClass("RsTopologyObject")
-        classes.RsGroup=this.class.classLoader.loadClass("RsGroup")
-        classes.RsCustomer=this.class.classLoader.loadClass("RsCustomer")
+        gcl.addClasspath(getWorkspaceDirectory().path+"/RapidModules/RapidInsight/grails-app/domain");
+        classes.RsTopologyObject=gcl.loadClass("RsTopologyObject")
+        classes.RsGroup=gcl.loadClass("RsGroup")
+        classes.RsCustomer=gcl.loadClass("RsCustomer")
         initialize([classes.RsTopologyObject,classes.RsGroup,classes.RsCustomer], []);
     }
 

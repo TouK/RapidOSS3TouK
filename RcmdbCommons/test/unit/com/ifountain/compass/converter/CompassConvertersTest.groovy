@@ -43,18 +43,18 @@ class CompassConvertersTest extends AbstractSearchableCompassTests {
         DomainClassDefaultPropertyValueHolder.initialize ([CompassTestObject]);
         def defaultValueForProp1 = "defaultValue1";
 
-        def convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.simpleName, "prop1", defaultValueForProp1);
+        def convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.name, "prop1", defaultValueForProp1);
         assertEquals(new CompassTestObject().prop1, convertedNullValue);
 
         def defaultValueForProp48 = "defaultValue48";
-        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.simpleName, "prop48", defaultValueForProp48);
+        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.name, "prop48", defaultValueForProp48);
         assertEquals(defaultValueForProp48, convertedNullValue);
 
-        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.simpleName, "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1", defaultValueForProp1);
+        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.name, "${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}prop1", defaultValueForProp1);
         assertEquals("If it is an untokenized field it should return default value of tokenized property", new CompassTestObject().prop1, convertedNullValue);
 
         DomainClassDefaultPropertyValueHolder.destroy();
-        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.simpleName, "prop1", defaultValueForProp1);
+        convertedNullValue = CompassConverterUtils.getNullPropertyValue (CompassTestObject.name, "prop1", defaultValueForProp1);
         assertEquals("If any exception occurred in DefaultPropertyHolder it will return given default value", defaultValueForProp1, convertedNullValue);
 
     }

@@ -33,7 +33,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         this.viewBuilder = null;
         this.viewsLoaded = false;
         this.currentView = 'default';
-        if(this.config.defaultView != null)
+        if (this.config.defaultView != null)
         {
             this.currentView = this.config.defaultView;
         }
@@ -105,7 +105,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             YAHOO.util.Dom.setStyle(wrps[8], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[9], 'display', 'none')
         }
-        else if(!this.searchInEnabled){
+        else if (!this.searchInEnabled) {
             YAHOO.util.Dom.setStyle(wrps[5], 'display', 'none')
             YAHOO.util.Dom.setStyle(wrps[6], 'display', 'none')
         }
@@ -625,8 +625,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             sortOrder = column['sortOrder'] || 'asc';
         }
         this._setQuery(newQuery || this.currentlyExecutingQuery || '', sortAtt, sortOrder, this.getSearchClass(), extraSearchParams);
-        if(willPoll !== false){
-            this.handleSearch(null, willSaveHistory);    
+        if (willPoll !== false) {
+            this.handleSearch(null, willSaveHistory);
         }
     },
     getColumnConfigFromViewNode: function(viewNode) {
@@ -700,7 +700,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (title) {
             this.setTitle(title);
         }
-        var currentView =  this.viewsLoaded ? this.viewInput.options[this.viewInput.selectedIndex].value : 'default';
+        var currentView = this.viewsLoaded ? this.viewInput.options[this.viewInput.selectedIndex].value : 'default';
         if (this.searchClassesLoaded) {
             SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }
@@ -742,7 +742,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.viewChanged(queryString, false);
         }
     },
-
+    getViewedProperties : function() {
+        var props = [];
+        var columns = this.columns;
+        for (var i = 0; i < columns.length; i++) {
+            var att = columns[i].attributeName.trim();
+            if (att != '') {
+                props.push(att);
+            }
+        }
+        return props;
+    },
     getSortedColumnIndex: function() {
         for (var i = 0; i < this.columns.length; i++) {
             if (this.columns[i]['sortBy'] == true) {

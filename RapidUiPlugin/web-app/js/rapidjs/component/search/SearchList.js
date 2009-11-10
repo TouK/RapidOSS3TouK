@@ -31,6 +31,7 @@ YAHOO.rapidjs.component.search.SearchList = function(container, config) {
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.component.search.AbstractSearchList, {
     init: function() {
         this.cellMenu = null;
+        this.propertiesToRequest = [];
         var events = {
             'cellMenuClicked' : new YAHOO.util.CustomEvent('cellMenuClicked'),
             'rowHeaderClicked' : new YAHOO.util.CustomEvent('rowHeaderClicked')
@@ -110,7 +111,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 this.maxRowCellLength = this.defaultFields ? this.defaultFields.length : 0;
             }
         }
-
+        this.preparePropertiesToRequest();
         this.cellMenu = new YAHOO.widget.Menu(this.id + '_cellMenu', {position: "dynamic", autofillheight:false, minscrollheight:300});
 
         for (var i in this.propertyMenuItems) {
@@ -368,7 +369,26 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             this.updateBodyHeight();
         }
     },
-
+    preparePropertiesToRequest: function() {
+        var propsMap = {};
+        if (this.fields) {
+            for (var i = 0; i < this.fields.length; i++) {
+                var fields = this.fields[i]['fields'];
+                for (var j = 0; j < fields.length; j++) {
+                    var field = fields[j];
+                    propsMap[field] = field;
+                }
+            }
+        }
+        for (var prop in propsMap) {
+            if (prop.trim() != '') {
+                this.propertiesToRequest.push(prop);
+            }
+        }
+    },
+    getViewedProperties : function() {
+        return this.propertiesToRequest;
+    },
     fireCellMenuClick: function(key, value, data, id) {
         this.events['cellMenuClicked'].fireDirect(key, value, data, id);
     },

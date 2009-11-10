@@ -36,6 +36,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.searchClassesUrl = null;
     this.defaultSearchClass = null;
     this.searchInEnabled = true;
+    this.extraPropertiesToRequest = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.configureTimeout(config);
     this.searchInput = null;
@@ -262,6 +263,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.subComponents[i].poll();
         }
     },
+    doRequest: function(url, params, callback){
+        YAHOO.rapidjs.component.search.AbstractSearchList.superclass.doPostRequest.call(this, url, params, callback);
+    },
     _poll: function() {
         if(this.searchInput != null)
         {
@@ -284,6 +288,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.params['sort'] = this.lastSortAtt;
             this.params['order'] = this.lastSortOrder;
             this.params['searchIn'] = this.getSearchClass();
+            this.params['propertyList'] = this.getPropertyListToRequest();
             YAHOO.rapidjs.component.search.AbstractSearchList.superclass.poll.call(this);
         }
     },
@@ -756,6 +761,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         params['query'] = this.currentlyExecutingQuery || '';
         params['offset'] = offset;
         params['max'] = max;
+        params['propertyList'] = this.getPropertyListToRequest();
         return params;
     },
 
@@ -772,7 +778,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.searchClassRequester.timeout = this.timeout;
         }
     },
-
+    getPropertyListToRequest : function(){
+        var viewedProps = this.getViewedProperties();
+        if(this.extraPropertiesToRequest && this.extraPropertiesToRequest != ''){
+            viewedProps.concat(this.extraPropertiesToRequest.split(','));    
+        }
+        return viewedProps.join(',');
+    },
+    getViewedProperties : function(){
+        return [];
+    },
     showCurrentState: function() {
     },
     calculateRowHeight: function() {

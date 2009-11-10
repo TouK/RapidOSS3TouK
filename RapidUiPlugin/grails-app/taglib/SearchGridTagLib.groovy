@@ -184,6 +184,8 @@ class SearchGridTagLib {
             cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
         if (config["searchInEnabled"] != null)
             cArray.add("searchInEnabled:${config['searchInEnabled']}")
+        if (config["extraPropertiesToRequest"] != null)
+            cArray.add("extraPropertiesToRequest:'${config['extraPropertiesToRequest']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

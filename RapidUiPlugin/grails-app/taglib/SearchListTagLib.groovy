@@ -230,6 +230,8 @@ class SearchListTagLib {
             cArray.add("searchInEnabled:${config['searchInEnabled']}")
         if (config["searchClassesUrl"] != null)
             cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
+        if (config["extraPropertiesToRequest"] != null)
+            cArray.add("extraPropertiesToRequest:'${config['extraPropertiesToRequest']}'")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

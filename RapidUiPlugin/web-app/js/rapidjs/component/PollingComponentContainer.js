@@ -40,7 +40,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
 
     poll : function() {
         if(this.isVisible()){
-            this.requester.doRequest(this.url, this.params);
+            this.doRequest(this.url, this.params);
         }
     },
 
@@ -53,7 +53,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.PollingComponentContainer, YAHOO.rapid
                 this.params[param] = params[param];
             }
         }
-        this.requester.doRequest(this.url, this.params);
+        this.doRequest(this.url, this.params);
         if (title) {
             this.setTitle(title);
         }

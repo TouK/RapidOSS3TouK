@@ -50,11 +50,15 @@ class JsecDbRealm {
     }
     def hasRole(principal, roleName) {
         def user = RsUser.get(username: principal);
+        if(!user)
+            return false;
         return user.hasRole(roleName);
     }
 
     def hasAllRoles(principal, roles) {
         def user = RsUser.get(username: principal);
+        if(!user)
+            return false;
         return user.hasAllRoles(roles);
     }
 
@@ -65,6 +69,8 @@ class JsecDbRealm {
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
         def user = RsUser.get(username: principal);
+        if(!user)
+            return false;
         def permissions = user.permissionRelations.findAll {it.permission.type == requiredPermission.class.name}
 
         // Try each of the permissions found and see whether any of

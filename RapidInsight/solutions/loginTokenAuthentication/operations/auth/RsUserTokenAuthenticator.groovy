@@ -5,6 +5,7 @@ import org.jsecurity.authc.UnknownAccountException
 import org.jsecurity.authc.AccountException
 import application.Cache;
 import org.jsecurity.crypto.hash.Sha1Hash
+import com.ifountain.comp.utils.CaseInsensitiveMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -114,7 +115,7 @@ class RsUserTokenAuthenticator {
             if(entry==null)
             {
                 entry=[:];
-                entry.users=[:];
+                entry.users=new CaseInsensitiveMap();                
                 entry.tokens=[:];
                 Cache.store(CACHE_ENTRY_KEY,entry);
             }

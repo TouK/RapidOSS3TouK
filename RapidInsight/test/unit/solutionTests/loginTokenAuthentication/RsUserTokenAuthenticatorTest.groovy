@@ -149,6 +149,8 @@ class RsUserTokenAuthenticatorTest extends RapidCmdbWithCompassTestCase {
         assertEquals("testuser",userEntry.username);
         assertSame(entry.users[userEntry.username],entry.tokens[userEntry.loginToken])
         assertEquals(userEntry.loginToken,createdToken);
+        //case insensitive
+        assertSame(entry.users["testUSER"],entry.users["testuser"]);
         //check that expireAt is between 4-5 seconds in future
         def expireTimeDiff=userEntry.expireAt-System.currentTimeMillis();
         assertTrue(expireTimeDiff<=(5*1000));

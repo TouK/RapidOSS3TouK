@@ -253,6 +253,21 @@ class RapidQueryParserTest extends RapidCmdbTestCase
         assertEquals ("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:[${CompassStringConverter.EMPTY_VALUE} TO ${CompassStringConverter.EMPTY_VALUE}]".toString(), fieldQuery);
     }
 
+    public void testRangeQueryChangeFieldToUntokenized()
+    {
+        compass = TestCompassFactory.getCompass([CompassTestObject]);
+        String field1 = "field1";
+        QueryParser qp = RapidQueryParser.newInstance(field1, new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        Query q = qp.parse("${field1}:[1 TO 1000]");
+        String fieldQuery = q.toString();
+        assertEquals ("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:[1 TO 1000]".toString(), fieldQuery);
+
+        RapidMultiQueryParser mqp = RapidMultiQueryParser.newInstance([field1] as String[], new WhitespaceAnalyzer(), compass.getMapping(), compass.getSearchEngineFactory(), true);
+        q = mqp.parse("${field1}:[1 TO 1000]");
+        fieldQuery = q.toString();
+        assertEquals ("${CompassConstants.UN_TOKENIZED_FIELD_PREFIX}${field1}:[1 TO 1000]".toString(), fieldQuery);
+    }
+
     public void testIntegerRangeWithCurrentTimeOfRapidQueryParser()
     {
         _testIntegerRangeWithCurrentTime("field", RapidQueryParser);

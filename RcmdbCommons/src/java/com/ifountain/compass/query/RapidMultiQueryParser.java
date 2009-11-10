@@ -57,6 +57,7 @@ public class RapidMultiQueryParser extends CompassMultiFieldQueryParser
     }
 
     protected Query getRangeQuery(String field, String start, String end, boolean inclusive) throws ParseException {
+        field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
         RangeQueryParameter param = QueryParserUtils.createRangeQueryParameters(field, start, end, inclusive);
         return super.getRangeQuery(param.getField(), param.getStart(), param.getEnd(), param.isInclusive());
     }

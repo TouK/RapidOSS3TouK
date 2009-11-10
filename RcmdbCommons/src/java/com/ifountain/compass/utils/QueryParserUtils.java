@@ -65,7 +65,6 @@ public class QueryParserUtils {
         {
             start = QueryParserUtils.replaceEmptyStringQuery(start, QueryParserUtils.EMPTY_STRING_FOR_RANGE_QUERY);
             end = QueryParserUtils.replaceEmptyStringQuery(end, QueryParserUtils.EMPTY_STRING_FOR_RANGE_QUERY);
-            field = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+field;
         }
         else
         {

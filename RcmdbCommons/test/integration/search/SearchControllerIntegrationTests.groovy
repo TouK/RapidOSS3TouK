@@ -68,6 +68,47 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
 
 
+    public void testSearchWithPropertyList()
+    {
+        def propertyList = ["rsOwner", "name"]
+        def expectedProperties = ["id", "rsAlias", "sortOrder"]
+        expectedProperties.addAll (propertyList)
+        for (i in 0..9) {
+            BaseDatasource.add(name: "ds${i}");
+        }
+
+        def maxCount = 5;
+        def controller = new SearchController();
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "desc"
+        controller.params["propertyList"] = propertyList.join(" ,")
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.index();
+        def objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        def objects = objectsXml.Object;
+        assertEquals(maxCount, objects.size());
+        assertEquals("ds9", objects[0].@name.toString());
+
+        def attributes = objects[0].attributes();
+        assertEquals(expectedProperties.size(), attributes.size())
+
+
+        //test by changing max number and sort order
+        IntegrationTestUtils.resetController (controller);
+        maxCount = 10;
+        controller.params["max"] = "${maxCount}";
+        controller.params["sort"] = "name"
+        controller.params["order"] = "asc"
+        controller.params["searchIn"] = BaseDatasource.class.name
+        controller.index();
+        objectsXml = new XmlSlurper().parseText(controller.response.contentAsString);
+        objects = objectsXml.Object;
+        assertEquals(maxCount, objects.size());
+        assertEquals("ds0", objects[0].@name.toString());
+    }
+
+
     public void testExportAsXml()
     {
         def expectedProperties = ["id", "rsAlias", "rsOwner", "name", "rsInsertedAt", "rsUpdatedAt"]
@@ -205,7 +246,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     {
         def lines = StringUtils.split(content, "\n");
         def colNames = StringUtils.split(lines[0], ",");
-        assertEquals (expectedProperties.size(), colNames.length)
+        assertEquals ("Expected ${expectedProperties} bu was ${colNames}".toString(), expectedProperties.size(), colNames.length)
         def objects = [];
         for(int i=1; i < lines.length; i++)
         {

@@ -21,6 +21,7 @@ package search
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.apache.commons.lang.StringUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -34,6 +35,19 @@ class SearchController {
     def static Map propertyConfiguration = null;
     def index = {
 
+        if(params.propertyList != null)
+        {
+            def propertyList = [];
+            StringUtils.splitPreserveAllTokens(params.propertyList, ",").each {propName->
+                propertyList.add(propName.trim());
+            }
+            params.propertyList = propertyList;
+            if(!propertyList.contains("id"))
+            {
+                propertyList.add ("id")
+            }
+
+        }
         def searchResults = search(params);
         if (searchResults == null) {
             withFormat {
@@ -45,12 +59,9 @@ class SearchController {
         def builder = new MarkupBuilder(sw);
         def sortOrder = 0;
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
-            searchResults.results.each {result ->
-                def className = result.getClass().name;
-                def grailsObjectProps = result.getNonFederatedPropertyList().name;
-                def props = result.asStringMap(grailsObjectProps);
+            searchResults.results.each {props ->
                 props.put("sortOrder", sortOrder++)
-                props.put("rsAlias", result.getClass().name)
+                props.put("rsAlias", props.remove("alias"))
                 builder.Object(props);
             }
         }
@@ -75,12 +86,10 @@ class SearchController {
         if (type == "xml") {
             StringWriter sw = new StringWriter();
             def builder = new MarkupBuilder(sw);
+            def sortOrder = 0;
             builder.Objects(total: searchResults.total, offset: searchResults.offset) {
-                searchResults.results.each {result ->
-                    def className = result.getClass().name;
-                    def grailsObjectProps = result.getNonFederatedPropertyList().name;
-                    def props = result.asStringMap(grailsObjectProps);
-                    props.put("rsAlias", result.getClass().name)
+                searchResults.results.each {props ->
+                    props.put("rsAlias", props.remove("alias"))
                     builder.Object(props);
                 }
             }
@@ -92,26 +101,25 @@ class SearchController {
             if(searchResults.total == 0 && params.searchIn != null){
                  def domainClass = grailsApplication.getDomainClass(params.searchIn);
                  domainClass.getNonFederatedPropertyList().each{property ->
+                    if(property.name != "alias")
                      propertyMap.put(property.name, "\"${property.name}\"")
                  }
             }
             def results = [];
             def processedClasses =[:]
             searchResults.results.each {result ->
-                def className = result.getClass().name;
-                def grailsobjectProps = result.getNonFederatedPropertyList();
+                def className = result.alias;
+                def grailsobjectProps = result.keySet()
                 if(processedClasses[className] == null)
                 {
                     processedClasses[className] =className;
-                    grailsobjectProps.each{property ->
-                         propertyMap.put(property.name, "\"${property.name}\"")
+                    grailsobjectProps.each{propertyName ->
+                        if(propertyName != "alias")
+                         propertyMap.put(propertyName, "\"${propertyName}\"")
                      }
                 }
-                def props = [:];
-                grailsobjectProps.each {resultProperty ->
-                    props[resultProperty.name] = result[resultProperty.name];
-                }
-                props.put("rsAlias", result.getClass().name)
+                def props = result;
+                props.put("rsAlias", props.remove("alias"))
                 results.add(props);
             }
             propertyMap["rsAlias"] = "\"rsAlias\""
@@ -157,7 +165,7 @@ class SearchController {
             }
             def mc = grailsClass.metaClass;
             try {
-                searchResults = mc.invokeStaticMethod(mc.theClass, "search", [query, params] as Object[])
+                searchResults = mc.theClass.searchAsString(query, params)
             }
             catch (Throwable e) {
                 addError("invalid.search.query", [query, e.getMessage()]);

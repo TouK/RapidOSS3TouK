@@ -132,6 +132,7 @@ class SearchableExtensionGrailsPlugin {
         addUniqueMethod.setWillReturnErrorIfExist(true);
         def removeAllMatchingMethod = new RemoveAllMatchingMethod(mc, relations);
         def getPropertyValuesMethod = new GetPropertyValuesMethod(mc, relations);
+        def getPropertyValuesAsStringMethod = new GetPropertyValuesAsStringMethod(mc);
         def getRelatedModelPropertyValuesMethod = new GetRelatedObjectPropertyValuesMethod(mc, relations);
         def getRelatedObjectsMethod = new GetRelatedObjectsMethod(mc, relations);
         def removeMethod = new RemoveMethod(mc, relations);
@@ -179,6 +180,13 @@ class SearchableExtensionGrailsPlugin {
 
         mc.remove = {->
             return invokeCompassOperation("remove", []);
+        }
+
+        mc.'static'.searchAsString = {query->
+            return getPropertyValuesAsStringMethod.invoke(mc.theClass, [query, [:]] as Object[]);
+        }
+        mc.'static'.searchAsString = {query, params->
+            return getPropertyValuesAsStringMethod.invoke(mc.theClass, [query, params] as Object[]);
         }
 
         mc.'static'.removeAll = {->

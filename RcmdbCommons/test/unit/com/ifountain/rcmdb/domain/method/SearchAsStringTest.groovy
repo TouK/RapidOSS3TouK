@@ -1,9 +1,8 @@
 package search
 
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.compass.CompassTestObject
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.RapidStringUtilities
 
 /**

@@ -107,7 +107,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
             }
             else
             {
-                this.fields = {exp:"true", fields:this.defaultFields};
+                this.fields = [{exp:"true", fields:this.defaultFields}];
                 this.maxRowCellLength = this.defaultFields ? this.defaultFields.length : 0;
             }
         }
@@ -378,6 +378,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                     var field = fields[j];
                     propsMap[field] = field;
                 }
+            }
+        }
+        if (this.defaultFields) {
+            for (var j = 0; j < this.defaultFields.length; j++) {
+                var field = this.defaultFields[j];
+                propsMap[field] = field;
             }
         }
         for (var prop in propsMap) {

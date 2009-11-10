@@ -781,7 +781,16 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     getPropertyListToRequest : function(){
         var viewedProps = this.getViewedProperties();
         if(this.extraPropertiesToRequest && this.extraPropertiesToRequest != ''){
-            viewedProps.concat(this.extraPropertiesToRequest.split(','));    
+            viewedProps = viewedProps.concat(this.extraPropertiesToRequest.split(','));    
+        }
+        var propsMap = {};
+        for (var index = 0; index < viewedProps.length; index++) {
+            var prop = viewedProps[index];
+            propsMap[prop] = prop;
+        }
+        viewedProps = [];
+        for(var prop in propsMap){
+            viewedProps.push(prop);
         }
         return viewedProps.join(',');
     },

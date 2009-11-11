@@ -32,7 +32,7 @@ YAHOO.rapidjs.component.LoadingMask.prototype = {
             this.textEl.innerHTML = text;
         }
         this.panel.show();
-        YAHOO.util.Dom.setStyle(this.panel.mask, 'r-loadingmask-mask');
+        YAHOO.util.Dom.addClass(this.panel.mask, 'r-loadingmask-mask');
     },
     hide:function() {
         if(this.panel){

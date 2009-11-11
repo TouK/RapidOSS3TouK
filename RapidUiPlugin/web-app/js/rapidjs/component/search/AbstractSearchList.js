@@ -36,6 +36,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.searchClassesUrl = null;
     this.defaultSearchClass = null;
     this.searchInEnabled = true;
+    this.bringAllProperties = true;
     this.extraPropertiesToRequest = null;
     YAHOO.ext.util.Config.apply(this, config);
     this.configureTimeout(config);
@@ -288,7 +289,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             this.params['sort'] = this.lastSortAtt;
             this.params['order'] = this.lastSortOrder;
             this.params['searchIn'] = this.getSearchClass();
-            this.params['propertyList'] = this.getPropertyListToRequest();
+            if(!this.bringAllProperties){
+                this.params['propertyList'] = this.getPropertyListToRequest();    
+            }
             YAHOO.rapidjs.component.search.AbstractSearchList.superclass.poll.call(this);
         }
     },
@@ -761,7 +764,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         params['query'] = this.currentlyExecutingQuery || '';
         params['offset'] = offset;
         params['max'] = max;
-        params['propertyList'] = this.getPropertyListToRequest();
+        if(!this.bringAllProperties){
+            params['propertyList'] = this.getPropertyListToRequest();    
+        }
         return params;
     },
 

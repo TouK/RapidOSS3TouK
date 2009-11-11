@@ -173,7 +173,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                            updatedPropsOldValues[propName] = oldPropValue;
                         }
                     }
-
+                    //check if there is still non relation properties that are changed against the original object
                     willBeIndexed=updatedPropsOldValues.findAll{relations.containsKey(it.key)==false}.size()>0                    
                     if(willBeIndexed)
                     {

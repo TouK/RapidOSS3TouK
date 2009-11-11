@@ -22,6 +22,7 @@ class UiSearchList extends UiComponent {
     String defaultFields = "";
     Boolean searchInEnabled = true;
     String extraPropertiesToRequest = ""
+    Boolean bringAllProperties = true;
     Long showMax = 0;
     Long lineSize = 3;
     Long pollingInterval = 0;
@@ -52,7 +53,8 @@ class UiSearchList extends UiComponent {
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],
                         searchInEnabled: [descr: "Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.", validators: [blank: false, nullable: false]],
-                        extraPropertiesToRequest: [descr: "Comma separated property names which will be added to the server side data."],
+                        bringAllProperties: [descr: "When set to false SearchList requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server."],
+                        extraPropertiesToRequest: [descr: "Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false."],
                         searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         defaultFields: [descr: "Properties list that will be shown when no field configuration is found for the row. Optional if showMax property is provided."],
                         showMax: [descr: "Maximum number of properties that will be displayed from the data. It overrides defaultFields and fields declarations."],

@@ -17,7 +17,8 @@ SearchGrid is a UI component designed to represent tabular row data. It enables 
 <b>offsetAttribute</b> (Required): The attribute in the root node of the AJAX response which shows where the results starts from according to the search query. ex: "offset" for the sample data below<br/>
 <b>sortOrderAttribute</b> (Required): The attribute of the row which displays the sort position of the row according to the search query. ex: "sortOrder" for the sample data below<br/>
 <b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
-<b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.</p>
+<b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.<br/>
+<b>searchInEnabled</b> (Required): Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.</p>
 <div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td> All properties except rootTag, contentPath and keyAttribute are pre-populated when a new SearchGrid component is added to the layout, assuming you will be using SearchController provided with RapidInsight.</td></tr></table></div>
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
@@ -31,6 +32,8 @@ SearchGrid is a UI component designed to represent tabular row data. It enables 
 <h4><a name="SearchGridComponent-AdditionalProperties"></a>Additional Properties</h4>
 
 <p><b>queryEnabled</b> (Optional): Parameter to determine whether the quick filtering is enabled or not. Default is true.<br/>
+<b>bringAllProperties</b> (Optional): When set to false SearchGrid requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server.<br/>
+<b>extraPropertiesToRequest</b> (Optional): Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false.<br/>
 <b>searchClassesUrl</b> (Required when queryEnabled is "true"): The url used for the request to the server to retrieve available search classes.<br/>
 <b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100.<br/>
 <b>defaultQuery</b> (Optional): The query appended to all queries sent by SearchGrid.<br/>

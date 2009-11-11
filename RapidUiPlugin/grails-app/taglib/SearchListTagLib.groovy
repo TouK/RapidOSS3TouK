@@ -228,6 +228,8 @@ class SearchListTagLib {
             cArray.add("rowHeaderAttribute:'${config['rowHeaderAttribute']}'")
         if (config["searchInEnabled"] != null)
             cArray.add("searchInEnabled:${config['searchInEnabled']}")
+        if (config["bringAllProperties"] != null)
+            cArray.add("bringAllProperties:${config['bringAllProperties']}")
         if (config["searchClassesUrl"] != null)
             cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
         if (config["extraPropertiesToRequest"] != null)
@@ -247,7 +249,7 @@ class SearchListTagLib {
         }
         cArray.add("propertyMenuItems:[${pmenuItemArray.join(',\n')}]");
         def timeRangeSelector = xml.TimeRangeSelector;
-        if(timeRangeSelector != null && timeRangeSelector.size() > 0)
+        if (timeRangeSelector != null && timeRangeSelector.size() > 0)
         {
             timeRangeSelector = timeRangeSelector[0];
             cArray.add("timeRangeSelectorEnabled:true")

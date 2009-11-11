@@ -184,6 +184,8 @@ class SearchGridTagLib {
             cArray.add("searchClassesUrl:'${config['searchClassesUrl']}'")
         if (config["searchInEnabled"] != null)
             cArray.add("searchInEnabled:${config['searchInEnabled']}")
+        if (config["bringAllProperties"] != null)
+            cArray.add("bringAllProperties:${config['bringAllProperties']}")
         if (config["extraPropertiesToRequest"] != null)
             cArray.add("extraPropertiesToRequest:'${config['extraPropertiesToRequest']}'")
 
@@ -194,7 +196,7 @@ class SearchGridTagLib {
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
         def timeRangeSelector = xml.TimeRangeSelector;
-        if(timeRangeSelector != null && timeRangeSelector.size() > 0)
+        if (timeRangeSelector != null && timeRangeSelector.size() > 0)
         {
             timeRangeSelector = timeRangeSelector[0];
             cArray.add("timeRangeSelectorEnabled:true")

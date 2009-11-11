@@ -125,35 +125,77 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
             {
                 if (willBeIndexed)
                 {
-                    existingInstanceEntry.clear();
+
                     nullProps.each{propName->
-                        if(domainObject.getProperty(propName) == null)
+                        //if nullProp is updated in beforeUpdate it will be handled below with  updatedPropsFromBeforeUpdate
+                        if(! (updatedPropsFromBeforeUpdate?.containsKey(propName)) && domainObject.getProperty(propName) == null)
                         {
                             domainObject.setProperty (propName, defaultValues[propName], false);
+                            //property is removed from updatedPropsOldValues if its not changed compared to the object from repo
+                            if(updatedPropsOldValues.containsKey(propName))
+                            {
+                                if(domainObject.getProperty(propName) == updatedPropsOldValues[propName])
+                                {
+                                    updatedPropsOldValues.remove(propName);
+                                }
+                            }
                         }
                     }
-                    updatedPropsFromBeforeUpdate.each{ propName,oldPropValue ->
-                        if(domainObject.getProperty(propName) == null)
+                    //handling props changed in before update
+                    updatedPropsFromBeforeUpdate.each{ String propName,Object oldPropValue ->
+                        if(!relations.containsKey(propName)) //non relation props
                         {
-                            domainObject.setProperty (propName, defaultValues[propName], false);
+                            if(domainObject.getProperty(propName) == null)
+                            {
+                                domainObject.setProperty (propName, defaultValues[propName], false);
+                            }
+                            //property is removed from updatedPropsOldValues if its not changed compared to the object from repo
+                            //if changed its put to updatedPropsOldValues
+                            if(updatedPropsOldValues.containsKey(propName))
+                            {
+                                if(domainObject.getProperty(propName) == updatedPropsOldValues[propName])
+                                {
+                                    updatedPropsOldValues.remove(propName);
+                                }
+                                else
+                                {
+                                   updatedPropsOldValues[propName] = oldPropValue;
+                                }
+                            }
+                            else //if only changed in beforeUpdate added to  updatedPropsOldValues
+                            {
+                               updatedPropsOldValues[propName] = oldPropValue;
+                            }
+
+                        }
+                        else  //if relation changed in beforeUpdate added to  updatedPropsOldValues
+                        {
+                           updatedPropsOldValues[propName] = oldPropValue;
                         }
                     }
-                    domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
-                    domainObject.index(domainObject);
-                    domainObject.updateCacheEntry(domainObject, true);
+
+                    willBeIndexed=updatedPropsOldValues.findAll{relations.containsKey(it.key)==false}.size()>0                    
+                    if(willBeIndexed)
+                    {
+                        existingInstanceEntry.clear();
+                        domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
+                        domainObject.index(domainObject);
+                        domainObject.updateCacheEntry(domainObject, true);
+                    }
 
                 }
-                statistics.stop();
-                domainObject.removeRelation(relationToBeRemovedMap);
-                domainObject.addRelation(relationToBeAddedMap);
-                statistics.start();
-                updatedPropsFromBeforeUpdate.each{String updatedPropName, Object updatedPropValue->
-                    updatedPropsOldValues[updatedPropName] = updatedPropValue;
+                if (willBeIndexed || willRelationsBeIndexed)
+                {
+                    statistics.stop();
+                    domainObject.removeRelation(relationToBeRemovedMap);
+                    domainObject.addRelation(relationToBeAddedMap);
+                    statistics.start();
+
+                    EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
+                    EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+                    ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, updatedPropsOldValues)
+                    OperationStatistics.getInstance().addStatisticResult(OperationStatistics.UPDATE_OPERATION_NAME, statistics);
                 }
-                EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
-                EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
-                ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, updatedPropsOldValues)
-                OperationStatistics.getInstance().addStatisticResult(OperationStatistics.UPDATE_OPERATION_NAME, statistics);
             }
         }
         return domainObject;

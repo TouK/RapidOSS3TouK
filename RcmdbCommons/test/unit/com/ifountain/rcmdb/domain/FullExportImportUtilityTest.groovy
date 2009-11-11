@@ -945,6 +945,30 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
        }
 
     }
+    public void testMarkRelationsOfObjectIdsDoesNotGenerateQueryExceptionWithNoOfObjects()
+    {
+       def modelClassesNameList=["relation.Relation"];
+       def modelClasses=loadClasses(modelClassesNameList);
+       initialize(modelClasses,[],true);
+
+       def objectIds=[]
+
+       def fullExport=new FullExportImportUtility(Logger.getRootLogger());
+       fullExport.beginCompass(System.getProperty("index.dir"));
+       def tx=fullExport.beginCompassTransaction();
+
+       try{
+             fullExport.markRelationsOfObjectIds(objectIds);
+       }
+       finally{
+            fullExport.endCompassTransaction(tx);
+            fullExport.endCompass();
+       }
+       
+       assertEquals(0,fullExport.RELATION_IDS_TO_EXPORT.size());
+       assertEquals(0,fullExport.MODEL_IDS_TO_EXPORTED_WITH_RELATIONS.size());
+
+    }
     private def initializeFullExportModels()
     {
         def modelClassesNameList=["RsTopologyObject","RsGroup","RsCustomer","RsEvent","RsEventJournal","RsTicket","relation.Relation","application.ObjectId","connection.Connection"];

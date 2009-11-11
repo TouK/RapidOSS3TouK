@@ -270,7 +270,7 @@ class FullExportImportUtility {
     }
     protected def getModelAlias(modelName)
     {
-        return getDomainClass(modelName).clazz.simpleName;
+        return getDomainClass(modelName).clazz.name;
     }
 
     protected def exportModels(exportDir,objectsPerFile,MODELS_TO_EXPORT)

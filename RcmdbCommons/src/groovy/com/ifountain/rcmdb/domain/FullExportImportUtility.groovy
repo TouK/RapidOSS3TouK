@@ -368,12 +368,18 @@ class FullExportImportUtility {
     protected def markRelationsOfObjectIds(objectIds)
     {
         CollectionUtils.executeForEachBatch(objectIds, MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_MARKRELATIONS){List objectIdsToBeProcessed->
+            if(objectIdsToBeProcessed.size()==0)
+            {
+                return;
+            }
+            
             StringBuffer buf=new StringBuffer();
-            buf.append("alias:relation.Relation");
             objectIdsToBeProcessed.each{ objectId ->
                 buf.append(" OR objectId:${objectId} OR reverseObjectId:${objectId}");
             }
-            def query=buf.toString();
+
+            //ignore first OR
+            def query=buf.substring(3);
             
             def hits=getModelHits("relation.Relation",query);
 

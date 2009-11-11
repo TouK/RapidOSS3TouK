@@ -289,6 +289,46 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         assertEquals("cache should not be updated since no property changed", numberOfUpdateCacheCall, AddMethodDomainObject1.updateCacheCallParams.size());
     }
 
+    public void testUpdateMethodWillNotCallIndexIfNoPropertyHasChangedWithNullProps()
+    {
+
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+
+        def relations = [:];
+        AddMethod add = new AddMethod(AddMethodDomainObjectWithEvents.metaClass, AddMethodDomainObjectWithEvents, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations, ["prop1"]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObjectWithEvents.class, [props] as Object[]);
+        assertEquals(objectBeforeAdd, addedObject);
+        addedObject.numberOfFlushCalls = 0;
+        addedObject.isFlushedByProperty = [];
+        objectBeforeAdd.id = addedObject.id;
+
+        AddMethodDomainObjectWithEvents.eventCalls.clear();
+        AddMethodDomainObjectWithEvents.indexList.clear();
+        IdCacheEntry entry = AddMethodDomainObjectWithEvents.idCache[addedObject.prop1];
+        def numberOfUpdateCacheCall = AddMethodDomainObject1.updateCacheCallParams.size();
+        props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2,nullableProp:null];
+        UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
+        AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
+
+
+        //id property will be ignored
+        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME].getTime());
+        assertEquals(objectBeforeAdd.id, updatedObject.id);
+        assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
+        assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
+        assertEquals(objectBeforeAdd.nullableProp, updatedObject.nullableProp);
+        assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
+        assertSame(updatedObject, addedObject);
+        assertEquals(0, AddMethodDomainObjectWithEvents.eventCalls.size());
+        IdCacheEntry entryAfterUpdate = AddMethodDomainObjectWithEvents.idCache[updatedObject.prop1];
+        assertSame (entry, entryAfterUpdate)
+        assertTrue (entryAfterUpdate.exist());
+        assertEquals (AddMethodDomainObjectWithEvents.class, entryAfterUpdate.alias);
+        assertEquals (updatedObject.id, entryAfterUpdate.id);
+        assertEquals("cache should not be updated since no property changed", numberOfUpdateCacheCall, AddMethodDomainObject1.updateCacheCallParams.size());
+    }
+
     public void testUpdateMethodWillAddUpdatedPropsMapReturnedFromBeforeUpdate()
     {
         AddMethodDomainObjectWithEvents objectBeforeAdd = new AddMethodDomainObjectWithEvents(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");

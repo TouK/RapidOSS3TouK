@@ -174,7 +174,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                         }
                     }
                     //check if there is still non relation properties that are changed against the original object
-                    willBeIndexed=updatedPropsOldValues.findAll{relations.containsKey(it.key)==false}.size()>0                    
+                    willBeIndexed=(updatedPropsOldValues.find{relations.containsKey(it.key)==false}!=null)                    
                     if(willBeIndexed)
                     {
                         existingInstanceEntry.clear();

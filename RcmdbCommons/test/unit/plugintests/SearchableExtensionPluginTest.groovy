@@ -135,8 +135,13 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject = classes.child.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
 
+        def addedObjectFromRepo=addedObject.get(id:addedObject.id);
+
         assertEquals("object1",addedObject.keyProp);
         assertEquals("prop1ValueOverriden",addedObject.prop1);
+
+        assertEquals("object1",addedObjectFromRepo.keyProp);
+        assertEquals("prop1ValueOverriden",addedObjectFromRepo.prop1);
 
         assertTrue(DataStore.get("beforeInsert"));
         assertTrue(DataStore.get("afterInsert"));
@@ -166,8 +171,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:null)
         assertFalse(addedObject1.hasErrors());
 
-
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+        
         assertEquals("defaultValue",addedObject1.nullableProp);
+        assertEquals("defaultValue",addedObject1FromRepo.nullableProp);
 
         assertTrue(DataStore.containsKey("beforeInsertValue"))
         assertEquals(null,DataStore.get("beforeInsertValue"));
@@ -178,7 +185,11 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject2 = classes.parent.add(keyProp: "object2")
         assertFalse(addedObject2.hasErrors());
 
+        def addedObject2FromRepo=addedObject2.get(id:addedObject2.id);
+
         assertEquals("defaultValue",addedObject2.nullableProp);
+        assertEquals("defaultValue",addedObject2FromRepo.nullableProp);
+
         assertEquals("defaultValue",DataStore.get("beforeInsertValue"));
         assertEquals("defaultValue",DataStore.get("afterInsertValue"));
 
@@ -221,7 +232,6 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject1 = classes.parent.add(keyProp: "object1")
         assertTrue(addedObject1.hasErrors());
 
-
         assertEquals(null,addedObject1.keyProp);
 
         assertTrue(DataStore.containsKey("beforeInsertValue"))
@@ -256,8 +266,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:null)
         assertFalse(addedObject1.hasErrors());
 
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
 
         assertEquals("notnullValue",addedObject1.nullableProp);
+        assertEquals("notnullValue",addedObject1FromRepo.nullableProp);
 
         assertTrue(DataStore.containsKey("beforeInsertValue"))
         assertEquals(null,DataStore.get("beforeInsertValue"));
@@ -286,7 +298,11 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject1 = classes.parent.add(keyProp: "object1")
         assertFalse(addedObject1.hasErrors());
 
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+
         assertEquals("defaultValue",addedObject1.nullableProp);
+        assertEquals("defaultValue",addedObject1FromRepo.nullableProp);
+
         assertEquals("defaultValue",DataStore.get("beforeInsertValue"));
         assertEquals("defaultValue",DataStore.get("afterInsertValue"));
 
@@ -295,7 +311,11 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject2 = classes.parent.add(keyProp: "object2",nullableProp:"valueFromProp")
         assertFalse(addedObject2.hasErrors());
 
+        def addedObject2FromRepo=addedObject2.get(id:addedObject2.id);
+
         assertEquals("defaultValue",addedObject2.nullableProp);
+        assertEquals("defaultValue",addedObject2FromRepo.nullableProp);
+
         assertEquals("valueFromProp",DataStore.get("beforeInsertValue"));
         assertEquals("defaultValue",DataStore.get("afterInsertValue"));
     }
@@ -334,9 +354,13 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         addedObject1.update(nullableProp:null);
         assertFalse(addedObject1.hasErrors());
-        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+
+        assertTrue(addedObject1FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
 
         assertEquals("defaultValue",addedObject1.nullableProp);
+        assertEquals("defaultValue",addedObject1FromRepo.nullableProp);
 
         assertTrue(DataStore.containsKey("beforeUpdateValue"))
         assertEquals(null,DataStore.get("beforeUpdateValue"));
@@ -361,9 +385,14 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         addedObject2.update(prop1:"newprop1value");
         assertFalse(addedObject2.hasErrors());
-        assertTrue(addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        def addedObject2FromRepo=addedObject2.get(id:addedObject2.id);
+
+        assertTrue(addedObject2FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
 
         assertEquals("notNullValue",addedObject2.nullableProp);
+        assertEquals("notNullValue",addedObject2FromRepo.nullableProp);
+
         assertEquals("notNullValue",DataStore.get("beforeUpdateValue"));
         assertEquals("notNullValue",DataStore.get("afterUpdateValue"));
 
@@ -384,9 +413,14 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         addedObject3.update(keyProp:null);
         assertTrue(addedObject3.hasErrors());
-        assertTrue(addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
+
+        def addedObject3FromRepo=addedObject3.get(id:addedObject3.id);
+
+        assertTrue(addedObject3FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
 
         assertEquals(null,addedObject3.keyProp);
+        assertEquals("object1",addedObject3FromRepo.keyProp);
+
         assertTrue(DataStore.containsKey("beforeUpdateValue"));
         assertFalse(DataStore.containsKey("afterUpdateValue"));
 
@@ -432,9 +466,13 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         addedObject1.update(prop1:"newPropertyValue");
         assertTrue(addedObject1.hasErrors());
 
-        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+
+        assertTrue(addedObject1FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
 
         assertEquals(null,addedObject1.keyProp);
+        assertEquals("object1",addedObject1FromRepo.keyProp);
+
 
         assertTrue(DataStore.containsKey("beforeUpdateValue"))
         assertEquals("object1",DataStore.get("beforeUpdateValue"));
@@ -483,9 +521,12 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         addedObject1.update(nullableProp:null);
         assertFalse(addedObject1.hasErrors());
 
-        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+
+        assertTrue(addedObject1FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
 
         assertEquals("notnullValue",addedObject1.nullableProp);
+        assertEquals("notnullValue",addedObject1FromRepo.nullableProp);
 
         assertTrue(DataStore.containsKey("beforeUpdateValue"))
         assertEquals(null,DataStore.get("beforeUpdateValue"));
@@ -501,7 +542,84 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals(null,changedPropsInAfterUpdate.nullableProp);
 
     }
+    public void testUpdateMethodsWithNullPropertySetInBeforeInsert()
+    {
+        Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeUpdate(params)
+            {
+                def cloneParams=[:];
+                cloneParams.${UpdateMethod.UPDATED_PROPERTIES}=params.${UpdateMethod.UPDATED_PROPERTIES}.clone();
+                ${DataStore.class.name}.put("beforeUpdateParams", cloneParams);
 
+                ${DataStore.class.name}.put("beforeUpdateValue", nullableProp);
+                nullableProp=null;
+
+            }
+            def afterUpdate(params)
+            {
+                ${DataStore.class.name}.put("afterUpdateParams", params);
+                ${DataStore.class.name}.put("afterUpdateValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+        def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:"notdefaultvalue")
+        assertFalse(addedObject1.hasErrors());
+        def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        addedObject1.update(keyProp:"object1NewVal");
+        assertFalse(addedObject1.hasErrors());
+
+        def addedObject1FromRepo=addedObject1.get(id:addedObject1.id);
+
+        assertTrue(addedObject1FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        assertEquals("defaultValue",addedObject1.nullableProp);
+        assertEquals("defaultValue",addedObject1FromRepo.nullableProp);
+
+        assertEquals("notdefaultvalue",DataStore.get("beforeUpdateValue"));
+        assertEquals("defaultValue",DataStore.get("afterUpdateValue"));
+
+        def changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("object1",changedPropsInBeforeUpdate.keyProp);
+
+
+        def changedPropsInAfterUpdate=DataStore.get("afterUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(2,changedPropsInAfterUpdate.size());
+        assertEquals("object1",changedPropsInAfterUpdate.keyProp);
+        assertEquals("notdefaultvalue",changedPropsInAfterUpdate.nullableProp);
+
+        
+        DataStore.clear();
+
+        def addedObject2 = classes.parent.add(keyProp: "object2",nullableProp:"notdefaultvalue")
+        assertFalse(addedObject2.hasErrors());
+        oldUpdatedAt=addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        addedObject2.update(nullableProp:"valueFromProp");
+        assertFalse(addedObject2.hasErrors());
+
+        def addedObject2FromRepo=addedObject2.get(id:addedObject2.id);
+
+        assertTrue(addedObject2FromRepo[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        assertEquals("defaultValue",addedObject2.nullableProp);
+        assertEquals("defaultValue",addedObject2FromRepo.nullableProp);
+
+        assertEquals("valueFromProp",DataStore.get("beforeUpdateValue"));
+        assertEquals("defaultValue",DataStore.get("afterUpdateValue"));
+
+        changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("notdefaultvalue",changedPropsInBeforeUpdate.nullableProp);
+
+        changedPropsInAfterUpdate=DataStore.get("afterUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInAfterUpdate.size());        
+        assertEquals("valueFromProp",changedPropsInAfterUpdate.nullableProp);
+    }
     public void testGetMethods()
     {
         Map classes = initializePluginAndClasses();

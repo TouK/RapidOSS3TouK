@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -26,7 +27,6 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         DataStore.clear();
     }
-
 
     public void testAddMethodWithDateKeyProperty()
     {
@@ -122,6 +122,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
             def beforeInsert()
             {
                 ${DataStore.class.name}.put("beforeInsert", true);
+                prop1="prop1ValueOverriden"
             }
             def afterInsert()
             {
@@ -134,11 +135,372 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def addedObject = classes.child.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
 
+        assertEquals("object1",addedObject.keyProp);
+        assertEquals("prop1ValueOverriden",addedObject.prop1);
+
         assertTrue(DataStore.get("beforeInsert"));
         assertTrue(DataStore.get("afterInsert"));
 
     }
+    public void testAddMethodWithNullPropertyValue()
+    {
+        Map classes = initializePluginAndClasses();
 
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeInsert()
+            {
+                ${DataStore.class.name}.put("beforeInsertValue", nullableProp);
+                println "in beforeInsert nullableProp :" + nullableProp
+
+            }
+            def afterInsert()
+            {
+               ${DataStore.class.name}.put("afterInsertValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:null)
+        assertFalse(addedObject1.hasErrors());
+
+
+        assertEquals("defaultValue",addedObject1.nullableProp);
+
+        assertTrue(DataStore.containsKey("beforeInsertValue"))
+        assertEquals(null,DataStore.get("beforeInsertValue"));
+        assertEquals("defaultValue",DataStore.get("afterInsertValue"));
+
+        DataStore.clear();
+
+        def addedObject2 = classes.parent.add(keyProp: "object2")
+        assertFalse(addedObject2.hasErrors());
+
+        assertEquals("defaultValue",addedObject2.nullableProp);
+        assertEquals("defaultValue",DataStore.get("beforeInsertValue"));
+        assertEquals("defaultValue",DataStore.get("afterInsertValue"));
+
+        
+        DataStore.clear();
+
+        def addedObject3 = classes.parent.add(keyProp: null)
+        assertTrue(addedObject3.hasErrors());
+
+        assertEquals(null,addedObject3.keyProp);
+        assertTrue(DataStore.containsKey("beforeInsertValue"));
+        assertFalse(DataStore.containsKey("afterInsertValue"));
+    }
+
+
+
+
+    public void testAddMethodWithInvalidPropertyValueSetInBeforeInsert()
+    {
+        Map classes = initializePluginAndClasses();
+
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeInsert()
+            {
+                ${DataStore.class.name}.put("beforeInsertValue", keyProp);
+                keyProp=null
+                println "in beforeInsert keyProp :" + keyProp
+
+            }
+            def afterInsert()
+            {
+               ${DataStore.class.name}.put("afterInsertValue", keyProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1")
+        assertTrue(addedObject1.hasErrors());
+
+
+        assertEquals(null,addedObject1.keyProp);
+
+        assertTrue(DataStore.containsKey("beforeInsertValue"))
+        assertEquals("object1",DataStore.get("beforeInsertValue"));
+        assertFalse(DataStore.containsKey("afterInsertValue"))
+
+    }
+
+
+    public void testAddMethodWithNullPropertyValueChangedInBeforeInsert()
+    {
+        Map classes = initializePluginAndClasses();
+
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeInsert()
+            {
+                ${DataStore.class.name}.put("beforeInsertValue", nullableProp);
+                println "in beforeInsert nullableProp :" + nullableProp
+                nullableProp="notnullValue"
+
+            }
+            def afterInsert()
+            {
+               ${DataStore.class.name}.put("afterInsertValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:null)
+        assertFalse(addedObject1.hasErrors());
+
+
+        assertEquals("notnullValue",addedObject1.nullableProp);
+
+        assertTrue(DataStore.containsKey("beforeInsertValue"))
+        assertEquals(null,DataStore.get("beforeInsertValue"));
+        assertEquals("notnullValue",DataStore.get("afterInsertValue"));
+
+
+    }
+
+    public void testAddMethodsWithNullPropertySetInBeforeInsert()
+    {
+        Map classes = initializePluginAndClasses();
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeInsert()
+            {
+                ${DataStore.class.name}.put("beforeInsertValue", nullableProp);
+                nullableProp=null;
+
+            }
+            def afterInsert()
+            {   ${DataStore.class.name}.put("afterInsertValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+        def addedObject1 = classes.parent.add(keyProp: "object1")
+        assertFalse(addedObject1.hasErrors());
+
+        assertEquals("defaultValue",addedObject1.nullableProp);
+        assertEquals("defaultValue",DataStore.get("beforeInsertValue"));
+        assertEquals("defaultValue",DataStore.get("afterInsertValue"));
+
+        DataStore.clear();
+
+        def addedObject2 = classes.parent.add(keyProp: "object2",nullableProp:"valueFromProp")
+        assertFalse(addedObject2.hasErrors());
+
+        assertEquals("defaultValue",addedObject2.nullableProp);
+        assertEquals("valueFromProp",DataStore.get("beforeInsertValue"));
+        assertEquals("defaultValue",DataStore.get("afterInsertValue"));
+    }
+    public void testUpdateMethodWithNullPropertyValue()
+    {
+        Map classes = initializePluginAndClasses();
+
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeUpdate(params)
+            {
+                def cloneParams=[:];
+                cloneParams.${UpdateMethod.UPDATED_PROPERTIES}=params.${UpdateMethod.UPDATED_PROPERTIES}.clone();
+                ${DataStore.class.name}.put("beforeUpdateParams", cloneParams);
+
+                ${DataStore.class.name}.put("beforeUpdateValue", nullableProp);
+                println "in beforeUpdate nullableProp :" + nullableProp
+
+            }
+            def afterUpdate(params)
+            {
+               ${DataStore.class.name}.put("afterUpdateParams", params);
+               ${DataStore.class.name}.put("afterUpdateValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:"notNullValue")
+        assertFalse(addedObject1.hasErrors());
+
+        def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        assertEquals("notNullValue",addedObject1.nullableProp);
+
+        addedObject1.update(nullableProp:null);
+        assertFalse(addedObject1.hasErrors());
+        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        assertEquals("defaultValue",addedObject1.nullableProp);
+
+        assertTrue(DataStore.containsKey("beforeUpdateValue"))
+        assertEquals(null,DataStore.get("beforeUpdateValue"));
+        assertEquals("defaultValue",DataStore.get("afterUpdateValue"));
+
+        def changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("notNullValue",changedPropsInBeforeUpdate.nullableProp);
+
+        //user seed old value of  nullableProp as notNullValue, does not see null -> defaultValue change old value
+        //because it is the method that did this change  not the user
+        def changedPropsInAfterUpdate=DataStore.get("afterUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInAfterUpdate.size());
+        assertEquals("notNullValue",changedPropsInAfterUpdate.nullableProp);
+
+
+        DataStore.clear();
+
+        def addedObject2 = classes.parent.add(keyProp: "object1",nullableProp:"notNullValue")
+        assertFalse(addedObject2.hasErrors());
+        oldUpdatedAt=addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        addedObject2.update(prop1:"newprop1value");
+        assertFalse(addedObject2.hasErrors());
+        assertTrue(addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        assertEquals("notNullValue",addedObject2.nullableProp);
+        assertEquals("notNullValue",DataStore.get("beforeUpdateValue"));
+        assertEquals("notNullValue",DataStore.get("afterUpdateValue"));
+
+        changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("",changedPropsInBeforeUpdate.prop1);
+
+        changedPropsInAfterUpdate=DataStore.get("afterUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInAfterUpdate.size());
+        assertEquals("",changedPropsInAfterUpdate.prop1);
+
+
+        DataStore.clear();
+
+        def addedObject3 =classes.parent.add(keyProp: "object1")
+        assertFalse(addedObject3.hasErrors());
+        oldUpdatedAt=addedObject3[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        addedObject3.update(keyProp:null);
+        assertTrue(addedObject3.hasErrors());
+        assertTrue(addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
+
+        assertEquals(null,addedObject3.keyProp);
+        assertTrue(DataStore.containsKey("beforeUpdateValue"));
+        assertFalse(DataStore.containsKey("afterUpdateValue"));
+
+        changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("object1",changedPropsInBeforeUpdate.keyProp);
+
+        assertFalse(DataStore.containsKey("afterUpdateParams"));
+
+    }
+
+    public void testUpdateMethodWithInvalidPropertyValueSetInBeforeUpdate()
+    {
+        Map classes = initializePluginAndClasses();
+
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeUpdate(params)
+            {
+                def cloneParams=[:];
+                cloneParams.${UpdateMethod.UPDATED_PROPERTIES}=params.${UpdateMethod.UPDATED_PROPERTIES}.clone();
+                ${DataStore.class.name}.put("beforeUpdateParams", cloneParams);
+
+                ${DataStore.class.name}.put("beforeUpdateValue", keyProp);
+                keyProp=null
+                println "in beforeInsert keyProp :" + keyProp
+
+            }
+            def afterUpdate(params)
+            {
+                ${DataStore.class.name}.put("afterUpdateParams", params);
+                ${DataStore.class.name}.put("afterUpdateValue", keyProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1")
+        assertFalse(addedObject1.hasErrors());
+        def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+
+        addedObject1.update(prop1:"newPropertyValue");
+        assertTrue(addedObject1.hasErrors());
+
+        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] == oldUpdatedAt);
+
+        assertEquals(null,addedObject1.keyProp);
+
+        assertTrue(DataStore.containsKey("beforeUpdateValue"))
+        assertEquals("object1",DataStore.get("beforeUpdateValue"));
+        assertFalse(DataStore.containsKey("afterUpdateValue"))
+
+
+        def changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("",changedPropsInBeforeUpdate.prop1);
+
+        assertFalse(DataStore.containsKey("afterUpdateParams"));
+
+    }
+
+    public void testUpdateMethodWithNullPropertyValueChangedInBeforeInsert()
+    {
+        Map classes = initializePluginAndClasses();
+
+        Class operationClass = gcl.parseClass("""
+        class ${classes.parent.name}Operations extends ${AbstractDomainOperation.class.name}{
+            def beforeUpdate(params)
+            {
+                def cloneParams=[:];
+                cloneParams.${UpdateMethod.UPDATED_PROPERTIES}=params.${UpdateMethod.UPDATED_PROPERTIES}.clone();
+                ${DataStore.class.name}.put("beforeUpdateParams", cloneParams);
+
+                ${DataStore.class.name}.put("beforeUpdateValue", nullableProp);
+                println "in beforeInsert nullableProp :" + nullableProp
+                nullableProp="notnullValue"
+
+            }
+            def afterUpdate(params)
+            {
+               ${DataStore.class.name}.put("afterUpdateParams", params);
+               ${DataStore.class.name}.put("afterUpdateValue", nullableProp);
+            }
+        }
+        """)
+        CompassForTests.addOperationSupport(classes.parent, operationClass);
+
+
+        def addedObject1 = classes.parent.add(keyProp: "object1",nullableProp:"avalue")
+        assertFalse(addedObject1.hasErrors());
+        def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
+        
+        addedObject1.update(nullableProp:null);
+        assertFalse(addedObject1.hasErrors());
+
+        assertTrue(addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME] > oldUpdatedAt);
+
+        assertEquals("notnullValue",addedObject1.nullableProp);
+
+        assertTrue(DataStore.containsKey("beforeUpdateValue"))
+        assertEquals(null,DataStore.get("beforeUpdateValue"));
+        assertEquals("notnullValue",DataStore.get("afterUpdateValue"));
+        
+        def changedPropsInBeforeUpdate=DataStore.get("beforeUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInBeforeUpdate.size());
+        assertEquals("avalue",changedPropsInBeforeUpdate.nullableProp);
+
+        //user see his change from beforeInsert , that nullableProp is changed from null
+        def changedPropsInAfterUpdate=DataStore.get("afterUpdateParams")[UpdateMethod.UPDATED_PROPERTIES];
+        assertEquals(1,changedPropsInAfterUpdate.size());
+        assertEquals(null,changedPropsInAfterUpdate.nullableProp);
+
+    }
 
     public void testGetMethods()
     {
@@ -287,7 +649,12 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         class ${classes.child.name}Operations extends ${AbstractDomainOperation.class.name}{
             def beforeUpdate(params)
             {
-                ${DataStore.class.name}.put("beforeUpdate", params);
+                def cloneParams=[:];
+                cloneParams.${UpdateMethod.UPDATED_PROPERTIES}=params.${UpdateMethod.UPDATED_PROPERTIES}.clone();
+                
+                ${DataStore.class.name}.put("beforeUpdate", cloneParams);                
+                prop2="newProp2Value";
+                prop3="newProp3Value";
             }
             def afterUpdate(params)
             {
@@ -296,7 +663,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         }
         """)
         CompassForTests.addOperationSupport(classes.child, operationClass);
-        def addedObjectProps = [keyProp: "object1", prop1: "prop1Value"]
+        def addedObjectProps = [keyProp: "object1", prop1: "prop1Value",prop2:"prop2Value"]
         def addedObject = classes.child.add(addedObjectProps);
         assertFalse(addedObject.hasErrors());
         def objectInRepo = classes.child.search("id:${addedObject.id}").results[0];
@@ -304,7 +671,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals(addedObjectProps.prop1, objectInRepo.prop1);
 
         //test update
-        def updatedObjectProps = [keyProp: "object2", prop1: "prop1ValueUpdated"]
+        //keyProp , prop1 ,prop2 is updated
+        //prop2  is updated again in beforeInsert
+        //prop3 is updated in beforeInsert
+        def updatedObjectProps = [keyProp: "object2", prop1: "prop1ValueUpdated",prop2: "prop2ValueUpdated"]
         addedObject.update(updatedObjectProps);
         assertFalse(addedObject.hasErrors());
         objectInRepo = classes.child.search("keyProp:${addedObjectProps.keyProp}").results[0];
@@ -312,12 +682,18 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         objectInRepo = classes.child.search("keyProp:${updatedObjectProps.keyProp}").results[0];
         assertEquals(updatedObjectProps.keyProp, objectInRepo.keyProp);
         assertEquals(updatedObjectProps.prop1, objectInRepo.prop1);
+        assertEquals("newProp2Value", objectInRepo.prop2);
+        assertEquals("newProp3Value", objectInRepo.prop3);
 
         //test events are called
         assertEquals(addedObjectProps.keyProp, DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].keyProp);
         assertEquals(addedObjectProps.prop1, DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(addedObjectProps.prop2, DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop2);
+        assertFalse(DataStore.get("beforeUpdate")[UpdateMethod.UPDATED_PROPERTIES].containsKey("prop3"));
         assertEquals(addedObjectProps.keyProp, DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].keyProp);
         assertEquals(addedObjectProps.prop1, DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop1);
+        assertEquals(updatedObjectProps.prop2, DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop2);
+        assertEquals("", DataStore.get("afterUpdate")[UpdateMethod.UPDATED_PROPERTIES].prop3);
     }
 
     public void testAddRemoveRelations()
@@ -387,6 +763,9 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
         def dateProp = [name: "dateProp", type: ModelGenerator.DATE_TYPE];
         def prop1 = [name: "prop1", type: ModelGenerator.STRING_TYPE, blank: false];
+        def prop2 = [name: "prop2", type: ModelGenerator.STRING_TYPE, blank: false];
+        def prop3 = [name: "prop3", type: ModelGenerator.STRING_TYPE, blank: false];
+        def nullableProp= [name: "nullableProp", type: ModelGenerator.STRING_TYPE, blank: true,nullable:true,defaultValue:"defaultValue"];
         def rel1 = [name: "rel1", reverseName: "revrel1", toModel: relatedModelName, cardinality: ModelGenerator.RELATION_TYPE_MANY, reverseCardinality: ModelGenerator.RELATION_TYPE_MANY, isOwner: true];
         def revrel1 = [name: "revrel1", reverseName: "rel1", toModel: childModelName, cardinality: ModelGenerator.RELATION_TYPE_MANY, reverseCardinality: ModelGenerator.RELATION_TYPE_MANY, isOwner: false];
 
@@ -395,7 +774,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         def childModelMetaProps = [name: childModelName, parentModel: parentModelName]
         def childModel2MetaProps = [name: childModel2Name, parentModel: parentModelName]
         def relatedModelMetaProps = [name: relatedModelName]
-        def modelProps = [keyProp, prop1];
+        def modelProps = [keyProp, prop1,prop2,prop3,nullableProp];
         def keyPropList = [keyProp];
         String parentModelString = ModelGenerationTestUtils.getModelText(parentModelMetaProps, [], modelProps, keyPropList, [], additionalParts["parent"])
         String childModelString = ModelGenerationTestUtils.getModelText(childModelMetaProps, [], [], [], [rel1], additionalParts["child"])

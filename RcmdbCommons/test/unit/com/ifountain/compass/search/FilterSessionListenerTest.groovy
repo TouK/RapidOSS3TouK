@@ -7,6 +7,12 @@ import auth.Group
 import com.ifountain.session.SessionManager
 import auth.SegmentFilter
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
+import com.ifountain.rcmdb.test.util.CompassForTests
+import auth.RsUserOperations
+import auth.GroupOperations
+import auth.Role
+import auth.SegmentFilterOperations
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,26 +24,31 @@ import com.ifountain.rcmdb.auth.SegmentQueryHelper
 class FilterSessionListenerTest extends RapidCmdbWithCompassTestCase{
     public void testFilterManager()
     {
-        initialize ([RsUser, Group, SegmentFilter],[]);
-
-        RsUser user1 = RsUser.add(username:"user1", passwordHash:"password");
-        RsUser user2 = RsUser.add(username:"user2", passwordHash:"password");
-        RsUser user3 = RsUser.add(username:"user3", passwordHash:"password");
-        RsUser user4 = RsUser.add(username:"user4", passwordHash:"password");
-        RsUser user5 = RsUser.add(username:"user5", passwordHash:"password");
-        assertFalse (user1.hasErrors());
-        assertFalse (user2.hasErrors());
-        assertFalse (user3.hasErrors());
-        assertFalse (user4.hasErrors());
-        assertFalse (user5.hasErrors());
-        Group gr1 = Group.add(name:"gr1", segmentFilter:"name:script1", users:[user1,user4], segmentFilterType:Group.GLOBAL_FILTER);
-        Group gr2 = Group.add(name:"gr2", users:user3, segmentFilterType:Group.GLOBAL_FILTER);
-        Group gr3 = Group.add(name:"gr3", users:[user4, user5], segmentFilterType:Group.CLASS_BASED_FILTER);
-        Group gr4 = Group.add(name:"gr4", users:user5, segmentFilterType:Group.CLASS_BASED_FILTER);
+        initialize ([RsUser, Group, SegmentFilter, Role],[]);
+        CompassForTests.addOperationSupport(RsUser, RsUserOperations)
+        CompassForTests.addOperationSupport(Group, GroupOperations)
+        CompassForTests.addOperationSupport(SegmentFilter, SegmentFilterOperations)
+        SegmentQueryHelper.getInstance().initialize([Object.class]);
+        UserConfigurationSpace.getInstance().initialize();
+        Role userRole = Role.add(name:Role.USER);
+        Group gr1 = Group.addGroup(name:"gr1", segmentFilter:"name:script1", segmentFilterType:Group.GLOBAL_FILTER, role:userRole);
+        Group gr2 = Group.addGroup(name:"gr2", segmentFilterType:Group.GLOBAL_FILTER, role:userRole);
+        Group gr3 = Group.addGroup(name:"gr3", segmentFilterType:Group.CLASS_BASED_FILTER, role:userRole);
+        Group gr4 = Group.addGroup(name:"gr4", segmentFilterType:Group.CLASS_BASED_FILTER, role:userRole);
         assertFalse (gr1.hasErrors());
         assertFalse (gr2.hasErrors());
         assertFalse (gr3.hasErrors());
         assertFalse (gr4.hasErrors());
+
+        RsUser user1 = RsUser.addUser(username:"user1", password:"password", groups:[gr1]);
+        RsUser user3 = RsUser.addUser(username:"user3", password:"password", groups:[gr2]);
+        RsUser user4 = RsUser.addUser(username:"user4", password:"password", groups:[gr1, gr3]);
+        RsUser user5 = RsUser.addUser(username:"user5", password:"password", groups:[gr4, gr3]);
+        assertFalse (user1.hasErrors());
+        assertFalse (user3.hasErrors());
+        assertFalse (user4.hasErrors());
+        assertFalse (user5.hasErrors());
+
 
         def segmentFilter1 = "name:a*"
         def segmentFilter2 = "name:b*"
@@ -46,8 +57,6 @@ class FilterSessionListenerTest extends RapidCmdbWithCompassTestCase{
 
         assertFalse (filter1.hasErrors());
         assertFalse (filter2.hasErrors());
-
-        SegmentQueryHelper.getInstance().initialize([Object.class]);
 
         Session session = new Session();
         session.put (SessionManager.SESSION_USERNAME_KEY, user1.username);
@@ -65,13 +74,6 @@ class FilterSessionListenerTest extends RapidCmdbWithCompassTestCase{
         listener.sessionEnded (session);
         filters = session.get (FilterManager.SESSION_FILTER_KEY);
         assertNull(filters);
-
-        //Test with a user does not have a group
-        session = new Session();
-        session.put (SessionManager.SESSION_USERNAME_KEY, user2.username);
-        listener.sessionStarted (session);
-        filters = session.get (FilterManager.SESSION_FILTER_KEY);
-        assertNull (filters);
 
         //Test with a nonexisting user
         session = new Session();

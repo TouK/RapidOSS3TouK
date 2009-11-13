@@ -49,7 +49,7 @@ class RsUserController {
         if (rsUser) {
             try
             {
-                rsUser.remove()
+                RsUser.removeUser(rsUser)
                 flash.message = "User ${params.id} deleted"
                 redirect(action: list)
             }

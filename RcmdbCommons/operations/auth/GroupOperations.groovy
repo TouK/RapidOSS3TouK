@@ -2,6 +2,7 @@ package auth
 
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import com.ifountain.rcmdb.exception.MessageSourceException
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -10,49 +11,49 @@ import com.ifountain.rcmdb.exception.MessageSourceException
 * Time: 5:16:08 PM
 * To change this template use File | Settings | File Templates.
 */
-class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation 
+class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     def beforeDelete()
     {
-       if(name.equalsIgnoreCase(RsUser.RSADMIN))
-       {
-           throw new Exception("Can not delete group ${RsUser.RSADMIN}");
-       }
+        if (name.equalsIgnoreCase(RsUser.RSADMIN))
+        {
+            throw new Exception("Can not delete group ${RsUser.RSADMIN}");
+        }
     }
 
-    def afterDelete(){
+    def afterDelete() {
         SegmentQueryHelper.getInstance().removeGroupFilters(name);
     }
 
-     def afterInsert(){
+    def afterInsert() {
         SegmentQueryHelper.getInstance().calculateGroupFilters(name);
     }
 
-    def afterUpdate(params){
-        if(params.updatedProps.containsKey("segmentFilter") || params.updatedProps.containsKey("segmentFilterType")){
-            SegmentQueryHelper.getInstance().calculateGroupFilters(name);    
+    def afterUpdate(params) {
+        if (params.updatedProps.containsKey("segmentFilter") || params.updatedProps.containsKey("segmentFilterType")) {
+            SegmentQueryHelper.getInstance().calculateGroupFilters(name);
         }
     }
     public static Group addGroup(params)
     {
-        return _addGroup(params,false);
+        return _addGroup(params, false);
     }
     public static Group addUniqueGroup(params)
     {
-        return _addGroup(params,true);
+        return _addGroup(params, true);
     }
-    private static Group _addGroup(params,boolean addUnique)
+    private static Group _addGroup(params, boolean addUnique)
     {
         def group = null;
 
-        if (params.role == null )
+        if (params.role == null)
         {
             throw new MessageSourceException("no.role.specified", [] as Object[]);
         }
 
         params.users = getUsersFromRepository(params.users)
 
-        if(addUnique)
+        if (addUnique)
         {
             group = Group.addUnique(params);
         }
@@ -60,38 +61,57 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         {
             group = Group.add(params);
         }
+        if (!group.hasErrors()) {
+            UserConfigurationSpace.getInstance().groupAdded(group)
+        }
         return group;
     }
 
     public static Group updateGroup(group, params)
     {
+        boolean renamed = false;
+        def oldName = group.name;
+        if (group.name != params.name) {
+            renamed = true;
+        }
         if (params.users != null)
         {
-           params.users = getUsersFromRepository(params.users)
+            params.users = getUsersFromRepository(params.users)
         }
-        if(params.containsKey("role"))
-        {               
-            if (params.role == null )
+        if (params.containsKey("role"))
+        {
+            if (params.role == null)
             {
                 throw new MessageSourceException("no.role.specified", [] as Object[]);
             }
         }
 
         group.update(params);
+        if (!group.hasErrors()) {
+            if (renamed) {
+                UserConfigurationSpace.getInstance().groupRemoved(oldName)
+            }
+            UserConfigurationSpace.getInstance().groupAdded(group);
+        }
         return group;
     }
 
+    public static void removeGroup(Group group) {
+        def groupName = group.name
+        group.remove();
+        UserConfigurationSpace.getInstance().groupRemoved(groupName)
+    }
     private static List getUsersFromRepository(List users)
     {
         def usersToBeAdded = [];
-        users.each{userObject->
+        users.each {userObject ->
             def username = userObject;
-            if(userObject instanceof RsUser)
+            if (userObject instanceof RsUser)
             {
                 username = userObject.username;
             }
-            RsUser rsUser = RsUser.get(username:username);
-            if(rsUser == null)
+            RsUser rsUser = RsUser.get(username: username);
+            if (rsUser == null)
             {
                 throw new Exception("Could not created group since user ${username} does not exist.");
             }
@@ -103,34 +123,38 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
     public void addUsers(List userList)
     {
         List usersToBeAdded = getUsersFromRepository(userList);
-        addRelation(users:usersToBeAdded);
+        addRelation(users: usersToBeAdded);
+        UserConfigurationSpace.getInstance().groupAdded(domainObject);
     }
 
     public void removeUsers(List userList)
     {
         List usersToBeRemoved = getUsersFromRepository(userList);
-        removeRelation(users:usersToBeRemoved);
+        removeRelation(users: usersToBeRemoved);
+        UserConfigurationSpace.getInstance().groupAdded(domainObject);
     }
 
     public void assignRole(role)
     {
-        addRelation(role:getRole(role));
+        addRelation(role: getRole(role));
+        UserConfigurationSpace.getInstance().groupAdded(domainObject);
     }
 
     public void removeRole(role)
     {
-        removeRelation(role:getRole(role));
+        removeRelation(role: getRole(role));
+        UserConfigurationSpace.getInstance().groupAdded(domainObject);
     }
 
     private static getRole(role)
     {
         String roleName = role;
-        if(role instanceof Role)
+        if (role instanceof Role)
         {
             roleName = role.name;
         }
-        def roleFromRi = Role.get(name:roleName);
-        if(roleFromRi == null)
+        def roleFromRi = Role.get(name: roleName);
+        if (roleFromRi == null)
         {
             throw new Exception("Role ${roleName} does not exist");
         }

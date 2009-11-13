@@ -29,6 +29,7 @@ import org.compass.core.Compass
 import org.springframework.web.context.support.WebApplicationContextUtils
 import script.CmdbScript
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -62,6 +63,7 @@ class BootStrap {
         registerDefaultConverters();
         initializeModelGenerator();
         initializeSegmentHelper();
+        initializeUserConfigurationSpace();
         registerDefaultUsers();
         registerDefaultDatasources();
         corrrectModelData();
@@ -73,6 +75,11 @@ class BootStrap {
     def initializeSegmentHelper(){
         log.warn(logPrefix+"Initializing Segment Helper");
         SegmentQueryHelper.getInstance().initialize(ApplicationHolder.application.domainClasses.clazz.findAll{it.name.indexOf(".") < 0})
+    }
+
+    def initializeUserConfigurationSpace(){
+        log.warn(logPrefix+"Initializing User Configuration Space");
+        UserConfigurationSpace.getInstance().initialize();
     }
     def initializeSessionManager()
     {

@@ -72,7 +72,7 @@ class GroupController {
         def group = Group.get([id: params.id])
         if (group) {
             try{
-                group.remove()
+                Group.removeGroup(group)
                 flash.message = "Group ${params.id} deleted"
                 redirect(action: list)
             }

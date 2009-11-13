@@ -55,12 +55,17 @@ class BootStrap {
         registerDefaultConverters();
         initializeModelGenerator();
         initializeSegmentHelper();
+        initializeUserConfigurationSpace();
         registerDefaultUsers();
         registerDefaultDatasourceNames();
         initializeScripting();
     }
     def initializeSegmentHelper(){
         SegmentQueryHelper.getInstance().initialize(ApplicationHolder.application.domainClasses.clazz.findAll{it.name.indexOf(".") < 0})
+    }
+    def initializeUserConfigurationSpace(){
+        log.warn(logPrefix+"Initializing User Configuration Space");
+        UserConfigurationSpace.getInstance().initialize();
     }
     def initializeCaches()
     {

@@ -508,7 +508,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def segmentFilter3 = "rootProp:c*"
         def group2 = Group.addGroup(name:"group2", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
         def group3 = Group.addGroup(name:"group3", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
-        user.addToGroups([group2, group3]);
+        user.update(groups:[group2, group3]);
 
         userGroup.update(segmentFilter:segmentFilter1);
         SegmentFilter.add(className: rootClass.name, filter: segmentFilter2, group: [group2], groupId: group2.id);

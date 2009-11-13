@@ -1,18 +1,15 @@
 package auth
 
-import org.jsecurity.crypto.hash.Sha1Hash
-import com.ifountain.rcmdb.exception.MessageSourceException
-import com.ifountain.rcmdb.execution.ExecutionContextManager
-import com.ifountain.rcmdb.execution.ExecutionContext
-import com.ifountain.rcmdb.util.RapidCMDBConstants
+import application.RsApplication
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
-
-import org.jsecurity.authc.IncorrectCredentialsException
-import org.jsecurity.authc.UnknownAccountException
+import com.ifountain.rcmdb.exception.MessageSourceException
+import com.ifountain.rcmdb.execution.ExecutionContext
+import com.ifountain.rcmdb.execution.ExecutionContextManager
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.jsecurity.authc.AccountException
-import application.RsApplication;
+import org.jsecurity.crypto.hash.Sha1Hash
+
 /**
 * Created by IntelliJ IDEA.
 * User: mustafa sener
@@ -30,29 +27,29 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     {
         return ["email"];
     }
-    
+
     public static def getAuthenticationType()
     {
         return "local";
     }
     public static RsUser authenticateUser(params)
     {
-        String username=params.login;
-        String loginToken=params.loginToken;
+        String username = params.login;
+        String loginToken = params.loginToken;
 
-        if(username)
+        if (username)
         {
             String authenticationType = RsUser.getAuthenticationType();
-            if(authenticationType == "local" || username == RsUser.RSADMIN)
+            if (authenticationType == "local" || username == RsUser.RSADMIN)
             {
                 return RsApplication.getUtility("auth.RsUserLocalAuthenticator")?.authenticateUser(params);
             }
-            else if(authenticationType == "ldap")
+            else if (authenticationType == "ldap")
             {
                 return RsApplication.getUtility("auth.RsUserLdapAuthenticator")?.authenticateUser(params);
             }
         }
-        else if(loginToken)
+        else if (loginToken)
         {
             return RsApplication.getUtility("auth.RsUserTokenAuthenticator")?.authenticateUser(params);
         }
@@ -64,14 +61,14 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     def beforeDelete()
     {
-       if(username.equalsIgnoreCase(getCurrentUserName()))
-       {
-           throw new Exception("Can not delete your own account");
-       }
-       if(username.equalsIgnoreCase(RsUser.RSADMIN))
-       {
-           throw new Exception("Can not delete user ${RsUser.RSADMIN}");
-       }
+        if (username.equalsIgnoreCase(getCurrentUserName()))
+        {
+            throw new Exception("Can not delete your own account");
+        }
+        if (username.equalsIgnoreCase(RsUser.RSADMIN))
+        {
+            throw new Exception("Can not delete user ${RsUser.RSADMIN}");
+        }
     }
     public static String hashPassword(password)
     {
@@ -83,6 +80,11 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     }
     public static RsUser updateUser(user, params)
     {
+        boolean renamed = false;
+        def oldName = user.username;
+        if (user.username != params.username) {
+            renamed = true;
+        }
         if (params.password != null)
         {
             params.passwordHash = hashPassword(params.password);
@@ -99,6 +101,12 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
 
         user.update(params);
+        if (!user.hasErrors()) {
+            if (renamed) {
+                UserConfigurationSpace.getInstance().userRemoved(oldName)
+            }
+            UserConfigurationSpace.getInstance().userAdded(user);
+        }
         return user;
     }
     private static void restoreOldData(oldProperties)
@@ -109,13 +117,13 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     }
     public static RsUser addUser(params)
     {
-        return _addUser(params,false);
+        return _addUser(params, false);
     }
     public static RsUser addUniqueUser(params)
     {
-        return _addUser(params,true);
+        return _addUser(params, true);
     }
-    private static RsUser _addUser(params,boolean addUnique)
+    private static RsUser _addUser(params, boolean addUnique)
     {
         params.passwordHash = hashPassword(params.password);
 
@@ -128,7 +136,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         params.groups = getGroupsFromRepository(params.groups)
 
-        if(addUnique)
+        if (addUnique)
         {
             rsUser = RsUser.addUnique(params);
         }
@@ -136,9 +144,16 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             rsUser = RsUser.add(params);
         }
+        if (!rsUser.hasErrors()) {
+            UserConfigurationSpace.getInstance().userAdded(rsUser);
+        }
         return rsUser;
     }
-
+    public static void removeUser(RsUser user) {
+        def userName = user.username;
+        user.remove();
+        UserConfigurationSpace.getInstance().userRemoved(userName);
+    }
 
     private static List getGroupsFromRepository(List groups)
     {
@@ -158,19 +173,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
         return groupsToBeAssigned;
     }
-
-    public void addToGroups(List groups)
-    {
-        List groupsToBeAssigned = getGroupsFromRepository(groups)
-        addRelation(groups: groupsToBeAssigned);
-    }
-
-    public void removeFromGroups(List groups)
-    {
-        List groupsToBeAssigned = getGroupsFromRepository(groups)
-        removeRelation(groups: groupsToBeAssigned);
-    }
-
 
     public static String getCurrentUserName()
     {
@@ -192,8 +194,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
 
     def addChannelInformation(channelParams) {
-        def channelInformation = ChannelUserInformation.add(userId: id, type:channelParams.type, destination: channelParams.destination)
-        if(!channelInformation.hasErrors())
+        def channelInformation = ChannelUserInformation.add(userId: id, type: channelParams.type, destination: channelParams.destination)
+        if (!channelInformation.hasErrors())
         {
             addRelation(userInformations: channelInformation);
         }
@@ -208,33 +210,33 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     def addChannelInformationsAndRollBackIfErrorOccurs(channelInformationList)
     {
-        def oldInformationProperties=[:];
+        def oldInformationProperties = [:];
         //save all old destinations
-        ChannelUserInformation.searchEvery("userId:${id}").each{ userInfo ->
-             oldInformationProperties[userInfo.id]=ControllerUtils.backupOldData(userInfo, ["destination":""])
+        ChannelUserInformation.searchEvery("userId:${id}").each {userInfo ->
+            oldInformationProperties[userInfo.id] = ControllerUtils.backupOldData(userInfo, ["destination": ""])
         }
 
-        def errorOccured=false;
+        def errorOccured = false;
 
-        def addedInformations=addChannelInformations(channelInformationList);
+        def addedInformations = addChannelInformations(channelInformationList);
 
         //add all informations and track if error occured
-        addedInformations.each{ addedInfo ->
-            if(addedInfo.hasErrors())
+        addedInformations.each {addedInfo ->
+            if (addedInfo.hasErrors())
             {
-                errorOccured=true;
+                errorOccured = true;
             }
         }
 
         //roll back the information adds / updates if error occured
-        if(errorOccured)
+        if (errorOccured)
         {
-            addedInformations.each{ addedInfo ->
-                if(!addedInfo.hasErrors())  //if has error no change is done
+            addedInformations.each {addedInfo ->
+                if (!addedInfo.hasErrors()) //if has error no change is done
                 {
                     //if information exists earlier update it else remove it
-                    def oldProperties=oldInformationProperties[addedInfo.id];
-                    if(oldProperties!=null)
+                    def oldProperties = oldInformationProperties[addedInfo.id];
+                    if (oldProperties != null)
                     {
                         addedInfo.update(oldProperties);
                     }
@@ -252,8 +254,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     def addChannelInformations(channelInformationList)
     {
-        def addedInformations=[];
-        channelInformationList.each{ channelParams ->
+        def addedInformations = [];
+        channelInformationList.each {channelParams ->
             addedInformations.add(addChannelInformation(channelParams));
         }
         return addedInformations;
@@ -267,35 +269,28 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         params.userId = id;
         params.type = "ldap"
         def ldapInformation = LdapUserInformation.add(params)
-        if(!ldapInformation.hasErrors())
+        if (!ldapInformation.hasErrors())
         {
             addRelation(userInformations: ldapInformation);
         }
         return ldapInformation;
     }
 
-   def hasRole(roleName) {
-        def res = groups.findAll {it.role?.name == roleName};
-        return res.size() > 0
+    def static hasRole(uName, roleName) {
+        return UserConfigurationSpace.getInstance().hasRole(uName, roleName)
     }
 
-    def hasAllRoles(roleNames)
+    def static hasAllRoles(uName, roleNames)
     {
-        int numberOfFoundRoles = 0;
-        def groupList=groups;
+        return UserConfigurationSpace.getInstance().hasAllRoles(uName, roleNames)
+    }
 
-        roleNames.each {String role ->
-            boolean found=false;
-            groupList.each {group ->
-                if (role == group.role?.name && !found)
-                {
-                    numberOfFoundRoles++;
-                    found=true;
-                }
-            }
+    def static hasGroup(uName, groupName) {
+        return UserConfigurationSpace.getInstance().hasGroup(uName, groupName)
+    }
 
-        }
-
-        return numberOfFoundRoles == roleNames.size()
+    def static hasAllGroups(uName, groupNames)
+    {
+        return UserConfigurationSpace.getInstance().hasAllGroups(uName, groupNames)
     }
 }

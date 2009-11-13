@@ -124,21 +124,7 @@ protect pages based on a user's roles and/or permissions.
         //TODO:Added group checking method
         FilterAccessControlBuilder.metaClass.group = {String groupName->
             def username = delegate.subject.principal;
-            RsUser user = RsUser.get(username:username);
-            if(user != null)
-            {
-                boolean groupFound = false;
-                user.groups.each{
-                    if(it.name == groupName)
-                    {
-                        groupFound = true;
-                        return;
-                    }
-                }
-
-                return groupFound;
-            }
-            return false;
+            return RsUser.hasGroup(username, groupName)
         }
         application.filtersClasses.each {filterClass ->
             filterClass.clazz.metaClass.getRoleMap = {String controller -> return roleMaps[controller]}

@@ -1,4 +1,8 @@
-/* 
+import auth.RsUser
+import org.jsecurity.authc.SimpleAccount
+import org.jsecurity.authc.UnknownAccountException
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -16,17 +20,6 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 * USA.
 */
-
-import auth.RsUser
-import org.jsecurity.authc.AccountException
-import org.jsecurity.authc.IncorrectCredentialsException
-import org.jsecurity.authc.SimpleAccount
-import org.jsecurity.authc.UnknownAccountException
-import auth.Role
-import connection.LdapConnection
-import auth.LdapUserInformation
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-import javax.naming.NamingException
 
 class JsecDbRealm {
     static authTokenClass = org.jsecurity.authc.UsernamePasswordTokenWithParams
@@ -49,17 +42,11 @@ class JsecDbRealm {
         return account
     }
     def hasRole(principal, roleName) {
-        def user = RsUser.get(username: principal);
-        if(!user)
-            return false;
-        return user.hasRole(roleName);
+        return RsUser.hasRole(principal, roleName)
     }
 
     def hasAllRoles(principal, roles) {
-        def user = RsUser.get(username: principal);
-        if(!user)
-            return false;
-        return user.hasAllRoles(roles);
+        return RsUser.hasAllRoles(principal, roles)
     }
 
     def isPermitted(principal, requiredPermission) {
@@ -69,7 +56,7 @@ class JsecDbRealm {
         // First find all the permissions that the user has that match
         // the required permission's type and project code.
         def user = RsUser.get(username: principal);
-        if(!user)
+        if (!user)
             return false;
         def permissions = user.permissionRelations.findAll {it.permission.type == requiredPermission.class.name}
 

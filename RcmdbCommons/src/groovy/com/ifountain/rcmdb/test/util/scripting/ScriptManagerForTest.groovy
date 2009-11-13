@@ -70,7 +70,11 @@ class ScriptManagerForTest {
             scriptRealPath = "${scriptBaseDirectory}/${scriptFilePath}.groovy";
             scriptClassLoader.addClasspath(scriptBaseDirectory);
         }
-
+        def scriptFile = new File(scriptRealPath);
+        if(scriptFile.getText().trim() == "")
+        {
+            throw new Exception("script file ${scriptRealPath} should at least have return statement");
+        }
         def scriptClass = scriptClassLoader.parseClass(new File(scriptRealPath));
         scriptClasses[scriptFilePath] = scriptClass;
         return scriptClass;

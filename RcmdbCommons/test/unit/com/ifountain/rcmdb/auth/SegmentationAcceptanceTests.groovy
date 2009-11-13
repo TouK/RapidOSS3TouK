@@ -40,6 +40,8 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         createModels();
         initializeForAddAndUpdate();
         SegmentQueryHelper.getInstance().initialize([rootClass, parentClass1, parentClass2, leafClass1, leafClass2, leafClass3])
+        CompassForTests.addOperationSupport(RsUser, RsUserOperations) 
+        UserConfigurationSpace.getInstance().initialize();
 
         userRole=Role.add(name:Role.USER)
         assertFalse(userRole.hasErrors())
@@ -508,7 +510,7 @@ class SegmentationAcceptanceTests extends RapidCmdbWithCompassTestCase {
         def segmentFilter3 = "rootProp:c*"
         def group2 = Group.addGroup(name:"group2", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
         def group3 = Group.addGroup(name:"group3", segmentFilterType:Group.CLASS_BASED_FILTER,role:userRole)
-        user.update(groups:[group2, group3]);
+        RsUser.updateUser(user, [groups:[group2, group3, userGroup]]);
 
         userGroup.update(segmentFilter:segmentFilter1);
         SegmentFilter.add(className: rootClass.name, filter: segmentFilter2, group: [group2], groupId: group2.id);

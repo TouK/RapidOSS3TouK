@@ -19,17 +19,17 @@ class UserBean {
     public Map getGroups(){
         return groupsMap;
     }
-    public void groupAdded(GroupBean group) {
+    protected void groupAdded(GroupBean group) {
         groupsMap[group.name] = group;
         changed = true;
     }
-    public void groupRemoved(String groupName) {
+    protected void groupRemoved(String groupName) {
         if (groupsMap.containsKey(groupName)) {
             groupsMap.remove(groupName);
             changed = true;
         }
     }
-    public void calculateGroupsAndRoles() {
+    protected void calculateGroupsAndRoles() {
         if (changed) {
             rolesMap = new CaseInsensitiveMap();
             groupsMap.each {String groupName, GroupBean group ->

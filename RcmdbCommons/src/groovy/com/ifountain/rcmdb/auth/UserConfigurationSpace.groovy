@@ -67,7 +67,7 @@ class UserConfigurationSpace {
         return users[username]
     }
 
-    public void userAdded(RsUser user) {
+    public synchronized void userAdded(RsUser user) {
         def username = user.username;
         UserBean userBean = new UserBean(username);
         users[username] = userBean;
@@ -79,11 +79,11 @@ class UserConfigurationSpace {
         userBean.calculateGroupsAndRoles();
     }
 
-    public void userRemoved(String username) {
+    public synchronized void userRemoved(String username) {
         users.remove(username);
     }
 
-    public void groupAdded(Group group) {
+    public synchronized void groupAdded(Group group) {
         def groupUsers = group.users;
         def usernames = groupUsers.username;
         GroupBean groupBean = new GroupBean(group.name, group.role?.name);
@@ -103,7 +103,7 @@ class UserConfigurationSpace {
         }
     }
 
-    public void groupRemoved(String groupName) {
+    public synchronized void groupRemoved(String groupName) {
         users.each {String username, UserBean userBean ->
             userBean.groupRemoved(groupName);
             userBean.calculateGroupsAndRoles();

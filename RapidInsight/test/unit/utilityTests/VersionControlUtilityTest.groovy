@@ -19,6 +19,8 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty ("base.dir", "../testOutput/RapidSuite")
+        def gcl = new GroovyClassLoader();
+        gcl.addClasspath (new File(getWorkspaceDirectory(), "RapidModules/RapidInsight/operations").path);
         utility = VersionControlUtilityTest.classLoader.loadClass("VersionControlUtility").newInstance();
         sourceDirFile = utility.sourceDir
         sourceDir= sourceDirFile.path;

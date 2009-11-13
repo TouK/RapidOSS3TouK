@@ -16,7 +16,9 @@ class UserBean {
     public UserBean(String name) {
         username = name;
     }
-
+    public Map getGroups(){
+        return groupsMap;
+    }
     public void groupAdded(GroupBean group) {
         groupsMap[group.name] = group;
         changed = true;

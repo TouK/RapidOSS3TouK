@@ -63,6 +63,10 @@ class UserConfigurationSpace {
         return users.containsKey(username);
     }
 
+    public UserBean getUser(String username){
+        return users[username]
+    }
+
     public void userAdded(RsUser user) {
         def username = user.username;
         UserBean userBean = new UserBean(username);

@@ -4,7 +4,10 @@ import com.ifountain.session.SessionListener;
 import com.ifountain.session.Session
 import auth.RsUser
 import auth.Group
-import com.ifountain.rcmdb.auth.SegmentQueryHelper;
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserBean
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
+import com.ifountain.rcmdb.auth.GroupBean;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,17 +26,17 @@ public class FilterSessionListener implements SessionListener {
     {
         if (session.username != null)
         {
-            RsUser user = RsUser.get(username: session.username);
+            UserBean user = UserConfigurationSpace.getInstance().getUser(session.username);
             if (user)
             {
-                def groups = user.groups;
-                if (!groups.isEmpty())
+                def groups = user.getGroups();
+                if (groups.size() > 0)
                 {
                     def filters = [:];
                     filters[FilterManager.GROUP_FILTERS] = [];
                     filters[FilterManager.CLASS_FILTERS] = [:]
-                    groups.each {Group group ->
-                        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(group.name)
+                    groups.each {String groupName, GroupBean group ->
+                        def groupFilters = SegmentQueryHelper.getInstance().getGroupFilters(groupName)
                         if (groupFilters != null) {
                             def classesMap = groupFilters[SegmentQueryHelper.CLASSES];
                             if (classesMap != null) {

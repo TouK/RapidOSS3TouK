@@ -1,9 +1,15 @@
-<%@ page import="java.text.SimpleDateFormat" %><html>
+<%@ page import="auth.Role; java.text.SimpleDateFormat" %><html>
+<jsec:lacksRole name="${Role.ADMINISTRATOR}">
+     <%
+         response.sendRedirect("/RapidSuite/auth/unauthorized");
+     %>
+</jsec:lacksRole>
 <head>
     <meta name="layout" content="adminLayout"/>
 </head>
 <body>
 <div class="nav">
+    <span class="menuButton"><rui:link class="list" url="versionControl.gsp">Modification List</rui:link></span>
 </div>
 <g:render template="/common/messages" model="[flash:flash]"></g:render>
 <%

@@ -3,6 +3,7 @@ def excludedFiles = [
         "RapidSuite/data",
         "RapidSuite/logs",
         "RapidSuite/grails-app/conf/UIConfigurations",
+        "RapidSuite/rrdFiles",
         "temp"
 ]
 /************************************************************/

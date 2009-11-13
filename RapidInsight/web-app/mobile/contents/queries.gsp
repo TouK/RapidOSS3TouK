@@ -6,8 +6,8 @@
     }
     def filterType = params.filterType;
     def listURI = params.listURI ? params.listURI : "mobile/${gspFolder}/event.gsp";
-    def user = RsUser.get(username:session.username);
-    def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
+    def username=session.username;
+    def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${username.exactQuery()}) )");
 %>
 <ul id="query" class="list">
     <g:each var="group" in="${queryGroups}">

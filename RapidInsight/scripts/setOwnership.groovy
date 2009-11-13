@@ -17,24 +17,18 @@
 * USA.
 */
 
-import auth.RsUser
 import groovy.xml.MarkupBuilder;
 
 def notificationName = params.name;
-def user = RsUser.get(username:web.session.username);
+def username=web.session.username;
 def act = params.act;
 def rsEvent = RsEvent.get(name: notificationName);
 if (rsEvent) {
-    /*def userId = RsNotification.search("$user.username").results[0];
-    println(userId);
-    if(userId == null){
-        throw new Exception("No user found in repository with name: ${user.username}")
-    }*/
 
     if (act == "true")
-        rsEvent.setOwnership(true, user.username);
+        rsEvent.setOwnership(true, username);
     else if (act == "false")
-        rsEvent.setOwnership(false, user.username);
+        rsEvent.setOwnership(false, username);
 
 
     def props = rsEvent.asStringMap(rsEvent.getNonFederatedPropertyList().name);

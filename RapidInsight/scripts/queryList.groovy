@@ -28,16 +28,13 @@ import search.SearchQuery
 import search.SearchQueryGroup
 
 def filterType = params.type;
-def user = RsUser.get(username:web.session.username);
-if(user == null){
-    throw new Exception("User ${web.session.username} does not exist");
-}
+def username=web.session.username;
 
 def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
-SearchQueryGroup.add(name:SearchQueryGroup.MY_QUERIES, username:web.session.username, type:SearchQueryGroup.DEFAULT_TYPE);
-def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${user.username.exactQuery()}) )");
+SearchQueryGroup.add(name:SearchQueryGroup.MY_QUERIES, username:username, type:SearchQueryGroup.DEFAULT_TYPE);
+def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${username.exactQuery()}) )");
 queryBuilder.Filters
 {
     queryGroups.each {SearchQueryGroup group ->

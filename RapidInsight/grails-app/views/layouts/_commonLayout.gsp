@@ -6,15 +6,15 @@ window.currentUserGroups={};
 window.currentUserRoles={};
 
 <%
-    def rsUser=auth.RsUser.get(username:session.username);
-    if(rsUser)
+    def userBean = com.ifountain.rcmdb.auth.UserConfigurationSpace.getInstance().getUser(session.username);
+    if(userBean)
     {
-        rsUser.groups.each{ group ->
-            println "window.currentUserGroups['${group.name}']=true;";
-            def role=group.role;
-            if(role)
+        userBean.getGroups().each{  groupName, groupBean ->
+            println "window.currentUserGroups['${groupName}']=true;";
+            def roleName=groupBean.getRole();
+            if(roleName)
             {
-                println "window.currentUserRoles['${role.name}']=true;";
+                println "window.currentUserRoles['${roleName}']=true;";
             }
         }
     }

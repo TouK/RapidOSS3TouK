@@ -11,6 +11,7 @@ import auth.Group
 import auth.RsUserOperations
 import auth.GroupOperations
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -40,6 +41,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport (RsMessageRule,RsMessageRuleOperations);
         CompassForTests.addOperationSupport (RsUser,RsUserOperations);
         //CompassForTests.addOperationSupport (Group,GroupOperations);
+        UserConfigurationSpace.getInstance().initialize();
     }
     public void clearMetaClasses()
     {
@@ -114,7 +116,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         
 
         def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
-        def adminUser=RsUser.add(username:"admin",passwordHash:"aaa",groups:[adminGroup]);
+        def adminUser=RsUser.addUser(username:"admin",password:"aaa",groups:[adminGroup]);
 
         def groupsForAdmin=RsMessageRule.getDesnitationGroupsForUser(adminUser.username);
         assertEquals(2,groupsForAdmin.size());
@@ -164,9 +166,9 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def group=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
 
-        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa",groups:[group]);
+        def adminUser=RsUser.addUser(username:"adminUser",password:"aaa",groups:[group]);
         assertFalse(adminUser.hasErrors());
-        assertTrue(adminUser.hasRole(Role.ADMINISTRATOR));
+        assertTrue(RsUser.hasRole(adminUser.username,Role.ADMINISTRATOR));
 
          try{
              RsMessageRule.validateUserDestinationForChannel(adminUser,null,"email");
@@ -230,9 +232,9 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
 
-        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa",groups:[adminGroup]);
+        def adminUser=RsUser.addUser(username:"adminUser",password:"aaa",groups:[adminGroup]);
         assertFalse(adminUser.hasErrors());
-        assertTrue(adminUser.hasRole(Role.ADMINISTRATOR));
+        assertTrue(RsUser.hasRole(adminUser.username,Role.ADMINISTRATOR));
 
         RsMessageRule.validateUserDestinationForChannel(adminUser,"admin@com","email");
         RsMessageRule.validateUserDestinationForChannel(adminUser,"","");
@@ -288,9 +290,9 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def group=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
 
-        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa",groups:[group]);
+        def adminUser=RsUser.addUser(username:"adminUser",password:"aaa",groups:[group]);
         assertFalse(user.hasErrors());
-        assertTrue(adminUser.hasRole(Role.ADMINISTRATOR));
+        assertTrue(RsUser.hasRole(adminUser.username,Role.ADMINISTRATOR));
 
          try{
              RsMessageRule.addMessageRuleForUser(params,adminUser.username);
@@ -434,7 +436,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def group=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
 
-        def user=RsUser.add(username:username,passwordHash:"aaa",groups:[group]);
+        def user=RsUser.addUser(username:username,password:"aaa",groups:[group]);
         assertFalse(user.hasErrors());
 
 

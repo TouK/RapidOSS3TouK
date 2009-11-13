@@ -49,7 +49,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         if(user == null)
             throw new Exception("No user defined with username '${username}'");
 
-        def isAdmin = user.hasRole(Role.ADMINISTRATOR);
+        def isAdmin = auth.RsUser.hasRole(username,Role.ADMINISTRATOR);
         if(!isAdmin)
         {
            groups.remove(1);
@@ -98,7 +98,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static void validateUserDestinationForChannel(RsUser user,String destination,String channelType)
     {
-        def isAdmin = user.hasRole(Role.ADMINISTRATOR);
+        def isAdmin = auth.RsUser.hasRole(user.username,Role.ADMINISTRATOR);
 
         if(isChannelType(channelType))
         {

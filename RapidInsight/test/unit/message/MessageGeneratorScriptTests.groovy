@@ -17,6 +17,7 @@ import search.SearchQuery
 import search.SearchQueryGroup
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -70,6 +71,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(rsEventClass, rsEventOperationsClass);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        UserConfigurationSpace.getInstance().initialize();
     }
 
     private void initializeScriptManager() {
@@ -180,7 +182,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def adminUserName = RsUser.RSADMIN;
 
         def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
-        def adminUser = RsUser.add(username: "testadmin", passwordHash:"aaa",groups:[adminGroup]);
+        def adminUser = RsUser.addUser(username: "testadmin", password:"aaa",groups:[adminGroup]);
         assertFalse(adminUser.hasErrors());
 
         def user=RsUser.add(username:"testuser",passwordHash:"bbb");
@@ -381,12 +383,9 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         SessionManager.getInstance().addSessionListener(new FilterSessionListener());
         def destinationType = EMAIL_TYPE
         def userRole = Role.add(name: Role.USER);
-        def userGroup = Group.add(name: "testusergroup", role: userRole, segmentFilter: "severity:2");
+        def userGroup = Group.addGroup(name: "testusergroup", role: userRole, segmentFilter: "severity:2");
         assertFalse(userGroup.hasErrors());
-        def user = RsUser.add(username: "testuser", passwordHash: "xxx");
-        assertFalse(user.hasErrors());
-
-        user.addRelation(groups: userGroup);
+        def user = RsUser.addUser(username: "testuser", password: "xxx",groups:[userGroup]);
         assertFalse(user.hasErrors());
         assertEquals(user.groups.size(), 1);
 

@@ -175,8 +175,7 @@ YAHOO.extend(YAHOO.rapidjs.component.FlexLineChart, YAHOO.rapidjs.component.Poll
 				var avalue = attributes.item(j).nodeValue;
 				mapArray[i][key] = avalue;
 			}
-			var date = new Date(parseInt(attributes.getNamedItem(this.dateAttribute).nodeValue));
-			mapArray[i][this.dateAttribute] = date.format('Y-n-d H:i')+"";
+			mapArray[i][this.dateAttribute] = parseInt(node.getAttribute(this.dateAttribute));
 			var avalue = parseInt(attributes.getNamedItem(this.valueAttribute).nodeValue);
 			mapArray[i][this.valueAttribute] = avalue;
 		}

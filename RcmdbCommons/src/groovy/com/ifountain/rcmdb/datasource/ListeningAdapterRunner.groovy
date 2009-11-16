@@ -4,6 +4,7 @@ import org.apache.log4j.Logger
 import com.ifountain.core.datasource.BaseListeningAdapter
 import script.CmdbScript
 import datasource.BaseListeningDatasource
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,6 +24,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
     String state = NOT_STARTED;
     ListeningAdapterObserver observer;
     private boolean stopCalled = false;
+    private boolean cleanUpFinished = false;
 
     public ListeningAdapterRunner(Long dsId)
     {
@@ -47,17 +49,16 @@ public class ListeningAdapterRunner implements AdapterStateProvider
 
     public void stop() {
         setStopCalled(true);
-        setState(STOPPING);
         logger.debug("Stopping listening adapter with datasource id ${datasourceId}");
         try
         {
             adapter.unsubscribe();
+        }
+        catch(Exception e){}
+        finally {
             adapter.deleteObservers();
+            adapter.removeStateProvider(this);
             adapter = null;
-        } catch (Exception e)
-        {
-            adapter = null;
-            setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
         }
 
     }
@@ -65,6 +66,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
         if (observer) {
             try {
                 observer.getScriptInstance().cleanUp();
+                cleanUpFinished = true;
                 def stateBeforeCleanup = getState();
                 if (stateBeforeCleanup != STOPPED_WITH_EXCEPTION) {
                     setState(AdapterStateProvider.STOPPED);
@@ -80,10 +82,11 @@ public class ListeningAdapterRunner implements AdapterStateProvider
 
     public void start(BaseListeningDatasource listeningDatasource) throws Exception {
         def scriptObject = null;
+        cleanUpFinished = false;
         setState(INITIALIZING);
         CmdbScript script = listeningDatasource.listeningScript;
         if (script && script.type == CmdbScript.LISTENING) {
-            logger=CmdbScript.getScriptLogger(script);
+            logger = CmdbScript.getScriptLogger(script);
             logger.debug("Starting listening adapter with datasource id ${datasourceId}");
 
             scriptObject = createScriptObject(script, listeningDatasource);
@@ -110,8 +113,9 @@ public class ListeningAdapterRunner implements AdapterStateProvider
                 setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
                 throw ListeningAdapterException.noAdapterDefined(datasourceId)
             }
-            observer = new ListeningAdapterObserver(scriptObject, scriptLogger,adapter.isConversionEnabledForUpdate());
+            observer = new ListeningAdapterObserver(scriptObject, scriptLogger, adapter.isConversionEnabledForUpdate());
             adapter.addObserver(observer);
+            adapter.addStateProvider(this);
         }
         else {
             setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
@@ -128,10 +132,8 @@ public class ListeningAdapterRunner implements AdapterStateProvider
         if (!isStopCalled()) {
             try {
                 adapter.subscribe();
-                setState(AdapterStateProvider.STARTED);
             }
             catch (Throwable e) {
-                setState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
                 throw ListeningAdapterException.couldNotSubscribed(datasourceId, e);
             }
         }
@@ -140,8 +142,11 @@ public class ListeningAdapterRunner implements AdapterStateProvider
 
     public void setState(String state) {
         synchronized (stateLock) {
-            this.state = state;
-            lastStateChangeTime = new Date();
+            //STOPPED state will be set after clean up successfully called
+            if (state != STOPPED || cleanUpFinished) {
+                this.state = state;
+                lastStateChangeTime = new Date();
+            }
         }
     }
 
@@ -162,7 +167,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
     {
         synchronized (stateLock)
         {
-            return getState() == INITIALIZED || getState() == INITIALIZING || getState() == STARTED;
+            return getState() == INITIALIZED || getState() == INITIALIZING || getState() == STARTED || getState() == STARTING;
         }
     }
 

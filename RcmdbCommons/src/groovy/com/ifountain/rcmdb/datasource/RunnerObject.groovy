@@ -2,6 +2,7 @@ package com.ifountain.rcmdb.datasource
 
 import datasource.BaseListeningDatasource
 import org.apache.log4j.Logger
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
 * Created by IntelliJ IDEA.

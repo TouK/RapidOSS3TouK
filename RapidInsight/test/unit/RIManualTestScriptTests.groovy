@@ -12,7 +12,7 @@ import datasource.RepositoryDatasource
 import connection.RepositoryConnection
 import datasource.RepositoryDatasourceOperations
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
-import com.ifountain.rcmdb.datasource.AdapterStateProvider
+import com.ifountain.core.datasource.AdapterStateProvider
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.test.util.DatasourceTestUtils
@@ -20,7 +20,6 @@ import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
 import datasource.BaseListeningDatasource
 import datasource.BaseListeningDatasourceOperations
 import com.ifountain.comp.test.util.CommonTestUtils
-
 
 /**
 * Created by IntelliJ IDEA.

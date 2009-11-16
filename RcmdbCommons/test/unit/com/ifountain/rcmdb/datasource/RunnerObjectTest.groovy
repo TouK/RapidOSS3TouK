@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.test.util.LoggerForTest
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
  * Created by IntelliJ IDEA.

@@ -34,6 +34,7 @@ public class MockBaseListeningAdapter extends BaseListeningAdapter {
 
     public Exception subscribeException;
     public RuntimeException unSubscribeException;
+    public Object stateWaitLock;
     public MockBaseListeningAdapter(String connectionName, long reconnectInterval) {
         super(connectionName, reconnectInterval, TestLogUtils.log);
     }
@@ -44,12 +45,25 @@ public class MockBaseListeningAdapter extends BaseListeningAdapter {
 
     @Override
     protected void _subscribe() throws Exception {
+        if(stateWaitLock != null){
+            synchronized (stateWaitLock){
+                stateWaitLock.wait();
+            }
+        }
         if(subscribeException != null)
         throw subscribeException;
     }
 
     @Override
     protected void _unsubscribe() {
+        if(stateWaitLock != null){
+            synchronized (stateWaitLock){
+                try{
+                    stateWaitLock.wait();    
+                }
+                catch(Exception e){}
+            }
+        }
         if(unSubscribeException != null)
         throw unSubscribeException;
     }

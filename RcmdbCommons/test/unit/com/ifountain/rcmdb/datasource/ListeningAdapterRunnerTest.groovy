@@ -13,6 +13,7 @@ import script.CmdbScript
 import script.CmdbScriptOperations
 import com.ifountain.rcmdb.converter.datasource.DatasourceConversionUtils
 import com.ifountain.rcmdb.test.util.LoggerForTest
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
 * Created by IntelliJ IDEA.
@@ -456,7 +457,6 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
         {
             assertEquals(ListeningAdapterException.couldNotSubscribed(runner.datasourceId, subscribeException).getMessage(), e.getMessage());
         }
-        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, runner.getState());
     }
 
     public void testStateMechanism()
@@ -485,7 +485,7 @@ class ListeningAdapterRunnerTest extends RapidCmdbWithCompassTestCase {
             stateWaitLock.notify();
         }
         Thread.sleep(300)
-        assertEquals(AdapterStateProvider.INITIALIZED, runner.getState());
+        assertEquals(AdapterStateProvider.STARTING, runner.getState());
 
         //subscribe should pass
         synchronized(stateWaitLock){

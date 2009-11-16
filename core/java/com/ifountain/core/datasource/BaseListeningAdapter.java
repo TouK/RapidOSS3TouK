@@ -22,10 +22,7 @@
  */
 package com.ifountain.core.datasource;
 
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 
@@ -46,8 +43,10 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     private Object subscriptionLock = new Object();
     private Object isUpdateProcessingLock = new Object();
     private Object updateWaitLock = new Object();
+    private Object stateLock = new Object();
     protected ActionExecutor executorAdapter;
     private boolean isUpdateProcessing = false;
+    private List stateProviders = new ArrayList();
 
     public BaseListeningAdapter(String connectionName, long reconnectInterval, Logger logger) {
         this.connectionName = connectionName;
@@ -87,8 +86,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         }
     }
 
-    public boolean isConversionEnabledForUpdate()
-    {
+    public boolean isConversionEnabledForUpdate() {
         return true;
     }
 
@@ -113,16 +111,32 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
     }
 
     public void subscribe() throws Exception {
+        updateState(AdapterStateProvider.STARTING);
         synchronized (subscriptionLock) {
             this.stoppedByUser = false;
         }
-        subscribeInternally();
+        try {
+            subscribeInternally();
+            updateState(AdapterStateProvider.STARTED);
+        }
+        catch (Exception e) {
+            updateState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+            throw e;
+        }
     }
 
     public void unsubscribe() throws Exception {
+        updateState(AdapterStateProvider.STOPPING);
         synchronized (subscriptionLock) {
             this.stoppedByUser = true;
-            unsubscribeInternally(true);
+            try {
+                unsubscribeInternally(true);
+                updateState(AdapterStateProvider.STOPPED);
+            }
+            catch (Exception e) {
+                updateState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+                throw e;
+            }
         }
     }
 
@@ -144,8 +158,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                 }
                 finally {
                     isSubscribed = false;
-                    if(shouldWaitProcessingUpdates)
-                    {
+                    if (shouldWaitProcessingUpdates) {
                         synchronized (updateWaitLock) {
                             if (isUpdateProcessing()) {
                                 updateWaitLock.wait();
@@ -166,7 +179,29 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
 
     protected void disconnectDetected() throws Exception {
         unsubscribeInternally(false);
-        subscribeInternally();
+        if (reconnectInterval <= 0) {
+            logger.warn("Disconnect detected with no reconnection. Will exit.");
+            updateState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
+        } else {
+            subscribeInternally();
+        }
+    }
+
+    public void addStateProvider(AdapterStateProvider sp) {
+        stateProviders.add(sp);
+    }
+
+    public void removeStateProvider(AdapterStateProvider sp) {
+        stateProviders.remove(sp);
+    }
+
+    protected void updateState(String state) {
+        synchronized (stateLock) {
+            for (int i = 0; i < stateProviders.size(); i++) {
+                AdapterStateProvider sp = (AdapterStateProvider) stateProviders.get(i);
+                sp.setState(state);
+            }
+        }
     }
 
     public boolean isSubscribed() {

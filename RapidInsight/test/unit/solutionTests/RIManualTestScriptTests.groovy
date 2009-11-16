@@ -14,7 +14,7 @@ import datasource.RepositoryDatasource
 import connection.RepositoryConnection
 import datasource.RepositoryDatasourceOperations
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
-import com.ifountain.rcmdb.datasource.AdapterStateProvider
+import com.ifountain.core.datasource.AdapterStateProvider
 import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.test.util.DatasourceTestUtils
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger
 import com.ifountain.rcmdb.datasource.RunnerObject
 import com.ifountain.rcmdb.datasource.ListeningAdapterRunner
 import com.ifountain.rcmdb.datasource.AdapterRunnerThread
-
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
 * Created by IntelliJ IDEA.

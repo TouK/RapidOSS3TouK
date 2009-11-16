@@ -1,4 +1,4 @@
-package com.ifountain.rcmdb.datasource;
+package com.ifountain.core.datasource;
 
 /**
  * Created by IntelliJ IDEA.
@@ -11,6 +11,7 @@ public interface AdapterStateProvider {
     public static final String NOT_STARTED = "NotStarted";
     public static final String INITIALIZING = "Initializing";
     public static final String INITIALIZED = "Initialized";
+    public static final String STARTING = "Starting";
     public static final String STARTED = "Started";
     public static final String STOPPING = "Stopping";
     public static final String STOPPED_WITH_EXCEPTION = "StoppedWithException";

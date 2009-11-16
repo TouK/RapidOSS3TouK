@@ -10,7 +10,7 @@ import connection.RepositoryConnection
 import script.CmdbScript
 import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.util.ClosureWaitAction
-import com.ifountain.rcmdb.datasource.AdapterStateProvider
+import com.ifountain.core.datasource.AdapterStateProvider
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
@@ -29,6 +29,7 @@ import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
 import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.datasource.RunnerObject
 import com.ifountain.rcmdb.datasource.ListeningAdapterRunner
+import com.ifountain.core.datasource.AdapterStateProvider
 
 /**
 * Created by IntelliJ IDEA.

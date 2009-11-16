@@ -202,6 +202,136 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertEquals(0, argList.size());
     }
 
+    public void testStateMechanism() throws Exception {
+        Object stateWaitLock = new Object();
+        listeningAdapter.stateWaitLock = stateWaitLock;
+        MockStateProvider sp = new MockStateProvider();
+        listeningAdapter.addStateProvider(sp);
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.subscribe();
+                }
+                catch (Exception e) {
+                }
+            }
+        };
+        t.start();
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STARTING, sp.getState());
+
+        synchronized (stateWaitLock) {
+            stateWaitLock.notify();
+        }
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STARTED, sp.getState());
+
+        t = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.unsubscribe();
+                }
+                catch (Exception e) {
+                }
+            }
+        };
+        t.start();
+
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STOPPING, sp.getState());
+
+        synchronized (stateWaitLock) {
+            stateWaitLock.notify();
+        }
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STOPPED, sp.getState());
+
+    }
+    public void testStateMechanismWithExceptionalCases() throws Exception {
+        Object stateWaitLock = new Object();
+        listeningAdapter.stateWaitLock = stateWaitLock;
+        listeningAdapter.subscribeException = new Exception("");
+        listeningAdapter.unSubscribeException = new RuntimeException("");
+        MockStateProvider sp = new MockStateProvider();
+        listeningAdapter.addStateProvider(sp);
+        Thread t = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.subscribe();
+                }
+                catch (Exception e) {
+                }
+            }
+        };
+        t.start();
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STARTING, sp.getState());
+
+        synchronized (stateWaitLock) {
+            stateWaitLock.notify();
+        }
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, sp.getState());
+
+        listeningAdapter.subscribeException = null;
+        t = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.subscribe();
+                }
+                catch (Exception e) {
+                }
+            }
+        };
+        t.start();
+        Thread.sleep(200);
+        synchronized (stateWaitLock) {
+            stateWaitLock.notify();
+        }
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STARTED, sp.getState());
+
+        t = new Thread() {
+            public void run() {
+                try {
+                    listeningAdapter.unsubscribe();
+                }
+                catch (Exception e) {
+                }
+            }
+        };
+        t.start();
+
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STOPPING, sp.getState());
+
+        synchronized (stateWaitLock) {
+            stateWaitLock.notify();
+        }
+        Thread.sleep(200);
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, sp.getState());
+
+    }
+
+    public void testDisconnectDetectionWithReconnectIntervalZero() throws Exception {
+        listeningAdapter = new MockBaseListeningAdapter(connectionName, 60);
+        MockStateProvider sp = new MockStateProvider();
+        listeningAdapter.addStateProvider(sp);
+        listeningAdapter.subscribe();
+        assertEquals(AdapterStateProvider.STARTED, sp.getState());
+        listeningAdapter.disconnectDetected();
+        assertEquals(AdapterStateProvider.STARTED, sp.getState());
+        listeningAdapter.unsubscribe();
+
+        listeningAdapter = new MockBaseListeningAdapter(connectionName);
+        sp = new MockStateProvider();
+        listeningAdapter.addStateProvider(sp);
+        listeningAdapter.subscribe();
+        assertEquals(AdapterStateProvider.STARTED, sp.getState());
+        listeningAdapter.disconnectDetected();
+        assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, sp.getState());
+    }
+
     public void testUnsubscribeWaitsToUpdateFinishItsJobEvenIfUnsubscribeThrowsRuntimeException() throws Exception {
         _testUnsubscribeWaitsToUpdateFinishItsJob(true);
     }
@@ -220,10 +350,9 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
 
             @Override
             public Object _update(Observable o, Object arg) {
-                try{
+                try {
                     disconnectDetected();
-                }catch(Exception e)
-                {
+                } catch (Exception e) {
                 }
                 return null;
             }
@@ -373,9 +502,9 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
             assertTrue(updateThread.isAlive());
         }
         finally {
-           synchronized (updateWaitLock){
-               updateWaitLock.notifyAll();
-           }
+            synchronized (updateWaitLock) {
+                updateWaitLock.notifyAll();
+            }
         }
 
     }
@@ -399,6 +528,18 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
 
         public void setChangeArg(Object changeArg) {
             this.changeArg = changeArg;
+        }
+    }
+
+    class MockStateProvider implements AdapterStateProvider {
+        private String st = NOT_STARTED;
+
+        public void setState(String state) {
+            st = state;
+        }
+
+        public String getState() {
+            return st;
         }
     }
 

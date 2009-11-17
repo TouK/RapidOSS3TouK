@@ -24,7 +24,7 @@ public class ListeningAdapterRunner implements AdapterStateProvider
     String state = NOT_STARTED;
     ListeningAdapterObserver observer;
     private boolean stopCalled = false;
-    private boolean cleanUpFinished = false;
+    protected boolean cleanUpFinished = false;
 
     public ListeningAdapterRunner(Long dsId)
     {
@@ -50,17 +50,18 @@ public class ListeningAdapterRunner implements AdapterStateProvider
     public void stop() {
         setStopCalled(true);
         logger.debug("Stopping listening adapter with datasource id ${datasourceId}");
-        try
-        {
-            adapter.unsubscribe();
+        if (adapter != null) {
+            try
+            {
+                adapter.unsubscribe();
+            }
+            catch (Exception e) {}
+            finally {
+                adapter.deleteObservers();
+                adapter.removeStateProvider(this);
+                adapter = null;
+            }
         }
-        catch(Exception e){}
-        finally {
-            adapter.deleteObservers();
-            adapter.removeStateProvider(this);
-            adapter = null;
-        }
-
     }
     public void cleanUp() {
         if (observer) {

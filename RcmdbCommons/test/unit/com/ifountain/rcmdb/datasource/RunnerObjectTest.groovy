@@ -111,6 +111,7 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
             rObj.stop();
         }
         catch (e) {
+            e.printStackTrace()
             fail("Should not throw exception");
         }
 
@@ -142,7 +143,7 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
         Thread.sleep(300);
         rObj.stop();
         assertEquals(AdapterStateProvider.STOPPED, rObj.getState());
-        assertTrue(runner.cleanUpCalled)
+        assertTrue(runner.cleanUpFinished)
     }
 
     public void testStopThrowsExceptionIfAdapterIsNotInOneOfStartStates()
@@ -234,16 +235,16 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
 class MockListeningAdapterRunner extends ListeningAdapterRunner {
     ListeningAdapterException startException;
     String stateWillBeSet = AdapterStateProvider.NOT_STARTED;
-    boolean cleanUpCalled = false;
     public MockListeningAdapterRunner(Long datasourceId) {
         super(datasourceId);
     }
     public void stop() {
-        setState(AdapterStateProvider.STOPPED)
+        setState(AdapterStateProvider.STOPPING)
     }
 
     public void cleanUp() {
-        cleanUpCalled = true;
+        cleanUpFinished = true;
+        setState(AdapterStateProvider.STOPPED)
     }
 
 

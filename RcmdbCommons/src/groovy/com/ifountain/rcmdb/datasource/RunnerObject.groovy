@@ -53,7 +53,6 @@ class RunnerObject {
                 {
                     throw ListeningAdapterException.adapterAlreadyStoppedException(datasourceId);
                 }
-                runner.setState(AdapterStateProvider.STOPPING);
             }
             runner.stop();
             runnerThread.join();

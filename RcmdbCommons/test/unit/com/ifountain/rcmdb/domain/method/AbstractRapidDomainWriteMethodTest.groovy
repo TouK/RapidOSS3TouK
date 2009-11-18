@@ -14,6 +14,9 @@ import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import junit.framework.TestSuite
 import junit.framework.Assert
 import org.apache.commons.transaction.locking.LockException
+import com.ifountain.session.SessionManager
+import com.ifountain.session.Session
+import com.ifountain.compass.search.FilterManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,7 +36,60 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
+    public void testWriteMethodReturnsBackToTheirPreviousStateEvenIfExceptionIsThrown()
+    {
+        Class modelClass = createModels()[0];
+        AbstractRapidDomainWriteMethodImpl impl = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        def isClosureExecuted = false;
+        impl.lockKeyClosure = {domainObject, args->
+            return "key"
+        }
+        Exception expectedException = new Exception("this is a exception")
+        impl.closureToBeInvoked = {domainObject, arguments->
+            isClosureExecuted = true;
+            Session session = SessionManager.getInstance().getSession();
+            assertFalse(FilterManager.isFiltersEnabled());
+            throw expectedException;
+        }
+        try{
+            impl.invoke (modelClass, null);
+        }catch(Exception e)
+        {
+            assertSame (expectedException, e)
+        }
+        assertTrue (isClosureExecuted);
+        assertTrue(FilterManager.isFiltersEnabled());
+    }
+    public void testWriteMethodDisablesSearchFilters()
+    {
+        Class modelClass = createModels()[0];
+        AbstractRapidDomainWriteMethodImpl impl = new AbstractRapidDomainWriteMethodImpl(modelClass.metaClass);
+        def isClosureExecuted = false;
+        impl.lockKeyClosure = {domainObject, args->
+            return "key"            
+        }
+        impl.closureToBeInvoked = {domainObject, arguments->
+            isClosureExecuted = true;
+            Session session = SessionManager.getInstance().getSession();
+            assertFalse(FilterManager.isFiltersEnabled());
+        }
+        impl.invoke (modelClass, null);
+        assertTrue (isClosureExecuted);
+        assertTrue(FilterManager.isFiltersEnabled());
 
+        //after finishing its job write methdo should return filter state to previous state
+        isClosureExecuted = false;
+        FilterManager.setFiltersEnabled(false);
+        impl.closureToBeInvoked = {domainObject, arguments->
+            isClosureExecuted = true;
+            Session session = SessionManager.getInstance().getSession();
+            assertFalse(FilterManager.isFiltersEnabled());
+        }
+        impl.invoke (modelClass, null);
+        assertTrue (isClosureExecuted);
+        assertFalse(FilterManager.isFiltersEnabled());
+
+    }
     public void testSynchronization()
     {
         _testSynchronization(AbstractRapidDomainWriteMethodImpl);

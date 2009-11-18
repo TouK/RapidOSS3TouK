@@ -19,6 +19,7 @@
 package com.ifountain.compass.search;
 
 import com.ifountain.session.SessionManager;
+import com.ifountain.session.Session;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,13 +35,31 @@ import java.util.List;
  */
 public class FilterManager {
     public static String SESSION_FILTER_KEY = "searchfilters";
+    public static String IS_FILTERS_ENABLED = "isFiltersEnabled";
     public static String CLASS_FILTERS = "classFilters";
     public static String GROUP_FILTERS = "groupFilters";
     public static final String DEFAULT_FILTER = "rsOwner:p";
 
+    public static void setFiltersEnabled(boolean isEnabled)
+    {
+        Session session = SessionManager.getInstance().getSession();
+        session.put(IS_FILTERS_ENABLED, isEnabled);
+    }
+
+    public static boolean isFiltersEnabled()
+    {
+        Session session = SessionManager.getInstance().getSession();
+        return isFiltersEnabled(session);
+    }
+    public static boolean isFiltersEnabled(Session session)
+    {
+        Object isFiltersEnabled = session.get(IS_FILTERS_ENABLED);
+        return !Boolean.FALSE.equals(isFiltersEnabled);
+    }
     public static String getQuery(String query, String className) {
-        Map searchFilters = (Map) SessionManager.getInstance().getSession().get(SESSION_FILTER_KEY);
-        if (searchFilters == null) return query;
+        Session session = SessionManager.getInstance().getSession();
+        Map searchFilters = (Map) session.get(SESSION_FILTER_KEY);
+        if (searchFilters == null || !isFiltersEnabled(session)) return query;
         List filterList = new ArrayList();
         List groupFilters = (List) searchFilters.get(GROUP_FILTERS);
         filterList.addAll(groupFilters);

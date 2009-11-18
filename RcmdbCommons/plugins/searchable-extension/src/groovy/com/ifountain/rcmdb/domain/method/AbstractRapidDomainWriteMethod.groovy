@@ -3,6 +3,7 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.rcmdb.domain.DomainMethodExecutor
 import com.ifountain.rcmdb.domain.DomainMethodExecutorAction
+import com.ifountain.compass.search.FilterManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,9 +20,15 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
 
     public final Object invoke(Object domainObject, Object[] argumentsp) {
         String lockName = getLockName(domainObject, argumentsp);
+        def isFiltersEnabledBeforeExecutingThisMethod = FilterManager.isFiltersEnabled();
         def executionClosure = {
-            def res = _invoke(domainObject, argumentsp);
-            return res;
+            FilterManager.setFiltersEnabled (false);
+            try{
+                def res = _invoke(domainObject, argumentsp);
+                return res;
+            }finally{
+                FilterManager.setFiltersEnabled (isFiltersEnabledBeforeExecutingThisMethod);
+            }
         }
         def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
         return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)

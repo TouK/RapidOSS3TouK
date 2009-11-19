@@ -1,0 +1,23 @@
+<plugin name='log-manager' version='0.1'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/LogManager+Plugin</documentation>
+  <resources>
+    <resource>BootStrap</resource>
+    <resource>DataSource</resource>
+    <resource>LogManagerConfig</resource>
+    <resource>UrlMappings</resource>
+    <resource>logmanager.ViewLogController</resource>
+    <resource>logmanager.ConsoleAppender</resource>
+    <resource>logmanager.DailyRollingFileAppender</resource>
+    <resource>logmanager.DateLayout</resource>
+    <resource>logmanager.Layout</resource>
+    <resource>logmanager.Logger</resource>
+    <resource>logmanager.LoggerAppender</resource>
+    <resource>logmanager.PatternLayout</resource>
+    <resource>logmanager.RollingFileAppender</resource>
+    <resource>LogPersisterService</resource>
+  </resources>
+</plugin>

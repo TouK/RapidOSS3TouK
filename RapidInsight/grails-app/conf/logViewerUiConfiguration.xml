@@ -1,0 +1,27 @@
+<UiConfig>
+  <UiElement id="1" designer_name="Web Pages" designerType="WebPages">
+    <UiElement id="1127" canBeDeleted="true" designer_name="logViewer" name="logViewer" designerType="WebPage">
+      <UiElement id="1128" designer_name="Tabs" designerType="Tabs">
+        <UiElement id="1129" title="LogViewer" canBeDeleted="true" designer_item_tab="1129" designerType="Tab" name="logViewer" designer_name="logViewer">
+          <UiElement id="1130" designer_item_tab="1129" designer_name="Components" designerType="Components">
+            <UiElement id="1131" canBeDeleted="true" title="File List" contentPath="File" designer_item_tab="1129" rootTag="Files" name="fileListTree" designerType="TreeGrid" keyAttribute="name" pollingInterval="30" designer_name="fileListTree" url="viewLog/listFiles">
+              <UiElement id="1132" designer_item_tab="1129" designer_name="Columns" designerType="TreeGridColumns">
+                <UiElement attributeName="name" id="1133" colLabel="Path" canBeDeleted="true" designer_item_tab="1129" width="200" designerType="TreeGridColumn" columnIndex="0" designer_name="name">
+                  <UiElement id="1134" designer_item_tab="1129" designer_name="Images" designerType="TreeGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement id="1135" designer_item_tab="1129" designer_name="RootImages" designerType="TreeGridRootImages"/>
+              <UiElement id="1136" designer_item_tab="1129" designer_name="MenuItems" designerType="TreeGridMenuItems"/>
+            </UiElement>
+          </UiElement>
+          <UiElement id="1137" canBeDeleted="true" designer_name="Layout" designer_item_tab="1129" designerType="Layout">
+            <UiElement id="1138" contentFile="logContent.gsp" component="" designer_item_tab="1129" scroll="false" designerType="CenterUnit" designer_name="Center"/>
+            <UiElement id="1139" canBeDeleted="true" designer_item_tab="1129" component="fileListTree" designerType="LeftUnit" width="200" designer_name="Left" resize="true"/>
+          </UiElement>
+          <UiElement id="1140" designer_item_tab="1129" designer_name="Dialogs" designerType="Dialogs"/>
+          <UiElement id="1141" designer_item_tab="1129" designer_name="Actions" designerType="Actions"/>
+        </UiElement>
+      </UiElement>
+    </UiElement>
+  </UiElement>
+</UiConfig>

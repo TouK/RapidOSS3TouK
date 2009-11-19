@@ -1,10 +1,14 @@
 <script type="text/javascript">
 YAHOO.util.Event.onDOMReady(function() {
 <%
-    layoutPrinter = {layoutConfiguration, parentElement->
+    layoutPrinter = {layoutConfiguration, parentLayoutUnitName->
+        if(parentLayoutUnitName != null){
 %>
-
-    var layout${layoutConfiguration.attributes.id} = new YAHOO.widget.Layout(${parentElement!=null?parentElement+",":""} {
+    var ${parentLayoutUnitName}Wrapper = ${parentLayoutUnitName}.get('wrap');
+<%
+        }
+%>        
+    var layout${layoutConfiguration.attributes.id} = new YAHOO.widget.Layout(${parentLayoutUnitName!=null?parentLayoutUnitName+"Wrapper,":""} {
         <%
             if(layoutConfiguration.attributes.parentLayout)
             {
@@ -29,16 +33,19 @@ YAHOO.util.Event.onDOMReady(function() {
         %>
         ]
     });
-    <g:if test="${parentElement == null}">
+    <g:if test="${parentLayoutUnitName == null}">
        window.yuiLayout = layout${layoutConfiguration.attributes.id};
     </g:if>
+    <g:else>
+        ${parentLayoutUnitName}.childLayout = layout${layoutConfiguration.attributes.id}; 
+    </g:else>
     layout${layoutConfiguration.attributes.id}.on('render', function() {
     <%
         units.each{layoutunit->
             def unitPosition = layoutunit.attributes.position;
             def elName = "layoutUnit${layoutConfiguration.attributes.id}${layoutunit.attributes.position}";
     %>
-        var ${elName} = layout${layoutConfiguration.attributes.id}.getUnitByPosition('${unitPosition}').get('wrap');
+        var ${elName} = layout${layoutConfiguration.attributes.id}.getUnitByPosition('${unitPosition}');
     <%
             if(layoutunit.childLayout)
             {

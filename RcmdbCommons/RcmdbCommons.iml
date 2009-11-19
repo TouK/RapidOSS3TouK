@@ -28,6 +28,8 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/grails-app/taglib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/log-manager-0.1/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/log-manager-0.1/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/quartz-0.2/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1/src" isTestSource="false" />

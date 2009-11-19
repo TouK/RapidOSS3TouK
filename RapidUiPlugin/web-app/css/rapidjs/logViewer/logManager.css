@@ -1,0 +1,62 @@
+.logs{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+.logViewerLastNLinesBtn
+{
+    
+}
+.logViewerHeader
+{
+
+}
+.logViewerBody
+{
+    padding-left:10px;
+}
+.logViewerLastNLines
+{
+    width:40px;
+    height:20px;
+}
+.logLine{
+    padding:0px;
+    margin:0px;
+    white-space:pre;
+}
+.logContainer {
+    white-space:nowrap;
+    overflow:scroll;
+}
+.messageArea {
+    border-width:1px;
+    border-color:black;
+}
+.incompleteLogLine{
+    padding:0px;
+    margin:0px;
+}
+.logViewerProcessing{
+    z-index:1000;
+    width:48px;
+    height:48px;
+    background-image:url("../../../images/rapidjs/component/logViewer/blue_anime.gif")
+}
+.logViewerFileName
+{
+    padding-right:10px;
+    font-size:18px;
+    white-space:nowrap;
+
+}
+.logViewerSpinner{
+    width:15px;
+    height:15px;
+    background-image:url("../../../images/rapidjs/component/logViewer/spinner.gif");
+    background-repeat:no-repeat;
+}
+.logViewerSpinnerWrapper{
+    width:15px;
+    height:15px;
+}

@@ -80,7 +80,7 @@ class UiLayoutUnit extends UiElmnt {
 
     def getContentFileDivId()
     {
-        return "loyutUnit${id}${DesignerTemplateUtils.getContentDivId(contentFile)}"
+        return "loyutUnit${_designerKey}${DesignerTemplateUtils.getContentDivId(contentFile)}"
     }
 
     public static List getLayoutUnitHavingContentFile(UiLayout layout)

@@ -60,6 +60,8 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'Timelineext.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'TimelineWindow.js')}"></script>
 
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/logViewer', file:'LogViewer.js')}"></script>
+
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeNode.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeHeaderCell.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/treegrid', file:'TreeGridView.js')}"></script>
@@ -82,6 +84,7 @@
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'common.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'dialog.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs', file:'form.css')}"/>
+<link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/logViewer', file:'logManager.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'search.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchlist.css')}"/>
 <link rel="stylesheet" type="text/css" href="${createLinkTo(dir:'css/rapidjs/search', file:'searchgrid.css')}"/>

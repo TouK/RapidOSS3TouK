@@ -1,3 +1,29 @@
+<style>
+	.warnLogLevel{
+		color:red;
+        font-weight:bold;
+    }
+	.fatalLogLevel{
+		color:red;
+        font-weight:bold;
+    }
+	.debugLogLevel{
+		color:yellow;
+        font-weight:bold;
+    }
+	.infoLogLevel{
+		color:green;
+        font-weight:bold;
+    }
+	.errorLogLevel{
+		color:red;
+        font-weight:bold;
+    }
+    .exceptionLogLine{
+        color:red;
+        font-weight:bold;
+    }
+</style>
 <div id="logContent">
 
 </div>

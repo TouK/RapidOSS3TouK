@@ -28,7 +28,12 @@ class ViewLogController {
         {
             if (template == null) {
                 SimpleTemplateEngine engine = new SimpleTemplateEngine();
-                template = engine.createTemplate(new File("${System.getProperty("base.dir")}/grails-app/templates/log/logoutput.gsp"));
+                FileReader reader = new FileReader(new File("${System.getProperty("base.dir")}/grails-app/templates/log/logoutput.gsp"));
+                try{
+                    template = engine.createTemplate(reader);
+                }finally {
+                    reader.close();
+                }
             }
             return template;
         }
@@ -83,13 +88,8 @@ class ViewLogController {
         }
         catch(Exception e)
         {
-            render(contentType: "text/xml")
-            {
-                Errors()
-                {
-                    Error(message:"Log file exception. Reason:${e.getMessage()}");    
-                }
-            }
+            addError("log.file.exception", [e.toString()]);
+            render(text: errorsToXml(), contentType: "text/xml")
         }
     }
 
@@ -97,9 +97,17 @@ class ViewLogController {
         synchronized (lock)
         {
             template = null;
+            try{
+                getLogOutputTemplate();
+                render(contentType: "text/xml"){
+                    Successfull("Log template reloaded successfully");
+                }
+            }catch(Exception e)
+            {
+                addError("log.template.reload.exception", [e.toString()]);
+                render(text: errorsToXml(), contentType: "text/xml")
+            }
         }
-        render(contentType: "text/xml"){
-            Successfull("Log template reloaded successfully");
-        }
+
     }
 }

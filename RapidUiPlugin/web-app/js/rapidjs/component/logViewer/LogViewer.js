@@ -36,6 +36,22 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.LogViewer, YAHOO.rapidjs.component.Pol
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.LoadingTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.SettingsTool(document.body, this));
         this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ErrorTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ClearLogsTool(document.body, this));
+        this.toolbar.addTool(new YAHOO.rapidjs.component.tool.ReloadLog(document.body, this));
+    },
+    clearLogs: function()
+    {
+        if (this.activeLogManager != null)
+        {
+            this.activeLogManager.clear();
+        }
+    },
+    reloadLog: function()
+    {
+        if (this.activeLogManager != null)
+        {
+            this.activeLogManager.reload();
+        }
     },
     viewFile: function(fileName)
     {
@@ -231,6 +247,14 @@ YAHOO.rapidjs.component.LogManager.prototype =
     {
         this.logOutputElement.innerHTML = "";
     },
+    reload: function ()
+    {
+        this.viewer.abort();
+        this.offset = 0;
+        this.logOutputElement.innerHTML = "";
+        this.requestLogLines();
+
+    },
     resize: function (width, height)
     {
         var headerHeight = this.header.offsetHeight;
@@ -239,5 +263,26 @@ YAHOO.rapidjs.component.LogManager.prototype =
         YAHOO.util.Dom.setStyle(this.logContainer, "width", ''+width+"px");
     }
 }
+
+YAHOO.rapidjs.component.tool.ClearLogsTool = function(container, component) {
+    var config = {tooltip:"Clear Logs", className:"log-clear-tool"};
+    YAHOO.rapidjs.component.tool.ClearLogsTool.superclass.constructor.call(this, container, component,config);
+};
+
+YAHOO.lang.extend(YAHOO.rapidjs.component.tool.ClearLogsTool, YAHOO.rapidjs.component.tool.BasicTool, {
+    performAction : function() {
+        this.component.clearLogs();
+    }
+});
+YAHOO.rapidjs.component.tool.ReloadLog = function(container, component) {
+    var config = {tooltip:"Reload Log", className:"log-reload-tool"};
+    YAHOO.rapidjs.component.tool.ReloadLog.superclass.constructor.call(this, container, component,config);
+};
+
+YAHOO.lang.extend(YAHOO.rapidjs.component.tool.ReloadLog, YAHOO.rapidjs.component.tool.BasicTool, {
+    performAction : function() {
+        this.component.reloadLog();
+    }
+});
 
 

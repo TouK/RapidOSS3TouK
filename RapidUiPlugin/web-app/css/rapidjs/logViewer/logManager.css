@@ -15,6 +15,14 @@
 {
     padding-left:10px;
 }
+.log-clear-tool
+{
+    background-image:url("../../../images/rapidjs/component/logViewer/eraser.png")    
+}
+.log-reload-tool
+{
+    background-image:url("../../../images/rapidjs/component/logViewer/page_white_swoosh.png")    
+}
 .logViewerLastNLines
 {
     width:40px;

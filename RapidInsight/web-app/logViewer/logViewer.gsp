@@ -25,10 +25,12 @@
 
 
 
-    <div id="loyutUnit370web-app.logContent.gsp">
+    <div id="loyutUnit1web-app.logContent.gsp">
         <rui:include template="logContent.gsp" model="${binding.variables}"></rui:include>
     </div>
 
+
+       <rui:include template="pageContents/_logViewer.gsp" model="${binding.variables}"></rui:include>
 
 
 <rui:layout id="layout">
@@ -37,9 +39,9 @@
         
 
 
-<rui:innerLayout id="369">
+<rui:innerLayout id="0">
     
-    <rui:layoutUnit position='center' useShim='false' gutter='0px' contentFile='logContent.gsp' scroll='false' body='loyutUnit370web-app.logContent.gsp'>
+    <rui:layoutUnit position='center' useShim='false' gutter='0px' contentFile='logContent.gsp' scroll='false' body='loyutUnit1web-app.logContent.gsp'>
         
     </rui:layoutUnit>
     

@@ -27,15 +27,22 @@ class ViewLogController {
         synchronized (lock)
         {
             if (template == null) {
-                SimpleTemplateEngine engine = new SimpleTemplateEngine();
-                FileReader reader = new FileReader(new File("${System.getProperty("base.dir")}/grails-app/templates/log/logoutput.gsp"));
-                try{
-                    template = engine.createTemplate(reader);
-                }finally {
-                    reader.close();
-                }
+                template = createLogOutputTemplate();
             }
             return template;
+        }
+    }
+
+    private Template createLogOutputTemplate() {
+        synchronized (lock)
+        {
+            SimpleTemplateEngine engine = new SimpleTemplateEngine();
+            FileReader reader = new FileReader(new File("${System.getProperty("base.dir")}/grails-app/templates/log/logoutput.gsp"));
+            try{
+                return engine.createTemplate(reader);
+            }finally {
+                reader.close();
+            }
         }
     }
 
@@ -96,9 +103,8 @@ class ViewLogController {
     def reloadTemplate = {
         synchronized (lock)
         {
-            template = null;
             try{
-                getLogOutputTemplate();
+                template = createLogOutputTemplate();
                 render(contentType: "text/xml"){
                     Successfull("Log template reloaded successfully");
                 }

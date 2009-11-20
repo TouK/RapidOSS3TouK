@@ -555,7 +555,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
                     except = ["prop2"]
                 }
                 Long id;
-                Long version;
+                Long version = 0;
                 Date rsInsertedAt = new Date(0);
                 Date rsUpdatedAt  = new Date(0);
                 String prop1;
@@ -572,7 +572,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
         def pluginsToLoad = [DomainClassGrailsPlugin, gcl.loadClass("SearchableGrailsPlugin"), gcl.loadClass("SearchableExtensionGrailsPlugin"), gcl.loadClass("RapidDomainClassGrailsPlugin")];
         initialize(classesTobeLoaded, pluginsToLoad)
 
-        def instance = loadedDomainClass.add(prop1: "prop1Value", version: 4)
+        def instance = loadedDomainClass.add(prop1: "prop1Value")
         instance.prop1 = "updatedValue"
         def reloadedInstance = loadedDomainClass.get(id: instance.id)
         assertEquals("updatedValue", reloadedInstance.prop1);

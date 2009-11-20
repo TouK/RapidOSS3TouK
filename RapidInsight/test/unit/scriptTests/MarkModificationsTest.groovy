@@ -20,7 +20,7 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
     File versionControlDirectory;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
-
+        gcl.addClasspath (new File(getWorkspaceDirectory(), "RapidModules/RapidInsight/operations").path);
         initializeScriptManager ("/RapidModules/RapidInsight/scripts");
         addScript (scriptName);
         baseDir = "../testOutput"
@@ -83,7 +83,7 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
 
         def changeInfoFile = new File(changeSetDir, "changes.xml");
         assertEquals (result, changeInfoFile.getText());
-
+        Thread.sleep (300);
         //rerun script with comment parameter
         FileUtils.deleteDirectory (changeSetDir);
         def comment = "this is a comment"

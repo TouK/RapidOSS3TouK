@@ -21,7 +21,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         System.setProperty ("base.dir", "../testOutput/RapidSuite")
         def gcl = new GroovyClassLoader();
         gcl.addClasspath (new File(getWorkspaceDirectory(), "RapidModules/RapidInsight/operations").path);
-        utility = VersionControlUtilityTest.classLoader.loadClass("VersionControlUtility").newInstance();
+        utility = gcl.loadClass("VersionControlUtility").newInstance();
         sourceDirFile = utility.sourceDir
         sourceDir= sourceDirFile.path;
         versionControlDirectory = utility.versionControlDirectory

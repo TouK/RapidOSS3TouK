@@ -24,13 +24,13 @@ class DomainClassDefaultPropertyValueHolder {
             def instance = domainClass.newInstance();
             def propDefaultValues = [:]
             def fieldNames = [:]
-            fields.each{fieldName, field->
+            fields.each{fieldName, Field field->
                 try{
-                    propDefaultValues[fieldName] = instance[fieldName];
+                    propDefaultValues[fieldName] = field.get(instance);
                     fieldNames[fieldName] = fieldName;
                     def untokenizedFieldName = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+fieldName;
                     fieldNames[untokenizedFieldName] = CompassConstants.UN_TOKENIZED_FIELD_PREFIX+fieldName;
-                    propDefaultValues[untokenizedFieldName] = instance[fieldName];
+                    propDefaultValues[untokenizedFieldName] = field.get(instance);
                 }catch(MissingPropertyException exception){/*ignore*/}
             }
             classInstances[domainClass.name] = [fields:fieldNames,instance:propDefaultValues, instanceClass:domainClass];

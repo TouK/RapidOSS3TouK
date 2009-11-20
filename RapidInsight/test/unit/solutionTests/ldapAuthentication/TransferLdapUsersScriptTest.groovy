@@ -11,7 +11,8 @@ import com.ifountain.rcmdb.test.util.LdapConnectionTestUtils
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.test.util.DatasourceTestUtils
-import com.ifountain.rcmdb.auth.SegmentQueryHelper;
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,6 +37,7 @@ class TransferLdapUsersScriptTest extends RapidCmdbWithCompassTestCase {
 
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         SegmentQueryHelper.getInstance().initialize([]);
+        UserConfigurationSpace.getInstance().initialize();
     }
 
     public void tearDown() {

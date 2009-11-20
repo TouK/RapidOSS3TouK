@@ -20,7 +20,8 @@ import auth.ChannelUserInformation;
 import auth.LdapUserInformation;
 import auth.RsUserInformation;
 import auth.RsUserOperations;
-import auth.GroupOperations;
+import auth.GroupOperations
+import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,6 +49,7 @@ class RsUserLdapAuthenticatorTest extends RapidCmdbWithCompassTestCase {
 
         RsApplicationTestUtils.clearUtilityPaths();
         RsApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/operations/auth/RsUserLdapAuthenticator.groovy")];
+        UserConfigurationSpace.getInstance().initialize();
     }
 
     public void tearDown() {

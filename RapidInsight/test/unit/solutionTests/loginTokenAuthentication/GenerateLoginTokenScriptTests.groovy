@@ -11,7 +11,8 @@ import application.Cache
 import application.CacheOperations
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.auth.SegmentQueryHelper;
+import com.ifountain.rcmdb.auth.SegmentQueryHelper
+import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 /**
 * Created by IntelliJ IDEA.
 * User: admin
@@ -40,7 +41,8 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/operations/auth/RsUserTokenAuthenticator.groovy")];
 
         RsApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
-        
+
+        UserConfigurationSpace.getInstance().initialize();
         initializeScriptManager();
     }
 
@@ -121,7 +123,11 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(0,entry.tokens.size());
 
         //not admin
-        def user=RsUser.add(username:"rsadmin",passwordHash:"1234");
+
+        def userRole=Role.add(name:Role.USER);
+        def userGroup=Group.add(name:RsUser.RSUSER,role:userRole);
+
+        def user=RsUser.addUser(username:"rsadmin",password:"1234",groups:[userGroup]);
         assertFalse(user.hasErrors());
 
         result=runScriptWithUser(httpParams,"rsadmin");
@@ -133,9 +139,9 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
 
         //admin does successfuly
 
-        def role=Role.add(name:Role.ADMINISTRATOR);
-        def group=Group.add(name:RsUser.RSADMIN,role:role);
-        user.update(groups:[group]);
+        def adminRole=Role.add(name:Role.ADMINISTRATOR);
+        def adminGroup=Group.add(name:RsUser.RSADMIN,role:adminRole);
+        RsUser.updateUser(user,[groups:[adminGroup]])
         assertFalse(user.hasErrors());
 
         def testUser=RsUser.add(username:"testuser",passwordHash:"1234");

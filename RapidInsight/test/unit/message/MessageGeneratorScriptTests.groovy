@@ -28,6 +28,8 @@ import com.ifountain.rcmdb.auth.UserConfigurationSpace
 class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     def rsEventClass;
     def rsHistoricalEventClass;
+    def rsRiEventClass;
+    def rsRiHistoricalEventClass;
     def rsLookupClass;
     def rsEventJournalClass;
     def base_directory = "";
@@ -42,7 +44,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
         initializeScriptManager();
         initializeClasses();
-        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsLookupClass, rsEventJournalClass])
+        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsRiEventClass,rsRiHistoricalEventClass,rsLookupClass, rsEventJournalClass])
     }
     void tearDown() {
         SessionManager.destroyInstance();
@@ -58,11 +60,14 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     private void initializeClasses() {
         rsEventClass = gcl.loadClass("RsEvent")
         rsHistoricalEventClass = gcl.loadClass("RsHistoricalEvent")
+        rsRiEventClass = gcl.loadClass("RsRiEvent")
+        rsRiHistoricalEventClass = gcl.loadClass("RsRiHistoricalEvent")
         rsLookupClass = gcl.loadClass("RsLookup")
         rsEventJournalClass = gcl.loadClass("RsEventJournal")
         def rsEventOperationsClass = gcl.loadClass("RsEventOperations")
+        def rsRiEventOperationsClass = gcl.loadClass("RsRiEventOperations")
         initialize([CmdbScript, RsUser, RsUserInformation, ChannelUserInformation, Role, Group, SearchQueryGroup, SearchQuery, RsMessageRule, RsMessage,
-                rsEventClass, rsHistoricalEventClass, rsLookupClass, rsEventJournalClass], [], true);
+                rsEventClass, rsHistoricalEventClass, rsRiEventClass,rsRiHistoricalEventClass,rsLookupClass, rsEventJournalClass], [], true);
 
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsMessage, RsMessageOperations);
@@ -70,6 +75,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RsUser, RsUserOperations);
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(rsEventClass, rsEventOperationsClass);
+        CompassForTests.addOperationSupport(rsRiEventClass, rsRiEventOperationsClass);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
         UserConfigurationSpace.getInstance().initialize();
     }
@@ -264,8 +270,95 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testEmailGeneraterProcessesOnlyEventsOfTheQuerySearchClass()
     {
+        def destinationType = EMAIL_TYPE
+        def destination = "sezgin@gmail.com"
+        def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
+        assertFalse(user.hasErrors())
+        def imInformation = ChannelUserInformation.add(userId: user.id, type: destinationType, destination: destination, rsUser: user);
+        assertFalse(imInformation.hasErrors());
+
+        def adminUser = RsUser.RSADMIN;
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUser, isPublic: true, type: "event");
+
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events",searchClass:"RsRiEvent", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
+
+        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        assertFalse(rule.hasErrors())
+
+        assertEquals(RsMessageRule.countHits("alias:*"), 1)
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        //TestLogUtils.enableLogger ();
+
+        //add  events
+        def newEvents = addEvents("newevents", 2)
+        assertEquals(rsEventClass.countHits("alias:\"(RsEvent)\""), 2)
+        assertEquals(rsRiEventClass.countHits("alias:*"), 0)
+
+        //run the script
+        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+        assertEquals(RsMessage.countHits("alias:*"), 0)
+
+        //add new RsRiEvents
+        def newRsRiEvents = addEvents("newrsrievents", 2,rsRiEventClass)
+        assertEquals(rsEventClass.countHits("alias:\"(RsEvent)\""), 2)
+        assertEquals(rsRiEventClass.countHits("alias:*"), 2)
+
+        //run the script
+        rsLookupClass.add(name:"messageGeneratorMaxEventCreateId",value:0);
+        rsLookupClass.add(name:"messageGeneratorMaxEventClearId",value:0);
+
+        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+        assertEquals(RsMessage.countHits("alias:*"), 2)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}*"), 2)
+
+
+        newEvents.each{ event ->
+            assertEquals(0,RsMessage.countHits("eventId:${event.id}"))
+        };
+        newRsRiEvents.each{ event ->
+            assertEquals(1,RsMessage.countHits("eventId:${event.id}"))
+        };
+
+        //HISTORICAL EVENT TEST
+
+        //add create messages here because , clear messages wont be added if create messages does not exist
+        newEvents.each{ event ->
+            RsMessage.addEventCreateMessage(event.asMap(), destinationType, destination, new Long(0));
+            event.clear();
+        };
+        newRsRiEvents.each{ event ->
+            event.clear();
+        };
+        assertEquals(rsHistoricalEventClass.countHits("alias:\"(RsHistoricalEvent)\""), 2)
+        assertEquals(rsRiHistoricalEventClass.countHits("alias:*"), 2)
+
+
+        assertEquals(RsMessage.countHits("alias:*"), 4)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
+
+        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+
+        assertEquals(RsMessage.countHits("alias:*"), 6)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
+        assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CLEAR}"), 2)
+        
+        newEvents.each{ event ->
+            //create messages added by test
+            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"))
+            //clear messages should not exist
+            assertEquals(0,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
+        };
+        newRsRiEvents.each{ event ->
+            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE} "))
+            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
+        };
 
     }
+
     void testEmailGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
     {
         def destinationType = EMAIL_TYPE
@@ -464,21 +557,21 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
     }
 
-    def addEvents(prefix, count)
+    def addEvents(prefix, count,eventClass=rsEventClass)
     {
         def events = []
         count.times {
-            def event = rsEventClass."add"(name: "${prefix}${it}", severity: it)
+            def event = eventClass."add"(name: "${prefix}${it}", severity: it)
             assertFalse(event.hasErrors())
             events.add(event)
         }
         return events;
     }
-    def addHistoricalEvents(prefix, count)
+    def addHistoricalEvents(prefix, count,eventClass=rsHistoricalEventClass)
     {
         def events = []
         count.times {
-            def event = rsHistoricalEventClass."add"(name: "${prefix}${it}", severity: it, activeId: it)
+            def event = eventClass."add"(name: "${prefix}${it}", severity: it, activeId: it)
             assertFalse(event.hasErrors())
             events.add(event)
         }

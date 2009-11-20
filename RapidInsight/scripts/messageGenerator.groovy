@@ -93,8 +93,15 @@ users.each {user ->
                         {
                             def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
 
-                            logger.debug("Seaching RsEvent, for userid: ${userId}  with createQuery : ${createQuery}")
-                            def createdEvents = RsEvent.getPropertyValues(createQuery, ["id"], [sort: "id", order: "asc", max: 1000])
+
+                            def eventClass=RsEvent;
+                            if(searchQuery.searchClass)
+                            {
+                                eventClass= application.RsApplication.getModelClass(searchQuery.searchClass);
+                            }
+                            logger.debug("Seaching ${eventClass.name}, for userid: ${userId}  with createQuery : ${createQuery}")
+
+                            def createdEvents = eventClass.getPropertyValues(createQuery, ["id"], [sort: "id", order: "asc", max: 1000])
                             def date = new Date()
                             def now = date.getTime();
 
@@ -127,8 +134,14 @@ users.each {user ->
                         {
                             def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
 
-                            logger.debug("Searching RsHistoricalEvent, for userid: ${userId} with clearQuery : ${clearQuery}")
-                            def clearedEvents = RsHistoricalEvent.getPropertyValues(clearQuery, ["id", "activeId"], [sort: "id", order: "asc", max: 1000])
+                            def eventClass=RsHistoricalEvent;
+                            if(searchQuery.searchClass)
+                            {
+                                eventClass= application.RsApplication.getModelClass(searchQuery.searchClass).historicalEventModel();
+                            }
+
+                            logger.debug("Searching ${eventClass.name}, for userid: ${userId} with clearQuery : ${clearQuery}")
+                            def clearedEvents = eventClass.getPropertyValues(clearQuery, ["id", "activeId"], [sort: "id", order: "asc", max: 1000])
                             def date = new Date()
                             def now = date.getTime();
 
@@ -156,7 +169,7 @@ users.each {user ->
             }
             else
             {
-                logger.debug("No rules found for user userId:${userId} ${user.username}  with destinationType:${destinationType}");
+                logger.debug("No rules / enabled rules found for user userId:${userId} ${user.username}  with destinationType:${destinationType}");
             }
         }
     }

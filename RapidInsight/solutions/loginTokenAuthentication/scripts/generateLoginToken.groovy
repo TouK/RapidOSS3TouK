@@ -25,7 +25,7 @@ try{
         {
             throw new Exception("User ${currentUserName} does not exist")
         }
-        if(!user.hasRole(auth.Role.ADMINISTRATOR))
+        if(!auth.RsUser.hasRole(currentUserName,auth.Role.ADMINISTRATOR))
         {
             throw new Exception("Administrator Role is needed to generate Token for user ${tokenUser}");
         }

@@ -153,4 +153,16 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         def fullExportUtility=new FullExportImportUtility(getLogger());
         fullExportUtility.fullImport(CONFIG);
     }
+    public static def getModelClass(String modelName)
+    {
+        def modelClass=ApplicationHolder.application.getDomainClass(modelName);
+        if(modelClass)
+        {
+            return modelClass.clazz;
+        }
+        else
+        {
+            throw new Exception("Model Class ${modelName} does not exist");
+        }
+    }
 }

@@ -262,6 +262,10 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"), 4)
     }
 
+    void testEmailGeneraterProcessesOnlyEventsOfTheQuerySearchClass()
+    {
+
+    }
     void testEmailGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
     {
         def destinationType = EMAIL_TYPE

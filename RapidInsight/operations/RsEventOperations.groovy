@@ -61,11 +61,11 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
         {
 		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date(now))
         }
-		def historicalEvent = historicalEventModel().'add'(props)
+		def historicalEvent = domainObject.historicalEventModel().'add'(props)
 		remove()
 		
 	}
-	public Class historicalEventModel()
+	public static Class historicalEventModel()
     {
         return RsHistoricalEvent;    
     }

@@ -61,7 +61,7 @@ public class RsRiEventOperations  extends RsEventOperations {
         
         return event;
     }
-	public Class historicalEventModel()
+	public static Class historicalEventModel()
     {
         return RsRiHistoricalEvent;
     }

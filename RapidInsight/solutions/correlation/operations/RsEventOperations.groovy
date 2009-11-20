@@ -61,7 +61,7 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 		remove()
 		
 	}
-	public Class historicalEventModel()
+	public static Class historicalEventModel()
     {
         return RsHistoricalEvent;    
     }

@@ -5,7 +5,11 @@
 }
 .logViewerLastNLinesBtn
 {
-    
+    white-space:nowrap;
+}
+.logViewerLineCountBtn
+{
+    white-space:nowrap;
 }
 .logViewerHeader
 {
@@ -24,6 +28,11 @@
     background-image:url("../../../images/rapidjs/component/logViewer/page_white_swoosh.png")    
 }
 .logViewerLastNLines
+{
+    width:40px;
+    height:20px;
+}
+.logViewerLineCount
 {
     width:40px;
     height:20px;

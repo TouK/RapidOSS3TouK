@@ -139,6 +139,8 @@ YAHOO.rapidjs.component.LogManager.prototype =
             +'        <tbody>'
             +'            <tr>'
             +'                <td width="100%" height="0%"><div id="'+this.logFile+'filename" class="logViewerFileName"></div></td>'
+            +'                <td width="0%" height="0%"><input id="'+this.logFile+'filenameLineCount" class="logViewerLineCount" value='+this.maxLineCount+'></input></td>'
+            +'                <td width="0%" height="0%"><button id="'+this.logFile+'filenameLineCountBtn" class="button logViewerLineCountBtn">Set Line Count</button></td>'
             +'                <td width="0%" height="0%"><input id="'+this.logFile+'filenameLastN" class="logViewerLastNLines"></input></td>'
             +'                <td width="0%" height="0%"><button id="'+this.logFile+'filenameLastNBtn" class="button logViewerLastNLinesBtn">LastN</button></td>'
             +'            </tr>'
@@ -161,6 +163,7 @@ YAHOO.rapidjs.component.LogManager.prototype =
         this.spinner = document.getElementById(this.logFile+'spinner');
         this.filenameElement.innerHTML = this.logFile;
         YAHOO.util.Event.addListener(document.getElementById(this.logFile+'filenameLastNBtn'), "click", this.lastNButtonClicked, this, true)
+        YAHOO.util.Event.addListener(document.getElementById(this.logFile+'filenameLineCountBtn'), "click", this.lineCountButtonClicked, this, true)
     },
     lastNButtonClicked: function(){
         var inputElement = document.getElementById(this.logFile+'filenameLastN');
@@ -169,6 +172,14 @@ YAHOO.rapidjs.component.LogManager.prototype =
         this.offset = 0;
         this.clear();
         this.requestLogLines();
+    },
+    lineCountButtonClicked: function(){
+        var inputElement = document.getElementById(this.logFile+'filenameLineCount');
+        this.maxLineCount = inputElement.value*1;
+        if(this.maxLineCount <= 0)
+        {
+            this.maxLineCount = 10;
+        }
     },
     isPaused: function(){
         return this.processState == this.PAUSED;

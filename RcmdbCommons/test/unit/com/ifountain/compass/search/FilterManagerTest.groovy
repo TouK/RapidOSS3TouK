@@ -47,6 +47,7 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
     public void testFilterManagerWithCompass()
     {
         Session session = SessionManager.getInstance().startSession ("user1");
+        assertEquals(true, FilterManager.isFiltersEnabled(SessionManager.getInstance().getSession()));
 
         initialize([FilterManagerTestDomainObject1, FilterManagerTestDomainObject2], []);
 
@@ -94,9 +95,10 @@ class FilterManagerTest extends RapidCmdbWithCompassTestCase
         assertNull (res[0].rel3)
 
         //test with disabled filters
-        assertEquals(null, SessionManager.getInstance().getSession()[FilterManager.IS_FILTERS_ENABLED]);
+        
+        assertEquals(true, FilterManager.isFiltersEnabled(SessionManager.getInstance().getSession()));
         FilterManager.setFiltersEnabled (false);
-        assertEquals(false, SessionManager.getInstance().getSession()[FilterManager.IS_FILTERS_ENABLED]);
+        assertEquals(false, FilterManager.isFiltersEnabled(SessionManager.getInstance().getSession()));
         res = FilterManagerTestDomainObject1.search("alias:*").results;
         assertEquals (3, res.size());
         assertTrue (res.contains(obj1Inst1));

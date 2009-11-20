@@ -2,15 +2,15 @@ var EditArea_actiontabs = {
 
     init: function() {
         editArea.load_css(this.baseURL + "../../../../js/edit_area/plugins/actiontabs/css/actiontabs.css");
-        editArea.load_css(this.baseURL + "../../../../js/yui/assets/skins/sam/skin.css");
-        editArea.load_css(this.baseURL + "../../../../js/yui/container/assets/skins/sam/container.css");
-        editArea.load_script(this.baseURL + "../../../../js/yui/yahoo-dom-event/yahoo-dom-event.js");
-        editArea.load_script(this.baseURL + "../../../../js/yui/utilities/utilities.jss");
-        editArea.load_script(this.baseURL + "../../../../js/yui/container/container-min.js");
-        editArea.load_script(this.baseURL + "../../../../js/yui/dragdrop/dragdrop-min.js");
-        editArea.load_script(this.baseURL + "../../../../js/yui/element/element-beta-min.js");
-        editArea.load_script(this.baseURL + "../../../../js/yui/button/button-min.js");
-        editArea.load_script(this.baseURL + "../../../../js/yui/resize/resize-min.js");
+        editArea.load_css(this.baseURL + "../../../../../../js/yui/assets/skins/sam/skin.css");
+        editArea.load_css(this.baseURL + "../../../../../../js/yui/container/assets/skins/sam/container.css");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/yahoo-dom-event/yahoo-dom-event.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/utilities/utilities.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/container/container-min.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/dragdrop/dragdrop-min.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/element/element-min.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/button/button-min.js");
+        editArea.load_script(this.baseURL + "../../../../../../js/yui/resize/resize-min.js");
     }
 
     ,onload: function() {

@@ -3,21 +3,21 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
         <title>Code Editor</title>
        <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="${pluginContextPath}/js/edit_area" file="edit_area.css" />"/>
-       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="${pluginContextPath}/js/yui/fonts" file="fonts-min.css" />"/>
-       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="${pluginContextPath}/js/yui/button/assets/skins/sam" file="button.css" />"/>
-       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="${pluginContextPath}/js/yui/container/assets/skins/sam" file="container.css" />"/>
-       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="${pluginContextPath}/js/yui/datatable/assets/skins/sam" file="datatable.css" />"/>
+       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="js/yui/fonts" file="fonts-min.css" />"/>
+       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="js/yui/button/assets/skins/sam" file="button.css" />"/>
+       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="js/yui/container/assets/skins/sam" file="container.css" />"/>
+       <link rel="stylesheet" type="text/css" href="<g:createLinkTo dir="js/yui/datatable/assets/skins/sam" file="datatable.css" />"/>
 
         <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/edit_area" file="edit_area_loader.js" />"></script>
         <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/edit_area/reg_syntax" file="groovy.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/yahoo-dom-event" file="yahoo-dom-event.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/utilities" file="utilities.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/element" file="element-beta-min.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/button" file="button-min.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/datasource" file="datasource-min.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/datatable" file="datatable-min.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/container" file="container-min.js" />"></script>
-        <script type="text/javascript" src="<g:createLinkTo dir="${pluginContextPath}/js/yui/connection" file="connection-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/yahoo-dom-event" file="yahoo-dom-event.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/utilities" file="utilities.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/element" file="element-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/button" file="button-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/datasource" file="datasource-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/datatable" file="datatable-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/container" file="container-min.js" />"></script>
+        <script type="text/javascript" src="<g:createLinkTo dir="js/yui/connection" file="connection-min.js" />"></script>
 
         <style type="text/css">
             .fileDetails{

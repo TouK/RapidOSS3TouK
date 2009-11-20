@@ -1,11 +1,11 @@
 #actionTabsContainer {
     border-top:5px solid #ECE9D8;
-    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+    background: url(../../../../../../../js/yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
 }
 #actionTabsToolbar {
     height:22px;
     text-align:right;
-    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+    background: url(../../../../../../../js/yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
 }
 .actionTabHeader{
     height:20px;
@@ -13,7 +13,7 @@
     font-weight:bold;
     overflow:hidden;
     padding-left:10px;
-    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 -1400px;
+    background: url(../../../../../../../js/yui/assets/skins/sam/sprite.png) repeat-x scroll 0 -1400px;
     color:white;
 }
 .messagesActionTabErrorLine{

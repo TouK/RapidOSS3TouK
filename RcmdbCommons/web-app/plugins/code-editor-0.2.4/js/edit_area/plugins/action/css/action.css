@@ -1,0 +1,27 @@
+.actionMenu{
+
+    position: absolute;
+    visibility: hidden;
+    border: solid 1px #000;
+    padding: .5em;
+    background-color:white;
+    white-space:nowrap;
+    z-index:1000000;
+}
+.actionMenuItem{
+    text-align:left;
+    cursor:pointer;
+}
+.nonOveredMenuItem
+{
+    background:	white;    
+}
+.overedMenuItem
+{
+    background:	#D6E1FE;
+}
+.actionButtonSpan{
+    z-index:1000000;
+    position:absolute;
+    top:1px;
+}

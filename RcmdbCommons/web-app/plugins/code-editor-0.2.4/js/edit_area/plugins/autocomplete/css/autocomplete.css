@@ -1,0 +1,81 @@
+.autocomplete_suggestion{
+	border:		solid 1px #888;
+	position:	absolute;
+	z-index:	10000;
+	width:	280px;
+	height:	180px;
+	overflow: auto;
+    background-color:white;
+
+}
+
+.autocomplete_class{
+    background: url(../../../images/codecomplete/C4.png) repeat-x 0 0;
+    width:16px;
+    height:16px;
+}
+.autocomplete_property{
+    background: url(../../../images/codecomplete/P4.png) repeat-x 0 0;
+    width:16px;
+    height:16px;
+}
+.autocomplete_interface{
+    background: url(../../../images/codecomplete/I4.png) no-repeat 0 0;
+    width:16px;
+    height:16px;
+}
+.autocomplete_function{
+    background: url(../../../images/codecomplete/M4.png) no-repeat 0 0;
+    width:16px;
+    height:16px;
+}
+.autocomplete_variable{
+    background: url(../../../images/codecomplete/V4.png) no-repeat 0 0;
+    width:16px;
+    height:16px;
+}
+.autocomplete_variable{
+    background: url(../../../images/codecomplete/P4.png) no-repeat 0 0;
+    width:16px;
+    height:16px;
+}
+/*#auto_completion_area*/
+/*{*/
+	/*background:	#FFF;*/
+	/*border:		solid 1px #888;*/
+	/*position:	absolute;*/
+	/*z-index:	15;*/
+	/*width:	280px;*/
+	/*height:	180px;*/
+	/*overflow: auto;*/
+	/*display:none;*/
+/*}*/
+
+.autocomplete_suggestion a, .autocomplete_suggestion a:visited
+{
+	display:	block;
+	padding:	0 2px 1px;
+	text-decoration:none;
+}
+
+.focus
+{
+	background:	#D6E1FE;
+	text-decoration:none;
+}
+
+.autocomplete_suggestion ul
+{
+	margin:	0;
+	padding: 0;
+	list-style: none inside;
+}
+.autocomplete_suggestion li
+{
+	padding:	0;
+}
+.autocomplete_suggestion .prefix
+{
+	font-style: italic;
+	padding: 0 3px;
+}

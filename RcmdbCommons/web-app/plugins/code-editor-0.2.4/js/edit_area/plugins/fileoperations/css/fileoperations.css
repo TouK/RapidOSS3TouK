@@ -1,0 +1,19 @@
+.fileDetails{
+    cursor:pointer;
+    white-space:nowrap
+}
+.fileDetailsDir{
+    font-weight:bold;
+    cursor:pointer;
+    white-space:nowrap;
+}
+.fileList{
+    overflow:auto;
+    height:250px;
+    width:400px;
+    border-width:1px;
+    border-style:solid
+}
+.fileDetailsSelected{
+    background-color:blue;
+}

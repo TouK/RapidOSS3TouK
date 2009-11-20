@@ -1,0 +1,22 @@
+<plugin name='code-editor' version='0.2.4'>
+  <author>enguzekli</author>
+  <authorEmail>mustafa.sener@gmail.com</authorEmail>
+  <title>CodeEditor a Web Based IDE For Grails Developers</title>
+  <description>CodeEditor is a plugin which allows developers to edit any file on the serverside. Developers
+can edit groovy, javascript, xml and any other file from their browsers. Code editor has code completion capabilities
+for groovy files.
+</description>
+  <documentation>http://grails.org/CodeEditor+Plugin</documentation>
+  <resources>
+    <resource>CodeEditorConfig</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>CodeController</resource>
+    <resource>CodeEditorActionController</resource>
+    <resource>CompletionController</resource>
+    <resource>CodeEditorActionService</resource>
+    <resource>EditAreaTagLib</resource>
+    <resource>CodeEditorConfig</resource>
+    <resource>CodeEditorActionService</resource>
+  </resources>
+</plugin>

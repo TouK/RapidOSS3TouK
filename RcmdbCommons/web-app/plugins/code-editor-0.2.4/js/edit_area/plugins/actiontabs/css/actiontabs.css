@@ -1,0 +1,57 @@
+#actionTabsContainer {
+    border-top:5px solid #ECE9D8;
+    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+}
+#actionTabsToolbar {
+    height:22px;
+    text-align:right;
+    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 0;
+}
+.actionTabHeader{
+    height:20px;
+    text-align:left;
+    font-weight:bold;
+    overflow:hidden;
+    padding-left:10px;
+    background: url(../../../../yui/assets/skins/sam/sprite.png) repeat-x scroll 0 -1400px;
+    color:white;
+}
+.messagesActionTabErrorLine{
+    background-image: url(../../../images/exclamation.png);
+    background-repeat:no-repeat;
+}
+.messagesActionTabLine{
+    padding-left:18px;
+}
+.messagesActionTabLineOnGoingActionLine{
+    background-image: url(../../../images/processing.gif);
+    background-repeat:no-repeat;
+}
+
+.messagesActionTabLineAbortedActionLine{
+    background-image: url(../../../images/exclamation.png);
+    background-repeat:no-repeat;
+}
+.messagesActionTab{
+    width:100%;
+}
+.actionTabMain{
+    border-bottom:1px solid #888888;
+    padding-top:5px;
+    padding-left:1px;
+    overflow:hidden;
+    width:100%
+}
+.actionTabViewContainer{
+    text-align:left;
+    overflow:scroll;
+    width:100%;
+    background-color:white;
+
+}
+
+#actionsTabMessagesButton .first-child {
+    background:url(../../../images/page_white_text.png) left center no-repeat;
+}
+
+

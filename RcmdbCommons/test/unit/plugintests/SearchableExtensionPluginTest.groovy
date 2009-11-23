@@ -383,6 +383,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertFalse(addedObject2.hasErrors());
         oldUpdatedAt=addedObject2[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject2.update(prop1:"newprop1value");
         assertFalse(addedObject2.hasErrors());
 

@@ -34,8 +34,29 @@ class DesignerControllerUtils {
             }
             def uiElements = confXml.depthFirst().findAll {it.name() == "UiElement"}
             def id = 0;
-            uiElements.each {
-                it.attributes()["id"] = ++id;
+            uiElements.each {uiElement ->
+                def uiClass = DesignerSpace.getInstance().getUiClass("${DesignerSpace.PACKAGE_NAME}.Ui${uiElement.@designerType}".toString())
+                if(uiClass){
+                    def metaData = uiClass.metaData();
+                    def childrenConfiguration = metaData.childrenConfiguration;
+                    childrenConfiguration.each{childConfig ->
+                        def canBeDeleted = false;
+                        def childMeta = childConfig.metaData;
+                        if(childMeta){
+                            canBeDeleted = childMeta.canBeDeleted == true
+                        }
+                        else{
+                            def childClass = DesignerSpace.getInstance().getUiClass("${DesignerSpace.PACKAGE_NAME}.Ui${childConfig.designerType}".toString())
+                            if(childClass){
+                                canBeDeleted = childClass.metaData().canBeDeleted == true;
+                            }
+                        }
+                        if(!canBeDeleted && uiElement.UiElement.findAll{it.@designerType.text() == childConfig.designerType}.size() == 0){
+                            uiElement.appendNode({UiElement(designerType:childConfig.designerType, id:++id)})
+                        }
+                    }
+                }
+                uiElement.attributes()["id"] = ++id;
             }
             def outputBuilder = new StreamingMarkupBuilder()
             return outputBuilder.bind {mkp.yield confXml}.toString();

@@ -160,6 +160,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         }
         YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
+        YAHOO.util.Event.addListener(this.scrollPos.dom, 'contextmenu', this.handleContextMenu, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
         this.updateColumns();
         this.viewBuilder = new YAHOO.rapidjs.component.search.ViewBuilder(this);

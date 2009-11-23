@@ -50,7 +50,7 @@ function createURL(url, params)
             url = url + "?" + postData;
         }
     }
-    if(url.indexOf('http') != 0 && url.indexOf('www') != 0){
+    if (url.indexOf('http') != 0 && url.indexOf('www') != 0) {
         return getUrlPrefix() + url;
     }
     return url
@@ -84,7 +84,7 @@ String.prototype.trim = function() {
     return a.replace(/\s+$/, '');
 };
 String.prototype.toQuery = function() {
-    return  '"'+this.escapeQuery()+'"';
+    return  '"' + this.escapeQuery() + '"';
 }
 String.prototype.escapeQuery = function() {
     var a = this.replace(/\\/g, '\\\\');
@@ -115,7 +115,37 @@ YAHOO.rapidjs.ArrayUtils = new function()
         }
         return false;
     };
+    this.collect = function(array, collectFunc) {
+        var collection = [];
+        var nOfItems = array.length;
+        for (var i = 0; i < nOfItems; i++) {
+            collection.push(collectFunc(array[i]));
+        }
+        return collection;
+    };
+    this.find = function(array, findFunc) {
+        var nOfItems = array.length;
+        for (var i = 0; i < nOfItems; i++) {
+            var item = array[i]
+            if (findFunc(item)) {
+                return item;
+            }
+        }
+        return null;
+    };
+    this.findAll = function(array, findFunc) {
+        var collection = [];
+        var nOfItems = array.length;
+        for (var i = 0; i < nOfItems; i++) {
+            var item = array[i]
+            if (findFunc(item)) {
+                collection.push(item);
+            }
+        }
+        return collection;
+    }
 }();
+var ArrayUtils = YAHOO.rapidjs.ArrayUtils
 YAHOO.rapidjs.FlashUtils = new function()
 {
     // JavaScript helper required to detect Flash Player PlugIn version information
@@ -341,7 +371,7 @@ YAHOO.rapidjs.Connect = new function()
             {
                 location = location + "?" + window.location.search;
             }
-            window.location = getUrlPrefix()+"auth/login?targetUri=" + encodeURI(location);
+            window.location = getUrlPrefix() + "auth/login?targetUri=" + encodeURI(location);
             return false;
         }
         else

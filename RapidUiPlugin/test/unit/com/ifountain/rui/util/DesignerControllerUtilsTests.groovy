@@ -98,12 +98,29 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
         assertEquals(uiElements.size(), idMap.size())
     }
 
+    public void testViewCreatesTagsForUndeletableChildsIfTheyDontExist() {
+        builder.UiConfig() {
+            builder.UiElement(designerType: "WebPages") {
+                builder.UiElement(designerType: "WebPage", name: "page1", id: "page1")
+            }
+        }
+
+        new File(CONF_FILE).setText(sw.toString());
+
+        def viewResult = DesignerControllerUtils.view(CONF_FILE);
+        def viewXml = new XmlSlurper().parseText(viewResult);
+        def webPageNode = viewXml.depthFirst().find {it.@designerType == "WebPage"}
+        def childNodes = webPageNode.UiElement;
+        assertEquals(1, childNodes.size())
+        assertEquals("Tabs", childNodes[0].@designerType.toString());
+    }
+
     public void testSave() {
         new File(CONF_FILE).setText("<UiConfig/>")
         builder.UiConfig() {
             builder.UiElement(designerType: "WebPages") {
-                builder.UiElement(designerType: "WebPage", name: "page1", id:"1") {
-                    builder.UiElement(designerType: "Tabs", id:"2")
+                builder.UiElement(designerType: "WebPage", name: "page1", id: "1") {
+                    builder.UiElement(designerType: "Tabs", id: "2")
                 }
             }
         }
@@ -233,8 +250,8 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
 
     public void testTrashFileDeletionWithGenerate() {
         createTemplates();
-        DesignerTrashPage.add(webPage:"page1")
-        DesignerTrashPage.add(webPage:"page2")
+        DesignerTrashPage.add(webPage: "page1")
+        DesignerTrashPage.add(webPage: "page2")
 
         new File(DesignerControllerUtils.getPageDirectory(DIR, "page1")).mkdirs();
         new File(DesignerControllerUtils.getPageFilePath(DIR, "page1")).createNewFile();
@@ -251,7 +268,7 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
         new File(DesignerControllerUtils.getPageLayoutFilePath(DIR, "page2")).createNewFile();
         new File(DesignerControllerUtils.getTabFilePath(DIR, "page2", "tab4")).createNewFile()
         new File(DesignerControllerUtils.getTabFilePath(DIR, "page2", "tab5")).createNewFile()
-        
+
         builder.UiConfig() {
             builder.UiElement(designerType: "WebPages") {
                 builder.UiElement(designerType: "WebPage", name: "page1") {
@@ -263,9 +280,9 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
             }
         }
         new File(CONF_FILE).setText(sw.toString());
-        
+
         DesignerControllerUtils.generate(CONF_FILE, TEMPLATE_DIR, DIR);
-        
+
         def trashFiles = DesignerTrashPage.list();
         assertEquals(1, trashFiles.size())
         assertNotNull(DesignerTrashPage.get(webPage: "page1"))
@@ -283,7 +300,7 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
         assertFalse(new File(DesignerControllerUtils.getPageDirectory(DIR, "page2")).exists())
 
         assertTrue(new File(DesignerControllerUtils.getPageHelpFilePath(DIR, "page2")).exists())
-        
+
         assertFalse(new File(DesignerControllerUtils.getPageLayoutFilePath(DIR, "page2")).exists())
         assertFalse(new File(DesignerControllerUtils.getTabFilePath(DIR, "page2", "tab4")).exists())
         assertFalse(new File(DesignerControllerUtils.getTabFilePath(DIR, "page2", "tab5")).exists())

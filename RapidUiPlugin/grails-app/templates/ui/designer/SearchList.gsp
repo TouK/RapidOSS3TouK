@@ -64,6 +64,43 @@
             }
         %>
     </rui:slMenuItems>
+    <rui:slMultiSelectionMenuItems>
+        <%
+            uiElement.getMultiSelectionMenuItems().each{menuItem->
+                if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                def menuItemVisiblePropertyName = menuItem.name+ "Visible";
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(menuItemVisiblePropertyName, menuItem.visible, true);
+        %>
+        <rui:slMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${menuItemVisiblePropertyName}}" ${actionString}>
+               <%
+                    if(!menuItem.childMenuItems.isEmpty())
+                    {
+                %>
+                    <rui:slSubmenuItems>
+                        <%
+                            menuItem.childMenuItems.each{subMenuItem->
+                                def subMenuActionString = subMenuItem.getActionString();
+                                def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
+                                def subMenuItemVisiblePropertyName = subMenuItem.name+ "Visible";
+                                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuItemVisiblePropertyName, subMenuItem.visible, true);
+                        %>
+                            <rui:slMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuItemVisiblePropertyName}}"></rui:slMenuItem>
+                        <%
+                                }
+                        %>
+                    </rui:slSubmenuItems>
+                <%
+                        }
+                %>
+        </rui:slMenuItem>
+        <%
+
+               }
+            }
+        %>
+    </rui:slMultiSelectionMenuItems>
     <rui:slPropertyMenuItems>
         <%
             uiElement.propertyMenuItems.each{menuItem->

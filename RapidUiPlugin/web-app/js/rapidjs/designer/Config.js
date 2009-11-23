@@ -569,7 +569,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             "selectionChanged":{
                 descr:"Fired when the row selection is changed.",
                 params:{
-                    "params.data":"JavaScript object representing the row data"
+                    "params.datas":"List of JavaScript objects representing the selected rows data"
                 }
             },
             "saveQueryClicked":{
@@ -603,7 +603,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             "selectionChanged":{
                 descr:"Fired when the row selection is changed.",
                 params:{
-                    "params.data":"JavaScript object representing the row data"
+                    "params.datas":"List of JavaScript objects representing the selected rows data"
                 }
             },
             "saveQueryClicked":{
@@ -837,6 +837,11 @@ YAHOO.rapidjs.designer.Config = new function() {
                 "params.data": "JavaScript object representing the row data",
                 "params.menuId": "Name of the menu item.",
                 "params.parentId": "Parent menu item name, if it is a sub menu."
+            },
+            'multiple':{
+                "params.datas": "List of JavaScripts object representing the selected rows data",
+                "params.menuId": "Name of the menu item.",
+                "params.parentId": "Parent menu item name, if it is a sub menu."
             }
         },
         'SearchList':{
@@ -845,6 +850,11 @@ YAHOO.rapidjs.designer.Config = new function() {
                 "params.menuId": "Name of the menu item.",
                 "params.parentId": "Parent menu item name, if it is a sub menu."
             },
+            'multiple':{
+                "params.datas": "List of JavaScripts object representing the selected rows data",
+                "params.menuId": "Name of the menu item.",
+                "params.parentId": "Parent menu item name, if it is a sub menu."
+            }, 
             'property':{
                 "params.data": "JavaScript object representing the row data",
                 "params.menuId": "Name of the menu item.",

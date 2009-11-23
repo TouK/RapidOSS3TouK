@@ -25,7 +25,7 @@
     %>
     <rui:sgMenuItems>
     <%
-        uiElement.menuItems.each{menuItem->
+        uiElement.getRowMenuItems().each{menuItem->
             if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
                 def menuActionString = menuItem.getActionString();
                 def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
@@ -60,6 +60,43 @@
         }
     %>
     </rui:sgMenuItems>
+     <rui:sgMultiSelectionMenuItems>
+    <%
+        uiElement.getMultiSelectionMenuItems().each{menuItem->
+            if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                def visiblePropertyName = menuItem.name+ "Visible";
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(visiblePropertyName, menuItem.visible, true);
+    %>
+        <rui:sgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${visiblePropertyName}}" ${actionString}>
+            <%
+                if(!menuItem.childMenuItems.isEmpty())
+                {
+            %>
+                <rui:sgSubmenuItems>
+                    <%
+                        menuItem.childMenuItems.each{subMenuItem->
+                            def subMenuActionString = subMenuItem.getActionString();
+                            def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
+                            def subMenuVisiblePropertyName = subMenuItem.name+ "Visible";
+                            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuVisiblePropertyName, subMenuItem.visible, true);
+                    %>
+                        <rui:sgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuVisiblePropertyName}}"></rui:sgMenuItem>
+                    <%
+                            }
+                    %>
+                </rui:sgSubmenuItems>
+            <%
+                    }
+            %>
+        </rui:sgMenuItem>
+    <%
+
+          }
+        }
+    %>
+    </rui:sgMultiSelectionMenuItems>
     <rui:sgImages>
     <%
         uiElement.images.each{image->

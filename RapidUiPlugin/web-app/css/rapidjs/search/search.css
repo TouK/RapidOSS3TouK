@@ -54,3 +54,7 @@
 .rcmdb-search-sub-component{
 
 }
+.rcmdb-search-rowselected {
+    background-color: #DDDDFF !important;
+    color: black !important;
+}

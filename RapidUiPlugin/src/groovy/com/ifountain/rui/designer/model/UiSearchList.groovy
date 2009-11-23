@@ -109,6 +109,20 @@ class UiSearchList extends UiComponent {
                                 ]
                         ],
                         [
+                                designerType: "SearchListMultiSelectionMenuItems",
+                                isMultiple: false,
+                                metaData: [
+                                        help: "SearchList MenuItems.html",
+                                        designerType: "SearchListMultiSelectionMenuItems",
+                                        display: "MultiSelectionMenuItems",
+                                        imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
+                                        imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
+                                        childrenConfiguration: [
+                                                [designerType: "MenuItem", isMultiple: true]
+                                        ]
+                                ]
+                        ],
+                        [
                                 designerType: "SearchListPropertyMenuItems",
                                 isMultiple: false,
                                 metaData: [
@@ -137,7 +151,7 @@ class UiSearchList extends UiComponent {
     {
         def attributes = xmlNode.attributes();
         attributes.tabId = parentElement._designerKey;
-        if(attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)){
+        if (attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)) {
             throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
         }
         def searchList = DesignerSpace.getInstance().addUiElement(UiSearchList, attributes);
@@ -146,6 +160,7 @@ class UiSearchList extends UiComponent {
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListFields"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListImages"};
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMenuItems"};
+        def multiSelectionMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMultiSelectionMenuItems"};
         def propertyMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListPropertyMenuItems"};
         if (timeRangeSelector && timeRangeSelector.size() > 0)
         {
@@ -159,6 +174,10 @@ class UiSearchList extends UiComponent {
         }
         menuItemsNode.UiElement.each {
             UiMenuItem.addUiElement(it, searchList);
+        }
+        multiSelectionMenuItemsNode.UiElement.each {
+            def menuItem = UiMenuItem.addUiElement(it, searchList);
+            menuItem.type = "multiple";
         }
         propertyMenuItemsNode.UiElement.each {
             def propMenuItem = UiMenuItem.addUiElement(it, searchList);
@@ -176,18 +195,14 @@ class UiSearchList extends UiComponent {
     public List getPropertyMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "property"};
     }
+     public List getMultiSelectionMenuItems() {
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "multiple"};
+    }
     public List getSubComponents() {
         return DesignerSpace.getInstance().getUiElements(UiSearchListTimeRangeSelector).values().findAll {it.componentId == _designerKey};
     }
 
     public List getRowMenuItems() {
-        def propertyMenuItemNames = getPropertyMenuItems().name;
-        def rowMenuItems = [];
-        getMenuItems().each {UiMenuItem menuItem ->
-            if (!propertyMenuItemNames.contains(menuItem.name)) {
-                rowMenuItems.add(menuItem);
-            }
-        }
-        return rowMenuItems;
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "component"};
     }
 }

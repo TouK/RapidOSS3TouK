@@ -67,6 +67,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         this.bufferView.rowEls = [];
         YAHOO.util.Event.addListener(this.body.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
+        YAHOO.util.Event.addListener(this.scrollPos.dom, 'contextmenu', this.handleContextMenu, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
         var searchInHtml = this.searchInEnabled ? '<td  width="0%"><div>in:</div></td><td  width="0%"><div><select style="width:80px;"></select></div></td>' : ''
         this.searchBox = dh.append(this.header.dom, {tag: 'div', cls:'rcmdb-searchlist-box',

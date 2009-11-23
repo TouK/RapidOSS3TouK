@@ -73,8 +73,8 @@ class SearchGridTagLib {
         if (onSelectionChange != null) {
             getActionsArray(onSelectionChange).each {actionName ->
                 selectionChangeJs += """
-                   ${searchGridId}sg.events['selectionChanged'].subscribe(function(xmlData, event){
-                       var params = {data:xmlData.getAttributes(), event:event};
+                   ${searchGridId}sg.events['selectionChanged'].subscribe(function(xmlDatas, event){
+                       var params = {datas:ArrayUtils.collect(xmlDatas, function(xmlData){return xmlData.getAttributes()}), event:event};
                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                     }, this, true);
                 """
@@ -92,38 +92,26 @@ class SearchGridTagLib {
         }
         def menuEvents = [:]
         def subMenuEvents = [:]
+        def multipleSelectionMenuEvents = [:]
+        def multipleSelectionSubMenuEvents = [:]
         def menuEventsJs;
-        def configStr = getConfig(attrs, configXML, menuEvents, subMenuEvents);
+        def configStr = getConfig(attrs, configXML, menuEvents, subMenuEvents, multipleSelectionMenuEvents, multipleSelectionSubMenuEvents);
         if (menuEvents.size() > 0 || subMenuEvents.size() > 0) {
-            def innerJs = "";
-            def index = 0;
-            menuEvents.each {id, actionArray ->
-                innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(menuId == '${id}'){""";
-                actionArray.each {actionName ->
-                    innerJs += """
-                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
-                    """
-                }
-                innerJs += """}""";
-                index++;
-            }
-            subMenuEvents.each {parentId, subMap ->
-                subMap.each {id, actionArray ->
-                    innerJs += index == 0 ? "if" : "else if";
-                    innerJs += """(parentId == '${parentId}' && menuId == '${id}'){"""
-                    actionArray.each {actionName ->
-                        innerJs += """
-                            YAHOO.rapidjs.Actions['${actionName}'].execute(params);
-                        """
-                    }
-                    innerJs += """}""";
-                    index++;
-                }
-            }
+            def innerJs = _getMenuEventJs(menuEvents, subMenuEvents)
             menuEventsJs = """
                ${searchGridId}sg.events['rowHeaderMenuClicked'].subscribe(function(xmlData, menuId, parentId){
                    var params = {data:xmlData.getAttributes(), menuId:menuId, parentId:parentId};
+                   ${innerJs}
+                }, this, true);
+            """
+
+        }
+        def multiplerSelectionMenuEventJs;
+        if (multipleSelectionMenuEvents.size() > 0 || multipleSelectionSubMenuEvents.size() > 0) {
+            def innerJs = _getMenuEventJs(multipleSelectionMenuEvents, multipleSelectionSubMenuEvents)
+            multiplerSelectionMenuEventJs = """
+               ${searchGridId}sg.events['multiSelectionMenuClicked'].subscribe(function(xmlDatas, menuId, parentId){
+                   var params = {datas:ArrayUtils.collect(xmlDatas, function(item){return item.getAttributes()}), menuId:menuId, parentId:parentId};
                    ${innerJs}
                 }, this, true);
             """
@@ -140,6 +128,7 @@ class SearchGridTagLib {
                ${selectionChangeJs}
                ${propertyClickedJs}
                ${menuEventsJs ? menuEventsJs : ""}
+               ${multiplerSelectionMenuEventJs ? multiplerSelectionMenuEventJs : ""}
                if(${searchGridId}sg.pollingInterval > 0){
                    YAHOO.util.Event.onDOMReady(function(){
                         this.poll();
@@ -148,11 +137,41 @@ class SearchGridTagLib {
            </script>
         """
     }
+
+    static def _getMenuEventJs(menuEvents, subMenuEvents) {
+        def innerJs = "";
+        def index = 0;
+        menuEvents.each {id, actionArray ->
+            innerJs += index == 0 ? "if" : "else if";
+            innerJs += """(menuId == '${id}'){""";
+            actionArray.each {actionName ->
+                innerJs += """
+                        YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
+            }
+            innerJs += """}""";
+            index++;
+        }
+        subMenuEvents.each {parentId, subMap ->
+            subMap.each {id, actionArray ->
+                innerJs += index == 0 ? "if" : "else if";
+                innerJs += """(parentId == '${parentId}' && menuId == '${id}'){"""
+                actionArray.each {actionName ->
+                    innerJs += """
+                            YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                        """
+                }
+                innerJs += """}""";
+                index++;
+            }
+        }
+        return innerJs;
+    }
     def searchGrid = {attrs, body ->
         out << fSearchGrid(attrs, body());
     }
 
-    static def getConfig(config, configXML, menuEvents, subMenuEvents) {
+    static def getConfig(config, configXML, menuEvents, subMenuEvents, multipleSelectionMenuEvents, multipleSelectionSubMenuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -195,6 +214,12 @@ class SearchGridTagLib {
             menuItemArray.add(processMenuItem(menuItem, menuEvents, subMenuEvents));
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
+        def multipleSelectionMenuItems = xml.MultiSelectionMenuItems?.MenuItem;
+        def multipleSelectionMenuItemsArray = [];
+        multipleSelectionMenuItems.each {menuItem ->
+            multipleSelectionMenuItemsArray.add(processMenuItem(menuItem, multipleSelectionMenuEvents, multipleSelectionSubMenuEvents));
+        }
+        cArray.add("multiSelectionMenuItems:[${multipleSelectionMenuItemsArray.join(',\n')}]");
         def timeRangeSelector = xml.TimeRangeSelector;
         if (timeRangeSelector != null && timeRangeSelector.size() > 0)
         {
@@ -351,6 +376,12 @@ class SearchGridTagLib {
     }
     def sgMenuItems = {attrs, body ->
         out << fSgMenuItems(attrs, body())
+    }
+    static def fSgMultiSelectionMenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("MultiSelectionMenuItems", attrs, [], bodyString);
+    }
+    def sgMultiSelectionMenuItems = {attrs, body ->
+        out << fSgMultiSelectionMenuItems(attrs, body())
     }
     static def fSgSubmenuItems(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("SubmenuItems", attrs, [], bodyString)

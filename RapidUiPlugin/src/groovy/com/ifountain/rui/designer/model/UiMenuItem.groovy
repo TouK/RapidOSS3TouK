@@ -35,7 +35,7 @@ class UiMenuItem extends UiElmnt {
                         name: [descr: "Unique name of the menu item", validators: [key: true, matches: "[a-z_A-z]\\w*"]],
                         label: [descr: "The label of the menu item", validators:[nullable:false]],
                         visible: [descr: "The JavaScript expression evaluated on row data to determine whether the item is displayed or not", required: true, type: "Expression"],
-                        type: [validators: [blank: false, nullable: false, inList: ["component", "property", "toolbar"]], isVisible: false]
+                        type: [validators: [blank: false, nullable: false, inList: ["component", "property", "toolbar", "multiple"]], isVisible: false]
                 ],
                 childrenConfiguration: [
                         [

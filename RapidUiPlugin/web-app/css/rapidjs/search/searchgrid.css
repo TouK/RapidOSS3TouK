@@ -131,11 +131,6 @@
     position: relative;
 }
 
-.rcmdb-searchgrid .rcmdb-search-rowselected {
-    background-color: #DDDDFF !important;
-    color: black !important;
-}
-
 .rcmdb-searchgrid .rcmdb-search-cell {
     -moz-box-sizing: border-box;
     -moz-user-focus: normal;

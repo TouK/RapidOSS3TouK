@@ -122,6 +122,20 @@ class UiSearchGrid extends UiComponent {
                                                 [designerType: "MenuItem", isMultiple: true]
                                         ]
                                 ]
+                        ],
+                        [
+                                designerType: "SearchGridMultiSelectionMenuItems",
+                                isMultiple: false,
+                                metaData: [
+                                        help: "SearchGrid MenuItems.html",
+                                        designerType: "SearchGridMultiSelectionMenuItems",
+                                        display: "MultiSelectionMenuItems",
+                                        imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
+                                        imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
+                                        childrenConfiguration: [
+                                                [designerType: "MenuItem", isMultiple: true]
+                                        ]
+                                ]
                         ]
                 ]
         ];
@@ -146,6 +160,7 @@ class UiSearchGrid extends UiComponent {
         def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
         def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};
         def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
+        def multiSelectionMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMultiSelectionMenuItems"};
         def rowColorsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridRowColors"};
         if (timeRangeSelector && timeRangeSelector.size() > 0)
         {
@@ -159,6 +174,10 @@ class UiSearchGrid extends UiComponent {
         }
         menuItemsNode.UiElement.each {
             UiMenuItem.addUiElement(it, searchGrid);
+        }
+        multiSelectionMenuItemsNode.UiElement.each {
+            def menuItem = UiMenuItem.addUiElement(it, searchGrid);
+            menuItem.type = "multiple"
         }
         rowColorsNode.UiElement.each {
             UiRowColor.addUiElement(it, searchGrid);
@@ -180,5 +199,11 @@ class UiSearchGrid extends UiComponent {
 
     public List getColumns() {
         return DesignerSpace.getInstance().getUiElements(UiSearchGridColumn).values().findAll {it.componentId == _designerKey};
+    }
+    public List getRowMenuItems() {
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "component"};
+    }
+     public List getMultiSelectionMenuItems() {
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "multiple"};
     }
 }

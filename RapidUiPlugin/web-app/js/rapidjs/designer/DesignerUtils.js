@@ -86,7 +86,7 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
 
         }
         var menuConfig = {};
-        var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenus':'toolbar'}
+        var menuTypes = {'MenuItems':'node', 'PropertyMenuItems':'property', 'ToolbarMenus':'toolbar', "MultiSelectionMenuItems":"multiple"}
         var componentNodes = this.getComponentNodesOfCurrentTab(xmlData);
         for (var i = 0; i < componentNodes.length; i++) {
             var hasMenu = false;
@@ -94,7 +94,7 @@ YAHOO.rapidjs.designer.DesignerUtils = new function() {
             var compChildNodes = componentNodes[i].childNodes();
             for (var j = 0; j < compChildNodes.length; j++) {
                 var childDisplay = compChildNodes[j].getAttribute(window.designer.treeDisplayAttribute);
-                if (childDisplay == "MenuItems" || childDisplay == "PropertyMenuItems" || childDisplay == "ToolbarMenus") {
+                if (childDisplay == "MenuItems" || childDisplay == "PropertyMenuItems" || childDisplay == "ToolbarMenus" || childDisplay == "MultiSelectionMenuItems") {
                     var menuType = menuTypes[childDisplay];
                     var menuNames = [];
                     if (childDisplay == 'ToolbarMenus') {

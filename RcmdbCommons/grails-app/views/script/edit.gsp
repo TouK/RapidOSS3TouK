@@ -124,7 +124,7 @@
                     </tr>
                     <tr>
                         <td valign="top" class="name" colspan="2">
-                            <g:render template="/common/listToList" model="[id:'allowedGroups', inputName:'allowedGroups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'Allowed Groups', fromListContent:availableGroups, toListContent:cmdbScript?.allowedGroups]"></g:render>
+                            <g:render template="/common/listToList" model="[id:'allowedGroups', inputName:'allowedGroups.id', valueProperty:'id', displayProperty:'name', fromListTitle:'Available Groups', toListTitle:'Allowed Groups', fromListContent:availableGroups, toListContent:allowedGroups]"></g:render>
                         </td>
                     </tr>
                     <tr class="prop" id="staticParamRow">

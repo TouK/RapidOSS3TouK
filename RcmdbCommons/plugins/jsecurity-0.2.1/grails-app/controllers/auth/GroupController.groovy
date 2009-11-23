@@ -96,13 +96,8 @@ class GroupController {
             redirect(action: list)
         }
         else {
-            def availableUsers = RsUser.list();
-            def groupUsers = [:];
-            def users = group.users;
-            users.each {
-                groupUsers[it.username] = it;
-            };
-            availableUsers = availableUsers.findAll {!groupUsers.containsKey(it.username)}
+            def users = group.users.sort{it.username};
+            def availableUsers=availableUsersForGroupUsers(users)
             return [group: group, availableUsers: availableUsers, groupUsers:users]
         }
     }
@@ -159,7 +154,7 @@ class GroupController {
     def create = {
         def group = new Group()
         group.properties = params
-        return ['group': group, availableUsers: RsUser.list(),groupUsers:[]]
+        return ['group': group, availableUsers: RsUser.list([sort:"username"]),groupUsers:[]]
     }
     def addExceptionToError = { exception ->
         if(exception instanceof MessageSourceException)
@@ -217,7 +212,7 @@ class GroupController {
 
     def availableUsersForGroupUsers(users)
     {
-        def availableUsers = RsUser.list();
+        def availableUsers = RsUser.list([sort:"username"]);
         def groupUserNames = [:];
         users.each {
             groupUserNames[it.username] = it;

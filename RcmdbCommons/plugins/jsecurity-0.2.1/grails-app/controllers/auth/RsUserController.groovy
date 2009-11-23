@@ -74,7 +74,7 @@ class RsUserController {
             redirect(action: list)
         }
         else {
-            def userGroups =  rsUser.groups
+            def userGroups =  rsUser.groups.sort{it.name}
             def availableGroups = availableGroupsForUserGroups(userGroups);
             def userChannels=getChannelInformationsBeansForUpdate(rsUser);
             return [rsUser: rsUser, availableGroups: availableGroups,userGroups:userGroups,userChannels:userChannels];
@@ -84,7 +84,7 @@ class RsUserController {
     def availableGroupsForUserGroups(userGroups)
     {
 
-        def availableGroups = Group.list();
+        def availableGroups = Group.list([sort:"name"]);
         def userGroupNames = [:];
         userGroups.each {
             userGroupNames[it.name] = it;
@@ -272,7 +272,7 @@ class RsUserController {
         rsUser.properties = params
         def userChannels=getChannelInformationsBeansForCreate();
 
-        return ['rsUser': rsUser, availableGroups: Group.list(),userGroups:[],userChannels:userChannels];
+        return ['rsUser': rsUser, availableGroups: Group.list([sort:"name"]),userGroups:[],userChannels:userChannels];
     }
 
     def addUserChannelInformationsFromParams={ rsUser,channelTypes ->

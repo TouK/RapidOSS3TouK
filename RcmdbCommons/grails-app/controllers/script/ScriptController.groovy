@@ -73,8 +73,8 @@ class ScriptController {
     def create = {
         def cmdbScript = new CmdbScript()
         cmdbScript.properties = params
-        def availableGroups = Group.list();
-        return ['cmdbScript': cmdbScript, availableGroups:availableGroups]
+        def availableGroups = Group.list([sort:"name"]);
+        return ['cmdbScript': cmdbScript, availableGroups:availableGroups,allowedGroups:[]]
     }
 
     def save = {
@@ -83,12 +83,22 @@ class ScriptController {
         classProperties["listenToRepository"] = params["listenToRepository"] == "on"
         def script = CmdbScript.addScript(classProperties, true)
         if (script.hasErrors()) {
-            render(view: 'create', controller: 'script', model: [cmdbScript: script])
+            render(view: 'create', controller: 'script', model: [cmdbScript: script,availableGroups:availableGroupsForAllowedGroups(classProperties.allowedGroups),allowedGroups:classProperties.allowedGroups])
         }
         else {
             flash.message = SUCCESSFULLY_CREATED
             redirect(action: show, id:script.id)
         }
+    }
+
+    def availableGroupsForAllowedGroups(allowedGroups)
+    {
+        def availableGroups = Group.list([sort:"name"]);
+        def allowedGroupNames = [:];
+        allowedGroups.each {
+            allowedGroupNames[it.name] = it;
+        };
+        return availableGroups.findAll {!allowedGroupNames.containsKey(it.name)}
     }
 
     def delete = {
@@ -112,11 +122,10 @@ class ScriptController {
             redirect(action: list)
         }
         else {
-            List availableGroups = Group.list();
-            Map currentAllowedGroups = [:]
-            cmdbScript.allowedGroups.each{currentAllowedGroups[it.name] = it.name}
-            availableGroups = availableGroups.findAll {!currentAllowedGroups.containsKey (it.name)}
-            return [cmdbScript: cmdbScript, availableGroups:availableGroups]
+            def allowedGroups = cmdbScript.allowedGroups.sort{it.name};
+            def availableGroups=availableGroupsForAllowedGroups(allowedGroups)
+
+            return [cmdbScript: cmdbScript, availableGroups:availableGroups,allowedGroups:allowedGroups]
         }
     }
 
@@ -128,7 +137,7 @@ class ScriptController {
             classProperties["listenToRepository"] = params["listenToRepository"] == "on"
             script = CmdbScript.updateScript(script,classProperties, true);
             if (script.hasErrors()) {
-                render(view: 'edit', model: [cmdbScript: script])
+                render(view: 'edit', model: [cmdbScript: script,availableGroups:availableGroupsForAllowedGroups(classProperties.allowedGroups),allowedGroups:classProperties.allowedGroups])
             }
             else {
                 flash.message = "Script ${params.id} updated"

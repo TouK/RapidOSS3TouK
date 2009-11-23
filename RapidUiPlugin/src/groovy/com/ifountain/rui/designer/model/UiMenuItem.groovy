@@ -27,7 +27,7 @@ class UiMenuItem extends UiElmnt {
                 help: "SearchGrid MenuItem.html",
                 designerType: "MenuItem",
                 displayFromProperty: "name",
-                canBeDeleted: "true",
+                canBeDeleted: true,
                 imageExpanded: "images/rapidjs/designer/view_menu.gif",
                 imageCollapsed: "images/rapidjs/designer/view_menu.gif",
                 propertyConfiguration: [

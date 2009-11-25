@@ -15,8 +15,6 @@ def templatePath="grails-app/templates/message/emailTemplate.gsp";
 //should be a valid email address
 def from="IFountainEmailSender@ifountain.com"
 
-def date=new Date();
-
 def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
@@ -43,7 +41,7 @@ if(ds!=null)
 
                 ds.sendEmail(emailParams)
                 logger.debug("Sended email about RsEvent: ${event.name}")
-                message.update(state:RsMessage.STATE_SENT,sendAt:date.getTime());
+                message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)
@@ -56,7 +54,7 @@ if(ds!=null)
         }
         else
         {
-            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:date.getTime());
+            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:Date.now());
             logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send email. Updated state of message as 4");
         }
 

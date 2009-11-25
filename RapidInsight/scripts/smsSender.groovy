@@ -32,7 +32,7 @@ if(ds!=null)
                 def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
                 ds.sendMessage(message.destination,messageContent)
                 logger.debug("Sended message about RsEvent: ${event.name}")
-                message.update(state:RsMessage.STATE_SENT,sendAt:new Date().getTime());
+                message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());
                 logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
             }
             catch(e)
@@ -45,7 +45,7 @@ if(ds!=null)
         }
         else
         {
-            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:date.getTime());
+            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:Date.now());
             logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send message. Updated state of message as 4");
         }
 

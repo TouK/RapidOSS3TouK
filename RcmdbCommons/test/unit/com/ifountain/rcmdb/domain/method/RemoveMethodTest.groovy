@@ -27,6 +27,8 @@ import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
+import com.ifountain.rcmdb.domain.statistics.GlobalOperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
 * Created by IntelliJ IDEA.
@@ -75,6 +77,33 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
         assertSame(false, RemoveMethodDomainObject.updateCacheCallParams[0][1])
     }
 
+    public void testRemoveObjectWithOperationStatistics(){
+        OperationStatistics.getInstance().reset();
+        RemoveMethodDomainObject objectToBeRemoved = new RemoveMethodDomainObject(id:1, prop1:"prop1Value1");
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1] =  new IdCacheEntry();
+        RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1].setProperties(RemoveMethodDomainObject.class, objectToBeRemoved.id);
+        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, [:]);
+        removeMethod.invoke (objectToBeRemoved, null);
+
+        GlobalOperationStatisticResult result = OperationStatistics.getInstance().getModelStatistic(OperationStatistics.REMOVE_OPERATION_NAME, RemoveMethodDomainObject.name);
+        assertNotNull(result);
+        def resultReport = result.getGeneralReport()
+        assertEquals(1, resultReport.NumberOfOperations)
+        assertTrue(resultReport.TotalDuration > 0)
+
+        result = OperationStatistics.getInstance().getModelStatistic(OperationStatistics.BEFORE_DELETE_OPERATION_NAME, RemoveMethodDomainObject.name);
+        assertNotNull(result);
+        resultReport = result.getGeneralReport()
+        assertEquals(1, resultReport.NumberOfOperations)
+        assertTrue(resultReport.TotalDuration > 0)
+
+        result = OperationStatistics.getInstance().getModelStatistic(OperationStatistics.AFTER_DELETE_OPERATION_NAME, RemoveMethodDomainObject.name);
+        assertNotNull(result);
+        resultReport = result.getGeneralReport()
+        assertEquals(1, resultReport.NumberOfOperations)
+        assertTrue(resultReport.TotalDuration > 0)
+    }
+
     public void testRemoveObjectWithEvents()
     {
         initialize([relation.Relation], []);
@@ -83,14 +112,22 @@ class RemoveMethodTest extends RapidCmdbWithCompassTestCase{
 
         def rel1Object=new Object();
         RemoveMethodDomainObjectWithEvents objectToBeRemoved = new RemoveMethodDomainObjectWithEvents(id:1, prop1:"prop1Value1",rel1:rel1Object);
+        RemoveMethodDomainObjectWithEvents objectDoesNotExist = new RemoveMethodDomainObjectWithEvents(id:2, prop1:"prop1Value2");
         RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1] =  new IdCacheEntry();
         RemoveMethodDomainObject.idCache[objectToBeRemoved.prop1].setProperties(RemoveMethodDomainObject.class, objectToBeRemoved.id);
         def relations=[rel1:new RelationMetaData("rel1","otherrel1",RemoveMethodDomainObject,RemoveMethodDomainObject,RelationMetaData.ONE_TO_ONE)];
 
 
-        RemoveMethod removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, relations);
-        removeMethod.invoke (objectToBeRemoved, null);
+        RemoveMethod removeMethod = new RemoveMethod(objectDoesNotExist.metaClass, relations);
+        removeMethod.invoke (objectDoesNotExist, null);
 
+        assertEquals(0, RemoveMethodDomainObjectWithEvents.unIndexList.size());
+        assertNull(objectDoesNotExist.relationsToBeRemoved)
+        assertEquals(0, RemoveMethodDomainObject.eventCallList.size())
+        assertEquals(0, observer.repositoryChanges.size());
+
+        removeMethod = new RemoveMethod(objectToBeRemoved.metaClass, relations);
+        removeMethod.invoke (objectToBeRemoved, null);
         
         assertSame(objectToBeRemoved, RemoveMethodDomainObjectWithEvents.unIndexList[0][0]);
         assertEquals (rel1Object,objectToBeRemoved.relationsToBeRemoved.rel1[0]);

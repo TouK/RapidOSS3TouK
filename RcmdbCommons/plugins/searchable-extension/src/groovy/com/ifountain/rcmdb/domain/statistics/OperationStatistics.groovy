@@ -30,10 +30,16 @@ import groovy.xml.MarkupBuilder
 class OperationStatistics {
 
     public static final ADD_OPERATION_NAME = "Add";
+    public static final AFTER_INSERT_OPERATION_NAME = "AfterInsert";
+    public static final BEFORE_INSERT_OPERATION_NAME = "BeforeInsert";
     public static final ADD_RELATION_OPERATION_NAME = "AddRelation";
     public static final REMOVE_OPERATION_NAME = "Remove";
+    public static final AFTER_DELETE_OPERATION_NAME = "AfterDelete";
+    public static final BEFORE_DELETE_OPERATION_NAME = "BeforeDelete";
     public static final REMOVE_RELATION_OPERATION_NAME = "RemoveRelation";
     public static final UPDATE_OPERATION_NAME = "Update";
+    public static final AFTER_UPDATE_OPERATION_NAME = "AfterUpdate";
+    public static final BEFORE_UPDATE_OPERATION_NAME = "BeforeUpdate";
     public static final SEARCH_OPERATION_NAME = "Search";
     public static final SEARCH_TOP_OPERATION_NAME = "SearchTop";
     public static final COUNT_HITS_OPERATION_NAME = "CountHits";
@@ -69,18 +75,30 @@ class OperationStatistics {
     public void reset()
     {
         operationStatistics[ADD_OPERATION_NAME] = new GlobalOperationStatisticResult(name:ADD_OPERATION_NAME);
+        operationStatistics[AFTER_INSERT_OPERATION_NAME] = new GlobalOperationStatisticResult(name:AFTER_INSERT_OPERATION_NAME);
+        operationStatistics[BEFORE_INSERT_OPERATION_NAME] = new GlobalOperationStatisticResult(name:BEFORE_INSERT_OPERATION_NAME);
         operationStatistics[REMOVE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:REMOVE_OPERATION_NAME);
+        operationStatistics[AFTER_DELETE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:AFTER_DELETE_OPERATION_NAME);
+        operationStatistics[BEFORE_DELETE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:BEFORE_DELETE_OPERATION_NAME);
         operationStatistics[ADD_RELATION_OPERATION_NAME] = new GlobalOperationStatisticResult(name:ADD_RELATION_OPERATION_NAME);
         operationStatistics[REMOVE_RELATION_OPERATION_NAME] = new GlobalOperationStatisticResult(name:REMOVE_RELATION_OPERATION_NAME);
         operationStatistics[UPDATE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:UPDATE_OPERATION_NAME);
+        operationStatistics[AFTER_UPDATE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:AFTER_UPDATE_OPERATION_NAME);
+        operationStatistics[BEFORE_UPDATE_OPERATION_NAME] = new GlobalOperationStatisticResult(name:BEFORE_UPDATE_OPERATION_NAME);
         operationStatistics[SEARCH_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_OPERATION_NAME);
         operationStatistics[SEARCH_TOP_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_TOP_OPERATION_NAME);
         operationStatistics[COUNT_HITS_OPERATION_NAME] = new GlobalOperationStatisticResult(name:COUNT_HITS_OPERATION_NAME);
         modelStatistics[ADD_OPERATION_NAME] = [:];
+        modelStatistics[AFTER_INSERT_OPERATION_NAME] = [:];
+        modelStatistics[BEFORE_INSERT_OPERATION_NAME] = [:];
         modelStatistics[REMOVE_OPERATION_NAME] = [:];
+        modelStatistics[BEFORE_DELETE_OPERATION_NAME] = [:];
+        modelStatistics[AFTER_DELETE_OPERATION_NAME] = [:];
         modelStatistics[ADD_RELATION_OPERATION_NAME] = [:];
         modelStatistics[REMOVE_RELATION_OPERATION_NAME] = [:];
         modelStatistics[UPDATE_OPERATION_NAME] = [:];
+        modelStatistics[AFTER_UPDATE_OPERATION_NAME] = [:];
+        modelStatistics[BEFORE_UPDATE_OPERATION_NAME] = [:];
         modelStatistics[SEARCH_OPERATION_NAME] = [:];
         modelStatistics[SEARCH_TOP_OPERATION_NAME] = [:];
         modelStatistics[COUNT_HITS_OPERATION_NAME] = [:];
@@ -122,13 +140,13 @@ class OperationStatistics {
         }
     }
 
-    private GlobalOperationStatisticResult getModelStatistic(String operationType, String modelName)
+    public GlobalOperationStatisticResult getModelStatistic(String operationType, String modelName)
     {
         Map modelStatisticsOfOperation = modelStatistics[operationType];
         GlobalOperationStatisticResult modelStatistic = modelStatisticsOfOperation[modelName]
         if(modelStatistic == null)
         {
-            modelStatistic = new GlobalOperationStatisticResult();
+            modelStatistic = new GlobalOperationStatisticResult(name:operationType);
             modelStatisticsOfOperation[modelName] = modelStatistic;
         }
         return modelStatistic;
@@ -151,15 +169,6 @@ class GlobalOperationStatisticResult
         return [Operation:name, NumberOfOperations:numberOfOperationsPerformed, TotalDuration:totalDurationInSecs, AvarageDuration:totalDurationInSecs/numberOfOperationsPerformed];
     }
 
-    public Map getClassBasedStatistics()
-    {
-        def classStatisticsList = [];
-        setModelStatistics.each{String modelName, GlobalOperationStatisticResult result->
-            classStatisticsList.add(result.get);
-        }
-        def totalDurationInSecs = totalOperationDuration/Math.pow(10, 9);
-        return [Operation:name, NumberOfOperations:numberOfOperationsPerformed, TotalDuration:totalDurationInSecs, AvarageDuration:totalDurationInSecs/numberOfOperationsPerformed];
-    }
 }
 class OperationStatisticResult
 {

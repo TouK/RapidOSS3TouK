@@ -28,13 +28,13 @@ import com.ifountain.rcmdb.domain.cache.IdCache;
  * Time: 5:57:30 PM
  * To change this template use File | Settings | File Templates.
  */
-class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod{
+class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod {
     List cascadedRelations;
     public RemoveAllMatchingMethod(MetaClass mcp, Map relations) {
-        super(mcp);    //To change body of overridden methods use File | Settings | File Templates.
+        super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         cascadedRelations = [];
-        relations.each{relationName, RelationMetaData metaData->
-            if(metaData.isCascade)
+        relations.each {relationName, RelationMetaData metaData ->
+            if (metaData.isCascade)
             {
                 cascadedRelations.add(metaData);
             }
@@ -47,20 +47,20 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod{
 
 
 
-    protected Object _invoke(Object clazz, Object[] arguments) {
+    protected Map _invoke(Object clazz, Object[] arguments) {
         def query = arguments[0];
 
-        clazz.'searchEvery'(query, [raw:{hits, session->
-            hits.iterator().each{hit->
+        clazz.'searchEvery'(query, [raw: {hits, session ->
+            hits.iterator().each {hit ->
                 def resource = hit.getResource();
                 def id = resource.getObject("id");
                 session.delete(resource);
-                IdCache.get (id).clear();
-                cascadedRelations.each{RelationMetaData metaData->
+                IdCache.get(id).clear();
+                cascadedRelations.each {RelationMetaData metaData ->
                     def cascadedObjectsIds = RelationUtils.getRelatedObjectsIdsByObjectId(id, metaData.getName(), metaData.getOtherSideName());
-                    cascadedObjectsIds.each{cascadedObjectId, cascadedNumberOfObjects->
-                        def cascadedObject = metaData.getOtherSideCls().'get'(id:cascadedObjectId)
-                        if(cascadedObject != null)
+                    cascadedObjectsIds.each {cascadedObjectId, cascadedNumberOfObjects ->
+                        def cascadedObject = metaData.getOtherSideCls().'get'(id: cascadedObjectId)
+                        if (cascadedObject != null)
                         {
                             cascadedObject.remove();
                         }
@@ -69,7 +69,11 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod{
                 RelationUtils.removeExistingRelationsById(id)
             }
         }])
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null; //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    protected Object executeAfterTriggers(Map triggersMap) {
+        return null;
     }
 
 }

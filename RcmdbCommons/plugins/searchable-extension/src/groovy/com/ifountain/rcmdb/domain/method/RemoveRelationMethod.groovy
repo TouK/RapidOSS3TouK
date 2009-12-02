@@ -36,7 +36,7 @@ import com.ifountain.rcmdb.domain.cache.IdCacheEntry
  * Time: 1:42:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
+class RemoveRelationMethod extends AbstractRapidDomainWriteMethod {
 
     def relations;
     public RemoveRelationMethod(MetaClass mcp, Map relations) {
@@ -44,37 +44,37 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
         this.relations = relations;
     }
 
-    protected Object _invoke(Object domainObject, Object[] arguments) {
-        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+    protected Map _invoke(Object domainObject, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
         statistics.start();
         def props = arguments[0];
         def source = arguments[1];
         IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject);
-        if(!existingInstanceEntry.exist())
+        if (!existingInstanceEntry.exist())
         {
-            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);
-            return domainObject;
+            ValidationUtils.addObjectError(domainObject.errors, "default.not.exist.message", []);
+            return [domainObject:domainObject];
         }
         long numberOfRemovedRelations = 0;
         boolean isChanged = false;
-        props.each{key,value->
+        props.each {key, value ->
             RelationMetaData relation = relations.get(key);
             def storage = [];
-            if(relation)
+            if (relation)
             {
-                if(value)
+                if (value)
                 {
-                    value = value instanceof Collection?value:[value]
+                    value = value instanceof Collection ? value : [value]
                     def validValues = [];
                     Errors errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
-                    value.each{relatedObject->
-                        if(!relation.otherSideCls.isInstance(relatedObject))
+                    value.each {relatedObject ->
+                        if (!relation.otherSideCls.isInstance(relatedObject))
                         {
-                            ValidationUtils.addFieldError (errors, key, relatedObject, "rapidcmdb.invalid.relation.type", [relatedObject.class.name, relation.otherSideCls.name]);
+                            ValidationUtils.addFieldError(errors, key, relatedObject, "rapidcmdb.invalid.relation.type", [relatedObject.class.name, relation.otherSideCls.name]);
                         }
-                        else if(relatedObject.id == null)
+                        else if (relatedObject.id == null)
                         {
-                            ValidationUtils.addFieldError (errors, key, relatedObject, "rapidcmdb.relation.with.nonpersistant.object", [relatedObject]);
+                            ValidationUtils.addFieldError(errors, key, relatedObject, "rapidcmdb.relation.with.nonpersistant.object", [relatedObject]);
                         }
                         else
                         {
@@ -82,7 +82,7 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
                         }
                     }
                     value = validValues;
-                    if(errors.hasErrors())
+                    if (errors.hasErrors())
                     {
                         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
                     }
@@ -93,7 +93,12 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod{
         }
         statistics.stop();
         statistics.numberOfOperations = numberOfRemovedRelations;
-        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
-        return domainObject;
+        OperationStatistics.getInstance().addStatisticResult(OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
+        return [domainObject:domainObject];
     }
+
+    protected Object executeAfterTriggers(Map triggersMap) {
+        return triggersMap?.domainObject
+    }
+
 }

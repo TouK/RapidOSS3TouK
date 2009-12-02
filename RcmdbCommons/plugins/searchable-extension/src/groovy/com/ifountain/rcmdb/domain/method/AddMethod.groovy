@@ -19,22 +19,17 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.IdGenerator
-import com.ifountain.rcmdb.converter.RapidConvertUtils
-import com.ifountain.rcmdb.domain.util.RelationMetaData
-import com.ifountain.rcmdb.domain.util.ValidationUtils
-import org.apache.commons.beanutils.ConversionException
-import org.springframework.validation.BeanPropertyBindingResult
-import org.springframework.validation.Errors
-import org.springframework.validation.Validator
-import com.ifountain.rcmdb.util.RapidCMDBConstants
-import com.ifountain.rcmdb.domain.util.RelationMetaData
-import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
-import com.ifountain.rcmdb.domain.statistics.OperationStatistics
-import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
-import com.ifountain.rcmdb.domain.validator.IRapidValidator
 import com.ifountain.rcmdb.domain.ObjectProcessor
 import com.ifountain.rcmdb.domain.cache.IdCacheEntry
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.util.RelationMetaData
+import com.ifountain.rcmdb.domain.util.ValidationUtils
+import com.ifountain.rcmdb.domain.validator.DomainClassValidationWrapper
+import com.ifountain.rcmdb.domain.validator.IRapidValidator
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.apache.log4j.Logger
+import org.springframework.validation.BeanPropertyBindingResult
 
 class AddMethod extends AbstractRapidDomainWriteMethod
 {
@@ -51,21 +46,21 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         super(mcp);
         this.keys = keys;
         this.validator = validator;
-        def instance = mcp.theClass.newInstance ();
-        allFields.each{String fieldName, field->
+        def instance = mcp.theClass.newInstance();
+        allFields.each {String fieldName, field ->
             fieldTypes[fieldName] = field.type;
             defaultValues[fieldName] = instance[fieldName];
         }
         this.relations = relations
-        this.rootDomainClass=rootDomainClass;
+        this.rootDomainClass = rootDomainClass;
         getMethod = new GetMethod(mc, keys, relations);
     }
 
     public String getLockName(Object clazz, Object[] args) {
-        if(keys.isEmpty()) return null;
+        if (keys.isEmpty()) return null;
         Map params = args[0];
         StringBuffer bf = new StringBuffer(rootDomainClass.name);
-        keys.each{keyPropName->
+        keys.each {keyPropName ->
             bf.append(params[keyPropName]);
         }
         return bf.toString();
@@ -73,25 +68,28 @@ class AddMethod extends AbstractRapidDomainWriteMethod
 
 
 
-    protected Object _invoke(Object clazz, Object[] arguments) {
-        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+    protected Map _invoke(Object clazz, Object[] arguments) {
+        def triggersMap = [shouldCallAfterTriggers: true];
+        OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
         statistics.start();
         def props = arguments[0];
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
-        IdCacheEntry existingInstanceEntry = clazz.getCacheEntry(props);//
+        IdCacheEntry existingInstanceEntry = clazz.getCacheEntry(props); //
         def instanceOfError = false;
-        if(!willReturnErrorIfExist && existingInstanceEntry.exist)
+        if (!willReturnErrorIfExist && existingInstanceEntry.exist)
         {
-            if(clazz.isAssignableFrom(existingInstanceEntry.alias) )
+            if (clazz.isAssignableFrom(existingInstanceEntry.alias))
             {
                 def existingInstance = getMethod.invoke(clazz, [props, false] as Object[]);
-                if(existingInstance == null)
+                if (existingInstance == null)
                 {
                     def idCacheEntry = clazz.getCacheEntry(props);
-                    logger.error ("There is a mismatch between IdCache and repository. \nRepository instance:${existingInstance}\nSearch Props:${props} \nSearch class:${clazz} \nIdCacheEntryExist:${idCacheEntry?idCacheEntry.exist:"<null>"}");
+                    logger.error("There is a mismatch between IdCache and repository. \nRepository instance:${existingInstance}\nSearch Props:${props} \nSearch class:${clazz} \nIdCacheEntryExist:${idCacheEntry ? idCacheEntry.exist : "<null>"}");
                 }
-                return existingInstance.update(props);
+                triggersMap.shouldCallAfterTriggers = false;
+                triggersMap.domainObject = existingInstance.update(props);
+                return triggersMap;
             }
             else
             {
@@ -100,20 +98,21 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         }
 
         def sampleBean = clazz.newInstance()
+        triggersMap.domainObject = sampleBean;
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];
         def addedprops = [:]
         def nullProps = [];
-        props.each{propName,value->
+        props.each {propName, value ->
             RelationMetaData relation = relations.get(propName);
-            if(!relation)
+            if (!relation)
             {
                 def fieldType = fieldTypes[propName];
-                if(fieldType)
+                if (fieldType)
                 {
-                    if(value == null)
+                    if (value == null)
                     {
-                        nullProps.add(propName);    
+                        nullProps.add(propName);
                     }
                     MethodUtils.convertAndSetDomainObjectProperty(errors, sampleBean, propName, fieldType, value);
                 }
@@ -125,58 +124,69 @@ class AddMethod extends AbstractRapidDomainWriteMethod
                 addedprops[propName] = ValidationUtils.getValidationRelationValue(value, relationMetaData);
             }
         }
-        if(willReturnErrorIfExist && existingInstanceEntry.exist)
+        if (willReturnErrorIfExist && existingInstanceEntry.exist)
         {
             ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstanceEntry.id]);
         }
-        else if(instanceOfError)
+        else if (instanceOfError)
         {
-            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name,existingInstanceEntry.class.name]);
+            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name, existingInstanceEntry.class.name]);
         }
 
-        if(errors.hasErrors()){
+        if (errors.hasErrors()) {
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
-            return sampleBean;
+            return triggersMap;
         }
-        def updatedPropsFromBeforeInsert=EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
-        validator.validate (new DomainClassValidationWrapper(sampleBean, addedprops), sampleBean, errors)
+        statistics.stop();
+        OperationStatisticResult beforeInsertStatistics = new OperationStatisticResult(model: mc.theClass.name);
+        beforeInsertStatistics.start();
+        def updatedPropsFromBeforeInsert = EventTriggeringUtils.triggerEvent(sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
+        OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_INSERT_OPERATION_NAME, beforeInsertStatistics);
+        statistics.start();
+        validator.validate(new DomainClassValidationWrapper(sampleBean, addedprops), sampleBean, errors)
 
-        if(errors. hasErrors())
+        if (errors.hasErrors())
         {
             sampleBean.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
         }
         else
         {
             sampleBean.setProperty("id", IdGenerator.getInstance().getNextId(), false);
-            nullProps.each{propName->
-                if(sampleBean.getProperty(propName) == null)
+            nullProps.each {propName ->
+                if (sampleBean.getProperty(propName) == null)
                 {
-                    sampleBean.setProperty (propName, defaultValues[propName], false);
+                    sampleBean.setProperty(propName, defaultValues[propName], false);
                 }
             }
-            updatedPropsFromBeforeInsert.each{ propName,oldPropValue ->
-                if(sampleBean.getProperty(propName) == null)
+            updatedPropsFromBeforeInsert.each {propName, oldPropValue ->
+                if (sampleBean.getProperty(propName) == null)
                 {
-                    sampleBean.setProperty (propName, defaultValues[propName], false);
+                    sampleBean.setProperty(propName, defaultValues[propName], false);
                 }
             }
 
             sampleBean.setProperty(RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, new Date(), false);
-            CompassMethodInvoker.index (mc, sampleBean);
+            CompassMethodInvoker.index(mc, sampleBean);
             sampleBean.updateCacheEntry(sampleBean, true);
-            if(!relatedInstances.isEmpty())
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.ADD_OPERATION_NAME, statistics);
+            if (!relatedInstances.isEmpty())
             {
-                statistics.stop();
                 sampleBean.addRelation(relatedInstances);
-                statistics.start();
             }
-            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.AFTER_INSERT_EVENT);
-            EventTriggeringUtils.triggerEvent (sampleBean, EventTriggeringUtils.ONLOAD_EVENT);
-            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_INSERT_EVENT, sampleBean);
-            statistics.stop();
-            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, statistics);
         }
-        return sampleBean;
+        return triggersMap;
     }
 
+    protected Object executeAfterTriggers(Map triggersMap) {
+        def domainObject = triggersMap.domainObject 
+        if (!domainObject.hasErrors() && triggersMap.shouldCallAfterTriggers) {
+            OperationStatisticResult afterInsertStatistics = new OperationStatisticResult(model: mc.theClass.name);
+            afterInsertStatistics.start();
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_INSERT_EVENT);
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_INSERT_EVENT, domainObject);
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_INSERT_OPERATION_NAME, afterInsertStatistics);
+        }
+        return domainObject;
+    }
 }

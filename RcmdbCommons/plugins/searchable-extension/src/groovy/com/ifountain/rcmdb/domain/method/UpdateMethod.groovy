@@ -47,7 +47,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
     public UpdateMethod(MetaClass mcp, IRapidValidator validator, Map allFields, Map relations) {
         super(mcp); //To change body of overridden methods use File | Settings | File Templates.
         this.validator = validator;
-        def instance = mcp.theClass.newInstance ();
+        def instance = mcp.theClass.newInstance();
         allFields.each {fieldName, field ->
             fieldTypes[fieldName] = field.type;
             defaultValues[fieldName] = instance[fieldName];
@@ -55,7 +55,8 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         this.relations = relations;
     }
 
-    protected Object _invoke(Object domainObject, Object[] arguments) {
+    protected Map _invoke(Object domainObject, Object[] arguments) {
+        def triggersMap = [shouldCallAfterTriggers: false, domainObject: domainObject]
         OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
         statistics.start();
         def props = arguments[0];
@@ -63,11 +64,11 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(domainObject, domainObject.getClass().getName());
         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
-        IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject);//
-        if(!existingInstanceEntry.exist)
+        IdCacheEntry existingInstanceEntry = mc.theClass.getCacheEntry(domainObject); //
+        if (!existingInstanceEntry.exist)
         {
-            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);
-            return domainObject;
+            ValidationUtils.addObjectError(domainObject.errors, "default.not.exist.message", []);
+            return triggersMap;
         }
         def relationToBeAddedMap = [:]
         def updatedPropsOldValues = [:];
@@ -83,7 +84,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (fieldType)
                 {
                     def propValueBeforeUpdate = domainObject.getProperty(propName);
-                    if(value == null)
+                    if (value == null)
                     {
                         nullProps.add(propName);
                     }
@@ -115,8 +116,14 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
         if (willBeIndexed || willRelationsBeIndexed)
         {
             def triggeredEventParams = [:];
+            triggersMap.triggeredEventParams = triggeredEventParams;
             triggeredEventParams[UPDATED_PROPERTIES] = updatedPropsOldValues;
+            statistics.stop();
+            OperationStatisticResult beforeUpdateStatistics = new OperationStatisticResult(model: mc.theClass.name);
+            beforeUpdateStatistics.start();
             def updatedPropsFromBeforeUpdate = EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_UPDATE_OPERATION_NAME, beforeUpdateStatistics);
+            statistics.start();
             if (!errors.hasErrors())
             {
                 validator.validate(new DomainClassValidationWrapper(domainObject, updatedRelations), domainObject, errors)
@@ -126,15 +133,15 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 if (willBeIndexed)
                 {
 
-                    nullProps.each{propName->
+                    nullProps.each {propName ->
                         //if nullProp is updated in beforeUpdate it will be handled below with  updatedPropsFromBeforeUpdate
-                        if(! (updatedPropsFromBeforeUpdate?.containsKey(propName)) && domainObject.getProperty(propName) == null)
+                        if (!(updatedPropsFromBeforeUpdate?.containsKey(propName)) && domainObject.getProperty(propName) == null)
                         {
-                            domainObject.setProperty (propName, defaultValues[propName], false);
+                            domainObject.setProperty(propName, defaultValues[propName], false);
                             //property is removed from updatedPropsOldValues if its not changed compared to the object from repo
-                            if(updatedPropsOldValues.containsKey(propName))
+                            if (updatedPropsOldValues.containsKey(propName))
                             {
-                                if(domainObject.getProperty(propName) == updatedPropsOldValues[propName])
+                                if (domainObject.getProperty(propName) == updatedPropsOldValues[propName])
                                 {
                                     updatedPropsOldValues.remove(propName);
                                 }
@@ -142,40 +149,40 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                         }
                     }
                     //handling props changed in before update
-                    updatedPropsFromBeforeUpdate.each{ String propName,Object oldPropValue ->
-                        if(!relations.containsKey(propName)) //non relation props
+                    updatedPropsFromBeforeUpdate.each {String propName, Object oldPropValue ->
+                        if (!relations.containsKey(propName)) //non relation props
                         {
-                            if(domainObject.getProperty(propName) == null)
+                            if (domainObject.getProperty(propName) == null)
                             {
-                                domainObject.setProperty (propName, defaultValues[propName], false);
+                                domainObject.setProperty(propName, defaultValues[propName], false);
                             }
                             //property is removed from updatedPropsOldValues if its not changed compared to the object from repo
                             //if changed its put to updatedPropsOldValues
-                            if(updatedPropsOldValues.containsKey(propName))
+                            if (updatedPropsOldValues.containsKey(propName))
                             {
-                                if(domainObject.getProperty(propName) == updatedPropsOldValues[propName])
+                                if (domainObject.getProperty(propName) == updatedPropsOldValues[propName])
                                 {
                                     updatedPropsOldValues.remove(propName);
                                 }
                                 else
                                 {
-                                   updatedPropsOldValues[propName] = oldPropValue;
+                                    updatedPropsOldValues[propName] = oldPropValue;
                                 }
                             }
                             else //if only changed in beforeUpdate added to  updatedPropsOldValues
                             {
-                               updatedPropsOldValues[propName] = oldPropValue;
+                                updatedPropsOldValues[propName] = oldPropValue;
                             }
 
                         }
-                        else  //if relation changed in beforeUpdate added to  updatedPropsOldValues
+                        else //if relation changed in beforeUpdate added to  updatedPropsOldValues
                         {
-                           updatedPropsOldValues[propName] = oldPropValue;
+                            updatedPropsOldValues[propName] = oldPropValue;
                         }
                     }
                     //check if there is still non relation properties that are changed against the original object
-                    willBeIndexed=(updatedPropsOldValues.find{relations.containsKey(it.key)==false}!=null)                    
-                    if(willBeIndexed)
+                    willBeIndexed = (updatedPropsOldValues.find {relations.containsKey(it.key) == false} != null)
+                    if (willBeIndexed)
                     {
                         existingInstanceEntry.clear();
                         domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
@@ -186,19 +193,27 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                 }
                 if (willBeIndexed || willRelationsBeIndexed)
                 {
-                    statistics.stop();
+                    triggersMap.shouldCallAfterTriggers = true;
+                    OperationStatistics.getInstance().addStatisticResult(OperationStatistics.UPDATE_OPERATION_NAME, statistics);
                     domainObject.removeRelation(relationToBeRemovedMap);
                     domainObject.addRelation(relationToBeAddedMap);
-                    statistics.start();
-
-                    EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
-                    EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
-                    ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, updatedPropsOldValues)
-                    OperationStatistics.getInstance().addStatisticResult(OperationStatistics.UPDATE_OPERATION_NAME, statistics);
                 }
             }
         }
-        return domainObject;
+        return triggersMap;
     }
 
+    protected Object executeAfterTriggers(Map triggersMap) {
+        def domainObject = triggersMap.domainObject;
+        if (!domainObject.hasErrors() && triggersMap.shouldCallAfterTriggers) {
+            OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
+            statistics.start();
+            def triggeredEventParams = triggersMap.triggeredEventParams;
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, triggeredEventParams[UPDATED_PROPERTIES])
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_UPDATE_OPERATION_NAME, statistics);
+        }
+        return domainObject
+    }
 }

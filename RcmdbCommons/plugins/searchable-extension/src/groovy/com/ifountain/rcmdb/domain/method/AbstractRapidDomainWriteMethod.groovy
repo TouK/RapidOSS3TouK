@@ -21,17 +21,18 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
     public final Object invoke(Object domainObject, Object[] argumentsp) {
         String lockName = getLockName(domainObject, argumentsp);
         def isFiltersEnabledBeforeExecutingThisMethod = FilterManager.isFiltersEnabled();
-        def executionClosure = {
-            FilterManager.setFiltersEnabled (false);
-            try{
-                def res = _invoke(domainObject, argumentsp);
-                return res;
-            }finally{
-                FilterManager.setFiltersEnabled (isFiltersEnabledBeforeExecutingThisMethod);
+        FilterManager.setFiltersEnabled(false);
+        try {
+            def executionClosure = {
+                return _invoke(domainObject, argumentsp);
             }
+            def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
+            Map triggersMap = DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
+            return executeAfterTriggers(triggersMap);
         }
-        def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
-        return DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
+        finally {
+            FilterManager.setFiltersEnabled(isFiltersEnabledBeforeExecutingThisMethod);
+        }
     }
 
     public String getLockName(Object domainObject, Object[] arguments) {
@@ -50,6 +51,7 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
         return bf.toString();
     }
 
-    protected abstract Object _invoke(Object domainObject, Object[] arguments);
+    protected abstract Map _invoke(Object domainObject, Object[] arguments);
+    protected abstract Object executeAfterTriggers(Map triggersMap);
 
 }

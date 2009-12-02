@@ -30,66 +30,82 @@ import com.ifountain.rcmdb.domain.ObjectProcessor
  * Time: 1:33:26 PM
  * To change this template use File | Settings | File Templates.
  */
-class RemoveMethod extends AbstractRapidDomainWriteMethod{
+class RemoveMethod extends AbstractRapidDomainWriteMethod {
     def relations;
     public RemoveMethod(MetaClass mcp, Map relations) {
         super(mcp);
         this.relations = relations;
     }
 
-    protected Object _invoke(Object domainObject, Object[] arguments) {
-        OperationStatisticResult statistics = new OperationStatisticResult(model:mc.theClass.name);
+    protected Map _invoke(Object domainObject, Object[] arguments) {
+        def triggersMap = [shouldCallAfterTriggers: true, domainObject: domainObject];
+        OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
         statistics.start();
         def cacheEntry = domainObject.getCacheEntry(domainObject);
-        if(!cacheEntry.exist())
+        if (!cacheEntry.exist())
         {
-            ValidationUtils.addObjectError (domainObject.errors, "default.not.exist.message", []);            
+            ValidationUtils.addObjectError(domainObject.errors, "default.not.exist.message", []);
+            triggersMap.shouldCallAfterTriggers = false;
+            return triggersMap;
         }
         else
         {
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
-
+            statistics.stop();
+            OperationStatisticResult beforeDeleteStatistics = new OperationStatisticResult(model: mc.theClass.name);
+            beforeDeleteStatistics.start();
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_DELETE_OPERATION_NAME, beforeDeleteStatistics);
+            statistics.start();
             def cascadedObjectsToBeRemoved = [];
             def relsToBeRemoved = [:]
-            relations.each{relationName,relation->
+            relations.each {relationName, relation ->
                 def relatedObject = domainObject[relationName];
-                if(relatedObject instanceof Collection)
+                if (relatedObject instanceof Collection)
                 {
                     relsToBeRemoved[relationName] = relatedObject;
-                    if(relation.isCascade)
+                    if (relation.isCascade)
                     {
                         cascadedObjectsToBeRemoved.addAll(relatedObject);
                     }
                 }
-                else if(relatedObject != null)
+                else if (relatedObject != null)
                 {
                     relsToBeRemoved[relationName] = [relatedObject];
-                    if(relation.isCascade)
+                    if (relation.isCascade)
                     {
                         cascadedObjectsToBeRemoved.add(relatedObject);
                     }
                 }
 
             }
-            if(!relsToBeRemoved.isEmpty())
+            if (!relsToBeRemoved.isEmpty())
             {
                 domainObject.removeRelation(relsToBeRemoved);
             }
-            cascadedObjectsToBeRemoved.each{
+            cascadedObjectsToBeRemoved.each {
                 it.remove();
             }
 
             CompassMethodInvoker.unindex(mc, domainObject);
             domainObject.updateCacheEntry(domainObject, false);
-            EventTriggeringUtils.triggerEvent (domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
-            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_DELETE_EVENT, domainObject)
-            statistics.stop();
-            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
-            if(!relsToBeRemoved.isEmpty())
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.REMOVE_OPERATION_NAME, statistics);
+            if (!relsToBeRemoved.isEmpty())
             {
                 RelationUtils.removeExistingRelationsById(domainObject.id);
             }
+            return triggersMap;
         }
+    }
+    protected Object executeAfterTriggers(Map triggersMap) {
+        def domainObject = triggersMap.domainObject;
+        if (triggersMap.shouldCallAfterTriggers) {
+            OperationStatisticResult afterDeleteStatistics = new OperationStatisticResult(model: mc.theClass.name);
+            afterDeleteStatistics.start();
+            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
+            ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_DELETE_EVENT, domainObject)
+            OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_DELETE_OPERATION_NAME, afterDeleteStatistics);
+        }
+        return domainObject;
     }
 
 }

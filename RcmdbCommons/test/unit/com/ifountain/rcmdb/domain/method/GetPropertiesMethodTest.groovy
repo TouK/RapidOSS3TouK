@@ -167,7 +167,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsInsertedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -175,7 +175,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsUpdatedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -338,7 +338,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsInsertedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -346,7 +346,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsUpdatedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -471,7 +471,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsInsertedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -479,7 +479,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsUpdatedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -532,7 +532,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsInsertedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -540,7 +540,7 @@ class GetPropertiesMethodTest extends RapidCmdbTestCase {
         assertEquals("rsUpdatedAt", prop.name);
         assertFalse(prop.isKey);
         assertFalse(prop.isRelation);
-        assertEquals(Date, prop.type);
+        assertEquals(Long, prop.type);
         assertFalse(prop.isOperationProperty);
         assertFalse(prop.isFederated);
 
@@ -557,9 +557,9 @@ class GetPropertiesMethodDomainObject
     Long id;
     Long version;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     String prop1;
     String prop2;
     String prop3;
@@ -657,9 +657,9 @@ class GetPropertiesMethodIgnorePropertyDomainObject
     Long id;
     Long version;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     String prop1;
     String prop2;
     String prop3;
@@ -715,9 +715,9 @@ class GetPropertiesMethodIgnoreStaticPropertyDomainObject
     Long id;
     Long version;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     String prop1;
     String prop2;
     String prop3;

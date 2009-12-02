@@ -33,9 +33,9 @@ class RsTicket {
     
     Long version ;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     
     Object __operation_class__ ;
     

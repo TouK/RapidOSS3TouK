@@ -34,8 +34,8 @@ class CompassTestObject {
     static relations = [:]
     Long id
     Long version
-    Date rsInsertedAt = new Date(0);
-    Date rsUpdatedAt  = new Date(0);
+    Long rsInsertedAt =0;
+    Long rsUpdatedAt =0;
     String prop1 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";
     String prop2 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";
     String prop3 = "awdaskdkalsjdklasdlkjaslkdjaslkdjlaksjdklasjdlkasjdlkasdlkjsadjlksdskaldksladjksa";

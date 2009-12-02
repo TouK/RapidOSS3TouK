@@ -36,8 +36,8 @@ class SearchQueryGroup {
     
     Long id;
     Long version;
-    Date rsInsertedAt = new Date(0);
-    Date rsUpdatedAt  = new Date(0);
+    Long rsInsertedAt =0;
+    Long rsUpdatedAt =0;
     String username;
     Boolean expanded = false;
     String rsOwner = "p"

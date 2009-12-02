@@ -27,8 +27,8 @@ class ModelRelation {
      public static String ONE = "One";
      public static String MANY = "Many";
      Model firstModel;
-    Date rsInsertedAt = new Date(0);
-    Date rsUpdatedAt  = new Date(0);
+    Long rsInsertedAt =0;
+    Long rsUpdatedAt =0;
      String rsOwner = "p"
      Model secondModel;
      String firstName;

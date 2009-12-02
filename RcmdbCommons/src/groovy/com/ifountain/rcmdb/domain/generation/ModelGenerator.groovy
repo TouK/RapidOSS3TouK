@@ -436,8 +436,8 @@ class ModelMetaData
         {
             propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.IDENTITY];
             propertyList += [type:Long.simpleName, name:GrailsDomainClassProperty.VERSION];
-            propertyList += [type:Date.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, defaultValue:"new Date(0)"];
-            propertyList += [type:Date.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, defaultValue:"new Date(0)"];
+            propertyList += [type:Long.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME, defaultValue:"0"];
+            propertyList += [type:Long.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, defaultValue:"0"];
             propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME];
             propertyList += [type:Object.simpleName, name:com.ifountain.rcmdb.util.RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
             constraints[com.ifountain.rcmdb.util.RapidCMDBConstants.OPERATION_PROPERTY_NAME] = ["${ConstrainedProperty.NULLABLE_CONSTRAINT}":true];

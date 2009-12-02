@@ -102,9 +102,9 @@ class AddMethodTest extends RapidCmdbTestCase {
         def prevId = addedObject.id;
         def insertedAt = addedObject.rsInsertedAt;
         def updatedAt = addedObject.rsUpdatedAt;
-        assertEquals(0, updatedAt.getTime());
-        assertTrue(insertedAt.getTime() > 0);
-        assertTrue(insertedAt.getTime() <= System.currentTimeMillis() && insertedAt.getTime() >= System.currentTimeMillis() - 3000);
+        assertEquals(0, updatedAt);
+        assertTrue(insertedAt > 0);
+        assertTrue(insertedAt <= System.currentTimeMillis() && insertedAt >= System.currentTimeMillis() - 3000);
 
         AddMethodDomainObject1.indexList.clear();
         AddMethodDomainObject1.idCache.clear();
@@ -586,8 +586,8 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     Boolean booleanProp;
     String nullableProp = "defaultValue";
     long id;
-    Date rsInsertedAt = new Date(0);
-    Date rsUpdatedAt = new Date(0);
+    Long rsInsertedAt =0;
+    Long rsUpdatedAt =0;
     def static searchWithoutTriggering(queryClosure)
     {
         AddMethodDomainObject1.query = queryClosure;

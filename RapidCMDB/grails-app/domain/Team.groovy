@@ -33,9 +33,9 @@ class Team {
     
     String name ="";
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     Employee managedBy ;
     org.springframework.validation.Errors errors ;
     Object __operation_class__;

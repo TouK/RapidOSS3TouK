@@ -22,9 +22,9 @@ class RolePermissionRel {
         except=["permission", "role", "errors", "__operation_class__", "__dynamic_property_storage__"]
      };
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     Role role
     Permission permission
     String target

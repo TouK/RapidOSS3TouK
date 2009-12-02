@@ -185,7 +185,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
                     if (willBeIndexed)
                     {
                         existingInstanceEntry.clear();
-                        domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, new Date(), false);
+                        domainObject.setProperty(RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME, System.currentTimeMillis(), false);
                         domainObject.index(domainObject);
                         domainObject.updateCacheEntry(domainObject, true);
                     }

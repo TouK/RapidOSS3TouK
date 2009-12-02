@@ -18,9 +18,9 @@ class Cache {
     Object __operation_class__ ;
     Object __dynamic_property_storage__ ;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
 
     static constraints = {
         __operation_class__(nullable:true)

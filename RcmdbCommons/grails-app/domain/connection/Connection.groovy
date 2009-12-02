@@ -26,9 +26,9 @@ public class Connection {
     Long id;
     Long version=0;
 
-    Date rsInsertedAt = new Date(0);
+    Long rsInsertedAt =0;
 
-    Date rsUpdatedAt  = new Date(0);
+    Long rsUpdatedAt =0;
     String name = "";
     String rsOwner = "p"
     String connectionClass = "";

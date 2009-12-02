@@ -31,6 +31,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RsUser, RsUserOperations)
         SessionManager.destroyInstance();
         SessionManager.getInstance().addSessionListener(new FilterSessionListener());
+        UserConfigurationSpace.getInstance().initialize();
     }
 
     public void tearDown() {

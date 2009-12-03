@@ -95,14 +95,14 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(AddMethodDomainObject1, cacheEntry.alias);
         assertEquals(addedObject.id, cacheEntry.id);
 
-        assertEquals(3, addedObject.numberOfFlushCalls);
+        assertEquals(4, addedObject.numberOfFlushCalls);
         assertFalse(addedObject.isFlushedByProperty[0]);
         assertFalse(addedObject.isFlushedByProperty[1]);
         assertFalse(addedObject.isFlushedByProperty[2]);
         def prevId = addedObject.id;
         def insertedAt = addedObject.rsInsertedAt;
         def updatedAt = addedObject.rsUpdatedAt;
-        assertEquals(0, updatedAt);
+        assertEquals(insertedAt, updatedAt);
         assertTrue(insertedAt > 0);
         assertTrue(insertedAt <= System.currentTimeMillis() && insertedAt >= System.currentTimeMillis() - 3000);
 

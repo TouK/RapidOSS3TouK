@@ -311,12 +311,15 @@ class UpdateMethodTest extends RapidCmdbTestCase {
         IdCacheEntry entry = AddMethodDomainObjectWithEvents.idCache[addedObject.prop1];
         def numberOfUpdateCacheCall = AddMethodDomainObject1.updateCacheCallParams.size();
         props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2];
+        //for rsUpdatedAt,
+        Thread.sleep(100);
         UpdateMethod update = new UpdateMethod(AddMethodDomainObjectWithEvents.metaClass, new MockValidator(), AddMethodDomainObjectWithEvents.allFields, relations);
         AddMethodDomainObjectWithEvents updatedObject = update.invoke(addedObject, [props] as Object[]);
 
 
         //id property will be ignored
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -355,7 +358,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
 
         //id property will be ignored
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -407,7 +410,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
 
         //id property will be ignored
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -457,7 +460,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
 
         //id property will be ignored
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertEquals(objectBeforeAdd.id, updatedObject.id);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);
@@ -553,7 +556,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertEquals(objectBeforeAdd.prop5, updatedObject.prop5);
         assertEquals(0, AddMethodDomainObjectWithEvents.indexList.size());
         assertTrue(updatedObject.hasErrors());
@@ -585,7 +588,7 @@ class UpdateMethodTest extends RapidCmdbTestCase {
 
         //id property will be ignored
         assertEquals(objectBeforeAdd.id, updatedObject.id);
-        assertEquals(0, updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
+        assertEquals(updatedObject[RapidCMDBConstants.INSERTED_AT_PROPERTY_NAME], updatedObject[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME]);
         assertEquals(objectBeforeAdd.prop1, updatedObject.prop1);
         assertEquals(objectBeforeAdd.prop2, updatedObject.prop2);
         assertEquals(objectBeforeAdd.prop3, updatedObject.prop3);

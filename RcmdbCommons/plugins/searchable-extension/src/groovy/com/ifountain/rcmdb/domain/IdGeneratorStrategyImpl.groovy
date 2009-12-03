@@ -34,6 +34,25 @@ class IdGeneratorStrategyImpl implements IdGeneratorStrategy
     private long nextId = 0;
     private long numberOfRemainingIds = 0;
     private int INCREMENT_AMOUNT = 1000;
+
+    public IdGeneratorStrategyImpl(String startId)
+    {
+
+        try
+        {
+            this.nextId=Long.parseLong(String.valueOf(startId));        
+        }
+        catch(Throwable t)
+        {
+            org.apache.log4j.Logger.getRootLogger().warn("IdGenerator : Invalid startId property ${startId}. it will be assigned to default value ${this.nextId}.");
+        }
+    }
+
+    public IdGeneratorStrategyImpl(long startId)
+    {
+        this.nextId=startId;
+    }
+    
     public long getNextId() {
         if(numberOfRemainingIds == 0)
         {
@@ -43,16 +62,16 @@ class IdGeneratorStrategyImpl implements IdGeneratorStrategy
             {
                 objectId = new ObjectId();
                 objectId.setProperty("name", "generalObjectId", false);
-                objectId.setProperty("nextId", INCREMENT_AMOUNT, false);
+                objectId.setProperty("nextId", nextId+INCREMENT_AMOUNT, false);
                 objectId.setProperty("id", 0, false);
                 ObjectId.index(objectId);
-                nextId = 0;
+                nextId++;
             }
             else
             {
+                nextId = objectId.nextId+1;
                 objectId.nextId = objectId.nextId+INCREMENT_AMOUNT;
                 ObjectId.index(objectId);
-                nextId = objectId.nextId;
             }
 
             numberOfRemainingIds = INCREMENT_AMOUNT;

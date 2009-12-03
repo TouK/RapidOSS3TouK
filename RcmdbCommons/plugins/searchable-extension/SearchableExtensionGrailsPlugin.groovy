@@ -65,7 +65,8 @@ class SearchableExtensionGrailsPlugin {
     def doWithDynamicMethods = {ctx ->
         CompassTransactionFactory factory = new CompassTransactionFactory(ctx.getBean("compass"));
         RapidCmdbTransactionManager.initializeTransactionManager(factory);
-        IdGenerator.initialize(new IdGeneratorStrategyImpl());
+        
+        IdGenerator.initialize(new IdGeneratorStrategyImpl(application.config.toProperties()["rapidCMDB.id.start"]));
         domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass

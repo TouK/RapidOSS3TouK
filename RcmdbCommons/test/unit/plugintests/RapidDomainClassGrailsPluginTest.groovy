@@ -37,6 +37,9 @@ import org.springframework.validation.BeanPropertyBindingResult
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.IdGeneratorStrategyImpl
+import com.ifountain.rcmdb.domain.IdGenerator
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,6 +66,19 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     }
 
 
+    public void testIdGeneratorIsStarted()
+    {
+        def pluginsToLoad=[];
+        pluginsToLoad +=  DomainClassGrailsPlugin;
+        pluginsToLoad +=  gcl.loadClass("SearchableGrailsPlugin");
+        pluginsToLoad +=  gcl.loadClass("SearchableExtensionGrailsPlugin");
+        pluginsToLoad +=  gcl.loadClass("RapidDomainClassGrailsPlugin");
+
+        initialize([application.ObjectId],pluginsToLoad);
+        
+        assertEquals(IdGeneratorStrategyImpl,IdGenerator.getInstance().getStrategy().class);
+        assertEquals(1,IdGenerator.getInstance().getNextId())
+    }
 
     public void testDoWithSpring()
     {

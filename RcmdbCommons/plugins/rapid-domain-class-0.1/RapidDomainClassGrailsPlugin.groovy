@@ -74,7 +74,7 @@ class RapidDomainClassGrailsPlugin {
     }
 
     def doWithDynamicMethods = { ctx ->
-        IdGenerator.initialize (new IdGeneratorStrategyImpl());
+        IdGenerator.initialize (new IdGeneratorStrategyImpl(application.config.toProperties()["rapidCMDB.id.start"]));
         domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass

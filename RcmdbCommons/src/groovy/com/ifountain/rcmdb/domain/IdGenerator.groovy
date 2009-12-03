@@ -48,10 +48,16 @@ class IdGenerator {
     {
         return idGenerator;
     }
+    public IdGeneratorStrategy getStrategy()
+    {
+        return strategy;    
+    }
+
     public synchronized getNextId()
     {
         return strategy.getNextId();
     }
+
 }
 
 interface IdGeneratorStrategy

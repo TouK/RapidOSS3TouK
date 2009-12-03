@@ -58,6 +58,7 @@ connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toString();
 rapidCMDB.base.dir = System.getProperty("base.dir");
 rapidcmdb.date.format = "yyyy-dd-MM HH:mm:ss.SSS";
+rapidCMDB.id.start = 0
 
 
 // enabled native2ascii conversion of i18n properties files

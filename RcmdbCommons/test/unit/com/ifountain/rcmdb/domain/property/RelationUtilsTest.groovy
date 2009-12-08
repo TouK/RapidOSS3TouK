@@ -332,11 +332,23 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         assertNotNull (relatedObjects.find {it.id == toObj1.id});
         assertNotNull (relatedObjects.find {it.id == toObj2.id});
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
+        
+        //test by id
+        def relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel1MetaData);
+        assertEquals (3,  relatedObjectsByObjectId.size());
+        relatedObjects.size().times{
+            assertEquals(relatedObjects[it].id , relatedObjectsByObjectId[it].id)
+        }
 
         //with source
         relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel1MetaData, "source2");
         assertEquals (1,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
+
+        //test by id
+        relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel1MetaData,"source2");
+        assertEquals (1,  relatedObjectsByObjectId.size());
+        assertNotNull (relatedObjectsByObjectId.find {it.id == toObj4.id});
     }
 
     public void testGetRelatedObjectsWithOneToManyRelation()
@@ -371,10 +383,22 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         assertNotNull (relatedObjects.find {it.id == toObj2.id});
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
 
+        //test by id
+        def relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel4MetaData);
+        assertEquals (3,  relatedObjectsByObjectId.size());
+        relatedObjects.size().times{
+            assertEquals(relatedObjects[it].id , relatedObjectsByObjectId[it].id)
+        }
+
         //with source
         relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel4MetaData, "source2");
         assertEquals (1,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
+
+        //test by id
+        relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel4MetaData,"source2");
+        assertEquals (1,  relatedObjectsByObjectId.size());
+        assertNotNull (relatedObjectsByObjectId.find {it.id == toObj4.id});
     }
 
     public void testGetRelatedObjectsWithOneToOneRelation()
@@ -406,11 +430,23 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData);
         assertEquals(toObj1.id, relatedObject.id);
 
+        //test by id
+        def relatedObjectByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel2MetaData);
+        assertEquals(toObj1.id, relatedObjectByObjectId.id);
+
+
         //with source
         relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source1");
         assertEquals(toObj1.id, relatedObject.id);
         relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source2");
         assertNull(relatedObject)
+
+        //test by id
+        relatedObjectByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel2MetaData, "source1");
+        assertEquals(toObj1.id, relatedObjectByObjectId.id);
+        relatedObjectByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel2MetaData, "source2");
+        assertNull(relatedObjectByObjectId)
+
     }
 
     public void testGetRelatedObjectsWithManyToOneRelation()
@@ -471,6 +507,10 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         RelationUtils.addRelatedObjects(fromObj1, rel1MetaData, objectToBeIndexed, "source1");
         def relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel1MetaData);
         assertEquals (objectCount, relatedObjects.size());
+
+        //test by id
+        def relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel1MetaData);
+        assertEquals (objectCount, relatedObjectsByObjectId.size());
     }
 
     public void testRemoveRelatedObjectsWithHugeNumberOfRelatedObjects()

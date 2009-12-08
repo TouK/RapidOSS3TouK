@@ -212,9 +212,16 @@ class RelationUtils
     public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData){
          return getRelatedObjects(object, relationMetaData, null)
     }
+    public static Object getRelatedObjectsByObjectId(objectId, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData){
+         return getRelatedObjectsByObjectId(objectId, relationMetaData, null)
+    }
     public static Object getRelatedObjects(object, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData, String source)
     {
-        def allRealtedObjectIds = getRelatedObjectsIds(object, relationMetaData.name, relationMetaData.otherSideName, source);
+        return getRelatedObjectsByObjectId(object.id,relationMetaData,source);
+    }
+    public static Object getRelatedObjectsByObjectId(objectId, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData, String source)
+    {
+        def allRealtedObjectIds = getRelatedObjectsIdsByObjectId(objectId, relationMetaData.name, relationMetaData.otherSideName, source);
         if(relationMetaData.isOneToOne() || relationMetaData.isManyToOne())
         {
             if(!allRealtedObjectIds.isEmpty())

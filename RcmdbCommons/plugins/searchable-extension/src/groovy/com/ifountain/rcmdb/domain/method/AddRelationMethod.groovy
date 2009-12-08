@@ -134,4 +134,9 @@ class AddRelationMethod extends AbstractRapidDomainWriteMethod {
         return triggersMap?.domainObject;
     }
 
+    public String getDirectoryLockName(Object domainObject, Object[] arguments) {
+        return null;
+    }
+
+
 }

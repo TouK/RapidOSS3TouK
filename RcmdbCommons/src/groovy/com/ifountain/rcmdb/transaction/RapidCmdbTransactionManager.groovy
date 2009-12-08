@@ -1,6 +1,9 @@
 package com.ifountain.rcmdb.transaction
 
 import com.ifountain.compass.transaction.ICompassTransaction
+import com.ifountain.rcmdb.domain.DomainLockManager
+import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,6 +49,9 @@ class RapidCmdbTransactionManager {
     }
 
     public static Object executeWithGlobalTransaction(Closure closure){
+        ObjectProcessor.getInstance().batchStarted();
+        EventTriggeringUtils.getInstance().batchStarted();
+        DomainLockManager.getInstance().batchStarted();
         AbstractGlobalTransaction tr = (AbstractGlobalTransaction) RapidCmdbTransactionManager.startGlobalTransaction();
         try {
             Object res = closure(tr);
@@ -62,7 +68,10 @@ class RapidCmdbTransactionManager {
             throw e;
         }
         finally {
-            RapidCmdbTransactionManager.endTransaction (tr);    
+            RapidCmdbTransactionManager.endTransaction (tr); 
+            DomainLockManager.getInstance().batchFinished();
+            EventTriggeringUtils.getInstance().batchFinished();
+            ObjectProcessor.getInstance().batchFinished();
         }
     }
     public static Object executeWithTransaction(Closure closure){

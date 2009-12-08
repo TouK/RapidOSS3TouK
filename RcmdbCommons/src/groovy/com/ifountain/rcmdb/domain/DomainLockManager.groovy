@@ -1,9 +1,13 @@
 package com.ifountain.rcmdb.domain
 
-import org.apache.commons.transaction.locking.GenericLock
 import org.apache.commons.transaction.locking.GenericLockManager
 import org.apache.commons.transaction.util.Log4jLogger
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.domain.lock.LockStrategyImpl
+import com.ifountain.rcmdb.domain.lock.LockStrategy
+import com.ifountain.rcmdb.domain.lock.BatchDirectoryLockStrategyImpl
+import com.ifountain.rcmdb.domain.batch.AbstractBatchExecutionManager
+import com.ifountain.rcmdb.domain.batch.BatchExecutionContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,126 +17,75 @@ import org.apache.log4j.Logger
  * To change this template use File | Settings | File Templates.
  */
 
-public class DomainLockManager
+public class DomainLockManager extends AbstractBatchExecutionManager
 {
-    public static int WRITE_LOCK = 1;
-    private static long lockTimeout = 10000;
-    private static GenericLockManager lockManager;
-    private static Map lockAccessObjects;
-    private static final Object accessLockObject = new Object();
-    public static void setLockTimeout(long timeout)
-    {
-        lockTimeout = timeout;
-    }
-    public static void getWriteLock(Object owner, String lockName)
-    {
-        synchronized (accessLockObject)
-        {
-            if(!hasLock(owner, lockName))
-            {
-                def accessCount = getLockAccessCount (lockName);
-                accessCount.increase();
-            }
-        }
-        try{
-            lockManager.lock(owner, lockName, WRITE_LOCK, GenericLock.COMPATIBILITY_REENTRANT, false, lockTimeout);
-        }catch(Throwable t){
-            removeLock(owner, lockName);
-            throw t;
-        }
-    }
-
-    private static LockAccessCount getLockAccessCount(String lockName)
-    {
-        synchronized (accessLockObject)
-        {
-            LockAccessCount accessCount = lockAccessObjects[lockName];
-            if(accessCount == null)
-            {
-                accessCount = new LockAccessCount();
-                lockAccessObjects[lockName] = accessCount;
-            }
-            return accessCount;
-        }
-    }
-
-    public static void getLock(int type, Object owner, String lockName)
-    {
-        switch (type)
-        {
-            case WRITE_LOCK:
-                getWriteLock(owner, lockName)
-                break;
-            default:
-                throw new Exception("Invalid lock type "+ type);
-        }
-    }
+    private long instanceBasedLockTimeout = 10000;
+    private long directoryBasedLockTimeout = 1800000;
+    public GenericLockManager lockManager;
+    private DomainLockManager() {}
+    private static DomainLockManager instance;
     
-    public static void releaseLock(Object owner, String lockName)
-    {
-        def hasLock = hasLock(owner, lockName);
-        if(hasLock)
-        {
-            lockManager.release(owner, lockName)
-            removeLock(owner, lockName);
+    public static BatchExecutionContext getInstance() {
+        if (instance == null) {
+            instance = new DomainLockManager();
         }
+        return instance;
     }
 
-    private static void removeLock(Object owner, String lockName)
-    {
-        if(lockManager.getAll(owner).isEmpty())
-        {
-            lockManager.removeOwner (owner);
+    public static destroy(){
+        instance = null;
+    }
+
+    protected BatchExecutionContext makeStorageInstance() {
+        return new BatchDirectoryLockStrategyImpl(lockManager, LockStrategyImpl.EXCLUSIVE, directoryBasedLockTimeout)
+    }
+
+    public void lockDirectory(String directoryName) throws Exception {
+        LockStrategy lockStrategy = getDirectoryLockStrategy();
+        lockStrategy.lock(getOwner(), directoryName);
+    }
+    public void releaseDirectory(String directoryName) {
+        LockStrategy lockStrategy = getDirectoryLockStrategy();
+        lockStrategy.release(getOwner(), directoryName);
+    }
+
+    private LockStrategy getDirectoryLockStrategy() {
+        LockStrategy lockStrategy = (BatchDirectoryLockStrategyImpl) batchExecutionContextStorage.get();
+        if (lockStrategy == null) {
+            lockStrategy = new LockStrategyImpl(lockManager, LockStrategyImpl.SHARED, directoryBasedLockTimeout);
         }
-        synchronized (accessLockObject)
-        {
-            def accessCount = getLockAccessCount (lockName);
-            accessCount.decrease();
-            if(accessCount.getAccessCount() == 0)
-            {
-                lockManager.removeLock (lockName);
-                lockAccessObjects.remove (lockName);
-            }
-        }
+        return lockStrategy
     }
 
-    public static boolean hasLock(Object owner, String lockName)
+    public void lockInstance(String instanceName) throws Exception {
+        new LockStrategyImpl(lockManager, LockStrategyImpl.EXCLUSIVE, instanceBasedLockTimeout).lock(getOwner(), instanceName);
+    }
+    public void releaseInstance(String instanceName) {
+        new LockStrategyImpl(lockManager, LockStrategyImpl.EXCLUSIVE, instanceBasedLockTimeout).release(getOwner(), instanceName);
+    }
+
+    private Object getOwner() {
+        return Thread.currentThread();
+    }
+    public void initialize(Logger logger) {
+        initialize(logger, 10000, 1800000)
+    }
+    public void initialize(Logger logger, long instanceLockTimeout) {
+        initialize(logger, instanceLockTimeout, 1800000)
+    }
+    public void initialize(Logger logger, long intanceLockTimeout, long directoryLockTimeout)
     {
-        return lockManager.getOwner(lockName) == owner;
+        instanceBasedLockTimeout = intanceLockTimeout;
+        directoryBasedLockTimeout = directoryLockTimeout;
+        lockManager = new GenericLockManager(2, new Log4jLogger(logger));
+        batchExecutionContextStorage = new ThreadLocal<BatchExecutionContext>()
     }
 
-    public static boolean hasLock(Object owner)
-    {
-        return !lockManager.getAll(owner).isEmpty();
+    public void setInstanceBasedLockTimeout(long newTimeout) {
+        instanceBasedLockTimeout = newTimeout;
+    }
+    public void setDirectoryBasedLockTimeout(long newTimeout) {
+        directoryBasedLockTimeout = newTimeout;
     }
 
-    public static void initialize(long lockTimeout, Logger logger)
-    {
-        DomainLockManager.lockTimeout = lockTimeout;
-        lockAccessObjects = Collections.synchronizedMap([:]);
-        lockManager = new GenericLockManager(WRITE_LOCK, new Log4jLogger(logger));
-    }
-
-    public static void destroy()
-    {
-    }
-
-}
-
-class LockAccessCount{
-    int accessCount = 0;
-    public synchronized void increase()
-    {
-        accessCount++;
-    }
-
-    public synchronized void decrease()
-    {
-        accessCount--;
-    }
-
-    public synchronized int getAccessCount()
-    {
-        return accessCount;
-    }
 }

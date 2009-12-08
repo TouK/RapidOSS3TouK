@@ -70,7 +70,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
                 res?.results?.each{result->
-                    EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                    EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
                 statistics.stop();
                 OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
@@ -96,7 +96,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 def res = searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
                 if(res)
                 {
-                    EventTriggeringUtils.triggerEvent (res, EventTriggeringUtils.ONLOAD_EVENT);
+                    EventTriggeringUtils.getInstance().triggerEvent (res, EventTriggeringUtils.ONLOAD_EVENT);
                 }
                 statistics.stop();
                 OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_TOP_OPERATION_NAME, statistics);
@@ -116,7 +116,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 if(args.length != 2 || !(args[1] instanceof Map) || args[1].raw == null)
                 {
                     res?.each{result->
-                        EventTriggeringUtils.triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                        EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                     }
                 }
                 statistics.stop();

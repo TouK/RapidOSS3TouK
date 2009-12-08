@@ -299,7 +299,7 @@ class NewPerfTest extends RapidCmdbWithCompassTestCase {
     }
     def intializeCompassWithSimpleObjects(String storageType)
     {
-        DomainLockManager.initialize(100000, TestLogUtils.log);
+        DomainLockManager.getInstance().initialize(100000, TestLogUtils.log);
         def keyProp = [name: "keyProp", type: ModelGenerator.STRING_TYPE, blank: false];
         String propValue = "ThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValueThisIsALongPropValue"
         def model1MetaProps = [name: "Model1", storageType: storageType]

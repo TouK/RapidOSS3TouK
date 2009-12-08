@@ -19,6 +19,8 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,11 +33,11 @@ class EventTriggeringUtilsTest extends RapidCmdbTestCase{
     public void testTriggerEvent()
     {
         EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
-        EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.ONLOAD_EVENT);
+        EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.ONLOAD_EVENT);
         assertTrue (obj.isOnLoadCalled);
         try
         {
-            EventTriggeringUtils.triggerEvent (obj, "undefinedevent");
+            EventTriggeringUtils.getInstance().triggerEvent (obj, "undefinedevent");
         }catch(t)
         {
             fail("Should not throw exception if event does not exist")
@@ -46,35 +48,114 @@ class EventTriggeringUtilsTest extends RapidCmdbTestCase{
     public void testTriggerEventWithParameter()
     {
         EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
-        def res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+        def res = EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT);
         assertEquals (1, obj.beforeDeleteParams.size());
         assertEquals (null, obj.beforeDeleteParams[0]);
         assertEquals("beforeDeleteWrapperRes", res);
 
         def mapToBePassed = [:];
         obj = new EventTriggeringUtilsTestObject();
-        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT, mapToBePassed);
+        res = EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.BEFORE_DELETE_EVENT, mapToBePassed);
         assertEquals (1, obj.beforeDeleteParams.size());
         assertSame(mapToBePassed, obj.beforeDeleteParams[0]);
         assertEquals("beforeDeleteWrapperRes", res);
 
         obj = new EventTriggeringUtilsTestObject();
-        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT, null);
+        res = EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT, null);
         assertEquals(1, obj.beforeUpdateParams.size());
         assertEquals("beforeUpdateCalledRes", res);
 
         obj = new EventTriggeringUtilsTestObject();
-        res = EventTriggeringUtils.triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
+        res = EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
         assertEquals(1, obj.beforeUpdateParams.size());
         assertEquals("beforeUpdateCalledRes", res);
     }
+
+    public void testAfterEventsAreTriggeredAfterBatchExecutionFinished(){
+       EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
+       Object waitLock = new Object();
+       def t1state = 0;
+       def t1 = Thread.start{
+           EventTriggeringUtils.getInstance().batchStarted();
+           EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.BEFORE_UPDATE_EVENT);
+           EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.AFTER_UPDATE_EVENT);
+           t1state = 1;
+           synchronized(waitLock){
+               waitLock.wait();
+           }
+           EventTriggeringUtils.getInstance().batchFinished();
+       }
+
+       CommonTestUtils.waitFor(new ClosureWaitAction({
+           assertEquals(1, t1state)
+       }))
+       assertEquals (1, obj.beforeUpdateParams.size());
+       assertEquals (0, obj.afterUpdateParams.size());
+
+       synchronized(waitLock){
+           waitLock.notifyAll();
+       }
+       t1.join();
+       assertEquals (1, obj.afterUpdateParams.size());
+    }
+
+    public void testIfOneAfterEventThrowsExceptionOtherEventsAreTriggeredAfterBatchExecutionFinish(){
+       EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
+       Object waitLock = new Object();
+       def t1state = 0;
+       def t1 = Thread.start{
+           EventTriggeringUtils.getInstance().batchStarted();
+           obj.afterUpdateWillThrowException = true;
+           EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.AFTER_UPDATE_EVENT);
+           EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.AFTER_DELETE_EVENT);
+           EventTriggeringUtils.getInstance().batchFinished();
+       }
+       t1.join();
+       assertEquals (0, obj.afterUpdateParams.size());
+       assertEquals (1, obj.afterDeleteParams.size());
+    }
+
+    public void testBatchExecutionContextIsThreadLocal() {
+        EventTriggeringUtilsTestObject obj = new EventTriggeringUtilsTestObject();
+        Object waitLock = new Object();
+        def t1state = 0;
+        def t1 = Thread.start {
+            EventTriggeringUtils.getInstance().batchStarted();
+            EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.AFTER_UPDATE_EVENT);
+            t1state = 1;
+            synchronized (waitLock) {
+                waitLock.wait();
+            }
+            EventTriggeringUtils.getInstance().batchFinished();
+            t1state = 2;
+        }
+
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals(1, t1state);
+        }))
+        assertEquals (0, obj.afterUpdateParams.size());
+
+        def t2 = Thread.start {
+            EventTriggeringUtils.getInstance().triggerEvent (obj, EventTriggeringUtils.AFTER_UPDATE_EVENT);
+        }
+        t2.join();
+        assertEquals (1, obj.afterUpdateParams.size());
+        synchronized (waitLock) {
+            waitLock.notifyAll();
+        }
+        t1.join();
+        assertEquals (2, obj.afterUpdateParams.size());
+    }
 }
 
-class   EventTriggeringUtilsTestObject
+class EventTriggeringUtilsTestObject
 {
     boolean isOnLoadCalled = false;
     List beforeDeleteParams = [];
+    List afterDeleteParams = [];
     List beforeUpdateParams = [];
+    List afterUpdateParams = [];
+    boolean afterUpdateWillThrowException = false;
     def onLoadWrapper = {
         isOnLoadCalled = true;
     }
@@ -87,5 +168,16 @@ class   EventTriggeringUtilsTestObject
     def beforeUpdateWrapper(){
         beforeUpdateParams.add("beforeUpdateCalled");
         return "beforeUpdateCalledRes"
+    }
+    def afterUpdateWrapper(){
+        if(afterUpdateWillThrowException){
+            throw new Exception("after update exception")
+        }
+        afterUpdateParams.add("afterUpdateCalled");
+        return "afterUpdateCalledRes"
+    }
+    def afterDeleteWrapper(){
+        afterDeleteParams.add("afterDeleteCalled");
+        return "afterDeleteCalledRes"
     }
 }

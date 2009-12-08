@@ -1,9 +1,7 @@
 package com.ifountain.rcmdb.domain.method
 
-import com.ifountain.rcmdb.domain.DomainLockManager
-import com.ifountain.rcmdb.domain.DomainMethodExecutor
-import com.ifountain.rcmdb.domain.DomainMethodExecutorAction
 import com.ifountain.compass.search.FilterManager
+import com.ifountain.rcmdb.domain.DomainLockManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,14 +18,24 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
 
     public final Object invoke(Object domainObject, Object[] argumentsp) {
         String lockName = getLockName(domainObject, argumentsp);
+        String directoryLockName = getDirectoryLockName(domainObject, argumentsp);
         def isFiltersEnabledBeforeExecutingThisMethod = FilterManager.isFiltersEnabled();
         FilterManager.setFiltersEnabled(false);
         try {
-            def executionClosure = {
-                return _invoke(domainObject, argumentsp);
+            def triggersMap;
+            DomainLockManager.getInstance().lockDirectory(directoryLockName)
+            try {
+                DomainLockManager.getInstance().lockInstance(lockName)
+                try {
+                    triggersMap = _invoke(domainObject, argumentsp);
+                }
+                finally {
+                    DomainLockManager.getInstance().releaseInstance(lockName)
+                }
             }
-            def methodExecutorAction = new DomainMethodExecutorAction(DomainLockManager.WRITE_LOCK, lockName, executionClosure);
-            Map triggersMap = DomainMethodExecutor.executeActionWithRetry(Thread.currentThread(), methodExecutorAction)
+            finally {
+                DomainLockManager.getInstance().releaseDirectory(directoryLockName)
+            }
             return executeAfterTriggers(triggersMap);
         }
         finally {
@@ -49,6 +57,9 @@ abstract class AbstractRapidDomainWriteMethod extends AbstractRapidDomainMethod 
             }
         }
         return bf.toString();
+    }
+    public String getDirectoryLockName(Object domainObject, Object[] arguments) {
+        return domainObject.class.name;
     }
 
     protected abstract Map _invoke(Object domainObject, Object[] arguments);

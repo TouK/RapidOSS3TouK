@@ -53,7 +53,7 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod {
         if (!existingInstanceEntry.exist())
         {
             ValidationUtils.addObjectError(domainObject.errors, "default.not.exist.message", []);
-            return [domainObject:domainObject];
+            return [domainObject: domainObject];
         }
         long numberOfRemovedRelations = 0;
         boolean isChanged = false;
@@ -94,11 +94,15 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod {
         statistics.stop();
         statistics.numberOfOperations = numberOfRemovedRelations;
         OperationStatistics.getInstance().addStatisticResult(OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
-        return [domainObject:domainObject];
+        return [domainObject: domainObject];
     }
 
     protected Object executeAfterTriggers(Map triggersMap) {
         return triggersMap?.domainObject
+    }
+
+    public String getDirectoryLockName(Object domainObject, Object[] arguments) {
+        return null;
     }
 
 }

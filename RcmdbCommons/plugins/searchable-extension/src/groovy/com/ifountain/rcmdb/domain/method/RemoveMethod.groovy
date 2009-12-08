@@ -53,7 +53,7 @@ class RemoveMethod extends AbstractRapidDomainWriteMethod {
             statistics.stop();
             OperationStatisticResult beforeDeleteStatistics = new OperationStatisticResult(model: mc.theClass.name);
             beforeDeleteStatistics.start();
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.BEFORE_DELETE_EVENT);
             OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_DELETE_OPERATION_NAME, beforeDeleteStatistics);
             statistics.start();
             def cascadedObjectsToBeRemoved = [];
@@ -101,7 +101,7 @@ class RemoveMethod extends AbstractRapidDomainWriteMethod {
         if (triggersMap.shouldCallAfterTriggers) {
             OperationStatisticResult afterDeleteStatistics = new OperationStatisticResult(model: mc.theClass.name);
             afterDeleteStatistics.start();
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.AFTER_DELETE_EVENT);
             ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_DELETE_EVENT, domainObject)
             OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_DELETE_OPERATION_NAME, afterDeleteStatistics);
         }

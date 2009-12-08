@@ -140,7 +140,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         statistics.stop();
         OperationStatisticResult beforeInsertStatistics = new OperationStatisticResult(model: mc.theClass.name);
         beforeInsertStatistics.start();
-        def updatedPropsFromBeforeInsert = EventTriggeringUtils.triggerEvent(sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
+        def updatedPropsFromBeforeInsert = EventTriggeringUtils.getInstance().triggerEvent(sampleBean, EventTriggeringUtils.BEFORE_INSERT_EVENT);
         OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_INSERT_OPERATION_NAME, beforeInsertStatistics);
         statistics.start();
         validator.validate(new DomainClassValidationWrapper(sampleBean, addedprops), sampleBean, errors)
@@ -185,11 +185,15 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         if (!domainObject.hasErrors() && triggersMap.shouldCallAfterTriggers) {
             OperationStatisticResult afterInsertStatistics = new OperationStatisticResult(model: mc.theClass.name);
             afterInsertStatistics.start();
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_INSERT_EVENT);
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.AFTER_INSERT_EVENT);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
             ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_INSERT_EVENT, domainObject);
             OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_INSERT_OPERATION_NAME, afterInsertStatistics);
         }
         return domainObject;
+    }
+
+    public String getDirectoryLockName(Object clazz, Object[] arguments) {
+        return clazz.name;
     }
 }

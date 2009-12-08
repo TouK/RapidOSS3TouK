@@ -121,7 +121,7 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
             statistics.stop();
             OperationStatisticResult beforeUpdateStatistics = new OperationStatisticResult(model: mc.theClass.name);
             beforeUpdateStatistics.start();
-            def updatedPropsFromBeforeUpdate = EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
+            def updatedPropsFromBeforeUpdate = EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.BEFORE_UPDATE_EVENT, triggeredEventParams);
             OperationStatistics.getInstance().addStatisticResult(OperationStatistics.BEFORE_UPDATE_OPERATION_NAME, beforeUpdateStatistics);
             statistics.start();
             if (!errors.hasErrors())
@@ -209,8 +209,8 @@ class UpdateMethod extends AbstractRapidDomainWriteMethod {
             OperationStatisticResult statistics = new OperationStatisticResult(model: mc.theClass.name);
             statistics.start();
             def triggeredEventParams = triggersMap.triggeredEventParams;
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
-            EventTriggeringUtils.triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.AFTER_UPDATE_EVENT, triggeredEventParams);
+            EventTriggeringUtils.getInstance().triggerEvent(domainObject, EventTriggeringUtils.ONLOAD_EVENT);
             ObjectProcessor.getInstance().repositoryChanged(EventTriggeringUtils.AFTER_UPDATE_EVENT, domainObject, triggeredEventParams[UPDATED_PROPERTIES])
             OperationStatistics.getInstance().addStatisticResult(OperationStatistics.AFTER_UPDATE_OPERATION_NAME, statistics);
         }

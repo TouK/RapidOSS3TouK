@@ -95,7 +95,7 @@ class BootStrap {
     def initializeLockManager()
     {
         log.warn(logPrefix+"Initializing Lock Manager");
-        DomainLockManager.getInstance().initialize(30000, Logger.getLogger(DomainLockManager.class));
+        DomainLockManager.initialize(Logger.getLogger(DomainLockManager.class), 30000);
         LockStrategyImpl.setMaxNumberOfRetries(20); 
     }
     def initializeCaches()

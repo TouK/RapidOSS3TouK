@@ -80,7 +80,7 @@ class BootStrap {
     }
     def initializeLockManager()
     {
-        DomainLockManager.initialize(Logger.getLogger(DomainLockManager.class), 30000);
+        DomainLockManager.getInstance().initialize(Logger.getLogger(DomainLockManager.class), 30000);
         LockStrategyImpl.setMaxNumberOfRetries(20);
     }
     def registerUtilities()

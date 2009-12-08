@@ -25,7 +25,7 @@ public class DomainLockManager extends AbstractBatchExecutionManager
     private DomainLockManager() {}
     private static DomainLockManager instance;
     
-    public static BatchExecutionContext getInstance() {
+    public static DomainLockManager getInstance() {
         if (instance == null) {
             instance = new DomainLockManager();
         }

@@ -5,6 +5,7 @@ import com.ifountain.rcmdb.test.util.ClosureRunnerThread
 import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import org.apache.log4j.Logger
+import org.apache.commons.transaction.locking.GenericLockManager
 
 /**
 * Created by IntelliJ IDEA.
@@ -301,15 +302,6 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
     public void testMemoryLeak()
     {
         DomainLockManager.getInstance().initialize(Logger.getRootLogger());
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        long usedMemoryBeforeLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         String lockName = "lock1";
         for (int i = 0; i < 10000; i++)
         {
@@ -327,19 +319,8 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
             t1.start();
             t1.join();
         }
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-
-        long usedMemoryAfterLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        def difference = usedMemoryAfterLockOperations - usedMemoryBeforeLockOperations;
-        println difference;
-        assertTrue("$difference should be less than ${Math.pow(2, 12)}", difference < Math.pow(2, 12));
+        assertEquals(0, DomainLockManager.getInstance().lockManager.globalOwners.size())
+        assertEquals(0, DomainLockManager.getInstance().lockManager.getLocks().size())
     }
 
     public void testMemoryLeakWithLockOwnersThrowingLockTimeoutException()
@@ -383,18 +364,6 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
             }
         }
 
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        long usedMemoryBeforeLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-
-
-
         CommonTestUtils.waitFor(new ClosureWaitAction() {
             threadStates.each {
                 assertEquals("expected 1 but was ${it}".toString(), 1, it);
@@ -402,7 +371,6 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
         }, 300)
         synchronized (threadStartFlag)
         {
-            usedMemoryBeforeLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
             threadStartFlag.notifyAll();
         }
         CommonTestUtils.waitFor(new ClosureWaitAction() {
@@ -435,17 +403,7 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
         threads = null;
         threadStates = null;
         waitLock = null;
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-        Runtime.getRuntime().gc();
-        Thread.sleep(1000);
-
-        long usedMemoryAfterLockOperations = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        def difference = usedMemoryAfterLockOperations - usedMemoryBeforeLockOperations;
-        assertTrue("$difference should be less than ${Math.pow(2, 12)}", difference < Math.pow(2, 12));
+        assertEquals(0, DomainLockManager.getInstance().lockManager.globalOwners.size())
+        assertEquals(0, DomainLockManager.getInstance().lockManager.getLocks().size())
     }
 }

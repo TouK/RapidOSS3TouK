@@ -18,8 +18,8 @@ class LockStrategyImpl implements LockStrategy {
     private int lockLevel = EXCLUSIVE;
     private GenericLockManager lockManager
     private int lockTimeout;
-    private static Map lockAccessObjects = Collections.synchronizedMap([:]);;
-    private static Map lockOwnerObjects = Collections.synchronizedMap([:]);;
+    protected static Map lockAccessObjects = Collections.synchronizedMap([:]);;
+    protected static Map lockOwnerObjects = Collections.synchronizedMap([:]);;
     private static final Object accessLockObject = new Object();
     private static final Object ownerLockObject = new Object();
     Logger logger = Logger.getLogger(LockStrategyImpl.class);
@@ -83,8 +83,8 @@ class LockStrategyImpl implements LockStrategy {
                 {
                     lockManager.removeOwner(owner);
                 }
-                removeLock(lockname);
             }
+            removeLock(lockname);
         }
     }
 

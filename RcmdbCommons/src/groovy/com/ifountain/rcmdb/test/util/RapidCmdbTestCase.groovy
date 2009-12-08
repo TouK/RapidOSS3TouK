@@ -44,7 +44,9 @@ public class RapidCmdbTestCase extends RapidTestCase{
             Locale.setDefault(Locale.ENGLISH);
         }
         defaultBaseDir = System.getProperty("base.dir", ".");
+        println "initializing lock manager"
         DomainLockManager.getInstance().initialize(Logger.getRootLogger());
+        println "storage : ${DomainLockManager.getInstance().getBatchExecutionContextStorage()}"
         IdCache.initialize (10000);
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }

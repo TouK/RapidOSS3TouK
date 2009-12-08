@@ -127,7 +127,7 @@ class UiSearchGrid extends UiComponent {
                                 designerType: "SearchGridMultiSelectionMenuItems",
                                 isMultiple: false,
                                 metaData: [
-                                        help: "SearchGrid MenuItems.html",
+                                        help: "SearchGrid MultiSelectionMenuItems.html",
                                         designerType: "SearchGridMultiSelectionMenuItems",
                                         display: "MultiSelectionMenuItems",
                                         imageExpanded: 'images/rapidjs/designer/table_row_insert.png',

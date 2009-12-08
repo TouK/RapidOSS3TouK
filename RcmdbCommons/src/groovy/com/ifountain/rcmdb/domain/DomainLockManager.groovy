@@ -22,7 +22,9 @@ public class DomainLockManager extends AbstractBatchExecutionManager
     private long instanceBasedLockTimeout = 10000;
     private long directoryBasedLockTimeout = 1800000;
     public GenericLockManager lockManager;
-    private DomainLockManager() {}
+    private DomainLockManager() {
+        batchExecutionContextStorage = new ThreadLocal<BatchExecutionContext>()
+    }
     private static DomainLockManager instance;
     
     public static DomainLockManager getInstance() {
@@ -78,7 +80,6 @@ public class DomainLockManager extends AbstractBatchExecutionManager
         instanceBasedLockTimeout = intanceLockTimeout;
         directoryBasedLockTimeout = directoryLockTimeout;
         lockManager = new GenericLockManager(2, new Log4jLogger(logger));
-        batchExecutionContextStorage = new ThreadLocal<BatchExecutionContext>()
     }
 
     public void setInstanceBasedLockTimeout(long newTimeout) {

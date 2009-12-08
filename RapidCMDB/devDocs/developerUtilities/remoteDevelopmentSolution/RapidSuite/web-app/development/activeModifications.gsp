@@ -4,7 +4,7 @@
 </head>
 <body>
 <rui:searchGrid id="modificationList" url="../script/run/getActiveModifications" queryParameter="query" rootTag="Modifications" contentPath="Modification"
-        keyAttribute="id" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder" title="Modifications"
+        keyAttribute="id" title="Modifications"
         pollingInterval="10" fieldsUrl="../script/run/getModificationFieldList?format=xml" queryEnabled="false" defaultQuery="" timeout="30"
         defaultSearchClass="RemoteApplicationModification" 
     

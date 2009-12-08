@@ -16,9 +16,6 @@ class UiSearchList extends UiComponent {
     String contentPath = "Object";
     String keyAttribute = "id";
     String queryParameter = "query";
-    String totalCountAttribute = "total";
-    String offsetAttribute = "offset";
-    String sortOrderAttribute = "sortOrder";
     String defaultFields = "";
     Boolean searchInEnabled = true;
     String extraPropertiesToRequest = ""
@@ -47,9 +44,6 @@ class UiSearchList extends UiComponent {
                         contentPath: [descr: "The node names of AJAX response which will be used as row data.", validators: [blank: false, nullable: false]],
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node.", validators: [blank: false, nullable: false]],
                         defaultSearchClass: [descr: "Default class that the search will be applied.", validators: [blank: false, nullable: false]],
-                        totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query.", validators: [blank: false, nullable: false]],
-                        offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query.", validators: [blank: false, nullable: false]],
-                        sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query.", validators: [blank: false, nullable: false]],
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],
                         searchInEnabled: [descr: "Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.", validators: [blank: false, nullable: false]],

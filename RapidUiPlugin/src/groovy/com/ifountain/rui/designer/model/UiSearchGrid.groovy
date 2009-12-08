@@ -18,9 +18,6 @@ class UiSearchGrid extends UiComponent {
     String defaultView = "default";
     String fieldsUrl = "script/run/getViewFields?format=xml";
     String queryParameter = "query";
-    String totalCountAttribute = "total";
-    String offsetAttribute = "offset";
-    String sortOrderAttribute = "sortOrder";
     String defaultSearchClass = "RsEvent"
     String searchClassesUrl = "script/run/getClassesForSearch?rootClass=RsEvent&format=xml"
     String extraPropertiesToRequest = ""
@@ -49,9 +46,6 @@ class UiSearchGrid extends UiComponent {
                         keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node.", validators: [blank: false, nullable: false]],
                         defaultSearchClass: [descr: "Default class that the search will be applied.", validators: [blank: false, nullable: false]],
                         fieldsUrl: [descr: "The url used for the request to the server to retrieve available properties used in view builder.", validators: [blank: false, nullable: false]],
-                        totalCountAttribute: [descr: "The attribute in the root node of the AJAX response which shows the total number of hits which matches the query.", validators: [blank: false, nullable: false]],
-                        offsetAttribute: [descr: "The attribute in the root node of the AJAX response which shows where the results starts from according to the search query.", validators: [blank: false, nullable: false]],
-                        sortOrderAttribute: [descr: "The attribute of the row which displays the sort position of the row according to the search query.", validators: [blank: false, nullable: false]],
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         defaultView: [descr: "The view which will be shown when the search grid is shown."],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],

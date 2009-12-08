@@ -5,7 +5,7 @@
 <body>
 
 <rui:searchList id="objectList" url="../rsBrowser/searchWithQuery?format=xml" rootTag="Objects" contentPath="Object" keyAttribute="id"
-    lineSize="3" title="Objects" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
+    lineSize="3" title="Objects" queryParameter="query"
     pollingInterval="0" defaultFields='${["id", "name"]}' showMax='6' defaultQuery=""
     defaultSearchClass="connection.Connection" searchClassesUrl="../rsBrowser/getSearchClasses" timeout="30"
     

@@ -5,7 +5,7 @@
 <body>
 
 <rui:searchList id="inventoryList" url="../search" rootTag="Objects" contentPath="Object" keyAttribute="id"
-    lineSize="3" title="Inventory" queryParameter="query" totalCountAttribute="total" offsetAttribute="offset" sortOrderAttribute="sortOrder"
+    lineSize="3" title="Inventory" queryParameter="query"
     pollingInterval="0" defaultFields='${["className", "name", " description", " displayName", " isManaged"]}'  defaultQuery=""
     defaultSearchClass="RsTopologyObject" searchClassesUrl="../script/run/getClassesForSearch?rootClass=RsTopologyObject" timeout="30"
     

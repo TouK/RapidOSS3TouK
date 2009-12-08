@@ -32,7 +32,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     }
     public void testSearch()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "sortOrder", "name", "rsInsertedAt", "rsUpdatedAt"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "__sortOrder", "name", "rsInsertedAt", "rsUpdatedAt"]
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -71,7 +71,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
     public void testSearchWithPropertyList()
     {
         def propertyList = ["rsOwner", "name"]
-        def expectedProperties = ["id", "rsAlias", "sortOrder"]
+        def expectedProperties = ["id", "rsAlias", "__sortOrder"]
         expectedProperties.addAll (propertyList)
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
@@ -293,7 +293,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         def federatedProperties = SmartsObjectModel.getFederatedPropertyList();
         assertTrue (federatedProperties.size() > 0);
         def expectedProperties = SmartsObjectModel.getNonFederatedPropertyList().name;
-        expectedProperties.add("sortOrder");
+        expectedProperties.add("__sortOrder");
         expectedProperties.add("rsAlias");
         SmartsObjectModel.add(name:"object1");
 
@@ -321,7 +321,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testSearchWithQuery()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "sortOrder", "name"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "__sortOrder", "name"]
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${i}");
         }
@@ -343,7 +343,7 @@ class SearchControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
     public void testSearchWithDifferentSortProperty()
     {
-        def expectedProperties = ["id", "rsAlias", "rsOwner", "sortOrder", "name"]
+        def expectedProperties = ["id", "rsAlias", "rsOwner", "__sortOrder", "name"]
         for (i in 0..9) {
             BaseDatasource.add(name: "ds${9-i}");
         }

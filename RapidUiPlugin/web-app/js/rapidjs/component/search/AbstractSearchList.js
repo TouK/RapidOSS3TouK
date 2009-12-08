@@ -25,10 +25,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.currentlyExecutingQuery = null;
     this.keyAttribute = null;
     this.rootTag = null;
-    this.totalCountAttribute = null;
-    this.offsetAttribute = null;
     this.maxRowsDisplayed = 100;
-    this.sortOrderAttribute = null;
     this.images = null;
     this.menuItems = null;
     this.multiSelectionMenuItems = null;
@@ -40,6 +37,9 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.bringAllProperties = true;
     this.extraPropertiesToRequest = null;
     YAHOO.ext.util.Config.apply(this, config);
+    this.totalCountAttribute = 'total';
+    this.offsetAttribute = 'offset';
+    this.sortOrderAttribute = '__sortOrder';
     this.configureTimeout(config);
     this.searchInput = null;
     this.classesInput = null;

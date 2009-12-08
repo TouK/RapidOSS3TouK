@@ -60,7 +60,7 @@ class SearchController {
         def sortOrder = 0;
         builder.Objects(total: searchResults.total, offset: searchResults.offset) {
             searchResults.results.each {props ->
-                props.put("sortOrder", sortOrder++)
+                props.put("__sortOrder", sortOrder++)
                 props.put("rsAlias", props.remove("alias"))
                 builder.Object(props);
             }

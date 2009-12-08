@@ -11,6 +11,9 @@ import org.apache.log4j.Logger
 * Time: 6:22:24 PM
 */
 class LockStrategyImpl implements LockStrategy {
+    public static final int NO_LOCK = 0;
+    public static final int SHARED = 1;
+    public static final int EXCLUSIVE = 2;
     public static int MAX_NUMBER_OF_RETRIES_AFTER_DEAD_LOCK = 15;
     private int lockLevel = EXCLUSIVE;
     private GenericLockManager lockManager

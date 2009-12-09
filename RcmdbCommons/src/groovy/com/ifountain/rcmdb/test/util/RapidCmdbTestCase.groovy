@@ -44,6 +44,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
             Locale.setDefault(Locale.ENGLISH);
         }
         defaultBaseDir = System.getProperty("base.dir", ".");
+        DomainLockManager.destroy();
         DomainLockManager.getInstance().initialize(Logger.getRootLogger());
         IdCache.initialize (10000);
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
@@ -54,7 +55,6 @@ public class RapidCmdbTestCase extends RapidTestCase{
         System.setProperty("base.dir", defaultBaseDir);
         TestDatastore.clear();
         IdCache.clearCache();
-        DomainLockManager.destroy();
         EventTriggeringUtils.destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);

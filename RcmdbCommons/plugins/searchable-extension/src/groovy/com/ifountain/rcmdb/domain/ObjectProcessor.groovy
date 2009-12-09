@@ -14,7 +14,7 @@ class ObjectProcessor extends Observable implements BatchExecutionContext {
     public static final String DOMAIN_OBJECT = "domainObject";
     public static final String UPDATED_PROPERTIES = "updatedProps";
 
-    private static objectProcessor;
+    private static ObjectProcessor objectProcessor;
     private static Object getInstanceLock = new Object();
     private ObjectProcessorBatchExecutionManager batchManager;
     private ObjectProcessor() {
@@ -30,6 +30,15 @@ class ObjectProcessor extends Observable implements BatchExecutionContext {
             return objectProcessor;
         }
     }
+    public static void destroy() {
+        if (objectProcessor) {
+            objectProcessor.deleteObservers()
+        }
+        synchronized (getInstanceLock) {
+            objectProcessor = null;
+        }
+    }
+
 
     public void repositoryChanged(String eventName, Object domainObject, Map updateParams) {
         if (countObservers() > 0) {

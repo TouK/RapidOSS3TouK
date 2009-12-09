@@ -25,6 +25,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.rcmdb.domain.cache.IdCache
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /**
 * Created by IntelliJ IDEA.
@@ -56,6 +57,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
         TestDatastore.clear();
         IdCache.clearCache();
         EventTriggeringUtils.destroy();
+        ObjectProcessor.destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);
         CompassForTests.destroy();

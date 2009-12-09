@@ -22,10 +22,8 @@ import groovy.xml.MarkupBuilder
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.grails.web.binding.DataBindingUtils
 import javax.imageio.ImageIO
-import com.ifountain.rcmdb.execution.ExecutionContext
-import com.ifountain.rcmdb.execution.ExecutionContextManager
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import java.lang.reflect.Field
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,8 +42,7 @@ class ControllerUtils {
     }
     def static getWebResponse()
     {
-        ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
-        return context?.get(RapidCMDBConstants.WEB_RESPONSE);
+        return ExecutionContextManagerUtils.getWebResponseFromCurrentContext();
     }
 
     def static convertSuccessToXml(String successMessage)

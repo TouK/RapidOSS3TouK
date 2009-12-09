@@ -4,7 +4,6 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.execution.ExecutionContext
 import org.apache.log4j.Logger
-import javax.servlet.http.HttpServletResponse
 import org.springframework.mock.web.MockHttpServletResponse
 
 /**
@@ -25,9 +24,51 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         ExecutionContextManager.destroy();
     }
+    public void testAddObjectAndRemoveObjectAndGetObject()
+    {
+        def key="myobject";
+        def object=new Long(8);
+
+        assertFalse(ExecutionContextManager.getInstance().hasExecutionContext());
+        assertNull(ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+        ExecutionContextManagerUtils.addObjectToCurrentContext(key,object);
+        assertFalse("Since there is no context object should not be added", ExecutionContextManager.getInstance().hasExecutionContext());
+        ExecutionContextManager.getInstance().startExecutionContext([:]);
+        assertTrue(ExecutionContextManager.getInstance().hasExecutionContext());
+        assertNull(ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+        ExecutionContextManagerUtils.addObjectToCurrentContext(key,object);
+
+        ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
+        assertSame ("context object should be same as given object", object, currContext[key]);
+
+        assertSame(object,ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+        ExecutionContextManagerUtils.removeObjectFromCurrentContext(key);
+        assertNull("context object should be null since it is removed",currContext[key]);
+
+        assertNull(ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+        //add again
+        ExecutionContextManagerUtils.addObjectToCurrentContext(key,object);
+        assertSame ("context object should be same as given object", object, currContext[key]);
+        assertSame(object,ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+        //try deletion with no context, nothing will happen
+        ExecutionContextManager.getInstance().endExecutionContext();
+        assertNull(ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+        
+        ExecutionContextManagerUtils.removeObjectFromCurrentContext(key);
+        assertFalse("Since the is no context nothing is done", ExecutionContextManager.getInstance().hasExecutionContext());
+        assertNull(ExecutionContextManagerUtils.getObjectFromCurrentContext(key));
+
+    }
 
     public void testAddLogger()
     {
+        assertNull(ExecutionContextManagerUtils.getLoggerFromCurrentContext());
+
         Logger logger = Logger.getLogger("logger1")
         ExecutionContextManagerUtils.addLoggerToCurrentContext(logger);
         assertFalse("Since the is no context logger should not be added", ExecutionContextManager.getInstance().hasExecutionContext());
@@ -36,9 +77,12 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
 
         ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
         assertSame ("context logger should be same as given logger", logger, currContext[RapidCMDBConstants.LOGGER]);
+        assertSame(logger,ExecutionContextManagerUtils.getLoggerFromCurrentContext());
     }
     public void testAddUsername()
     {
+        assertNull(ExecutionContextManagerUtils.getUsernameFromCurrentContext());
+
         String userName = "user1"
         ExecutionContextManagerUtils.addUsernameToCurrentContext(userName);
         assertFalse("Since the is no context username should not be added", ExecutionContextManager.getInstance().hasExecutionContext());
@@ -47,9 +91,12 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
 
         ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
         assertSame ("context username should be same as given username", userName, currContext[RapidCMDBConstants.USERNAME]);
+        assertSame(userName,ExecutionContextManagerUtils.getUsernameFromCurrentContext());
     }
     public void testAddWebResponse()
     {
+        assertNull(ExecutionContextManagerUtils.getWebResponseFromCurrentContext());
+
         def mockResponse=new MockHttpServletResponse();
         ExecutionContextManagerUtils.addWebResponseToCurrentContext(mockResponse);
         assertFalse("Since the is no context response should not be added", ExecutionContextManager.getInstance().hasExecutionContext());
@@ -58,6 +105,7 @@ class ExecutionContextManagerUtilsTest extends RapidCmdbTestCase {
 
         ExecutionContext currContext = ExecutionContextManager.getInstance().getExecutionContext();
         assertSame ("context response should be same as given username", mockResponse, currContext[RapidCMDBConstants.WEB_RESPONSE]);
+        assertSame(mockResponse, ExecutionContextManagerUtils.getWebResponseFromCurrentContext());
     }
     public void testExecuteInContext()
     {

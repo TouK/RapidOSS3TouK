@@ -4,11 +4,9 @@ import application.RsApplication
 import com.ifountain.rcmdb.auth.UserConfigurationSpace
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.exception.MessageSourceException
-import com.ifountain.rcmdb.execution.ExecutionContext
-import com.ifountain.rcmdb.execution.ExecutionContextManager
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import org.jsecurity.authc.AccountException
 import org.jsecurity.crypto.hash.Sha1Hash
+import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -176,20 +174,12 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     public static String getCurrentUserName()
     {
-        ExecutionContext context = ExecutionContextManager.getInstance().getExecutionContext();
-        if (context != null)
+        def currentuser=ExecutionContextManagerUtils.getUsernameFromCurrentContext();
+        if(currentuser ==null)
         {
-            def currentuser = context[RapidCMDBConstants.USERNAME];
-            if (currentuser == null)
-            {
-                currentuser = "system";
-            }
-            return currentuser;
+            currentuser = "system";
         }
-        else
-        {
-            return "system";
-        }
+        return currentuser;
     }
 
 

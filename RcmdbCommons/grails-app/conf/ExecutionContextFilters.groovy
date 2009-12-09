@@ -1,7 +1,4 @@
-import org.codehaus.groovy.grails.plugins.web.ControllersGrailsPlugin
-import org.codehaus.groovy.grails.plugins.LoggingGrailsPlugin
 import com.ifountain.rcmdb.execution.ExecutionContextManager
-import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.util.RapidCmdbLogFactory
 

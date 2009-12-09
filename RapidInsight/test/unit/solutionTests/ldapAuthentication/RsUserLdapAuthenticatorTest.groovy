@@ -2,9 +2,6 @@ package solutionTests.ldapAuthentication
 
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.exception.MessageSourceException
-import org.jsecurity.crypto.hash.Sha1Hash
-import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import connection.LdapConnection
 import com.ifountain.comp.test.util.logging.TestLogUtils

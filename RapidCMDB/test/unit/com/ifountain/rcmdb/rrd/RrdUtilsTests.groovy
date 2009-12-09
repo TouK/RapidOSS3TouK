@@ -1,7 +1,5 @@
 package com.ifountain.rcmdb.rrd
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.execution.ExecutionContext
-import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils

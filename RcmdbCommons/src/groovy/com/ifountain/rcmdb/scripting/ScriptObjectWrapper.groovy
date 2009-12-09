@@ -1,6 +1,5 @@
 package com.ifountain.rcmdb.scripting
 
-import com.ifountain.rcmdb.execution.ExecutionContextManager
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 

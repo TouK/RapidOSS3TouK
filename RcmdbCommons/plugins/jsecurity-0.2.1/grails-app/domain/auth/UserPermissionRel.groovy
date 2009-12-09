@@ -21,6 +21,8 @@ class UserPermissionRel {
     static searchable = {
         except=["permission", "rsUser", "errors", "__operation_class__", "__dynamic_property_storage__"]
      };
+    Long id;
+    Long version;
 
     Long rsInsertedAt =0;
 

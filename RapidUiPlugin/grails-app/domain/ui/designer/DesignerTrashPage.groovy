@@ -16,6 +16,7 @@ class DesignerTrashPage {
     String webPage = "";
     Long id;
     Long version;
+    String rsOwner = "p";
 
     Long rsInsertedAt =0;
 

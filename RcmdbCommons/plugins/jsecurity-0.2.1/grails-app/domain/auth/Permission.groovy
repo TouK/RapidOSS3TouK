@@ -21,6 +21,9 @@ class Permission {
      static searchable = {
         except=["userRelations", "roleRelations", "errors", "__operation_class__", "__dynamic_property_storage__"]
      };
+    Long id;
+    Long version;
+
     String type
     String rsOwner = "p"
 

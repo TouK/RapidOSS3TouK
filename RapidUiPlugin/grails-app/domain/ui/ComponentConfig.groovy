@@ -29,6 +29,9 @@ class ComponentConfig {
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["name": ["nameInDs": "name"]]]]
 
+    Long id;
+    Long version;
+
     String rsOwner = "p";
     
     String name = "";

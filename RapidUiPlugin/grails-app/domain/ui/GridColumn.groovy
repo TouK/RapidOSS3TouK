@@ -29,6 +29,9 @@ class GridColumn {
     };
     static datasources = ["RCMDB": ["master": true, "keys": ["attributeName": ["nameInDs": "attributeName"]]]]
 
+    Long id;
+    Long version;
+
     String rsOwner = "p";
 
     Long columnIndex = 0;

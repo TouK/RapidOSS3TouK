@@ -29,10 +29,7 @@ function getUrlPrefix() {
         {
             break;
         }
-        else
-        {
-            urlPrefix += '../';
-        }
+        urlPrefix += '../';
     }
     return urlPrefix;
 }

@@ -21,10 +21,18 @@ YAHOO.namespace('rapidjs');
 function getUrlPrefix() {
     var pathName = window.location.pathname;
     var splits = pathName.split('/');
-    var distanceToWebApp = splits.length - 3;
     var urlPrefix = '';
-    for (var index = 0; index < distanceToWebApp; index++) {
-        urlPrefix += '../';
+    //minus 1 because index start from 0 not 1 , another minus 1 for the last url split itself
+    //add ../ to urlPrefix until RapidSuite is found
+    for (var index = splits.length - 2 ; index >= 0; index--) {
+        if(splits[index]=="RapidSuite")
+        {
+            break;
+        }
+        else
+        {
+            urlPrefix += '../';
+        }
     }
     return urlPrefix;
 }

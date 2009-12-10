@@ -123,6 +123,9 @@ class ControllerUtils {
                 {
                     domainObjectpropertyNames.add(paramName.substring(1));
                 }
+                else if(params.containsKey("_${paramName}".toString()) && paramValue.trim() == ""){
+                    willBeAdded = false
+                }
                 else if (paramName.indexOf(".") >= 0)
                 {
                     def relName = StringUtils.substringBefore(paramName, ".id");

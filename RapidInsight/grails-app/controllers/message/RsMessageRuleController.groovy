@@ -94,47 +94,109 @@ class RsMessageRuleController {
     def update = {
         def rsMessageRule = RsMessageRule.get([id: params.id])
         if (rsMessageRule) {
-            try{
-                def ruleParams=ControllerUtils.getClassProperties(params, RsMessageRule);
-                RsMessageRule.updateMessageRuleForUser(rsMessageRule,ruleParams,session.username)
-
+            try {
+                def ruleParams = ControllerUtils.getClassProperties(params, RsMessageRule);
+                RsMessageRule.updateMessageRuleForUser(rsMessageRule, ruleParams, session.username)
                 if (!rsMessageRule.hasErrors()) {
-                    render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                    withFormat {
+                        html {
+                            flash.message = "RsMessageRule ${rsMessageRule.id} updated";
+                            redirect(uri: params.targetURI)
+                        }
+                        xml {
+                            render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                        }
+                    }
                 }
                 else {
-                    render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                    withFormat {
+                        html {
+                            flash.errors = rsMessageRule.errors;
+                            def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                            redirect(uri: targetURI);
+                        }
+                        xml {
+                            render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                        }
+                    }
                 }
             }
-            catch(e)
+            catch (e)
             {
                 addError("default.couldnot.create", [RsMessageRule, e.getMessage()])
-                render(text: errorsToXml(this.errors), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.errors = errors;
+                        def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                        redirect(uri: targetURI);
+                    }
+                    xml {
+                        render(text: errorsToXml(this.errors), contentType: "text/xml")
+                    }
+                }
                 return;
             }
         }
         else {
             addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
-            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            withFormat {
+                html {
+                    flash.errors = errors;
+                    def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                    redirect(uri: targetURI);
+                }
+                xml {
+                    render(text: errorsToXml(this.errors), contentType: "text/xml")
+                }
+            }
         }
     }
 
 
     def save = {
-        try{
-            def ruleParams=ControllerUtils.getClassProperties(params, RsMessageRule);
-            def rsMessageRule = RsMessageRule.addMessageRuleForUser(ruleParams,session.username)
+        try {
+            def ruleParams = ControllerUtils.getClassProperties(params, RsMessageRule);
+            def rsMessageRule = RsMessageRule.addMessageRuleForUser(ruleParams, session.username)
 
             if (!rsMessageRule.hasErrors()) {
-                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.message = "RsMessageRule ${rsMessageRule.id} created";
+                        redirect(uri: params.targetURI)
+                    }
+                    xml {
+                        render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} created"), contentType: "text/xml")
+                    }
+                }
+
             }
             else {
-                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.errors = rsMessageRule.errors;
+                        def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                        redirect(uri: targetURI);
+                    }
+                    xml {
+                        render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                    }
+                }
+
             }
         }
-        catch(e)
+        catch (e)
         {
             addError("default.couldnot.create", [RsMessageRule, e.getMessage()])
-            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            withFormat {
+                html {
+                    flash.errors = errors;
+                    def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                    redirect(uri: targetURI);
+                }
+                xml {
+                    render(text: errorsToXml(this.errors), contentType: "text/xml")
+                }
+            }
             return;
         }
     }
@@ -144,15 +206,42 @@ class RsMessageRuleController {
         if (rsMessageRule) {
             rsMessageRule.update(enabled: true);
             if (!rsMessageRule.hasErrors()) {
-                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.message = "RsMessageRule ${rsMessageRule.id} successfully enabled.";
+                        redirect(uri: params.targetURI);
+                    }
+                    xml {
+                        render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                    }
+                }
             }
             else {
-                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.errors = rsMessageRule.errors;
+                        def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                        redirect(uri: targetURI);
+                    }
+                    xml {
+                        render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                    }
+                }
             }
         }
         else {
             addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
-            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            withFormat {
+                html {
+                    flash.errors = errors;
+                    def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                    redirect(uri: targetURI);
+                }
+                xml {
+                    render(text: errorsToXml(this.errors), contentType: "text/xml")
+                }
+            }
+
         }
     }
     def disableRule = {
@@ -160,15 +249,44 @@ class RsMessageRuleController {
         if (rsMessageRule) {
             rsMessageRule.update(enabled: false);
             if (!rsMessageRule.hasErrors()) {
-                render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.message = "RsMessageRule ${rsMessageRule.id} successfully disabled.";
+                        redirect(uri: params.targetURI);
+                    }
+                    xml {
+                        render(text: ControllerUtils.convertSuccessToXml("RsMessageRule ${rsMessageRule.id} updated"), contentType: "text/xml")
+                    }
+                }
+
             }
             else {
-                render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                withFormat {
+                    html {
+                        flash.errors = rsMessageRule.errors;
+                        def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                        redirect(uri: targetURI);
+                    }
+                    xml {
+                        render(text: errorsToXml(rsMessageRule.errors), contentType: "text/xml")
+                    }
+                }
+
             }
         }
         else {
             addError("default.couldnot.create", [RsMessageRule, "RsMessageRule not found with id ${params.id}"])
-            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            withFormat {
+                html {
+                    flash.errors = errors;
+                    def targetURI = params.errorTargetURI ? params.errorTargetURI : params.targetURI
+                    redirect(uri: targetURI);
+                }
+                xml {
+                    render(text: errorsToXml(this.errors), contentType: "text/xml")
+                }
+            }
+
         }
     }
 }

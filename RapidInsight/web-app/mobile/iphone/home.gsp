@@ -38,8 +38,10 @@
             <rui:link id="hEventsButton" class="button" url="mobile/iphone/historicalEvent.gsp" style="display:none">H. Events</rui:link>
             <rui:link id="inventoryButton" class="button" url="mobile/iphone/inventory.gsp" style="display:none">Inventory</rui:link>
             <rui:link id="objectReportsButton" class="button" url="mobile/iphone/objectReports.gsp" style="display:none">Reports</rui:link>
+            <rui:link id="notificationsButton" class="button" url="mobile/iphone/notifications.gsp" style="display:none">Notifications</rui:link>
             <a id="logoutButton" class="button" href="${createLink(controller:'auth', action:'logout')}" target="_self">Logout</a>
             <a id="searchButton" class="button" href="#searchForm" style="display: none;" title="Search">Search</a>
+            <rui:link id="addRuleButton" class="button" url="mobile/iphone/messageRuleForm.gsp" style="display:none">Add Rule</rui:link>
         </ul>
     </div>
 
@@ -114,6 +116,8 @@
                 logoutButton: ['home'],
                 searchButton: ['eventList', 'historicalEventList', 'inventoryList', 'query', 'eventDetails', 'historicalEventDetails', 'objectDetails', 'journals'],
                 refreshButton: ['eventList', 'historicalEventList', 'inventoryList'],
+                notificationsButton: ['messageRuleForm'],
+                addRuleButton: ['notifications'],
                 inventoryButton: ['objectDetails', 'objectReports'],
                 objectReportsButton : ['objectReport'],
                 eventsButton: ['eventDetails'],

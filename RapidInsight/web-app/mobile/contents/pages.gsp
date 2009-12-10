@@ -14,3 +14,4 @@
 <li><rui:link url="mobile/${gspFolder}/queries.gsp" params="${[filterType:'event', listURI:'mobile/' + gspFolder+ '/event.gsp']}">Events</rui:link></li>
 <li><rui:link url="mobile/${gspFolder}/queries.gsp" params="${[filterType:'historicalEvent', listURI:'mobile/' + gspFolder+ '/historicalEvent.gsp']}">Historical Events</rui:link></li>
 <li><rui:link url="mobile/${gspFolder}/queries.gsp" params="${[filterType:'topology', listURI:'mobile/' + gspFolder+ '/inventory.gsp']}">Inventory</rui:link></li>
+<li><rui:link url="mobile/${gspFolder}/notifications.gsp">Notifications</rui:link></li>

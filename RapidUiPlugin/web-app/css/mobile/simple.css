@@ -242,3 +242,8 @@ th a:link, th a:visited, th a:hover {
     margin-right: 5px;
     text-decoration:none;
 }
+
+.notifications li a{
+    background:none;
+    text-decoration:underline;
+}

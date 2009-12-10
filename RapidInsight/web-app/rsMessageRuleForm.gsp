@@ -100,6 +100,7 @@
             <g:if test="${mode=='edit' && params.ruleId}">
                 <input type="hidden" name="id" value="${params.ruleId}" />
             </g:if>
+            <input type="hidden" name="format" value="xml" />
         </rui:formRemote>
     </div>
 </div>

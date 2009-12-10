@@ -1,0 +1,1 @@
+<rui:include template="mobile/contents/notifications.gsp" model="${binding.variables}"></rui:include>

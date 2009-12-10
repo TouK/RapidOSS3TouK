@@ -18,3 +18,14 @@ def object=RsTopologyObject.add(name:"sampleNode");
 	def subNode=RsComputerSystem.add(name:"computer${it}");
 	RsMapConnection.add(name:"subcon${it}",mapType:"sampleMap",a_Name:event.name,a_RsClassName:event.class.name,z_Name:subNode.name,z_RsClassName:subNode.class.name);
 }
+
+
+
+
+return """
+
+for top node : http://localhost:12222/RapidSuite/index/maps.gsp?name=sampleNode&rsClassName=RsTopologyObject&mapType=sampleMap
+<br>for middle nodes :   http://localhost:12222/RapidSuite/index/maps.gsp?name=ev0&rsClassName=RsEvent&mapType=sampleMap
+<br>for lowest nodes :   http://localhost:12222/RapidSuite/index/maps.gsp?name=computer0&rsClassName=RsComputerSystem&mapType=sampleMap
+
+"""

@@ -26,9 +26,9 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         return ["email"];
     }
 
-    public static def getAuthenticationType()
+    public static def getAuthenticator()
     {
-        return "local";
+        return "auth.RsUserLocalAuthenticator";
     }
     public static RsUser authenticateUser(params)
     {
@@ -37,19 +37,16 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
         if (username)
         {
-            String authenticationType = RsUser.getAuthenticationType();
-            if (authenticationType == "local" || username == RsUser.RSADMIN)
+            String selectedAuthenticator = RsUser.getAuthenticator();
+            if(username == RsUser.RSADMIN)
             {
-                return RsApplication.getUtility("auth.RsUserLocalAuthenticator")?.authenticateUser(params);
-            }
-            else if (authenticationType == "ldap")
-            {
-                return RsApplication.getUtility("auth.RsUserLdapAuthenticator")?.authenticateUser(params);
-            }
+               selectedAuthenticator="auth.RsUserLocalAuthenticator";
+            }                
+            return RsApplication.getUtility(selectedAuthenticator).authenticateUser(params);
         }
         else if (loginToken)
         {
-            return RsApplication.getUtility("auth.RsUserTokenAuthenticator")?.authenticateUser(params);
+            return RsApplication.getUtility("auth.RsUserTokenAuthenticator").authenticateUser(params);
         }
         else
         {

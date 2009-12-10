@@ -5,7 +5,8 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
 import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils;
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +24,7 @@ class RsUserLocalAuthenticatorTest extends RapidCmdbWithCompassTestCase{
         CompassForTests.addOperationSupport (Group, GroupOperations);
 
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        UserConfigurationSpace.getInstance().initialize();
 
     }
 

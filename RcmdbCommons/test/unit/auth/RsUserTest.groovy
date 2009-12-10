@@ -540,7 +540,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
 
     public void testAuthenticateUser()
     {
-        RsUser.metaClass.'static'.getAuthenticationType = {return "local"};
+        RsUser.metaClass.'static'.getAuthenticator = {return "auth.RsUserLocalAuthenticator"};
 
         //no user and no loginToken case
         try {
@@ -583,7 +583,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         assertEquals(user.id, userFromAuth.id);
 
         //test ldap case
-        RsUser.metaClass.'static'.getAuthenticationType = {return "ldap"};
+        RsUser.metaClass.'static'.getAuthenticator = {return "auth.RsUserLdapAuthenticator"};
 
         def base_directory = getWorkspacePath() + "/RapidModules/RcmdbCommons/test/unit/auth/"
 
@@ -604,8 +604,6 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         }
 
         //test loginTokenCase
-        RsUser.metaClass.'static'.getAuthenticationType = {return "normal"};
-
         RsApplicationTestUtils.clearUtilityPaths();
         RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
 

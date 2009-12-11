@@ -214,7 +214,9 @@ class BootStrap {
         
         log.warn(logPrefix+"Destroying ListeningAdapterManager");
         ListeningAdapterManager.destroyInstance();
-
+        
+        log.warn(logPrefix+"Destroying ScriptScheduler");
+        ScriptScheduler.destroyInstance();
         log.warn(logPrefix+"Destroying ScriptManager");
         ScriptManager.destroyInstance();
 

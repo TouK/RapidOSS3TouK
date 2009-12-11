@@ -158,6 +158,7 @@ class BootStrap {
 
 
     def destroy = {
+        ScriptScheduler.destroyInstance();
         ScriptManager.destroyInstance();
         SessionManager.destroyInstance();
         def servletCtx = ServletContextHolder.getServletContext()

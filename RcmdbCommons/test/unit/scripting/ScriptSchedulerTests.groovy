@@ -185,7 +185,11 @@ class ScriptSchedulerTests extends RapidCmdbTestCase {
              }
              ScriptScheduler.destroyInstance();
          }
+    }
 
+    public void testDestroyShutsDownQuartzScheduler(){
+         ScriptScheduler.destroyInstance();
+         assertTrue(qScheduler.isShutdown());
     }
 
 }

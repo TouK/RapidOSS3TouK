@@ -51,11 +51,12 @@ class ScriptScheduler {
 
 
     public static void destroyInstance() {
+        if(scheduler != null){
+            scheduler.qScheduler.shutdown();
+        }
         synchronized (getInstanceLock)
         {
-            if (scheduler != null) {
-                scheduler = null;
-            }
+            scheduler = null;
         }
     }
 
@@ -81,7 +82,7 @@ class ScriptScheduler {
         def trigger = qScheduler.getTrigger(scriptName, null);
         if (trigger instanceof CronTrigger)
         {
-            return trigger.getCronExpression() == cronExp && trigger.startDelay == startDelay *1000    
+            return trigger.getCronExpression() == cronExp && trigger.startDelay == startDelay * 1000
         }
         return false;
     }

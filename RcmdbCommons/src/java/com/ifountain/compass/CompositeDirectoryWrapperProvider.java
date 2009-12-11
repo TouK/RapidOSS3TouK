@@ -41,6 +41,7 @@ import java.util.concurrent.Executors;
  */
 public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvider, CompassConfigurable {
     private static final Log log = LogFactory.getLog(CompositeDirectoryWrapperProvider.class);
+    private static String logPrefix="[CompositeDirectoryWrapperProvider] : ";
     public static String FILE_DIR_TYPE = "File";
     public static String RAM_DIR_TYPE = "Memory";
     public static String MIRRORED_DIR_TYPE = "FileAndMemory";
@@ -65,40 +66,75 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
         }
         if(minNumberOfUnProcessedBytes >= maxNumberOfUnProcessedBytes)
         {
-            throw new InvalidMirrorBufferSizeException("mirrorBufferLowerLimit", System.getProperty("mirrorBufferLowerLimit"), "mirrorBufferUpperLimit should be greater than mirrorBufferLowerLimit");    
+            throw new InvalidMirrorBufferSizeException("mirrorBufferLowerLimit", System.getProperty("mirrorBufferLowerLimit"), "mirrorBufferUpperLimit should be greater than mirrorBufferLowerLimit");
         }
 
     }
 
     public Directory wrap(String subIndex, Directory dir) throws SearchEngineException {
+        String subLogPrefix=logPrefix+subIndex+" : ";
+
         List allClassMappings = DomainClassMappingHelper.getDomainClassMappings();
         try {
+            log.info(subLogPrefix+"Checking storageType");
+            
             String storageType = null;
-            for(int i=0; i < allClassMappings.size(); i++)
+            CompassClassMapping  classMapping=getClassMappingForSubIndex(allClassMappings,subIndex);
+            if(classMapping != null)
             {
-                if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
-                {
-                    storageType = ((CompassClassMapping)allClassMappings.get(i)).getStorageType();
-                    break;
-                }
+                storageType=classMapping.getStorageType();
             }
-            log.info("Creating storageType "+storageType+" for "+subIndex);
+            log.info(subLogPrefix+"storageType in classMapping is "+storageType);
+
             if(storageType == null)
             {
-                return dir;
+                //search the top parent class and find storage type of it
+                if(classMapping!=null)
+                {
+                    log.info(subLogPrefix+"Seaching superclasses becasue storageType is "+storageType);
+                    Class superClass=classMapping.getMappedClassSuperClass();
+                    while(superClass!=null)
+                    {
+                        log.info(subLogPrefix+"Seaching superclass "+superClass.getName());
+                        CompassClassMapping  superClassMapping=getClassMappingForMappedClass(allClassMappings,superClass);
+                        if(superClassMapping != null)
+                        {
+                            storageType=superClassMapping.getStorageType();
+                            if(storageType==null)   //if not found search another top
+                            {
+                                superClass=superClassMapping.getMappedClassSuperClass();
+                            }
+                            else //if found stop search
+                            {
+                                log.info(subLogPrefix+"Found storageType "+storageType+" in superClass "+superClass.getName());
+                                superClass=null;
+                            }
+                        }
+                    }
+                }
+                //if no storageType found in parents, then return dir
+                if(storageType==null)
+                {
+                    log.info(subLogPrefix+"storageType can not be found in supercclasses, using default- FILE_TYPE (given dir) ");
+                    return dir;
+                }
             }
-            else if(storageType.equalsIgnoreCase(RAM_DIR_TYPE))
+
+            if(storageType.equalsIgnoreCase(RAM_DIR_TYPE))
             {
+                log.info(subLogPrefix+"Creating  storageType "+storageType);
                 RAMDirectory ramdir = new RAMDirectory(dir);
                 ramdir.setLockFactory(dir.getLockFactory());
                 return ramdir;
             }
             else  if(storageType.equalsIgnoreCase(MIRRORED_DIR_TYPE))
             {
+                log.info(subLogPrefix+"Creating  storageType "+storageType);
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
             }
             else
             {
+                log.warn(subLogPrefix+"StorageType is unknown using default- FILE_TYPE (given dir)");
                 return dir;
             }
         } catch (IOException e) {
@@ -106,6 +142,34 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
         }
     }
 
+    private CompassClassMapping getClassMappingForSubIndex(List allClassMappings,String subIndex)
+    {
+        CompassClassMapping classMapping=null;
+        for(int i=0; i < allClassMappings.size(); i++)
+        {
+            if(subIndex.equals(((CompassClassMapping)allClassMappings.get(i)).getSubIndex()))
+            {
+                //storageType = ((CompassClassMapping)allClassMappings.get(i)).getStorageType();
+                classMapping=((CompassClassMapping)allClassMappings.get(i));
+                break;
+            }
+        }
+        return classMapping;
+    }
+    private CompassClassMapping getClassMappingForMappedClass(List allClassMappings,Class mappedClass)
+    {
+        CompassClassMapping classMapping=null;
+        for(int i=0; i < allClassMappings.size(); i++)
+        {
+            if(mappedClass.equals(((CompassClassMapping)allClassMappings.get(i)).getMappedClass()))
+            {
+                //storageType = ((CompassClassMapping)allClassMappings.get(i)).getStorageType();
+                classMapping=((CompassClassMapping)allClassMappings.get(i));
+                break;
+            }
+        }
+        return classMapping;
+    }
     protected ExecutorService doCreateExecutorService() {
         return Executors.newSingleThreadExecutor();
     }

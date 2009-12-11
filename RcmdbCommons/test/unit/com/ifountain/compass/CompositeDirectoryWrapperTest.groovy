@@ -1,4 +1,4 @@
-/* 
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -99,12 +99,12 @@ class CompositeDirectoryWrapperTest extends  AbstractSearchableCompassTests{
 
     public void testWrap()
     {
-        GrailsApplication application = TestCompassFactory.getGrailsApplication([SubIndexSpecifiedMirrorProviderDomainClass, RamProviderDomainClass, FileProviderDomainClass, MirrorProviderDomainClass, NullProviderDomainClass])
+        GrailsApplication application = TestCompassFactory.getGrailsApplication([SubIndexSpecifiedMirrorProviderDomainClass, RamProviderDomainClass, RamProviderChildDomainClassLevel1WithNoStorageType,RamProviderChildDomainClassLevel2WithNoStorageType,FileProviderDomainClass, MirrorProviderDomainClass, NullProviderDomainClass])
         ApplicationHolder.application = application;
         CompositeDirectoryWrapperProvider provider = new CompositeDirectoryWrapperProvider();
         Map mappings = [:];
         DomainClassMappingHelper.getDomainClassMappings().each{CompassClassMapping mapping->
-            mappings[mapping.getMappedClass().name] = mapping;            
+            mappings[mapping.getMappedClass().name] = mapping;
         }
         Directory mainDir = FSDirectory.getDirectory("trial");
         mainDir.setLockFactory (NoLockFactory.getNoLockFactory())
@@ -123,6 +123,15 @@ class CompositeDirectoryWrapperTest extends  AbstractSearchableCompassTests{
         dir = provider.wrap(mappings[NullProviderDomainClass.name].subIndex,  mainDir);
         assertTrue (dir instanceof FSDirectory);
         assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
+
+        //test for the childs of RamProviderDomainClass should both be same as parent since not specified
+        dir = provider.wrap(mappings[RamProviderChildDomainClassLevel1WithNoStorageType.name].subIndex,  mainDir);
+        assertTrue ("False dir ${dir.class} should be ${RAMDirectory}",dir instanceof RAMDirectory);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
+
+        dir = provider.wrap(mappings[RamProviderChildDomainClassLevel2WithNoStorageType.name].subIndex,  mainDir);
+        assertTrue ("False dir ${dir.class} should be ${RAMDirectory}",dir instanceof RAMDirectory);
+        assertSame (NoLockFactory.getNoLockFactory(), dir.getLockFactory());
     }
 }
 
@@ -134,6 +143,20 @@ class RamProviderDomainClass{
     Long id
     Long version
     String prop1 = "";
+}
+
+class RamProviderChildDomainClassLevel1WithNoStorageType extends RamProviderDomainClass{
+    static searchable = {
+
+    }
+    static relations = [:]
+}
+
+class RamProviderChildDomainClassLevel2WithNoStorageType extends RamProviderChildDomainClassLevel1WithNoStorageType{
+    static searchable = {
+
+    }
+    static relations = [:]
 }
 
 class FileProviderDomainClass{

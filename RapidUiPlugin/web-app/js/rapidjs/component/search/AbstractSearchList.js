@@ -65,6 +65,8 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.searchClassRequester = new YAHOO.rapidjs.Requester(this.searchClassesSuccess, this.processFailure, this, this.timeout)
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.scrollPollTask = new YAHOO.ext.util.DelayedTask(this.scrollPoll, this);
+    this.handleSuccessTask = new YAHOO.ext.util.DelayedTask(this.handleSuccess, this);
+    this.handleSuccessInProgress = false;
     var events = {
         'rowHeaderMenuClicked' : new YAHOO.util.CustomEvent('rowHeaderMenuClicked'),
         'multiSelectionMenuClicked' : new YAHOO.util.CustomEvent('multiSelectionMenuClicked'),
@@ -139,7 +141,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
     handleSearch: function(e) {
         this.offset = 0;
-        this.poll();
+        this.poll(true);
         this._changeScroll(0);
     },
 
@@ -216,26 +218,33 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
-        var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
-        var node = this.getRootNode(newData);
-        if (node) {
-            var rowCount = node.getAttribute(this.totalCountAttribute);
-            if (rowCount != null) {
-                this.totalRowCount = parseInt(rowCount, 10)
+        if (this.handleSuccessInProgress) {
+             this.handleSuccessTask.delay(50, null, null, [response, keepExisting, removeAttribute])
+        }
+        else {
+            this.handleSuccessInProgress = true;
+            var newData = new YAHOO.rapidjs.data.RapidXmlDocument(response, [this.keyAttribute]);
+            var node = this.getRootNode(newData);
+            if (node) {
+                var rowCount = node.getAttribute(this.totalCountAttribute);
+                if (rowCount != null) {
+                    this.totalRowCount = parseInt(rowCount, 10)
+                }
+                var offset = node.getAttribute(this.offsetAttribute);
+                if (offset != null) {
+                    this.lastOffset = parseInt(offset, 10)
+                }
+                this.showCurrentState();
+                if (this.data) {
+                    this.data.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
+                    this.refreshData();
+                }
+                else {
+                    this.data = node;
+                    this.loadData(node);
+                }
             }
-            var offset = node.getAttribute(this.offsetAttribute);
-            if (offset != null) {
-                this.lastOffset = parseInt(offset, 10)
-            }
-            this.showCurrentState();
-            if (this.data) {
-                this.data.mergeData(node, this.keyAttribute, keepExisting, removeAttribute);
-                this.refreshData();
-            }
-            else {
-                this.data = node;
-                this.loadData(node);
-            }
+            this.handleSuccessInProgress = false;
         }
     },
 
@@ -257,12 +266,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return this.currentlyExecutingQuery;
     },
 
-    poll: function() {
+    poll: function(showMask) {
         for (var i = 0; i < this.subComponents.length; i++)
         {
             this.subComponents[i].preparePoll();
         }
-        this._poll();
+        this._poll(showMask);
         for (var i = 0; i < this.subComponents.length; i++)
         {
             this.subComponents[i].poll();
@@ -271,7 +280,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     doRequest: function(url, params, callback) {
         YAHOO.rapidjs.component.search.AbstractSearchList.superclass.doPostRequest.call(this, url, params, callback);
     },
-    _poll: function() {
+    _poll: function(showMask) {
         if (this.searchInput != null)
         {
             this.currentlyExecutingQuery = this.searchInput.value;
@@ -287,7 +296,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                     this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, filterQuery)
                 }
             }
-            this.showMask();
+            if(showMask === true){
+                this.showMask();    
+            }
             this.params['offset'] = this.offset;
             this.params[this.queryParameter] = this.currentlyExecutingQuery;
             this.params['sort'] = this.lastSortAtt;
@@ -360,7 +371,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.lastSortAtt = sortAtt;
         this.lastSortOrder = sortOrder;
         this.offset = 0;
-        this._poll();
+        this._poll(true);
     },
 
     handleScroll: function() {
@@ -375,7 +386,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
 
     scrollPoll : function(offset) {
         this.offset = offset;
-        this._poll();
+        this._poll(true);
     },
 
     _verticalScrollChanged : function() {
@@ -760,7 +771,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.events['rowClicked'].fireDirect(data, event);
     },
     fireSelectionChange: function(nodes, event) {
-        this.events['selectionChanged'].fireDirect(ArrayUtils.collect(nodes, function(node){return node.xmlData}), event);
+        this.events['selectionChanged'].fireDirect(ArrayUtils.collect(nodes, function(node) {
+            return node.xmlData
+        }), event);
     },
     fireSaveQueryClick: function(query) {
         this.events['saveQueryClicked'].fireDirect(query);

@@ -675,7 +675,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     viewBuilderSuccess: function() {
         this.events["success"].fireDirect(this);
     },
-    _poll : function() {
+    _poll : function(showMask) {
         var lastClicked = this.lastSortedHeader;
         if (lastClicked) {
             lastClicked.sortDir = null;
@@ -694,7 +694,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.lastSortedHeader.sortDir = this.lastSortOrder;
             this.updateHeaderSortState(this.lastSortedHeader);
         }
-        YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this);
+        YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this, showMask);
     },
     setQueryWithView: function(queryString, view, searchIn, title, extraParams)
     {

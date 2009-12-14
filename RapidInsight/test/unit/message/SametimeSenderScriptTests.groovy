@@ -2,13 +2,9 @@ package message
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
-import datasource.SametimeDatasource
-import connection.SametimeConnection
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import connector.SametimeConnector
-import connector.SametimeConnectorOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
-import datasource.SametimeDatasourceOperations
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 import com.ifountain.comp.test.util.logging.TestLogUtils
@@ -21,7 +17,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 * To change this template use File | Settings | File Templates.
 */
 class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
-    def connectorParams;
+    def connectorParams=[name:"testConnector"];
     def destination="abdurrahim"
     def scripts_directory="../testoutput";
 
@@ -48,9 +44,7 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,SametimeConnector,SametimeConnection,SametimeDatasource], []);
-        CompassForTests.addOperationSupport (SametimeConnector,SametimeConnectorOperations);
-        CompassForTests.addOperationSupport (SametimeDatasource,SametimeDatasourceOperations);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
@@ -58,8 +52,6 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             return "___renderTestResult";
         }
-
-        buildConnectorParams();
 
         initializeScriptManager();
     }
@@ -76,21 +68,7 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.enableGlobally();
     }
 
-    void buildConnectorParams(){
-
-        connectorParams=[:]
-
-        connectorParams["name"] = "testConnector";
-        connectorParams["host"]="sametimeHost"
-        connectorParams["port"]=5222
-        connectorParams["username"] = "testaccount";
-        connectorParams["userPassword"] = "3600";
-        connectorParams["community"] = "a.com";
-
-        println "connectorParams : ${connectorParams}"
-
-    }
-
+   
      def addEvents(prefix,count)
     {
         def events=[]
@@ -137,9 +115,14 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sendMessageParams=[];
 
-        SametimeDatasource.metaClass.sendMessage= { target, message ->
+        def mockDatasource=[:];
+        mockDatasource.sendMessage= { target, message ->
             sendMessageParams.add([target:target,message:message]);
-            println "my send message";
+            println "my send email";
+        }
+
+        SametimeConnector.metaClass.'static'.get={ Map props ->
+            return [ds:mockDatasource]
         }
 
 
@@ -161,9 +144,6 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
-
-
-        def connector=addConnector();
 
         TestLogUtils.enableLogger (TestLogUtils.log);
 
@@ -193,26 +173,4 @@ class SametimeSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
     }
 
-
-    def addConnector()
-    {
-        assertEquals(0,SametimeConnector.count())
-        assertEquals(0,SametimeConnection.count())
-        assertEquals(0,SametimeDatasource.count())
-
-        def params=[:]
-        params.putAll(connectorParams)
-
-        def addedObjects=SametimeConnector.addConnector(params);
-        assertEquals(3,addedObjects.size());
-        addedObjects.each{ key , object ->
-            assertFalse(object.hasErrors());
-        }
-        assertNotNull(addedObjects.sametimeConnector)
-
-        assertEquals(1,SametimeConnector.count())
-        assertEquals(1,SametimeConnection.count())
-        assertEquals(1,SametimeDatasource.count())
-        return
-    }
 }

@@ -2,13 +2,9 @@ package message
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
-import datasource.AolDatasource
-import connection.AolConnection
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import connector.AolConnector
-import connector.AolConnectorOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
-import datasource.AolDatasourceOperations
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 import com.ifountain.comp.test.util.logging.TestLogUtils
@@ -21,7 +17,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 * To change this template use File | Settings | File Templates.
 */
 class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
-    def connectorParams;
+    def connectorParams=[name:"testConnector"];
     def destination="abdurrahim"
     def scripts_directory="../testoutput";
 
@@ -46,11 +42,7 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         clearMetaClasses();
 
-
-
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,AolConnector,AolConnection,AolDatasource], []);
-        CompassForTests.addOperationSupport (AolConnector,AolConnectorOperations);
-        CompassForTests.addOperationSupport (AolDatasource,AolDatasourceOperations);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
@@ -58,8 +50,6 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             return "___renderTestResult";
         }
-
-        buildConnectorParams();
 
         initializeScriptManager();
     }
@@ -74,19 +64,6 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTemplate);
         ExpandoMetaClass.enableGlobally();
-    }
-
-    void buildConnectorParams(){
-
-        connectorParams=[:]
-
-        connectorParams["name"] = "testConnector";
-        connectorParams["host"]="aolHost"
-        connectorParams["port"]=5222
-        connectorParams["username"] = "testaccount";
-        connectorParams["userPassword"] = "3600";
-        println "connectorParams : ${connectorParams}"
-
     }
 
      def addEvents(prefix,count)
@@ -135,10 +112,16 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sendMessageParams=[];
 
-        AolDatasource.metaClass.sendMessage= { target, message ->
+        def mockDatasource=[:];
+        mockDatasource.sendMessage= { target, message ->
             sendMessageParams.add([target:target,message:message]);
-            println "my send message";
+            println "my send email";
         }
+
+        AolConnector.metaClass.'static'.get={ Map props ->
+            return [ds:mockDatasource]
+        }
+
 
 
         assertEquals(RsEvent.countHits("alias:*"),0)
@@ -160,8 +143,6 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
 
-
-        def connector=addConnector();
 
         TestLogUtils.enableLogger (TestLogUtils.log);
 
@@ -191,26 +172,4 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
     }
 
-
-    def addConnector()
-    {
-        assertEquals(0,AolConnector.count())
-        assertEquals(0,AolConnection.count())
-        assertEquals(0,AolDatasource.count())
-
-        def params=[:]
-        params.putAll(connectorParams)
-
-        def addedObjects=AolConnector.addConnector(params);
-        assertEquals(3,addedObjects.size());
-        addedObjects.each{ key , object ->
-            assertFalse(object.hasErrors());
-        }
-        assertNotNull(addedObjects.aolConnector)
-
-        assertEquals(1,AolConnector.count())
-        assertEquals(1,AolConnection.count())
-        assertEquals(1,AolDatasource.count())
-        return
-    }
 }

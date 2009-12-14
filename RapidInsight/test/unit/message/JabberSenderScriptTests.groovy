@@ -2,13 +2,9 @@ package message
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
-import datasource.JabberDatasource
-import connection.JabberConnection
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import connector.JabberConnector
-import connector.JabberConnectorOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
-import datasource.JabberDatasourceOperations
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 import com.ifountain.comp.test.util.logging.TestLogUtils
@@ -21,7 +17,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 * To change this template use File | Settings | File Templates.
 */
 class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
-    def connectorParams;
+    def connectorParams=[name:"testConnector"];
     def destination="abdurrahim"
     def scripts_directory="../testoutput";
 
@@ -48,9 +44,7 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,JabberConnector,JabberConnection,JabberDatasource], []);
-        CompassForTests.addOperationSupport (JabberConnector,JabberConnectorOperations);
-        CompassForTests.addOperationSupport (JabberDatasource,JabberDatasourceOperations);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
@@ -58,8 +52,6 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             return "___renderTestResult";
         }
-
-        buildConnectorParams();
 
         initializeScriptManager();
     }
@@ -76,20 +68,6 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.enableGlobally();
     }
 
-    void buildConnectorParams(){
-
-        connectorParams=[:]
-
-
-        connectorParams["name"] = "testConnector";
-        connectorParams["host"]="jabberHost"
-        connectorParams["port"]=5222
-        connectorParams["username"] = "testaccount";
-        connectorParams["userPassword"] = "3600";
-        connectorParams["serviceName"] = "a.com";
-        println "connectorParams : ${connectorParams}"
-
-    }
 
      def addEvents(prefix,count)
     {
@@ -137,9 +115,14 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sendMessageParams=[];
 
-        JabberDatasource.metaClass.sendMessage= { target, message ->
+        def mockDatasource=[:];
+        mockDatasource.sendMessage= { target, message ->
             sendMessageParams.add([target:target,message:message]);
-            println "my send message";
+            println "my send email";
+        }
+
+        JabberConnector.metaClass.'static'.get={ Map props ->
+            return [ds:mockDatasource]
         }
 
 
@@ -163,7 +146,7 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
 
 
-        def connector=addConnector();
+
 
         TestLogUtils.enableLogger (TestLogUtils.log);
 
@@ -194,25 +177,4 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
 
-    def addConnector()
-    {
-        assertEquals(0,JabberConnector.count())
-        assertEquals(0,JabberConnection.count())
-        assertEquals(0,JabberDatasource.count())
-
-        def params=[:]
-        params.putAll(connectorParams)
-
-        def addedObjects=JabberConnector.addConnector(params);
-        assertEquals(3,addedObjects.size());
-        addedObjects.each{ key , object ->
-            assertFalse(object.hasErrors());
-        }
-        assertNotNull(addedObjects.jabberConnector)
-
-        assertEquals(1,JabberConnector.count())
-        assertEquals(1,JabberConnection.count())
-        assertEquals(1,JabberDatasource.count())
-        return
-    }
 }

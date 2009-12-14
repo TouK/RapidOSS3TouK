@@ -2,11 +2,8 @@ package message
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
-import datasource.SmsDatasource
-import connection.SmsConnection
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import connector.SmsConnector
-import connector.SmsConnectorOperations
 import com.ifountain.rcmdb.test.util.CompassForTests
 import datasource.SmsDatasourceOperations
 import application.RsApplication
@@ -21,7 +18,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 * To change this template use File | Settings | File Templates.
 */
 class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
-    def connectorParams;
+    def connectorParams=[name:"testConnector"];
     def destination="abdurrahim"
     def scripts_directory="../testoutput";
 
@@ -48,9 +45,7 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication,SmsConnector,SmsConnection,SmsDatasource], []);
-        CompassForTests.addOperationSupport (SmsConnector,SmsConnectorOperations);
-        CompassForTests.addOperationSupport (SmsDatasource,SmsDatasourceOperations);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
         RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
@@ -58,8 +53,6 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             return "___renderTestResult";
         }
-
-        buildConnectorParams();
 
         initializeScriptManager();
     }
@@ -74,20 +67,6 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTemplate);
         ExpandoMetaClass.enableGlobally();
-    }
-
-    void buildConnectorParams(){
-
-        connectorParams=[:]
-
-
-        connectorParams["name"] = "testConnector";
-        connectorParams["host"]="smsHost"
-        connectorParams["port"]=5222
-        connectorParams["username"] = "testaccount";
-        connectorParams["userPassword"] = "3600";
-        println "connectorParams : ${connectorParams}"
-
     }
 
      def addEvents(prefix,count)
@@ -136,9 +115,14 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def sendMessageParams=[];
 
-        SmsDatasource.metaClass.sendMessage= { target, message ->
+        def mockDatasource=[:];
+        mockDatasource.sendMessage= { target, message ->
             sendMessageParams.add([target:target,message:message]);
-            println "my send message";
+            println "my send email";
+        }
+
+        SmsConnector.metaClass.'static'.get={ Map props ->
+            return [ds:mockDatasource]
         }
 
 
@@ -161,8 +145,6 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
 
-
-        def connector=addConnector();
 
         TestLogUtils.enableLogger (TestLogUtils.log);
 
@@ -193,25 +175,5 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     }
 
 
-    def addConnector()
-    {
-        assertEquals(0,SmsConnector.count())
-        assertEquals(0,SmsConnection.count())
-        assertEquals(0,SmsDatasource.count())
 
-        def params=[:]
-        params.putAll(connectorParams)
-
-        def addedObjects=SmsConnector.addConnector(params);
-        assertEquals(3,addedObjects.size());
-        addedObjects.each{ key , object ->
-            assertFalse(object.hasErrors());
-        }
-        assertNotNull(addedObjects.smsConnector)
-
-        assertEquals(1,SmsConnector.count())
-        assertEquals(1,SmsConnection.count())
-        assertEquals(1,SmsDatasource.count())
-        return
-    }
 }

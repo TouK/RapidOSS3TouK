@@ -42,16 +42,16 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     {
 
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
-        filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile1.txt")
         filesToBeTracked.last().parentFile.mkdirs();
         filesToBeTracked.last().setText("")
 
         def excludedFiles = [];
-        excludedFiles << new File(sourceDir, "RapidSuite/data")
+        excludedFiles << new File("${sourceDir}/RapidSuite/data")
         excludedFiles.last().mkdirs();
-        excludedFiles << new File(excludedFiles[0], "data1.txt")
+        excludedFiles << new File("${excludedFiles[0]}/data1.txt")
         excludedFiles.last().setText("")
         excludedFiles << new File("emptydir")
         excludedFiles.last().mkdirs()
@@ -65,9 +65,9 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void testMarkModificationsDoesNotCreateChangeSetDirectoryIfThereAreNoModifications()
     {
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
-        filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile1.txt")
         filesToBeTracked.last().parentFile.mkdirs();
         filesToBeTracked.last().setText("")
 
@@ -117,12 +117,12 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void testMarkModificationsCreateChangeSetDirectoryIfThereAreModifications()
     {
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
-        filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile1.txt")
         filesToBeTracked.last().parentFile.mkdirs();
         filesToBeTracked.last().setText("")
-        filesToBeTracked << new File(sourceDir, "trialDir/subFile2.txt")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile2.txt")
         filesToBeTracked.last().setText("")
 
         def filesToBeTrackedPath = filesToBeTracked.canonicalPath*.substring(sourceDirFile.canonicalPath.length()+1)*.replaceAll("\\\\", "/")
@@ -135,7 +135,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         def directoriesAfterMarkingBaseVersion = versionControlDirectory.listFiles()
         filesToBeTracked[0].delete();
         filesToBeTracked[1].setText("")
-        filesToBeTracked << new File(sourceDir, "trialDir/subFile3.txt")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile3.txt")
         filesToBeTracked.last().setText("");
         filesToBeTrackedPath = filesToBeTracked.canonicalPath*.substring(sourceDirFile.canonicalPath.length()+1)*.replaceAll("\\\\", "/")
 
@@ -158,7 +158,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         assertNotNull (change)
         change = changes.find{it.path == filesToBeTrackedPath[3] && it.operation == "Create" && it.modifiedAt == ""+filesToBeTracked[3].lastModified()}
         assertNotNull (change)
-        def fileToBeCopied = new File(changeSetDir, change.path);
+        def fileToBeCopied = new File("${changeSetDir}/${change.path}");
         assertEquals (filesToBeTracked[1].getText(), fileToBeCopied.getText())
 
         def allFiles = utility.getFileListFile(changeSetDir)
@@ -198,7 +198,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void testMarkModificationsCreateChangeSetDirectoryIfForceMarkIsSpecified()
     {
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
 
         def filesToBeTrackedPath = filesToBeTracked.canonicalPath*.substring(sourceDirFile.canonicalPath.length()+1)*.replaceAll("\\\\", "/")
@@ -216,7 +216,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void testMarkModificationsWillDiscardCorruptedChangeSets()
     {
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
 
         def filesToBeTrackedPath = filesToBeTracked.canonicalPath*.substring(sourceDirFile.canonicalPath.length()+1)*.replaceAll("\\\\", "/")
@@ -245,7 +245,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     public void testMarkModificationsWillDiscardCorruptedChangeSetsAndWillUseLastNotCorruptedOnes()
     {
         def filesToBeTracked = [];
-        filesToBeTracked << new File(sourceDir, "file1.txt")
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
         filesToBeTracked.last().setText("")
 
         def filesToBeTrackedPath = filesToBeTracked.canonicalPath*.substring(sourceDirFile.canonicalPath.length()+1)*.replaceAll("\\\\", "/")
@@ -276,7 +276,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         assertEquals (1, changes.size())
         def change = changes.find{it.path == filesToBeTrackedPath[0] && it.operation == "Change" && it.modifiedAt == ""+filesToBeTracked[0].lastModified()}
         assertNotNull (change)
-        def fileToBeCopied = new File(changeSetDir, change.path);
+        def fileToBeCopied = new File("${changeSetDir}/${change.path}");
         assertEquals (filesToBeTracked[0].getText(), fileToBeCopied.getText())
 
         allFiles = utility.getFileListFile(changeSetDir)

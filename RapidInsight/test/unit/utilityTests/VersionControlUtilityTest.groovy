@@ -44,23 +44,24 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         def filesToBeTracked = [];
         filesToBeTracked << new File(sourceDir, "file1.txt")
         println "file path : ${filesToBeTracked.last().canonicalPath}"
-        filesToBeTracked.last().setText("")
+        assertTrue(filesToBeTracked.last().parentFile.exists())
+        filesToBeTracked.last().setText("asdf")
         assertTrue(filesToBeTracked.last().exists())
         filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")
         filesToBeTracked.last().parentFile.mkdirs();
         assertTrue(filesToBeTracked.last().parentFile.exists())
-        filesToBeTracked.last().setText("")
+        filesToBeTracked.last().setText("asdf")
         assertTrue(filesToBeTracked.last().exists())
 
         def excludedFiles = [];
         excludedFiles << new File(sourceDir, "RapidSuite/data")
         excludedFiles.last().mkdirs();
         excludedFiles << new File(excludedFiles[0], "data1.txt")
-        excludedFiles.last().setText("")
+        excludedFiles.last().setText("asdf")
         excludedFiles << new File("emptydir")
         excludedFiles.last().mkdirs()
-//        def result = utility.markModifications (excludedFileNames, [:]);
-//        validateNoChangeChangeSet(result, filesToBeTracked);
+        def result = utility.markModifications (excludedFileNames, [:]);
+        validateNoChangeChangeSet(result, filesToBeTracked);
 
 
 

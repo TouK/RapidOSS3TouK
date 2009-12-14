@@ -43,6 +43,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
 
         def filesToBeTracked = [];
         filesToBeTracked << new File(sourceDir, "file1.txt")
+        println "file path : ${filesToBeTracked.last().canonicalPath}"
         filesToBeTracked.last().setText("")
         assertTrue(filesToBeTracked.last().exists())
         filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")

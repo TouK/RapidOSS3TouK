@@ -32,6 +32,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         ]
         FileUtils.deleteDirectory (sourceDirFile);
         sourceDirFile.mkdirs();
+        assertTrue(sourceDirFile.exists())
     }
 
     public void tearDown() {
@@ -44,6 +45,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         def filesToBeTracked = [];
         filesToBeTracked << new File(sourceDir, "file1.txt")
         println "file path : ${filesToBeTracked.last().canonicalPath}"
+        println "parent path : ${filesToBeTracked.last().parentFile.canonicalPath}"
         assertTrue(filesToBeTracked.last().parentFile.exists())
         filesToBeTracked.last().setText("asdf")
         assertTrue(filesToBeTracked.last().exists())

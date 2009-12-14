@@ -23,7 +23,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         gcl.addClasspath (new File(getWorkspaceDirectory(), "RapidModules/RapidInsight/operations").path);
         utility = gcl.loadClass("VersionControlUtility").newInstance();
         sourceDirFile = utility.sourceDir
-        sourceDir= sourceDirFile.path;
+        sourceDir= sourceDirFile.canonicalPath;
         versionControlDirectory = utility.versionControlDirectory
         excludedFileNames = [
                 "RapidSuite/data",

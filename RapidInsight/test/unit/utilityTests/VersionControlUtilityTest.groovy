@@ -55,8 +55,8 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         excludedFiles.last().setText("")
         excludedFiles << new File("emptydir")
         excludedFiles.last().mkdirs()
-        def result = utility.markModifications (excludedFileNames, [:]);
-        validateNoChangeChangeSet(result, filesToBeTracked);
+//        def result = utility.markModifications (excludedFileNames, [:]);
+//        validateNoChangeChangeSet(result, filesToBeTracked);
 
 
 

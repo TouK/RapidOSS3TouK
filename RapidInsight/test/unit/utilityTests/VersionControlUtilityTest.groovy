@@ -31,6 +31,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
                 "temp"
         ]
         FileUtils.deleteDirectory (sourceDirFile);
+        assertFalse(sourceDirFile.exists())
         sourceDirFile.mkdirs();
         assertTrue(sourceDirFile.exists())
     }

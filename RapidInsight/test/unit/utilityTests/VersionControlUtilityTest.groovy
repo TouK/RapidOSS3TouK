@@ -308,6 +308,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
     {
         def changesXml = new XmlParser().parseText(result);
         def changesAttributes = changesXml.attributes()
+        println "file list : ${versionControlDirectory.listFiles().name} attribute: ${changesAttributes.name}"
         return versionControlDirectory.listFiles().find {it.name == changesAttributes.name}
     }
 

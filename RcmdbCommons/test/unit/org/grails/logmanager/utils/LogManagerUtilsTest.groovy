@@ -127,8 +127,8 @@ public class LogManagerUtilsTest extends GroovyTestCase
         settings.validLogFilePatterns = ["a.*", "b.*"];
         settings.rollbackFilePatterns = ["aa.*"];
 
-        LogManagerUtils.getLogDirectories(settings).each{File dir->
-            dir.mkdirs();    
+        settings.logDirectories.each{String dirName->
+            new File("${outputDirectory}/${dirName}").mkdirs();    
         }
         new File("${outputDirectory}/anotherDir").mkdirs();
         def file1 = new File("${outputDirectory}/${settings.logDirectories[0]}/afile1.log");

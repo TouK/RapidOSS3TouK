@@ -38,29 +38,29 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 
-//    public void testMarkModificationsDoesNotMarkFileChangesIfThereAreNoBaseVersion()
-//    {
-//
-//        def filesToBeTracked = [];
-//        filesToBeTracked << new File("${sourceDir}/file1.txt")
-//        filesToBeTracked.last().setText("")
-//        filesToBeTracked << new File("${sourceDir}/trialDir/subFile1.txt")
-//        filesToBeTracked.last().parentFile.mkdir();
-//        filesToBeTracked.last().setText("")
-//
-//        def excludedFiles = [];
-//        excludedFiles << new File("${sourceDir}/RapidSuite/data")
-//        excludedFiles.last().mkdirs();
-//        excludedFiles << new File("${excludedFiles[0]}/data1.txt")
-//        excludedFiles.last().setText("")
-//        excludedFiles << new File("emptydir")
-//        excludedFiles.last().mkdirs()
-//        def result = utility.markModifications (excludedFileNames, [:]);
-//        validateNoChangeChangeSet(result, filesToBeTracked);
-//
-//
-//
-//    }
+    public void testMarkModificationsDoesNotMarkFileChangesIfThereAreNoBaseVersion()
+    {
+
+        def filesToBeTracked = [];
+        filesToBeTracked << new File("${sourceDir}/file1.txt")
+        filesToBeTracked.last().setText("")
+        filesToBeTracked << new File("${sourceDir}/trialDir/subFile1.txt")
+        filesToBeTracked.last().parentFile.mkdir();
+        filesToBeTracked.last().setText("")
+
+        def excludedFiles = [];
+        excludedFiles << new File("${sourceDir}/RapidSuite/data")
+        excludedFiles.last().mkdirs();
+        excludedFiles << new File("${excludedFiles[0]}/data1.txt")
+        excludedFiles.last().setText("")
+        excludedFiles << new File("emptydir")
+        excludedFiles.last().mkdirs()
+        def result = utility.markModifications (excludedFileNames, [:]);
+        validateNoChangeChangeSet(result, filesToBeTracked);
+
+
+
+    }
 
     public void testMarkModificationsDoesNotCreateChangeSetDirectoryIfThereAreNoModifications()
     {

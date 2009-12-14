@@ -13,7 +13,7 @@ class VersionControlUtility {
     public static final String allFilesName = "allFiles.xml"
     public static final String changesFileName = "changes.xml"
     File baseDirectory = new File(System.getProperty("base.dir", "."));
-    File sourceDir = new File(baseDirectory, "..");
+    File sourceDir = baseDirectory.parentFile;
     File versionControlDirectory = new File(sourceDir, "versionControl");
     def synchronized getChangeSetList()
     {

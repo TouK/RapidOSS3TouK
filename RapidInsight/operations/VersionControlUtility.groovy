@@ -14,7 +14,7 @@ class VersionControlUtility {
     public static final String changesFileName = "changes.xml"
     File baseDirectory = new File(System.getProperty("base.dir", "."));
     File sourceDir = new File(baseDirectory, "..");
-    File versionControlDirectory = new File(sourceDir, "RapidSuite/versionControl");
+    File versionControlDirectory = new File(sourceDir, "versionControl");
     def synchronized getChangeSetList()
     {
         def changeSets = [];

@@ -44,9 +44,12 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         def filesToBeTracked = [];
         filesToBeTracked << new File(sourceDir, "file1.txt")
         filesToBeTracked.last().setText("")
+        assertTrue(filesToBeTracked.last().exists())
         filesToBeTracked << new File(sourceDir, "trialDir/subFile1.txt")
         filesToBeTracked.last().parentFile.mkdirs();
+        assertTrue(filesToBeTracked.last().parentFile.exists())
         filesToBeTracked.last().setText("")
+        assertTrue(filesToBeTracked.last().exists())
 
         def excludedFiles = [];
         excludedFiles << new File(sourceDir, "RapidSuite/data")

@@ -1,6 +1,1 @@
-netcool.conversion.NetcoolRuleFunctionsTest
-com.ifountain.rcmdb.domain.util.ControllerUtilsTest
-auth.AuthenticationAuthorizationControllerIntegrationTests
-com.ifountain.compass.integration.CompassTransactionTest
-performance.writeOperations.RepositoryPerformanceTest
-performance.writeOperations.NewPerfTest
+utilityTests.VersionControlUtilityTest

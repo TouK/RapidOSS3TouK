@@ -131,7 +131,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         def result = utility.markModifications (excludedFileNames, [:]);
         def baseChangeSetDir = getChangeSetDir(result)
 
-        Thread.sleep (100)
+        Thread.sleep (1000)
         def directoriesAfterMarkingBaseVersion = versionControlDirectory.listFiles()
         filesToBeTracked[0].delete();
         filesToBeTracked[1].setText("")
@@ -252,7 +252,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
 
         //we created base version
         def result = utility.markModifications (excludedFileNames, [:]);
-        Thread.sleep (300)
+        Thread.sleep (1000)
 
         filesToBeTracked[0].setText("")
 

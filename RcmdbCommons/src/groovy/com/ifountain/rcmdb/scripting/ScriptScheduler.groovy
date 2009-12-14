@@ -52,7 +52,7 @@ class ScriptScheduler {
 
     public static void destroyInstance() {
         if(scheduler != null){
-            scheduler.qScheduler.shutdown();
+            scheduler.qScheduler?.shutdown();
         }
         synchronized (getInstanceLock)
         {

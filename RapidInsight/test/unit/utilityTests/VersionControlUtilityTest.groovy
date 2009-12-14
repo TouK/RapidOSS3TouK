@@ -257,7 +257,7 @@ class VersionControlUtilityTest extends RapidCmdbTestCase{
         filesToBeTracked[0].setText("")
 
         result = utility.markModifications (excludedFileNames, [:]);
-
+        println "result : ${result}"
         //corrupted allfiles
         def changeSetDir = getChangeSetDir(result)
         def allFiles = utility.getFileListFile(changeSetDir)

@@ -15,19 +15,21 @@ import application.RsApplicationOperations
 */
 class MarkModificationsTest extends RapidCmdbScriptTestCase{
     def scriptName = "markModifications"
-    def baseDir
+    String baseDir
     File baseDirFile
     File versionControlDirectory;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         gcl.addClasspath (new File(getWorkspaceDirectory(), "RapidModules/RapidInsight/operations").path);
+        gcl.loadClass("VersionControlUtility")
         initializeScriptManager ("/RapidModules/RapidInsight/scripts");
         addScript (scriptName);
-        baseDir = "../testOutput"
+        baseDir = "../testOutput/RapidSuite"
         System.setProperty ("base.dir", baseDir)
         baseDirFile = new File(baseDir)
-        versionControlDirectory = new File(baseDirFile, "versionControl");
-        FileUtils.deleteDirectory (baseDirFile);
+        File sourceDir = baseDirFile.parentFile;
+        versionControlDirectory = new File(sourceDir, "versionControl");
+        FileUtils.deleteDirectory (sourceDir);
         baseDirFile.mkdirs();
         CompassForTests.addOperationSupport (RsApplication, RsApplicationOperations)
     }
@@ -70,9 +72,9 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
 
         def changes = changesXml.Change*.attributes();
         assertEquals (2, changes.size())
-        def change = changes.find{it.path == filesToBeTrackedPath[0] && it.operation == "Delete"}
+        def change = changes.find{it.path == "RapidSuite/${filesToBeTrackedPath[0]}" && it.operation == "Delete"}
         assertNotNull (change)
-        change = changes.find{it.path == filesToBeTrackedPath[1] && it.operation == "Change" && it.modifiedAt == ""+filesToBeTracked[1].lastModified()}
+        change = changes.find{it.path == "RapidSuite/${filesToBeTrackedPath[1]}" && it.operation == "Change" && it.modifiedAt == ""+filesToBeTracked[1].lastModified()}
         assertNotNull (change)
         def fileToBeCopied = new File(changeSetDir, change.path);
         assertEquals (filesToBeTracked[1].getText(), fileToBeCopied.getText())
@@ -120,7 +122,7 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
 
         filesToBeTracked.each{File fileToBeTracked->
             def expectedFilePath = fileToBeTracked.canonicalPath.substring(baseDirFile.canonicalPath.length()+1).replaceAll("\\\\", "/")
-            def fileConf = fileConfigs.find {it.path == expectedFilePath}
+            def fileConf = fileConfigs.find {it.path == "RapidSuite/${expectedFilePath}"}
             assertEquals(""+fileToBeTracked.lastModified(), fileConf.modifiedAt)
         }    
     }

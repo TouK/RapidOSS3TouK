@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4j version="4.3" transformSequenceNumber="1">
+  <directoryPresets config="D:/IdeaWorkspace/RapidModules/RcmdbCommons/devDocs" />
+  <application name="iFountain RapidOSS" distributionSourceDir=".">
+    <languages>
+      <principalLanguage id="en" customLocalizationFile="" />
+    </languages>
+  </application>
+  <executable name="rs_64" type="1" iconSet="true" iconFile="../RcmdbCommons/devDocs/ifountain.ico" executableDir="." redirectStderr="true" stderrFile="logs/RapidServerErr.log" stderrMode="overwrite" redirectStdout="true" stdoutFile="logs/RapidServerOut.log" stdoutMode="overwrite" failOnStderrOutput="false" executableMode="3" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="Starts iFountain RapidOSS" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" amd64="true">
+    <messageSet />
+    <versionInfo include="false" fileVersion="" fileDescription="ProcessManager Service Executable" legalCopyright="Ifountain" internalName="" companyName="IFountain" productVersion="" />
+  </executable>
+  <splashScreen show="false" autoOff="true" alwaysOnTop="true" width="0" height="0" bitmapFile="" java6SplashScreen="false">
+    <text>
+      <statusLine x="20" y="20" text="" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
+      <versionLine x="20" y="40" text="version %VERSION%" font="Arial" fontSize="8" fontColor="0,0,0" fontWeight="500" />
+    </text>
+  </splashScreen>
+  <java mainClass="org.codehaus.groovy.grails.cli.support.GrailsStarter" vmParameters="&quot;-Dgroovy.starter.conf=%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; &quot;-Dgrails.home=%EXE4J_EXEDIR%..&quot; &quot;-Dgrails.work.dir=%EXE4J_EXEDIR%..\temp&quot; &quot;-Dbase.dir=.&quot;" arguments="--main com.ifountain.grails.RapidGrailsScriptRunner --classpath . --conf &quot;%EXE4J_EXEDIR%..\conf\groovy-starter.conf&quot; run-app" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true" minVersion="1.6" maxVersion="" allowBetaVM="false" jdkOnly="false">
+    <searchSequence>
+      <directory location="../jre" />
+      <envVar name="JAVA_HOME" />
+      <envVar name="JDK_HOME" />
+      <envVar name="JRE_HOME" />
+    </searchSequence>
+    <classPath>
+      <archive location="../lib/groovy-all-1.5.6.jar" failOnError="true" />
+      <archive location="../dist/grails-cli-1.0.3.jar" failOnError="true" />
+      <archive location="../lib/runner.jar" failOnError="true" />
+    </classPath>
+    <nativeLibraryDirectories />
+  </java>
+  <includedFiles />
+  <unextractableFiles />
+</exe4j>
+

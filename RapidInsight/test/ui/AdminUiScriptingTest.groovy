@@ -153,6 +153,7 @@ class AdminUiScriptingTest extends SeleniumTestCase
 
 
             // file scheduled2.log  will be looked if it has "Hello from cron" entries
+            Thread.sleep(1100)
             def numberOfMessagesInFileAfterCronOwnLogFile = getLogValidatorResult("logs/scheduled2.log", expectedMessage);
             // file scheduled2.log must have some entries
             assertNotEquals("0", numberOfMessagesInFileAfterCronOwnLogFile);

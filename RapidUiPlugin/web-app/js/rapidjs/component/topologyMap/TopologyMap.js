@@ -126,7 +126,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     YAHOO.ext.util.Config.apply(this.events,events);
     config.toolbarMenuItems = [];
     config.nodeMenuItems = [];
-    this.swfURL = "../images/rapidjs/component/topologyMap/TopologyMapping.swf";
+    this.swfURL = getUrlPrefix() + "images/rapidjs/component/topologyMap/TopologyMapping.swf";
     this.flexApplication = new YAHOO.rapidjs.component.FlexApplication("flexObj"+this.id, this.swfURL, "getNodes");
     YAHOO.util.Event.onDOMReady(function() {
         this.flexApplication.render(this.body.dom);

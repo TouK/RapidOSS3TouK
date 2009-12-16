@@ -27,6 +27,8 @@ import grails.util.GrailsWebUtil
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import auth.Group
 import com.ifountain.rcmdb.util.DataStore
+import org.apache.log4j.Level
+import org.apache.log4j.Logger
 
 /**
 * Created by IntelliJ IDEA.
@@ -464,6 +466,106 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             def logContent=logFile.getText();
             assertTrue(logContent.indexOf(exceptionMessage)>=0);
             assertTrue(logContent.indexOf("WARN")>=0);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testEnableAndDisable()
+    {
+        String scriptName = "script1"
+        createSimpleScript(scriptName);
+        try
+        {
+            def script=CmdbScript.addScript([name:scriptName,enabled:false],true);
+            assertFalse(script.hasErrors());
+            assertEquals(false,script.enabled)
+
+            def scriptController = new ScriptController();
+            scriptController.params["id"] = scriptName;
+            scriptController.enable();
+
+            script = CmdbScript.get(name:scriptName);
+            assertEquals (true, script.enabled);
+            assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
+            assertEquals("Script with name ${scriptName} successfully enabled.", scriptController.flash.message);
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.disable();
+            
+            script = CmdbScript.get(name:scriptName);
+            assertEquals (false, script.enabled);
+            assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
+            assertEquals("Script with name ${scriptName} successfully disabled.", scriptController.flash.message);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testUpdateLogLevel()
+    {
+        String scriptName = "script1"
+        createSimpleScript(scriptName);
+        try
+        {
+            def script=CmdbScript.addScript([name:scriptName,enabled:false],true);
+            assertFalse(script.hasErrors());
+            assertEquals(false,script.enabled)
+
+            Logger scriptLogger=CmdbScript.getScriptLogger(script);
+            assertEquals(Level.WARN,scriptLogger.getLevel());
+            assertEquals(Level.WARN.toString(),script.logLevel);
+
+
+            def scriptController = new ScriptController();
+            scriptController.params["id"] = scriptName;
+            scriptController.params["logLevel"] = Level.INFO.toString();
+            scriptController.updateLogLevel();
+
+            script = CmdbScript.get(name:scriptName);            
+            assertEquals("/script/show/" + script.id, scriptController.response.redirectedUrl);
+            assertEquals("Script with name ${scriptName} successfully updated.", scriptController.flash.message);
+
+            assertEquals(Level.INFO,scriptLogger.getLevel());
+            assertEquals(Level.INFO.toString(),script.logLevel);
+        }
+        finally
+        {
+            deleteSimpleScript (scriptName);
+        }
+    }
+
+    public void testEnableAndDisableAndUpdateLogLevelShowsErrorWhenScriptIsNotExists()
+    {
+        String scriptName = "noSuchScript"
+        try
+        {
+
+            def scriptController = new ScriptController();
+            scriptController.params["id"] = scriptName;
+            scriptController.enable();
+
+            assertEquals("/script/list", scriptController.response.redirectedUrl);
+            assertEquals("Script not found with name ${scriptName}", scriptController.flash.message);
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.disable();
+
+            assertEquals("/script/list", scriptController.response.redirectedUrl);
+            assertEquals("Script not found with name ${scriptName}", scriptController.flash.message);
+
+            IntegrationTestUtils.resetController (scriptController);
+            scriptController.params["id"] = scriptName;
+            scriptController.updateLogLevel();
+
+            assertEquals("/script/list", scriptController.response.redirectedUrl);
+            assertEquals("Script not found with name ${scriptName}", scriptController.flash.message);
         }
         finally
         {

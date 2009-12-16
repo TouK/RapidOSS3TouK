@@ -123,6 +123,7 @@ class ScriptControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         finally
         {
             deleteSimpleScript (scriptName);
+            Group.removeAll("name:gr*");
         }
     }
 

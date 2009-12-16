@@ -1,23 +1,30 @@
 package connector
+
+import datasource.BaseDatasource
+
 /**
- * Created by IntelliJ IDEA.
- * User: admin
- * Date: Jan 12, 2009
- * Time: 2:52:32 PM
- * To change this template use File | Settings | File Templates.
- */
-import datasource.SmsDatasource
+* Created by IntelliJ IDEA.
+* User: admin
+* Date: Dec 14, 2009
+* Time: 4:25:00 PM
+* To change this template use File | Settings | File Templates.
+*/
+class NotificationConnector {
 
-
-class SmsConnector {
-   static searchable = {
+    static searchable = {
         except = ["errors", "__operation_class__", "__dynamic_property_storage__", "ds"];
     };
     static datasources = ["RCMDB": ["keys": ["name": ["nameInDs": "name"]]]]
 
+    static DEFAULT_SENDER_SCRIPT="emailSender";
+
     String rsOwner = "p";
 
     String name = "";
+
+    String type = "Email";
+
+    Boolean showAsDestination =true;
 
     Long id;
 
@@ -34,16 +41,23 @@ class SmsConnector {
     Object __dynamic_property_storage__;
 
 
-    SmsDatasource ds;
+    BaseDatasource ds;
+
+
 
 
 
     static relations = [
-            ds: [type: SmsDatasource, isMany: false]
+            ds: [type: BaseDatasource, isMany: false]
     ]
 
     static constraints = {
         name(blank: false, nullable: false, key: [])
+
+        type(blank: false, nullable: false)
+
+        showAsDestination(nullable:true)
+
         __operation_class__(nullable: true)
 
         __dynamic_property_storage__(nullable: true)
@@ -64,4 +78,5 @@ class SmsConnector {
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
+
 }

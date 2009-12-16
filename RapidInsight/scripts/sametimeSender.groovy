@@ -6,13 +6,13 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.SametimeConnector;
+import connector.NotificationConnector;
 import message.RsMessage
 
 def destinationType="sametime";
 def templatePath="grails-app/templates/message/sametimeTemplate.gsp";
 
-def ds=SametimeConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 

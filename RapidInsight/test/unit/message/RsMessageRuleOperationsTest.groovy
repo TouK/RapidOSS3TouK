@@ -1,6 +1,5 @@
 package message
 
-import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import auth.RsUser
 import auth.RsUserInformation
@@ -12,6 +11,7 @@ import auth.RsUserOperations
 import auth.GroupOperations
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import com.ifountain.rcmdb.auth.UserConfigurationSpace
+import connector.NotificationConnector
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,21 +25,24 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
     public void setUp()
     {
         super.setUp();
-        clearMetaClasses();
+        clearMetaClasses();        
         //SegmentQueryHelper.getInstance().initialize ([]);
+        RsMessageRuleOperations.setConfiguredDestinationNames(null);
     }
 
     public void tearDown()
     {
+        RsMessageRuleOperations.setConfiguredDestinationNames(null);
         clearMetaClasses();
         super.tearDown();
     }
     def initializeModels()
-    {                                                   
-        initialize ([RsMessage,RsMessageRule,RsUser,RsUserInformation,ChannelUserInformation,Role,Group],[]);
+    {
+        initialize ([RsMessage,RsMessageRule,RsUser,RsUserInformation,ChannelUserInformation,Role,Group,NotificationConnector],[]);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsMessageRule,RsMessageRuleOperations);
         CompassForTests.addOperationSupport (RsUser,RsUserOperations);
+
         //CompassForTests.addOperationSupport (Group,GroupOperations);
         UserConfigurationSpace.getInstance().initialize();
     }
@@ -52,16 +55,114 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void testGetDestinations()
     {
+        RsMessageRuleOperations.setConfiguredDestinationNames([]);
+        CompassForTests.addOperationSupport (RsUser,RsUserOperations);
+
         def config=RsMessageRuleOperations.getDestinations();
+        assertEquals(0,config.size());
+
+        RsMessageRuleOperations.setConfiguredDestinationNames(["emailConnector","jabberConnector"]);
+
+        config=RsMessageRuleOperations.getDestinations();
+        assertEquals(2,config.size());
+
+        assertEquals("emailConnector",config[0]["name"]);
+        assertEquals("emailConnector",config[0]["channelType"]);
+
+        assertEquals("jabberConnector",config[1]["name"]);
+        assertEquals("jabberConnector",config[1]["channelType"]);
+
+        RsMessageRuleOperations.setConfiguredDestinationNames(["email"]);
+
+        config=RsMessageRuleOperations.getDestinations();
         assertEquals(1,config.size());
         assertEquals("email",config[0]["name"]);
         assertEquals("email",config[0]["channelType"]);
+
+        RsMessageRuleOperations.setConfiguredDestinationNames([]);
+
+        config=RsMessageRuleOperations.getDestinations();
+        assertEquals(0,config.size());
     }
+    public void testGetAndCacheConnectorDestinationNames()
+    {
+        initializeModels();
+        def rule=RsMessageRule.add([:]);
+        println rule.errors
+
+        def configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(0,configuredDestinationNames.size());
+
+
+        NotificationConnector.add(name:"jabberConnector",showAsDestination:true);
+        NotificationConnector.add(name:"jabberConnector2",showAsDestination:false);
+        NotificationConnector.add(name:"emailConnector",showAsDestination:true);
+        NotificationConnector.add(name:"emailConnector2",showAsDestination:true);
+
+        assertEquals(4,NotificationConnector.count())
+
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(0,configuredDestinationNames.size());
+
+
+        RsMessageRuleOperations.cacheConnectorDestinationNames();
+
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(3,configuredDestinationNames.size());
+
+        //should be sorted
+        assertEquals("emailConnector",configuredDestinationNames[0]);
+        assertEquals("emailConnector2",configuredDestinationNames[1]);
+        assertEquals("jabberConnector",configuredDestinationNames[2]);
+
+        //set to empty and check
+        RsMessageRuleOperations.setConfiguredDestinationNames([]);
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(0,configuredDestinationNames.size());
+
+        //set to null and check destinations are cached
+        RsMessageRuleOperations.setConfiguredDestinationNames(null);
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(3,configuredDestinationNames.size());
+
+        NotificationConnector.removeAll("name:emailConnector*");
+
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(3,configuredDestinationNames.size());
+
+        RsMessageRuleOperations.cacheConnectorDestinationNames();
+
+        configuredDestinationNames=RsMessageRuleOperations.getConfiguredDestinationNames();
+        assertEquals(1,configuredDestinationNames.size());
+        assertNotNull(configuredDestinationNames.find{it=="jabberConnector"})
+    }
+    public void testRsMessageRuleAndRsUserSharesConfiguredDestinationNames()
+    {
+         RsMessageRuleOperations.setConfiguredDestinationNames([]);
+         CompassForTests.addOperationSupport (RsUser,RsUserOperations);
+         
+         assertEquals([],RsMessageRuleOperations.getConfiguredDestinationNames());
+         assertEquals([],RsUser.getConfiguredDestinationNames());
+
+         RsMessageRuleOperations.setConfiguredDestinationNames(["email","jabber"]);
+
+         assertEquals(["email","jabber"],RsMessageRuleOperations.getConfiguredDestinationNames());
+         assertEquals(["email","jabber"],RsUser.getConfiguredDestinationNames());
+         assertSame(RsMessageRuleOperations.getConfiguredDestinationNames(),RsUser.getConfiguredDestinationNames())
+
+         RsMessageRuleOperations.setConfiguredDestinationNames([]);
+         assertEquals([],RsMessageRuleOperations.getConfiguredDestinationNames());
+         assertEquals([],RsUser.getConfiguredDestinationNames());
+         assertSame(RsMessageRuleOperations.getConfiguredDestinationNames(),RsUser.getConfiguredDestinationNames())
+    }
+
     public void testGetDestinationNames()
     {
+        RsMessageRuleOperations.setConfiguredDestinationNames([]);
+        CompassForTests.addOperationSupport (RsUser,RsUserOperations);
+        
         def defaultNames=RsMessageRuleOperations.getDestinationNames();
-        assertEquals(1,defaultNames.size());
-        assertEquals("email",defaultNames[0]);
+        assertEquals(0,defaultNames.size());
 
         RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
             return [
@@ -272,6 +373,13 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
     public void testAddAndUpdateMessageRuleForUserThrowsExceptionIfDestinationIsChannelTypeAndUserDoesNotHaveDestination()
     {
          initializeModels();
+
+         RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"]
+                   ];
+         }
+        
          def params=[:]
          params.destinationType="email";
          def username="testuser";
@@ -362,6 +470,11 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
     public void testAddAndUpdateMessageRuleForUserWithChannelDestination()
     {
         initializeModels();
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"]
+                   ];
+         }
         
         def params=[:]
         params.destinationType="email";

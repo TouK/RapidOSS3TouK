@@ -350,6 +350,97 @@ class ScriptController {
         }
     }
 
+
+    def enable = {
+        def script = CmdbScript.get([name:params.id])
+        if (script) {
+            CmdbScript.updateScript(script, [enabled:true], true);
+            if (!script.hasErrors()) {
+                flash.message = "Script with name ${params.id} successfully enabled."
+            }
+            else {
+                flash.errors = script.errors;
+            }
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: show, id: script.id)
+            }
+        }
+        else {
+            flash.message = "Script not found with name ${params.id}"
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: list)
+            }
+        }
+    }
+
+    def disable = {
+        def script = CmdbScript.get([name:params.id])
+        if (script) {
+            CmdbScript.updateScript(script, [enabled:false], true);
+            if (!script.hasErrors()) {
+                flash.message = "Script with name ${params.id} successfully disabled."
+            }
+            else {
+                flash.errors = script.errors;
+            }
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: show, id: script.id)
+            }
+        }
+        else {
+            flash.message = "Script not found with name ${params.id}"
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: list)
+            }
+        }
+    }
+
+     def updateLogLevel = {
+        def script = CmdbScript.get([name:params.id])
+        if (script) {
+            CmdbScript.updateLogLevel(script, params.logLevel ? params.logLevel : script.logLevel, true);
+            if (!script.hasErrors()) {
+                flash.message = "Script with name ${params.id} successfully updated."
+            }
+            else {
+                flash.errors = script.errors;
+            }
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: show, id: script.id)
+            }
+        }
+        else {
+            flash.message = "Script not found with name ${params.id}"
+
+            if(params.targetURI){
+                redirect(uri:params.targetURI);
+            }
+            else{
+                redirect(action: list)
+            }
+        }
+    }
+
     def test =
     {
         def testDir = "test/reports"

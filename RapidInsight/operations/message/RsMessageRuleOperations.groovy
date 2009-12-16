@@ -2,6 +2,7 @@ package message
 
 import auth.Role
 import auth.RsUser
+import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.annotations.HideProperty
 
 /**
@@ -12,13 +13,47 @@ import com.ifountain.annotations.HideProperty
 * To change this template use File | Settings | File Templates.
 */
 class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+
+    public static final String CONFIGURED_DESTINATIONS_CACHE_KEY_NAME = "ConfiguredDestinationNames"
+    
     public static List getDestinations() {
         //// Match destination type with user channel information type where user destination is stored ////
-        return [
-                [name:"email",channelType:"email"]
-               ]
+        def destinationMapping=[];
+
+        getConfiguredDestinationNames().each{ destination ->
+              destinationMapping.add([name:destination,channelType:destination]);
+        }
+
+        //configuredDestinationNames destinations from connectors can be modified
+        //destinationMapping.add([name:"email",channelType:"email"]);
+        return destinationMapping;               
     }
 
+    public static def getConfiguredDestinationNames()
+    {
+        def configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+        if(configuredDestinationNames==null)
+        {
+           cacheConnectorDestinationNames();
+           configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+        }
+        return configuredDestinationNames;
+    }
+    public static void setConfiguredDestinationNames(names)
+    {
+       DataStore.put(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,names);
+    }
+    public static void cacheConnectorDestinationNames()
+    {
+        def cachedDestinationNames=[];
+
+        def destinationConnectors=connector.NotificationConnector.getPropertyValues("showAsDestination:true",["name"],[sort:"name",order:"asc"]);
+        if(destinationConnectors.size()>0)
+        {
+            cachedDestinationNames.addAll(destinationConnectors.name);
+        }        
+        setConfiguredDestinationNames(cachedDestinationNames);
+    }
     public static def getDestination(String destinationType)
     {
         return getDestinations().find{it.name==destinationType};
@@ -27,6 +62,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     {
         return getDestination(destinationType)?.channelType;
     }
+
 
     @HideProperty public static List getDestinationNames() {
         def destinationConfig = getDestinations();
@@ -40,6 +76,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
                  [name:"Non-Channel",destinationNames:getNonChannelDestinationNames()]
                 ]
     }
+
 
     public static List getDesnitationGroupsForUser(String username)
     {

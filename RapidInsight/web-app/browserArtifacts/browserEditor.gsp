@@ -1,3 +1,12 @@
+<%
+   def autocompleteValue=binding.variables.autocomplete;
+   def autocompleteCode="";
+   if( autocompleteValue == "off" )
+   {
+		autocompleteCode="autocomplete=\"off\"";
+   }
+%>
+
 <g:if test="${property.type == Boolean.class || property.type == boolean.class}">
     <g:checkBox name="${property.name}" value="${domainObject[property.name]}"></g:checkBox>
 </g:if>
@@ -7,7 +16,7 @@
             <g:select from="${-128..127}" name="${property.name}" value="${domainObject[property.name]}"></g:select>
         </g:if>
         <g:else>
-            <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"/>
+            <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}" ${autocompleteCode}/>
         </g:else>
     </g:if>
     <g:else>
@@ -15,20 +24,20 @@
              <g:select from="${new IntRange(cp.range.from, cp.range.to)}" name="${property.name}" value="${domainObject[property.name]}" noselection="${['':'']}"></g:select>
         </g:if>
         <g:else>
-             <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}" />
+             <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"  ${autocompleteCode}/>
         </g:else>
     </g:else>
 </g:elseif>
 <g:elseif test="${property.type == String.class || property.type == URL.class}">
    <g:if test="${!cp}">
-       <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"/>
+       <input type="text" name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"  ${autocompleteCode}/>
    </g:if>
     <g:else>
         <g:if test="${cp.inList}">
            <g:select name="${property.name}" from="${domainObject.constraints[property.name].inList.collect{it.encodeAsHTML()}}" value="${domainObject[property.name]}"></g:select>
         </g:if>
         <g:else>
-           <input ${cp.password?  'type="password"':'type="text"'} ${!cp.editable ? 'readonly="readonly"':''} ${cp.maxSize ? 'maxlength="' + cp.maxSize + '"':''} name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"/>
+           <input ${cp.password?  'type="password"':'type="text"'} ${!cp.editable ? 'readonly="readonly"':''} ${cp.maxSize ? 'maxlength="' + cp.maxSize + '"':''} name="${property.name}" value="${fieldValue(bean: domainObject, field: property.name)}"  ${autocompleteCode}/>
         </g:else>
     </g:else>
 </g:elseif>

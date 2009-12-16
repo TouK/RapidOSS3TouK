@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.exception.MessageSourceException
 import org.jsecurity.authc.AccountException
 import org.jsecurity.crypto.hash.Sha1Hash
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
+import com.ifountain.rcmdb.util.DataStore
 
 /**
 * Created by IntelliJ IDEA.
@@ -17,13 +18,30 @@ import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    public static final String CONFIGURED_DESTINATIONS_CACHE_KEY_NAME = "ConfiguredDestinationNames"
+
     public static List getChannelTypes()
     {
-        return ["email"];
+        def channelTypes=[];
+        channelTypes.addAll(getConfiguredDestinationNames());
+        //channelTypes.add("email");     //existing destinations from connectors can be added/removed
+        return channelTypes;
     }
     public static List getEditableChannelTypes()
     {
-        return ["email"];
+        def channelTypes=[];
+        channelTypes.addAll(getConfiguredDestinationNames());
+        //channelTypes.add("email");     // existing destinations from connectors can be added/removed
+        return channelTypes;
+    }
+    public static def getConfiguredDestinationNames()
+    {
+        def configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+        if(configuredDestinationNames==null)
+        {
+           configuredDestinationNames=[];               
+        }
+        return configuredDestinationNames;
     }
 
     public static def getAuthenticator()
@@ -53,6 +71,9 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             throw new AccountException('Login or LoginToken must be specified for authentication.');
         }
     }
+
+   
+
 
     def beforeDelete()
     {

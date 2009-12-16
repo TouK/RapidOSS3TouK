@@ -532,9 +532,13 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
 
     public void testGetChannelTypes()
     {
+        assertEquals([], RsUser.getChannelTypes());
+        assertEquals([], RsUser.getEditableChannelTypes());
+
+        com.ifountain.rcmdb.util.DataStore.put(RsUserOperations.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,["email"]);
+        
         assertEquals(["email"], RsUser.getChannelTypes());
         assertEquals(["email"], RsUser.getEditableChannelTypes());
-
     }
 
 

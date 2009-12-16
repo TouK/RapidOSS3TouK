@@ -78,6 +78,12 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(rsRiEventClass, rsRiEventOperationsClass);
         RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
         UserConfigurationSpace.getInstance().initialize();
+
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+            return [
+                    [name:"email",channelType:"email"]
+                   ];
+        }
     }
 
     private void initializeScriptManager() {

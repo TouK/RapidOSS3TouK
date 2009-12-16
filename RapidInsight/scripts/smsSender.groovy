@@ -6,13 +6,13 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.SmsConnector;
+import connector.NotificationConnector;
 import message.RsMessage
 
 def destinationType="sms";
 def templatePath="grails-app/templates/message/smsTemplate.gsp";
 
-def ds=SmsConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 

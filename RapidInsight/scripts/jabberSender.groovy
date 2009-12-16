@@ -6,13 +6,13 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.JabberConnector;
+import connector.NotificationConnector;
 import message.RsMessage
 
 def destinationType="jabber";
 def templatePath="grails-app/templates/message/jabberTemplate.gsp";
 
-def ds=JabberConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 

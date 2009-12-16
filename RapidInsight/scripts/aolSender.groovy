@@ -6,12 +6,12 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.AolConnector;
+import connector.NotificationConnector;
 import message.RsMessage
 
 def destinationType="aol";
 
-def ds=AolConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
 def templatePath="grails-app/templates/message/aolTemplate.gsp";
 if(ds!=null)
 {

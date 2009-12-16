@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-import connector.EmailConnector;
+import connector.NotificationConnector;
 import message.RsMessage;
 
 def destinationType="email";
@@ -15,7 +15,7 @@ def templatePath="grails-app/templates/message/emailTemplate.gsp";
 //should be a valid email address
 def from="IFountainEmailSender@ifountain.com"
 
-def ds=EmailConnector.get(name:staticParamMap?.connectorName)?.ds
+def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
 if(ds!=null)
 {
 

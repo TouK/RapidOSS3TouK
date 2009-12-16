@@ -3,7 +3,7 @@ package message
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
-import connector.EmailConnector
+import connector.NotificationConnector
 import com.ifountain.rcmdb.test.util.CompassForTests
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
@@ -64,7 +64,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTemplate);
-        GroovySystem.metaClassRegistry.removeMetaClass(EmailConnector);
+        GroovySystem.metaClassRegistry.removeMetaClass(NotificationConnector);
         ExpandoMetaClass.enableGlobally();
     }
      def addEvents(prefix,count)
@@ -119,7 +119,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
             println "my send email";
         }
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 
@@ -186,7 +186,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
             println "my send email";
         }
         
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 
@@ -224,7 +224,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
             throw new Exception("Can not send email");
         }
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 
@@ -258,7 +258,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
              println "my send email";
         }
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
         
@@ -308,7 +308,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
              println "my send email";
         }
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 
@@ -333,10 +333,10 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return null;
         }
-        def connector=EmailConnector.get(name:connectorParams.name);
+        def connector=NotificationConnector.get(name:connectorParams.name);
         assertNull(connector);
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
@@ -349,7 +349,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
              println "my send email";
         }
 
-        EmailConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 

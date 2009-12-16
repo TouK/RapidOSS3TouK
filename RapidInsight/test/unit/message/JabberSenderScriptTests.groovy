@@ -3,7 +3,7 @@ package message
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
-import connector.JabberConnector
+import connector.NotificationConnector
 import com.ifountain.rcmdb.test.util.CompassForTests
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
@@ -121,7 +121,7 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
             println "my send email";
         }
 
-        JabberConnector.metaClass.'static'.get={ Map props ->
+        NotificationConnector.metaClass.'static'.get={ Map props ->
             return [ds:mockDatasource]
         }
 

@@ -1,6 +1,7 @@
 package auth
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import message.RsMessageRule
 
 /**
 * Created by IntelliJ IDEA.
@@ -23,12 +24,14 @@ class RsUserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
         RsUser.get(username:testUsername)?.remove();
         RsUser.get(username:"${testUsername}2")?.remove();   
         ChannelUserInformation.removeAll();
+        RsMessageRule.setConfiguredDestinationNames(["email"]);
     }
 
     public void tearDown() {
         super.tearDown();
         RsUser.get(username:testUsername)?.remove();
         RsUser.get(username:"${testUsername}2")?.remove();
+        RsMessageRule.setConfiguredDestinationNames([]);
     }
 
     public void testAddUserSuccessfully()

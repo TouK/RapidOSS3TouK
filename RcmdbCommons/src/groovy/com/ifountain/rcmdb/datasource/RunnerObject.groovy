@@ -23,7 +23,6 @@ class RunnerObject {
     }
 
     public void start(BaseListeningDatasource listeningDatasource) {
-        println "starting listening datasource ${listeningDatasource}"
         this.datasourceId = listeningDatasource.id;
         synchronized (adapterLock) {
             if (!isFree()) {
@@ -35,7 +34,6 @@ class RunnerObject {
                 }
             }
             runner = ListeningAdapterRunnerFactory.getRunner(listeningDatasource.id);
-            println "setting state to initializing"
             runner.setState(AdapterStateProvider.INITIALIZING);
         }
         runnerThread = new AdapterRunnerThread(runner: runner, datasource: listeningDatasource, logger: logger);

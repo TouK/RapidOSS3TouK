@@ -1,6 +1,7 @@
 package auth
 
 import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
 * Created by IntelliJ IDEA.

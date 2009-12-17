@@ -227,6 +227,15 @@ class MockQuartzScheduler extends StdScheduler{
         triggers.put(s, trigger);
         return null;
     }
+
+    public void shutdown(boolean b) {
+
+    }
+
+    public void shutdown() {
+
+    }
+
 }
 class MockQuartzJob implements StatefulJob {
     public void execute(JobExecutionContext jobExecutionContext) {

@@ -27,7 +27,7 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     def RsEventJournal;
     def RsTemplate;
 
-    def JABBER_TYPE="jabber";
+    def DESTINATION_TYPE="jabber";
 
 
 
@@ -122,7 +122,7 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
 
@@ -131,14 +131,14 @@ class JabberSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:JABBER_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:JABBER_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)

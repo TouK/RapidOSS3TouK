@@ -28,7 +28,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     def RsEventJournal;
     def RsTemplate;
 
-    def EMAIL_TYPE="email";
+    def DESTINATION_TYPE="email";
 
 
 
@@ -114,13 +114,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         def sendMessageParams=[];
 
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
             sendMessageParams.add([params:params]);
             println "my send email";
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
 
@@ -129,14 +130,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
@@ -182,12 +183,13 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     void testSenderProcessesMessages()
     {
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
             println "my send email";
         }
         
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
         assertEquals(RsEvent.countHits("alias:*"),0)
@@ -195,14 +197,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
@@ -219,13 +221,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     void testSenderDoesNotProcessMessagesIfSendGeneratesException()
     {
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
             println "will generate exception in sendEmail"
             throw new Exception("Can not send email");
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
         assertEquals(RsEvent.countHits("alias:*"),0)
@@ -233,14 +236,14 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
 
         def historicalEvents=addHistoricalEvents("testhistev1",4)
         historicalEvents.each{ event ->
-            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
@@ -254,12 +257,13 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     void testSenderProcessesMessagesAddedByRsMessageOperations()
     {
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
              println "my send email";
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
         
 
@@ -268,7 +272,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.addEventCreateMessage([id:event.id],EMAIL_TYPE, destination,0)
+            RsMessage.addEventCreateMessage([id:event.id],DESTINATION_TYPE, destination,0)
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -287,7 +291,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
         RsHistoricalEvent.list().each{ event ->
-            RsMessage.addEventClearMessage([activeId:event.activeId],EMAIL_TYPE, destination)
+            RsMessage.addEventClearMessage([activeId:event.activeId],DESTINATION_TYPE, destination)
         }
         assertEquals(RsMessage.countHits("alias:*"),8)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
@@ -304,12 +308,13 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     void testSenderDoesNotProcessMessagesIfConnectorIsMissing()
     {
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
              println "my send email";
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
         assertEquals(RsEvent.countHits("alias:*"),0)
@@ -317,7 +322,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
         def events=addEvents("testev1",4)
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -327,7 +332,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
 
         events.each{ event ->
-            RsMessage.add(eventId:event.id,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         assertEquals(RsEvent.countHits("alias:*"),4)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
@@ -345,12 +350,13 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     }
     void testSenderChangesMessageStateWhenEventsAreMissing(){
         def mockDatasource=[:];
+        mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
         mockDatasource.sendEmail= { Map params ->
              println "my send email";
         }
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
-            return [ds:mockDatasource]
+            return [ds:mockDatasource,name:DESTINATION_TYPE]
         }
 
         assertEquals(RsEvent.countHits("alias:*"),0)
@@ -359,10 +365,10 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
 
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
         4.times{ eventId ->
-            RsMessage.add(eventId:eventId,destination:destination,destinationType:EMAIL_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
+            RsMessage.add(eventId:eventId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
 
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)

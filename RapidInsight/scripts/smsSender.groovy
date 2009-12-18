@@ -9,50 +9,54 @@
 import connector.NotificationConnector;
 import message.RsMessage
 
-def destinationType="sms";
+
 def templatePath="grails-app/templates/message/smsTemplate.gsp";
 
-def ds=NotificationConnector.get(name:staticParamMap?.connectorName)?.ds
-if(ds!=null)
+def connector=NotificationConnector.get(name:staticParamMap?.connectorName);
+def ds=connector?.ds;
+
+if(connector==null || ds==null)
 {
+    logger.warn("Connector specified does not exist");
+    return;
+}
 
-    // Process RsMessage instances with destinationType
-    def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:${destinationType.exactQuery()}", [sort: "id",order:"asc",max:100]).results;
+def destinationType=connector.name;
 
-    messages.each{ message ->
 
-        def event=message.retrieveEvent();
-        if(event!=null)
-        {
-            //////// MESSAGE SENDING PART ////////////////////////////////////////////
-            ////// Modify the code below to execute your action /////////////////////
-            logger.debug("Will send message about RsEvent : ${event.name}");
-            try{
-                def templateParams=[event:event,message:message]
-                def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
-                ds.sendMessage(message.destination,messageContent)
-                logger.debug("Sended message about RsEvent: ${event.name}")
-                message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());
-                logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
-            }
-            catch(e)
-            {
-                logger.warn("Error occured while sending message.Reason ${e}");
-            }
-            ////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////
+// Process RsMessage instances with destinationType
+def messages=RsMessage.search("state:${RsMessage.STATE_READY} AND destinationType:${destinationType.exactQuery()}", [sort: "id",order:"asc",max:100]).results;
 
+messages.each{ message ->
+
+    def event=message.retrieveEvent();
+    if(event!=null)
+    {
+        //////// MESSAGE SENDING PART ////////////////////////////////////////////
+        ////// Modify the code below to execute your action /////////////////////
+        logger.debug("Will send message about RsEvent : ${event.name}");
+        try{
+            def templateParams=[event:event,message:message]
+            def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+            ds.sendMessage(message.destination,messageContent)
+            logger.debug("Sended message about RsEvent: ${event.name}")
+            message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());
+            logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
         }
-        else
+        catch(e)
         {
-            message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:Date.now());
-            logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send message. Updated state of message as 4");
+            logger.warn("Error occured while sending message.Reason ${e}");
         }
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
 
     }
-}
-else{
-    logger.warn("Connector specified does not exist");
+    else
+    {
+        message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:Date.now());
+        logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send message. Updated state of message as 4");
+    }
+
 }
 
 return "ended"

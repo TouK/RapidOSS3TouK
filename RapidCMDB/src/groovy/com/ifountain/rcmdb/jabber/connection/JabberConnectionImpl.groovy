@@ -67,6 +67,7 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
         connection = new XMPPConnection(conf);
         synchronized (connectionLock) {
             connection.connect();
+            connection.addConnectionListener(this)
             logger.info(getLogPrefix() + "Connected to host ${host}");
             logger.debug(getLogPrefix() + "Logging in with username ${username}")
             connection.login(username, password)
@@ -84,6 +85,7 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
             if (connection != null)
             {
                 logger.debug(getLogPrefix() + "Closing xmpp connection.")
+                connection.removeConnectionListener(this)
                 connection.disconnect();
                 logger.info(getLogPrefix() + "Connection successfully closed.")
                 connection.getChatManager().removeChatListener(this)
@@ -175,7 +177,7 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
         }
     }
 
-    public getXmppConnection() {
+    public XMPPConnection getXmppConnection() {
         return connection;
     }
 

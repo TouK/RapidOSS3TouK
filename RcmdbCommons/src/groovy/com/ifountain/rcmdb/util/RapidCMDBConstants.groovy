@@ -46,4 +46,7 @@ class RapidCMDBConstants {
     public static final String RELATED_MODEL = "RelatedModel";
     public static final String RELATION_NAME = "RelationName";
     public static final String PROPERTY_DATASOURCE_MANAGER_BEAN = "propertyDatasourceManager"
+
+    //Notification System Parameters
+    public static final String CONFIGURED_DESTINATIONS_CACHE_KEY_NAME = "ConfiguredDestinationNames"
 }

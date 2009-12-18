@@ -8,6 +8,7 @@ import org.jsecurity.authc.AccountException
 import org.jsecurity.crypto.hash.Sha1Hash
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.util.DataStore
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ import com.ifountain.rcmdb.util.DataStore
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-    public static final String CONFIGURED_DESTINATIONS_CACHE_KEY_NAME = "ConfiguredDestinationNames"
+
 
     public static List getChannelTypes()
     {
@@ -36,7 +37,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     }
     public static def getConfiguredDestinationNames()
     {
-        def configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+        def configuredDestinationNames=DataStore.get(RapidCMDBConstants.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
         if(configuredDestinationNames==null)
         {
            configuredDestinationNames=[];               

@@ -14,7 +14,8 @@ import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.test.util.DatasourceTestUtils
 import application.RsApplication
 import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
-import com.ifountain.rcmdb.auth.UserConfigurationSpace;
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
+import com.ifountain.rcmdb.util.RapidCMDBConstants;
 
 /**
  * Created by IntelliJ IDEA.
@@ -535,7 +536,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         assertEquals([], RsUser.getChannelTypes());
         assertEquals([], RsUser.getEditableChannelTypes());
 
-        com.ifountain.rcmdb.util.DataStore.put(RsUserOperations.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,["email"]);
+        com.ifountain.rcmdb.util.DataStore.put(RapidCMDBConstants.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,["email"]);
         
         assertEquals(["email"], RsUser.getChannelTypes());
         assertEquals(["email"], RsUser.getEditableChannelTypes());

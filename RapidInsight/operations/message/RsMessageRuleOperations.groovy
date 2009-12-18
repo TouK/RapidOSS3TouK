@@ -4,6 +4,7 @@ import auth.Role
 import auth.RsUser
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.annotations.HideProperty
+import com.ifountain.rcmdb.util.RapidCMDBConstants
 
 /**
 * Created by IntelliJ IDEA.
@@ -14,7 +15,7 @@ import com.ifountain.annotations.HideProperty
 */
 class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-    public static final String CONFIGURED_DESTINATIONS_CACHE_KEY_NAME = "ConfiguredDestinationNames"
+
     
     public static List getDestinations() {
         //// Match destination type with user channel information type where user destination is stored ////
@@ -31,17 +32,17 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static def getConfiguredDestinationNames()
     {
-        def configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+        def configuredDestinationNames=DataStore.get(RapidCMDBConstants.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
         if(configuredDestinationNames==null)
         {
            cacheConnectorDestinationNames();
-           configuredDestinationNames=DataStore.get(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
+           configuredDestinationNames=DataStore.get(RapidCMDBConstants.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME);
         }
         return configuredDestinationNames;
     }
     public static void setConfiguredDestinationNames(names)
     {
-       DataStore.put(CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,names);
+       DataStore.put(RapidCMDBConstants.CONFIGURED_DESTINATIONS_CACHE_KEY_NAME,names);
     }
     public static void cacheConnectorDestinationNames()
     {
@@ -51,7 +52,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         if(destinationConnectors.size()>0)
         {
             cachedDestinationNames.addAll(destinationConnectors.name);
-        }        
+        }
         setConfiguredDestinationNames(cachedDestinationNames);
     }
     public static def getDestination(String destinationType)

@@ -2,22 +2,13 @@ package com.ifountain.rcmdb.jabber.connection
 
 import com.ifountain.core.connection.BaseConnection
 import com.ifountain.core.connection.ConnectionParam
-import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
-import org.jivesoftware.smack.XMPPConnection
-import org.jivesoftware.smack.Roster
-import org.apache.log4j.Logger
-import org.jivesoftware.smack.ConnectionConfiguration
-import org.jivesoftware.smack.packet.Presence
-import org.jivesoftware.smack.PacketListener
-import org.jivesoftware.smack.packet.Packet
-import org.jivesoftware.smack.filter.PacketTypeFilter
-import org.jivesoftware.smack.ConnectionListener
-import org.jivesoftware.smack.ChatManagerListener
-import org.jivesoftware.smack.Chat
-import org.jivesoftware.smack.MessageListener
-import org.jivesoftware.smack.packet.Message
-import org.jivesoftware.smack.packet.XMPPError
 import com.ifountain.core.connection.exception.ConnectionException
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
+import org.apache.log4j.Logger
+import org.jivesoftware.smack.*
+import org.jivesoftware.smack.packet.Message
+import org.jivesoftware.smack.packet.Presence
+import org.jivesoftware.smack.packet.XMPPError
 
 /**
 * Created by IntelliJ IDEA.

@@ -298,6 +298,23 @@ YAHOO.rapidjs.designer.Config = new function() {
                     "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
                 }
             },
+            "addSort":{
+                descr:"Adds the given property and order to the current sorting parameters for multiple field sorting",
+                args:{
+                    "sortAttribute":"Property to add to the sorting parameters",
+                    "sortOrder":"The order of the sort. Possible values are 'asc' and 'desc'"
+                }
+            },
+            "removeSort":{
+                descr:"Removes the given property and order from the current sorting parameters for multiple field sorting",
+                args:{
+                    "sortAttribute":"Property to remove from the sorting parameters"
+                }
+            },
+            "clearSorting":{
+                descr:"Clears all sorting parameters",
+                args:{}
+            },
             "setTitle":{
                 descr:"Changes component's title.",
                 args:{
@@ -854,7 +871,7 @@ YAHOO.rapidjs.designer.Config = new function() {
                 "params.datas": "List of JavaScripts object representing the selected rows data",
                 "params.menuId": "Name of the menu item.",
                 "params.parentId": "Parent menu item name, if it is a sub menu."
-            }, 
+            },
             'property':{
                 "params.data": "JavaScript object representing the row data",
                 "params.menuId": "Name of the menu item.",

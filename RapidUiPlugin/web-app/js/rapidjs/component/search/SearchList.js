@@ -41,7 +41,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     showCurrentState: function() {
         this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
-        this.sortTextEl.innerHTML = "Sorted By: " + this.getSortAttribute() + " " + this.getSortOrder();
+        this.sortTextEl.innerHTML = "Sorted By: " + this.getSortAttribute().split(',').join(', ') + " " + this.getSortOrder().split(',').join(', ');
     },
 
     getScrolledEl: function() {

@@ -52,9 +52,8 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.totalRowCount = 0;
     this.lastOffset = 0;
     this.offset = 0;
-    this.lastSortAtt = this.keyAttribute;
-    this.lastSortOrder = 'asc';
-    this.params = {'offset':this.lastOffset, 'sort':this.lastSortAtt, 'order':this.lastSortOrder, 'max':this.maxRowsDisplayed, "searchIn":this.defaultSearchClass};
+    this.sortHelper = this.createSortHelper();
+    this.params = {'offset':this.lastOffset, 'sort':this.getSortAttribute(), 'order':this.getSortOrder(), 'max':this.maxRowsDisplayed, "searchIn":this.defaultSearchClass};
     this.rowHeaderMenu = null;
     this.multiSelectionMenu = null;
     this.bufferPos = null;
@@ -178,8 +177,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     {
         this.currentlyExecutingQuery = queryString;
         this.searchInput.value = queryString;
-        this.lastSortAtt = sortAtt || this.keyAttribute;
-        this.lastSortOrder = sortOrder || 'asc';
+        this.sortHelper.setSort(sortAtt, sortOrder)
         if (this.searchClassesLoaded) {
             SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }
@@ -194,7 +192,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     appendToQuery: function(query)
     {
         var queryString = this.searchInput.value + " " + query;
-        this.setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.getSearchClass());
+        this.setQuery(queryString, this.getSortAttribute(), this.getSortOrder(), this.getSearchClass());
     },
     appendExceptQuery: function(key, value) {
         if (this.searchInput.value != "")
@@ -219,7 +217,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         if (this.handleSuccessInProgress) {
-             this.handleSuccessTask.delay(50, null, null, [response, keepExisting, removeAttribute])
+            this.handleSuccessTask.delay(50, null, null, [response, keepExisting, removeAttribute])
         }
         else {
             this.handleSuccessInProgress = true;
@@ -296,13 +294,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
                     this.currentlyExecutingQuery = this.modifyQuery(this.currentlyExecutingQuery, filterQuery)
                 }
             }
-            if(showMask === true){
-                this.showMask();    
+            if (showMask === true) {
+                this.showMask();
             }
             this.params['offset'] = this.offset;
             this.params[this.queryParameter] = this.currentlyExecutingQuery;
-            this.params['sort'] = this.lastSortAtt;
-            this.params['order'] = this.lastSortOrder;
+            this.params['sort'] = this.getSortAttribute();
+            this.params['order'] = this.getSortOrder();
             this.params['searchIn'] = this.getSearchClass();
             if (!this.bringAllProperties) {
                 this.params['propertyList'] = this.getPropertyListToRequest();
@@ -368,8 +366,22 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     },
 
     sort:function(sortAtt, sortOrder) {
-        this.lastSortAtt = sortAtt;
-        this.lastSortOrder = sortOrder;
+        this.sortHelper.setSort(sortAtt, sortOrder)
+        this._pollForSort();
+    },
+    addSort: function(sortAtt, sortOrder) {
+        this.sortHelper.addSort(sortAtt, sortOrder)
+        this._pollForSort();
+    },
+    removeSort : function(sortAtt) {
+        this.sortHelper.removeSort(sortAtt)
+        this._pollForSort();
+    },
+    clearSorting : function() {
+        this.sortHelper.clearSorting();
+        this._pollForSort();
+    },
+    _pollForSort : function() {
         this.offset = 0;
         this._poll(true);
     },
@@ -779,10 +791,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.events['saveQueryClicked'].fireDirect(query);
     },
     getSortAttribute: function() {
-        return this.lastSortAtt;
+        return this.sortHelper.getSort();
     },
     getSortOrder: function() {
-        return this.lastSortOrder;
+        return this.sortHelper.getOrder();
     },
 
     getVisibleDataQueryParams: function() {
@@ -867,6 +879,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     getViewedProperties : function() {
         return [];
     },
+    createSortHelper : function() {
+        return new YAHOO.rapidjs.component.search.SortHelper(this.keyAttribute);
+    },
     showCurrentState: function() {
     },
     calculateRowHeight: function() {
@@ -887,3 +902,71 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     getScrolledEl: function() {
     }
 });
+
+YAHOO.rapidjs.component.search.SortHelper = function(defaultSort) {
+    this.defaultSort = defaultSort;
+    this.defaultOrder = 'asc';
+    this.sortString = defaultSort;
+    this.orderString = this.defaultOrder;
+    this.sorts = [];
+    this.orders = [];
+};
+
+YAHOO.rapidjs.component.search.SortHelper.prototype = {
+    getSort: function() {
+        return this.sortString;
+    },
+    getOrder: function() {
+        return this.orderString;
+    },
+    clearSorting: function() {
+        this.sorts = [];
+        this.orders = [];
+        this.sortString = this.defaultSort;
+        this.orderString = this.defaultOrder;
+    },
+    setSort: function(sortAtt, sortOrder) {
+        sortAtt = sortAtt || this.defaultSort;
+        sortOrder = sortOrder || this.defaultOrder;
+        if (this.sortString != sortAtt || this.orderString != sortOrder) {
+            this.sorts = sortAtt.split(',')
+            this.orders = sortOrder.split(',')
+            if (this.orders.length < this.sorts.length) {
+                while (this.orders.length != this.sorts.length) {
+                    this.orders.push(this.defaultOrder);
+                }
+            }
+            this.sortString = sortAtt;
+            this.orderString = sortOrder;
+        }
+    },
+    addSort : function(sort, order) {
+        var index = ArrayUtils.findIndex(this.sorts, function(it) {
+            return sort == it
+        })
+        if (index > -1) {
+            this.sorts.splice(index, 1, sort)
+            this.orders.splice(index, 1, order)
+        }
+        else {
+            this.sorts.push(sort);
+            this.orders.push(order);
+        }
+        this.sortString = this.sorts.join(',')
+        this.orderString = this.orders.join(',')
+    },
+    removeSort: function(sort) {
+        var index = ArrayUtils.findIndex(this.sorts, function(it) {
+            return sort == it
+        })
+        if (index > -1) {
+            this.sorts.splice(index, 1)
+            this.orders.splice(index, 1)
+            this.sortString = this.sorts.length > 0 ? this.sorts.join(',') : this.defaultSort
+            this.orderString = this.orders.length > 0 ? this.orders.join(',') : 'asc'
+        }
+
+    }
+
+
+}

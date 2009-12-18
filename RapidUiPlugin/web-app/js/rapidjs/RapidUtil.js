@@ -138,6 +138,16 @@ YAHOO.rapidjs.ArrayUtils = new function()
         }
         return null;
     };
+    this.findIndex = function(array, findFunc) {
+        var nOfItems = array.length;
+        for (var i = 0; i < nOfItems; i++) {
+            var item = array[i]
+            if (findFunc(item)) {
+                return i;
+            }
+        }
+        return -1;
+    };
     this.findAll = function(array, findFunc) {
         var collection = [];
         var nOfItems = array.length;

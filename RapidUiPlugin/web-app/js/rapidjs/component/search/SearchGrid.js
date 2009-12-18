@@ -45,7 +45,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             defaultColumnMap[columnConfig['attributeName']] = columnConfig
         }
         this.defaultColumnMap = defaultColumnMap;
-        this.lastSortedHeader = null;
         this.bodyId = this.id + "_body";
         this.addMenuColumn(this.columns);
         for (var index = 0; index < this.columns.length; index++) {
@@ -150,13 +149,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.addHeader(i, this.columns[i].colLabel);
         }
         if (sortColIndex != null) {
-            this.lastSortedHeader = this.headers[sortColIndex];
-            this.lastSortedHeader.sortDir = sortOrder;
-            this.params['order'] = sortOrder;
-            this.lastSortOrder = sortOrder;
             var sortAtt = this.columns[sortColIndex]['attributeName']
-            this.lastSortAtt = sortAtt;
-            this.params['sort'] = sortAtt;
+            this.sortHelper.setSort(sortAtt, sortOrder)
+            this.params['order'] = this.getSortOrder();
+            this.params['sort'] = this.getSortAttribute();
         }
         YAHOO.util.Event.addListener(this.bwrap.dom, 'scroll', this.handleScroll, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'click', this.handleClick, this, true);
@@ -437,17 +433,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     headerClicked: function(e) {
         var target = YAHOO.util.Event.getTarget(e)
         var header = this.getHeaderFromChild(target);
-        var direction = header.sortDir == 'asc' ? 'desc' : 'asc';
-        header.sortDir = direction;
-        this.sort(this.columns[header.columnIndex]['attributeName'], header.sortDir);
+        this.sortHelper.headerClicked(this.columns[header.columnIndex]['attributeName']);
+        this._pollForSort();
     },
 
-    updateHeaderSortState: function(hd) {
-        var sortAscDisplay = hd.sortDir == 'asc' ? 'block' : 'none';
-        var sortDescDisplay = hd.sortDir == 'desc' ? 'block' : 'none';
-        YAHOO.util.Dom.setStyle(hd.sortDesc, 'display', sortDescDisplay)
-        YAHOO.util.Dom.setStyle(hd.sortAsc, 'display', sortAscDisplay)
-    },
     getCellFromChild : function(childEl) {
         var cell = YAHOO.rapidjs.DomUtils.getElementFromChild(childEl, 'rcmdb-search-cell');
         if (!YAHOO.util.Dom.hasClass(cell, 'rcmdb-searchgrid-col-0')) {
@@ -591,11 +580,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             YAHOO.util.Dom.addClass(cells[columns.length - 1], 'rcmdb-searchgrid-col-last');
 
         }
-        if (this.lastSortedHeader) {
-            this.lastSortedHeader.sortDir = null;
-            this.updateHeaderSortState(this.lastSortedHeader);
-            this.lastSortedHeader = null;
-        }
+        this.sortHelper.clearSorting();
         this.columns = columns;
         for (var index = 0; index < this.columns.length; index++) {
             var columnConfig = this.columns[index]
@@ -618,8 +603,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.renderRow(rowEl);
         }
         var sortedColumnIndex = this.getSortedColumnIndex();
-        var sortAtt = this.lastSortAtt;
-        var sortOrder = this.lastSortOrder;
+        var sortAtt = this.getSortAttribute();
+        var sortOrder = this.getSortOrder();
         if (sortedColumnIndex > -1) {
             var column = this.columns[sortedColumnIndex];
             sortAtt = column['attributeName'];
@@ -675,27 +660,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     viewBuilderSuccess: function() {
         this.events["success"].fireDirect(this);
     },
-    _poll : function(showMask) {
-        var lastClicked = this.lastSortedHeader;
-        if (lastClicked) {
-            lastClicked.sortDir = null;
-            this.updateHeaderSortState(lastClicked);
-            this.lastSortedHeader = null;
-        }
-        var sortedHeaderIndex = -1;
-        for (var i = 0; i < this.columns.length; i++) {
-            if (this.columns[i]['attributeName'] == this.lastSortAtt) {
-                sortedHeaderIndex = i;
-                break;
-            }
-        }
-        if (sortedHeaderIndex > -1) {
-            this.lastSortedHeader = this.headers[sortedHeaderIndex];
-            this.lastSortedHeader.sortDir = this.lastSortOrder;
-            this.updateHeaderSortState(this.lastSortedHeader);
-        }
-        YAHOO.rapidjs.component.search.SearchGrid.superclass._poll.call(this, showMask);
-    },
     setQueryWithView: function(queryString, view, searchIn, title, extraParams)
     {
         if (title) {
@@ -710,7 +674,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.viewChanged(queryString, true, extraParams);
         }
         else {
-            this._setQuery(queryString, this.lastSortAtt, this.lastSortOrder, this.getSearchClass(), extraParams);
+            this._setQuery(queryString, this.getSortAttribute(), this.getSortOrder(), this.getSearchClass(), extraParams);
             this.handleSearch();
         }
     },
@@ -755,11 +719,84 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return props;
     },
     getSortedColumnIndex: function() {
-        for (var i = 0; i < this.columns.length; i++) {
-            if (this.columns[i]['sortBy'] == true) {
-                return i;
-            }
-        }
-        return -1;
+        return ArrayUtils.findIndex(this.columns, function(it) {
+            return it['sortBy'] === true
+        })
+    },
+    createSortHelper : function() {
+        return new YAHOO.rapidjs.component.search.SearchGridSortHelper(this, this.keyAttribute);
     }
 });
+
+YAHOO.rapidjs.component.search.SearchGridSortHelper = function(searchGrid, defaultSort) {
+    YAHOO.rapidjs.component.search.SearchGridSortHelper.superclass.constructor.call(this, defaultSort);
+    this.searchGrid = searchGrid
+};
+YAHOO.extend(YAHOO.rapidjs.component.search.SearchGridSortHelper, YAHOO.rapidjs.component.search.SortHelper, {
+    clearSorting: function() {
+        YAHOO.rapidjs.component.search.SearchGridSortHelper.superclass.clearSorting.call(this)
+        var headers = this.searchGrid.headers;
+        for (var i = 0; i < headers.length; i++) {
+            var header = headers[i]
+            YAHOO.util.Dom.setStyle(header.sortDesc, 'display', 'none')
+            YAHOO.util.Dom.setStyle(header.sortAsc, 'display', 'none')
+        }
+    },
+    updateHeaderStates: function() {
+        var columns = this.searchGrid.columns;
+        for (var i = 0; i < columns.length; i++) {
+            var attName = columns[i]['attributeName']
+            if (attName != '') {
+                var header = this.searchGrid.headers[i];
+                var sortIndex = ArrayUtils.findIndex(this.sorts, function(it) {
+                    return it == attName
+                });
+                if (sortIndex > -1) {
+                    var order = this.orders[sortIndex];
+                    if (order == 'asc') {
+                        YAHOO.util.Dom.setStyle(header.sortDesc, 'display', 'none')
+                        YAHOO.util.Dom.setStyle(header.sortAsc, 'display', 'block')
+                    }
+                    else {
+                        YAHOO.util.Dom.setStyle(header.sortDesc, 'display', 'block')
+                        YAHOO.util.Dom.setStyle(header.sortAsc, 'display', 'none')
+                    }
+                }
+                else {
+                    YAHOO.util.Dom.setStyle(header.sortDesc, 'display', 'none')
+                    YAHOO.util.Dom.setStyle(header.sortAsc, 'display', 'none')
+                }
+            }
+
+        }
+    },
+    addSort: function(sortAtt, sortOrder) {
+        YAHOO.rapidjs.component.search.SearchGridSortHelper.superclass.addSort.call(this, sortAtt, sortOrder)
+        this.updateHeaderStates();
+    },
+    removeSort : function(sort) {
+        YAHOO.rapidjs.component.search.SearchGridSortHelper.superclass.removeSort.call(this, sort)
+        this.updateHeaderStates();
+    },
+    setSort: function(sort, order) {
+        YAHOO.rapidjs.component.search.SearchGridSortHelper.superclass.setSort.call(this, sort, order)
+        this.updateHeaderStates();
+    },
+    headerClicked : function(att) {
+        var sortIndex = ArrayUtils.findIndex(this.sorts, function(it) {
+            return it == att
+        });
+        if (sortIndex > -1) {
+            var order = this.orders[sortIndex];
+            if (order == 'asc') {
+                this.addSort(att, 'desc')
+            }
+            else {
+                this.removeSort(att)
+            }
+        }
+        else {
+            this.addSort(att, this.defaultOrder)
+        }
+    }
+})

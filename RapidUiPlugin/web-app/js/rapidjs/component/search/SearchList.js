@@ -41,7 +41,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     showCurrentState: function() {
         this.searchCountEl.innerHTML = "Count: " + this.totalRowCount;
-        this.sortTextEl.innerHTML = "Sorted By: " + this.lastSortAtt + " " + this.lastSortOrder;
+        this.sortTextEl.innerHTML = "Sorted By: " + this.getSortAttribute() + " " + this.getSortOrder();
     },
 
     getScrolledEl: function() {
@@ -133,8 +133,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
         YAHOO.rapidjs.component.search.SearchList.superclass.handleSearch.call(this, e);
         var newHistoryState = [];
         newHistoryState[newHistoryState.length] = this.searchInput.value;
-        newHistoryState[newHistoryState.length] = this.lastSortAtt;
-        newHistoryState[newHistoryState.length] = this.lastSortOrder;
+        newHistoryState[newHistoryState.length] = this.getSortAttribute();
+        newHistoryState[newHistoryState.length] = this.getSortOrder();
         newHistoryState[newHistoryState.length] = this.params['searchIn'];
         this.saveHistoryChange(newHistoryState.join("!::!"));
     },

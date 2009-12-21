@@ -698,14 +698,14 @@ class RsBrowserControllerIntegrationTests extends RapidCmdbIntegrationTestCase {
             def object = objects[i];
             assertEquals("a${i + 1}", object.@name.toString())
             assertEquals(Connection.class.name, object.@rsAlias.toString())
-            assertEquals("${i}", object.@sortOrder.toString())
+            assertEquals("${i}", object.@__sortOrder.toString())
         }
 
         for (i in 3..5) {
             def object = objects[i];
             assertEquals("b${i - 2}", object.@name.toString())
             assertEquals(SnmpConnection.class.name, object.@rsAlias.toString())
-            assertEquals("${i}", object.@sortOrder.toString())
+            assertEquals("${i}", object.@__sortOrder.toString())
             assertEquals("0.0.0.0", object.@host.toString())
         }
     }

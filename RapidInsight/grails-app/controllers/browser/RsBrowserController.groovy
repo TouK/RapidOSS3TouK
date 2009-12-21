@@ -329,7 +329,7 @@ class RsBrowserController {
                             }
                             def props =  result.asStringMap(grailsObjectPropNames);
                             props.put("rsAlias", className)
-                            props.put("sortOrder", sortOrder++)
+                            props.put("__sortOrder", sortOrder++)
                             builder.Object(props);
                         }
                     }

@@ -64,7 +64,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
         clearMetaClasses()
-        TestLogUtils.enableLogger(Logger.getLogger("scripting"));
 
         ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
               setProperty(className,gcl.loadClass(className));
@@ -92,7 +91,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         if(ConnectionManager.isInitialized()){
             ConnectionManager.destroy();
         }
-        TestLogUtils.disableLogger(Logger.getLogger("scripting"));
+
         clearMetaClasses()
         super.tearDown();
 
@@ -211,7 +210,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
 
-        CmdbScript.metaClass.'static'.getScriptLogger={ aScript -> return Logger.getLogger("scripting")};
+
 
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true,logFileOwn:true], true)
@@ -296,7 +295,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         DatasourceTestUtils.getParamSupplier().setParam(getConnectionParam(connectionName));
         ListeningAdapterManager.getInstance().initialize();
 
-        CmdbScript.metaClass.'static'.getScriptLogger={ aScript -> return Logger.getLogger("scripting")};
+
 
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);
         def listeningscript = CmdbScript.addScript([name: "stateCalculationListeningScript", type: CmdbScript.LISTENING, listenToRepository: true], true)

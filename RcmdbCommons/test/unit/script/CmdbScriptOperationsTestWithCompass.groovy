@@ -45,6 +45,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         ScriptManager.destroyInstance();
         ScriptStateManager.destroyInstance();
         ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningDatasource)
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)

@@ -61,6 +61,7 @@ class ListeningAdapterManagerTest extends RapidCmdbWithCompassTestCase {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScriptOperations);
         ExpandoMetaClass.enableGlobally();
     }
     def initializeManagers()

@@ -27,6 +27,7 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         initialize([SegmentFilter, Group, Role, RsUser], []);
         CompassForTests.addOperationSupport(RsUser, RsUserOperations)
         SessionManager.destroyInstance();
@@ -35,7 +36,15 @@ class SegmentQueryHelperTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
+    }
+    
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(Group);
+        ExpandoMetaClass.enableGlobally();
     }
 
     public void testQueryHelperIsSingleton() {

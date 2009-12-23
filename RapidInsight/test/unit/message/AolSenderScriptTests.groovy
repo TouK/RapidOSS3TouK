@@ -63,6 +63,7 @@ class AolSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(RsTemplate);
+        GroovySystem.metaClassRegistry.removeMetaClass(NotificationConnector);
         ExpandoMetaClass.enableGlobally();
     }
 

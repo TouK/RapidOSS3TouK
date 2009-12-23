@@ -18,6 +18,7 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
     RunnerObject rObj;
     public void setUp() {
         super.setUp();
+        ListeningAdapterRunnerFactory.setRunner(null);
         rObj = new RunnerObject(2)
     }
     public void tearDown() {
@@ -28,6 +29,7 @@ public class RunnerObjectTest extends RapidCmdbWithCompassTestCase {
             catch (e) {}
 
         }
+        ListeningAdapterRunnerFactory.setRunner(null);
         super.tearDown();
     }
 

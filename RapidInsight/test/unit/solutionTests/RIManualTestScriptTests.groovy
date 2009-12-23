@@ -101,14 +101,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     {
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript);
-        GroovySystem.metaClassRegistry.removeMetaClass(BaseListeningDatasource);
-        GroovySystem.metaClassRegistry.removeMetaClass(RepositoryDatasource);
-        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager);
-        GroovySystem.metaClassRegistry.removeMetaClass(RunnerObject);
-        GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterRunner);
-        GroovySystem.metaClassRegistry.removeMetaClass(AdapterRunnerThread);
-
-
         ExpandoMetaClass.enableGlobally();
     }
 

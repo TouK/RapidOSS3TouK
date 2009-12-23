@@ -41,6 +41,7 @@ class SnmpConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         ScriptManager.destroyInstance();
         ListeningAdapterManager.destroyInstance();
         ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(CmdbScript)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager)
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptScheduler)
         GroovySystem.metaClassRegistry.removeMetaClass(ListeningAdapterManager)

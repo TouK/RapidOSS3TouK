@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
 import application.RsApplication
 import application.RsApplicationOperations
+import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,7 +32,8 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
         versionControlDirectory = new File(sourceDir, "versionControl");
         FileUtils.deleteDirectory (sourceDir);
         baseDirFile.mkdirs();
-        CompassForTests.addOperationSupport (RsApplication, RsApplicationOperations)
+        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+
     }
 
     public void tearDown() {

@@ -1,9 +1,11 @@
-package search
+package com.ifountain.rcmdb.domain.method
+
 
 import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.RapidStringUtilities
+
 
 /**
 * Created by IntelliJ IDEA.

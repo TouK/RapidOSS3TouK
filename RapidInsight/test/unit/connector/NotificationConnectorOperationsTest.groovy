@@ -32,6 +32,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
     public void setUp() {
         super.setUp();
+        clearMetaClasses();
         initializeForAddAndUpdate();
         connectorSaveParams = [name: "testConnector", smtpHost: "192.168.1.100", smtpPort: 25,
                 username: "testaccount", userPassword: "3600", protocol: EmailConnection.SMTP,logLevel:Level.INFO.toString(),scriptFile:"script1",type:type];
@@ -41,6 +42,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
     }
     public void clearMetaClasses()

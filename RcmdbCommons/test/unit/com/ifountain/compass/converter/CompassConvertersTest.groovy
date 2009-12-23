@@ -28,10 +28,12 @@ class CompassConvertersTest extends AbstractSearchableCompassTests {
 
     public void setUp() {
         super.setUp()
+        DomainClassDefaultPropertyValueHolder.destroy();
     }
 
     public void tearDown() {
         super.tearDown();
+        DomainClassDefaultPropertyValueHolder.destroy();
         if (compass)
         {
             compass.close();

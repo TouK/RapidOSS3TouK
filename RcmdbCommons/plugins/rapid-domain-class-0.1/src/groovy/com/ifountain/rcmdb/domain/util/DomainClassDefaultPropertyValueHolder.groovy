@@ -75,5 +75,6 @@ class DomainClassDefaultPropertyValueHolder {
     public static void destroy()
     {
         classInstances.clear();
+        classSimpleNames.clear();
     }
 }

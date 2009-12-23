@@ -29,12 +29,17 @@ class AllTestTestUtils {
         def possibleTestFiles = FileUtils.listFiles (testsPath, ["groovy", "java"] as String[], true);
 
         def testClasses = [];
+        def counter=0;
         possibleTestFiles.each{File possibleTesFile->
+            counter++;
             if(possibleTesFile.name.endsWith("Test.java") || possibleTesFile.name.endsWith("Test.groovy") || possibleTesFile.name.endsWith("Tests.groovy"))
             {
-                def fileName =  possibleTesFile.canonicalPath.substring(testsPath.canonicalPath.length()+1);
-                def className = StringUtils.substringBeforeLast(fileName, ".").replaceAll("/", ".").replaceAll("\\\\", ".");
-                suite.addTestSuite(allTestSuiteClass.classLoader.loadClass (className));
+                if(counter>20 )//&& possibleTesFile.name.indexOf("CompassTransactionTest")<0)
+                {
+                    def fileName =  possibleTesFile.canonicalPath.substring(testsPath.canonicalPath.length()+1);
+                    def className = StringUtils.substringBeforeLast(fileName, ".").replaceAll("/", ".").replaceAll("\\\\", ".");
+                    suite.addTestSuite(allTestSuiteClass.classLoader.loadClass (className));
+                }
             }
         }
 

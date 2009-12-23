@@ -31,10 +31,12 @@ class CompassTransactionTest extends AbstractSearchableCompassTests {
     public void setUp() {
         super.setUp()
         FileUtils.deleteDirectory (new File(TestCompassFactory.indexDirectory));
+        DomainClassDefaultPropertyValueHolder.destroy();
     }
 
     public void tearDown() {
         super.tearDown();
+        DomainClassDefaultPropertyValueHolder.destroy();
         if (compass)
         {
             compass.close();

@@ -12,6 +12,6 @@ class RapidInsightAllTests extends TestCase {
     
     public static junit.framework.TestSuite suite()
     {
-        return AllTestTestUtils.loadTests(RiAllTests, "RapidInsight/test/unit")
+        return AllTestTestUtils.loadTests(RapidInsightAllTests, "RapidInsight/test/unit")
     }
 }

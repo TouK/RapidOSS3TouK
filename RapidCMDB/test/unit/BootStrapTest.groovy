@@ -27,8 +27,8 @@ class BootStrapTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-        super.tearDown();
         clearMetaClasses();
+        super.tearDown();
     }
 
     public void clearMetaClasses()

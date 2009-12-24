@@ -4,6 +4,7 @@ import groovy.xml.MarkupBuilder
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.SuffixFileFilter
+import com.ifountain.rcmdb.domain.generation.DataCorrectionUtilities
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -56,12 +57,20 @@ if (tempDirectory != null)
     }
 }
 ModelGenerator.getInstance().generateModels(modelXmls);
-web.flash?.message = "Models generated successfully."
+def message = "Models generated successfully. Please restart the server."
+try{
+    DataCorrectionUtilities.dataCorrectionBeforeReloadStep(baseDir, tempDirectory)
+}
+catch(e){
+    message =  "Could not successfully generate models. Reason: ${e.toString()}"
+}
+
+web.flash?.message = message
 if(params.targetURI){
     web.redirect(uri:params.targetURI)
 }
 else{
-   return "Models generated successfully." 
+   return message 
 }
 def getModelXmls()
 {

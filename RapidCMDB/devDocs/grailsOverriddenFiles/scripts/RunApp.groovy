@@ -160,6 +160,11 @@ def loadOldSourceFileConfiguration()
     return [:];
 }
 target ('default': "Run's a Grails application in Jetty") {
+    def oldModelDir = new File("${grailsHome}/RapidSuite/grails-app/domain")
+    def tempModelDir = new File("${grailsHome}/RapidSuite/generatedModels/grails-app/domain")
+    if(tempModelDir.exists()){
+        FileUtils.copyDirectory(tempModelDir, oldModelDir);
+    }
     def oldSourceFileConfiguration = loadOldSourceFileConfiguration();
     def newSourceFileConfiguration = getSourceFileList();
     if(isChanged(oldSourceFileConfiguration, newSourceFileConfiguration))

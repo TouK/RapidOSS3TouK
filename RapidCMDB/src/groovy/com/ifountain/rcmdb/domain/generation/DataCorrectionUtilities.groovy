@@ -25,6 +25,12 @@ import model.PropertyAction
 import org.codehaus.groovy.grails.commons.*
 import org.compass.core.CompassHit
 import org.compass.core.Resource
+import org.apache.commons.io.FileUtils
+import org.codehaus.groovy.grails.compiler.injection.GrailsAwareClassLoader
+import org.codehaus.groovy.grails.compiler.injection.DefaultGrailsDomainClassInjector
+import org.codehaus.groovy.grails.compiler.injection.ClassInjector
+import org.apache.commons.lang.StringUtils
+import org.codehaus.groovy.control.MultipleCompilationErrorsException
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,9 +41,56 @@ import org.compass.core.Resource
  */
 class DataCorrectionUtilities
 {
-    public static void dataCorrectionBeforeReloadStep(String baseDir, String tempModelDir, Map oldDomainClasses, List domainClassesWillBeGenerated,  Map domainClassesMap)
+    public static void dataCorrectionBeforeReloadStep(String baseDir, String tempBaseDir)
     {
-        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], domainClassesMap);
+        def oldDomainClasses = [:]
+        def currentModelDir = "${baseDir}/grails-app/domain";
+        def currentModelDirFile = new File(currentModelDir);
+        def tempModelDir = "${tempBaseDir}/grails-app/domain";
+        def tempModelDirFile = new File(tempModelDir);
+        Collection tempModelFileList = [];
+        if (tempModelDirFile.exists()) {
+            tempModelFileList = FileUtils.listFiles(tempModelDirFile, ["groovy"] as String[], false);
+        }
+        Collection currentModelFileList = FileUtils.listFiles(currentModelDirFile, ["groovy"] as String[], false);
+        currentModelFileList.each {File modelFile ->
+            String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
+            GrailsDomainClass cls = ApplicationHolder.application.getDomainClass(modelName);
+            if (cls)
+            {
+                oldDomainClasses[modelName] = cls;
+            }
+        }
+        def domainClassesWillBeGenerated = [];
+        def newDomainClassesMap = [:];
+        GrailsAwareClassLoader gcl = new GrailsAwareClassLoader(DataCorrectionUtilitiesClassLoaderFactory.getClassLoaderForDomainClasses());
+        gcl.setShouldRecompile(true);
+        gcl.addClasspath(tempModelDir);
+        gcl.addClasspath(baseDir + "/src/groovy");
+        gcl.setClassInjectors([new DefaultGrailsDomainClassInjector()] as ClassInjector[]);
+        for (int i = 0; i < tempModelFileList.size(); i++) {
+            File modelFile = tempModelFileList[i];
+            String modelName = StringUtils.substringBefore(modelFile.name, ".groovy");
+            def cls = gcl.loadClass(modelName);
+            def domainClass = new DefaultGrailsDomainClass(cls);
+            domainClassesWillBeGenerated += domainClass;
+            newDomainClassesMap[modelName] = domainClass;
+        }
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClassesWillBeGenerated as GrailsClass[], newDomainClassesMap);
+        createModelActions(baseDir, domainClassesWillBeGenerated, oldDomainClasses);
+        oldDomainClasses.each {String oldClassName, GrailsDomainClass oldDomainClass ->
+            if (!newDomainClassesMap.containsKey(oldClassName))
+            {
+                ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
+                new File(tempModelDir + "/" + oldClassName + ".groovy").delete()
+                deleteAllInstances(oldDomainClass.clazz);
+            }
+        }
+    }
+
+    private static void createModelActions(String baseDir, List domainClassesWillBeGenerated, Map oldDomainClasses) {
+        ModelAction.removeAll();
+        PropertyAction.removeAll();
         domainClassesWillBeGenerated.each {GrailsDomainClass newDomainClass ->
 
             GrailsDomainClass oldDomainClass = oldDomainClasses[newDomainClass.name];
@@ -47,11 +100,11 @@ class DataCorrectionUtilities
                 actions.each {
                     if (it instanceof ModelAction)
                     {
-                        if(it.action == ModelAction.GENERATE_RESOURCES)
+                        if (it.action == ModelAction.GENERATE_RESOURCES)
                         {
-                            ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir+"/operations"), []);
+                            ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir + "/operations"), []);
                         }
-                        else if(it.action == ModelAction.DELETE_ALL_INSTANCES)
+                        else if (it.action == ModelAction.DELETE_ALL_INSTANCES)
                         {
                             deleteAllInstances(oldDomainClasses[it.modelName].clazz);
                         }
@@ -63,31 +116,21 @@ class DataCorrectionUtilities
                     }
                     else
                     {
-                        PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName, reverseName:it.reverseName, propTypeName:it.propTypeName);
+                        PropertyAction.add(propName: it.propName, action: it.action, modelName: it.modelName, reverseName: it.reverseName, propTypeName: it.propTypeName);
                     }
                 }
             }
             else
             {
-                ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir+"/operations"), []);
-            }
-        }
-
-
-        oldDomainClasses.each {String oldClassName, GrailsDomainClass oldDomainClass ->
-            if (!domainClassesMap.containsKey(oldClassName))
-            {
-                ModelUtils.deleteModelArtefacts(baseDir, oldClassName);
-                new File(tempModelDir + "/" + oldClassName + ".groovy").delete()
-                deleteAllInstances(oldDomainClass.clazz);
+                ModelUtils.createModelOperationsFile(newDomainClass.clazz, new File(baseDir + "/operations"), []);
             }
         }
     }
 
     private static void deleteAllInstances(clazz)
     {
-        clazz.'searchEvery'("alias:*", [raw:{hits, session->
-            hits.iterator().each{hit->
+        clazz.'searchEvery'("alias:*", [raw: {hits, session ->
+            hits.iterator().each {hit ->
                 Resource res = hit.getResource();
                 session.delete(res);
             }
@@ -97,7 +140,7 @@ class DataCorrectionUtilities
     public static void dataCorrectionAfterReloadStep()
     {
         def domainClasses = [:];
-        ApplicationHolder.application.getDomainClasses().each{
+        ApplicationHolder.application.getDomainClasses().each {
             domainClasses[it.clazz.name] = it;
         }
         ModelAction.list().each {ModelAction modelAction ->
@@ -107,11 +150,11 @@ class DataCorrectionUtilities
                 def propList = currentModelClass.'getPropertiesList'();
                 def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
                 propNames.add("id");
-                currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
-                    hits.iterator().each{hit->
+                currentModelClass.'searchEvery'("alias:*", [raw: {hits, session ->
+                    hits.iterator().each {hit ->
                         Resource res = hit.getResource();
                         def newObj = currentModelClass.newInstance();
-                        propNames.each{
+                        propNames.each {
                             newObj.setProperty(it, res.getObject(it), false);
                         }
                         session.save(newObj);
@@ -132,7 +175,7 @@ class DataCorrectionUtilities
                     modelProps = [:]
                     changedModelProperties[propAction.modelName] = modelProps;
                 }
-                if(propAction.action != PropertyAction.CLEAR_RELATION)
+                if (propAction.action != PropertyAction.CLEAR_RELATION)
                 {
                     propAction.defaultValue = currentDomainObject.clazz.newInstance()[propAction.propName];
                     propAction.propType = currentDomainObject.getPropertyByName(propAction.propName).type;
@@ -143,21 +186,21 @@ class DataCorrectionUtilities
         def simplePropetyNamesList = [:];
         domainClasses.each {String className, modelClass ->
 
-                def propList = modelClass.clazz.'getPropertiesList'();
-                def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
-                propNames.add("id");
-                simplePropetyNamesList[className] = propNames;
+            def propList = modelClass.clazz.'getPropertiesList'();
+            def propNames = propList.findAll {!it.isRelation && !it.isOperationProperty}.name
+            propNames.add("id");
+            simplePropetyNamesList[className] = propNames;
         }
         changedModelProperties.each {String modelName, Map modelProps ->
             DefaultGrailsDomainClass currentDomainObject = domainClasses[modelName];
             if (currentDomainObject)
             {
                 Class currentModelClass = currentDomainObject.clazz;
-                currentModelClass.'searchEvery'("alias:*", [raw:{hits, session->
-                    hits.iterator().each{CompassHit hit->
+                currentModelClass.'searchEvery'("alias:*", [raw: {hits, session ->
+                    hits.iterator().each {CompassHit hit ->
                         Resource res = hit.getResource();
                         def objectRealClass = domainClasses[hit.alias()];
-                        if(objectRealClass)
+                        if (objectRealClass)
                         {
                             def newObj = objectRealClass.newInstance();
                             def newProps = [:]
@@ -173,12 +216,12 @@ class DataCorrectionUtilities
 
                                 }
                             }
-                            if(!newProps.isEmpty())
+                            if (!newProps.isEmpty())
                             {
-                                simplePropetyNamesList.get(res.getAlias()).each{propName->
+                                simplePropetyNamesList.get(res.getAlias()).each {propName ->
                                     def newPropVal = newProps[propName];
 
-                                    if(newPropVal == null)
+                                    if (newPropVal == null)
                                     {
                                         newPropVal = res.getObject(propName)
                                     }
@@ -197,4 +240,18 @@ class DataCorrectionUtilities
             }
         }
     }
+}
+//for testing
+public class DataCorrectionUtilitiesClassLoaderFactory {
+    private static ClassLoader classLoader;
+    public static ClassLoader getClassLoaderForDomainClasses() {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader().parent;
+        }
+        return classLoader
+    }
+    public static setMockClassLoader(ClassLoader cl) {
+        classLoader = cl;
+    }
+
 }

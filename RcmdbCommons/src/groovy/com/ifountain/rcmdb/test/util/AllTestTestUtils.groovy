@@ -4,6 +4,7 @@ import junit.framework.TestSuite
 import org.apache.commons.io.FileUtils
 import junit.framework.TestCase
 import org.apache.commons.lang.StringUtils
+import com.ifountain.comp.utils.HttpUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -38,6 +39,49 @@ class AllTestTestUtils {
             }
         }
 
+        return suite;
+    }
+    //Sample url : "http://192.168.1.134:8080/job/RapidCMDBTests/2261/console"
+    //should be the output of console url
+    public static junit.framework.TestSuite loadTestsInHudsonOrder(Class allTestSuiteClass,hudsonUrl)
+    {
+        def testClassNames=[];
+        //find testnames in hudson
+        def testStartPrefix="Running test";
+        def testEndPrefix="...";
+
+        HttpUtils httpUtil=new HttpUtils();
+
+        def res=httpUtil.doGetRequest (hudsonUrl,[:]);
+
+        def startIndex=res.indexOf(testStartPrefix);
+        while(startIndex>=0)
+        {
+            def  endIndex=res.indexOf(testEndPrefix,startIndex+1);
+            if(endIndex>0)
+            {
+                def testName=res.substring(startIndex+testStartPrefix.length(),endIndex)?.trim();
+                testClassNames.add(testName);
+                startIndex=res.indexOf(testStartPrefix,endIndex+1);
+            }
+            else
+            {
+                startIndex=-1;
+            }
+
+        }
+        //run them
+        TestSuite suite = new TestSuite();
+        testClassNames.each{ className ->
+             println "loading test : ${className}"
+             try{
+                suite.addTestSuite(allTestSuiteClass.classLoader.loadClass (className));
+             }
+             catch(ClassNotFoundException e)
+             {
+                 println "! WARNING : test : ${className} not found";
+             }
+        }
         return suite;
     }
 }

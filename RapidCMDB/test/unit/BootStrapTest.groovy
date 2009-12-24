@@ -8,6 +8,8 @@ import auth.Role
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import auth.ChannelUserInformation
 import auth.RsUserInformation
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.rcmdb.auth.UserConfigurationSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,11 +22,20 @@ class BootStrapTest extends RapidCmdbWithCompassTestCase{
 
     public void setUp() {
         super.setUp();
-
+        clearMetaClasses();
+        BootStrap.metaClass.getLog={ -> return TestLogUtils.log};
     }
 
     public void tearDown() {
         super.tearDown();
+        clearMetaClasses();
+    }
+
+    public void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(BootStrap);
+        ExpandoMetaClass.enableGlobally();
     }
 
     public void testRegisterDefaultUsers()
@@ -32,8 +43,9 @@ class BootStrapTest extends RapidCmdbWithCompassTestCase{
         initialize ([RsUser,Group,Role,RsUserInformation,ChannelUserInformation],[]);
         CompassForTests.addOperationSupport (RsUser,RsUserOperations);
         CompassForTests.addOperationSupport (Group,GroupOperations);
-
+        UserConfigurationSpace.getInstance().initialize();
         SegmentQueryHelper.getInstance().initialize ([]);
+
 
         def bootstrap= new BootStrap();
         bootstrap.registerDefaultUsers();
@@ -75,8 +87,9 @@ class BootStrapTest extends RapidCmdbWithCompassTestCase{
         initialize ([RsUser,Group,Role,RsUserInformation,ChannelUserInformation],[]);
         CompassForTests.addOperationSupport (RsUser,RsUserOperations);
         CompassForTests.addOperationSupport (Group,GroupOperations);
-
+        UserConfigurationSpace.getInstance().initialize();
         SegmentQueryHelper.getInstance().initialize ([]);
+
 
         def bootstrap= new BootStrap();
         bootstrap.registerDefaultUsers();

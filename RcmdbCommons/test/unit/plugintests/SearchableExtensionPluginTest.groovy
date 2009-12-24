@@ -574,6 +574,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertFalse(addedObject1.hasErrors());
         def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject1.update(keyProp:"object1NewVal");
         assertFalse(addedObject1.hasErrors());
 
@@ -651,6 +652,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject1.update(keyProp: "object1",prop1:"prop1Value");
         assertFalse(addedObject1.hasErrors());
 
@@ -687,6 +689,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject1.update(nullableProp:null);
         assertFalse(addedObject1.hasErrors());
 
@@ -728,6 +731,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject1.update(nullableProp:"changeValue");
         assertFalse(addedObject1.hasErrors());
 
@@ -770,6 +774,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         def oldUpdatedAt=addedObject1[RapidCMDBConstants.UPDATED_AT_PROPERTY_NAME];
 
+        Thread.sleep(100);
         addedObject1.update(prop1:"prop1Value_new");
         assertFalse(addedObject1.hasErrors());
 

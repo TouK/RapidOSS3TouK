@@ -51,6 +51,7 @@ import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
+import com.ifountain.rcmdb.domain.IdGenerator
 
 /**
  * Created by IntelliJ IDEA.
@@ -208,6 +209,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         this.loadedClasses = null;
         WrapperIndexDeletionPolicy.clearPolicies();
         DomainClassDefaultPropertyValueHolder.destroy();
+        IdGenerator.destroy();
 
     }
 

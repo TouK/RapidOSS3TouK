@@ -50,6 +50,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 import com.ifountain.compass.index.WrapperIndexDeletionPolicy
 import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,7 +87,9 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     static indexCount = 0;
     public void setUp() {
         super.setUp();
+        DomainClassDefaultPropertyValueHolder.destroy();
         RapidConvertUtils.destroyInstance();
+
         indexCount++;
         indexDir = "${rootIndexDir}/${this.class.simpleName}${indexCount}";
         System.clearProperty("index.dir")
@@ -204,6 +207,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         ExpandoMetaClass.enableGlobally();
         this.loadedClasses = null;
         WrapperIndexDeletionPolicy.clearPolicies();
+        DomainClassDefaultPropertyValueHolder.destroy();
 
     }
 

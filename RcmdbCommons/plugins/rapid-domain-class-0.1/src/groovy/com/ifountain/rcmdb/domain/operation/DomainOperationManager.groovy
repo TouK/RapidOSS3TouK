@@ -46,6 +46,7 @@ class DomainOperationManager {
         this.operationsDirectory = operationsDirectory;
         this.domainClass = domainClass;
         this.parentOperationManager = parentOperationManager;
+        println "DomainOperationManager : [new] : for ${this.domainClass.name}, operationsDirectory:${operationsDirectory}, parentClassLoader : ${parentClassLoader} ,parentOperationManager: ${parentOperationManager}  "
     }
 
     public synchronized Class getOperationClass()
@@ -81,6 +82,7 @@ class DomainOperationManager {
     public synchronized Class loadOperation()
     {
         def operationFile = getOperationFile()
+        println "DomainOperationManager : [loadOperation] : for ${this.domainClass.name} ,operationFile: ${operationFile},exists : ${operationFile.exists() } "
         if(operationFile.exists())
         {
             def operationName = domainClass.name+OPERATION_SUFFIX;

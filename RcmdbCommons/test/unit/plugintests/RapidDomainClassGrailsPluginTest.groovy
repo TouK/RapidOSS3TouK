@@ -54,6 +54,7 @@ class RapidDomainClassGrailsPluginTest extends RapidCmdbMockTestCase
     Class loadedDomainClass;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DomainOperationManager.enableLoadOperation();        
         DataStore.clear()
         DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyList = [];
         DomainPropertyInterceptorDomainClassGrailsPluginImpl.federatedPropertyStorage = [:];

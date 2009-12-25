@@ -39,6 +39,9 @@ class DomainOperationManager {
     private Map operationClassMethods = [:];
     private DomainOperationManager parentOperationManager;
     private Map defaultMethods;
+
+    private static boolean enableLoadOperation=true;
+
     public DomainOperationManager(Class domainClass, String operationsDirectory, DomainOperationManager parentOperationManager, Map defaultMethods, ClassLoader parentClassLoader)
     {
         this.parentClassLoader = parentClassLoader;
@@ -78,10 +81,22 @@ class DomainOperationManager {
             return ABSTRACT_DOMAIN_OPERATION_METHODS;
         }
     }
+    public synchronized static void disableLoadOperation()
+    {
+         enableLoadOperation=false;
+    }
+    public synchronized static void enableLoadOperation()
+    {
+         enableLoadOperation=true;
+    }
     public synchronized Class loadOperation()
     {
         def operationFile = getOperationFile()
-        if(operationFile.exists())
+        if(!enableLoadOperation)
+        {
+            throw DomainOperationLoadException.operationLoadingIsDisabled(operationFile.path);
+        }
+        else if(operationFile.exists())
         {
             def operationName = domainClass.name+OPERATION_SUFFIX;
             GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader);

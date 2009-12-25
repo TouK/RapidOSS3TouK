@@ -52,6 +52,7 @@ import com.ifountain.rcmdb.domain.property.RapidCmdbDomainPropertyInterceptor
 import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 import com.ifountain.rcmdb.domain.IdGenerator
+import com.ifountain.rcmdb.domain.operation.DomainOperationManager
 
 /**
  * Created by IntelliJ IDEA.
@@ -91,6 +92,8 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         super.setUp();
         DomainClassDefaultPropertyValueHolder.destroy();
         RapidConvertUtils.destroyInstance();
+        //operations are not automatically loaded in tests
+        DomainOperationManager.disableLoadOperation();
 
         indexCount++;
         indexDir = "${rootIndexDir}/${this.class.simpleName}${indexCount}";

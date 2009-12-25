@@ -188,6 +188,51 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         assertTrue (manager.operationClassMethods.containsKey("method1"));
     }
 
+
+    public void testLoadOperationThrowsExceptionIfOperationLoadDisabled()
+    {
+        GroovyClassLoader classLoader = new GroovyClassLoader();
+        Class domainClass = classLoader.parseClass("""
+            package packagename1.packagename2.packagename3;
+            class TrialDomainClass
+            {
+
+            }
+        """);
+        def stringWillBeReturned = "method1"
+        def oprFile = new File("$operationsDirectory/packagename1/packagename2/packagename3/${domainClass.simpleName}${DomainOperationManager.OPERATION_SUFFIX}.groovy");
+        oprFile.parentFile.mkdirs();
+        oprFile.setText (
+                """
+                    package packagename1.packagename2.packagename3;
+                    class  ${domainClass.simpleName}${DomainOperationManager.OPERATION_SUFFIX} extends ${AbstractDomainOperation.class.name}
+                    {
+                        def method1()
+                        {
+                            return "${stringWillBeReturned}";
+                        }
+                    }
+                """
+        )
+        DomainOperationManager manager = new DomainOperationManager(domainClass, operationsDirectory, null, [:], this.class.classLoader);
+        
+        try
+        {
+            DomainOperationManager.disableLoadOperation();
+            manager.loadOperation();
+            fail("Should throw exception");
+        }
+        catch(DomainOperationLoadException ex)
+        {
+            assertEquals("Operation Loading is Disabled.",ex.getMessage());
+            assertNull(ex.getCause());
+        }
+        finally{
+            DomainOperationManager.enableLoadOperation();
+        }
+        assertEquals ("if no operation class exist ${AbstractDomainOperation.name} should be returned", AbstractDomainOperation.class.name, manager.getOperationClass().name);
+    }
+
     public void testLoadOperationThrowsExceptionIfOperationFileDoesnotExist()
     {
         Class domainClass = createSimpleDomainClass();

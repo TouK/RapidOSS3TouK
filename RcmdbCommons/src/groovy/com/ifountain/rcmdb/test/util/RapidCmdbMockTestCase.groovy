@@ -222,7 +222,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         destroy();
         System.clearProperty("index.dir")
         CompassForTests.destroy();
-        //super.tearDown();
+        super.tearDown();
         println "tearDown before : base.dir : ${System.getProperty('base.dir')}  "
 
     }

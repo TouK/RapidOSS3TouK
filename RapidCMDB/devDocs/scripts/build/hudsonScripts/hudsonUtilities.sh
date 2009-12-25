@@ -63,9 +63,9 @@ checkOutTag() {
 runTestBuildAndJavaTests(){
   runTestBuild
   cd RapidModules/
-  groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
-  groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
-  groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
+  #groovy RapidCMDB/devDocs/scripts/build/SmartsModuleTest
+  #groovy RapidCMDB/devDocs/scripts/build/CoreModuleTest
+  #groovy RapidCMDB/devDocs/scripts/build/CompModuleTest
   cd $WORKSPACE
 }
 runTestBuild() {

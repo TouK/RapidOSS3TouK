@@ -1,3 +1,4 @@
+connector.NetcoolConnectorControllerIntegrationTests
 netcool.conversion.NetcoolRuleFunctionsTest
 com.ifountain.rcmdb.domain.util.ControllerUtilsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests

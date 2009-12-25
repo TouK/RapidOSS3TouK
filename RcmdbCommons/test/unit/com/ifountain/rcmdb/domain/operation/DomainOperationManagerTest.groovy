@@ -39,6 +39,7 @@ class DomainOperationManagerTest extends RapidCmdbTestCase{
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
         FileUtils.deleteDirectory (new File(operationsDirectory));
         new File(operationsDirectory).mkdirs()
+        DomainOperationManager.enableLoadOperation();
     }
 
     protected void tearDown() {

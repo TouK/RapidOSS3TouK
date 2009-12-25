@@ -38,6 +38,7 @@ class ReloadOperationsMethodTest extends RapidCmdbTestCase{
     public static dsKey = ReloadOperationsMethodTest.name;
     protected void setUp() {
         super.setUp();    //To change body of overridden methods use File | Settings | File Templates.
+        DomainOperationManager.enableLoadOperation();
         TestDatastore.put (dsKey, [])
         def baseDirFile = new File(baseDir)
         if(baseDirFile.exists())

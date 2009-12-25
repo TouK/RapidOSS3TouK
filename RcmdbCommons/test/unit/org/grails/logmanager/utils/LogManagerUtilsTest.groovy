@@ -3,6 +3,7 @@ package org.grails.logmanager.utils
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.TrueFileFilter
+import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,7 +13,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter
  * To change this template use File | Settings | File Templates.
  */
 
-public class LogManagerUtilsTest extends GroovyTestCase
+public class LogManagerUtilsTest extends RapidCmdbTestCase
 {
     def static final String outputDirectory = "../testoutput/LogManagerUtilsTest"
 

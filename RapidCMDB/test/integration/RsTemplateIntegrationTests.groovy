@@ -1,5 +1,5 @@
-import com.ifountain.core.test.util.RapidCoreTestCase
 import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
+import com.ifountain.rcmdb.test.util.RapidCmdbIntegrationTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -8,7 +8,7 @@ import org.codehaus.groovy.grails.web.pages.GroovyPagesTemplateEngine
 * Time: 9:45:51 AM
 * To change this template use File | Settings | File Templates.
 */
-class RsTemplateIntegrationTests extends RapidCoreTestCase {
+class RsTemplateIntegrationTests extends RapidCmdbIntegrationTestCase {
     static transactional = false;
     public void testRenderTemplate(){
 

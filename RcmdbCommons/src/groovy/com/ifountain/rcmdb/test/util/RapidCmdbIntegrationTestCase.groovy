@@ -25,8 +25,14 @@ package com.ifountain.rcmdb.test.util
  * To change this template use File | Settings | File Templates.
  */
 public class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
-    static transactional = false;    
-    void setUp(){        
+    static transactional = false;
+    public static boolean isSetupCompleted = false;
+    void setUp(){
+        if(!isSetupCompleted)
+        {
+            isSetupCompleted = true;
+            CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        }
     }
 
     void tearDown(){

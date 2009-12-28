@@ -72,10 +72,17 @@ testApp() {
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app $@
 }
 testAppUnit() {
+   	#JAVA_OPTS=" -Xdebug $JAVA_OPTS"
+    #JAVA_OPTS=" -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7536 $JAVA_OPTS"
+    
    	. $GRAILS_HOME/bin/startGrails test-app -unit
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -unit
 }
 testAppIntegration() {
+    #JAVA_OPTS=" -Xdebug $JAVA_OPTS"
+    #JAVA_OPTS=" -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7536 $JAVA_OPTS"
+
+
    	. $GRAILS_HOME/bin/startGrails test-app -integration
 	startGrails com.ifountain.grails.RapidGrailsScriptRunner test-app -integration
 }

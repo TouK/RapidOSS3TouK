@@ -88,7 +88,6 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     def indexDir;
     static indexCount = 0;
     public void setUp() {
-        println "setUp before : base.dir : ${System.getProperty('base.dir')}  "
         super.setUp();
         DomainClassDefaultPropertyValueHolder.destroy();
         RapidConvertUtils.destroyInstance();
@@ -113,8 +112,6 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 //        {
             gcl = new GroovyClassLoader(this.class.classLoader);
 //        }
-
-        println "setUp after : base.dir : ${System.getProperty('base.dir')}  "
     }
 
     def initialize(List classesToBeLoaded, List pluginsToLoad)
@@ -123,7 +120,6 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     }
     def initialize(List classesToBeLoaded, List pluginsToLoad, boolean isPersistant)
     {
-        println "initialize before : base.dir : ${System.getProperty('base.dir')}  "
         if(isPersistant)
         {
             System.setProperty("index.dir", indexDir);
@@ -179,8 +175,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 		servletContext.setAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT, appCtx)
 		dependentPlugins*.doWithDynamicMethods(appCtx)
 		dependentPlugins*.doWithApplicationContext(appCtx)
-		println "initialize after : base.dir : ${System.getProperty('base.dir')}  "
-    }
+	}
 
     public void destroy()
     {
@@ -221,12 +216,9 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     }
 
     void tearDown() {
-        println "tearDown before : base.dir : ${System.getProperty('base.dir')}  "
         destroy();
         System.clearProperty("index.dir")
         CompassForTests.destroy();
         super.tearDown();
-        println "tearDown before : base.dir : ${System.getProperty('base.dir')}  "
-
     }
 }

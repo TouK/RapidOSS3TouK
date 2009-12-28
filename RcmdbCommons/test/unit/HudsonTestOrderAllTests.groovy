@@ -11,6 +11,7 @@ import junit.framework.TestCase
 class HudsonTestOrderAllTests {
     public static junit.framework.TestSuite suite()
     {
-        return AllTestTestUtils.loadTestsInHudsonOrder(RcmdbCommonsAllTests,"http://192.168.1.134:8080/job/RapidCMDBTests/2261/console");
+        //System.setProperty("base.dir","D:\\Ideaworkspace\\RapidModules\\RcmdbCommons\\");
+        return AllTestTestUtils.loadTestsInHudsonOrder(RcmdbCommonsAllTests,"http://192.168.1.134:8080/job/RapidCMDBTests/2266/consoleFull");
     }
 }

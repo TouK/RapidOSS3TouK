@@ -53,7 +53,7 @@ domain.property.interceptorclass = "com.ifountain.rcmdb.domain.property.RapidCmd
 plugin {
     excludes = "hibernate"
 }
-connection.pool.checker.interval = 10000;
+connection.pool.checker.interval = 10000000;
 connection.pool.timeout.strategy = DefaultTimeoutStrategy.name;
 rapidCMDB.temp.dir = "${System.getProperty("base.dir")}/generatedModels".toString();
 rapidCMDB.base.dir = System.getProperty("base.dir");

@@ -1,5 +1,3 @@
-connector.NetcoolConnectorControllerIntegrationTests
-com.ifountain.compass.MemoryDirectoryWrapperTest
 netcool.conversion.NetcoolRuleFunctionsTest
 com.ifountain.rcmdb.domain.util.ControllerUtilsTest
 auth.AuthenticationAuthorizationControllerIntegrationTests

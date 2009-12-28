@@ -53,17 +53,24 @@ public class ConnectionManager
 
     public static boolean checkConnection(String connectionName)
     {
+        System.out.println("checkConnection : 0 "+System.currentTimeMillis());
         boolean connected=false;
         try{
+            System.out.println("checkConnection : 1 "+System.currentTimeMillis());
             IConnection conn = getConnection(connectionName);
+            System.out.println("checkConnection : 2 "+System.currentTimeMillis());
             if(conn.checkConnection()){
                 connected = true;
             }
+            System.out.println("checkConnection : 3 "+System.currentTimeMillis());
             releaseConnection(conn);
+            System.out.println("checkConnection : 4 "+System.currentTimeMillis());
         }
         catch(Exception e){
+             System.out.println("checkConnection : 0 "+System.currentTimeMillis());
              logger.warn("Exception in ConnectionManager checkConnection "+e, e);
         }
+        System.out.println("checkConnection : 5 "+System.currentTimeMillis());
         return connected;
     }
 

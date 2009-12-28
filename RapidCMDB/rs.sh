@@ -32,8 +32,9 @@ JAVA_OPTS=" -Dtools.jar=$RS_HOME/lib/tools.jar $JAVA_OPTS"
 JAVA_OPTS=" -Dgroovy.sanitized.stacktraces=groovy.,org.codehaus.groovy.,java.,javax.,sun.,gjdk.groovy.,org.springframework.,org.mortbay.,net.sf., $JAVA_OPTS"
 JAVA_OPTS=" -Dgroovy.full.stacktrace=false $JAVA_OPTS"
 JAVA_OPTS=" -Dorg.mortbay.jetty.Request.maxFormContentSize=1000000 $JAVA_OPTS"
-JAVA_OPTS=" -Xdebug $JAVA_OPTS"
-JAVA_OPTS=" -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7536 $JAVA_OPTS"
+
+#JAVA_OPTS=" -Xdebug $JAVA_OPTS"
+#JAVA_OPTS=" -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7536 $JAVA_OPTS"
 
 
 

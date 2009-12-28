@@ -19,13 +19,7 @@
 package com.ifountain.rcmdb.test.util
 
 import com.ifountain.comp.test.util.testcase.RapidTestCase
-import com.ifountain.rcmdb.domain.DomainLockManager
-import org.apache.log4j.Logger
 import com.ifountain.comp.test.util.CommonTestUtils
-import com.ifountain.rcmdb.domain.cache.IdCache
-import com.ifountain.rcmdb.converter.RapidConvertUtils
-import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
-import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /**
 * Created by IntelliJ IDEA.
@@ -44,23 +38,15 @@ public class RapidCmdbTestCase extends RapidTestCase{
             CommonTestUtils.initializeFromFile("RCMDBTest.properties");
             Locale.setDefault(Locale.ENGLISH);
         }
-        defaultBaseDir = System.getProperty("base.dir", ".");
-        DomainLockManager.destroy();
-        DomainLockManager.getInstance().initialize(Logger.getRootLogger());
-        IdCache.initialize (10000);
+        defaultBaseDir = System.getProperty("base.dir", ".");       
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
     }
     
 
     protected void tearDown() {
         System.setProperty("base.dir", defaultBaseDir);
-        TestDatastore.clear();
-        IdCache.clearCache();
-        EventTriggeringUtils.destroy();
-        ObjectProcessor.destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);
-        CompassForTests.destroy();
     }
 
     public String getWorkspacePath() throws Exception

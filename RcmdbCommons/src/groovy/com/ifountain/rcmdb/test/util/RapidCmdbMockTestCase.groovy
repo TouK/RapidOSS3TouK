@@ -53,6 +53,11 @@ import com.ifountain.rcmdb.converter.RapidConvertUtils
 import com.ifountain.rcmdb.domain.util.DomainClassDefaultPropertyValueHolder
 import com.ifountain.rcmdb.domain.IdGenerator
 import com.ifountain.rcmdb.domain.operation.DomainOperationManager
+import com.ifountain.rcmdb.domain.DomainLockManager
+import org.apache.log4j.Logger
+import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
+import com.ifountain.rcmdb.domain.ObjectProcessor
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,6 +94,11 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     static indexCount = 0;
     public void setUp() {
         super.setUp();
+
+        DomainLockManager.destroy();
+        DomainLockManager.getInstance().initialize(Logger.getRootLogger());
+        IdCache.initialize (10000);
+
         DomainClassDefaultPropertyValueHolder.destroy();
         RapidConvertUtils.destroyInstance();
         //operations are not automatically loaded in tests
@@ -218,6 +228,10 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
     void tearDown() {
         destroy();
         System.clearProperty("index.dir")
+        TestDatastore.clear();
+        IdCache.clearCache();
+        EventTriggeringUtils.destroy();
+        ObjectProcessor.destroy();
         CompassForTests.destroy();
         super.tearDown();
     }

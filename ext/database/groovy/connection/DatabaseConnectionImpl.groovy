@@ -38,11 +38,8 @@ public class DatabaseConnectionImpl extends BaseConnection {
     private java.sql.Connection connection;
 
     protected void connect() throws Exception {
-        System.out.println("DatabaseConnectionImpl connect : 0 "+System.currentTimeMillis());
         DriverManager.setLoginTimeout((int) (getTimeout() / 1000));
-        System.out.println("DatabaseConnectionImpl connect : 1 "+System.currentTimeMillis());
         connection = DriverManager.getConnection(url, createConnectionProperties());
-        System.out.println("DatabaseConnectionImpl connect : 2 "+System.currentTimeMillis());
     }
     protected Properties createConnectionProperties()
     {

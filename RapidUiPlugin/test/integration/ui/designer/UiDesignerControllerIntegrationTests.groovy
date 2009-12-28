@@ -48,7 +48,7 @@ class UiDesignerControllerIntegrationTests extends RapidCmdbIntegrationTestCase 
         controller.generate();
         assertEqualsXML("<Successful>UI generated successfully</Successful>", controller.response.contentAsString);
 
-        File generatedFile = new File("${System.getProperty("base.dir")}/grails-app/views/layouts/" + url1.name + "Layout.gsp");
+        File generatedFile = new File("${System.getProperty("base.dir")}/grails-app/views/layouts/" + url1Props.name + "Layout.gsp");
         String generatedUrlFileContent = generatedFile.getText();
 
         uiUrlTemplate.setText("contentChanged");

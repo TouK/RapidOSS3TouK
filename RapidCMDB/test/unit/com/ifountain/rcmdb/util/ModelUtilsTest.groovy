@@ -26,6 +26,8 @@ import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
 import groovy.lang.MetaClassRegistry.MetaClassCreationHandle
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -44,9 +46,12 @@ class ModelUtilsTest extends RapidCmdbTestCase{
             FileUtils.deleteDirectory (new File(output_directory));
         }
         new File(output_directory).mkdirs();
+
+        ApplicationHolder.application = new DefaultGrailsApplication([] as Class[],new GroovyClassLoader(this.class.classLoader));
     }
 
     protected void tearDown() {
+        ApplicationHolder.application = null;
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
 

@@ -40,7 +40,7 @@
 package build
 
 class RapidInsightBuild extends Build {
-    boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, JIRA_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
+    boolean RI_UNIX_OPT, RI_WINDOWS_OPT, APG_OPT, OPENNMS_OPT, JIRA_OPT, NETCOOL_OPT, SMARTS_OPT, HYPERIC_OPT, RIVERMUSE_OPT, ENTERPRISE_WINDOWS_OPT, ENTERPRISE_UNIX_OPT, ZIP_OPT, TEST_OPT;
     def JREDIR_OPT;
     def version = "$env.rapid_insight/ROSSVersion.txt";
     def versionInBuild = "$env.dist_rapid_suite/ROSSVersion.txt";
@@ -57,6 +57,7 @@ class RapidInsightBuild extends Build {
             NETCOOL_OPT = Boolean.parseBoolean(options.get("NETCOOL", "false"));
             SMARTS_OPT = Boolean.parseBoolean(options.get("SMARTS", "false"));
             HYPERIC_OPT = Boolean.parseBoolean(options.get("HYPERIC", "false"));
+            RIVERMUSE_OPT = Boolean.parseBoolean(options.get("RIVERMUSE", "false"));
             ENTERPRISE_WINDOWS_OPT = Boolean.parseBoolean(options.get("E_WINDOWS", "false"));
             ENTERPRISE_UNIX_OPT = Boolean.parseBoolean(options.get("E_UNIX", "false"));
             ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
@@ -80,6 +81,7 @@ class RapidInsightBuild extends Build {
 	   options.put("NETCOOL", "true")
 	   options.put("SMARTS", "true")
 	   options.put("HYPERIC", "true")
+	   options.put("RIVERMUSE", "true")
 	   options.put("E_WINDOWS", "false")
 	   options.put("E_UNIX", "false")
 	   options.put("ZIP", "false")
@@ -213,6 +215,7 @@ class RapidInsightBuild extends Build {
         if (SMARTS_OPT) new SmartsModuleBuild().build(distDir);
         if (NETCOOL_OPT) new NetcoolModuleBuild().build(distDir);
         if (HYPERIC_OPT) new HypericBuild().build(distDir);
+        if (RIVERMUSE_OPT) new RivermuseBuild().build(distDir);
         if (APG_OPT) new ApgBuild().build(distDir);
         if (OPENNMS_OPT) new OpenNmsBuild().build(distDir);
         if (JIRA_OPT) new JiraPluginBuild().build(distDir);

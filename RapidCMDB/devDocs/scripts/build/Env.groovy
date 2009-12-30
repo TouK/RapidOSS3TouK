@@ -67,6 +67,7 @@ class Env {
     static def rapid_hyperic = "$basedir/Hyperic"
     static def rapid_opennms = "$basedir/OpenNms"
     static def rapid_apg = "$basedir/Apg"
+    static def rapid_rivermuse = "$basedir/Rivermuse"
     static def rapid_jira = "$rapid_ext/jira"
     static def dist_rapid_ui = "$dist_rapid_suite/plugins/rapid-ui-0.1"
     static def rapid_ui = "$rapid_modules/RapidUiPlugin"

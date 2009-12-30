@@ -92,6 +92,7 @@ runTestBuild() {
     echo APG=true>> $optionsFile
     echo OPENNMS=true >> $optionsFile
     echo HYPERIC=true >> $optionsFile
+    echo RIVERMUSE=true >> $optionsFile
     echo NETCOOL=true >> $optionsFile
     echo SMARTS=true >> $optionsFile
     echo JIRA=true >> $optionsFile
@@ -276,6 +277,7 @@ compileBuildFiles() {
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/Test.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/SmartsModuleBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/HypericBuild.groovy
+    groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/RivermuseBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/ApgBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/OpenNmsBuild.groovy
     groovyc -d $GROOVY_HOME/build RapidModules/RapidCMDB/devDocs/scripts/build/NetcoolModuleBuild.groovy

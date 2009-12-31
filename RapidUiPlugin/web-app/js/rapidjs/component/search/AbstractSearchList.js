@@ -340,7 +340,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             for (var rowIndex = 0; rowIndex < nOfChildNodes; rowIndex++) {
                 var childNode = childNodes[rowIndex];
                 if (childNode.isRemoved == true) {
-                    this.selectionHelper.nodeRemoved(childNode)
+                    this.searchNodeRemoved(childNode)
                     childNode.destroy();
                 }
                 else {
@@ -353,6 +353,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         this.updateBodyHeight();
     },
 
+    searchNodeRemoved: function(searchNode) {
+        if (this.rowHeaderMenu.searchNode == searchNode) {
+            this.rowHeaderMenu.searchNode = null;
+            this.rowHeaderMenu.hide();
+        }
+        this.selectionHelper.nodeRemoved(searchNode)
+    },
     updateSearchData: function() {
         this.searchData = [];
         var childNodes = this.rootNode.childNodes;
@@ -455,10 +462,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             while (this.bufferView.rowEls.length > interval) {
                 var rowEl = this.bufferView.rowEls[this.bufferView.rowEls.length - 1];
                 rowEl.dom.rowIndex = null;
-                if (this.rowHeaderMenu.row == rowEl.dom) {
-                    this.rowHeaderMenu.row = null;
-                    this.rowHeaderMenu.hide();
-                }
                 this.removeRowReferences(rowEl);
                 this.selectionHelper.rowRemoved(rowEl.dom)
                 rowEl.remove();
@@ -625,14 +628,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         var row = this.getRowFromChild(target);
         var cell = this.getCellFromChild(target);
         if (row) {
-            var dataNode = this.getSearchNode(row).xmlData;
+            var searchNode = this.getSearchNode(row)
+            var dataNode = searchNode.xmlData;
             this.fireRowClick(dataNode, e);
             this.selectionHelper.rowClicked(row, e);
             if (cell) {
-                this.cellClicked(cell, row, target, e, dataNode);
+                this.cellClicked(cell, row, target, e, searchNode);
             }
             else {
-                this.rowClicked(row, target, e, dataNode);
+                this.rowClicked(row, target, e, searchNode);
             }
         }
     },
@@ -687,9 +691,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         }
     },
 
-    rowClicked: function(row, target, e, dataNode) {
+    rowClicked: function(row, target, e, searchNode) {
         if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-row-headermenu')) {
-            this.rowHeaderMenu.row = row;
+            var dataNode = searchNode.xmlData;
+            this.rowHeaderMenu.searchNode = searchNode;
             this.rowHeaderMenu.cfg.setProperty("context", [target.firstChild || target, 'tl', 'bl']);
             var index = 0;
             for (var i in this.menuItems) {
@@ -726,8 +731,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.rowHeaderMenu);
         }
     },
-    cellClicked: function(cell, row, target, e, dataNode) {
-        this.firePropertyClick(cell.propKey, cell.propValue, dataNode);
+    cellClicked: function(cell, row, target, e, searchNode) {
+        this.firePropertyClick(cell.propKey, cell.propValue, searchNode.xmlData);
     },
 
     rowHeaderMenuItemClicked: function(eventType, params) {
@@ -743,9 +748,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
             id = this.menuItems[parentKey].id;
         }
         var parentId = this.menuItems[parentKey].id;
-        var row = this.rowHeaderMenu.row;
-        this.rowHeaderMenu.row = null;
-        var xmlData = this.getSearchNode(row).xmlData;
+        var searchNode = this.rowHeaderMenu.searchNode;
+        this.rowHeaderMenu.searchNode = null;
+        var xmlData = searchNode.xmlData;
         this.fireRowHeaderMenuClick(xmlData, id, parentId);
     },
     multiSelectionMenuItemClicked: function(eventType, params) {

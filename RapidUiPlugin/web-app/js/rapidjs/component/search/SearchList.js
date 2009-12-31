@@ -278,7 +278,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
 
     },
 
-    cellClicked: function(cell, row, target, e, dataNode) {
+    cellClicked: function(cell, row, target, e, searchNode) {
+        var dataNode = searchNode.xmlData;
         if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-cell-value')) {
             if (e.ctrlKey)
             {
@@ -305,29 +306,38 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchList, YAHOO.rapidjs.compo
                 }
                 index++;
             }
-            this.cellMenu.row = row;
-            this.cellMenu.cell = cell;
+            this.cellMenu.searchNode = searchNode;
+            this.cellMenu.propKey = cell.propKey;
             this.cellMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
             this.cellMenu.show();
             YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.cellMenu);
         }
     },
-    rowClicked: function(row, target, e, dataNode) {
-        YAHOO.rapidjs.component.search.SearchList.superclass.rowClicked.call(this, row, target, e, dataNode);
+    rowClicked: function(row, target, e, searchNode) {
+        YAHOO.rapidjs.component.search.SearchList.superclass.rowClicked.call(this, row, target, e, searchNode);
         if (YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader') || YAHOO.util.Dom.hasClass(target, 'rcmdb-search-rowheader-value'))
         {
-            this.fireRowHeaderClicked(dataNode);
+            this.fireRowHeaderClicked(searchNode.xmlData);
         }
     },
 
     cellMenuItemClicked: function(eventType, key) {
         var id = this.propertyMenuItems[key].id;
-        var row = this.cellMenu.row;
-        var cell = this.cellMenu.cell;
-        this.cellMenu.row = null;
-        this.cellMenu.cell = null;
-        var xmlData = this.searchData[row.rowIndex - this.lastOffset].xmlData;
-        this.fireCellMenuClick(cell.propKey, cell.propValue, xmlData, id);
+        var searchNode = this.cellMenu.searchNode;
+        var propKey = this.cellMenu.propKey;
+        this.cellMenu.searchNode = null;
+        this.cellMenu.propKey = null;
+        var xmlData = searchNode.xmlData;
+        this.fireCellMenuClick(propKey, xmlData.getAttribute(propKey), xmlData, id);
+    },
+
+    searchNodeRemoved: function(searchNode) {
+        YAHOO.rapidjs.component.search.SearchList.superclass.searchNodeRemoved.call(this, searchNode)
+        if (this.cellMenu.searchNode == searchNode) {
+            this.cellMenu.searchNode = null;
+            this.cellMenu.propKey = null;
+            this.cellMenu.hide();
+        }
     },
 
     calculateRowHeight: function() {

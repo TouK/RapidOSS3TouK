@@ -80,8 +80,7 @@ class NotificationConnectorController {
             redirect(action: 'list');
         }
         else {
-            def script=CmdbScript.get(name:NotificationConnector.getScriptName(connector.name));
-            return [connector: connector, connection: connector.ds.connection, datasource: connector.ds,script:script]
+            return [connector: connector, connection: connector.ds.connection, datasource: connector.ds,script:connector.script]
         }
     }
     def update = {

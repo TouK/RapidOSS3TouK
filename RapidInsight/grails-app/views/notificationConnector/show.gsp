@@ -1,7 +1,7 @@
 <%
     //Configured for Connection Class
     def connection=connector.ds.connection;
-    def script=script.CmdbScript.get(name:connector.NotificationConnector.getScriptName(connector.name));
+    def script=connector.script;
     def domainClass = grailsApplication.getDomainClass(connection.class.name)
     def domainObject = connection;
     def logicalName = domainClass.logicalPropertyName;

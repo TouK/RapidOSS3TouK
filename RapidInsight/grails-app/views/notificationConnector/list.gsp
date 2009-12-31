@@ -132,7 +132,7 @@
                                                  <td>${connection?.getProperty(column.name)}</td>
                                             </g:each>
                                             <%
-                                                def connScript = script.CmdbScript.get(name: NotificationConnector.getScriptName(connector.name));
+                                                def connScript = connector.script;
                                             %>
                                             <td>
                                                 <g:form controller="script">

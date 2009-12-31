@@ -37,7 +37,10 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
     {
          return application.RsApplication.getModelClass("connection.${connectorType}Connection".toString());
     }
-
+    def getScript()
+    {
+        return CmdbScript.get(name:getScriptName(name));
+    }
 
     public static Map addConnector(Map connectorParams) {
         def connectorParamsCopy = connectorParams.clone();
@@ -93,8 +96,7 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
         def connectorParamsCopy = connectorParams.clone();
         def oldProperties = [:]
 
-        def scriptName = NotificationConnector.getScriptName(connector.name);
-        CmdbScript script = CmdbScript.get(name: scriptName);
+        CmdbScript script = connector.script;
 
         def updatedObjects = [connector: connector, connection: connector.ds.connection, datasource: connector.ds,script:script];
         oldProperties[connector] = ControllerUtils.backupOldData(connector, connectorParamsCopy);
@@ -114,7 +116,7 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
                 if(!datasource.hasErrors())
                 {
                     def staticParam = "connectorName:${connector.name}";
-                    scriptName = getScriptName(connector.name);
+                    def scriptName = getScriptName(connector.name);
                     def scriptUpdateParams=[name: scriptName, scriptFile: connectorParams.scriptFile, staticParam: staticParam, logLevel: connectorParams.logLevel];
                     oldProperties[script] = ControllerUtils.backupOldData(script, scriptUpdateParams);
                     CmdbScript.updateScript(script,scriptUpdateParams, true);
@@ -148,7 +150,7 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
     public static void deleteConnector(NotificationConnector connector) {
         connector.ds?.connection?.remove();
         connector.ds?.remove();
-        def script=CmdbScript.get(name:getScriptName(connector.name));
+        def script=connector.script;
         if(script)
         {
             CmdbScript.deleteScript(script);

@@ -35,10 +35,10 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         clearMetaClasses();
         initializeForAddAndUpdate();
         connectorSaveParams = [name: "testConnector", smtpHost: "192.168.1.100", smtpPort: 25,
-                username: "testaccount", userPassword: "3600", protocol: EmailConnection.SMTP,logLevel:Level.INFO.toString(),scriptFile:"script1",type:type];
+                username: "testaccount", userPassword: "3600", protocol: EmailConnection.SMTP,logLevel:Level.INFO.toString(),scriptFile:"script1",type:type,period:70];
 
         connectorUpdateParams = [name: "testConnector2", smtpHost: "192.168.1.101", smtpPort: 40,showAsDestination:false,
-                username: "newtestaccount", userPassword: "3601", protocol: EmailConnection.SMTPS,logLevel:Level.DEBUG.toString(),scriptFile:"script2",type:type]
+                username: "newtestaccount", userPassword: "3601", protocol: EmailConnection.SMTPS,logLevel:Level.DEBUG.toString(),scriptFile:"script2",type:type,period:30]
     }
 
     public void tearDown() {
@@ -137,7 +137,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(script.id,createdObjects["script"].id)
         assertEquals(NotificationConnector.getScriptName(connector.name),script.name);
         assertEquals(CmdbScript.SCHEDULED, script.type);
-        assertEquals(60, script.period);
+        assertEquals(70, script.period);
         assertEquals(CmdbScript.PERIODIC, script.scheduleType);
         assertEquals(connectorSaveParams.scriptFile, script.scriptFile);
         assertEquals(connectorSaveParams.logLevel, script.logLevel);
@@ -278,7 +278,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         assertEquals(script.id,updatedObjects["script"].id)
         assertEquals(NotificationConnector.getScriptName(connector.name),script.name);
         assertEquals(CmdbScript.SCHEDULED, script.type);
-        assertEquals(60, script.period);
+        assertEquals(30, script.period);
         assertEquals(CmdbScript.PERIODIC, script.scheduleType);
         assertEquals(connectorUpdateParams.scriptFile, script.scriptFile);
         assertEquals(connectorUpdateParams.logLevel, script.logLevel);

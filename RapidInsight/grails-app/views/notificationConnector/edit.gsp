@@ -105,6 +105,15 @@
 
                     <tr class="prop">
                         <td valign="top" class="name">
+                            <label for="period">Sender Script Period:</label>
+                        </td>
+                        <td valign="top" class="value ${hasErrors(bean:script,field:'period','errors')}">
+                            <input type="text" class="inputtextfield" id="period" name="period" value="${fieldValue(bean:script,field:'period')}"/> sec.
+                        </td>
+                    </tr>
+
+                    <tr class="prop">
+                        <td valign="top" class="name">
                             <label for="logLevel">Log Level:</label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: script, field: 'logLevel', 'errors')}">

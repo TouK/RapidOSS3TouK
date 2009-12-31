@@ -93,6 +93,13 @@
                 </tr>
 
                 <tr class="prop">
+                    <td valign="top" class="name">Sender Script Period:</td>
+
+                    <td valign="top" class="value">${script?.period} sec.</td>
+
+                </tr>
+
+                <tr class="prop">
                     <td valign="top" class="name">Log Level:</td>
 
                     <td valign="top" class="value">${script?.logLevel}</td>

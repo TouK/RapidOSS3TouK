@@ -54,6 +54,7 @@ class NotificationConnectorController {
 
         def script=new CmdbScript();
         script.setPropertyWithoutUpdate("scriptFile",NotificationConnector.getDefaultScriptFile(connector.type));
+        script.setPropertyWithoutUpdate("period",NotificationConnector.getDefaultScriptPeriod(connector.type));
         return ['connector': connector, connection:connectionClass.newInstance(), datasource: datasourceClass.newInstance(),script:script]
     }
     def save = {

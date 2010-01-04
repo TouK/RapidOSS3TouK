@@ -401,6 +401,41 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$/../Apg">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Apg" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../Hyperic">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Hyperic" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../LicencedJars">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/LicencedJars" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../Netcool">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Netcool" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../OpenNms">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/OpenNms" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
@@ -440,6 +475,13 @@
             </SvnBranchConfiguration>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../Rivermuse">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Rivermuse" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../Smarts">
           <value>
             <SvnBranchConfiguration>
@@ -458,6 +500,13 @@
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Smarts" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../SmartsBrowser">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/SmartsBrowser" />
             </SvnBranchConfiguration>
           </value>
         </entry>
@@ -686,12 +735,7 @@
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/joda/joda-time-1.6.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/test" />
-      </SOURCES>
+      <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/im" recursive="false" />

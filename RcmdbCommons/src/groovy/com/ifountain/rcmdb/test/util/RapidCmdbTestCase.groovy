@@ -31,7 +31,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 public class RapidCmdbTestCase extends RapidTestCase{
     def defaultBaseDir;
     public static boolean isSetupCompleted = false;
-    protected void setUp() {
+    protected void setUp() throws Exception{
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
@@ -43,7 +43,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
     }
     
 
-    protected void tearDown() {
+    protected void tearDown() throws Exception{
         System.setProperty("base.dir", defaultBaseDir);
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         System.setProperty("base.dir", defaultBaseDir);

@@ -29,7 +29,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 public class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
     static transactional = false;
     public static boolean isSetupCompleted = false;
-    void setUp(){
+    void setUp() throws Exception{
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
@@ -37,7 +37,7 @@ public class RapidCmdbIntegrationTestCase extends RapidCmdbTestCase{
         }
     }
 
-    void tearDown(){
+    void tearDown() throws Exception{
 
     }
 

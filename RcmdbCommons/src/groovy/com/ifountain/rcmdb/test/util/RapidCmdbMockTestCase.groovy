@@ -92,7 +92,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 //    def previousGrailsApp;
     def indexDir;
     static indexCount = 0;
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
 
         DomainLockManager.destroy();
@@ -225,7 +225,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
 
     }
 
-    void tearDown() {
+    void tearDown() throws Exception{
         destroy();
         System.clearProperty("index.dir")
         TestDatastore.clear();

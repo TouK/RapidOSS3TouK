@@ -24,14 +24,12 @@
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/ModelOperations/RapidServer/RapidSuite/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/default/RapidServer/RapidSuite/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/devDocs/test/manualTesting/deployment" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/grails-app/conf" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/views" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/operations" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/scripts" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />

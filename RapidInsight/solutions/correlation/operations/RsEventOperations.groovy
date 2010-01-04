@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -21,26 +21,26 @@ import application.RsApplication
 public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
 	def beforeInsert(){
-        RsApplication.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
+        RapidApplication.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
 	}
 	def beforeUpdate(params)
     {
-        RsApplication.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
+        RapidApplication.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
     }
 	def afterInsert(){
-        RsApplication.getUtility("EventProcessor").eventIsAdded(this.domainObject);
+        RapidApplication.getUtility("EventProcessor").eventIsAdded(this.domainObject);
     }
     def afterUpdate(params){
-        RsApplication.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
+        RapidApplication.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
     }
     def afterDelete()
     {
-        RsApplication.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
+        RapidApplication.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
     }
 
     static notify(Map eventProps) {
         def event=RsEvent.add(eventProps);
-        RsApplication.getUtility("CorrelationProcessor").eventIsNotified(event);
+        RapidApplication.getUtility("CorrelationProcessor").eventIsNotified(event);
         return event;
     }
 

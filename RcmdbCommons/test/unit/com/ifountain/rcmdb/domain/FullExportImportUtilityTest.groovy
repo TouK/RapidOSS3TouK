@@ -2,9 +2,9 @@ package com.ifountain.rcmdb.domain
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-import application.RsApplicationOperations
+import application.RapidApplicationOperations
 import com.ifountain.rcmdb.domain.FullExportImportUtility
-import application.RsApplication
+import application.RapidApplication
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.compass.core.CompassQuery
@@ -45,23 +45,23 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     private void clearMetaClasses()
     {
         ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(RsApplication)
-        GroovySystem.metaClassRegistry.removeMetaClass(RsApplicationOperations)
+        GroovySystem.metaClassRegistry.removeMetaClass(RapidApplication)
+        GroovySystem.metaClassRegistry.removeMetaClass(RapidApplicationOperations)
         GroovySystem.metaClassRegistry.removeMetaClass(FullExportImportUtility)
         ExpandoMetaClass.enableGlobally();
     }
 
     public void testBackup()
     {
-        initialize([RsApplication],[]);
+        initialize([RapidApplication],[]);
 
         def callParams=[:];
-        RsApplicationOperations.metaClass.static.backup = {String directory ->
+        RapidApplicationOperations.metaClass.static.backup = {String directory ->
             println "backup in test";
             callParams.directory = directory;
 
         }
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         def backupPath=directoryPaths.backupDir;
 
@@ -1039,7 +1039,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
 
     public void testFullExportWithAllModels()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         def modelClassMap=initializeFullExportModels();
         initializeFullExportInstances(modelClassMap)
@@ -1098,7 +1098,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testFullExportCallsExportModelsAndCallsExportMarkedRelationsIfExportMarkedRelationsTrue()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         initialize([],[]);
 
@@ -1321,7 +1321,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testFullExportGeneratesExceptionWhenInvalidModelIsInMODELS()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         initialize([],[],true);
 
@@ -1408,7 +1408,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
     public void testFullExportDeletesExportDirWhenExceptionIsGenerated()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         initialize([loadClass("RsEvent")],[]);
 
@@ -1442,7 +1442,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     }
      public void testFullImportDeletesExportDirWhenExceptionIsGenerated()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         initialize([loadClass("RsEvent")],[]);
 
@@ -1726,7 +1726,7 @@ class FullExportImportUtilityTest extends RapidCmdbWithCompassTestCase{
     
     public void testFullImportSuccessfullyImportsXmlResultsOfFullExport()
     {
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
 
         def modelClassMap=initializeFullExportModels();
         initializeFullExportInstances(modelClassMap)

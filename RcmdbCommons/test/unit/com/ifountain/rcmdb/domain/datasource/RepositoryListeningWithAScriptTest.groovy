@@ -13,8 +13,8 @@ import com.ifountain.rcmdb.util.ClosureWaitAction
 import com.ifountain.core.datasource.AdapterStateProvider
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
-import application.RsApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import application.RapidApplication
 import datasource.RepositoryDatasource
 import datasource.BaseListeningDatasource
 import com.ifountain.rcmdb.test.util.CompassForTests
@@ -119,7 +119,7 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RepositoryDatasource, RepositoryDatasourceOperations);
         CompassForTests.addOperationSupport(BaseListeningDatasource, BaseListeningDatasourceOperations);
 
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
 
 
     }

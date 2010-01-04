@@ -1,2 +1,2 @@
-import application.RsApplication
-return RsApplication.getCompassStatistics();
+import application.RapidApplication
+return RapidApplication.getCompassStatistics();

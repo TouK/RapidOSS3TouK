@@ -1,7 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
-import application.RsApplication
+import application.RapidApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -16,14 +16,14 @@ class EventProcessorTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
         clearMetaClasses();
-        initialize([RsEvent,RsApplication,RsTopologyObject], []);
+        initialize([RsEvent,RapidApplication,RsTopologyObject], []);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
-        RsApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
+        RapidApplicationTestUtils.clearProcessors();
     }
 
     public void tearDown() {
-        RsApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.clearProcessors();
         clearMetaClasses();
         super.tearDown();
     }

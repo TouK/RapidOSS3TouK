@@ -6,8 +6,8 @@ import com.ifountain.rcmdb.scripting.ScriptManager
 import script.CmdbScript
 import script.CmdbScriptOperations
 import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
-import application.RsApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import application.RapidApplication
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.connection.ConnectionParam
 import datasource.RepositoryDatasource
@@ -85,8 +85,8 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         {
             classes.StateCalculator.setToDefault();
         }
-        RsApplicationTestUtils.clearProcessors();
-        RsApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.clearUtilityPaths();
         ListeningAdapterManager.getInstance().destroyInstance();
         if(ConnectionManager.isInitialized()){
             ConnectionManager.destroy();
@@ -119,7 +119,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void initializeModels(classMap)
     {
-        initialize([CmdbScript, RepositoryConnection, RepositoryDatasource, BaseListeningDatasource, RsTopologyObject, RsCustomer, RsEvent, RsGroup, RsService, RsObjectState, relation.Relation, RsInMaintenance, RsEventJournal, RsHistoricalEvent, RsApplication], []);
+        initialize([CmdbScript, RepositoryConnection, RepositoryDatasource, BaseListeningDatasource, RsTopologyObject, RsCustomer, RsEvent, RsGroup, RsService, RsObjectState, relation.Relation, RsInMaintenance, RsEventJournal, RsHistoricalEvent, RapidApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, classMap.RsTopologyObjectOperations);
@@ -131,7 +131,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RepositoryDatasource, RepositoryDatasourceOperations);
         CompassForTests.addOperationSupport(BaseListeningDatasource, BaseListeningDatasourceOperations);
         classes.StateCalculator = classMap.StateCalculator;
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
     }
     void copyManualTestScript(scriptFolder, scriptName)
     {
@@ -167,11 +167,11 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsCustomerOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
 
-        RsApplication.getUtility("EventProcessor").afterProcessors = ["StateCalculator"];
-        RsApplication.getUtility("ObjectProcessor").afterProcessors = ["StateCalculator"];
+        RapidApplication.getUtility("EventProcessor").afterProcessors = ["StateCalculator"];
+        RapidApplication.getUtility("ObjectProcessor").afterProcessors = ["StateCalculator"];
 
 
         copyManualTestScript("stateCalculation", "findMaxTest");
@@ -200,7 +200,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsCustomerOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
         copyManualTestScript("stateCalculation", "findMaxTest");
         copyScript("stateCalculation", "stateCalculationListeningScript");
@@ -251,11 +251,11 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsCustomerOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
 
-        RsApplication.getUtility("EventProcessor").afterProcessors = ["StateCalculator"];
-        RsApplication.getUtility("ObjectProcessor").afterProcessors = ["StateCalculator"];
+        RapidApplication.getUtility("EventProcessor").afterProcessors = ["StateCalculator"];
+        RapidApplication.getUtility("ObjectProcessor").afterProcessors = ["StateCalculator"];
 
 
 
@@ -285,7 +285,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsCustomerOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsCustomerOperations"));
         classMap.RsServiceOperations = loader.parseClass(getOperationPathAsFile("RI", "operations", "RsServiceOperations"));
 
-        RsApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["StateCalculator": getOperationPathAsFile("RI", "solutions/stateCalculation/operations", "StateCalculator")];
         initializeModels(classMap)
         copyManualTestScript("stateCalculation", "criticalPercentTest");
         copyScript("stateCalculation", "stateCalculationListeningScript");
@@ -324,15 +324,15 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
 
     public void testRsEventOperations()
     {
-        initialize([CmdbScript, RsEvent, RsRiEvent, RsHistoricalEvent, RsEventJournal, RsTopologyObject, RsApplication], []);
+        initialize([CmdbScript, RsEvent, RsRiEvent, RsHistoricalEvent, RsEventJournal, RsTopologyObject, RapidApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsRiEvent, RsRiEventOperations);
         CompassForTests.addOperationSupport(RsHistoricalEvent, RsHistoricalEventOperations);
         CompassForTests.addOperationSupport(RsEventJournal, RsEventJournalOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
-        RsApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
+        RapidApplicationTestUtils.clearProcessors();
 
 
 
@@ -361,17 +361,17 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
 
 
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RsApplication], []);
+        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RapidApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
         CompassForTests.addOperationSupport(RsInMaintenance, classMap.RsInMaintenanceOperations);
         CompassForTests.addOperationSupport(RsInMaintenanceSchedule, classMap.RsInMaintenanceScheduleOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
 
-        RsApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
 
-        RsApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
+        RapidApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
 
         copyScript("inMaintenance", "MaintenanceScheduler");
         copyManualTestScript("maintenance", "MaintenanceTest");
@@ -403,17 +403,17 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
 
 
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RsApplication], []);
+        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RapidApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
         CompassForTests.addOperationSupport(RsInMaintenance, classMap.RsInMaintenanceOperations);
         CompassForTests.addOperationSupport(RsInMaintenanceSchedule, classMap.RsInMaintenanceScheduleOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
 
-        RsApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
+        RapidApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
 
-        RsApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
+        RapidApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
 
 
 
@@ -447,15 +447,15 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         classMap.RsHeartBeatOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/heartbeat/operations", "RsHeartBeatOperations"));
 
 
-        initialize([CmdbScript, RsEvent, RsHeartBeat, RsEventJournal, RsHistoricalEvent, RsApplication, RsTopologyObject], []);
+        initialize([CmdbScript, RsEvent, RsHeartBeat, RsEventJournal, RsHistoricalEvent, RapidApplication, RsTopologyObject], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsHeartBeat, classMap.RsHeartBeatOperations);
         CompassForTests.addOperationSupport(RsEventJournal, RsEventJournalOperations);
         CompassForTests.addOperationSupport(RsHistoricalEvent, RsHistoricalEventOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
-        RsApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.clearProcessors();
 
         copyManualTestScript("Heartbeat", "HeartbeatTest");
 

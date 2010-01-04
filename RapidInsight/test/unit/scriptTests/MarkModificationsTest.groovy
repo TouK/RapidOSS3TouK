@@ -3,9 +3,9 @@ package scriptTests
 import com.ifountain.rcmdb.test.util.RapidCmdbScriptTestCase
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
-import application.RsApplication
-import application.RsApplicationOperations
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RapidApplication
+import application.RapidApplicationOperations
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -32,7 +32,7 @@ class MarkModificationsTest extends RapidCmdbScriptTestCase{
         versionControlDirectory = new File(sourceDir, "versionControl");
         FileUtils.deleteDirectory (sourceDir);
         baseDirFile.mkdirs();
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
 
     }
 

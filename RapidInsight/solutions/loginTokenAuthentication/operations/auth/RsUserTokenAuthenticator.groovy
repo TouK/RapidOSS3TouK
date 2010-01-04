@@ -15,7 +15,7 @@ import com.ifountain.comp.utils.CaseInsensitiveMap
  * To change this template use File | Settings | File Templates.
  */
 class RsUserTokenAuthenticator {
-    def logger=application.RsApplication.getLogger();
+    def logger=application.RapidApplication.getLogger();
     static def authLogPrefix="User Authentication (Token) : ";
 
     static def CACHE_ENTRY_KEY="RsUserLoginTokens";

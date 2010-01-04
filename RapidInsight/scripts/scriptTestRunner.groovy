@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 import groovy.xml.MarkupBuilder
 import grails.util.GrailsUtil
 import org.apache.commons.lang.exception.ExceptionUtils
@@ -42,7 +42,7 @@ def allTestResults = [:]
 def total = 0;
 def failure = 0
 def passed = 0
-def testUtility = RsApplication.getUtility("ScriptTestUtility");
+def testUtility = RapidApplication.getUtility("ScriptTestUtility");
 scriptClasses.each{Map classConfig->
     String scriptName = classConfig.scriptName;
     Class scriptClass = classConfig.scriptClass

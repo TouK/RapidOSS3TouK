@@ -2,9 +2,9 @@ package com.ifountain.compass.integration
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.compass.CompassTestObject
 import com.ifountain.compass.CompositeDirectoryWrapperProvider
-import application.RsApplication
+import application.RapidApplication
 import com.ifountain.rcmdb.test.util.CompassForTests
-import application.RsApplicationOperations
+import application.RapidApplicationOperations
 
 /**
 * Created by IntelliJ IDEA.

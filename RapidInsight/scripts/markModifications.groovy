@@ -7,4 +7,4 @@ def excludedFiles = [
         "temp"
 ]
 /************************************************************/
-application.RsApplication.getUtility("VersionControlUtility").markModifications(excludedFiles, [comment:params.comment, forceMark:params.forceMark]);
+application.RapidApplication.getUtility("VersionControlUtility").markModifications(excludedFiles, [comment:params.comment, forceMark:params.forceMark]);

@@ -4,8 +4,8 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 
-import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RapidApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 
 /**
@@ -18,12 +18,12 @@ import com.ifountain.rcmdb.auth.UserConfigurationSpace;
 class RsUserLocalAuthenticatorTest extends RapidCmdbWithCompassTestCase{
       public void setUp() {
         super.setUp();
-        initialize([RsUser,Group,Role, RsApplication], []);
+        initialize([RsUser,Group,Role, RapidApplication], []);
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
 
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
         UserConfigurationSpace.getInstance().initialize();
 
     }
@@ -35,7 +35,7 @@ class RsUserLocalAuthenticatorTest extends RapidCmdbWithCompassTestCase{
 
     public void testAuthenticateUser()
     {
-        def localAuthenticator=RsApplication.getUtility("auth.RsUserLocalAuthenticator");
+        def localAuthenticator=RapidApplication.getUtility("auth.RsUserLocalAuthenticator");
 
         //no username
         try{

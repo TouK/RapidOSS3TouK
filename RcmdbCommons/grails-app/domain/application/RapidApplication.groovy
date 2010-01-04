@@ -25,7 +25,7 @@ package application
  * To change this template use File | Settings | File Templates.
  */
 
-class RsApplication {
+class RapidApplication {
     static searchable = {
         except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
     };

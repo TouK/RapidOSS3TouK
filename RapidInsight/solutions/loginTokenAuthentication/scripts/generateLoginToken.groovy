@@ -31,7 +31,7 @@ try{
         }
     }
 
-    def tokenAuthenticator=application.RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+    def tokenAuthenticator=application.RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
 
     def loginToken=tokenAuthenticator.generateTokenForUser(tokenUser,expireAfter);
     logger.info("LoginToken generated for user : ${tokenUser}");

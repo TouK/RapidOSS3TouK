@@ -6,8 +6,8 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import connector.NotificationConnector
 import com.ifountain.rcmdb.test.util.CompassForTests
 import datasource.SmsDatasourceOperations
-import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RapidApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
@@ -45,12 +45,12 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 
-        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RsApplication], []);
+        initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RapidApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
-        RsApplicationTestUtils.clearProcessors();
-        RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
+        RapidApplicationTestUtils.clearProcessors();
+        RapidApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             return "___renderTestResult";
         }
 
@@ -109,7 +109,7 @@ class SmsSenderScriptTests  extends RapidCmdbWithCompassTestCase {
     void testSenderCallsRenderTemplateAndPassesTemplateResultToSendMessage()
     {
         def renderTemplateParams=[];
-        RsApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
+        RapidApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
             renderTemplateParams.add([templatePath:templatePath,params:params]);
             return "renderTestResult";
         }

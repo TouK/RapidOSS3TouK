@@ -35,11 +35,11 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
     }
     static def getDatasourceClass(String connectorType)
     {
-         return application.RsApplication.getModelClass("datasource.${connectorType}Datasource".toString());
+         return application.RapidApplication.getModelClass("datasource.${connectorType}Datasource".toString());
     }
     static def getConnectionClass(String connectorType)
     {
-         return application.RsApplication.getModelClass("connection.${connectorType}Connection".toString());
+         return application.RapidApplication.getModelClass("connection.${connectorType}Connection".toString());
     }
     def getScript()
     {

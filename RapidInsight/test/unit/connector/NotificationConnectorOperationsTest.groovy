@@ -13,8 +13,8 @@ import com.ifountain.rcmdb.scripting.ScriptScheduler
 import org.apache.log4j.Level
 import message.RsMessageRule
 import message.RsMessageRuleOperations
-import application.RsApplication
-import application.RsApplicationOperations
+import application.RapidApplication
+import application.RapidApplicationOperations
 import auth.RsUser
 import auth.RsUserOperations
 
@@ -62,7 +62,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(NotificationConnector, NotificationConnectorOperations);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsMessageRule,RsMessageRuleOperations);
-        CompassForTests.addOperationSupport(RsApplication,RsApplicationOperations);
+        CompassForTests.addOperationSupport(RapidApplication,RapidApplicationOperations);
         CompassForTests.addOperationSupport(RsUser,RsUserOperations);
         RsMessageRule.setConfiguredDestinationNames([]);
 

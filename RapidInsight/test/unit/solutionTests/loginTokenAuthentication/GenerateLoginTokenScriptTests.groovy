@@ -6,10 +6,10 @@ import auth.RsUserOperations
 import auth.Group;
 import auth.Role;
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
-import application.RsApplication
+import application.RapidApplication
 import application.Cache
 import application.CacheOperations
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import com.ifountain.rcmdb.auth.UserConfigurationSpace;
@@ -28,19 +28,19 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
 
-        initialize([RsUser,Group,Role,RsApplication,Cache], []);
+        initialize([RsUser,Group,Role,RapidApplication,Cache], []);
         SegmentQueryHelper.getInstance().initialize([]);
 
         CompassForTests.addOperationSupport (Cache, CacheOperations);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
 
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/loginTokenAuthentication"
 
-        RsApplicationTestUtils.clearUtilityPaths();
-        RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/operations/auth/RsUserTokenAuthenticator.groovy")];
+        RapidApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/operations/auth/RsUserTokenAuthenticator.groovy")];
 
-        RsApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
+        RapidApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
 
         UserConfigurationSpace.getInstance().initialize();
         initializeScriptManager();
@@ -58,7 +58,7 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testGenerateLoginTokenForCurrentUser()
     {
-        def tokenAuthenticator=RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+        def tokenAuthenticator=RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
         def entry=tokenAuthenticator.getCacheEntry();
         assertEquals(2,entry.size());
         assertEquals(0,entry.users.size());
@@ -107,7 +107,7 @@ class GenerateLoginTokenScriptTests  extends RapidCmdbWithCompassTestCase {
     }
     public void testGenerateLoginTokenForOtherUser()
     {
-        def tokenAuthenticator=RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+        def tokenAuthenticator=RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
         def entry=tokenAuthenticator.getCacheEntry();
         assertEquals(2,entry.size());
         assertEquals(0,entry.users.size());

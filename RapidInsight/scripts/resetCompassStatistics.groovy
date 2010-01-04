@@ -1,2 +1,2 @@
-import application.RsApplication
-return RsApplication.resetCompassStatistics();
+import application.RapidApplication
+return RapidApplication.resetCompassStatistics();

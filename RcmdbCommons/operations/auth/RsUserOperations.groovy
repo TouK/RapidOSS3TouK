@@ -1,6 +1,6 @@
 package auth
 
-import application.RsApplication
+import application.RapidApplication
 import com.ifountain.rcmdb.auth.UserConfigurationSpace
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import com.ifountain.rcmdb.exception.MessageSourceException
@@ -61,11 +61,11 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             {
                selectedAuthenticator="auth.RsUserLocalAuthenticator";
             }                
-            return RsApplication.getUtility(selectedAuthenticator).authenticateUser(params);
+            return RapidApplication.getUtility(selectedAuthenticator).authenticateUser(params);
         }
         else if (loginToken)
         {
-            return RsApplication.getUtility("auth.RsUserTokenAuthenticator").authenticateUser(params);
+            return RapidApplication.getUtility("auth.RsUserTokenAuthenticator").authenticateUser(params);
         }
         else
         {

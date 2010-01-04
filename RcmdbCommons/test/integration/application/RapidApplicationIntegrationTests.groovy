@@ -13,7 +13,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 * Time: 6:01:51 PM
 * To change this template use File | Settings | File Templates.
 */
-class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
+class RapidApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
     static transactional = false;
     void setUp() throws Exception {
         super.setUp();
@@ -38,19 +38,19 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RapidApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility(utilityName).x);
-        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
-        assertNotSame(RsApplication.getUtility(utilityName),RsApplication.getUtility(utilityName));
+        assertEquals(5,RapidApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RapidApplication.getUtility(utilityName).method1());
+        assertNotSame(RapidApplication.getUtility(utilityName),RapidApplication.getUtility(utilityName));
 
 
     }
     public void testGetUtilityThrowsExceptionIfUtilityDoesNotExist()
     {
         try{
-            RsApplication.getUtility("nonexistingutility");
+            RapidApplication.getUtility("nonexistingutility");
             fail("Should throw ClassNotFoundException e");
         }
         catch(ClassNotFoundException e)
@@ -58,7 +58,7 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         }
     }
-    public void testReloadingRsApplicationReloadsUtilities()
+    public void testReloadingRapidApplicationReloadsUtilities()
     {
        def utilityName="UtilForTest";
        def utilityContent="""
@@ -72,19 +72,19 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         deleteUtility(utilityName);
-        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
+        ApplicationHolder.application.classLoader.loadClass("application.RapidApplication").reloadOperations();
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility(utilityName).x);
-        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
+        assertEquals(5,RapidApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RapidApplication.getUtility(utilityName).method1());
 
         //change the static variable
-        RsApplication.getUtility(utilityName).x=15;
-        assertEquals(15,RsApplication.getUtility(utilityName).x);
+        RapidApplication.getUtility(utilityName).x=15;
+        assertEquals(15,RapidApplication.getUtility(utilityName).x);
 
         //reload and see that original variable come
-        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
-        assertEquals(5,RsApplication.getUtility(utilityName).x);
+        ApplicationHolder.application.classLoader.loadClass("application.RapidApplication").reloadOperations();
+        assertEquals(5,RapidApplication.getUtility(utilityName).x);
 
         //change the utility see that before reload original remains
         utilityContent="""
@@ -98,12 +98,12 @@ class RsApplicationIntegrationTests extends RapidCmdbIntegrationTestCase{
         """;
 
         createUtility(utilityName,utilityContent);
-        assertEquals(5,RsApplication.getUtility(utilityName).x);
-        assertEquals("method1result",RsApplication.getUtility(utilityName).method1());
+        assertEquals(5,RapidApplication.getUtility(utilityName).x);
+        assertEquals("method1result",RapidApplication.getUtility(utilityName).method1());
 
-        ApplicationHolder.application.classLoader.loadClass("application.RsApplication").reloadOperations();
-        assertEquals(45,RsApplication.getUtility(utilityName).x);
-        assertEquals("newresult",RsApplication.getUtility(utilityName).method1());
+        ApplicationHolder.application.classLoader.loadClass("application.RapidApplication").reloadOperations();
+        assertEquals(45,RapidApplication.getUtility(utilityName).x);
+        assertEquals("newresult",RapidApplication.getUtility(utilityName).method1());
 
     }
 

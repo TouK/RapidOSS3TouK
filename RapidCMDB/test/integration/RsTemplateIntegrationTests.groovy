@@ -29,7 +29,7 @@ class RsTemplateIntegrationTests extends RapidCmdbIntegrationTestCase {
         def templatePath=file.getPath();
         def parameters=["aList":[1,2,3]];
 
-        String result=application.RsApplication.getUtility("RsTemplate").render(templatePath,parameters);
+        String result=application.RapidApplication.getUtility("RsTemplate").render(templatePath,parameters);
         assertEquals("1,2,3,",result.trim())
     }
 }

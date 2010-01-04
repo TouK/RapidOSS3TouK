@@ -8,7 +8,7 @@ if(date == null)
     date = "0"
 }
 date = new Date(Long.parseLong(date));
-def utility = application.RsApplication.getUtility("VersionControlUtility");
+def utility = application.RapidApplication.getUtility("VersionControlUtility");
 def modifications = utility.getChangeSetList();
 modifications = modifications.findAll{it.isValid && (bringChangesSetGeraterThan && it.date >= date || !bringChangesSetGeraterThan && it.date <= date)};
 def sw = new StringWriter();

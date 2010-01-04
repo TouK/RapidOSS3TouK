@@ -15,7 +15,7 @@ CONFIG.MODELS.add([model:"all"]);
 
 
 try{
-    application.RsApplication.fullExport(CONFIG);
+    application.RapidApplication.fullExport(CONFIG);
 }
 catch(e)
 {

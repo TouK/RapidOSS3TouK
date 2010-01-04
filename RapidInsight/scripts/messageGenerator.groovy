@@ -97,7 +97,7 @@ users.each {user ->
                             def eventClass=RsEvent;
                             if(searchQuery.searchClass)
                             {
-                                eventClass= application.RsApplication.getModelClass(searchQuery.searchClass);
+                                eventClass= application.RapidApplication.getModelClass(searchQuery.searchClass);
                             }
                             logger.debug("Seaching ${eventClass.name}, for userid: ${userId}  with createQuery : ${createQuery}")
 
@@ -137,7 +137,7 @@ users.each {user ->
                             def eventClass=RsHistoricalEvent;
                             if(searchQuery.searchClass)
                             {
-                                eventClass= application.RsApplication.getModelClass(searchQuery.searchClass).historicalEventModel();
+                                eventClass= application.RapidApplication.getModelClass(searchQuery.searchClass).historicalEventModel();
                             }
 
                             logger.debug("Searching ${eventClass.name}, for userid: ${userId} with clearQuery : ${clearQuery}")

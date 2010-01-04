@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -41,5 +41,5 @@ def update(changeEvent) {
 }
 
 def getStateCalculatorUtility() {
-    RsApplication.getUtility("StateCalculator");
+    RapidApplication.getUtility("StateCalculator");
 }

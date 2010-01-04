@@ -43,7 +43,7 @@ messages.each{ message ->
             emailParams.from=from
             emailParams.to=message.destination
             emailParams.subject= ( message.eventType  == RsMessage.EVENT_TYPE_CREATE ? "Event Created" : "Event Cleared" )
-            emailParams.body=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+            emailParams.body=application.RapidApplication.getUtility("RsTemplate").render(templatePath,templateParams);
             emailParams.contentType="text/html"
 
             ds.sendEmail(emailParams)

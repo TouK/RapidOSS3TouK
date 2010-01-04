@@ -12,8 +12,8 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 import connection.LdapConnectionOperations
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.test.util.DatasourceTestUtils
-import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RapidApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.rcmdb.auth.UserConfigurationSpace
 import com.ifountain.rcmdb.util.RapidCMDBConstants;
 
@@ -29,12 +29,12 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         super.setUp();
         clearMetaClasses();
 
-        initialize([RsUser, Group, Role, ChannelUserInformation, LdapConnection, LdapUserInformation, RsUserInformation, RsApplication], []);
+        initialize([RsUser, Group, Role, ChannelUserInformation, LdapConnection, LdapUserInformation, RsUserInformation, RapidApplication], []);
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport(RsUser, RsUserOperations);
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(LdapConnection, LdapConnectionOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
         UserConfigurationSpace.getInstance().initialize();
     }
@@ -592,8 +592,8 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
 
         def base_directory = getWorkspacePath() + "/RapidModules/RcmdbCommons/test/unit/auth/"
 
-        RsApplicationTestUtils.clearUtilityPaths();
-        RsApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
+        RapidApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
 
         userFromAuth = RsUser.authenticateUser([login: "nouser", password: "123"]);
         assertEquals(user.id, userFromAuth.id);
@@ -609,8 +609,8 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         }
 
         //test loginTokenCase
-        RsApplicationTestUtils.clearUtilityPaths();
-        RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
+        RapidApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/RsUserMockAuthenticator.groovy")];
 
         userFromAuth = RsUser.authenticateUser([loginToken: "asdasd"]);
         assertEquals(user.id, userFromAuth.id);

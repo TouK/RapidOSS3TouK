@@ -8,8 +8,8 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 import connection.LdapConnectionOperations
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.test.util.DatasourceTestUtils
-import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils;
+import application.RapidApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils;
 import auth.RsUser;
 import auth.Group;
 import auth.Role;
@@ -33,19 +33,19 @@ class RsUserLdapAuthenticatorTest extends RapidCmdbWithCompassTestCase {
         super.setUp();
         clearMetaClasses();
 
-        initialize([RsUser,Group,Role, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation,RsApplication], []);
+        initialize([RsUser,Group,Role, ChannelUserInformation,LdapConnection,LdapUserInformation,RsUserInformation,RapidApplication], []);
         SegmentQueryHelper.getInstance().initialize([]);
         CompassForTests.addOperationSupport (RsUser, RsUserOperations);
         CompassForTests.addOperationSupport (Group, GroupOperations);
         CompassForTests.addOperationSupport (LdapConnection, LdapConnectionOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
 
         ConnectionManager.initialize(TestLogUtils.log, DatasourceTestUtils.getParamSupplier(), Thread.currentThread().getContextClassLoader(), 1000);
 
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/ldapAuthentication"
 
-        RsApplicationTestUtils.clearUtilityPaths();
-        RsApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/operations/auth/RsUserLdapAuthenticator.groovy")];
+        RapidApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.utilityPaths = ["auth.RsUserLdapAuthenticator": new File("${base_directory}/operations/auth/RsUserLdapAuthenticator.groovy")];
         UserConfigurationSpace.getInstance().initialize();
     }
 
@@ -62,7 +62,7 @@ class RsUserLdapAuthenticatorTest extends RapidCmdbWithCompassTestCase {
     }
     public void testAuthenticateUser()
     {
-        def ldapAuthenticator=RsApplication.getUtility("auth.RsUserLdapAuthenticator");
+        def ldapAuthenticator=RapidApplication.getUtility("auth.RsUserLdapAuthenticator");
 
         //no ldap information for user case
         def group1 = Group.add(name:"group1");

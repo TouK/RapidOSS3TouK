@@ -1,13 +1,13 @@
 package message
 
-import application.RsApplication
+import application.RapidApplication
 import auth.*
 import com.ifountain.compass.search.FilterSessionListener
 import com.ifountain.rcmdb.methods.MethodFactory
 import com.ifountain.rcmdb.scripting.ScriptManager
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.session.SessionManager
 import org.apache.commons.io.FileUtils
 import org.apache.log4j.Level
@@ -76,7 +76,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(rsEventClass, rsEventOperationsClass);
         CompassForTests.addOperationSupport(rsRiEventClass, rsRiEventOperationsClass);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         UserConfigurationSpace.getInstance().initialize();
 
         RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->

@@ -18,7 +18,7 @@ import com.ifountain.rcmdb.domain.MockObjectProcessorObserver
 * Time: 10:50:08 PM
 * To change this template use File | Settings | File Templates.
 */
-class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
+class RapidApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
     def models;
     public void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
@@ -35,7 +35,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         long t = System.currentTimeMillis();
         2.times {
             println it;
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 300.times {
                     models.Model2.add(prop1: "prop1val" + it);
                 }
@@ -56,7 +56,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         long t = System.currentTimeMillis();
         2.times {
             println it;
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 300.times {
                     models.Model1.add(prop1: "prop1val" + it);
                 }
@@ -75,7 +75,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
     {
         def executed = false
         long t = System.currentTimeMillis();
-        RsApplication.executeBatch {
+        RapidApplication.executeBatch {
             300.times {
                 models.Model1.add(prop1: "prop1val" + it);
             }
@@ -97,7 +97,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         def t2state = 0;
         Object waitLock = new Object();
         def t1 = Thread.start {
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 models.Model1.add(prop1: "prop1value1");
                 t1state = 1;
                 synchronized (waitLock) {
@@ -112,7 +112,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         }))
         def t2 = Thread.start {
             t2state = 1
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 models.Model1.add(prop1: "prop1value2");
             }
             t2state = 2;
@@ -135,7 +135,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         def t2state = 0;
         Object waitLock = new Object();
         def t1 = Thread.start {
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 models.Model1.add(prop1: "prop1value1");
                 t1state = 1;
                 synchronized (waitLock) {
@@ -173,7 +173,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
             synchronized (waitLock) {
                 waitLock.wait();
             }
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 100.times {
                     def propNumber = (int) (Math.random() * 10)
                     models.Model1.add(prop1: "value${propNumber}")
@@ -226,7 +226,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         def t2state = 0;
         Object waitLock = new Object();
         def t1 = Thread.start {
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 models.Model1.add(prop1: "prop1value1");
                 t1state = 1;
                 synchronized (waitLock) {
@@ -259,7 +259,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         def t2state = 0;
         Object waitLock = new Object();
         def t1 = Thread.start {
-            RsApplication.executeBatch {
+            RapidApplication.executeBatch {
                 models.Model1.add(prop1: "prop1value1");
                 t1state = 1;
                 synchronized (waitLock) {
@@ -303,7 +303,7 @@ class RsApplicationExecuteBatchTest extends RapidCmdbWithCompassTestCase {
         def model2Class = gcl.loadClass(model2Name)
         models.Model1 = model1Class
         models.Model2 = model2Class
-        initialize([RsApplication, model1Class, model2Class], []);
-        CompassForTests.addOperationSupport(RsApplication, RsApplicationOperations);
+        initialize([RapidApplication, model1Class, model2Class], []);
+        CompassForTests.addOperationSupport(RapidApplication, RapidApplicationOperations);
     }
 }

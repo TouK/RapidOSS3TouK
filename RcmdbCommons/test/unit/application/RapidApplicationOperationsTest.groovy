@@ -10,12 +10,12 @@ import com.ifountain.rcmdb.test.util.RapidCmdbTestCase
  * To change this template use File | Settings | File Templates.
  */
 
-public class RsApplicationOperationsTest extends RapidCmdbTestCase
+public class RapidApplicationOperationsTest extends RapidCmdbTestCase
 {
   public void testGetApplicationInfo()
   {
     String baseDir = "../testoutput";
-    def licenceFile = new File("${baseDir}/../${RsApplicationOperations.ENTERPRISE_LICENCE_FILE}");
+    def licenceFile = new File("${baseDir}/../${RapidApplicationOperations.ENTERPRISE_LICENCE_FILE}");
     licenceFile.delete();
     def baseDirFile = new File(baseDir);
     if(baseDirFile.exists())
@@ -42,12 +42,12 @@ public class RsApplicationOperationsTest extends RapidCmdbTestCase
       anotherFile.setText("invaliddata")
 
 
-      Map appInfo = RsApplicationOperations.applicationInfo();
+      Map appInfo = RapidApplicationOperations.applicationInfo();
       assertEquals(2, appInfo.size())
       assertEquals(3, appInfo.RI.size())
       assertEquals("3.0", appInfo.RI.veRsion);
       assertEquals("3.0.1", appInfo.RI.Build);
-      assertEquals(RsApplicationOperations.COMMUNITY_PRODUCT, appInfo.RI[RsApplicationOperations.PRODUCT_TYPE]);
+      assertEquals(RapidApplicationOperations.COMMUNITY_PRODUCT, appInfo.RI[RapidApplicationOperations.PRODUCT_TYPE]);
 
       assertEquals(2, appInfo.RCMDB.size())
       assertEquals("3.0", appInfo.RCMDB.veRsion);
@@ -56,8 +56,8 @@ public class RsApplicationOperationsTest extends RapidCmdbTestCase
 
       licenceFile.setText("licence")
 
-      appInfo = RsApplicationOperations.applicationInfo();
-      assertEquals(RsApplicationOperations.ENTERPRISE_PRODUCT, appInfo.RI[RsApplicationOperations.PRODUCT_TYPE]);
+      appInfo = RapidApplicationOperations.applicationInfo();
+      assertEquals(RapidApplicationOperations.ENTERPRISE_PRODUCT, appInfo.RI[RapidApplicationOperations.PRODUCT_TYPE]);
     }
     finally{
       licenceFile.delete();

@@ -13,7 +13,7 @@ import org.jsecurity.authc.AccountException
  * To change this template use File | Settings | File Templates.
  */
 class RsUserLdapAuthenticator {
-    def logger=application.RsApplication.getLogger();
+    def logger=application.RapidApplication.getLogger();
     static def authLogPrefix="User Authentication (Ldap) : ";
 
     public RsUser authenticateUser(params)

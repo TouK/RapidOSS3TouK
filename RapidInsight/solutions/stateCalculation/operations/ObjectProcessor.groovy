@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,33 +15,33 @@ public class ObjectProcessor {
     static def objectInBeforeInsert(object)
     {
         beforeProcessors.each{ procName ->
-            def processor=RsApplication.getUtility(procName);
+            def processor=RapidApplication.getUtility(procName);
             processor.objectInBeforeInsert(object);
         }
     }
     static def objectInBeforeUpdate(object,params)
     {
         beforeProcessors.each{ procName ->
-            def processor=RsApplication.getUtility(procName);
+            def processor=RapidApplication.getUtility(procName);
             processor.objectInBeforeUpdate(object,params.updatedProps);
         }
     }
 
     static def objectIsAdded(object){
         afterProcessors.each{ procName ->
-            def processor=RsApplication.getUtility(procName);
+            def processor=RapidApplication.getUtility(procName);
             processor.objectIsAdded(object);
         }
     }
     static def objectIsUpdated(object,params){
         afterProcessors.each{ procName ->
-            def processor=RsApplication.getUtility(procName);
+            def processor=RapidApplication.getUtility(procName);
             processor.objectIsUpdated(object,params.updatedProps);
         }
     }
     static def objectIsDeleted(object){
         afterProcessors.each{ procName ->
-            def processor=RsApplication.getUtility(procName);
+            def processor=RapidApplication.getUtility(procName);
             processor.objectIsDeleted(object);
         }
     }

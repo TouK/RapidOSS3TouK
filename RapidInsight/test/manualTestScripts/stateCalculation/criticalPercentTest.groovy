@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 import com.ifountain.comp.utils.SmartWait
 import com.ifountain.rcmdb.util.ClosureWaitAction
 
@@ -6,7 +6,7 @@ logger.warn("Starting..............")
 
 
 try {
-    RsApplication.getUtility("StateCalculator").calculateMethod = "criticalPercent";
+    RapidApplication.getUtility("StateCalculator").calculateMethod = "criticalPercent";
 
     //RI- FINDMAX
     final static int CRITICAL = 5
@@ -126,5 +126,5 @@ catch (e)
     throw e;
 }
 finally {
-    RsApplication.getUtility("StateCalculator").setToDefault();
+    RapidApplication.getUtility("StateCalculator").setToDefault();
 }

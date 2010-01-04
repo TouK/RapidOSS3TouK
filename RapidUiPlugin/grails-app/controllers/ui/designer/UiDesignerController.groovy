@@ -89,7 +89,7 @@ class UiDesignerController {
             try
             {
                 DesignerControllerUtils.generate("${baseDir}/${CONF_FILE}", "${baseDir}/${TEMPLATES_DIRECTORY}", baseDir)
-                application.RsApplication.reloadViewsAndControllers();
+                application.RapidApplication.reloadViewsAndControllers();
                 render(contentType: "text/xml") {
                     Successful("UI generated successfully")
                 }

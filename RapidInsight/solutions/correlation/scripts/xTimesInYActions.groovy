@@ -1,6 +1,6 @@
 // This script allows the following 2 important operations of the CorrelationProcessor to be invoked peridically.
 logger.debug("BEGIN xTimesInYActions")
-def correlationProcessor = application.RsApplication.getUtility("CorrelationProcessor")
+def correlationProcessor = application.RapidApplication.getUtility("CorrelationProcessor")
 
 //Each RsXinY has a time to live. This operation will remove expired instances.
 logger.debug("calling removeExpiredCorrelationItems")

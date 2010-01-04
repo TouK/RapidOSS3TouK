@@ -3,8 +3,8 @@ package solutionTests.loginTokenAuthentication
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import application.Cache
 import application.CacheOperations
-import application.RsApplication
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
+import application.RapidApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import com.ifountain.rcmdb.test.util.CompassForTests
 
 import org.jsecurity.authc.IncorrectCredentialsException
@@ -26,26 +26,26 @@ class RsUserTokenAuthenticatorTest extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
 
-        initialize([Cache,RsApplication,RsUser], []);
+        initialize([Cache,RapidApplication,RsUser], []);
 
         CompassForTests.addOperationSupport (Cache, CacheOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
 
         def base_directory = getWorkspacePath()+"/RapidModules/RapidInsight/solutions/loginTokenAuthentication"
 
-        RsApplicationTestUtils.clearUtilityPaths();
-        RsApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/operations/auth/RsUserTokenAuthenticator.groovy")];
+        RapidApplicationTestUtils.clearUtilityPaths();
+        RapidApplicationTestUtils.utilityPaths = ["auth.RsUserTokenAuthenticator": new File("${base_directory}/operations/auth/RsUserTokenAuthenticator.groovy")];
 
-        RsApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
+        RapidApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
     }
 
     public void tearDown() {
-        RsApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
+        RapidApplication.getUtility("auth.RsUserTokenAuthenticator").clearCacheEntry();
         super.tearDown();
     }
     public void testAuthenticateUser()
     {
-        def tokenAuthenticator=RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+        def tokenAuthenticator=RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
         def entry=tokenAuthenticator.getCacheEntry();
         assertEquals(2,entry.size());
         assertEquals(0,entry.users.size());
@@ -134,7 +134,7 @@ class RsUserTokenAuthenticatorTest extends RapidCmdbWithCompassTestCase {
         def user2=RsUser.add(username:"testuser2",passwordHash:"345");
         assertFalse(user2.errors.toString(),user2.hasErrors());
 
-        def tokenAuthenticator=RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+        def tokenAuthenticator=RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
         def entry=tokenAuthenticator.getCacheEntry();
         assertEquals(2,entry.size());
         assertEquals(0,entry.users.size());
@@ -190,7 +190,7 @@ class RsUserTokenAuthenticatorTest extends RapidCmdbWithCompassTestCase {
     public void testCreateToken()
     {
         //does not create same token for the same user
-        def tokenAuthenticator=RsApplication.getUtility("auth.RsUserTokenAuthenticator");
+        def tokenAuthenticator=RapidApplication.getUtility("auth.RsUserTokenAuthenticator");
         10.times{
             def token1=tokenAuthenticator.createToken("testuser");
             def token2=tokenAuthenticator.createToken("testuser");

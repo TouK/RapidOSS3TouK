@@ -1,6 +1,6 @@
 package com.ifountain.rcmdb.domain
 
-import application.RsApplication
+import application.RapidApplication
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.SearchableCompassConfiguratorFactory
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfiguratorFactory
@@ -144,7 +144,7 @@ class FullExportImportUtility {
         logger.info("backing up current data to directory '${backupDir}'");
         deleteDirectory(backupDir);
 
-        RsApplication.backup(backupDir+File.separator+"index");
+        RapidApplication.backup(backupDir+File.separator+"index");
         logger.info("backing up done");
     }
     protected def generateModelsToExport(MODELS)

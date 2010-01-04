@@ -3,7 +3,7 @@ CONFIG.importDir="importData";
 CONFIG.exportDir="exportFiles";
 
 try{
-    application.RsApplication.fullImport(CONFIG);
+    application.RapidApplication.fullImport(CONFIG);
 }
 catch(e)
 {

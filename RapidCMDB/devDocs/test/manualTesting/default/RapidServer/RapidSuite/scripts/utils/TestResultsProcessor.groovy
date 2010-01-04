@@ -53,7 +53,7 @@ class TestResultsProcessor{
         return total-free;
     }
     private void generateCompassStatisticsMap(){
-        statsXml=application.RsApplication.getCompassStatistics()
+        statsXml=application.RapidApplication.getCompassStatistics()
         def parser = new XmlParser()
         def stats = parser.parseText(statsXml)
 

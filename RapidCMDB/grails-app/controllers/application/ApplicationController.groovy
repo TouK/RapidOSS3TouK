@@ -32,7 +32,7 @@ class ApplicationController {
     def index = {render(view: "application")}
 
     def reloadControllers = {
-        RsApplication.reloadControllers();
+        RapidApplication.reloadControllers();
         flash.message = "Controllers reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -43,7 +43,7 @@ class ApplicationController {
     }
 
     def reloadFilters = {
-        RsApplication.reloadFilters();
+        RapidApplication.reloadFilters();
         flash.message = "Filters reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -54,7 +54,7 @@ class ApplicationController {
     }
 
     def reloadViewsAndControllers = {
-        RsApplication.reloadViewsAndControllers();
+        RapidApplication.reloadViewsAndControllers();
         flash.message = "Views and controllers reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);
@@ -65,7 +65,7 @@ class ApplicationController {
     }
     
     def reloadViews = {
-        RsApplication.reloadViews();
+        RapidApplication.reloadViews();
         flash.message = "Views reloaded successfully."
         if (params.targetURI) {
             redirect(uri: params.targetURI);

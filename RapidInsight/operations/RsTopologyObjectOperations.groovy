@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -21,21 +21,21 @@ import application.RsApplication
 public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
     def beforeInsert(){
-        RsApplication.getUtility("ObjectProcessor").objectInBeforeInsert(this.domainObject);
+        RapidApplication.getUtility("ObjectProcessor").objectInBeforeInsert(this.domainObject);
 	}
 	def beforeUpdate(params)
     {
-        RsApplication.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
+        RapidApplication.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
     }
 	def afterInsert(){
-        RsApplication.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
+        RapidApplication.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
     }
     def afterUpdate(params){
-        RsApplication.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
+        RapidApplication.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
     }
     def afterDelete()
     {
-        RsApplication.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
+        RapidApplication.getUtility("ObjectProcessor").objectIsDeleted(this.domainObject);
     }
     def getState()
     {

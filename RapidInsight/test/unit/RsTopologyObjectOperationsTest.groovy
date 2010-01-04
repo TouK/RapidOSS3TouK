@@ -1,7 +1,7 @@
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
-import application.RsApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import application.RapidApplication
 
 /**
 * Created by IntelliJ IDEA.
@@ -15,10 +15,10 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
     public void setUp() {
         super.setUp();
         clearMetaClasses();
-        initialize([RsTopologyObject,RsApplication], []);
+        initialize([RsTopologyObject,RapidApplication], []);
         CompassForTests.addOperationSupport(RsTopologyObject,RsTopologyObjectOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations (RsApplication);
-        RsApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
+        RapidApplicationTestUtils.clearProcessors();
     }
 
     public void tearDown() {

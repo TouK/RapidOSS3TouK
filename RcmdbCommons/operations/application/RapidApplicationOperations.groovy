@@ -44,7 +44,7 @@ import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
  * Time: 4:10:27 PM
  * To change this template use File | Settings | File Templates.
  */
-class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+class RapidApplicationOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
     public static final String VERSION_FILE_SUFFIX = "Version.txt";
     public static final String ENTERPRISE_LICENCE_FILE = "IFountain End User License Agreement.pdf";
     public static final String COMMUNITY_PRODUCT = "community";
@@ -140,7 +140,7 @@ class RsApplicationOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static def getUtility(utilityName)
     {
-        return RsApplicationOperations.class.classLoader.loadClass (utilityName).newInstance();
+        return RapidApplicationOperations.class.classLoader.loadClass (utilityName).newInstance();
     }
 
     public static def fullExport(CONFIG)

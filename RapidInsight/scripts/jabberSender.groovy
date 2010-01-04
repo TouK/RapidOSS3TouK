@@ -37,7 +37,7 @@ messages.each{ message ->
         try{
 
             def templateParams=[event:event,message:message]
-            def messageContent=application.RsApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+            def messageContent=application.RapidApplication.getUtility("RsTemplate").render(templatePath,templateParams);
             ds.sendMessage(message.destination,messageContent)
             logger.debug("Sended message about RsEvent: ${event.name}")
             message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());

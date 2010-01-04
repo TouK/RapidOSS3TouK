@@ -3,8 +3,8 @@ package scriptTests
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.test.util.RsApplicationTestUtils
-import application.RsApplication
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import application.RapidApplication
 
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 
@@ -31,10 +31,10 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
              setProperty(className,gcl.loadClass(className));
         }
 
-        initialize([RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RsApplication], []);
+        initialize([RsComputerSystem,RsTopologyObject,RsLink,RsObjectState,RsEvent,RapidApplication], []);
         CompassForTests.addOperationSupport (RsComputerSystem,RsComputerSystemOperations);
         CompassForTests.addOperationSupport (RsLink,RsLinkOperations);
-        RsApplicationTestUtils.initializeRsApplicationOperations(RsApplication);
+        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
 
         initializeScriptManager();
 

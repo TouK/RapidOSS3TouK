@@ -33,7 +33,7 @@ class StatsConverter {
             
             if(statsFile==null)
             {
-                statsXml=application.RsApplication.getCompassStatistics();                
+                statsXml=application.RapidApplication.getCompassStatistics();
             }
             else
             {

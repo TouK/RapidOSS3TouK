@@ -1,4 +1,4 @@
-import application.RsApplication
+import application.RapidApplication
 
 public class CorrelationProcessor {
 	
@@ -9,7 +9,7 @@ public class CorrelationProcessor {
 	// called everytime an event is created
 	static def eventIsNotified(event){
 	
-		def logger = RsApplication.getLogger()
+		def logger = RapidApplication.getLogger()
 		logger.debug("event.source:" + event.source) 
 		
 		//	CUSTOMIZE THE CONDITION
@@ -34,7 +34,7 @@ public class CorrelationProcessor {
     
     
     private static def queueRsXinYCorrelation(event, correlationConfig){
-    	    def logger = RsApplication.getLogger()
+    	    def logger = RapidApplication.getLogger()
 	    def expireTime = System.currentTimeMillis() + correlationConfig.period
 	    def identifier = correlationConfig.name + "|" + event.name
 	    def myCorrelation = RsXinYCorrelation.add([eventId:event.name,identifier:identifier, willExpireAt:expireTime])
@@ -43,7 +43,7 @@ public class CorrelationProcessor {
     
     // will be called by the XTimesInYActions periodic script
 	static def takeAction(){
-	        def logger = RsApplication.getLogger()
+	        def logger = RapidApplication.getLogger()
 		RsXinYCorrelation.propertySummary("alias:*",["identifier"]).identifier.each {correlation,count->
 			def correlationData = getCorrelationData(correlation)
 			logger.debug("correlationData: " + correlationData)
@@ -68,7 +68,7 @@ public class CorrelationProcessor {
 
     // will be called by the XTimesYActions periodic script
 	static def removeExpiredCorrelationItems(){
-		def logger = RsApplication.getLogger()
+		def logger = RapidApplication.getLogger()
 		logger.debug("begin expired removal")
 		def currentTime = System.currentTimeMillis()
 		RsXinYCorrelation.list().each{
@@ -87,7 +87,7 @@ public class CorrelationProcessor {
     }
     
     private static def removeUsedCorrelationItems(correlation){
-        def logger = RsApplication.getLogger()
+        def logger = RapidApplication.getLogger()
     	RsXinYCorrelation.search("identifier:$correlation").results.each{
     		logger.debug("used in correlation and removed: ${it.identifier}")
     		it.remove()

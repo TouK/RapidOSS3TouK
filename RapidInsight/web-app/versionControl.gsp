@@ -28,7 +28,7 @@
 </div>
 <g:render template="/common/messages" model="[flash:flash]"></g:render>
 <%
-    def utility = application.RsApplication.getUtility("VersionControlUtility");
+    def utility = application.RapidApplication.getUtility("VersionControlUtility");
     def changeSets = utility.getChangeSetList();
     def df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>

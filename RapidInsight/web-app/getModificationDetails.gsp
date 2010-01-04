@@ -13,7 +13,7 @@
 </div>
 <g:render template="/common/messages" model="[flash:flash]"></g:render>
 <%
-    def utility = application.RsApplication.getUtility("VersionControlUtility");
+    def utility = application.RapidApplication.getUtility("VersionControlUtility");
     def changesAsMap = utility.getChangesAsMap(utility.getChangeSetDir(params.changeSet))
     def df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 %>

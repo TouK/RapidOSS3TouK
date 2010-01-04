@@ -28,6 +28,7 @@
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="grails-1.0.3" level="application" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module-library">
       <library name="Grails User Library">

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
-    <output url="file://$APPLICATION_HOME_DIR$/bin/$USER_HOME$/.grails/1.0.1/projects/RapidCMDB/classes" />
     <exclude-output />
-    <output-test url="file://$MODULE_DIR$/../out/test/ext" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/antlr" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/database/groovy" isTestSource="false" />
@@ -32,7 +30,6 @@
         <jarDirectory url="file://$MODULE_DIR$/jira/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntryProperties />
   </component>
 </module>
 

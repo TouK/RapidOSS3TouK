@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="GRAILS_MODULE" version="4">
+<module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
-    <facet type="Spring" name="Spring" implicit="true">
+    <facet type="Spring" name="Spring">
       <configuration>
         <options>
           <option name="enableValidation" value="false" />
@@ -42,7 +42,6 @@
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="module" module-name="comp" />
-    <orderEntryProperties />
   </component>
 </module>
 

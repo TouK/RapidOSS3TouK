@@ -87,6 +87,13 @@ if(testOptions.HYPERIC == "true")
     watchConfig.add([new File("${workspaceDir}/Hyperic/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
     watchConfig.add([new File("${workspaceDir}/Hyperic/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")]);
 }
+if(testOptions.RIVERMUSE == "true")
+{
+    buildProperties.put("RIVERMUSE", "false")
+    watchConfig.add([new File("${workspaceDir}/Rivermuse"), new File("${rootDir.absolutePath}/RapidSuite"), [new File("${workspaceDir}/Rivermuse/applications").canonicalPath, new File("${workspaceDir}/Rivermuse/application.properties").canonicalPath]]);
+    watchConfig.add([new File("${workspaceDir}/Rivermuse/applications/RapidInsight"), new File("${rootDir.absolutePath}/RapidSuite")]);
+    watchConfig.add([new File("${workspaceDir}/Rivermuse/test/integration"), new File("${rootDir.absolutePath}/RapidSuite/test/integration")]);
+}
 if(testOptions.APG == "true")
 {
     buildProperties.put("APG", "false")

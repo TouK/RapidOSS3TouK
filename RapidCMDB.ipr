@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
-  </component>
-  <component name="ArtifactManager">
-    <artifact type="exploded-war" name="SmartsBrowser:Web2 exploded">
-      <root id="root">
-        <element id="javaee-facet-resources" facet="SmartsBrowser/web/Web2" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="module-output" name="SmartsBrowser" />
-          </element>
-        </element>
-      </root>
-    </artifact>
-    <artifact type="exploded-war" name="SmartsBrowser:Web exploded">
-      <root id="root">
-        <element id="javaee-facet-resources" facet="SmartsBrowser/web/Web" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="module-output" name="SmartsBrowser" />
-          </element>
-        </element>
-      </root>
-    </artifact>
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -33,85 +11,12 @@
     <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
   </component>
   <component name="CodeStyleSettingsManager">
-    <option name="PER_PROJECT_SETTINGS">
-      <value>
-        <ADDITIONAL_INDENT_OPTIONS fileType="groovy">
-          <option name="INDENT_SIZE" value="2" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="gsp">
-          <option name="INDENT_SIZE" value="2" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="java">
-          <option name="INDENT_SIZE" value="4" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="js">
-          <option name="INDENT_SIZE" value="4" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="jsp">
-          <option name="INDENT_SIZE" value="4" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="sql">
-          <option name="INDENT_SIZE" value="2" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="xml">
-          <option name="INDENT_SIZE" value="4" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-        <ADDITIONAL_INDENT_OPTIONS fileType="yml">
-          <option name="INDENT_SIZE" value="2" />
-          <option name="CONTINUATION_INDENT_SIZE" value="8" />
-          <option name="TAB_SIZE" value="4" />
-          <option name="USE_TAB_CHARACTER" value="false" />
-          <option name="SMART_TABS" value="false" />
-          <option name="LABEL_INDENT_SIZE" value="0" />
-          <option name="LABEL_INDENT_ABSOLUTE" value="false" />
-        </ADDITIONAL_INDENT_OPTIONS>
-      </value>
-    </option>
+    <option name="PER_PROJECT_SETTINGS" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEPLOY_AFTER_MAKE" value="0" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -127,10 +32,6 @@
       <entry name="?*.dtd" />
       <entry name="?*.tld" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
-  </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
   </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
@@ -139,8 +40,11 @@
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="EclipseCompilerSettings">
+    <option name="DEBUGGING_INFO" value="true" />
     <option name="GENERATE_NO_WARNINGS" value="true" />
     <option name="DEPRECATION" value="false" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+    <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="EclipseEmbeddedCompilerSettings">
     <option name="DEBUGGING_INFO" value="true" />
@@ -149,7 +53,6 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -159,7 +62,7 @@
         <modules>
           <module name="RapidServer">
             <files>
-              <file url="file://D:/TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
             </files>
           </module>
           <module name="Opennmstrunk">
@@ -176,9 +79,9 @@
         <modules>
           <module name="RapidServer">
             <files>
-              <file url="file://D:/TEMP/RapidServer/RapidCMDB/web-app/WEB-INF/applicationContext.xml" />
-              <file url="file://D:/TEMP/RapidServer/src/war/WEB-INF/applicationContext.xml" />
-              <file url="file://D:/TEMP/RapidServer/src/war/WEB-INF/test-applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/RapidCMDB/web-app/WEB-INF/applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/src/war/WEB-INF/applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/src/war/WEB-INF/test-applicationContext.xml" />
             </files>
           </module>
           <module name="RcmdbCommons">
@@ -305,7 +208,23 @@
     </autodetection-disabled>
   </component>
   <component name="IdProvider" IDEtalkID="EA28FD7B5140EC52C88BBC670B90414F" />
+  <component name="InspectionProjectProfileManager">
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
+    <scopes />
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <option name="myName" value="Project Default" />
+        <option name="myLocal" value="false" />
+      </profile>
+    </profiles>
+    <list size="0" />
+  </component>
   <component name="JavacSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="DEPRECATION" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="512" />
   </component>
   <component name="JavadocGenerationManager">
@@ -324,6 +243,14 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
+  </component>
+  <component name="JikesSettings">
+    <option name="JIKES_PATH" value="" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="DEPRECATION" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="IS_EMACS_ERRORS_MODE" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -446,9 +373,7 @@
       </item>
     </group>
   </component>
-  <component name="ProjectDetails">
-    <option name="projectName" value="RapidCMDB" />
-  </component>
+  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Apg/Apg.iml" filepath="$PROJECT_DIR$/../Apg/Apg.iml" />
@@ -471,7 +396,7 @@
       <module fileurl="file://$PROJECT_DIR$/ext/ext.iml" filepath="$PROJECT_DIR$/ext/ext.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../out" />
   </component>
   <component name="ResourceManagerContainer">
@@ -481,40 +406,23 @@
       </value>
     </option>
   </component>
+  <component name="RmicSettings">
+    <option name="IS_EANABLED" value="false" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_IIOP_STUBS" value="false" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+  </component>
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_4_1_b08081811">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
-                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_4_1_b08081811" />
                   <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618" />
                 </list>
@@ -526,15 +434,6 @@
         <entry key="$PROJECT_DIR$/../Smarts">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618" />
@@ -553,7 +452,6 @@
         </entry>
       </map>
     </option>
-    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="TL_PLUGIN">
     <option name="myModel">
@@ -770,10 +668,10 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/test" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/test" />
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
@@ -806,10 +704,10 @@
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/src" />
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/load" />
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/test" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/demo" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/gcj" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/test" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/demo" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/gcj" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/test" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/java" />
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/compass" recursive="false" />
@@ -820,8 +718,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>
@@ -829,8 +727,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/quartz-0.2/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
     <library name="apg">
       <CLASSES>

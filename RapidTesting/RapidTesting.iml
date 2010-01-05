@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="GRAILS_MODULE" version="4">
+<module relativePaths="true" type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="Spring" name="Spring">
-      <configuration>
-        <options>
-          <option name="enableValidation" value="false" />
-          <option name="reportErrorsAsWarnings" value="true" />
-        </options>
-        <customNs />
-      </configuration>
+      <configuration />
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -29,6 +23,7 @@
     <orderEntry type="library" name="grails-1.0.3" level="application" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="grails-1.0.3" level="application" />
     <orderEntry type="module-library">
       <library name="Grails User Library">
         <CLASSES>
@@ -41,7 +36,6 @@
     </orderEntry>
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="module" module-name="comp" />
-    <orderEntryProperties />
   </component>
 </module>
 

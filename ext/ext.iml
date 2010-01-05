@@ -16,6 +16,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="grails-1.0.3" level="application" />
+    <orderEntry type="library" name="grails-1.0.3" level="application" />
     <orderEntry type="library" name="GROOVY" level="application" />
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
@@ -31,7 +32,6 @@
         <jarDirectory url="file://$MODULE_DIR$/jira/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntryProperties />
   </component>
 </module>
 

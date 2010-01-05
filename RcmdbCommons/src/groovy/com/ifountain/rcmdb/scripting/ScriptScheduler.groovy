@@ -123,7 +123,7 @@ class ScriptScheduler {
 class CustomCronTrigger extends CronTrigger
 {
     public long startDelay;
-    public CustomCronTrigger(String name, long startDelay, String cronExpression) {
+    public CustomCronTrigger(String name, long startDelay, String cronExpression) throws java.text.ParseException {
         super(name, null, cronExpression); //To change body of overridden methods use File | Settings | File Templates.
         this.startDelay = startDelay;
         setStartTime(new Date(System.currentTimeMillis() + startDelay));

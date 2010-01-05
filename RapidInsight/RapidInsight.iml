@@ -28,6 +28,7 @@
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/ui" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/manualTestScripts/samples_src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/web-app/plugins" />
     </content>
     <orderEntry type="library" name="GRAILS" level="application" />

@@ -72,6 +72,7 @@ scriptsToAdd.add([name:"enableInstrumentation"])
 scriptsToAdd.add([name:"disableInstrumentation"])
 scriptsToAdd.add([name:"memorySummarizer", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 scriptsToAdd.add([name:"memoryHistogram", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:300,logFileOwn:true]);
+scriptsToAdd.add([name:"threadLister", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:300,logFileOwn:true]);
 scriptsToAdd.add([name:"memoryDump"])
 
 

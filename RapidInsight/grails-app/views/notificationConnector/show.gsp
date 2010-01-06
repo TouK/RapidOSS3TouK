@@ -117,10 +117,27 @@
         </table>
     </div>
     <div class="buttons">
-        <g:form>
+        <g:form style="display:inline">
             <input type="hidden" name="id" value="${connector?.id}"/>
             <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
             <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+        </g:form>
+        
+            <%
+                def connScript = script;
+                def targetURI="/notificationConnector/show/${connector.id}";
+            %>
+            <g:if test="${connScript?.enabled}">
+                <g:link action="disable" controller="script" id="${connScript.name}" class="stop" params="[targetURI:targetURI]">Stop</g:link>
+            </g:if>
+            <g:else>
+                <g:link action="enable" controller="script" id="${connScript.name}" class="start" params="[targetURI:targetURI]">Start</g:link>
+            </g:else>
+
+        <g:form style="display:inline" controller="script">
+            <input type="hidden" name="id" value="${connScript.name}"/>
+            <input type="hidden" name="targetURI" value="${targetURI}"/>
+            <span class="button"><g:actionSubmit class="refresh" value="Reload Script" action="Reload"/></span>
         </g:form>
     </div>
 </div>

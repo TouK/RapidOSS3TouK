@@ -3664,7 +3664,7 @@ YAHOO.ext.DomHelper = new function(){
         where = where.toLowerCase();
         if(el.insertAdjacentHTML){
             var tag = el.tagName.toLowerCase();
-            if(tag == 'table' || tag == 'tbody' || tag == 'tr'){
+            if(YAHOO.ext.util.Browser.isIE && (tag == 'table' || tag == 'tbody' || tag == 'tr')){
                return insertIntoTable(tag, where, el, html);
             }
             switch(where){

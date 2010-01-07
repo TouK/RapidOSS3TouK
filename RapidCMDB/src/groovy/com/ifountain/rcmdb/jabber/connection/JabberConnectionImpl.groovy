@@ -35,6 +35,7 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
     private Hashtable chats = new Hashtable();
     private Closure textReceivedCallback;
     private boolean isConnectionActive = false;
+    private boolean chatManagerCreated = false;
 
     public void init(ConnectionParam param) {
         super.init(param);
@@ -61,12 +62,20 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
             connection.addConnectionListener(this)
             logger.info(getLogPrefix() + "Connected to host ${host}");
             logger.debug(getLogPrefix() + "Logging in with username ${username}")
-            connection.login(username, password)
-            logger.info(getLogPrefix() + "Logged in.");
-            Presence presence = new Presence(Presence.Type.available);
-            connection.sendPacket(presence);
-            connection.getChatManager().addChatListener(this)
-            isConnectionActive = true;
+            try{
+                connection.login(username, password)
+	            logger.info(getLogPrefix() + "Logged in.");
+	            Presence presence = new Presence(Presence.Type.available);
+	            connection.sendPacket(presence);
+	            connection.getChatManager().addChatListener(this)
+	            chatManagerCreated = true;
+	            isConnectionActive = true;
+            }
+            catch(e){
+            	disconnect();
+            	throw e;
+            }
+
         }
 
     }
@@ -79,7 +88,9 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
                 connection.removeConnectionListener(this)
                 connection.disconnect();
                 logger.info(getLogPrefix() + "Connection successfully closed.")
-                connection.getChatManager().removeChatListener(this)
+                if(chatManagerCreated){
+                    connection.getChatManager().removeChatListener(this)    
+                }
             }
             chats.each {String participant, Chat chat ->
                 chat.removeMessageListener(this)

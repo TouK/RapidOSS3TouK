@@ -118,6 +118,8 @@ class JabberConnectionImplTests extends RapidCoreTestCase {
         }
         catch (XMPPException e) {
         }
+        //clears already opened session
+        assertFalse(connection.getXmppConnection().isConnected())
     }
 
     public void testDisconnect() throws Exception {

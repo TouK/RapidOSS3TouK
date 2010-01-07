@@ -41,6 +41,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
         connectorParams["logLevel"] = Level.INFO.toString();
         connectorParams["scriptFile"] = "emailSender";
         connectorParams["type"] = "Email";
+        connectorParams["period"] = 70;
 
     }
 
@@ -162,6 +163,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
         updateParams["id"]=oldConnector.id
         updateParams["logLevel"] = Level.DEBUG.toString();
         updateParams["scriptFile"] = "emailSender";
+        updateParams["period"] = 70;
 
 
         controller = new NotificationConnectorController();

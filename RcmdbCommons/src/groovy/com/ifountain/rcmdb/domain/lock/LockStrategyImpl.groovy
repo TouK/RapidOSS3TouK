@@ -53,7 +53,7 @@ class LockStrategyImpl implements LockStrategy {
                 if (exception.getCode() != LockException.CODE_DEADLOCK_VICTIM || numberOfRetries >= MAX_NUMBER_OF_RETRIES_AFTER_DEAD_LOCK)
                 {
                     removeLock(lockname);
-                    throw exception;
+                    throw new Exception("Could not get lock for ${owner} with name ${lockname} with code ${exception.getCode()}".toString(), exception);
                 }
                 else
                 {

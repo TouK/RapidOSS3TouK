@@ -27,10 +27,13 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
 {
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DomainLockManager.getInstance().initialize (TestLogUtils.log);
         LockStrategyImpl.setMaxNumberOfRetries(1);
+
     }
 
     protected void tearDown() {
+        DomainLockManager.destroy();
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
     }
     public void testWriteMethodReturnsBackToTheirPreviousStateEvenIfExceptionIsThrown()
@@ -862,7 +865,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             {
                 impl2.invoke(instance2, null)
                 thread2State = 2;
-            } catch (org.apache.commons.transaction.locking.LockException ex)
+            } catch (e)
             {
                 thread2State = 3;
             }
@@ -949,7 +952,7 @@ public class AbstractRapidDomainWriteMethodTest extends RapidCmdbTestCase
             catch (Exception e)
             {
 
-                println "t1 ${((LockException) e).getCode()} ${((LockException) e).getReason()}"
+                println "t1 ${e.getCause().getCode()} ${e.getCause().getReason()}"
                 thread1State = 3;
             }
         }

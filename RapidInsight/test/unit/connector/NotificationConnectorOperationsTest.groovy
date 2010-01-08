@@ -92,13 +92,29 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
     {
         assertEquals([],RsMessageRule.getConfiguredDestinationNames());
 
+
+        def paramsCopy=connectorSaveParams.clone();
         def createdObjects = NotificationConnectorOperations.addConnector(connectorSaveParams)
         assertEquals(4,createdObjects.size());
+        assertEquals(paramsCopy,connectorSaveParams)
+        
+        assertNotNull(createdObjects["connector"])
+        assertFalse(createdObjects["connector"].hasErrors())
+
+        assertNotNull(createdObjects["connection"])
+        assertFalse(createdObjects["connection"].hasErrors())
+
+        assertNotNull(createdObjects["datasource"])
+        assertFalse(createdObjects["datasource"].hasErrors())
+
+        assertNotNull(createdObjects["script"])
+        assertFalse(createdObjects["script"].hasErrors())
+        
 
         def connectors = NotificationConnector.list();
         assertEquals(1, connectors.size());
         NotificationConnector connector = connectors[0]
-        assertNotNull(createdObjects["connector"])
+
         assertEquals(connector.id,createdObjects["connector"].id)
         assertEquals(connectorSaveParams.name, connector.name);
         assertEquals(true,connector.showAsDestination);
@@ -107,7 +123,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def connections = EmailConnection.list();
         assertEquals(1, connections.size());
         def connection = connections[0];
-        assertNotNull(createdObjects["connection"])
         assertEquals(connection.id,createdObjects["connection"].id);
 
         assertEquals(NotificationConnector.getConnectionName(connector.name),connection.name);
@@ -122,7 +137,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def datasources = EmailDatasource.list();
         assertEquals(1, datasources.size());
         EmailDatasource datasource = datasources[0];
-        assertNotNull(createdObjects["datasource"])
         assertEquals(datasource.id,createdObjects["datasource"].id)
         assertEquals(NotificationConnector.getDatasourceName(connector.name),datasource.name);
         assertEquals(datasource.id, connector.ds.id);
@@ -133,7 +147,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def scripts=CmdbScript.list();
         assertEquals(1, scripts.size());
         CmdbScript script = scripts[0];
-        assertNotNull(createdObjects["script"])
         assertEquals(script.id,createdObjects["script"].id)
         assertEquals(NotificationConnector.getScriptName(connector.name),script.name);
         assertEquals(CmdbScript.SCHEDULED, script.type);
@@ -226,20 +239,35 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
 
         assertEquals([],RsMessageRule.getConfiguredDestinationNames());
 
+        def paramsCopy=connectorSaveParams.clone();
         def createdObjects = NotificationConnectorOperations.addConnector(connectorSaveParams)
+        assertEquals(paramsCopy,connectorSaveParams);
 
         assertEquals(1, NotificationConnector.count());
         NotificationConnector oldConnector = NotificationConnector.get(name:connectorSaveParams.name);
-
         assertEquals([oldConnector.name],RsMessageRule.getConfiguredDestinationNames());
 
+        paramsCopy=connectorUpdateParams.clone();
         def updatedObjects = NotificationConnectorOperations.updateConnector(oldConnector, connectorUpdateParams);
         assertEquals(4,updatedObjects.size());
+        assertEquals(paramsCopy,connectorUpdateParams);
+
+
+        assertNotNull(updatedObjects["connector"])
+        assertFalse(updatedObjects["connector"].hasErrors())
+
+        assertNotNull(updatedObjects["connection"])
+        assertFalse(updatedObjects["connection"].hasErrors())
+
+        assertNotNull(updatedObjects["datasource"])
+        assertFalse(updatedObjects["datasource"].hasErrors())
+
+        assertNotNull(updatedObjects["script"])
+        assertFalse(updatedObjects["script"].hasErrors())
 
         def connectors = oldConnector.list();
         assertEquals(1, connectors.size());
         NotificationConnector connector = connectors[0]
-        assertNotNull(updatedObjects["connector"])
         assertEquals(connector.id,updatedObjects["connector"].id)
         assertEquals(connectorUpdateParams.name, connector.name);
         assertEquals(false,connector.showAsDestination);
@@ -248,7 +276,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def connections = EmailConnection.list();
         assertEquals(1, connections.size());
         def connection = connections[0];
-        assertNotNull(updatedObjects["connection"])
         assertEquals(connection.id,updatedObjects["connection"].id);
         assertEquals(NotificationConnector.getConnectionName(connector.name),connection.name);
         assertEquals(connection.id, connector.ds.connection.id);
@@ -263,7 +290,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def datasources = EmailDatasource.list();
         assertEquals(1, datasources.size());
         EmailDatasource datasource = datasources[0];
-        assertNotNull(updatedObjects["datasource"])
         assertEquals(datasource.id,updatedObjects["datasource"].id)
         assertEquals(NotificationConnector.getDatasourceName(connector.name),datasource.name);
         assertEquals(datasource.id, connector.ds.id);
@@ -274,7 +300,6 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def scripts=CmdbScript.list();
         assertEquals(1, scripts.size());
         CmdbScript script = scripts[0];
-        assertNotNull(updatedObjects["script"])
         assertEquals(script.id,updatedObjects["script"].id)
         assertEquals(NotificationConnector.getScriptName(connector.name),script.name);
         assertEquals(CmdbScript.SCHEDULED, script.type);

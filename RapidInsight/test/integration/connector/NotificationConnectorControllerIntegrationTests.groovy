@@ -24,7 +24,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
     def connectorParams=[:]
     public void setUp() {
         super.setUp();
-        //NotificationConnector.reloadOperations();
+        NotificationConnector.reloadOperations();
         Connection.removeAll();
         BaseDatasource.removeAll();
         NotificationConnector.removeAll();
@@ -87,6 +87,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
         paramsToCheck.remove("logLevel");
         paramsToCheck.remove("scriptFile");
         paramsToCheck.remove("type");
+        paramsToCheck.remove("period");
 
         paramsToCheck.each{ key , val ->
             assertEquals(val,connection[key])
@@ -194,6 +195,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
         paramsToCheck.remove("id");
         paramsToCheck.remove("logLevel");
         paramsToCheck.remove("scriptFile");
+        paramsToCheck.remove("period");
 
         paramsToCheck.each{ key , val ->
             assertEquals(val,connection[key])

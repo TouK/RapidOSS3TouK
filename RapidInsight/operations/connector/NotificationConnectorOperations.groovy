@@ -66,7 +66,15 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
                 if (!datasource.hasErrors()) {
                     def scriptName = getScriptName(connector.name);
                     def staticParam = "connectorName:${connector.name}";
-                    CmdbScript script = CmdbScript.addUniqueScript([name: scriptName, scriptFile: connectorParams.scriptFile, enabled: false, type: CmdbScript.SCHEDULED, period: connectorParams.period, logFileOwn: true, staticParam: staticParam, logLevel: connectorParams.logLevel], true);
+                    //period, scriptFile , logLevel from connector params , others hardcoded
+                    def scriptSaveParams=ControllerUtils.getClassProperties(connectorParams,CmdbScript);
+                    scriptSaveParams.name=scriptName;
+                    scriptSaveParams.enabled=false;
+                    scriptSaveParams.type=CmdbScript.SCHEDULED;
+                    scriptSaveParams.logFileOwn=true;
+                    scriptSaveParams.staticParam=staticParam;
+
+                    CmdbScript script = CmdbScript.addUniqueScript(scriptSaveParams, true);
                     createdObjects["script"] = script;
                     if (!script.hasErrors()) {
                         connector.addRelation(ds: datasource)
@@ -121,7 +129,12 @@ class NotificationConnectorOperations  extends com.ifountain.rcmdb.domain.operat
                 {
                     def staticParam = "connectorName:${connector.name}";
                     def scriptName = getScriptName(connector.name);
-                    def scriptUpdateParams=[name: scriptName, scriptFile: connectorParams.scriptFile, staticParam: staticParam, logLevel: connectorParams.logLevel,period:connectorParams.period];
+                    //period, scriptFile , logLevel from connector params , others hardcoded
+                    def scriptUpdateParams=ControllerUtils.getClassProperties(connectorParams,CmdbScript);
+                    scriptUpdateParams.name=scriptName;
+                    scriptUpdateParams.staticParam=staticParam;
+                    scriptUpdateParams.remove("type");
+
                     oldProperties[script] = ControllerUtils.backupOldData(script, scriptUpdateParams);
                     CmdbScript.updateScript(script,scriptUpdateParams, true);
                     updatedObjects["script"] = script;

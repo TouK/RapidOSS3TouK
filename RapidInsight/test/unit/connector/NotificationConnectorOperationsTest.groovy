@@ -380,7 +380,7 @@ class NotificationConnectorOperationsTest extends RapidCmdbWithCompassTestCase {
         def script = updatedObjects.script;
 
         assertTrue(script.hasErrors())
-        assertEquals("nullable", script.errors.allErrors[0].code)
+        assertEquals("Errors ${script.errors.toString()}","blank", script.errors.allErrors[0].code)
 
         assertEquals(1, NotificationConnector.count())
         assertEquals(1, EmailConnection.count())

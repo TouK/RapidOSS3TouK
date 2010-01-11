@@ -22,7 +22,11 @@ public class RsRiEventOperations  extends RsEventOperations {
 	public static notify(Map originalEventProps) {
 		return _notify(RsRiEvent,originalEventProps);
 	}
-    public static _notify(Class eventModel,Map originalEventProps)
+	public static _notify(Class eventModel,Map originalEventProps)
+    {
+         _notify(eventModel, originalEventProps, true)
+    }
+    public static _notify(Class eventModel,Map originalEventProps, createJournal)
     {
        def eventProps = [:]
 		eventProps.putAll(originalEventProps)
@@ -51,7 +55,11 @@ public class RsRiEventOperations  extends RsEventOperations {
 		event = eventModel.add(eventProps)
 
 		if (!event.hasErrors()) {
-            RsEventJournal.add(eventId:event.id,eventName:"created",rsTime:Date.toDate(now),details:journalDetails)            
+            if(createJournal){
+                def eventName = journalDetails == RsEventJournal.MESSAGE_CREATE ? "created" : "updated"
+                RsEventJournal.add(eventId:event.id,eventName:eventName,rsTime:Date.toDate(now),details:journalDetails)    
+            }
+
 		}
 		else
         {

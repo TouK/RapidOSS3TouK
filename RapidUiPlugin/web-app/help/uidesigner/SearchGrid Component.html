@@ -29,8 +29,9 @@ SearchGrid is a UI component designed to represent tabular row data. It enables 
 <h4><a name="SearchGridComponent-AdditionalProperties"></a>Additional Properties</h4>
 
 <p><b>queryEnabled</b> (Optional): Parameter to determine whether the quick filtering is enabled or not. Default is true.<br/>
-<b>bringAllProperties</b> (Optional): When set to false SearchGrid requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server.<br/>
-<b>extraPropertiesToRequest</b> (Optional): Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false.<br/>
+<b>bringAllProperties</b> (Optional): When set to false SearchGrid requests its data with a parameter ("propertyList") to indicate that it needs only a set of properties, to decrease the size of the data coming from server.<br/>
+<b>extraPropertiesToRequest</b> (Optional): Comma separated property names which will be added "propertyList" URL parameter. Active when bringAllProperties is set to false.<br/>
+<b>multipleFieldSorting</b> (Optional): When set true component supports multiple field sorting.<br/>
 <b>searchClassesUrl</b> (Required when queryEnabled is "true"): The url used for the request to the server to retrieve available search classes.<br/>
 <b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100.<br/>
 <b>defaultQuery</b> (Optional): The query appended to all queries sent by SearchGrid.<br/>

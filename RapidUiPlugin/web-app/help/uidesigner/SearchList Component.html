@@ -28,8 +28,9 @@ SearchList is a UI component designed to represent tabular row data. It enables 
 
 <h4><a name="SearchListComponent-AdditionalProperties"></a>Additional Properties</h4>
 
-<p><b>bringAllProperties</b> (Optional): When set to false SearchList requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server.<br/>
-<b>extraPropertiesToRequest</b> (Optional): Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false.<br/>
+<p><b>bringAllProperties</b> (Optional): When set to false SearchList requests its data with a parameter ("propertyList") to indicate that it needs only a set of properties, to decrease the size of the data coming from server.<br/>
+<b>extraPropertiesToRequest</b> (Optional): Comma separated property names which will be added "propertyList" URL parameter. Active when bringAllProperties is set to false.<br/>
+<b>multipleFieldSorting</b> (Optional): When set true component supports multiple field sorting.<br/>    
 <b>defaultFields</b> (Optional if showMax property is provided): Properties list that will be shown when no field configuration is found for the row.<br/>
 <b>showMax</b> (Optional): Maximum number of properties that will be displayed from the data. It overrides "defaultFields" and fields declarations.<br/>
 <b>maxRowsDisplayed</b> (Optional): The maximum row count requested from server at every poll. Default is 100.<br/>

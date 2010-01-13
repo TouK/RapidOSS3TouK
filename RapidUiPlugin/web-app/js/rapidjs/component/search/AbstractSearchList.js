@@ -36,6 +36,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     this.searchInEnabled = true;
     this.bringAllProperties = true;
     this.extraPropertiesToRequest = null;
+    this.multipleFieldSorting = true;
     YAHOO.ext.util.Config.apply(this, config);
     this.totalCountAttribute = 'total';
     this.offsetAttribute = 'offset';
@@ -885,7 +886,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return [];
     },
     createSortHelper : function() {
-        return new YAHOO.rapidjs.component.search.SortHelper(this.keyAttribute);
+        if(this.multipleFieldSorting){
+            return new YAHOO.rapidjs.component.search.SortHelper(this.keyAttribute);    
+        }
+        else{
+           return new YAHOO.rapidjs.component.search.SingleSortHelper(this.keyAttribute);
+        }
+
     },
     showCurrentState: function() {
     },
@@ -972,6 +979,17 @@ YAHOO.rapidjs.component.search.SortHelper.prototype = {
         }
 
     }
-
-
 }
+
+YAHOO.rapidjs.component.search.SingleSortHelper = function(defaultSort) {
+   YAHOO.rapidjs.component.search.SingleSortHelper.superclass.constructor.call(this, defaultSort); 
+}
+
+YAHOO.extend(YAHOO.rapidjs.component.search.SingleSortHelper, YAHOO.rapidjs.component.search.SortHelper, {
+    addSort: function(sortAtt, sortOrder) {
+        YAHOO.rapidjs.component.search.SingleSortHelper.superclass.setSort.call(this, sortAtt, sortOrder)
+    },
+    removeSort : function(sort) {
+        YAHOO.rapidjs.component.search.SingleSortHelper.superclass.setSort.call(this, this.defaultSort, this.defaultOrder)
+    }
+});

@@ -724,7 +724,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         })
     },
     createSortHelper : function() {
-        return new YAHOO.rapidjs.component.search.SearchGridSortHelper(this, this.keyAttribute);
+        if(this.multipleFieldSorting){
+            return new YAHOO.rapidjs.component.search.SearchGridSortHelper(this, this.keyAttribute);    
+        }
+        else{
+            return new YAHOO.rapidjs.component.search.SearchGridSingleSortHelper(this, this.keyAttribute);
+        }
     }
 });
 
@@ -800,3 +805,33 @@ YAHOO.extend(YAHOO.rapidjs.component.search.SearchGridSortHelper, YAHOO.rapidjs.
         }
     }
 })
+
+YAHOO.rapidjs.component.search.SearchGridSingleSortHelper = function(searchGrid, defaultSort) {
+    YAHOO.rapidjs.component.search.SearchGridSingleSortHelper.superclass.constructor.call(this, searchGrid, defaultSort);
+}
+
+YAHOO.extend(YAHOO.rapidjs.component.search.SearchGridSingleSortHelper, YAHOO.rapidjs.component.search.SearchGridSortHelper, {
+    addSort: function(sortAtt, sortOrder) {
+        YAHOO.rapidjs.component.search.SearchGridSingleSortHelper.superclass.setSort.call(this, sortAtt, sortOrder)
+    },
+    removeSort : function(sort) {
+        YAHOO.rapidjs.component.search.SearchGridSingleSortHelper.superclass.setSort.call(this, this.defaultSort, this.defaultOrder)
+    },
+    headerClicked : function(att) {
+        var sortIndex = ArrayUtils.findIndex(this.sorts, function(it) {
+            return it == att
+        });
+        if (sortIndex > -1) {
+            var order = this.orders[sortIndex];
+            if (order == 'asc') {
+                this.setSort(att, 'desc')
+            }
+            else {
+                this.setSort(att, 'asc')
+            }
+        }
+        else {
+            this.setSort(att, 'asc')
+        }
+    }
+});

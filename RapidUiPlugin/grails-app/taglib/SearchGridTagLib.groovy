@@ -204,6 +204,8 @@ class SearchGridTagLib {
             cArray.add("bringAllProperties:${config['bringAllProperties']}")
         if (config["extraPropertiesToRequest"] != null)
             cArray.add("extraPropertiesToRequest:'${config['extraPropertiesToRequest']}'")
+        if (config["multipleFieldSorting"] != null)
+            cArray.add("multipleFieldSorting:${config['multipleFieldSorting']}")
 
         def menuItems = xml.MenuItems?.MenuItem;
         def menuItemArray = [];

@@ -26,6 +26,7 @@ class UiSearchGrid extends UiComponent {
     Boolean searchInEnabled = true;
     Boolean queryEnabled = true;
     Boolean bringAllProperties = true;
+    Boolean multipleFieldSorting = true;
     Long maxRowsDisplayed = 100;
     String defaultQuery = "";
 
@@ -53,6 +54,7 @@ class UiSearchGrid extends UiComponent {
                         queryEnabled: [descr: "Parameter to determine whether the quick filtering is enabled or not."],
                         bringAllProperties: [descr: "When set to false SearchGrid requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server."],
                         extraPropertiesToRequest: [descr: "Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false."],
+                        multipleFieldSorting: [descr: "When set true component supports multiple field sorting"],
                         searchClassesUrl: [descr: "The url used for the request to the server to retrieve available search classes."],
                         maxRowsDisplayed: [descr: "The maximum row count requested from server at every poll."],
                         defaultQuery: [descr: "The query appended to the all queries sent by SearchGrid."],

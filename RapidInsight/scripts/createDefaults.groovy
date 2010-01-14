@@ -30,7 +30,7 @@ message.RsMessageRule.cacheConnectorDestinationNames();
 
 
 def scriptsToAdd=[]
-scriptsToAdd.add([name:"modelCreator"])
+scriptsToAdd.add([name:"modelCreator",logFileOwn:true])
 scriptsToAdd.add([name:"removeAll"])
 scriptsToAdd.add([name:"scriptTestRunner", logFileOwn:true])
 scriptsToAdd.add([name:"getTimeRangeButtonConfiguration", logFileOwn:true, enabledForAllGroups:true])

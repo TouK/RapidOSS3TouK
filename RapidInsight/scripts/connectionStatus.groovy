@@ -24,7 +24,7 @@ logInfo("TOTAL > borrowed : ${totalCounts.borrowed} \t active : ${totalCounts.ac
 
 def logInfo(message)
 {
-	logger.info(message);
+	logger.warn(message);
 	RESULT+=message.replace("\t","&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")+"<br>";
 }
 

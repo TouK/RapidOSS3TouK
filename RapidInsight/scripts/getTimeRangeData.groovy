@@ -71,7 +71,7 @@ def mb = new MarkupBuilder(sw);
 long lowestTime = startDate.getTime();
 def time = lowestTime;
 def start = 0;
-def results = [];
+def results = Collections.synchronizedList([]);
 def queryThreads = Collections.synchronizedList([]);
 while(time <= cTime.getTime() || start < numberOfintervals){
 

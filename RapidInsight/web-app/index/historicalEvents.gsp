@@ -12,6 +12,10 @@
         onSaveQueryClicked="${['saveQueryAction']}"
     
 >
+    <rui:timeRangeSelector url="../script/run/getTimeRangeData" buttonConfigurationUrl="../script/run/getTimeRangeButtonConfiguration" fromTimeProperty="fromTime"
+            tooltipProperty="tooltip" toTimeProperty="toTime" stringToTimeProperty="stringToTime" stringFromTimeProperty="stringFromTime" timeAxisLabelProperty="timeAxisLabel" valueProperties="value">
+    </rui:timeRangeSelector>
+    
     <rui:slMenuItems>
         <%
 eventDetailsVisible="true"

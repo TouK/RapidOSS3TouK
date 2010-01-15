@@ -112,17 +112,34 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         }
     }
 
+    public void testReleasesConnectionToConnectionManagerAndGetsItAgainIfSubscribeThrowsException() throws Exception {
+        param.setMaxNumberOfConnectionsInPool(1);
+        listeningAdapter.subscribe();
+        IConnection oldConn = listeningAdapter.getConnection();
+        listeningAdapter.subscribeException = new Exception("subscribe exception");
+        try {
+            listeningAdapter.disconnectDetected();
+        }
+        catch (Exception e) {
+        }
+        ConnectionManager.removeConnection(connectionName);
+        IConnection newConn = listeningAdapter.getConnection();
+        assertNotSame(oldConn, newConn);
+    }
+
     public void testUnsubscribeReleasesConnection() throws Exception {
         param.setMaxNumberOfConnectionsInPool(1);
         listeningAdapter.subscribe();
-        assertTrue(listeningAdapter.getConnection().isConnected());
-        assertTrue(listeningAdapter.getConnection().checkConnection());
+        IConnection oldConnection = listeningAdapter.getConnection();
+        assertTrue(oldConnection.isConnected());
+        assertTrue(oldConnection.checkConnection());
         assertTrue(listeningAdapter.isSubscribed());
 
         listeningAdapter.unsubscribe();
         assertFalse(listeningAdapter.isSubscribed());
         IConnection conn = ConnectionManager.getConnection(connectionName);
         assertTrue(conn.isConnected());
+        assertSame(oldConnection, conn);
     }
 
     public void testUnsubscribeReleasesConnectionIfExceptionOccurs() throws Exception {
@@ -247,6 +264,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertEquals(AdapterStateProvider.STOPPED, sp.getState());
 
     }
+
     public void testStateMechanismWithExceptionalCases() throws Exception {
         Object stateWaitLock = new Object();
         listeningAdapter.stateWaitLock = stateWaitLock;
@@ -330,6 +348,20 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
         assertEquals(AdapterStateProvider.STARTED, sp.getState());
         listeningAdapter.disconnectDetected();
         assertEquals(AdapterStateProvider.STOPPED_WITH_EXCEPTION, sp.getState());
+    }
+
+    public void testDisconnectDetectionInvalidatesTheConnection() throws Exception {
+        listeningAdapter = new MockBaseListeningAdapter(connectionName, 60);
+        listeningAdapter.subscribe();
+        IConnection oldConnection = listeningAdapter.getConnection();
+        assertTrue(oldConnection.isConnected());
+        assertTrue(oldConnection.isValid());
+        listeningAdapter.disconnectDetected();
+        IConnection newConnection = listeningAdapter.getConnection();
+        assertTrue(newConnection.isConnected());
+        assertTrue(newConnection.isValid());
+        assertNotSame(oldConnection, newConnection);
+        assertFalse(oldConnection.isValid());
     }
 
     public void testUnsubscribeWaitsToUpdateFinishItsJobEvenIfUnsubscribeThrowsRuntimeException() throws Exception {

@@ -49,8 +49,6 @@ public abstract class BaseAdapter implements Adapter {
         this.logger = logger;
     }
 
-//    protected abstract boolean isConnectionException(Throwable t);
-
     public abstract Map<String, Object> getObject(Map<String, String> ids, List<String> fieldsToBeRetrieved) throws Exception;
 
     public void executeAction(Action action) throws Exception {
@@ -79,6 +77,7 @@ public abstract class BaseAdapter implements Adapter {
                     throw e;
                 }
             }
+            boolean shouldWait = false;
             try {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Executing action with " + connectionName);
@@ -106,7 +105,7 @@ public abstract class BaseAdapter implements Adapter {
                             isPrintedConnectionExceptionOnce = true;
                             logger.warn("Exception occurred while executing action " + connectionName + ". Trying to reconnect.", e);
                         }
-                        Thread.sleep(reconnectInterval);
+                        shouldWait = true;
                     } else {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Exception occurred while executing action with connection " + connectionName, e);
@@ -120,9 +119,10 @@ public abstract class BaseAdapter implements Adapter {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Released connection " + connectionName);
                 }
+                if(shouldWait){
+                    Thread.sleep(reconnectInterval);
+                }
             }
-
-
         }
     }
 

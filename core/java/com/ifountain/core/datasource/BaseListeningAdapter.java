@@ -75,7 +75,6 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
             setIsUpdateProcessing(false);
             updateWaitLock.notifyAll();
         }
-        //updateLock.notifyAll();
     }
 
     public void sendDataToObservers(Object data) {
@@ -150,7 +149,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
         }
     }
 
-    private void unsubscribeInternally(boolean shouldWaitProcessingUpdates) throws Exception {
+    private void unsubscribeInternally(boolean shouldWaitProcessingUpdates, boolean shouldInvalidateConnection) throws Exception {
         try {
             if (isSubscribed()) {
                 try {
@@ -165,6 +164,9 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                             }
                         }
                     }
+                    if(shouldInvalidateConnection){
+                        getConnection().invalidate();
+                    }
                     releaseConnection();
                 }
             }
@@ -174,11 +176,14 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
                 executorAdapter.destroy();
             }
         }
+    }
 
+    private void unsubscribeInternally(boolean shouldWaitProcessingUpdates) throws Exception {
+        unsubscribeInternally(shouldWaitProcessingUpdates, false);
     }
 
     protected void disconnectDetected() throws Exception {
-        unsubscribeInternally(false);
+        unsubscribeInternally(false, true);
         if (reconnectInterval <= 0) {
             logger.warn("Disconnect detected with no reconnection. Will exit.");
             updateState(AdapterStateProvider.STOPPED_WITH_EXCEPTION);
@@ -260,7 +265,7 @@ public abstract class BaseListeningAdapter extends Observable implements Observe
             return connection;
         }
 
-        protected void releaseConnection(IConnection connection) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
+        protected void releaseConnection(IConnection conn) throws ConnectionInitializationException, ConnectionPoolException, ConnectionException {
             if (!isSubscribed()) {
                 super.releaseConnection(connection);
                 connection = null;

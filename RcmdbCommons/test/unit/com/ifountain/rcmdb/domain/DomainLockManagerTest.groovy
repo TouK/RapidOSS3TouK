@@ -385,7 +385,7 @@ class DomainLockManagerTest extends RapidCmdbTestCase {
                 DomainLockManager.getInstance().lockInstance(lockName + i);
                 fail("Should throw timeout exception since lock is not available");
             }
-            catch (org.apache.commons.transaction.locking.LockException exception)
+            catch (Exception e)
             {
 
             }

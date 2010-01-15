@@ -31,9 +31,6 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
      public void testNotifyAddsRsRiEvent()
      {
-
-
-
         assertEquals(0,RsRiEvent.count());
         assertEquals(0,RsEventJournal.count());
 
@@ -59,7 +56,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         def addedJournal=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[0]
 
         assertEquals(addedJournal.eventId,addedEvent.id);
-        assertEquals(addedJournal.eventName,addedEvent.identifier);
+        assertEquals("created",addedJournal.eventName);
         assertEquals(addedJournal.rsTime,Date.toDate(addedEvent.changedAt));
         assertEquals(addedJournal.details,RsEventJournal.MESSAGE_CREATE);
 
@@ -85,7 +82,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
         def addedJournal2=RsEventJournal.search("eventId:${addedEvent.id}", ["sort":"id","order":"asc"]).results[1]
 
         assertEquals(addedJournal2.eventId,updatedEvent.id);
-        assertEquals(addedJournal2.eventName,updatedEvent.identifier);
+        assertEquals("updated",addedJournal2.eventName);
         assertEquals(addedJournal2.rsTime,Date.toDate(updatedEvent.changedAt));
         assertEquals(addedJournal2.details,RsEventJournal.MESSAGE_UPDATE);
 

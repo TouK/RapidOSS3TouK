@@ -15,9 +15,9 @@ def buttons = [
 ]
 
 def fields = [
+    [displayName:"Cleared At", name:"clearedAt"],
     [displayName:"Created At", name:"createdAt"],
-    [displayName:"Changed At", name:"changedAt"],
-    [displayName:"Cleared At", name:"clearedAt"]
+    [displayName:"Changed At", name:"changedAt"]
 ]
 
 def sw = new StringWriter();

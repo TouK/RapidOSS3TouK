@@ -60,7 +60,7 @@ class AdminUiUsersTabTest extends SeleniumTestCase
         def userId = selenium.createUser("nmd1User", "pass", ["nmd1Group"], [:], true);
         selenium.login("nmd1User", "pass");
         selenium.login("rsadmin", "changeme");
-        def updatedFields =  [password1:"123", password2:"123", email:"nmd1@ifountain.com"]
+        def updatedFields =  [password1:"123", password2:"123"]
         selenium.updateUserById(userId,updatedFields);
         try{
             selenium.login("nmd1User", "pass");
@@ -73,7 +73,6 @@ class AdminUiUsersTabTest extends SeleniumTestCase
         selenium.login("rsadmin", "changeme");
         selenium.openAndWait("/RapidSuite/rsUser/show/${userId}");
         selenium.clickAndWait("_action_Edit");
-        assertEquals(updatedFields.email, selenium.getValue("email"));
 
     }
 

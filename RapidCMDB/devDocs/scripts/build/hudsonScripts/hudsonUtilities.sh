@@ -17,6 +17,7 @@ tagSvn() {
     svn copy http://dev.ifountain.org/repos/os/Hyperic http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Hyperic"
     svn copy http://dev.ifountain.org/repos/os/Apg http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Apg"
     svn copy http://dev.ifountain.org/repos/os/OpenNms http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging OpenNms"
+    svn copy http://dev.ifountain.org/repos/os/Rivermuse http://dev.ifountain.org/repos/os/tags/$tagname -m "Tagging Rivermuse"
 }
 
 tagSvnForRapidBrowser() {

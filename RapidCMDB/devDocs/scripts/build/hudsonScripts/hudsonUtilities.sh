@@ -59,6 +59,7 @@ checkOutTag() {
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Hyperic ./Hyperic
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Apg ./Apg
     svn checkout file:///var/www/svn/os/tags/$TAG_NAME/OpenNms ./OpenNms
+    svn checkout file:///var/www/svn/os/tags/$TAG_NAME/Rivermuse ./Rivermuse
 }
 
 runTestBuildAndJavaTests(){

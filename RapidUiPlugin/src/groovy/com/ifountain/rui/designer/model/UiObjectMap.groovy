@@ -1,8 +1,8 @@
 package com.ifountain.rui.designer.model
 
+import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -125,37 +125,15 @@ class UiObjectMap extends UiComponent {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = [:];
-        attributes.putAll(xmlNode.attributes());
-        attributes.tabId = parentElement._designerKey;
-        def addedMap = DesignerSpace.getInstance().addUiElement(UiObjectMap, attributes);
-        def textsNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapTextNodeContent"}
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapImageNodeContent"}
-        def gaugesNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapGaugeNodeContent"}
-        def toolbarsNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapToolbarMenus"}
-        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "ObjectMapMenuItems"}
-
-        textsNode.UiElement.each {
-            it.attributes().put("type", "text")
-            UiObjectMapContent.addUiElement(it, addedMap);
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        node."${UIELEMENT_TAG}"."${UIELEMENT_TAG}".each{
+            create(it, this)
         }
-        imagesNode.UiElement.each {
-            UiImageObjectMapContent.addUiElement(it, addedMap);
+        node.children().each{
+            removeUnneccessaryAttributes(it)
         }
-        gaugesNode.UiElement.each {
-            it.attributes().put("type", "gauge")
-            UiObjectMapContent.addUiElement(it, addedMap);
-        }
-        toolbarsNode.UiElement.each {
-            UiToolbarMenu.addUiElement(it, addedMap);
-        }
-        menuItemsNode.UiElement.each {
-            UiMenuItem.addUiElement(it, addedMap);
-        }
-        return addedMap;
     }
+
 
     def getNodeMenuItems() {
         def toolbarMenuItems = [];

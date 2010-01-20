@@ -39,8 +39,4 @@ class UiMergeAction extends UiRequestAction {
 
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        return UiRequestAction._addUiElement(UiMergeAction, xmlNode, parentElement);
-    }
 }

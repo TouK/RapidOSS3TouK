@@ -161,10 +161,12 @@ class DesignerSpace {
         }
     }
 
-    public UiElmnt addUiElement(Class uiElementClass, Map props) {
+    public UiElmnt addUiElement(UiElmnt uiElementInstance) {
+        Class uiElementClass = uiElementInstance.class;
         if (uiElementClassMap.containsKey(uiElementClass.name)) {
             def mc = uiElementClass.metaClass;
             def uiElementProps = [:];
+            def props = uiElementInstance.attributesAsString;
             props.each {propName, propValue ->
                 MetaBeanProperty metaProp = mc.getMetaProperty(propName)
                 if (metaProp && metaProp.getSetter() != null) {
@@ -182,7 +184,6 @@ class DesignerSpace {
                 }
             }
             def uiElementKey = calculateKey(uiElementClass, uiElementProps);
-            def uiElementInstance = uiElementClass.newInstance();
             uiElementInstance._designerKey = uiElementKey;
             uiElementProps.each {key, value ->
                 uiElementInstance[key] = value;

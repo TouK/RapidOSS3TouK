@@ -143,43 +143,26 @@ class UiSearchList extends UiComponent {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.tabId = parentElement._designerKey;
-        if (attributes.searchInEnabled == "true" && (attributes.searchClassesUrl == "" || attributes.searchClassesUrl == null)) {
-            throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def attributes = node.attributes();
+        if (attributes.searchInEnabled == "true" && attributes.searchClassesUrl == "") {
+            throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchList ${attributes.name}")
         }
-        def searchList = DesignerSpace.getInstance().addUiElement(UiSearchList, attributes);
+    }
 
-        def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};
-        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListFields"};
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListImages"};
-        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMenuItems"};
-        def multiSelectionMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListMultiSelectionMenuItems"};
-        def propertyMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchListPropertyMenuItems"};
-        if (timeRangeSelector && timeRangeSelector.size() > 0)
-        {
-            UiSearchListTimeRangeSelector.addUiElement(timeRangeSelector, searchList)
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        node.children().each {
+            if (it.@designerType.text() != "SearchListTimeRangeSelector") {
+                it."${UIELEMENT_TAG}".each {child ->
+                    create(child, this)
+                }
+                removeUnneccessaryAttributes(it);
+            }
+            else {
+                create(it, this)
+            }
         }
-        columnsNode.UiElement.each {
-            UiSearchListField.addUiElement(it, searchList);
-        }
-        imagesNode.UiElement.each {
-            UiImage.addUiElement(it, searchList);
-        }
-        menuItemsNode.UiElement.each {
-            UiMenuItem.addUiElement(it, searchList);
-        }
-        multiSelectionMenuItemsNode.UiElement.each {
-            def menuItem = UiMenuItem.addUiElement(it, searchList);
-            menuItem.type = "multiple";
-        }
-        propertyMenuItemsNode.UiElement.each {
-            def propMenuItem = UiMenuItem.addUiElement(it, searchList);
-            propMenuItem.type = "property";
-        }
-        return searchList;
     }
 
     public List getFields() {
@@ -191,7 +174,7 @@ class UiSearchList extends UiComponent {
     public List getPropertyMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "property"};
     }
-     public List getMultiSelectionMenuItems() {
+    public List getMultiSelectionMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "multiple"};
     }
     public List getSubComponents() {

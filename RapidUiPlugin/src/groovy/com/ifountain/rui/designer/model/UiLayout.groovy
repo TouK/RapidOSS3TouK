@@ -2,6 +2,7 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.designer.DesignerSpace
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -33,6 +34,26 @@ class UiLayout extends UiElmnt {
                 ]
         ];
         return metaData;
+    }
+
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        if (parent instanceof UiTab) {
+            attributesAsString["tabId"] = parent._designerKey;
+        }
+        else {
+            attributesAsString["parentUnitId"] = parent._designerKey;
+            UiLayout parentLayout = ((UiLayoutUnit) parent).getParentLayout();
+            attributesAsString["tabId"] = parentLayout.tabId;
+        }
+    }
+
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        def innerLayoutUnitsNode = node."${UIELEMENT_TAG}";
+        innerLayoutUnitsNode.each {innerLayoutUnitNode ->
+            create(innerLayoutUnitNode, this);
+        }
     }
 
     public List getUnits() {

@@ -38,7 +38,7 @@ class UiElementTests extends RCompTestCase {
             }
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
-        UiWebPage.addUiElement(xmlNode, null);
+        UiElmnt.create(xmlNode, null);
         UiWebPage webPage = DesignerSpace.getInstance().getUiElement(UiWebPage, "page1");
         assertNotNull(webPage);
         def tabs = webPage.getTabs()
@@ -46,7 +46,7 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddTab() {
-        UiWebPage webPage = DesignerSpace.getInstance().addUiElement(UiWebPage, [name: "page1"]);
+        UiWebPage webPage = DesignerSpace.getInstance().addUiElement(new UiWebPage(attributesAsString:[name: "page1"]));
         builder.UiElement([designerType: "Tab", name: "tab1", contentFile: "content.gsp"]) {
             builder.UiElement(designerType: 'Layout') {
                 builder.UiElement(designerType: 'CenterUnit', component: '', contentFile: 'center.gsp', gutter: '', scroll: 'false', useShim: 'false');
@@ -60,7 +60,7 @@ class UiElementTests extends RCompTestCase {
             builder.UiElement(designerType: 'Actions')
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
-        UiTab.addUiElement(xmlNode, webPage);
+        UiElmnt.create(xmlNode, webPage)
         UiTab tab = DesignerSpace.getInstance().getUiElement(UiTab, "page1_tab1");
 
         assertNotNull(tab);
@@ -77,14 +77,14 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddDialog() {
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, [name: "tab1", webPageId: "page1"])
-        UiHtml comp = DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm", tabId: tab._designerKey])
+        UiTab tab = DesignerSpace.getInstance().addUiElement(new UiTab(attributesAsString:[name: "tab1", webPageId: "page1"]))
+        UiHtml comp = DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm", tabId: tab._designerKey]))
 
         def dialogProps = [designerType: "Dialog", component: "htmlForm", width: "500", height: "400", resizable: "true"]
         builder.UiElement(dialogProps)
 
         def xmlNode = new XmlSlurper().parseText(sw.toString());
-        UiDialog.addUiElement(xmlNode, tab);
+        UiElmnt.create(xmlNode, tab)
 
         UiDialog dialog = DesignerSpace.getInstance().getUiElement(UiDialog, "${comp._designerKey}");
         assertNotNull(dialog);
@@ -97,12 +97,14 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddAction() {
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, [name: "tab1", webPageId: "page1"])
-        UiHtml comp = DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm", tabId: tab._designerKey])
-        UiMenuItem menuItem = DesignerSpace.getInstance().addUiElement(UiMenuItem, [name: "menuItem", componentId: comp._designerKey])
+        UiTab tab = DesignerSpace.getInstance().addUiElement(new UiTab(attributesAsString:[name: "tab1", webPageId: "page1"]) )
+        UiHtml comp = DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm", tabId: tab._designerKey]))
+        UiMenuItem menuItem = DesignerSpace.getInstance().addUiElement(new UiMenuItem(attributesAsString:[name: "menuItem", componentId: comp._designerKey]))
 
         builder.UiElement(designerType: "Actions") {
-            builder.UiElement(designerType: "LinkAction", name: "linkAction1", url: "url1", target: "self")
+            builder.UiElement(designerType: "LinkAction", name: "linkAction1", url: "url1", target: "self"){
+                builder.UiElement(designerType: "ActionTriggers")
+            }
             builder.UiElement(designerType: "LinkAction", name: "linkAction2", url: "url2", target: "blank") {
                 builder.UiElement(designerType: "ActionTriggers") {
                     builder.UiElement(designerType: "ActionTrigger", type: "Component event", component: "htmlForm", event: "clicked")
@@ -113,7 +115,7 @@ class UiElementTests extends RCompTestCase {
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
         xmlNode.UiElement.each {
-            UiLinkAction.addUiElement(it, tab);
+            UiElmnt.create(it, tab);
         }
 
         UiLinkAction action1 = DesignerSpace.getInstance().getUiElement(UiLinkAction, "${tab._designerKey}_linkAction1");
@@ -149,9 +151,9 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddLayoutUnit() {
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, [name: "tab1", webPageId: "page1"])
-        UiHtml comp = DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm", tabId: tab._designerKey])
-        UiLayout pageLayout = DesignerSpace.getInstance().addUiElement(UiLayout, [tabId: tab._designerKey])
+        UiTab tab = DesignerSpace.getInstance().addUiElement(new UiTab(attributesAsString:[name: "tab1", webPageId: "page1"]))
+        UiHtml comp = DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm", tabId: tab._designerKey]))
+        UiLayout pageLayout = DesignerSpace.getInstance().addUiElement(new UiLayout(attributesAsString:[tabId: tab._designerKey]))
 
         builder.UiElement(designerType: "CenterUnit", component: "htmlForm") {
             builder.UiElement(designerType: "Layout") {
@@ -159,7 +161,7 @@ class UiElementTests extends RCompTestCase {
             }
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
-        UiLayoutUnit.addUiElement(xmlNode, pageLayout);
+        UiElmnt.create(xmlNode, pageLayout)
 
         def unitsOfPageLayout = pageLayout.getUnits();
         assertEquals(1, unitsOfPageLayout.size());
@@ -179,26 +181,27 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddRequestAction() {
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, [name: "tab1", webPageId: "page1"])
+        UiTab tab = DesignerSpace.getInstance().addUiElement(new UiTab(attributesAsString:[name: "tab1", webPageId: "page1"]))
         builder.UiElement(designerType: "RequestAction", name: "requestAction", components: "htmlForm1, htmlForm2", url: "url") {
             builder.UiElement(designerType: "RequestParameters") {
                 builder.UiElement(designerType: "RequestParameter", key: "key1", value: "value1")
                 builder.UiElement(designerType: "RequestParameter", key: "key2", value: "value2")
             }
+            builder.UiElement(designerType:"ActionTriggers")
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
         try {
-            UiRequestAction.addUiElement(xmlNode, tab)
+            UiElmnt.create(xmlNode, tab)
             fail("should throw exception")
         }
         catch (e) {
            assertEquals("Component htmlForm1 could not found for request action requestAction", e.getMessage())
         }
 
-        DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm1", tabId: tab._designerKey])
-        DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm2", tabId: tab._designerKey])
+        DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm1", tabId: tab._designerKey]))
+        DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm2", tabId: tab._designerKey]))
         
-        UiRequestAction requestAction = UiRequestAction.addUiElement(xmlNode, tab)
+        UiRequestAction requestAction = UiElmnt.create(xmlNode, tab)
         assertEquals("requestAction", requestAction.name)
         assertEquals("url", requestAction.url)
         assertEquals("htmlForm1, htmlForm2", requestAction.components)
@@ -206,25 +209,26 @@ class UiElementTests extends RCompTestCase {
     }
 
     public void testAddFunctionAction(){
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, [name: "tab1", webPageId: "page1"])
+        UiTab tab = DesignerSpace.getInstance().addUiElement(new UiTab(attributesAsString:[name: "tab1", webPageId: "page1"]))
         builder.UiElement(designerType: "FunctionAction", name: "functionAction", component: "htmlForm", function: "show") {
             builder.UiElement(designerType: "FunctionArguments") {
                 builder.UiElement(designerType: "FunctionArgument", value: "value1")
                 builder.UiElement(designerType: "FunctionArgument", value: "value2")
             }
+            builder.UiElement(designerType:"ActionTriggers")
         }
         def xmlNode = new XmlSlurper().parseText(sw.toString());
         try {
-            UiFunctionAction.addUiElement(xmlNode, tab)
+            UiElmnt.create(xmlNode, tab)
             fail("should throw exception")
         }
         catch (e) {
            assertEquals("Component <htmlForm> cannot be found for function action functionAction", e.getMessage())
         }
 
-        DesignerSpace.getInstance().addUiElement(UiHtml, [name: "htmlForm", tabId: tab._designerKey])
+        DesignerSpace.getInstance().addUiElement(new UiHtml(attributesAsString:[name: "htmlForm", tabId: tab._designerKey]))
 
-        UiFunctionAction funcAction = UiFunctionAction.addUiElement(xmlNode, tab)
+        UiFunctionAction funcAction = UiElmnt.create(xmlNode, tab)
         assertEquals("functionAction", funcAction.name)
         assertEquals("htmlForm", funcAction.component)
         assertEquals("show", funcAction.function)

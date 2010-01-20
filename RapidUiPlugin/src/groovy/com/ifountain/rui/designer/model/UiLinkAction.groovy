@@ -44,12 +44,4 @@ class UiLinkAction extends UiAction {
 
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.tabId = parentElement._designerKey;
-        def addedAction = DesignerSpace.getInstance().addUiElement(UiLinkAction, attributes);
-        addTriggers(xmlNode, addedAction);
-        return addedAction;
-    }
 }

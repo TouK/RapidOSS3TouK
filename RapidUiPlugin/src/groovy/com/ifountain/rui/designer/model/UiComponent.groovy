@@ -3,6 +3,7 @@ package com.ifountain.rui.designer.model
 import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.util.DesignerTemplateUtils
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -29,6 +30,13 @@ class UiComponent extends UiElmnt {
         ];
         return metaData;
     }
+
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["tabId"] = parent._designerKey;
+    }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
 
     public List getTriggers() {
         return DesignerSpace.getInstance().getUiElements(UiActionTrigger).values().findAll {it.componentId == _designerKey};
@@ -57,4 +65,5 @@ class UiComponent extends UiElmnt {
     public String getActionsString(List actionTriggers){
         return DesignerTemplateUtils.getActionsString(actionTriggers);
     }
+
 }

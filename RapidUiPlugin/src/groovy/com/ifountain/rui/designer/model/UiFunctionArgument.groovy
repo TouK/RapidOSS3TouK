@@ -2,7 +2,6 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,10 +30,10 @@ class UiFunctionArgument extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.actionId = parentElement._designerKey;
-        return DesignerSpace.getInstance().addUiElement(UiFunctionArgument, attributes);
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["actionId"] = parent._designerKey;
     }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
 }

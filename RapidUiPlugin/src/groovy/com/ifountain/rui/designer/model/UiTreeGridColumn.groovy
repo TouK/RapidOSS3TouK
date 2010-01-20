@@ -1,8 +1,8 @@
 package com.ifountain.rui.designer.model
 
+import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -57,25 +57,28 @@ class UiTreeGridColumn extends UiColumn {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumnImages"};
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey
-        if (imagesNode.UiElement.size() == 0)
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "TreeGridColumnImages"};
+        if (imagesNode."${UIELEMENT_TAG}".size() == 0)
         {
-            attributes.type = "text";
+            attributesAsString["type"] = "text";
         }
         else
         {
-            attributes.type = "image";
+            attributesAsString["type"] = "image";
         }
-        def treeGridColumn = DesignerSpace.getInstance().addUiElement(UiTreeGridColumn, attributes);
-        imagesNode.UiElement.each {
-            UiImage.addUiElement(it, treeGridColumn);
-        }
-        return treeGridColumn;
     }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        super.addChildElements(node, parent);
+        def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "TreeGridColumnImages"};
+        imagesNode."${UIELEMENT_TAG}".each {
+            create(it, this)
+        }
+        removeUnneccessaryAttributes(imagesNode)
+    }
+
     public List getImages() {
         return DesignerSpace.getInstance().getUiElements(UiImage).values().findAll {it.columnId == _designerKey};
     }

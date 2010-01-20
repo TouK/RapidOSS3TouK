@@ -2,7 +2,6 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -30,24 +29,33 @@ class UiObjectMapContent extends UiElmnt {
                 imageExpanded: "images/rapidjs/designer/report.png",
                 imageCollapsed: "images/rapidjs/designer/report.png",
                 propertyConfiguration: [
-                        componentId:[isVisible:false, validators:[key:true]],
-                        type:[isVisible:false, validators:[inList:["text", "image", "gauge"]]],
-                        name: [descr: "The unique name of the node content configuration", validators:[key:true]],
-                        dataKey: [descr: "The attribute in node data which the mapping will be applied according to", validators:[blank:false, nullable:false]],
-                        x: [descr: "Sets how far the left edge of the image is to the left edge of the node", validators:[nullable:false]],
-                        y: [descr: "Sets how far the top edge of the image is to the top edge of the node", validators:[nullable:false]],
-                        width: [descr: "Width of the image", validators:[nullable:false]],
-                        height: [descr: "Height of the image", validators:[nullable:false]]
+                        componentId: [isVisible: false, validators: [key: true]],
+                        type: [isVisible: false, validators: [inList: ["text", "image", "gauge"]]],
+                        name: [descr: "The unique name of the node content configuration", validators: [key: true]],
+                        dataKey: [descr: "The attribute in node data which the mapping will be applied according to", validators: [blank: false, nullable: false]],
+                        x: [descr: "Sets how far the left edge of the image is to the left edge of the node", validators: [nullable: false]],
+                        y: [descr: "Sets how far the top edge of the image is to the top edge of the node", validators: [nullable: false]],
+                        width: [descr: "Width of the image", validators: [nullable: false]],
+                        height: [descr: "Height of the image", validators: [nullable: false]]
                 ],
                 childrenConfiguration: []
         ];
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey
-        return DesignerSpace.getInstance().addUiElement(UiObjectMapContent, attributes);
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["componentId"] = parent._designerKey;
+        def parentDesignerType = node.parent().@"${DESIGNER_TYPE}".toString();
+        if (parentDesignerType == "ObjectMapTextNodeContent") {
+            attributesAsString["type"] = "text"
+        }
+        else if (parentDesignerType == "ObjectMapGaugeNodeContent") {
+            attributesAsString["type"] = "gauge"
+        }
+
     }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
+
 }

@@ -1,8 +1,8 @@
 package com.ifountain.rui.designer.model
 
-import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.designer.DesignerSpace
+import com.ifountain.rui.designer.UiElmnt
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -144,41 +144,26 @@ class UiSearchGrid extends UiComponent {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.tabId = parentElement._designerKey;
-        if(attributes.searchInEnabled == "true" && attributes.searchClassesUrl == ""){
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def attributes = node.attributes();
+        if (attributes.searchInEnabled == "true" && attributes.searchClassesUrl == "") {
             throw new Exception("Property searchClassesUrl should be provided if searchInEnabled is true for SearchGrid ${attributes.name}")
         }
-        def searchGrid = DesignerSpace.getInstance().addUiElement(UiSearchGrid, attributes);
-        def timeRangeSelector = xmlNode.UiElement.find {it.@designerType.text() == "SearchListTimeRangeSelector"};
-        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumns"};
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridImages"};
-        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMenuItems"};
-        def multiSelectionMenuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridMultiSelectionMenuItems"};
-        def rowColorsNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridRowColors"};
-        if (timeRangeSelector && timeRangeSelector.size() > 0)
-        {
-            UiSearchListTimeRangeSelector.addUiElement(timeRangeSelector, searchGrid)
+    }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        node.children().each {
+            if (it.@designerType.text() != "SearchListTimeRangeSelector") {
+                it."${UIELEMENT_TAG}".each{child ->
+                    create(child, this)
+                }
+                removeUnneccessaryAttributes(it);
+            }
+            else{
+                create(it, this)
+            }
         }
-        columnsNode.UiElement.each {
-            UiSearchGridColumn.addUiElement(it, searchGrid);
-        }
-        imagesNode.UiElement.each {
-            UiImage.addUiElement(it, searchGrid);
-        }
-        menuItemsNode.UiElement.each {
-            UiMenuItem.addUiElement(it, searchGrid);
-        }
-        multiSelectionMenuItemsNode.UiElement.each {
-            def menuItem = UiMenuItem.addUiElement(it, searchGrid);
-            menuItem.type = "multiple"
-        }
-        rowColorsNode.UiElement.each {
-            UiRowColor.addUiElement(it, searchGrid);
-        }
-        return searchGrid;
     }
 
     public List getSubComponents() {
@@ -199,7 +184,7 @@ class UiSearchGrid extends UiComponent {
     public List getRowMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "component"};
     }
-     public List getMultiSelectionMenuItems() {
+    public List getMultiSelectionMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "multiple"};
     }
 }

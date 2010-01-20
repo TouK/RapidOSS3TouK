@@ -1,8 +1,8 @@
 package com.ifountain.rui.designer.model
 
-import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.designer.DesignerSpace
+import com.ifountain.rui.designer.UiElmnt
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -51,18 +51,15 @@ class UiSearchGridColumn extends UiColumn {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey;
-        def searchGridColumn = DesignerSpace.getInstance().addUiElement(UiSearchGridColumn, attributes);
-        if (attributes.type == "image") {
-            def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "SearchGridColumnImages"};
-            imagesNode.UiElement.each {
-                UiImage.addUiElement(it, searchGridColumn);
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        super.addChildElements(node, parent);
+        if (node.@type.toString() == "image") {
+            def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "SearchGridColumnImages"};
+            removeUnneccessaryAttributes(imagesNode);
+            imagesNode."${UIELEMENT_TAG}".each {
+                create(it, this);
             }
         }
-        return searchGridColumn;
     }
 
     public List getImages() {

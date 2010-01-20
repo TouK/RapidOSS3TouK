@@ -1,7 +1,7 @@
 package com.ifountain.rui.designer.model
 
-import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.designer.DesignerSpace
+import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
 
 /**
@@ -33,7 +33,7 @@ class UiMenuItem extends UiElmnt {
                 propertyConfiguration: [
                         componentId: [validators: [key: true], isVisible: false],
                         name: [descr: "Unique name of the menu item", validators: [key: true, matches: "[a-z_A-z]\\w*"]],
-                        label: [descr: "The label of the menu item", validators:[nullable:false]],
+                        label: [descr: "The label of the menu item", validators: [nullable: false]],
                         visible: [descr: "The JavaScript expression evaluated on row data to determine whether the item is displayed or not", required: true, type: "Expression"],
                         type: [validators: [blank: false, nullable: false, inList: ["component", "property", "toolbar", "multiple"]], isVisible: false]
                 ],
@@ -46,17 +46,35 @@ class UiMenuItem extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey;
-        def childMenuItemNodes = xmlNode.UiElement
-        def menuItem = DesignerSpace.getInstance().addUiElement(UiMenuItem, attributes);
-        childMenuItemNodes.each {childMenuItem ->
-            UiMenuItem cMenuItem = UiMenuItem.addUiElement(childMenuItem, parentElement);
-            cMenuItem.parentMenuItemId = menuItem._designerKey;
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        if (parent instanceof UiComponent) {
+            attributesAsString["componentId"] = parent._designerKey;
         }
-        return menuItem;
+        else if (parent instanceof UiMenuItem) {
+            attributesAsString["componentId"] = parent.componentId;
+            attributesAsString["parentMenuItemId"] = parent._designerKey;
+        }
+        else if (parent instanceof UiToolbarMenu) {
+            attributesAsString["componentId"] = parent.componentId;
+            attributesAsString["type"] = "toolbar";
+            attributesAsString["toolbarId"] = parent._designerKey;
+        }
+        def parentDesignerType = node.parent().@"${DESIGNER_TYPE}".toString();
+        if (parentDesignerType == "SearchGridMultiSelectionMenuItems" || parentDesignerType == "SearchListMultiSelectionMenuItems") {
+            attributesAsString["type"] = "multiple"
+        }
+        else if(parentDesignerType == "SearchListPropertyMenuItems"){
+           attributesAsString["type"] = "property" 
+        }
+
+    }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        def childMenuItemNodes = node."${UIELEMENT_TAG}"
+        childMenuItemNodes.each {childMenuItem ->
+            create(childMenuItem, this)
+        }
     }
 
     public List getActions()
@@ -83,7 +101,7 @@ class UiMenuItem extends UiElmnt {
 
     public UiMenuItem getParentMenuItem() {
         def menuItems = DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it._designerKey == parentMenuItemId};
-        if(menuItems.size() > 0){
+        if (menuItems.size() > 0) {
             return menuItems[0]
         }
         return null;

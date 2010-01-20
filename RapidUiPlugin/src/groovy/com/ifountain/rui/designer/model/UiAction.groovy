@@ -44,11 +44,21 @@ class UiAction extends UiElmnt {
         ];
         return metaData;
     }
-    public static void addTriggers(GPathResult xmlNode, UiElmnt addedAction)
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["tabId"] = parent._designerKey;
+    }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        addTriggers(node);
+    }
+
+    protected void addTriggers(GPathResult xmlNode)
     {
-        def triggersNode = xmlNode.UiElement.find {it.@designerType.text() == "ActionTriggers"}
-        triggersNode.UiElement.each {
-            UiActionTrigger.addUiElement(it, addedAction);
+        def triggersNode = xmlNode."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "ActionTriggers"}
+        removeUnneccessaryAttributes(triggersNode);
+        triggersNode."${UIELEMENT_TAG}".each {
+            create(it, this)
         }
     }
     public List getTriggers() {

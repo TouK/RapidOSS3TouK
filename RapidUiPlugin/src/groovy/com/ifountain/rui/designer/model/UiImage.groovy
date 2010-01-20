@@ -2,7 +2,6 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,17 +35,18 @@ class UiImage extends UiElmnt{
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        if (parentElement instanceof UiComponent)
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        if (parent instanceof UiComponent)
         {
-            attributes.componentId = parentElement._designerKey
+            attributesAsString.componentId = parent._designerKey
         }
         else
         {
-            attributes.columnId = parentElement._designerKey
+            attributesAsString.columnId = parent._designerKey
         }
-        return DesignerSpace.getInstance().addUiElement(UiImage, attributes);
     }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
+
 }

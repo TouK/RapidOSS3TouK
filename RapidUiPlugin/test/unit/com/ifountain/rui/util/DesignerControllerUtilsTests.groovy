@@ -1,16 +1,17 @@
 package com.ifountain.rui.util
 
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.comp.test.util.file.TestFile
-import groovy.xml.MarkupBuilder
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.model.UiWebPage
-import com.ifountain.rui.designer.model.UiTab
+import groovy.util.slurpersupport.GPathResult
+import groovy.xml.MarkupBuilder
+import java.text.SimpleDateFormat
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang.StringUtils
-import java.text.SimpleDateFormat
 import ui.designer.DesignerTrashPage
-import groovy.xml.StreamingMarkupBuilder
+import com.ifountain.rui.designer.UiElmnt
+import com.ifountain.rui.designer.model.UiSearchGrid
 
 /**
 * Created by IntelliJ IDEA.
@@ -119,8 +120,8 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
         new File(CONF_FILE).setText("<UiConfig/>")
         builder.UiConfig() {
             builder.UiElement(designerType: "WebPages") {
-                builder.UiElement(designerType: "WebPage", name: "page1", id: "1") {
-                    builder.UiElement(designerType: "Tabs", id: "2")
+                builder.UiElement(designerType: "WebPage", name: "page1") {
+                    builder.UiElement(designerType: "Tabs")
                 }
             }
         }
@@ -166,6 +167,24 @@ class DesignerControllerUtilsTests extends RapidCmdbWithCompassTestCase {
 
         assertEquals("<UiConfig/>", new File(CONF_FILE).getText());
     }
+
+    public void testSaveRemovesUnnecessaryUiDesignerInternalAttributes() {
+        builder.UiConfig() {
+            builder.UiElement(designerType: "WebPages", id:"1") {
+                builder.UiElement(designerType: "WebPage", id:"2", name:"page") {
+                    builder.UiElement(designerType: "Tabs", id:"3")
+                }
+            }
+        }
+        def uiConfig = sw.toString()
+        DesignerControllerUtils.save(uiConfig, CONF_FILE, BACKUP_DIR);
+        def newUiConfig = new XmlSlurper().parseText(new File(CONF_FILE).getText())
+        newUiConfig.depthFirst().each{
+            assertNull(it.attributes().get("id"));
+        }
+        assertEquals("page", newUiConfig.UiElement[0].UiElement[0].@name.toString())
+    }
+
     public void testGenerateThrowsExceptionIfFileDoesNotExist() {
         try {
             DesignerControllerUtils.generate(CONF_FILE, TEMPLATE_DIR, DIR);

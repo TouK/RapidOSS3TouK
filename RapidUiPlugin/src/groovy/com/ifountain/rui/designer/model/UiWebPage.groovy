@@ -1,9 +1,8 @@
 package com.ifountain.rui.designer.model
 
-import com.ifountain.rui.designer.UiElmnt
-import groovy.util.slurpersupport.GPathResult
 import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -46,14 +45,13 @@ class UiWebPage extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement) {
-        def webPage = DesignerSpace.getInstance().addUiElement(UiWebPage, xmlNode.attributes());
-        def addedTabs = [];
-        def tabNodes = xmlNode.UiElement.UiElement;
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        def tabsNode = node."${UIELEMENT_TAG}"[0]
+        UiElmnt.removeUnneccessaryAttributes(tabsNode)
+        def tabNodes = tabsNode."${UIELEMENT_TAG}";
         tabNodes.each {tabNode ->
-            UiTab.addUiElement(tabNode, webPage);
+            UiElmnt.create(tabNode, this)
         }
-        return webPage;
     }
 
     public Collection getTabs(){

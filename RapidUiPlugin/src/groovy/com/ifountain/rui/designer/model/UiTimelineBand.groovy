@@ -2,7 +2,6 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -55,14 +54,16 @@ class UiTimelineBand extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
+
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def attributes = node.attributes();
         if (attributes.date != null)
-            attributes.date = dateFormatter.parse(attributes.date);
-        attributes.timelineId = parentElement._designerKey;
-        return DesignerSpace.getInstance().addUiElement(UiTimelineBand, attributes);
+            attributesAsString["date"] = dateFormatter.parse(attributes.date);
+        attributesAsString["timelineId"] = parent._designerKey;
     }
+    
 
     public static String formatDate(Date date)
     {

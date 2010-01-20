@@ -36,12 +36,9 @@ class UiImageObjectMapContent extends UiObjectMapContent {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey
-        attributes.type = "image"
-        return DesignerSpace.getInstance().addUiElement(UiImageObjectMapContent, attributes);
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["type"] = "image"
     }
 
 }

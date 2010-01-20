@@ -1,8 +1,8 @@
 package com.ifountain.rui.designer.model
 
+import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,10 +31,10 @@ class UiTreeGrid extends UiComponent {
                 imageExpanded: "images/rapidjs/designer/chart_organisation.png",
                 imageCollapsed: "images/rapidjs/designer/chart_organisation.png",
                 propertyConfiguration: [
-                        url: [descr: "The default URL to be used for requests to the server to retrieve the data.", validators:[blank:false, nullable:false]],
-                        rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data.", validators:[blank:false, nullable:false]],
-                        contentPath: [descr: "The node names of AJAX response which will be used as row data.", validators:[blank:false, nullable:false]],
-                        keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node.", validators:[blank:false, nullable:false]],
+                        url: [descr: "The default URL to be used for requests to the server to retrieve the data.", validators: [blank: false, nullable: false]],
+                        rootTag: [descr: "The root node name of AJAX response which SearchGrid takes as starting point to get its data.", validators: [blank: false, nullable: false]],
+                        contentPath: [descr: "The node names of AJAX response which will be used as row data.", validators: [blank: false, nullable: false]],
+                        keyAttribute: [descr: "The attribute name of the row node which uniquely identifies the node.", validators: [blank: false, nullable: false]],
                         expandAttribute: [descr: "The attribute name of the row node which shows current row as expanded."],
                         pollingInterval: [descr: "Time delay between two server requests.", required: true],
                         expanded: [descr: "Parameter to display TreeGrid branches either expanded or collapsed"],
@@ -96,25 +96,13 @@ class UiTreeGrid extends UiComponent {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.tabId = parentElement._designerKey;
-        def treeGrid = DesignerSpace.getInstance().addUiElement(UiTreeGrid, attributes);
-
-        def columnsNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridColumns"};
-        def imagesNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridRootImages"};
-        def menuItemsNode = xmlNode.UiElement.find {it.@designerType.text() == "TreeGridMenuItems"};
-        columnsNode.UiElement.each {
-            UiTreeGridColumn.addUiElement(it, treeGrid);
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        node."${UIELEMENT_TAG}"."${UIELEMENT_TAG}".each{
+            create(it, this)
         }
-        imagesNode.UiElement.each {
-            UiRootImage.addUiElement(it, treeGrid);
+        node.children().each{
+            removeUnneccessaryAttributes(it)
         }
-        menuItemsNode.UiElement.each {
-            UiMenuItem.addUiElement(it, treeGrid);
-        }
-        return treeGrid;
     }
     public List getColumns() {
         return DesignerSpace.getInstance().getUiElements(UiTreeGridColumn).values().findAll {it.componentId == _designerKey};

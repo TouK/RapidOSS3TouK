@@ -1,6 +1,5 @@
 package com.ifountain.rui.designer.model
 
-import com.ifountain.rui.designer.DesignerSpace
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
 
@@ -54,11 +53,5 @@ class UiGMap extends UiComponent{
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = [:];
-        attributes.putAll(xmlNode.attributes());
-        attributes.tabId = parentElement._designerKey;
-        return DesignerSpace.getInstance().addUiElement(UiGMap, attributes);
-    }
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
 }

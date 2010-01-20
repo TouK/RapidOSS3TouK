@@ -1,9 +1,9 @@
 package com.ifountain.rui.designer.model
 
-import com.ifountain.rui.designer.UiElmnt
-import groovy.util.slurpersupport.GPathResult
 import com.ifountain.rui.designer.DesignerSpace
+import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.util.DesignerTemplateUtils
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -36,30 +36,26 @@ class UiLayoutUnit extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.parentLayoutId = parentElement._designerKey;
-        def designerType = attributes.designerType;
-        if (attributes.component != null && attributes.component != "")
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def designerType = node.@"${DESIGNER_TYPE}";
+        attributesAsString["parentLayoutId"] = parent._designerKey;
+        def componentAtt = node.@component;
+        if (componentAtt != null && componentAtt != "")
         {
-            UiComponent component = DesignerSpace.getInstance().getUiElement(UiComponent, "${parentElement.tabId}_${attributes.component}")
+            UiComponent component = (UiComponent) DesignerSpace.getInstance().getUiElement(UiComponent, "${parent.tabId}_${componentAtt}")
             if (!component) {
-                throw new Exception("Could not find component ${attributes.component} for ${designerType}")
+                throw new Exception("Could not find component ${componentAtt} for ${designerType}".toString())
             }
-            attributes.componentId = component._designerKey;
+            attributesAsString["componentId"] = component._designerKey;
         }
-        def layoutClass = DesignerSpace.getInstance().getUiClass("${DesignerSpace.PACKAGE_NAME}.Ui${designerType}")
-        UiLayoutUnit layoutUnit = DesignerSpace.getInstance().addUiElement(layoutClass, attributes);
-        def innerLayouts = xmlNode.UiElement;
+    }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        def innerLayouts = node."${UIELEMENT_TAG}";
         innerLayouts.each {innerLayoutNode ->
-            def addedLayout = DesignerSpace.getInstance().addUiElement(UiLayout, [parentUnitId: layoutUnit._designerKey, tabId:parentElement.tabId])
-            def innerLayoutUnitsNode = innerLayoutNode.UiElement;
-            innerLayoutUnitsNode.each {innerLayoutUnitNode ->
-                UiLayoutUnit.addUiElement(innerLayoutUnitNode, addedLayout);
-            }
+            create(innerLayoutNode, this)
         }
-        return layoutUnit;
     }
 
     public UiLayout getChildLayout() {
@@ -68,6 +64,20 @@ class UiLayoutUnit extends UiElmnt {
             return layouts[0]
         }
         return null;
+    }
+
+    public UiLayout getParentLayout() {
+        def layouts = DesignerSpace.getInstance().getUiElements(UiLayout).values().findAll {it._designerKey == parentLayoutId};
+        if (layouts.size() > 0) {
+            return layouts[0]
+        }
+        return null;
+    }
+
+    protected List getExtraPropsNeededInXml() {
+        def props = super.getExtraPropsNeededInXml();
+        props.addAll(["component"])
+        return props;
     }
 
     public UiComponent getComponent() {
@@ -86,7 +96,7 @@ class UiLayoutUnit extends UiElmnt {
     public static List getLayoutUnitHavingContentFile(UiLayout layout)
     {
         def layoutUnitList = [];
-        if(layout)
+        if (layout)
         {
             _getLayoutUnitHavingContentFile(layout, layoutUnitList);
         }
@@ -94,15 +104,15 @@ class UiLayoutUnit extends UiElmnt {
     }
     private static void _getLayoutUnitHavingContentFile(UiLayout layout, List layoutUnitList)
     {
-        layout.units.each{UiLayoutUnit unit->
+        layout.units.each {UiLayoutUnit unit ->
             def childLayout;
-            if(unit.contentFile != null && unit.contentFile != "")
+            if (unit.contentFile != null && unit.contentFile != "")
             {
                 layoutUnitList.add(unit);
             }
-            else if((childLayout = unit.childLayout) != null)
+            else if ((childLayout = unit.childLayout) != null)
             {
-                _getLayoutUnitHavingContentFile (childLayout, layoutUnitList);
+                _getLayoutUnitHavingContentFile(childLayout, layoutUnitList);
             }
         }
     }

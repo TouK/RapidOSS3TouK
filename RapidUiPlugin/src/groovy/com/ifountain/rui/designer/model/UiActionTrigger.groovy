@@ -33,10 +33,10 @@ class UiActionTrigger extends UiElmnt {
                 imageExpanded: "images/rapidjs/designer/lightning.png",
                 imageCollapsed: "images/rapidjs/designer/lightning.png",
                 propertyConfiguration: [
-                        type: [descr: "The type of the triggering event", validators:[blank:false, nullable:false,inList:[MENU_TYPE, COMPONENT_TYPE, ACTION_TYPE, GLOBAL_TYPE]]],
+                        type: [descr: "The type of the triggering event", validators: [blank: false, nullable: false, inList: [MENU_TYPE, COMPONENT_TYPE, ACTION_TYPE, GLOBAL_TYPE]]],
                         component: [descr: ""],
                         triggeringAction: [descr: ""],
-                        event: [descr: "", validators:[blank:false, nullable:false]],
+                        event: [descr: "", validators: [blank: false, nullable: false]],
                         actionId: [validators: [blank: false, nullable: false], isVisible: false]
                 ],
                 childrenConfiguration: []
@@ -44,42 +44,45 @@ class UiActionTrigger extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes()
-        attributes.actionId = parentElement._designerKey;
-        def triggerType = attributes.type;
-        if (triggerType == UiActionTrigger.MENU_TYPE || triggerType == UiActionTrigger.COMPONENT_TYPE) {
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
+
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["actionId"] = parent._designerKey;
+        def triggerType = node.@type.toString();
+        if (triggerType == MENU_TYPE || triggerType == COMPONENT_TYPE) {
             UiComponent component = null;
-            if (attributes.component != "")
+            def compAtt = node.@component.toString();
+            if (compAtt != "")
             {
-                component = DesignerSpace.getInstance().getUiElement(UiComponent, "${parentElement.tabId}_${attributes.component}")
-                attributes.componentId = component._designerKey;
+                component = (UiComponent) DesignerSpace.getInstance().getUiElement(UiComponent, "${parent.tabId}_${compAtt}")
+                attributesAsString["componentId"] = component._designerKey;
             }
             if (component == null) {
-                throw new Exception("Property component cannot be null for ActionTrigger if type ${triggerType} with event ${attributes.event}")
+                throw new Exception("Property component cannot be null for ActionTrigger if type ${triggerType} with event ${node.@event}".toString())
             }
-            if (triggerType == UiActionTrigger.MENU_TYPE) {
-                UiMenuItem menuItem = DesignerSpace.getInstance().getUiElement(UiMenuItem, "${component._designerKey}_${attributes.event}")
+            if (triggerType == MENU_TYPE) {
+                UiMenuItem menuItem = (UiMenuItem) DesignerSpace.getInstance().getUiElement(UiMenuItem, "${component._designerKey}_${node.@event}".toString())
                 if (menuItem == null) {
-                    throw new Exception("Property menu cannot be null for ActionTrigger if type ${triggerType} with event ${attributes.event}")
+                    throw new Exception("Property menu cannot be null for ActionTrigger if type ${triggerType} with event ${node.@event}".toString())
                 }
-                attributes.menuId = menuItem._designerKey;
+                attributesAsString["menuId"] = menuItem._designerKey;
             }
         }
-        else if (triggerType == UiActionTrigger.ACTION_TYPE) {
+        else if (triggerType == ACTION_TYPE) {
             UiAction triggeringAction = null;
-            if (attributes.triggeringAction != "")
+            def triggeringActionAtt = node.@triggeringAction.toString()
+            if (triggeringActionAtt != "")
             {
-                triggeringAction = DesignerSpace.getInstance().getUiElement(UiAction, "${parentElement.tabId}_${attributes.triggeringAction}")
-                attributes.triggeringActionId = triggeringAction._designerKey;
+                triggeringAction = (UiAction) DesignerSpace.getInstance().getUiElement(UiAction, "${parent.tabId}_${triggeringActionAtt}")
+                attributesAsString["triggeringActionId"] = triggeringAction._designerKey;
             }
             if (triggeringAction == null) {
-                throw new Exception("Property triggeringAction cannot be null for ActionTrigger if type ${triggerType} with event ${attributes.event}")
+                throw new Exception("Property triggeringAction cannot be null for ActionTrigger if type ${triggerType} with event ${node.@event}")
             }
         }
-        return DesignerSpace.getInstance().addUiElement(UiActionTrigger, attributes)
     }
+
 
     public UiAction getAction() {
         def actions = DesignerSpace.getInstance().getUiElements(UiAction).values().findAll {it._designerKey == actionId};
@@ -88,4 +91,11 @@ class UiActionTrigger extends UiElmnt {
         }
         return null;
     }
+
+    protected List getExtraPropsNeededInXml() {
+        def props = super.getExtraPropsNeededInXml();
+        props.addAll(["component", "triggeringAction"])
+        return props;
+    }
+
 }

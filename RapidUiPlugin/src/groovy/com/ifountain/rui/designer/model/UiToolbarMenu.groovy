@@ -34,18 +34,17 @@ class UiToolbarMenu extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey;
-        def toolbar = DesignerSpace.getInstance().addUiElement(UiToolbarMenu, attributes);
-        xmlNode.UiElement.each {menuItemNode ->
-            menuItemNode.attributes()["type"] = "toolbar";
-            menuItemNode.attributes()["toolbarId"] = toolbar._designerKey;
-            UiMenuItem menuItem = UiMenuItem.addUiElement(menuItemNode, parentElement);
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        node."${UIELEMENT_TAG}".each {menuItemNode ->
+            create(menuItemNode, this);
         }
-        return toolbar;
     }
+
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["componentId"] = parent._designerKey;
+    }
+    
 
     public List getMenuItems() {
         return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.toolbarId == _designerKey};

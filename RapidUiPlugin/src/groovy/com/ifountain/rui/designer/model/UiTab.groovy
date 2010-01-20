@@ -1,9 +1,9 @@
 package com.ifountain.rui.designer.model
 
-import com.ifountain.rui.designer.UiElmnt
-import groovy.util.slurpersupport.GPathResult
 import com.ifountain.rui.designer.DesignerSpace
+import com.ifountain.rui.designer.UiElmnt
 import com.ifountain.rui.util.DesignerTemplateUtils
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -90,27 +90,25 @@ class UiTab extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement) {
-        def props = [webPageId: parentElement._designerKey];
-        props.putAll(xmlNode.attributes());
-        UiTab tab = DesignerSpace.getInstance().addUiElement(UiTab, props);
-        UiLayout layout = DesignerSpace.getInstance().addUiElement(UiLayout, [tabId: tab._designerKey]);
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["webPageId"] = parent._designerKey;
+    }
 
-        def layoutNode = xmlNode.UiElement.find {it.@designerType == 'Layout'}
-        def componentsNode = xmlNode.UiElement.find {it.@designerType == 'Components'}
-        def dialogsNode = xmlNode.UiElement.find {it.@designerType == 'Dialogs'}
-        def actionsNode = xmlNode.UiElement.find {it.@designerType == 'Actions'}
 
-        componentsNode.UiElement.each {componentNode ->
-            def designerType = componentNode.@designerType.text()
-            def uiElementClass = DesignerSpace.getInstance().getUiClass("${DesignerSpace.PACKAGE_NAME}.Ui${designerType}");
-            if (uiElementClass) {
-                uiElementClass.addUiElement(componentNode, tab)
-            }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {
+        def layoutNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}" == 'Layout'}
+        def componentsNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}" == 'Components'}
+        def dialogsNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}" == 'Dialogs'}
+        def actionsNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}" == 'Actions'}
+
+        componentsNode."${UIELEMENT_TAG}".each {componentNode ->
+            create(componentNode, this);
         }
         def actionAddOrder = [];
         def actionsMap = [:]
-        actionsNode.UiElement.each {actionNode ->
+        actionsNode."${UIELEMENT_TAG}".each {actionNode ->
             actionsMap.put(actionNode.@name.toString(), actionNode);
         }
         def iterationCount = 0
@@ -120,7 +118,7 @@ class UiTab extends UiElmnt {
                 iterationCount++;
                 actionsMap.each {actionName, actionNode ->
                     if (!actionAddOrder.contains(actionName)) {
-                        def triggerNodes = actionNode.UiElement.UiElement.findAll {it.@designerType == "ActionTrigger" && it.@type == UiActionTrigger.ACTION_TYPE}
+                        def triggerNodes = actionNode."${UIELEMENT_TAG}"."${UIELEMENT_TAG}".findAll {it.@designerType == "ActionTrigger" && it.@type == UiActionTrigger.ACTION_TYPE}
                         if (triggerNodes.size() > 0) {
                             def willAddAction = true;
                             def triggeringActions = triggerNodes.@triggeringAction;
@@ -152,25 +150,18 @@ class UiTab extends UiElmnt {
             throw new Exception("Cannot save successfully because action configuration has circular references.")
         }
         actionAddOrder.each {
-            def actionNode = actionsMap[it];
-            def designerType = actionNode.@designerType.text()
-            def uiElementClass = DesignerSpace.getInstance().getUiClass("${DesignerSpace.PACKAGE_NAME}.Ui${designerType}");
-            if (uiElementClass) {
-                uiElementClass.addUiElement(actionNode, tab)
-            }
+            create(actionsMap[it], this)
         }
         dialogsNode.UiElement.each {dialogNode ->
-            UiDialog.addUiElement(dialogNode, tab);
+            create(dialogNode, this)
         }
         if (layoutNode.size() != 0)
         {
-            def layoutUnitsNode = layoutNode.UiElement;
-            layoutUnitsNode.each {layoutUnitNode ->
-                def layoutUnit = UiLayoutUnit.addUiElement(layoutUnitNode, layout);
-            }
+            create(layoutNode, this);
         }
-
-        return tab;
+        node.children().each {
+            removeUnneccessaryAttributes(it);
+        }
     }
 
     public UiLayout getLayout() {

@@ -2,7 +2,6 @@ package com.ifountain.rui.designer.model
 
 import com.ifountain.rui.designer.UiElmnt
 import groovy.util.slurpersupport.GPathResult
-import com.ifountain.rui.designer.DesignerSpace
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,10 +30,10 @@ class UiColumn extends UiElmnt {
                         componentId: [isVisible: false, validators: [key: true]],
                         attributeName: [descr: "The data node attribute which will be shown in the column", validators: [key: true]],
                         colLabel: [descr: "Title of the column", validators: [nullable: false]],
-                        width: [descr: "Width of the column", validators:[nullable:false]],
+                        width: [descr: "Width of the column", validators: [nullable: false]],
                         sortBy: [descr: "Parameter to render component whether sorted according to this column or not"],
                         sortOrder: [descr: "The order of the sort when \"sortBy\" property is \"true\"", required: false, validators: [inList: ["asc", "desc"]]],
-                        columnIndex: [descr: "The order of the column in the grid.", validators:[nullable:false]]
+                        columnIndex: [descr: "The order of the column in the grid.", validators: [nullable: false]]
 
                 ],
                 childrenConfiguration: []
@@ -42,10 +41,11 @@ class UiColumn extends UiElmnt {
         return metaData;
     }
 
-    public static UiElmnt addUiElement(GPathResult xmlNode, UiElmnt parentElement)
-    {
-        def attributes = xmlNode.attributes();
-        attributes.componentId = parentElement._designerKey;
-        return DesignerSpace.getInstance().addUiElement(UiColumn, attributes);
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        attributesAsString["componentId"] = parent._designerKey;
     }
+
+    protected void addChildElements(GPathResult node, UiElmnt parent) {}
+
 }

@@ -71,8 +71,10 @@ class DesignerControllerUtils {
     public static void save(String uiConfigXml, String filePath, String backupDirPath) {
         def configXml = new XmlSlurper().parseText(uiConfigXml);
         try {
-            configXml.UiElement[0].UiElement.each {
-                UiWebPage.addUiElement(it, null);
+            def webPagesNode = configXml."${UiElmnt.UIELEMENT_TAG}"[0]
+            UiElmnt.removeUnneccessaryAttributes(webPagesNode);
+            webPagesNode."${UiElmnt.UIELEMENT_TAG}".each {
+                UiElmnt.create(it, null);
             }
 
             File configFile = new File(filePath);
@@ -88,6 +90,8 @@ class DesignerControllerUtils {
             def stringWriter = new StringWriter()
             def printWriter = new PrintWriter(stringWriter)
 
+            def outputBuilder = new StreamingMarkupBuilder()
+            uiConfigXml = outputBuilder.bind {mkp.yield configXml}.toString();
             def node = new XmlParser().parseText(uiConfigXml)
             new XmlNodePrinter(printWriter).print(node)
             uiConfigXml = stringWriter.toString()
@@ -110,8 +114,8 @@ class DesignerControllerUtils {
                 throw new Exception("Could not parse UIConfiguration file. Reason: ${e.getMessage()}")
             }
             try {
-                confXml.UiElement[0].UiElement.each {
-                    UiWebPage.addUiElement(it, null);
+                confXml."${UiElmnt.UIELEMENT_TAG}"[0]."${UiElmnt.UIELEMENT_TAG}".each {
+                    UiElmnt.create(it, null);
                 }
                 def webPageTemplate = getTemplate("WebPage", templatePath);
                 def tabTemplate = getTemplate("Tab", templatePath);

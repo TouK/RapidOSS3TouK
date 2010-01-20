@@ -12,6 +12,7 @@ import com.ifountain.rcmdb.converter.DoubleConverter
 import com.ifountain.rcmdb.converter.BooleanConverter
 import com.ifountain.rcmdb.converter.StringConverter
 import java.text.SimpleDateFormat
+import groovy.util.slurpersupport.GPathResult
 
 /**
 * Created by IntelliJ IDEA.
@@ -61,6 +62,7 @@ class DesignerSpaceTests extends RCompTestCase {
         def uiModel1 = """
             package ${DesignerSpace.PACKAGE_NAME}
             import ${UiElmnt.class.name}
+            import ${GPathResult.class.name}
 
             class UiModel1 extends UiElmnt{
                 String prop1 = "";
@@ -89,6 +91,7 @@ class DesignerSpaceTests extends RCompTestCase {
                     ]
                     return metaData;
                 }
+                protected void addChildElements(GPathResult node, UiElmnt parent) {}
             }
         """
         cl.parseClass(uiModel1);
@@ -101,7 +104,7 @@ class DesignerSpaceTests extends RCompTestCase {
         assertEquals(originalMetaData.designerType, metaData.designerType)
         assertTrue(metaData.containsKey("childrenConfiguration"))
 
-        def expectedProperties = originalMetaData.propertyConfiguration.entrySet().findAll{it.value.isVisible == null || it.value.isVisible != false}.key.sort {it}
+        def expectedProperties = originalMetaData.propertyConfiguration.entrySet().findAll {it.value.isVisible == null || it.value.isVisible != false}.key.sort {it}
         assertEquals(expectedProperties.size(), metaData.propertyConfiguration.size())
         def propConfiguration = metaData.propertyConfiguration.values().sort {it.name};
 
@@ -216,17 +219,17 @@ class DesignerSpaceTests extends RCompTestCase {
         assertNull(componentMap[""])
     }
 
-    public void testAddUiElementThrowsExceptionIfClassCannotBeFound() {
-        ClassLoader cl = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
-        DesignerSpaceClassLoaderFactory.setDesignerClassLoader(cl);
-        try {
-            DesignerSpace.getInstance().addUiElement(Date.class, [:])
-            fail("should throw exception");
-        }
-        catch (e) {
-            assertEquals("Class ${Date.class.name} cannot be found among UiElement classes", e.getMessage());
-        }
-    }
+//    public void testAddUiElementThrowsExceptionIfClassCannotBeFound() {
+//        ClassLoader cl = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
+//        DesignerSpaceClassLoaderFactory.setDesignerClassLoader(cl);
+//        try {
+//            DesignerSpace.getInstance().addUiElement(new UiElmnt())
+//            fail("should throw exception");
+//        }
+//        catch (e) {
+//            assertEquals("Class ${Date.class.name} cannot be found among UiElement classes", e.getMessage());
+//        }
+//    }
 
     public void testPropertyConversion() {
         ClassLoader cl = new GroovyClassLoader(Thread.currentThread().getContextClassLoader());
@@ -235,6 +238,7 @@ class DesignerSpaceTests extends RCompTestCase {
         def uiModel1 = """
             package ${DesignerSpace.PACKAGE_NAME}
             import ${UiElmnt.class.name}
+            import ${GPathResult.class.name}
 
             class UiModel1 extends UiElmnt{
                 String prop1 = "";
@@ -250,6 +254,7 @@ class DesignerSpaceTests extends RCompTestCase {
                         ]
                     ]
                 }
+                protected void addChildElements(GPathResult node, UiElmnt parent) {}
             }
         """
         cl.parseClass(uiModel1);
@@ -259,8 +264,10 @@ class DesignerSpaceTests extends RCompTestCase {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-dd-MM HH:mm:ss.SSS")
         def anyDate = new Date(System.currentTimeMillis());
 
-        ds.addUiElement(model1Class, [prop1: 5, prop2: "12", prop3: "12.3", prop4: format.format(anyDate), prop5: "true"])
-        def model1Instance = ds.getUiElement(model1Class, "5");
+        UiElmnt model1Instance = model1Class.newInstance();
+        model1Instance.attributesAsString = [prop1: 5, prop2: "12", prop3: "12.3", prop4: format.format(anyDate), prop5: "true"]
+        ds.addUiElement(model1Instance)
+        model1Instance = ds.getUiElement(model1Class, "5");
 
         assertNotNull(model1Instance);
         assertEquals("5", model1Instance._designerKey)
@@ -272,7 +279,8 @@ class DesignerSpaceTests extends RCompTestCase {
 
         //Long conversion fails
         try {
-            ds.addUiElement(model1Class, [prop1: "prop1", prop2: "prop2"])
+            model1Instance.attributesAsString = [prop1: "prop1", prop2: "prop2"];
+            ds.addUiElement(model1Instance)
             fail("should throw exception");
         }
         catch (e) {
@@ -281,7 +289,8 @@ class DesignerSpaceTests extends RCompTestCase {
 
         //Double conversion fails
         try {
-            ds.addUiElement(model1Class, [prop1: "prop1", prop3: "prop3"])
+            model1Instance.attributesAsString = [prop1: "prop1", prop3: "prop3"];
+            ds.addUiElement(model1Instance)
             fail("should throw exception");
         }
         catch (e) {
@@ -290,7 +299,8 @@ class DesignerSpaceTests extends RCompTestCase {
 
         //Date conversion fails
         try {
-            ds.addUiElement(model1Class, [prop1: "prop1", prop4: "prop4"])
+            model1Instance.attributesAsString = [prop1: "prop1", prop4: "prop4"]
+            ds.addUiElement(model1Instance)
             fail("should throw exception");
         }
         catch (e) {
@@ -299,7 +309,8 @@ class DesignerSpaceTests extends RCompTestCase {
 
         //Boolean conversion fails
         try {
-            ds.addUiElement(model1Class, [prop1: "prop1", prop5: "prop5"])
+            model1Instance.attributesAsString = [prop1: "prop1", prop5: "prop5"]
+            ds.addUiElement(model1Instance)
             fail("should throw exception");
         }
         catch (e) {
@@ -314,6 +325,7 @@ class DesignerSpaceTests extends RCompTestCase {
         def parentModel = """
             package ${DesignerSpace.PACKAGE_NAME}
             import ${UiElmnt.class.name}
+            import ${GPathResult.class.name}
 
             class UiParentModel extends UiElmnt{
                 String prop1 = "";
@@ -326,11 +338,13 @@ class DesignerSpaceTests extends RCompTestCase {
                         ]
                     ]
                 }
+                protected void addChildElements(GPathResult node, UiElmnt parent) {}
             }
         """
         def childModel = """
             package ${DesignerSpace.PACKAGE_NAME}
-
+            import ${UiElmnt.class.name}
+            import ${GPathResult.class.name}
             class UiChildModel extends UiParentModel{
                 String prop3 = "";
                 public static Map metaData(){
@@ -343,6 +357,7 @@ class DesignerSpaceTests extends RCompTestCase {
                     metaData.propertyConfiguration.putAll(parentMetaData.propertyConfiguration);
                     return metaData;
                 }
+                protected void addChildElements(GPathResult node, UiElmnt parent) {}
             }
         """
         cl.parseClass(parentModel);
@@ -351,35 +366,41 @@ class DesignerSpaceTests extends RCompTestCase {
         def childClass = cl.getLoadedClasses().findAll {StringUtils.substringAfter(it.name, DesignerSpace.PACKAGE_NAME + ".") == "UiChildModel"}[0];
 
         DesignerSpace ds = DesignerSpace.getInstance();
-        ds.addUiElement(parentClass, [prop1: "value1", prop2: "value2"])
-        def parentInstance1 = ds.getUiElement(parentClass, "value1_value2");
+        UiElmnt parentInstance1 = parentClass.newInstance();
+        parentInstance1.attributesAsString = [prop1: "value1", prop2: "value2"]
+        ds.addUiElement(parentInstance1)
+        parentInstance1 = ds.getUiElement(parentClass, "value1_value2");
         assertNotNull(parentInstance1);
         assertEquals("value1_value2", parentInstance1._designerKey);
         assertEquals("value1", parentInstance1.prop1)
         assertEquals("value2", parentInstance1.prop2)
 
         try {
-            ds.addUiElement(parentClass, [prop1: "value1", prop2: "value2"])
+            parentInstance1.attributesAsString = [prop1: "value1", prop2: "value2"]
+            ds.addUiElement(parentInstance1)
             fail("should throw exception");
         }
         catch (e) {
             assertEquals("Another instance of ParentModel with keys <prop1:value1> <prop2:value2> exists.", e.getMessage())
         }
-
+        def childInstance = childClass.newInstance();
         try {
-            ds.addUiElement(childClass, [prop1: "value1", prop2: "value2"])
+
+            childInstance.attributesAsString = [prop1: "value1", prop2: "value2"]
+            ds.addUiElement(childInstance)
             fail("should throw exception");
         }
         catch (e) {
             assertEquals("Another instance of ParentModel with keys <prop1:value1> <prop2:value2> exists.", e.getMessage())
         }
-
-        ds.addUiElement(childClass, [prop1: "value11", prop2: "value22"])
+        childInstance.attributesAsString = [prop1: "value11", prop2: "value22"]
+        ds.addUiElement(childInstance)
         assertNotNull(ds.getUiElement(parentClass, "value11_value22"));
         assertNotNull(ds.getUiElement(childClass, "value11_value22"));
 
         try {
-            ds.addUiElement(parentClass, [prop1: "value11", prop2: "value22"])
+            parentInstance1.attributesAsString = [prop1: "value11", prop2: "value22"];
+            ds.addUiElement(parentInstance1)
             fail("should throw exception");
         }
         catch (e) {
@@ -387,7 +408,8 @@ class DesignerSpaceTests extends RCompTestCase {
         }
 
         try {
-            ds.addUiElement(childClass, [prop1: "value11", prop2: "value22"])
+            childInstance.attributesAsString = [prop1: "value11", prop2: "value22"]
+            ds.addUiElement(childInstance)
             fail("should throw exception");
         }
         catch (e) {
@@ -401,6 +423,7 @@ class DesignerSpaceTests extends RCompTestCase {
         def uiModel1 = """
             package ${DesignerSpace.PACKAGE_NAME}
             import ${UiElmnt.class.name}
+            import ${GPathResult.class.name}
 
             class UiModel1 extends UiElmnt{
                 String prop1 = "";
@@ -422,63 +445,70 @@ class DesignerSpaceTests extends RCompTestCase {
                         ]
                     ]
                 }
+                protected void addChildElements(GPathResult node, UiElmnt parent) {}
             }
         """
         cl.parseClass(uiModel1);
         DesignerSpace ds = DesignerSpace.getInstance();
         def model1Class = cl.getLoadedClasses().findAll {StringUtils.substringAfter(it.name, DesignerSpace.PACKAGE_NAME + ".") == "UiModel1"}[0];
-
+        UiElmnt model1Instance = model1Class.newInstance();
         //keys cannot be blank
-        try{
-            ds.addUiElement(model1Class, [prop1: "", prop2: "prop2", prop3:"prop3", prop4:"prop4", prop5:"asd", prop6:"aa"]);
+        try {
+            model1Instance.attributesAsString = [prop1: "", prop2: "prop2", prop3: "prop3", prop4: "prop4", prop5: "asd", prop6: "aa"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop1> of Model1 cannot be blank.", e.getMessage());
         }
 
         //keys cannot be null
-        try{
-            ds.addUiElement(model1Class, [prop1: null, prop2: "prop2", prop3:"prop3", prop4:"prop4", prop5:"asd", prop6:"aa"]);
+        try {
+            model1Instance.attributesAsString = [prop1: null, prop2: "prop2", prop3: "prop3", prop4: "prop4", prop5: "asd", prop6: "aa"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop1> of Model1 cannot be null.", e.getMessage());
         }
 
         //blank constraint
-        try{
-            ds.addUiElement(model1Class, [prop1: "prop1", prop2: "prop2", prop3:"", prop4:"prop4", prop5:"asd", prop6:"aa"]);
+        try {
+            model1Instance.attributesAsString = [prop1: "prop1", prop2: "prop2", prop3: "", prop4: "prop4", prop5: "asd", prop6: "aa"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop3> of Model1 cannot be blank.", e.getMessage());
         }
 
         //nullable constraint
-        try{
-            ds.addUiElement(model1Class, [prop1: "prop1", prop2: "prop2", prop3:"prop3", prop4:null, prop5:"asd", prop6:"aa"]);
+        try {
+            model1Instance.attributesAsString = [prop1: "prop1", prop2: "prop2", prop3: "prop3", prop4: null, prop5: "asd", prop6: "aa"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop4> of Model1 cannot be null.", e.getMessage());
         }
 
         //matches constraint
-        try{
-            ds.addUiElement(model1Class, [prop1: "prop1", prop2: "prop2", prop3:"prop3", prop4:"prop4", prop5:"bbbb", prop6:"aa"]);
+        try {
+            model1Instance.attributesAsString = [prop1: "prop1", prop2: "prop2", prop3: "prop3", prop4: "prop4", prop5: "bbbb", prop6: "aa"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop5> of Model1 does not match expression <a.*>.", e.getMessage());
         }
 
         //inList constraint
-        try{
-            ds.addUiElement(model1Class, [prop1: "prop1", prop2: "prop2", prop3:"prop3", prop4:"prop4", prop5:"asd", prop6:"cc"]);
+        try {
+            model1Instance.attributesAsString = [prop1: "prop1", prop2: "prop2", prop3: "prop3", prop4: "prop4", prop5: "asd", prop6: "cc"]
+            ds.addUiElement(model1Instance);
             fail("should throw exception")
         }
-        catch(e){
+        catch (e) {
             assertEquals("Property <prop6> of Model1 is not one of <aa, bb>.", e.getMessage());
         }
     }

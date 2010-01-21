@@ -55,7 +55,6 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod {
             ValidationUtils.addObjectError(domainObject.errors, "default.not.exist.message", []);
             return [domainObject: domainObject];
         }
-        long numberOfRemovedRelations = 0;
         boolean isChanged = false;
         props.each {key, value ->
             RelationMetaData relation = relations.get(key);
@@ -86,13 +85,11 @@ class RemoveRelationMethod extends AbstractRapidDomainWriteMethod {
                     {
                         domainObject.setProperty(RapidCMDBConstants.ERRORS_PROPERTY_NAME, errors, false);
                     }
-                    numberOfRemovedRelations += value.size();
                     RelationUtils.removeRelations(domainObject, relation, value, source);
                 }
             }
         }
         statistics.stop();
-        statistics.numberOfOperations = numberOfRemovedRelations;
         OperationStatistics.getInstance().addStatisticResult(OperationStatistics.REMOVE_RELATION_OPERATION_NAME, statistics);
         return [domainObject: domainObject];
     }

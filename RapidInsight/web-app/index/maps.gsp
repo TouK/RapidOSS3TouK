@@ -410,7 +410,7 @@ x='50' y='85'
   title='Save Map'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapGroupForm" width="330" height="100" resizable="false"
+<rui:popupWindow componentId="saveMapGroupForm" width="330" height="110" resizable="false"
 
 
   title='Save Group'

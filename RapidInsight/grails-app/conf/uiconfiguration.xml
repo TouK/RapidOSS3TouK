@@ -963,7 +963,7 @@
             <UiElement title="" height="500" component="objectDetails" designerType="Dialog" width="850" y="85" x="50"/>
             <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement resizable="false" title="Save Map" height="125" component="saveMapForm" width="385" designerType="Dialog"/>
-            <UiElement resizable="false" title="Save Group" height="100" component="saveMapGroupForm" width="330" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save Group" height="110" component="saveMapGroupForm" width="330" designerType="Dialog"/>
             <UiElement resizable="false" title="" height="400" component="eventsGrid" width="800" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">

@@ -116,11 +116,11 @@
     width: 80px;
 }
 
-.ri-object-details a{
-    color:#006DBA;
-    cursor:pointer;
-    display:block;
-    text-decoration:underline;
+.ri-object-details a {
+    color: #006DBA;
+    cursor: pointer;
+    display: block;
+    text-decoration: underline;
 }
 
 .r-loadingmask-mask {
@@ -148,9 +148,20 @@
     text-align: center;
 }
 
-
 .apgLegendCell {
     border: 1px solid #A7BBC4;
     color: #076D8F;
+}
+
+.yui-skin-sam .yui-dt tbody td {
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.yui-skin-sam tr.yui-dt-even td.yui-dt-asc, .yui-skin-sam tr.yui-dt-even td.yui-dt-desc {
+    background-color: inherit !important;
+}
+
+.yui-skin-sam tr.yui-dt-odd td.yui-dt-asc, .yui-skin-sam tr.yui-dt-odd td.yui-dt-desc {
+    background-color: inherit !important;
 }
 

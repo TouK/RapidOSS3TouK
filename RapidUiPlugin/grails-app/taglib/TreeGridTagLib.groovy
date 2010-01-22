@@ -32,6 +32,7 @@ class TreeGridTagLib {
         def nodeClickJs = "";
         def selectionChangedJs = "";
         def menuEventsJs;
+        def multiSelectionMenuEventJs;
         if (onNodeClick != null) {
             getActionsArray(onNodeClick).each {actionName ->
                 nodeClickJs += """
@@ -43,7 +44,7 @@ class TreeGridTagLib {
             }
         }
         if (onSelectionChanged != null) {
-           getActionsArray(onSelectionChanged).each {actionName ->
+            getActionsArray(onSelectionChanged).each {actionName ->
                 selectionChangedJs += """
                ${treeGridId}tg.events['selectionChanged'].subscribe(function(xmlDatas){
                    var params = {datas:ArrayUtils.collect(xmlDatas, function(xmlData){return xmlData.getAttributes()})};
@@ -54,28 +55,25 @@ class TreeGridTagLib {
         }
         def configXML = "<TreeGrid>${bodyString}</TreeGrid>";
         def menuEvents = [:]
-        def configStr = getConfig(attrs, configXML, menuEvents);
+        def multiSelectionMenuEvents = [:]
+        def configStr = getConfig(attrs, configXML, menuEvents, multiSelectionMenuEvents);
         if (menuEvents.size() > 0) {
-            def innerJs = "";
-            def index = 0;
-            menuEvents.each {id, actionArray ->
-                innerJs += index == 0 ? "if" : "else if";
-                innerJs += """(id == '${id}'){""";
-                actionArray.each {actionName ->
-                    innerJs += """
-                          YAHOO.rapidjs.Actions['${actionName}'].execute(params);
-                    """
-                }
-                innerJs += """}""";
-                index++;
-            }
+            def innerJs = _getMenuEventJs(menuEvents)
             menuEventsJs = """
                ${treeGridId}tg.events['rowMenuClicked'].subscribe(function(xmlData, id, parentId){
                    var params = {data:xmlData.getAttributes(), menuId:id, parentId:parentId};
                    ${innerJs}
                 }, this, true);
             """
-
+        }
+        if (multiSelectionMenuEvents.size() > 0) {
+            def innerJs = _getMenuEventJs(multiSelectionMenuEvents)
+            multiSelectionMenuEventJs = """
+               ${treeGridId}tg.events['multiSelectionMenuClicked'].subscribe(function(xmlDatas, id, parentId){
+                   var params = {datas:ArrayUtils.collect(xmlDatas, function(it){return it.getAttributes()}), menuId:id, parentId:parentId};
+                   ${innerJs}
+                }, this, true);
+            """
         }
         return """
            <script type="text/javascript">
@@ -85,6 +83,7 @@ class TreeGridTagLib {
                ${nodeClickJs}
                ${selectionChangedJs}
                ${menuEventsJs ? menuEventsJs : ""}
+               ${multiSelectionMenuEventJs ? multiSelectionMenuEventJs : ""}
                if(${treeGridId}tg.pollingInterval > 0){
                     YAHOO.util.Event.onDOMReady(function(){
                         this.poll();
@@ -93,12 +92,29 @@ class TreeGridTagLib {
            </script>
         """
     }
+
+    static def _getMenuEventJs(menuEvents) {
+        def innerJs = "";
+        def index = 0;
+        menuEvents.each {id, actionArray ->
+            innerJs += index == 0 ? "if" : "else if";
+            innerJs += """(id == '${id}'){""";
+            actionArray.each {actionName ->
+                innerJs += """
+                          YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    """
+            }
+            innerJs += """}""";
+            index++;
+        }
+        return innerJs;
+    }
     def treeGrid = {attrs, body ->
         out << fTreeGrid(attrs, body());
     }
 
 
-    static def getConfig(config, configXML, menuEvents) {
+    static def getConfig(config, configXML, menuEvents, multiSelectionMenuEvents) {
         def xml = new XmlSlurper().parseText(configXML);
         def cArray = [];
         cArray.add("id: '${config["id"]}'")
@@ -125,6 +141,13 @@ class TreeGridTagLib {
         }
         cArray.add("menuItems:[${menuItemArray.join(',\n')}]");
 
+        def multipleSelectionMenuItems = xml.MultiSelectionMenuItems?.MenuItem;
+        def multipleSelectionMenuItemsArray = [];
+        multipleSelectionMenuItems.each {menuItem ->
+            multipleSelectionMenuItemsArray.add(processMenuItem(menuItem, multiSelectionMenuEvents));
+        }
+        cArray.add("multiSelectionMenuItems:[${multipleSelectionMenuItemsArray.join(',\n')}]");
+
         def rootImages = xml.RootImages?.RootImage;
         def imageArray = [];
         rootImages.each {rootImage ->
@@ -143,13 +166,13 @@ class TreeGridTagLib {
             def sortOrder = column.@sortOrder.toString().trim();
             def sortType = column.@sortType.toString().trim();
             def sortTypeInJs;
-            if(sortType != ""){
-                switch(sortType){
-                    case 'string':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.none'; break;
-                    case 'int':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asInt'; break;
-                    case 'date':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asDate'; break;
-                    case 'float':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asFloat'; break;
-                    case 'ucString':sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asUCString'; break;
+            if (sortType != "") {
+                switch (sortType) {
+                    case 'string': sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.none'; break;
+                    case 'int': sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asInt'; break;
+                    case 'date': sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asDate'; break;
+                    case 'float': sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asFloat'; break;
+                    case 'ucString': sortTypeInJs = 'YAHOO.rapidjs.component.treegrid.sortTypes.asUCString'; break;
                 }
             }
             def type = column.@type.toString().trim();
@@ -295,6 +318,12 @@ class TreeGridTagLib {
     }
     def tgMenuItems = {attrs, body ->
         out << fTgMenuItems(attrs, body());
+    }
+    static def fTgMultiSelectionMenuItems(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("MultiSelectionMenuItems", attrs, [], bodyString);
+    }
+    def tgMultiSelectionMenuItems = {attrs, body ->
+        out << fTgMultiSelectionMenuItems(attrs, body())
     }
     static def fTgMenuItem(attrs, bodyString) {
         def validAttrs = ["id", "label", "visible", "action"];

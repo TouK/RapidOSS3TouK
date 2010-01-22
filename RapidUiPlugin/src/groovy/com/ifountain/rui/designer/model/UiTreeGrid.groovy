@@ -84,6 +84,20 @@ class UiTreeGrid extends UiComponent {
                                                 [designerType: "MenuItem", isMultiple: true]
                                         ]
                                 ]
+                        ],
+                        [
+                                designerType: "TreeGridMultiSelectionMenuItems",
+                                isMultiple: false,
+                                metaData: [
+                                        help: "SearchGrid MultiSelectionMenuItems.html",
+                                        designerType: "TreeGridMultiSelectionMenuItems",
+                                        display: "MultiSelectionMenuItems",
+                                        imageExpanded: 'images/rapidjs/designer/table_row_insert.png',
+                                        imageCollapsed: 'images/rapidjs/designer/table_row_insert.png',
+                                        childrenConfiguration: [
+                                                [designerType: "MenuItem", isMultiple: true]
+                                        ]
+                                ]
                         ]
                 ]
         ];
@@ -97,10 +111,10 @@ class UiTreeGrid extends UiComponent {
     }
 
     protected void addChildElements(GPathResult node, UiElmnt parent) {
-        node."${UIELEMENT_TAG}"."${UIELEMENT_TAG}".each{
-            create(it, this)
-        }
-        node.children().each{
+        node."${UIELEMENT_TAG}".each{
+            it."${UIELEMENT_TAG}".each{uiEl ->
+                create(uiEl, this)    
+            }
             removeUnneccessaryAttributes(it)
         }
     }
@@ -109,6 +123,12 @@ class UiTreeGrid extends UiComponent {
     }
     public List getRootImages() {
         return DesignerSpace.getInstance().getUiElements(UiRootImage).values().findAll {it.componentId == _designerKey};
+    }
+    public List getRowMenuItems() {
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "component"};
+    }
+    public List getMultiSelectionMenuItems() {
+        return DesignerSpace.getInstance().getUiElements(UiMenuItem).values().findAll {it.componentId == _designerKey && it.type == "multiple"};
     }
 
 }

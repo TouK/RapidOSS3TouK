@@ -25,7 +25,8 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     var events = {
         'selectionChanged' : new YAHOO.util.CustomEvent('selectionChanged'),
         'nodeClicked' : new YAHOO.util.CustomEvent('nodeClicked'),
-        'rowMenuClicked' : new YAHOO.util.CustomEvent('rowMenuClicked')
+        'rowMenuClicked' : new YAHOO.util.CustomEvent('rowMenuClicked'),
+        'multiSelectionMenuClicked' : new YAHOO.util.CustomEvent('multiSelectionMenuClicked')
     };
     YAHOO.ext.util.Config.apply(this.events, events);
     this.header = YAHOO.ext.DomHelper.append(this.container, {tag:'div'});
@@ -39,6 +40,7 @@ YAHOO.rapidjs.component.TreeGrid = function(container, config) {
     this.treeGridView.events['selectionchanged'].subscribe(this.fireSelectionChange, this, true);
     this.treeGridView.events['rowMenuClick'].subscribe(this.fireRowMenuClick, this, true);
     this.treeGridView.events['treenodeclicked'].subscribe(this.fireTreeNodeClick, this, true);
+    this.treeGridView.events['multiSelectionMenuClicked'].subscribe(this.fireMultiSelectionMenuClick, this, true);
 }
 YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.PollingComponentContainer, {
     handleSuccess: function(response, keepExisting, removeAttribute)
@@ -77,8 +79,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
     fireSelectionChange: function(treeNodes) {
         this.events['selectionChanged'].fireDirect(ArrayUtils.collect(treeNodes, function(it){return it.xmlData}));
     },
-    fireRowMenuClick: function(xmlData, id, parentId, row) {
-        this.events['rowMenuClicked'].fireDirect(xmlData, id, parentId, row);
+    fireRowMenuClick: function(xmlData, id, parentId) {
+        this.events['rowMenuClicked'].fireDirect(xmlData, id, parentId);
+    },
+    fireMultiSelectionMenuClick: function(datas, id, parentId) {
+        this.events['multiSelectionMenuClicked'].fireDirect(datas, id, parentId);
     },
     fireTreeNodeClick: function(treeNode) {
         this.events['nodeClicked'].fireDirect(treeNode.xmlData);

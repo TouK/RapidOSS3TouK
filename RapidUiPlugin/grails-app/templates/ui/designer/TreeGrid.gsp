@@ -43,7 +43,7 @@
     </rui:tgColumns>    
     <rui:tgMenuItems>
         <%
-            uiElement.menuItems.each{menuItem->
+            uiElement.getRowMenuItems().each{menuItem->
                  if(menuItem.parentMenuItem == null){
                     def menuActionString = menuItem.getActionString();
                     def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
@@ -77,6 +77,43 @@
             }
         %>
     </rui:tgMenuItems>
+     <rui:tgMultiSelectionMenuItems>
+    <%
+        uiElement.getMultiSelectionMenuItems().each{menuItem->
+            if(menuItem.parentMenuItemId == null || menuItem.parentMenuItemId == ""){
+                def menuActionString = menuItem.getActionString();
+                def actionString = menuActionString ? "action=\"${menuActionString}\"": "";
+                def visiblePropertyName = menuItem.name+ "Visible";
+                println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(visiblePropertyName, menuItem.visible, true);
+    %>
+        <rui:tgMenuItem id="${menuItem.name}" label="${menuItem.label}" visible="\${${visiblePropertyName}}" ${actionString}>
+            <%
+                if(!menuItem.childMenuItems.isEmpty())
+                {
+            %>
+                <rui:tgSubmenuItems>
+                    <%
+                        menuItem.childMenuItems.each{subMenuItem->
+                            def subMenuActionString = subMenuItem.getActionString();
+                            def subActionString = subMenuActionString ? "action=\"${subMenuActionString}\"": "";
+                            def subMenuVisiblePropertyName = subMenuItem.name+ "Visible";
+                            println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(subMenuVisiblePropertyName, subMenuItem.visible, true);
+                    %>
+                        <rui:sgMenuItem id="${subMenuItem.name}" label="${subMenuItem.label}" ${subActionString} visible="\${${subMenuVisiblePropertyName}}"></rui:sgMenuItem>
+                    <%
+                            }
+                    %>
+                </rui:tgSubmenuItems>
+            <%
+                    }
+            %>
+        </rui:tgMenuItem>
+    <%
+
+          }
+        }
+    %>
+    </rui:tgMultiSelectionMenuItems>
     <rui:tgRootImages>
         <%
             uiElement.rootImages.each{rootImage->

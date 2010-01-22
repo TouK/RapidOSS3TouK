@@ -26,12 +26,14 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
     this.contentPath = null;
     this.hideAttribute = null;
     this.expandNodeAttribute = null;
+    this.menuItems = null;
+    this.multiSelectionMenuItems = null;
     this.expandedNodes = [];
     this.events = {
         'selectionchanged' : new YAHOO.util.CustomEvent('selectionchanged'),
         'treenodeclicked' : new YAHOO.util.CustomEvent('treenodeclicked'),
-        'contextmenuclicked' : new YAHOO.util.CustomEvent('contextmenuclicked'),
-        'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
+        'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick'),
+        'multiSelectionMenuClicked' : new YAHOO.util.CustomEvent('multiSelectionMenuClicked')
     };
     YAHOO.ext.util.Config.apply(this, config);
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
@@ -88,29 +90,36 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             Tooltip.add(this.treeBody.dom, '');
         }
         this.setMenuItems(this.menuItems);
+        this.multiSelectionMenu = this.renderMenus(this.multiSelectionMenuItems, "multiSelection", this.multiSelectionMenuItemClicked)
     },
 
     setMenuItems: function(menuItems) {
         this.menuItems = menuItems;
-        if (this.menuItems) {
-            this.rowMenu = new YAHOO.widget.Menu(this.id + "_rowMenu", {position: "dynamic", autofillheight:false, minscrollheight:300});
-            for (var i in this.menuItems) {
-                if (this.menuItems[i].submenuItems)
+        this.rowMenu = this.renderMenus(this.menuItems, 'rowMenu', this.rowMenuItemClicked)
+    },
+
+    renderMenus : function(menuItems, menuType, clickFunc) {
+        if (menuItems) {
+            var menu = new YAHOO.widget.Menu(this.id + '_' + menuType + 'Menu', {position: "dynamic", autofillheight:false, minscrollheight:300});
+            for (var i in menuItems) {
+                var subMenu = null;
+                if (menuItems[i].submenuItems)
                 {
-                    var subMenu = new YAHOO.widget.Menu(this.id + '_rowSubmenu_' + i, {position: "dynamic"});
-                    for (var j in this.menuItems[i].submenuItems)
+                    subMenu = new YAHOO.widget.Menu(this.id + '_' + menuType + 'Submenu_' + i, {position: "dynamic"});
+                    for (var j in menuItems[i].submenuItems)
                     {
 
-                        var subItem = subMenu.addItem({text:this.menuItems[i].submenuItems[j].label });
-                        YAHOO.util.Event.addListener(subItem.element, "click", this.rowMenuItemClicked, { parentKey:i, subKey:j}, this);
+                        var subItem = subMenu.addItem({text:menuItems[i].submenuItems[j].label });
+                        YAHOO.util.Event.addListener(subItem.element, "click", clickFunc, { parentKey:i, subKey:j}, this);
                     }
                 }
-                var item = this.rowMenu.addItem({text:this.menuItems[i].label, submenu : subMenu });
-                if (!(this.menuItems[i].submenuItems))
-                    YAHOO.util.Event.addListener(item.element, "click", this.rowMenuItemClicked, { parentKey:i }, this);
+                var item = menu.addItem({text:menuItems[i].label, submenu : subMenu });
+                if (!(menuItems[i].submenuItems))
+                    YAHOO.util.Event.addListener(item.element, "click", clickFunc, { parentKey:i }, this);
             }
-            this.rowMenu.render(document.body);
-            YAHOO.rapidjs.component.OVERLAY_MANAGER.register(this.rowMenu);
+            menu.render(document.body);
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.register(menu);
+            return menu;
         }
     },
 
@@ -178,36 +187,6 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             var childNode = childNodes[index];
             childNode.isExpanded = isExpanded;
             this._expandNodes(childNode, isExpanded);
-        }
-    },
-
-    selectionChanged: function(row, triggerEvent, event)
-    {
-        var treeNode = this.getTreeNode(row);
-        this.events['treenodeclicked'].fireDirect(treeNode);
-        if (this.selectedRow) {
-            if (row != this.selectedRow) {
-                YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
-                YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-                this.selectedNode = treeNode;
-                if (triggerEvent == true) {
-                    this.events["selectionchanged"].fireDirect(treeNode);
-                }
-                this.selectedRow = row;
-            }
-            else if (event && event.ctrlKey) {
-                YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
-                this.selectedNode = null;
-                this.selectedRow = null;
-            }
-        }
-        else {
-            YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-            this.selectedNode = treeNode;
-            if (triggerEvent == true) {
-                this.events["selectionchanged"].fireDirect(treeNode);
-            }
-            this.selectedRow = row;
         }
     },
 
@@ -360,9 +339,6 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 row.cells = null;
                 row.icon = null;
                 row.rowIndex = null;
-//                if (this.selectedRow == row) {
-                //                    this.selectedRow = null;
-                //                }
                 this.bufferView.dom.removeChild(row);
                 this.bufferView.rows.splice(this.bufferView.rows.length - 1, 1);
             }
@@ -387,26 +363,6 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             row.rowIndex = realRowIndex;
             this.renderRow(row);
             this.selectionHelper.rowRendered(row);
-//            var treeNode = this.expandedNodes[realRowIndex];
-            //            if (treeNode == this.selectedNode) {
-            //                if (row != this.selectedRow) {
-            //                    if (this.selectedRow) {
-            //                        YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
-            //                    }
-            //                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-            //                    this.selectedRow = row;
-            //                }
-            //                else {
-            //                    if (!YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
-            //                        YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-            //                    }
-            //                }
-            //            }
-            //            else {
-            //                if (YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
-            //                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowselected', 'r-tree-rowunselected');
-            //                }
-            //            }
         }
     },
     createEmptyRows: function(rowCount)
@@ -574,13 +530,12 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             }
             else {
                 this.selectionHelper.rowClicked(row, e);
-//                this.selectionChanged(row, true, e);
             }
         }
     },
 
     showRowMenu : function(target, row) {
-        this.rowMenu.row = row;
+        this.rowMenu.treeNode = this.getTreeNode(row);
         this.rowMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
         var treeNode = this.getTreeNode(row);
         var dataNode = treeNode.xmlData;
@@ -639,21 +594,77 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             id = this.menuItems[parentKey].id;
         }
         var parentId = this.menuItems[parentKey].id;
-        var row = this.rowMenu.row;
-        this.rowMenu.row = null;
-        var xmlData = this.getTreeNode(row).xmlData;
-        this.events['rowMenuClick'].fireDirect(xmlData, id, parentId, row);
+        var treeNode = this.rowMenu.treeNode;
+        this.rowMenu.treeNode = null;
+        this.events['rowMenuClick'].fireDirect(treeNode.xmlData, id, parentId);
     },
-    handleRightClick : function(event) {
-        var target = YAHOO.util.Event.getTarget(event);
+    multiSelectionMenuItemClicked: function(eventType, params) {
+        var id;
+        var parentKey = params.parentKey;
+        if (params.subKey != null)
+        {
+            var subKey = params.subKey;
+            id = this.multiSelectionMenuItems[parentKey].submenuItems[subKey].id;
+        }
+        else
+        {
+            id = this.multiSelectionMenuItems[parentKey].id;
+        }
+        var parentId = this.multiSelectionMenuItems[parentKey].id;
+        var xmlDatas = ArrayUtils.collect(this.selectionHelper.getSelectedNodes(), function(item) {
+            return item.xmlData
+        });
+        this.fireMultiSelectionMenuClick(xmlDatas, id, parentId);
+    },
+    handleRightClick : function(e) {
+        YAHOO.util.Event.stopEvent(e);
+        var target = YAHOO.util.Event.getTarget(e);
         var row = this.getRowFromChild(target);
         if (row) {
-            var treeNode = this.getTreeNode(row);
-//            this.selectionChanged(row, true);
-            this.events["contextmenuclicked"].fireDirect(event, treeNode.xmlData);
+            this.selectionHelper.contextMenuClicked(row, e);
+        }
+        var selectedNodes = this.selectionHelper.getSelectedNodes();
+        if (selectedNodes.length > 0) {
+            var xy = YAHOO.util.Event.getXY(e)
+            this.multiSelectionMenu.cfg.setProperty("xy", xy);
+            var datas = ArrayUtils.collect(selectedNodes, function(node) {
+                return node.xmlData.getAttributes()
+            });
+            var index = 0;
+            for (var i in this.multiSelectionMenuItems) {
+                var menuItemConfig = this.multiSelectionMenuItems[i];
+                if (menuItemConfig['visible'] != null) {
+                    var params = {datas: datas, label:menuItemConfig.label, menuId:menuItemConfig.id}
+                    var condRes = eval(menuItemConfig['visible']);
+                    var menuItem = this.multiSelectionMenu.getItem(index);
+                    if (!condRes)
+                        menuItem.element.style.display = "none";
+                    else
+                        menuItem.element.style.display = "";
+
+                }
+                var subIndex = 0;
+                for (var j in this.multiSelectionMenuItems[i].submenuItems)
+                {
+                    var subMenuItemConfig = this.multiSelectionMenuItems[i].submenuItems[j];
+                    var submenuItem = this.multiSelectionMenu.getItem(index)._oSubmenu.getItem(subIndex);
+                    if (subMenuItemConfig['visible'] != null)
+                    {
+                        var params = {datas: datas, label:subMenuItemConfig.label}
+                        var condRes = eval(subMenuItemConfig['visible']);
+                        if (!condRes)
+                            submenuItem.element.style.display = "none";
+                        else
+                            submenuItem.element.style.display = "";
+                    }
+                    subIndex++;
+                }
+                index++;
+            }
+            this.multiSelectionMenu.show();
+            YAHOO.rapidjs.component.OVERLAY_MANAGER.bringToTop(this.multiSelectionMenu);
         }
     },
-
     updateTooltip : function(event) {
         var target = YAHOO.util.Event.getTarget(event);
         var cell = this.getCellFromChild(target);
@@ -707,9 +718,10 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             }
             if (childNode.isRemoved == true) {
                 this.selectionHelper.nodeRemoved(childNode);
-//                if (this.selectedNode == childNode) {
-                //                    this.selectedNode = null;
-                //                }
+                if (this.rowMenu.treeNode == childNode) {
+                    this.rowMenu.treeNode = null;
+                    this.rowMenu.hide();
+                }
                 childNode.destroy();
             }
             else {
@@ -800,14 +812,17 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         }
         header.updateSortState(direction);
     },
-    getTreeNode: function(row){
-       return this.expandedNodes[row.rowIndex]
+    getTreeNode: function(row) {
+        return this.expandedNodes[row.rowIndex]
     },
-    getNodeFromRow : function(row){
-       return this.getTreeNode(row)
+    getNodeFromRow : function(row) {
+        return this.getTreeNode(row)
     },
     fireSelectionChange:function(selectedNodes, e) {
-       this.events["selectionchanged"].fireDirect(selectedNodes);
+        this.events["selectionchanged"].fireDirect(selectedNodes);
+    },
+    fireMultiSelectionMenuClick: function(datas, id, parentId) {
+        this.events['multiSelectionMenuClicked'].fireDirect(datas, id, parentId);
     }
 
 };

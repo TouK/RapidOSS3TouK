@@ -61,7 +61,7 @@ class UiMenuItem extends UiElmnt {
             attributesAsString["toolbarId"] = parent._designerKey;
         }
         def parentDesignerType = node.parent().@"${DESIGNER_TYPE}".toString();
-        if (parentDesignerType == "SearchGridMultiSelectionMenuItems" || parentDesignerType == "SearchListMultiSelectionMenuItems") {
+        if (parentDesignerType == "SearchGridMultiSelectionMenuItems" || parentDesignerType == "SearchListMultiSelectionMenuItems" || parentDesignerType == "TreeGridMultiSelectionMenuItems") {
             attributesAsString["type"] = "multiple"
         }
         else if(parentDesignerType == "SearchListPropertyMenuItems"){

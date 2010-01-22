@@ -29,15 +29,20 @@ public abstract class UiElmnt {
             throw new Exception("No class found with designer type: ${designerType}".toString())
         }
     }
-    public static void removeUnneccessaryAttributes(GPathResult node) {
+    public static void removeUnneccessaryAttributes(GPathResult node, List excludedAtts) {
         def props = [:]
+        def excludedProps = ["designerType"]
+        excludedProps.addAll(excludedAtts);
         def atts = node.attributes();
         props.putAll(atts);
         props.each {key, value ->
-            if (key != "designerType") {
+            if (!excludedProps.contains(key)) {
                 atts.remove(key);
             }
         }
+    }
+    public static void removeUnneccessaryAttributes(GPathResult node) {
+        removeUnneccessaryAttributes(node, []);
     }
 
     protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
@@ -67,15 +72,15 @@ public abstract class UiElmnt {
         return [DESIGNER_TYPE];
     }
 
-//    private static Class getUiClassFromDesignerType(String designerType){
-//        switch(designerType){
-//            case "ObjectMapTextNodeContent":
-//            case "ObjectMapGaugeNodeContent":
-//                return com.ifountain.rui.designer.model.UiObjectMapContent
-//            default:
-//                DesignerSpace.getUiClass(DesignerSpace.PACKAGE_NAME + ".Ui" + designerType);
-//        }
-//    }
+    //    private static Class getUiClassFromDesignerType(String designerType){
+    //        switch(designerType){
+    //            case "ObjectMapTextNodeContent":
+    //            case "ObjectMapGaugeNodeContent":
+    //                return com.ifountain.rui.designer.model.UiObjectMapContent
+    //            default:
+    //                DesignerSpace.getUiClass(DesignerSpace.PACKAGE_NAME + ".Ui" + designerType);
+    //        }
+    //    }
 
     protected abstract void addChildElements(GPathResult node, UiElmnt parent);
 

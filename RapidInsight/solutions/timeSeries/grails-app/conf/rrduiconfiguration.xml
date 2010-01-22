@@ -59,7 +59,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="window.currentDevice=params.data.resource || window.currentDevice;params.data.nodeType != 'Container';" component="FlexLineChart" function="refresh" name="graph" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="{name:params.data.name}" designerType="FunctionArgument"/>
                 <UiElement value="'Flex Line Chart: ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -68,7 +68,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="showVariableDetails" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="'changedAt: ' +params.data.time +' AND elementName: ' +window.currentDevice.toExactQuery()" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
                 <UiElement value="'RsEvent'" designerType="FunctionArgument"/>
@@ -80,7 +80,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="showAnnotations" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value=" 'changedAt:[' +params.data.start  + ' TO ' +params.data.end +'] AND elementName: ' +window.currentDevice.toExactQuery()" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
                 <UiElement value="'RsEvent'" designerType="FunctionArgument"/>

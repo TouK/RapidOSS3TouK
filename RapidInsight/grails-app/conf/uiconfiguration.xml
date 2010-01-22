@@ -82,7 +82,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType == 'filter'" component="eventsGrid" function="setQueryWithView" name="setQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query " designerType="FunctionArgument"/>
                 <UiElement value="params.data.viewName" designerType="FunctionArgument"/>
                 <UiElement value="params.data.searchClass" designerType="FunctionArgument"/>
@@ -93,7 +93,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -102,7 +102,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
               </UiElement>
@@ -111,7 +111,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, mode:'create', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -120,7 +120,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  viewName:YAHOO.rapidjs.Components['eventsGrid'].getCurrentView(), mode:'create', type:'event', searchClass: YAHOO.rapidjs.Components['eventsGrid'].getSearchClass(), searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -129,7 +129,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -138,7 +138,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'event', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -147,7 +147,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="deleteQueryGroupAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -275,7 +275,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType == 'filter'" component="eventList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortOrder" designerType="FunctionArgument"/>
@@ -286,7 +286,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -295,7 +295,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
               </UiElement>
@@ -304,7 +304,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -313,7 +313,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), searchClass: YAHOO.rapidjs.Components['eventList'].getSearchClass(), mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -322,7 +322,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -331,7 +331,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'event', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -340,7 +340,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="sort" name="sortAscAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -349,7 +349,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="sort" name="sortDescAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -358,7 +358,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
               </UiElement>
@@ -367,7 +367,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -375,7 +375,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -383,7 +383,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -391,7 +391,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -399,7 +399,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="deleteQueryGroupAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -525,7 +525,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType == 'filter'" component="eventList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortOrder" designerType="FunctionArgument"/>
@@ -536,7 +536,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getHistoricalEventDetails.gsp', {id:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -545,7 +545,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
               </UiElement>
@@ -555,7 +555,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass:params.data.searchClass, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -564,7 +564,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), searchClass:YAHOO.rapidjs.Components['eventList'].getSearchClass(),  mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -573,7 +573,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -582,7 +582,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'historicalEvent', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -591,7 +591,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="sort" name="sortAscAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -600,7 +600,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="sort" name="sortDescAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -609,7 +609,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
               </UiElement>
@@ -618,7 +618,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -626,7 +626,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -634,7 +634,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -642,7 +642,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -650,7 +650,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="deleteQueryGroupAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -730,7 +730,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType == 'filter'" component="inventoryList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortOrder" designerType="FunctionArgument"/>
@@ -741,7 +741,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
               </UiElement>
@@ -750,7 +750,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.className + ' ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -759,7 +759,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, searchClass: params.data.searchClass, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -768,7 +768,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['inventoryList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['inventoryList'].getSortOrder(), searchClass: YAHOO.rapidjs.Components['inventoryList'].getSearchClass(), mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -777,7 +777,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -786,7 +786,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'topology', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -795,7 +795,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="sort" name="sortAscAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key " designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -804,7 +804,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="sort" name="sortDescAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -813,7 +813,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -821,7 +821,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -829,7 +829,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -837,7 +837,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="inventoryList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -845,7 +845,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="deleteQueryGroupAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -968,7 +968,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.type + ' ' + params.data.displayName" designerType="FunctionArgument"/>
               </UiElement>
@@ -977,7 +977,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="showEventsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="''" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
                 <UiElement value="'RsEvent'" designerType="FunctionArgument"/>
@@ -989,7 +989,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveMapGroupForm" function="show" name="mapGroupUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapGroupForm.gsp', {mode:'edit', mapGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -998,7 +998,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="topologyMap" function="loadMapForNode" name="loadMapForNodeAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="getURLParams()" designerType="FunctionArgument"/>
                 <UiElement value="getURLParams()" designerType="FunctionArgument"/>
               </UiElement>
@@ -1007,7 +1007,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveMapForm" function="show" name="updateMapAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapForm.gsp', getMapUpdateParams(params.data.id))" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -1016,7 +1016,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="saveMapForm" function="show" name="saveMapAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapForm.gsp',getMapSaveParams())" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
@@ -1025,7 +1025,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1034,7 +1034,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="topologyMap" function="loadMap" name="loadMapAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.response" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1042,7 +1042,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="mapTree" function="poll" name="refreshMapsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteMapAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="deleteMapGroupAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -1150,7 +1150,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
               </UiElement>
@@ -1159,7 +1159,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1168,7 +1168,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="getEventsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="getEventsQuery(params.data)" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
                 <UiElement value="'RsEvent'" designerType="FunctionArgument"/>
@@ -1179,7 +1179,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="summaryChart" function="refresh" name="getSummaryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="{nodeType:params.data.nodeType, name:params.data.name}" designerType="FunctionArgument"/>
                 <UiElement value="'Summary View for ' + params.data.displayName" designerType="FunctionArgument"/>
               </UiElement>
@@ -1188,7 +1188,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventHistory" function="refresh" name="eventHistoryAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="{nodeType:params.data.nodeType, name:params.data.name}" designerType="FunctionArgument"/>
                 <UiElement value="'Event History of ' + params.data.displayName" designerType="FunctionArgument"/>
               </UiElement>
@@ -1293,7 +1293,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
               </UiElement>
@@ -1302,7 +1302,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1311,7 +1311,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="getEventsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="'elementName:' + params.query.toExactQuery()" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
                 <UiElement value="'RsEvent'" designerType="FunctionArgument"/>
@@ -1322,7 +1322,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectDetails" function="show" name="autocompleteObjectDetailsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.query})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.query" designerType="FunctionArgument"/>
               </UiElement>
@@ -1406,7 +1406,7 @@
           <UiElement designerType="Dialogs"/>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType=='rule'" component="ruleContent" function="show" name="ruleUpdateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('rsMessageRuleForm.gsp',{mode:'edit',ruleId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Rule Details For Search Query: ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1415,7 +1415,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="ruleContent" function="show" name="ruleContentPoll" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="YAHOO.rapidjs.Components['ruleContent'].url" designerType="FunctionArgument"/>
                 <UiElement value="YAHOO.rapidjs.Components['ruleContent'].title" designerType="FunctionArgument"/>
               </UiElement>
@@ -1424,7 +1424,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="ruleTree" function="poll" name="ruleTreePoll" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="ruleDisableAction" type="Action event" event="success" designerType="ActionTrigger"/>
                 <UiElement triggeringAction="ruleEnableAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -1516,7 +1516,7 @@
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="" component="objectDetails" function="show" name="browseAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.rsAlias + ' ' + params.data.id" designerType="FunctionArgument"/>
               </UiElement>
@@ -1526,7 +1526,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="propsAndOperations" function="show" name="propsAndOperationsAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/propsAndOperations.gsp', {className:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Properties and Operations of ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1535,7 +1535,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1543,7 +1543,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1551,7 +1551,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1559,7 +1559,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1567,7 +1567,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
               </UiElement>
@@ -1576,7 +1576,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="sort" name="sortAscAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1585,7 +1585,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="sort" name="sortDescAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1594,7 +1594,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="crudForm" function="show" name="createAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/create.gsp', {__rsBrowserClassName:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Create ' + params.data.name" designerType="FunctionArgument"/>
               </UiElement>
@@ -1603,7 +1603,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="crudForm" function="show" name="updateAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/edit.gsp', {__rsBrowserClassName:params.data.rsAlias, id:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Edit ' + params.data.rsAlias" designerType="FunctionArgument"/>
               </UiElement>
@@ -1612,7 +1612,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectOtherDetails" function="show" name="browseRrdVariableGraphAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('showRrdVariableGraph.gsp', {name:params.data.name})  " designerType="FunctionArgument"/>
                 <UiElement value="'Graph of '+params.data.name  " designerType="FunctionArgument"/>
               </UiElement>
@@ -1621,7 +1621,7 @@
               </UiElement>
             </UiElement>
             <UiElement condition="" component="objectList" function="poll" name="refreshAction" designerType="FunctionAction">
-              <UiElement designerType="FunctionArguments"/>
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteAction" type="Action event" event="success" designerType="ActionTrigger"/>
               </UiElement>

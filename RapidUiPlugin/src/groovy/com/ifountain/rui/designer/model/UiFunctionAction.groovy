@@ -70,7 +70,7 @@ class UiFunctionAction extends UiAction {
     protected void addChildElements(GPathResult node, UiElmnt parent) {
         super.addChildElements(node, parent);
         def functionArgumentsNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "FunctionArguments"}
-        removeUnneccessaryAttributes(functionArgumentsNode)
+        removeUnneccessaryAttributes(functionArgumentsNode, ["designerHidden"])
         functionArgumentsNode."${UIELEMENT_TAG}".each {
             create(it, this)
         }

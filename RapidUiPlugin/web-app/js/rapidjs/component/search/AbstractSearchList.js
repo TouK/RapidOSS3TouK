@@ -79,7 +79,7 @@ YAHOO.rapidjs.component.search.AbstractSearchList = function(container, config) 
     YAHOO.ext.util.Config.apply(this.events, events);
     this.createSubComponents();
     this.calculateRowHeight();
-    this.selectionHelper = new YAHOO.rapidjs.component.search.SelectionHelper(this)
+    this.selectionHelper = new YAHOO.rapidjs.component.SelectionHelper(this, "rcmdb-search-rowselected");
     this.init();
     this.render();
     this.events['error'].subscribe(function() {
@@ -863,6 +863,9 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
     getSearchNode: function(row) {
         return this.searchData[row.rowIndex - this.lastOffset]
     },
+    getNodeFromRow: function(row) {
+        return this.getSearchNode(row)
+    },
     getRowsInRange: function(startIndex, endIndex) {
         var rows = [];
         var rowEls = this.bufferView.rowEls;
@@ -886,11 +889,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.AbstractSearchList, YAHOO.rapid
         return [];
     },
     createSortHelper : function() {
-        if(this.multipleFieldSorting){
-            return new YAHOO.rapidjs.component.search.SortHelper(this.keyAttribute);    
+        if (this.multipleFieldSorting) {
+            return new YAHOO.rapidjs.component.search.SortHelper(this.keyAttribute);
         }
-        else{
-           return new YAHOO.rapidjs.component.search.SingleSortHelper(this.keyAttribute);
+        else {
+            return new YAHOO.rapidjs.component.search.SingleSortHelper(this.keyAttribute);
         }
 
     },
@@ -982,7 +985,7 @@ YAHOO.rapidjs.component.search.SortHelper.prototype = {
 }
 
 YAHOO.rapidjs.component.search.SingleSortHelper = function(defaultSort) {
-   YAHOO.rapidjs.component.search.SingleSortHelper.superclass.constructor.call(this, defaultSort); 
+    YAHOO.rapidjs.component.search.SingleSortHelper.superclass.constructor.call(this, defaultSort);
 }
 
 YAHOO.extend(YAHOO.rapidjs.component.search.SingleSortHelper, YAHOO.rapidjs.component.search.SortHelper, {

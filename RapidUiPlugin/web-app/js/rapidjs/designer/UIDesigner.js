@@ -179,10 +179,13 @@ YAHOO.rapidjs.designer.UIDesigner.prototype = {
         this.tree.events["error"].fireDirect(this.tree, errors);
     },
 
-    treeSelectionChanged:function(xmlData) {
-        this.displayItemProperties(xmlData);
-        this.showHelp();
-        this.changeLayout(xmlData);
+    treeSelectionChanged:function(xmlDatas) {
+        if (xmlDatas.length > 0) {
+            var xmlData = xmlDatas[0];
+            this.displayItemProperties(xmlData);
+            this.showHelp();
+            this.changeLayout(xmlData);
+        }
     },
 
     displayItemProperties: function(xmlData) {

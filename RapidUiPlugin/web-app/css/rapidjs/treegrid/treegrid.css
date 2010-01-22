@@ -96,16 +96,12 @@
     background-color: #ddddff !important;
 }
 
-.r-tree-rowunselected {
-    background-color: white;
-}
-
 .r-tree-treerow {
     height: 25px;
 }
 
 .r-tree-row-headermenu {
-    background:transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll -1px -175px;
+    background: transparent url( ../../../images/rapidjs/sprite-png.png ) no-repeat scroll -1px -175px;
     cursor: pointer;
     height: 15px;
     overflow: hidden;

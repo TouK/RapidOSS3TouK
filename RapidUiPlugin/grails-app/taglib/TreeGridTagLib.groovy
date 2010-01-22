@@ -45,8 +45,8 @@ class TreeGridTagLib {
         if (onSelectionChanged != null) {
            getActionsArray(onSelectionChanged).each {actionName ->
                 selectionChangedJs += """
-               ${treeGridId}tg.events['selectionChanged'].subscribe(function(xmlData){
-                   var params = {data:xmlData.getAttributes()};
+               ${treeGridId}tg.events['selectionChanged'].subscribe(function(xmlDatas){
+                   var params = {datas:ArrayUtils.collect(xmlDatas, function(xmlData){return xmlData.getAttributes()})};
                    YAHOO.rapidjs.Actions['${actionName}'].execute(params);
                 }, this, true);
             """

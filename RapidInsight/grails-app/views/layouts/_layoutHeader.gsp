@@ -39,12 +39,12 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/tools', file:'Tooltip.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/dialog', file:'Dialog.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'PopupWindow.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component', file:'SelectionHelper.js')}"></script>
 
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchNode.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ExportTool.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchListSubComponent.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'TimeSelectorSubComponent.js')}"></script>
-<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SelectionHelper.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'AbstractSearchList.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'SearchList.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/search', file:'ViewBuilder.js')}"></script>

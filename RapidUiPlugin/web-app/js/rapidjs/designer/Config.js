@@ -640,7 +640,7 @@ YAHOO.rapidjs.designer.Config = new function() {
             "selectionChanged":{
                 descr:"Fired when row selection is changed.",
                 params:{
-                    "params.data":"JavaScript object representing the row data"
+                    "params.datas":"List of JavaScript objects representing the selected rows data"
                 }
             },
             "nodeClicked":{

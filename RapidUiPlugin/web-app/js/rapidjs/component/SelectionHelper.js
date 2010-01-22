@@ -1,22 +1,22 @@
-YAHOO.rapidjs.component.search.SelectionHelper = function(searchComponent) {
-    this.searchComponent = searchComponent;
+YAHOO.rapidjs.component.SelectionHelper = function(component, cssClass) {
+    this.component = component;
     this.selectedNodes = [];
     this.selectedRows = [];
-    this.cssClass = "rcmdb-search-rowselected"
+    this.cssClass = cssClass;
     this.lastRow = null;
 };
 
-YAHOO.rapidjs.component.search.SelectionHelper.prototype = {
+YAHOO.rapidjs.component.SelectionHelper.prototype = {
     getSelectedNodes : function(){
         return this.selectedNodes
     },
     getSelectedRows :function(){
         return this.selectedRows;        
     },
-    nodeRemoved: function(searchNode) {
+    nodeRemoved: function(node) {
         var nodeIndex = -1;
         for (var i = 0; i < this.selectedNodes.length; i++) {
-            if (this.selectedNodes[i] == searchNode) {
+            if (this.selectedNodes[i] == node) {
                 nodeIndex = i;
                 break;
             }
@@ -43,8 +43,8 @@ YAHOO.rapidjs.component.search.SelectionHelper.prototype = {
     },
 
     rowRendered: function(row) {
-        var searchNode = this.searchComponent.getSearchNode(row);
-        if (ArrayUtils.contains(this.selectedNodes, searchNode)) {
+        var node = this.component.getNodeFromRow(row);
+        if (ArrayUtils.contains(this.selectedNodes, node)) {
             if (!ArrayUtils.contains(this.selectedRows, row)) {
                 this.selectedRows.push(row);
                 YAHOO.util.Dom.addClass(row, this.cssClass);
@@ -85,18 +85,18 @@ YAHOO.rapidjs.component.search.SelectionHelper.prototype = {
         else {
             this.selectRow(row);
         }
-        this.searchComponent.fireSelectionChange(this.selectedNodes, e)
+        this.component.fireSelectionChange(this.selectedNodes, e)
     },
 
     contextMenuClicked:function(row, e){
         if(!ArrayUtils.contains(this.selectedRows, row)){
             this.selectRow(row);
-            this.searchComponent.fireSelectionChange(this.selectedNodes, e)
+            this.component.fireSelectionChange(this.selectedNodes, e)
         }
     },
 
     selectRange: function(startIndex, endIndex) {
-        var rows = this.searchComponent.getRowsInRange(startIndex, endIndex);
+        var rows = this.component.getRowsInRange(startIndex, endIndex);
         this.removeSelection();
         var lastRow = this.lastRow;
         for (var i = 0; i < rows.length; i++) {
@@ -118,17 +118,17 @@ YAHOO.rapidjs.component.search.SelectionHelper.prototype = {
             this.removeSelection();
         }
         if (!ArrayUtils.contains(this.selectedRows, row)) {
-            var searchNode = this.searchComponent.getSearchNode(row);
+            var node = this.component.getNodeFromRow(row);
             YAHOO.util.Dom.addClass(row, this.cssClass);
-            this.selectedNodes.push(searchNode);
+            this.selectedNodes.push(node);
             this.selectedRows.push(row);
         }
         this.lastRow = row;
     },
     deselectRow: function(row) {
         this.rowRemoved(row)
-        var searchNode = this.searchComponent.getSearchNode(row)
-        this.nodeRemoved(searchNode)
+        var node = this.component.getNodeFromRow(row)
+        this.nodeRemoved(node)
         YAHOO.util.Dom.removeClass(row, this.cssClass);
     }
 }

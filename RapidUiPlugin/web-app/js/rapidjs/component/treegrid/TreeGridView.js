@@ -33,11 +33,12 @@ YAHOO.rapidjs.component.treegrid.TreeGridView = function(container, config) {
         'contextmenuclicked' : new YAHOO.util.CustomEvent('contextmenuclicked'),
         'rowMenuClick' : new YAHOO.util.CustomEvent('rowMenuClick')
     };
-    YAHOO.ext.util.Config.apply(this, config);    
+    YAHOO.ext.util.Config.apply(this, config);
     this.renderTask = new YAHOO.ext.util.DelayedTask(this.renderRows, this);
     this.sortState = {header:null, direction:null};
     this.isSortingDisabled = false;
     this.selectedNode = null;
+    this.selectionHelper = new YAHOO.rapidjs.component.SelectionHelper(this, "r-tree-rowselected");
 };
 
 YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
@@ -182,7 +183,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
 
     selectionChanged: function(row, triggerEvent, event)
     {
-        var treeNode = this.expandedNodes[row.rowIndex];
+        var treeNode = this.getTreeNode(row);
         this.events['treenodeclicked'].fireDirect(treeNode);
         if (this.selectedRow) {
             if (row != this.selectedRow) {
@@ -194,10 +195,10 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 }
                 this.selectedRow = row;
             }
-            else if(event && event.ctrlKey){
-               YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
-               this.selectedNode = null; 
-               this.selectedRow = null; 
+            else if (event && event.ctrlKey) {
+                YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
+                this.selectedNode = null;
+                this.selectedRow = null;
             }
         }
         else {
@@ -214,7 +215,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var treeNode;
         var expandedRowIndex;
         if (treeRow) {
-            treeNode = this.expandedNodes[treeRow.rowIndex]
+            treeNode = this.getTreeNode(treeRow)
             expandedRowIndex = treeRow.rowIndex;
         }
         else {
@@ -355,12 +356,13 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                     cell.rootImage = null;
                     row.cells[cellIndex] = null;
                 }
+                this.selectionHelper.rowRemoved(row)
                 row.cells = null;
                 row.icon = null;
                 row.rowIndex = null;
-                if (this.selectedRow == row) {
-                    this.selectedRow = null;
-                }
+//                if (this.selectedRow == row) {
+                //                    this.selectedRow = null;
+                //                }
                 this.bufferView.dom.removeChild(row);
                 this.bufferView.rows.splice(this.bufferView.rows.length - 1, 1);
             }
@@ -384,26 +386,27 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             var realRowIndex = rowStartIndex + rowIndex;
             row.rowIndex = realRowIndex;
             this.renderRow(row);
-            var treeNode = this.expandedNodes[realRowIndex];
-            if (treeNode == this.selectedNode) {
-                if (row != this.selectedRow) {
-                    if (this.selectedRow) {
-                        YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
-                    }
-                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-                    this.selectedRow = row;
-                }
-                else {
-                    if (!YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
-                        YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
-                    }
-                }
-            }
-            else {
-                if (YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
-                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowselected', 'r-tree-rowunselected');
-                }
-            }
+            this.selectionHelper.rowRendered(row);
+//            var treeNode = this.expandedNodes[realRowIndex];
+            //            if (treeNode == this.selectedNode) {
+            //                if (row != this.selectedRow) {
+            //                    if (this.selectedRow) {
+            //                        YAHOO.util.Dom.replaceClass(this.selectedRow, 'r-tree-rowselected', 'r-tree-rowunselected');
+            //                    }
+            //                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
+            //                    this.selectedRow = row;
+            //                }
+            //                else {
+            //                    if (!YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
+            //                        YAHOO.util.Dom.replaceClass(row, 'r-tree-rowunselected', 'r-tree-rowselected');
+            //                    }
+            //                }
+            //            }
+            //            else {
+            //                if (YAHOO.util.Dom.hasClass(row, 'r-tree-rowselected')) {
+            //                    YAHOO.util.Dom.replaceClass(row, 'r-tree-rowselected', 'r-tree-rowunselected');
+            //                }
+            //            }
         }
     },
     createEmptyRows: function(rowCount)
@@ -415,7 +418,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 var rowCells = [];
                 var row = dh.append(this.bufferView.dom, {tag:'div', cls:'r-tree-treerow',
                     html:'<table cellspacing="0" cellpadding="0" style="height:100%;"><tbody><tr></tr></tbody></table>'});
-                YAHOO.util.Dom.addClass(row, 'r-tree-rowunselected');
+                //YAHOO.util.Dom.addClass(row, 'r-tree-rowunselected');
                 var tr = row.getElementsByTagName('tr')[0];
                 if (colCount > 0) {
                     var firstTd = document.createElement('td');
@@ -469,7 +472,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
 
     renderRow : function(row) {
         if (row.cells && row.cells.length > 0) {
-            var treeNode = this.expandedNodes[row.rowIndex];
+            var treeNode = this.getTreeNode(row);
             var dataNode = treeNode.xmlData;
             var firstCell = row.cells[0];
             var cellBody = firstCell['body'];
@@ -564,13 +567,14 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 this.expandNode(row);
             }
             else if (YAHOO.util.Dom.hasClass(target, "r-tree-treerowicon-expanded")) {
-                this.collapseNode(this.expandedNodes[row.rowIndex], row, row.rowIndex);
+                this.collapseNode(this.getTreeNode(row), row, row.rowIndex);
             }
             else if (YAHOO.util.Dom.hasClass(target, "r-tree-row-headermenu")) {
                 this.showRowMenu(target, row);
             }
             else {
-                this.selectionChanged(row, true, e);
+                this.selectionHelper.rowClicked(row, e);
+//                this.selectionChanged(row, true, e);
             }
         }
     },
@@ -578,7 +582,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
     showRowMenu : function(target, row) {
         this.rowMenu.row = row;
         this.rowMenu.cfg.setProperty("context", [target, 'tl', 'bl']);
-        var treeNode = this.expandedNodes[row.rowIndex];
+        var treeNode = this.getTreeNode(row);
         var dataNode = treeNode.xmlData;
         var index = 0;
         var numberOfDisplayedItems = 0;
@@ -637,15 +641,15 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var parentId = this.menuItems[parentKey].id;
         var row = this.rowMenu.row;
         this.rowMenu.row = null;
-        var xmlData = this.expandedNodes[row.rowIndex].xmlData;
+        var xmlData = this.getTreeNode(row).xmlData;
         this.events['rowMenuClick'].fireDirect(xmlData, id, parentId, row);
     },
     handleRightClick : function(event) {
         var target = YAHOO.util.Event.getTarget(event);
         var row = this.getRowFromChild(target);
         if (row) {
-            var treeNode = this.expandedNodes[row.rowIndex];
-            this.selectionChanged(row, true);
+            var treeNode = this.getTreeNode(row);
+//            this.selectionChanged(row, true);
             this.events["contextmenuclicked"].fireDirect(event, treeNode.xmlData);
         }
     },
@@ -702,9 +706,10 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 }
             }
             if (childNode.isRemoved == true) {
-                if (this.selectedNode == childNode) {
-                    this.selectedNode = null;
-                }
+                this.selectionHelper.nodeRemoved(childNode);
+//                if (this.selectedNode == childNode) {
+                //                    this.selectedNode = null;
+                //                }
                 childNode.destroy();
             }
             else {
@@ -764,7 +769,25 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             treeNode.indexInParent = index;
         }
     },
-
+    getRowsInRange: function(startIndex, endIndex) {
+        var rows = [];
+        var rowEls = this.bufferView.rows;
+        if (rowEls.length > 0) {
+            if (startIndex < 0) {
+                startIndex = rowEls[0].rowIndex;
+            }
+            for (var i = 0; i < rowEls.length; i++) {
+                var row = rowEls[i];
+                var rowIndex = row.rowIndex;
+                if (rowIndex > endIndex)break;
+                else if (rowIndex < startIndex) continue;
+                else {
+                    rows.push(row);
+                }
+            }
+        }
+        return rows;
+    },
     headerClicked: function(header, direction) {
         var lastClicked = this.sortState['header'];
         this.sortState['header'] = header;
@@ -776,6 +799,15 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             lastClicked.updateSortState(null);
         }
         header.updateSortState(direction);
+    },
+    getTreeNode: function(row){
+       return this.expandedNodes[row.rowIndex]
+    },
+    getNodeFromRow : function(row){
+       return this.getTreeNode(row)
+    },
+    fireSelectionChange:function(selectedNodes, e) {
+       this.events["selectionchanged"].fireDirect(selectedNodes);
     }
 
 };

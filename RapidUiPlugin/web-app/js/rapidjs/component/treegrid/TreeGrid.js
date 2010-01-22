@@ -74,8 +74,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.TreeGrid, YAHOO.rapidjs.component.Poll
         this.treeGridView.resize(width, bodyHeight);
     },
 
-    fireSelectionChange: function(treeNode) {
-        this.events['selectionChanged'].fireDirect(treeNode.xmlData);
+    fireSelectionChange: function(treeNodes) {
+        this.events['selectionChanged'].fireDirect(ArrayUtils.collect(treeNodes, function(it){return it.xmlData}));
     },
     fireRowMenuClick: function(xmlData, id, parentId, row) {
         this.events['rowMenuClicked'].fireDirect(xmlData, id, parentId, row);

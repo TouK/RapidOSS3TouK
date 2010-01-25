@@ -554,7 +554,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
                 for (var index = 0; index < columnsToBeAdded; index++) {
                     var columnIndex = this.numberOfColumnsDrawn + index;
                     this.addHeader(columnIndex, "&#160;")
-                    var colCssName = "#" + this.bodyId + " .rcmdb-searchgrid-col-" + columnIndex;
+                    var colCssName = "#" + this.bodyId.toLowerCase() + " .rcmdb-searchgrid-col-" + columnIndex;
                     this.addColCss(colCssName);
                 }
                 YAHOO.ext.util.CSS.getRules(true);
@@ -642,7 +642,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         return columns;
     },
     hideColumn : function(colIndex) {
-        var selector = ["#" + this.bodyId + " .rcmdb-searchgrid-col-" + colIndex, ".rcmdb-searchgrid-col-" + colIndex];
+        var selector = "#" + this.bodyId.toLowerCase() + " .rcmdb-searchgrid-col-" + colIndex;
         YAHOO.ext.util.CSS.updateRule(selector, 'position', 'absolute');
         YAHOO.ext.util.CSS.updateRule(selector, 'display', 'none');
         this.headers[colIndex].style.display = 'none';

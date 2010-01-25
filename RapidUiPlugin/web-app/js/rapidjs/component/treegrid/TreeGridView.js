@@ -530,6 +530,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
             }
             else {
                 this.selectionHelper.rowClicked(row, e);
+                this.events['treenodeclicked'].fireDirect(this.getTreeNode(row));
             }
         }
     },

@@ -34,6 +34,14 @@ class AuthController {
     	return[username:params.login, targetUri: params.targetUri, flash : params.flash]
     }
     def signIn = {
+        if(params.login==null)
+        {
+            params.login="";
+        }
+        if(params.password==null)
+        {
+           params.password="";
+        }
         def authToken = new UsernamePasswordTokenWithParams(params)
         try{
             // Perform the actual login. An AuthenticationException

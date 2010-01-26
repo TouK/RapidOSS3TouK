@@ -53,7 +53,7 @@ mapDataBuilder.graphData {
         def source = edgeTokens[1];
         def target = edgeTokens[2];
 
-        def links = getLinkModel().searchEvery("name:${linkName.exactQuery()}");
+        def links = getLinkModel().searchEvery("name:${linkName.exactQuery()} ${getMapTypeQuery()}");
 
         if( links.size() != 0 )
         {
@@ -68,6 +68,21 @@ mapDataBuilder.graphData {
 return writer.toString();
 
 //utility functions
+def getMapTypeQuery()
+{
+    def query="";
+    if(CONFIG.USE_MAP_TYPE)
+    {
+        def mapType=MAPDATA.mapType;
+        if(mapType == null || mapType == "")
+        {
+            mapType=CONFIG.DEFAULT_MAP_TYPE;
+        }
+
+        query=" AND mapType:${mapType.exactQuery()}";
+    }
+    return query;
+}
 def extractNodeDataFromParameter(nodeParam)
 {
     def nodeData=[:];

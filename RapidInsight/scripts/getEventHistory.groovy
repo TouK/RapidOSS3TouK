@@ -34,20 +34,27 @@ def formatter = new SimpleDateFormat(timeStampFormat);
 def nodeType = params.nodeType;
 def name = params.name;
 
-def searchParams = [max: "1000", sort: "clearedAt", order: "desc"];
-def historicalEvents = null;
+def eventQuery="";
 if (nodeType == "Container") {
-    historicalEvents = RsHistoricalEvent.search("${CONTAINER_PROPERTY}:${name.exactQuery()}", searchParams).results;
+    eventQuery="${CONTAINER_PROPERTY}:${name.exactQuery()}";
 }
 else {
-    historicalEvents = RsHistoricalEvent.search("elementName:${name.exactQuery()}", searchParams).results;
+    eventQuery="elementName:${name.exactQuery()}";
 }
+
+def searchParams = [max: "1000", sort: "clearedAt", order: "desc"];
+def historicalEvents = RsHistoricalEvent.getPropertyValues(eventQuery, ["name", "elementName", "createdAt", "clearedAt"], searchParams);
 def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 builder.data() {
     historicalEvents.each {RsHistoricalEvent historicalEvent ->
         def start = formatter.format(new Timestamp(historicalEvent.createdAt)) + " GMT";
         def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
+        //if end < start then graph gives error
+        if(historicalEvent.clearedAt<historicalEvent.createdAt)
+        {
+            end=start;
+        }
         def title = historicalEvent.elementName + " " + historicalEvent.name;
         builder.event(title: title, start: start, end: end, isDuration: "true", historicalEvent.name)
     }

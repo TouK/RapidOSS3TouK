@@ -52,12 +52,11 @@
                 <table width="100%" cellspacing="1" cellpadding="1">
                     <tbody>
                         <g:each var="propertyName" status="i" in="${propertyNames}">
-                            <g:set var="propertyValue" value=""/>
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${propertyName}</td>
                                 <g:if test="${!relations.containsKey(propertyName)}">
                                     <%
-                                        propertyValue = domainObject[propertyName];
+                                        def propertyValue = domainObject[propertyName];
                                         if (dateProperties.contains(propertyName))
                                         {
                                             propertyValue = format.format(new Timestamp(propertyValue))
@@ -77,24 +76,14 @@
                                             %>
                                             <g:if test="${sortedRelatedObjects.size() > 10}">
                                                 <div>
-                                                    <%
-                                                        for (j in 0..9) {
-                                                    %>
-                                                    <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
-                                                    <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
-                                                    <%
-                                                        }
-                                                    %>
+                                                    <g:each var="rObj" in="${sortedRelatedObjects[0..9]}">
+                                                        <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
+                                                    </g:each>
                                                 </div>
                                                 <div style="display:none" id="${propertyName}_hiddenObjects">
-                                                    <%
-                                                        for (int j=10; j< sortedRelatedObjects.size(); j++) {
-                                                    %>
-                                                    <g:set var="rObj" value="${sortedRelatedObjects[j]}"></g:set>
-                                                    <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
-                                                    <%
-                                                        }
-                                                    %>
+                                                    <g:each var="rObj" in="${sortedRelatedObjects[10..-1]}">
+                                                        <li><a onclick="window.showRO('${rObj.name}', '${rObj.className}')">${rObj.className} ${rObj.name}</a></li>
+                                                    </g:each>
                                                 </div>
                                                 <div class="ri-objectdetails-expand" id="${propertyName}_expandButton" onclick="window.expandRelations('${propertyName}', ${sortedRelatedObjects.size()});">Expand (${sortedRelatedObjects.size() - 10})</div>
                                             </g:if>

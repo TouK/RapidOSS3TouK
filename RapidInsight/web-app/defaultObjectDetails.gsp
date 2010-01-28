@@ -27,6 +27,31 @@
             }
         }
         def relations = DomainClassUtils.getRelations(className);
+
+        //prepare object properties & relations
+        //the presentation and data prepate are seperate from each other
+        def objectProperties=[:];
+        def objectPropertyHasErrors=[:];
+        def objectRelations=[:];
+
+        propertyNames.each{ propertyName ->
+            if(!relations.containsKey(propertyName))
+            {
+                  def propertyValue = domainObject[propertyName];
+                  if (dateProperties.contains(propertyName))
+                  {
+                        propertyValue = format.format(new Timestamp(propertyValue))
+                  }
+                  objectProperties[propertyName]=propertyValue;
+                  objectPropertyHasErrors[propertyName]=domainObject.hasErrors(propertyName);
+            }
+            else
+            {
+                 def relatedObjects = domainObject.getRelatedModelPropertyValues(propertyName, ["className", "name"]);
+                 def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                 objectRelations[propertyName]=sortedRelatedObjects;
+            }
+        }   
     %>
     <script type="text/javascript">
          window.expandRelations = function(propertyName, relCount){
@@ -55,24 +80,18 @@
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${propertyName}</td>
                                 <g:if test="${!relations.containsKey(propertyName)}">
-                                    <%
-                                        def propertyValue = domainObject[propertyName];
-                                        if (dateProperties.contains(propertyName))
-                                        {
-                                            propertyValue = format.format(new Timestamp(propertyValue))
-                                        }
-                                        def fieldHasError = domainObject.hasErrors(propertyName)
-                                    %>
-                                    <td ${fieldHasError ? 'class="ri-field-error"' : ""}>
-                                        ${fieldHasError ? "InAccessible" : propertyValue}&nbsp;
-                                    </td>
+                                    <g:if test="${!objectPropertyHasErrors[propertyName]}">
+                                        <td>${objectProperties[propertyName]}&nbsp;</td>
+                                    </g:if>
+                                    <g:else>
+                                        <td class="ri-field-error">InAccessible&nbsp;</td>
+                                    </g:else>
                                 </g:if>
                                 <g:else>
                                     <td width="100%">
                                         <ul style="margin-left: 10px;">
-                                            <%
-                                                def relatedObjects = domainObject.getRelatedModelPropertyValues(propertyName, ["className", "name"]);
-                                                def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                                             <%
+                                                def sortedRelatedObjects = objectRelations[propertyName];
                                             %>
                                             <g:if test="${sortedRelatedObjects.size() > 10}">
                                                 <div>

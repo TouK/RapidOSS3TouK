@@ -129,8 +129,8 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
     }
 
     public void connectionClosedOnError(Exception e) {
-        logger.warn(getLogPrefix() + "Connection closed with error. Reason: ${e.getMessage()}")
         isConnectionActive = false;
+        logger.warn(getLogPrefix() + "Connection closed with error. Reason: ${e.getMessage()} ${e}");        
     }
 
     public void reconnectingIn(int i) {}

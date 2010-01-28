@@ -27,6 +27,7 @@
             }
         }
         def relations = DomainClassUtils.getRelations(className);
+        def relationNamesMap=relations;
 
         //prepare object properties & relations
         //the presentation and data prepate are seperate from each other
@@ -35,7 +36,7 @@
         def objectRelations=[:];
 
         propertyNames.each{ propertyName ->
-            if(!relations.containsKey(propertyName))
+            if(!relationNamesMap.containsKey(propertyName))
             {
                   def propertyValue = domainObject[propertyName];
                   if (dateProperties.contains(propertyName))
@@ -79,7 +80,7 @@
                         <g:each var="propertyName" status="i" in="${propertyNames}">
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${propertyName}</td>
-                                <g:if test="${!relations.containsKey(propertyName)}">
+                                <g:if test="${!relationNamesMap.containsKey(propertyName)}">
                                     <g:if test="${!objectPropertyHasErrors[propertyName]}">
                                         <td>${objectProperties[propertyName]}&nbsp;</td>
                                     </g:if>

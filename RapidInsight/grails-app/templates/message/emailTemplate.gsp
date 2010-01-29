@@ -1,14 +1,17 @@
-<%@ page import="message.RsMessage;" %>
+<% def subject=message.eventType=="create"?"Event Created":"Event Cleared" %>
 <html>
 <body>
-<g:if  test="${message.eventType==RsMessage.EVENT_TYPE_CREATE}"><b>"Event Created"</b></g:if>
-<g:else><b>"Event Cleared"</b></g:else>
-
+<b>${subject}</b>
 <br><br>Event Properties
 <ul>
-<g:each var="entry" in="${event.asMap().entrySet()}">
-<li>${entry.key} : ${entry.value}</li>
-</g:each>
+<li>name : ${event.name}</li>
+<li>elementName : ${event.elementName}</li>
+<li>owner : ${event.owner}</li>
+<li>severity : ${event.severity}</li>
+<li>acknowledged : ${event.acknowledged}</li>
+<li>createdAt : ${new Date(event.createdAt)}</li>
+<li>changedAt : ${new Date(event.changedAt)}</li>
+<li>clearedAt : ${new Date(event.clearedAt)}</li>
 </ul>
 </body>
 </html>

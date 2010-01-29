@@ -1,5 +1,6 @@
-<%@ page import="message.RsMessage;" %><% def propsToSend=["name","elementName","severity"] %>
-<g:if  test="${message.eventType==RsMessage.EVENT_TYPE_CREATE}">"Event Created"</g:if><g:else>"Event Cleared"</g:else>
+<% def subject=message.eventType=="create"?"Event Created":"Event Cleared" %>
+${subject}
 Event Properties
-<g:each var="propName" in="${propsToSend}">${propName} : ${event.getProperty(propName)}
-</g:each>
+name : ${event.name}
+elementName : ${event.elementName}
+severity : ${event.severity}

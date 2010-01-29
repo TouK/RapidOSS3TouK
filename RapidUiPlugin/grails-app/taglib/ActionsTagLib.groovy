@@ -71,6 +71,18 @@ class ActionsTagLib {
             """;
 
         }
+        if (actionType == "javascript") {
+            def js = new XmlSlurper().parseText(configXml).Javascript
+            return """
+               <script type="text/javascript">
+               var ${actionId}js = function(){${js.text()}};
+               var ${actionId}action = new YAHOO.rapidjs.component.action.ExecuteJavascriptAction('${attrs["id"]}',${actionId}js , ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"} )
+               ${successJs}
+               ${errorJs}
+               </script>
+            """;
+
+        }
         else if (actionType == "request" || actionType == "merge") {
             def timeoutJs = "";
             def unknownUrlJs = "";
@@ -153,7 +165,7 @@ class ActionsTagLib {
                 """;
             }
             else {
-               return """
+                return """
                    <script type="text/javascript">
                        var ${actionId}config = {
                          id:'${actionId}',
@@ -176,7 +188,7 @@ class ActionsTagLib {
         else if (actionType == "link") {
             return """
                <script type="text/javascript">
-               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"].encodeAsJavaScript()}\", ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"}, ${attrs["target"] ? "\"${attrs["target"]}\"":"null"});
+               var ${actionId}action = new YAHOO.rapidjs.component.action.LinkAction( '${actionId}', \"${attrs["url"].encodeAsJavaScript()}\", ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"}, ${attrs["target"] ? "\"${attrs["target"]}\"" : "null"});
                ${errorJs} 
                </script>
             """;
@@ -190,6 +202,13 @@ class ActionsTagLib {
     }
     def functionArg = {attrs, body ->
         out << fFunctionArg(attrs, body())
+    }
+
+    static def fActionJavascript(attrs, bodyString) {
+        return TagLibUtils.getConfigAsXml("Javascript", attrs, [], bodyString);
+    }
+    def actionJavascript = {attrs, body ->
+        out << fActionJavascript(attrs, body())
     }
     static def fRequestParam(attrs, bodyString) {
         return TagLibUtils.getConfigAsXml("RequestParam", attrs, ["key", "value"], bodyString);

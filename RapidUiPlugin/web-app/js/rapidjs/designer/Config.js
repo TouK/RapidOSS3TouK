@@ -801,6 +801,18 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             }
         },
+        "ExecuteJavascriptAction":{
+            "success": {
+                descr:"Fired when the js code successfully executed.",
+                params:{}
+            },
+            "error":{
+                descr:"Fired when the js code cannot be executed successfully.",
+                params:{
+                    "params.messages":"List of error messages."
+                }
+            }
+        },
         "LinkAction":{
             "error":{
                 descr:"Fired when the action cannot be executed successfully.",

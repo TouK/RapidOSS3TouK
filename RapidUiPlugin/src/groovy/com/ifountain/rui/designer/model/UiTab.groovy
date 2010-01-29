@@ -79,6 +79,7 @@ class UiTab extends UiElmnt {
                                         imageCollapsed: 'images/rapidjs/component/tools/folder.gif',
                                         childrenConfiguration: [
                                                 [designerType: "FunctionAction", isMultiple: true],
+                                                [designerType: "ExecuteJavascriptAction", isMultiple: true],
                                                 [designerType: "MergeAction", isMultiple: true],
                                                 [designerType: "RequestAction", isMultiple: true],
                                                 [designerType: "LinkAction", isMultiple: true]

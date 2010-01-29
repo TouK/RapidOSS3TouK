@@ -21,8 +21,8 @@ class UiFunctionAction extends UiAction {
                 designerType: "FunctionAction",
                 canBeDeleted: true,
                 displayFromProperty: "name",
-                imageExpanded: "images/rapidjs/designer/javascript.gif",
-                imageCollapsed: "images/rapidjs/designer/javascript.gif",
+                imageExpanded: "images/rapidjs/designer/function.png",
+                imageCollapsed: "images/rapidjs/designer/function.png",
                 propertyConfiguration: [
                         component: [descr: "The name of the component", validators: [blank: false, nullable: false]],
                         function: [descr: "The method of the component that will called.", validators: [blank: false, nullable: false]],

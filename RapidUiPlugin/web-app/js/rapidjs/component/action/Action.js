@@ -179,6 +179,35 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
 
     }
 };
+YAHOO.rapidjs.component.action.ExecuteJavascriptAction = function(id, fnc, condition) {
+    this.targetFunction = fnc;
+    this.condition = condition;
+    this.id = id;
+    this.events = {
+        'success' : new YAHOO.util.CustomEvent('success'),
+        'error' : new YAHOO.util.CustomEvent('error')
+    };
+    YAHOO.rapidjs.Actions[this.id] = this;
+};
+
+YAHOO.rapidjs.component.action.ExecuteJavascriptAction.prototype = {
+    execute: function(params) {
+        try {
+            var conditionResult = true;
+            if (this.condition) {
+                var conditionResult = eval(this.condition);
+            }
+            if (conditionResult) {
+                this.targetFunction.apply(this.component, []);
+            }
+            this.events['success'].fireDirect();
+        }
+        catch(err) {
+            this.events['error'].fireDirect([err.description])
+        }
+
+    }
+};
 YAHOO.rapidjs.component.action.LinkAction = function(id, urlExp, condition, target) {
     this.condition = condition;
     this.urlExp = urlExp;

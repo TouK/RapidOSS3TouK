@@ -713,7 +713,7 @@ YAHOO.rapidjs.designer.DesignerRenderUtils = new function() {
         if (itemType == "ActionTrigger") {
             helpText += "<h3>Event Description</h3>" + getTriggerHelp.call(this, this.currentDisplayedItemData)
         }
-        else if (itemType == "RequestAction" || itemType == "MergeAction" || itemType == "LinkAction") {
+        else if (itemType == "RequestAction" || itemType == "MergeAction" || itemType == "LinkAction" || itemType == "ExecuteJavascriptAction") {
             helpText += getTriggersHelp.call(this, this.currentDisplayedItemData);
         }
         else if (itemType == "FunctionAction") {

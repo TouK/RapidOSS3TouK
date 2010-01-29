@@ -34,7 +34,7 @@ if(model=="maintenance")
 
                 def endTime=new Date(new Date().getTime()+(1000*60*minutes))
                 def props=["objectName":objectName,"source":source,"info":info,"ending":endTime];
-                RsInMaintenance.putObjectInMaintenance (props);
+                RsInMaintenance.putObjectInMaintenance (props, true);
             }
             else
             {

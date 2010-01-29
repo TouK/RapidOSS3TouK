@@ -1,32 +1,27 @@
 package solutionTests
 
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
-import com.ifountain.rcmdb.test.util.CompassForTests
-import com.ifountain.rcmdb.scripting.ScriptManager
-import script.CmdbScript
-import script.CmdbScriptOperations
-import org.apache.commons.io.FileUtils
-import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import application.RapidApplication
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.connection.ConnectionManager
 import com.ifountain.core.connection.ConnectionParam
-import datasource.RepositoryDatasource
-import connection.RepositoryConnection
-import datasource.RepositoryDatasourceOperations
-import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import com.ifountain.core.datasource.AdapterStateProvider
-import com.ifountain.rcmdb.datasource.ListeningAdapterManager
-import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.test.util.DatasourceTestUtils
+import com.ifountain.rcmdb.datasource.ListeningAdapterManager
 import com.ifountain.rcmdb.domain.connection.RepositoryConnectionImpl
+import com.ifountain.rcmdb.scripting.ScriptManager
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
+import com.ifountain.rcmdb.test.util.CompassForTests
+import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import connection.RepositoryConnection
 import datasource.BaseListeningDatasource
 import datasource.BaseListeningDatasourceOperations
-import com.ifountain.comp.test.util.CommonTestUtils
-import org.apache.log4j.Logger
-import com.ifountain.rcmdb.datasource.RunnerObject
-import com.ifountain.rcmdb.datasource.ListeningAdapterRunner
-import com.ifountain.rcmdb.datasource.AdapterRunnerThread
-import com.ifountain.core.datasource.AdapterStateProvider
+import datasource.RepositoryDatasource
+import datasource.RepositoryDatasourceOperations
+import org.apache.commons.io.FileUtils
+import script.CmdbScript
+import script.CmdbScriptOperations
 
 /**
 * Created by IntelliJ IDEA.
@@ -352,48 +347,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 
-    public void testMaintenanceTest()
-    {
-        def classMap = [:];
-        GroovyClassLoader loader = new GroovyClassLoader();
-
-        classMap.RsInMaintenanceOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceOperations"));
-        classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
-
-
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RapidApplication], []);
-        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
-        CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
-        CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport(RsInMaintenance, classMap.RsInMaintenanceOperations);
-        CompassForTests.addOperationSupport(RsInMaintenanceSchedule, classMap.RsInMaintenanceScheduleOperations);
-        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
-
-        RapidApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
-
-        RapidApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
-
-        copyScript("inMaintenance", "MaintenanceScheduler");
-        copyManualTestScript("maintenance", "MaintenanceTest");
-
-        def script = CmdbScript.addScript([name: "MaintenanceTest", scriptFile: "MaintenanceTest.groovy", type: CmdbScript.ONDEMAND], true)
-        println script.errors
-        assertFalse(script.hasErrors());
-
-        def maintScript = CmdbScript.addScript([name: "MaintenanceScheduler", type: CmdbScript.ONDEMAND], true)
-        println maintScript.errors
-        assertFalse(maintScript.hasErrors());
-
-        try {
-            def result = CmdbScript.runScript(script, [:]);
-        }
-        catch (e)
-        {
-            e.printStackTrace();
-            fail("Error in script. Reason ${e}");
-
-        }
-    }
     public void testMaintenanceScheduleTest()
     {
         def classMap = [:];

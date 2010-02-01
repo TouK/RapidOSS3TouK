@@ -179,8 +179,8 @@ YAHOO.rapidjs.component.action.FunctionAction.prototype = {
 
     }
 };
-YAHOO.rapidjs.component.action.ExecuteJavascriptAction = function(id, fnc, condition) {
-    this.targetFunction = fnc;
+YAHOO.rapidjs.component.action.ExecuteJavascriptAction = function(id, js, condition) {
+    this.js = js;
     this.condition = condition;
     this.id = id;
     this.events = {
@@ -198,7 +198,7 @@ YAHOO.rapidjs.component.action.ExecuteJavascriptAction.prototype = {
                 var conditionResult = eval(this.condition);
             }
             if (conditionResult) {
-                this.targetFunction.apply(this.component, []);
+                eval(this.js);
             }
             this.events['success'].fireDirect();
         }

@@ -75,8 +75,7 @@ class ActionsTagLib {
             def js = new XmlSlurper().parseText(configXml).Javascript
             return """
                <script type="text/javascript">
-               var ${actionId}js = function(){${js.text()}};
-               var ${actionId}action = new YAHOO.rapidjs.component.action.ExecuteJavascriptAction('${attrs["id"]}',${actionId}js , ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"} )
+               var ${actionId}action = new YAHOO.rapidjs.component.action.ExecuteJavascriptAction('${attrs["id"]}','${js.text().encodeAsJavaScript()}' , ${attrs["condition"] ? "\"${attrs["condition"].encodeAsJavaScript()}\"" : "null"} )
                ${successJs}
                ${errorJs}
                </script>

@@ -2,7 +2,7 @@
     def jsActionConditionPropertyName = "jsActionCondition"+uiElement._designerKey+ "Condition";
     println com.ifountain.rui.util.DesignerTemplateUtils.declareVariable(jsActionConditionPropertyName, uiElement.condition, true);
 %>
-<rui:action id="${uiElement.name}" type="javascript"  ${uiElement.condition != ""?"condition=\"\$"+functionActionConditionPropertyName+"\"":""}
+<rui:action id="${uiElement.name}" type="javascript"  ${uiElement.condition != ""?"condition=\"\$"+jsActionConditionPropertyName+"\"":""}
 <%
     uiElement.getSubscribedTriggers().each{eventName, actionTriggers->
          def actionString = uiElement.getSubscribedActionsString(actionTriggers);

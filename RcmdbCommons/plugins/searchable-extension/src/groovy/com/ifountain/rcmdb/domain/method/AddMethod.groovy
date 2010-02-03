@@ -126,11 +126,11 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         }
         if (willReturnErrorIfExist && existingInstanceEntry.exist)
         {
-            ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstanceEntry.id]);
+            ValidationUtils.addObjectError(errors, "rapidcmdb.instance.already.exist", [existingInstanceEntry.alias?.name,existingInstanceEntry.id,sampleBean.toString()]);
         }
         else if (instanceOfError)
         {
-            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name, existingInstanceEntry.class.name]);
+            ValidationUtils.addObjectError(errors, "rapidcmdb.invalid.instanceof.existing", [rootDomainClass.name, existingInstanceEntry.alias?.name,sampleBean.toString()]);
         }
 
         if (errors.hasErrors()) {

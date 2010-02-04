@@ -28,7 +28,7 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
         if (maintObj) {
             tempProps.remove("starting");
             eventsAreAlreadyInMaintenance = true;
-            if(!override && endTime != 0 && endTime <= maintObj.ending.getTime())return maintObj;
+            if(!override && (maintObj.ending.getTime() == 0 || (endTime != 0 && endTime <= maintObj.ending.getTime())))return maintObj;
         }
 
         maintObj = RsInMaintenance.add(tempProps);

@@ -404,7 +404,7 @@ x='50' y='85'
 
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveMapForm" width="385" height="125" resizable="false"
+<rui:popupWindow componentId="saveMapForm" width="385" height="135" resizable="false"
 
 
   title='Save Map'

@@ -1,9 +1,9 @@
 package solutionTests
 
-import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import application.RapidApplication
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
+import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,6 +43,8 @@ class RsInMaintenanceOperationsTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
+        RapidApplicationTestUtils.clearProcessors();
+        RapidApplicationTestUtils.clearUtilityPaths();
         super.tearDown();
     }
 
@@ -200,6 +202,12 @@ class RsInMaintenanceOperationsTests extends RapidCmdbWithCompassTestCase {
         assertEquals("newSource", maint1.source)
         assertEquals("newInfo", maint1.info)
 
+        //maintenance with ending 0 cannot be overriden if override option is false
+        maint1.update(ending:new Date(0));
+
+        maint1 = RsInMaintenance.putObjectInMaintenance(props)
+        assertEquals(new Date(0).getTime(), maint1.ending.getTime())
+
     }
 
     public void testCanUpdateWithSmallerEndingIfOverrideOptionIsTrue() {
@@ -232,16 +240,6 @@ class RsInMaintenanceOperationsTests extends RapidCmdbWithCompassTestCase {
             assertTrue("wrong exception ${e}", e.getMessage().indexOf("time should be greater than starting time") >= 0);
         }
         assertEquals(0, RsInMaintenance.count())
-    }
-
-    public void testDeneme(){
-        def list = [];
-        while(true){
-            list.add([:])
-            if(list.size() == 1000000){
-                list.clear();
-            }
-        }
     }
 
 }

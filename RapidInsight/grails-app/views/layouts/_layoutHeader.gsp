@@ -7,6 +7,7 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/history', file:'history-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/datasource', file:'datasource-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/datatable', file:'datatable-min.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/yui/calendar', file: 'calendar-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/charts', file:'charts-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/autocomplete', file:'autocomplete-min.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/yui/button', file:'button-min.js')}"></script>

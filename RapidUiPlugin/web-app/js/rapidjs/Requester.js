@@ -42,6 +42,7 @@ YAHOO.rapidjs.Requester.prototype = {
             return;
         }
         YAHOO.rapidjs.ErrorManager.serverUp();
+        var containsErrors = false;
         try
         {
 
@@ -51,6 +52,7 @@ YAHOO.rapidjs.Requester.prototype = {
             }
             else
             {
+                containsErrors = true;
                 this.handleErrors(response);
             }
 
@@ -60,7 +62,7 @@ YAHOO.rapidjs.Requester.prototype = {
         }
         var callback = response.argument[0];
         if (typeof callback == 'function') {
-            callback(response);
+            callback(response, containsErrors);
         }
     },
     handleErrors: function(response)

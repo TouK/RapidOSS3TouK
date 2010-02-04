@@ -264,3 +264,6 @@
 .rcmdb-searchgrid-view-collist{
 	width: 150px;
 }
+.rcmdb-searchgrid-tools select{
+    padding:0;
+}

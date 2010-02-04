@@ -41,7 +41,7 @@ import com.ifountain.rcmdb.domain.util.RelationMetaData
 */
 class RapidDomainClassGrailsPlugin {
     private static final Map EXCLUDED_PROPERTIES = [:]
-    static{
+    static {
         EXCLUDED_PROPERTIES["id"] = "id";
         EXCLUDED_PROPERTIES["version"] = "version";
         EXCLUDED_PROPERTIES["errors"] = "errors";
@@ -57,24 +57,24 @@ class RapidDomainClassGrailsPlugin {
     def doWithSpring = {
         operationClassManagers = [:];
         ConstrainedProperty.registerNewConstraint(KeyConstraint.KEY_CONSTRAINT, KeyConstraint);
-        domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) { bean ->
+        domainPropertyInterceptor(DomainClassPropertyInterceptorFactoryBean) {bean ->
             propertyInterceptorClassName = ConfigurationHolder.getConfig().flatten().get(RapidCMDBConstants.PROPERTY_INTERCEPTOR_CLASS_CONFIG_NAME);
             classLoader = application.getClassLoader()
         }
         propertyDatasourceManager(PropertyDatasourceManagerBean)
-        {
-        }
-        DomainClassDefaultPropertyValueHolder.initialize (application.domainClasses.clazz);
+                {
+                }
+        DomainClassDefaultPropertyValueHolder.initialize(application.domainClasses.clazz);
     }
 
-    def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = {applicationContext ->
     }
 
-    def doWithWebDescriptor = { xml ->
+    def doWithWebDescriptor = {xml ->
     }
 
-    def doWithDynamicMethods = { ctx ->
-        IdGenerator.initialize (new IdGeneratorStrategyImpl(application.config.toProperties()["rapidCMDB.id.start"]));
+    def doWithDynamicMethods = {ctx ->
+        IdGenerator.initialize(new IdGeneratorStrategyImpl(application.config.toProperties()["rapidCMDB.id.start"]));
         domainClassMap = [:];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
@@ -83,7 +83,7 @@ class RapidDomainClassGrailsPlugin {
         def domainClassesToBeCreated = [];
         for (dc in application.domainClasses) {
             MetaClass mc = dc.metaClass
-            if(!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
+            if (!domainClassMap.containsKey(mc.getTheClass().getSuperclass().getName()))
             {
                 domainClassesToBeCreated += dc;
             }
@@ -97,24 +97,24 @@ class RapidDomainClassGrailsPlugin {
         }
     }
 
-    def onChange = { event ->
+    def onChange = {event ->
         if (application.isArtefactOfType(ControllerArtefactHandler.TYPE, event.source)) {
             addControllerMethods(event.source, event.ctx);
         }
     }
 
-    def onApplicationChange = { event ->
+    def onApplicationChange = {event ->
     }
 
     def addControllerMethods(controller, ctx)
     {
         MetaClass mc = controller.metaClass
-        mc.addError = {String messageCode->
+        mc.addError = {String messageCode ->
 
             delegate.addError(messageCode, [])
 
         }
-        mc.addError = {String messageCode, List params->
+        mc.addError = {String messageCode, List params ->
 
             delegate.addError(messageCode, params, "")
 
@@ -122,38 +122,46 @@ class RapidDomainClassGrailsPlugin {
 
         mc."${MethodFactory.WITH_SESSION_METHOD}" = MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD);
 
-        mc.addError = {String messageCode, List params, String defaultMessage->
-            if(!delegate.hasErrors())
+        mc.addError = {String messageCode, List params, String defaultMessage ->
+            if (!delegate.hasErrors())
             {
                 delegate.errors = new RapidBindException(delegate, delegate.class.name);
             }
-            delegate.errors.reject(messageCode, params as Object[],defaultMessage)
+            delegate.errors.reject(messageCode, params as Object[], defaultMessage)
 
         }
         def messageSource = ctx.getBean("messageSource");
         mc.errorsToXml = {->
             delegate.errorsToXml(delegate.errors);
         }
-        mc.errorsToXml = {errors->
+        mc.errorMessagesToXml = {errors ->
             StringWriter writer = new StringWriter();
             def builder = new MarkupBuilder(writer);
-            builder.Errors(){
-                errors.getAllErrors().each{error->
-                    def message = messageSource.getMessage( error,Locale.ENGLISH);
-                    if(error instanceof FieldError)
+            builder.Errors() {
+                errors.each {message ->
+                    builder.Error(error: message)
+                }
+            }
+            return writer.toString();
+        }
+        mc.errorsToXml = {errors ->
+            StringWriter writer = new StringWriter();
+            def builder = new MarkupBuilder(writer);
+            builder.Errors() {
+                errors.getAllErrors().each {error ->
+                    def message = messageSource.getMessage(error, Locale.ENGLISH);
+                    if (error instanceof FieldError)
                     {
                         def field = error.getField();
-                        builder.Error(field:field, error:message)
+                        builder.Error(field: field, error: message)
                     }
                     else
                     {
-                        builder.Error(error:message)
+                        builder.Error(error: message)
                     }
                 }
             }
-
             return writer.toString();
-
         }
     }
 
@@ -162,27 +170,27 @@ class RapidDomainClassGrailsPlugin {
         def mc = dc.metaClass;
         try
         {
-        	Field errField = mc.theClass.getDeclaredField("errors");
-            errField.setAccessible (true);
-            mc.hasErrors = {String fieldName-> delegate.errors?.hasFieldErrors(fieldName) }
-            mc.hasErrors = {-> delegate.errors?.hasErrors() }
-	        mc.getErrors = {->
-	            def errors = errField.get(delegate);
-	            if(errors == null)
-	            {
-	            	errors = new BeanPropertyBindingResult(delegate, delegate.getClass().getName());
-	            	delegate.setErrors(errors);
-	            }
-	            return errors;
-	       }
-	        mc.setErrors = { Errors errors ->
-	            errField.set(delegate, errors);
-	        }
-	        mc.clearErrors = {->
-	            delegate.setErrors (new BeanPropertyBindingResult(delegate, delegate.getClass().getName()))
-	        }
+            Field errField = mc.theClass.getDeclaredField("errors");
+            errField.setAccessible(true);
+            mc.hasErrors = {String fieldName -> delegate.errors?.hasFieldErrors(fieldName)}
+            mc.hasErrors = {-> delegate.errors?.hasErrors()}
+            mc.getErrors = {->
+                def errors = errField.get(delegate);
+                if (errors == null)
+                {
+                    errors = new BeanPropertyBindingResult(delegate, delegate.getClass().getName());
+                    delegate.setErrors(errors);
+                }
+                return errors;
+            }
+            mc.setErrors = {Errors errors ->
+                errField.set(delegate, errors);
+            }
+            mc.clearErrors = {->
+                delegate.setErrors(new BeanPropertyBindingResult(delegate, delegate.getClass().getName()))
+            }
         }
-        catch(java.lang.NoSuchFieldException ex)
+        catch (java.lang.NoSuchFieldException ex)
         {
         }
     }
@@ -212,36 +220,36 @@ class RapidDomainClassGrailsPlugin {
         mc.static.getOperations = {->
             return getOperationsMethod.getOperations();
         }
-        mc.static.keySet= {->
+        mc.static.keySet = {->
             return keySetMethod.getKeys();
         }
-        if(mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
+        if (mc.getMetaProperty(RapidCMDBConstants.OPERATION_PROPERTY_NAME) != null)
         {
             DomainOperationManager parentClassManager = operationClassManagers[dc.clazz.superclass.name];
-            def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}":[method:MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD), isStatic:true]];
+            def defaultOperationsMethods = ["${MethodFactory.WITH_SESSION_METHOD}": [method: MethodFactory.createMethod(MethodFactory.WITH_SESSION_METHOD), isStatic: true]];
             DomainOperationManager manager = new DomainOperationManager(dc.clazz, "${System.getProperty("base.dir")}/operations".toString(), parentClassManager, defaultOperationsMethods, application.classLoader);
             operationClassManagers[dc.clazz.name] = manager;
             ReloadOperationsMethod reloadOperationsMethod = new ReloadOperationsMethod(dc.metaClass, DomainClassUtils.getSubClasses(dc), manager, logger);
             def cls = mc.theClass;
-            mc.invokeOperation =  {String name, args ->
+            mc.invokeOperation = {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
 
             //for testing
-            mc.'static'._setDomainOperation = {Class oprClass->
-                manager.setOperationClass (oprClass);
-                getPropertiesMethod.setOperationClass (manager.getOperationClass());
-                getOperationsMethod.setOperationClass (manager.getOperationClass());
+            mc.'static'._setDomainOperation = {Class oprClass ->
+                manager.setOperationClass(oprClass);
+                getPropertiesMethod.setOperationClass(manager.getOperationClass());
+                getOperationsMethod.setOperationClass(manager.getOperationClass());
             }
-            mc.propertyMissing = {String name->
+            mc.propertyMissing = {String name ->
                 def domainObject = delegate;
                 def getterName = GrailsClassUtils.getGetterName(name);
-                return convertPropertyMissingException(delegate.class, name, getterName){
+                return convertPropertyMissingException(delegate.class, name, getterName) {
                     return InvokeOperationUtils.invokeMethod(domainObject, getterName, InvokerHelper.EMPTY_ARGS, manager.getOperationClass(), manager.getOperationClassMethods());
                 }
 
             }
-            mc.methodMissing =  {String name, args ->
+            mc.methodMissing = {String name, args ->
                 return InvokeOperationUtils.invokeMethod(delegate, name, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.invokeStaticOperation = {String methodName, args ->
@@ -251,25 +259,25 @@ class RapidDomainClassGrailsPlugin {
                 return InvokeOperationUtils.invokeStaticMethod(cls, methodName, args, manager.getOperationClass(), manager.getOperationClassMethods());
             }
             mc.'static'.reloadOperations = {
-                mc.invokeStaticMethod (dc.clazz, "reloadOperations", true);
+                mc.invokeStaticMethod(dc.clazz, "reloadOperations", true);
             }
-            mc.'static'.reloadOperations = {reloadSubclasses->
+            mc.'static'.reloadOperations = {reloadSubclasses ->
                 reloadOperationsMethod.invoke(mc.theClass, [reloadSubclasses] as Object[]);
-                try{
-                    getPropertiesMethod.setOperationClass (manager.getOperationClass());
-                    getOperationsMethod.setOperationClass (manager.getOperationClass());
-                }catch(Throwable e)
+                try {
+                    getPropertiesMethod.setOperationClass(manager.getOperationClass());
+                    getOperationsMethod.setOperationClass(manager.getOperationClass());
+                } catch (Throwable e)
                 {
                     logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}.", e);
                     throw e;
                 }
             }
-              
+
             try
             {
-                mc.invokeStaticMethod (dc.clazz, "reloadOperations", false);
+                mc.invokeStaticMethod(dc.clazz, "reloadOperations", false);
             }
-            catch(t)
+            catch (t)
             {
                 //the errors is already logged by the reloadOperations method _invoke(), but invoke() exceptions are ignored                
                 //logger.warn("[RapidDomainClassGrailsPlugin]: Error in invoke reloadOperations for domain ${dc.clazz.name}. Reason :"+t.toString());
@@ -282,9 +290,9 @@ class RapidDomainClassGrailsPlugin {
 
     }
 
-    
 
-    
+
+
 
     def addUtilityMetods(dc, application, ctx)
     {
@@ -294,46 +302,46 @@ class RapidDomainClassGrailsPlugin {
         mc.asMap = {->
             return asMapMethod.invoke(delegate, null);
         };
-        mc.asMap = {List requestedProperties->
+        mc.asMap = {List requestedProperties ->
             return asMapMethod.invoke(delegate, [requestedProperties] as Object[]);
         };
         mc.asStringMap = {->
             return asStringMapMethod.invoke(delegate, null);
         };
-        mc.asStringMap = {List requestedProperties->
+        mc.asStringMap = {List requestedProperties ->
             return asStringMapMethod.invoke(delegate, [requestedProperties] as Object[]);
         };
         mc.cloneObject = {->
             def cloned = dc.clazz.newInstance();
             def domainObject = delegate;
-            domainObject.getNonFederatedPropertyList().each{p ->
+            domainObject.getNonFederatedPropertyList().each {p ->
                 cloned.setPropertyWithoutUpdate(p.name, domainObject[p.name])
             }
             def filteredProps = ["version", RapidCMDBConstants.ERRORS_PROPERTY_NAME];
-            filteredProps.each{propName ->
+            filteredProps.each {propName ->
                 cloned.setPropertyWithoutUpdate(propName, domainObject[propName])
             }
             return cloned;
         };
-        mc.'static'.create = {Map props->
+        mc.'static'.create = {Map props ->
             def sampleBean = delegate.newInstance();
-            props.each{key,value->
-                sampleBean.setProperty (key, value);
+            props.each {key, value ->
+                sampleBean.setProperty(key, value);
             }
             return sampleBean;
         }
     }
-    
+
     def registerDynamicMethods(GrailsDomainClass dc, application, ctx)
     {
         def mc = dc.clazz.metaClass;
         addPropertyInterceptors(dc, application, ctx);
         addErrorsSupport(dc, application, ctx)
         addOperationsSupport(dc, application, ctx)
-        addUtilityMetods (dc, application, ctx)
-        for(subClass in dc.subClasses)
+        addUtilityMetods(dc, application, ctx)
+        for (subClass in dc.subClasses)
         {
-            if(subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)
+            if (subClass.metaClass.getTheClass().getSuperclass().name == dc.metaClass.getTheClass().name)
             {
                 registerDynamicMethods(subClass, application, ctx);
             }
@@ -345,9 +353,9 @@ class RapidDomainClassGrailsPlugin {
         {
             return closureToBeInvoked();
         }
-        catch(MissingMethodException ex)
+        catch (MissingMethodException ex)
         {
-            if(ex.getType().name == expectedExceptionClass.name && ex.getMethod() == expectedMethodName)
+            if (ex.getType().name == expectedExceptionClass.name && ex.getMethod() == expectedMethodName)
             {
                 throw new MissingPropertyException(propertyName, expectedExceptionClass);
             }
@@ -361,35 +369,35 @@ class RapidDomainClassGrailsPlugin {
     {
         FederatedPropertyManager impl = ctx.getBean(PropertyDatasourceManagerBean.BEAN_ID)
         GetPropertiesMethod getPropertiesMethod = new GetPropertiesMethod(dc, impl);
-        def props =dc.getProperties();
+        def props = dc.getProperties();
         def persistantProps = DomainClassUtils.getPersistantProperties(dc, false);
         def relations = DomainClassUtils.getRelations(dc);
         MetaClass dcMetaCls = dc.metaClass;
         Class dcClass = dc.clazz;
         DomainClassPropertyInterceptor propertyInterceptor = ctx.getBean("domainPropertyInterceptor");
-        dc.metaClass.setPropertyWithoutUpdate = {String name, Object value->
+        dc.metaClass.setPropertyWithoutUpdate = {String name, Object value ->
             delegate.setProperty(name, value, false);
         }
-        dc.metaClass.setProperty = {String name, Object value->
+        dc.metaClass.setProperty = {String name, Object value ->
             delegate.setProperty(name, value, true);
         }
-        dc.metaClass.setProperty = {String name, Object value, boolean flush->
+        dc.metaClass.setProperty = {String name, Object value, boolean flush ->
             try
             {
-                if(flush && !EXCLUDED_PROPERTIES.containsKey(name) && persistantProps.containsKey(name) && ((MetaClass)delegate.metaClass).getMetaMethod("update", Map) != null)
+                if (flush && !EXCLUDED_PROPERTIES.containsKey(name) && persistantProps.containsKey(name) && ((MetaClass) delegate.metaClass).getMetaMethod("update", Map) != null)
                 {
-                    delegate.invokeCompassOperation("updateForSetProperty", [["$name":value]]);
+                    delegate.invokeCompassOperation("updateForSetProperty", [["$name": value]]);
                 }
                 else
                 {
-                    if(relations[name] == null)
+                    if (relations[name] == null)
                     {
-                        propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, name, value);
+                        propertyInterceptor.setDomainClassProperty(dcMetaCls, dcClass, delegate, name, value);
                     }
                     else
                     {
                         def dynamicPropertyStorage = delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
-                        if(dynamicPropertyStorage == null)
+                        if (dynamicPropertyStorage == null)
                         {
                             dynamicPropertyStorage = [:]
                             delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE] = dynamicPropertyStorage;
@@ -398,29 +406,29 @@ class RapidDomainClassGrailsPlugin {
                     }
                 }
             }
-            catch(MissingPropertyException propEx)
+            catch (MissingPropertyException propEx)
             {
 
                 def setterName = GrailsClassUtils.getSetterName(name);
-                convertPropertyMissingException(delegate.class, name, setterName){
+                convertPropertyMissingException(delegate.class, name, setterName) {
                     delegate.methodMissing(GrailsClassUtils.getSetterName(name), [value] as Object[]);
                 }
             }
 
         }
 
-        getPropertiesMethod.getFederatedProperties().name.each{propName->
+        getPropertiesMethod.getFederatedProperties().name.each {propName ->
             dc.metaClass."${GrailsClassUtils.getGetterName(propName)}" = {->
-                return propertyInterceptor.getDomainClassProperty (dcMetaCls, dcClass, delegate, propName);
+                return propertyInterceptor.getDomainClassProperty(dcMetaCls, dcClass, delegate, propName);
             }
-            dc.metaClass."${GrailsClassUtils.getSetterName(propName)}" = {value->
-                propertyInterceptor.setDomainClassProperty (dcMetaCls, dcClass, delegate, propName, value);
+            dc.metaClass."${GrailsClassUtils.getSetterName(propName)}" = {value ->
+                propertyInterceptor.setDomainClassProperty(dcMetaCls, dcClass, delegate, propName, value);
             }
         }
-        relations.each{relName, metaData->
+        relations.each {relName, metaData ->
             dc.metaClass."${GrailsClassUtils.getGetterName(relName)}" = {->
                 def dynamicPropertyStorage = delegate[RapidCMDBConstants.DYNAMIC_PROPERTY_STORAGE];
-                if(dynamicPropertyStorage != null && dynamicPropertyStorage.containsKey(relName))
+                if (dynamicPropertyStorage != null && dynamicPropertyStorage.containsKey(relName))
                 {
                     return dynamicPropertyStorage.get(relName);
                 }
@@ -429,8 +437,8 @@ class RapidDomainClassGrailsPlugin {
                     return RelationUtils.getRelatedObjects(delegate, metaData);
                 }
             }
-            dc.metaClass."${GrailsClassUtils.getSetterName(relName)}" = {value->
-                delegate.invokeCompassOperation("updateForSetProperty", [["$relName":value]]);
+            dc.metaClass."${GrailsClassUtils.getSetterName(relName)}" = {value ->
+                delegate.invokeCompassOperation("updateForSetProperty", [["$relName": value]]);
             }
         }
     }

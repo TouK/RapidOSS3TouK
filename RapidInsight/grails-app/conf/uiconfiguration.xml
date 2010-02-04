@@ -77,7 +77,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="190" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save query" height="220" component="saveQueryForm" width="385" designerType="Dialog"/>
             <UiElement resizable="false" title="Save group" height="140" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -270,7 +270,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="213" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save query" height="250" component="saveQueryForm" width="385" designerType="Dialog"/>
             <UiElement resizable="false" title="Save group" height="140" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -520,7 +520,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="213" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save query" height="250" component="saveQueryForm" width="385" designerType="Dialog"/>
             <UiElement resizable="false" title="Save group" height="140" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -726,7 +726,7 @@
           <UiElement designerType="Dialogs">
             <UiElement resizable="false" title="Save group" height="140" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="213" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save query" height="250" component="saveQueryForm" width="385" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="params.data.nodeType == 'filter'" component="inventoryList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
@@ -962,7 +962,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="objectDetails" designerType="Dialog" width="850" y="85" x="50"/>
             <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
-            <UiElement resizable="false" title="Save Map" height="125" component="saveMapForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save Map" height="135" component="saveMapForm" width="385" designerType="Dialog"/>
             <UiElement resizable="false" title="Save Group" height="110" component="saveMapGroupForm" width="330" designerType="Dialog"/>
             <UiElement resizable="false" title="" height="400" component="eventsGrid" width="800" designerType="Dialog"/>
           </UiElement>

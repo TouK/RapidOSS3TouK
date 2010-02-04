@@ -37,7 +37,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.compo
 
     loadData: function() {
         var childData = this.xmlData.childNodes();
-        this.processChildNodes(0, childData);
+        this.processChildNodes(childData);
     },
     childAdded : function(newChild) {
         if (!this.hideAttribute || !newChild.getAttribute(this.hideAttribute)) {
@@ -45,7 +45,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.compo
             this.childNodes[this.childNodes.length] = childNode;
         }
     },
-    setChildNodes: function(newChildNodes){
+    setChildNodes: function(newChildNodes) {
         this.childNodes = newChildNodes;
         this.isLeaf = this.childNodes.length == 0;
     },
@@ -58,13 +58,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.compo
         this.xmlData = null;
     },
 
-    processChildNodes: function(lastIndex, childData)
+    processChildNodes: function(childData)
     {
         if (childData)
         {
             var numberOfChilds = childData.length;
-            var childToBeProcessed = lastIndex + 100;
-            for (var index = lastIndex; index < childToBeProcessed && index < numberOfChilds; index++) {
+            for (var index = 0; index < numberOfChilds; index++) {
                 var childDataNode = childData[index];
                 if (childDataNode.nodeType == 1 && childDataNode.nodeName == this.contentPath && !(this.hideAttribute && childDataNode.getAttribute(this.hideAttribute)))
                 {
@@ -73,10 +72,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.treegrid.TreeNode, YAHOO.rapidjs.compo
                     this.childNodes[this.childNodes.length] = childNode;
                     childNode.indexInParent = this.childNodes.length;
                 }
-            }
-            if (childToBeProcessed < numberOfChilds)
-            {
-                this.processChildNodes.defer(1, this, [childToBeProcessed, childData]);
             }
         }
     }

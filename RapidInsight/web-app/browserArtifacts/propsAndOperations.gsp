@@ -9,7 +9,7 @@
     def className = params.className;
     def domainClass = grailsApplication.getDomainClass(className);
 %>
-<g:if test="domainClass">
+<g:if test="${domainClass}">
     <%
         def operations = domainClass.clazz.getOperations();
         def keys = domainClass.clazz.keySet();

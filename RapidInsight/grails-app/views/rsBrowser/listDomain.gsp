@@ -26,12 +26,7 @@
                         <td><g:link action="${params.domain}" id="${object.id}">${object.id?.encodeAsHTML()}</g:link></td>
                         <g:each in="${propertyList}" var="p">
                             <g:if test="${p.name != 'id'}">
-                                <g:if test="true">
-                                    <td>${object[p.name]?.encodeAsHTML()}</td>                                    
-                                </g:if>
-                                <g:else>
-                                    <td>${object[p.name]?.encodeAsHTML()}</td>
-                                </g:else>
+                                <td>${object[p.name]?.encodeAsHTML()}</td>
                             </g:if>
                         </g:each>
                     </tr>

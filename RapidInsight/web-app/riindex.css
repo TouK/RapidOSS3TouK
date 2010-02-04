@@ -122,6 +122,13 @@
     display: block;
     text-decoration: underline;
 }
+.ri-object-details .errors{
+    background: #fff3f3;
+    border: 1px solid red;
+    color: #cc0000;
+    margin: 10px 0 5px 0;
+    padding: 5px 0 5px 15px;
+}
 
 .r-loadingmask-mask {
     background-color: #DAE8FB !important;

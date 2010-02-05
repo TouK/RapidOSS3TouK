@@ -255,7 +255,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         Calendar cal = Calendar.getInstance();
         def today = cal.get(Calendar.DAY_OF_WEEK);
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.WEEKLY,
-                daysOfWeek: today + 2, schedStarting: schedStarting, schedEnding: schedEnding];
+                daysOfWeek: ((today + 2) % 7) +1, schedStarting: schedStarting, schedEnding: schedEnding];
 
         try {
             RsInMaintenanceSchedule.addObjectSchedule(props);

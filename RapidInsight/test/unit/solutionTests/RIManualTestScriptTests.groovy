@@ -347,51 +347,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         }
     }
 
-    public void testMaintenanceScheduleTest()
-    {
-        def classMap = [:];
-        GroovyClassLoader loader = new GroovyClassLoader();
-
-        classMap.RsInMaintenanceOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceOperations"));
-        classMap.RsInMaintenanceScheduleOperations = loader.parseClass(getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "RsInMaintenanceScheduleOperations"));
-
-
-        initialize([CmdbScript, RsEvent, RsTopologyObject, RsInMaintenance, RsInMaintenanceSchedule, RsHistoricalInMaintenance, RapidApplication], []);
-        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
-        CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
-        CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
-        CompassForTests.addOperationSupport(RsInMaintenance, classMap.RsInMaintenanceOperations);
-        CompassForTests.addOperationSupport(RsInMaintenanceSchedule, classMap.RsInMaintenanceScheduleOperations);
-        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
-
-        RapidApplicationTestUtils.utilityPaths = ["InMaintenanceCalculator": getOperationPathAsFile("RI", "solutions/inMaintenance/operations", "InMaintenanceCalculator")];
-
-        RapidApplication.getUtility("EventProcessor").beforeProcessors = ["InMaintenanceCalculator"];
-
-
-
-        copyScript("inMaintenance", "MaintenanceScheduler");
-        copyManualTestScript("maintenance", "MaintenanceScheduleTest");
-
-        def script = CmdbScript.addScript([name: "MaintenanceScheduleTest", type: CmdbScript.ONDEMAND], true)
-        println script.errors
-        assertFalse(script.hasErrors());
-
-        def maintScript = CmdbScript.addScript([name: "MaintenanceScheduler", type: CmdbScript.ONDEMAND], true)
-        println maintScript.errors
-        assertFalse(maintScript.hasErrors());
-
-        try {
-            def result = CmdbScript.runScript(script, [:]);
-        }
-        catch (e)
-        {
-            e.printStackTrace();
-            fail("Error in script. Reason ${e}");
-
-        }
-    }
-
     public void testHeartBeatTest()
     {
         def classMap = [:];

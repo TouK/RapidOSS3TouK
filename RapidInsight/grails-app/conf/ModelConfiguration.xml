@@ -96,7 +96,11 @@
 				<Property Name="vendor" Type="string"/>
 			</Properties>
 		</Model>
-		<Model Name="RsLink" Parent="RsTopologyObject">
+        <Model Name="RsApplication" Parent="RsTopologyObject">
+			<Properties>				
+			</Properties>
+		</Model>
+        <Model Name="RsLink" Parent="RsTopologyObject">
 			<Properties>
 				<Property Name="a_ComputerSystemName" Type="string"/>
 				<Property Name="a_Name" Type="string"/>
@@ -165,9 +169,10 @@
 			</Properties>
 		</Model>          
     </Models>
-	<Relations>
+	<Relations>  HostsServices
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
-		<Relation From="RsTopologyObject" To="RsTopologyObject" Name="childObjects" ReverseName="parentObjects" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsApplication" Name="hostsServices" ReverseName="hostedBy" Type="OneToMany"></Relation>
+        <Relation From="RsTopologyObject" To="RsTopologyObject" Name="childObjects" ReverseName="parentObjects" Type="ManyToMany"></Relation>
 		<Relation From="RsTicket" To="RsTopologyObject" Name="relatedObjects" ReverseName="relatedTickets" Type="ManyToMany"></Relation>
 		<Relation From="RsTicket" To="RsService" Name="relatedServices" ReverseName="relatedServiceTickets" Type="ManyToMany"></Relation>
 		<Relation From="RsTicket" To="RsEvent" Name="relatedEvents" ReverseName="relatedEventTickets" Type="ManyToMany"></Relation>		

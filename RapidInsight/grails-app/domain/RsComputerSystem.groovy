@@ -24,7 +24,7 @@ class RsComputerSystem  extends RsTopologyObject {
     //AUTO_GENERATED_CODE
 
     static searchable = {
-        except = ["errors", "connectedVia"];
+        except = ["errors", "connectedVia", "hostsServices"];
     
     
     };
@@ -57,10 +57,14 @@ class RsComputerSystem  extends RsTopologyObject {
     
     List connectedVia =[];
     
+    List hostsServices =[];
+    
     
     static relations = [
     
         connectedVia:[type:RsLink, reverseName:"connectedSystems", isMany:true]
+    
+        ,hostsServices:[type:RsApplication, reverseName:"hostedBy", isMany:true]
     
     ]
     
@@ -93,12 +97,13 @@ class RsComputerSystem  extends RsTopologyObject {
     }
 
     static propertyConfiguration= [:]
-    static transients = ["errors", "connectedVia"];
+    static transients = ["errors", "connectedVia", "hostsServices"];
     
     public boolean equals(Object obj) {
         return obj.id == this.id;
     }
     //AUTO_GENERATED_CODE
+
 
 
 

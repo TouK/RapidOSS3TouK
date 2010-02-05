@@ -37,6 +37,10 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.statistics.GlobalOperationStatisticResult
+import com.ifountain.rcmdb.domain.DomainLockManager
+import com.ifountain.rcmdb.domain.lock.LockStrategyImpl
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /**
 * Created by IntelliJ IDEA.
@@ -50,6 +54,9 @@ class AddMethodTest extends RapidCmdbTestCase {
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
         IdGenerator.initialize(new MockIdGeneratorStrategy());
+        DomainLockManager.getInstance().initialize (TestLogUtils.log);
+        LockStrategyImpl.setMaxNumberOfRetries(1);
+        IdCache.initialize(10000)
         AddMethodDomainObject1.searchResult = [total: 0, results: []];
         AddMethodDomainObjectWithEvents.closureToBeInvokedBeforeInsert = null;
         AddMethodDomainObjectWithEvents.eventCalls = [];
@@ -518,7 +525,7 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertTrue(addedObjectAfterAdd.hasErrors());
         assertEquals(1, addedObjectAfterAdd.errors.allErrors.size());
         assertEquals("rapidcmdb.instance.already.exist", addedObjectAfterAdd.errors.allErrors[0].code);
-        assertEquals(objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[0]);
+        assertEquals(objectId, addedObjectAfterAdd.errors.allErrors[0].getArguments()[1]);
         assertNull(addedObjectAfterAdd.propertiesToBeUpdated);
         assertNull(AddMethodDomainObjectWithEvents.query);
         assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);

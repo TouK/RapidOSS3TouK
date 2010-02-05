@@ -40,7 +40,7 @@ YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
         this.dialog.hideMask()
     }, this, true)
     this.render();
-    this.getViews(this.loadViews.createDelegate(this));
+    this.getViews(this.loadViews);
 }
 YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.component.PollingComponentContainer, {
     render: function() {
@@ -137,11 +137,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         }
         parameters['columns'] = columnsArray.join("::");
         this.dialog.showMask();
-        this.doPostRequest(url, parameters, this.saveSuccess.createDelegate(this));
+        this.doPostRequest(url, parameters, this.saveSuccess);
     },
-    saveSuccess: function(response) {
+    saveSuccess: function(response, containsErrors) {
         this.dialog.hideMask();
-        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+        if (!containsErrors) {
             var currentView = this.nameInput.value;
             this.dialog.hide();
             if (!this.currentNode) {
@@ -157,35 +157,43 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var url = getUrlPrefix() + 'gridView/delete';
         this.doPostRequest(url, {id:encodeURIComponent(viewId)}, this.removeSuccess.createDelegate(this, [view], true))
     },
-    removeSuccess : function(response, view) {
-        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+    removeSuccess : function(response, containsErrors, view) {
+        if (!containsErrors) {
             this.getViews(this.viewRemoved.createDelegate(this, [view], true));
         }
     },
-    loadViews: function(response) {
-        this._getViewData(response);
-        this.searchGrid.loadViews(response);
-    },
-    viewAdded: function(response, view) {
-        this._getViewData(response);
-        var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
-        if (viewNode) {
-            this.searchGrid.viewAdded(viewNode);
+    loadViews: function(response, containsErrors) {
+        if (!containsErrors) {
+            this._getViewData(response);
+            this.searchGrid.loadViews(response);
         }
     },
-    viewUpdated: function(response, view) {
-        this._getViewData(response);
-        var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
-        if (viewNode) {
-            this.searchGrid.viewUpdated(viewNode);
+    viewAdded: function(response, containsErrors, view) {
+        if (!containsErrors) {
+            this._getViewData(response);
+            var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
+            if (viewNode) {
+                this.searchGrid.viewAdded(viewNode);
+            }
         }
     },
-    viewRemoved : function(response, view) {
-        this._getViewData(response);
-        this.searchGrid.viewRemoved(view);
+    viewUpdated: function(response, containsErrors, view) {
+        if (!containsErrors) {
+            this._getViewData(response);
+            var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
+            if (viewNode) {
+                this.searchGrid.viewUpdated(viewNode);
+            }
+        }
     },
-    _getViewData: function(response) {
-        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+    viewRemoved : function(response, containsErrors, view) {
+        if (!containsErrors) {
+            this._getViewData(response);
+            this.searchGrid.viewRemoved(view);
+        }
+    },
+    _getViewData: function(response, containsErrors) {
+        if (!containsErrors) {
             var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, ['name']);
             var rootNode = data.getRootNode('Views');
             if (rootNode) {
@@ -221,53 +229,53 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         }
         this.dialog.show();
         if (!this.availableFields) {
-            this.doRequest(this.searchGrid.fieldsUrl, {}, this.getFieldsSuccess.createDelegate(this))
+            this.doRequest(this.searchGrid.fieldsUrl, {}, this.getFieldsSuccess)
         }
         else {
             if (this.currentNode) {
                 this.populateFieldsForUpdate(this.currentNode);
             }
-            else{
+            else {
                 this.populateFieldsForAdd();
             }
             this.loadAvailableFields();
         }
     },
-    getFieldsSuccess: function(response) {
-        if (YAHOO.rapidjs.Connect.containsError(response) == false) {
+    getFieldsSuccess: function(response, containsErrors) {
+        if (!containsErrors) {
             this.availableFields = response.responseXML.getElementsByTagName('Field');
             if (this.currentNode) {
                 this.populateFieldsForUpdate(this.currentNode);
             }
-            else{
+            else {
                 this.populateFieldsForAdd();
             }
             this.loadAvailableFields();
         }
     },
-    populateFieldsForAdd: function(){
+    populateFieldsForAdd: function() {
         var viewInput = this.searchGrid.viewInput;
         var currentView = viewInput.options[viewInput.selectedIndex].value;
-        if(currentView == 'default'){
-             this.populteFieldsFromDefaultView();
+        if (currentView == 'default') {
+            this.populteFieldsFromDefaultView();
         }
-        else{
+        else {
             var node = this.viewData.findChildNode('name', currentView, 'View')[0];
             this.populateFieldsForUpdate(node);
             this.nameInput.readOnly = false;
             this.nameInput.value = '';
         }
     },
-    populteFieldsFromDefaultView: function(){
+    populteFieldsFromDefaultView: function() {
         var columns = YAHOO.rapidjs.ObjectUtils.clone(this.searchGrid.defaultColumns, true);
         var defaultSortColumn = '';
         var sortOrder = 'asc';
-        for(var index = 0; index < columns.length; index++){
-             var column = columns[index]
-             var attName = column['attributeName'];
-             var header = column['colLabel'];
-             var width = column['width'];
-             if (column['sortBy'] == true) {
+        for (var index = 0; index < columns.length; index++) {
+            var column = columns[index]
+            var attName = column['attributeName'];
+            var header = column['colLabel'];
+            var width = column['width'];
+            if (column['sortBy'] == true) {
                 defaultSortColumn = attName;
                 if (column['sortOrder']) {
                     sortOrder = column['sortOrder'];
@@ -279,13 +287,13 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         }
         SelectUtils.selectTheValue(this.defaultSortInput, defaultSortColumn, 0);
         SelectUtils.selectTheValue(this.sortOrderInput, sortOrder, 0);
-       
+
     },
     populateFieldsForUpdate: function(node) {
         var viewName = node.getAttribute('name');
         var isPublic = node.getAttribute('isPublic');
         this.nameInput.value = viewName;
-        if(isPublic == "true"){
+        if (isPublic == "true") {
             this.isPublicInput.checked = true;
         }
         this.nameInput.readOnly = true;
@@ -303,7 +311,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             this.columnsConfig[att] = {header:header, width:width};
             orderedArray.push({attribute:att, order:colOrder});
         }
-        orderedArray.sort(function(col1, col2){
+        orderedArray.sort(function(col1, col2) {
             return col1.order - col2.order;
         })
         for (var index = 0; index < nOfColumns; index++) {

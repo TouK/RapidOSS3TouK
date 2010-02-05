@@ -62,7 +62,8 @@ YAHOO.rapidjs.Requester.prototype = {
         }
         var callback = response.argument[0];
         if (typeof callback == 'function') {
-            callback(response, containsErrors);
+            callback = callback.createDelegate(this.scope, [containsErrors], true)
+            callback(response);
         }
     },
     handleErrors: function(response)
@@ -102,10 +103,6 @@ YAHOO.rapidjs.Requester.prototype = {
     doRequest: function(url, params, callback)
     {
         this.abort();
-        if(callback)
-        {
-            callback = callback.createDelegate(this.scope)
-        }
         var urlAndParams = parseURL(url)
         var paramsArray = this.getParamsArray(params, urlAndParams.params)
         var cb = {
@@ -147,14 +144,10 @@ YAHOO.rapidjs.Requester.prototype = {
     },
     doPostRequest : function(url, params, callback)
     {
-        if(callback)
-        {
-            callback = callback.createDelegate(this.scope)
-        }
         this.abort();
         var urlAndParams = parseURL(url)
         var paramsArray = this.getParamsArray(params, urlAndParams.params)
-        var callback = {
+        var cb = {
             success: this.processSuccess,
             failure: this.processFailure,
             timeout: this.timeout,
@@ -163,7 +156,7 @@ YAHOO.rapidjs.Requester.prototype = {
             argument : [callback]
         };
 
-        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', urlAndParams.url, callback, paramsArray.join("&"));
+        this.lastConnection = YAHOO.util.Connect.asyncRequest('POST', urlAndParams.url, cb, paramsArray.join("&"));
     },
 
     abort: function()

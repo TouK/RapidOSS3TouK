@@ -144,7 +144,7 @@ cursor:pointer;
                     </div></td>
                     <td valign="top">
                         <div class="scheduleType" style="display:none;padding-left:10">
-                            <div style="padding:5;color:#083772;font-weight:bold;text-decoration:underline;cursor:pointer">Calculate fire times:</div>
+                            <div style="padding:5;color:#083772;font-weight:bold;text-decoration:underline;cursor:pointer">Show start times:</div>
                             <select multiple="multiple" style="width:155;height:150"></select>
                         </div>
                     </td>

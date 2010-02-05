@@ -190,6 +190,7 @@ YAHOO.rapidjs.component.InMaintenanceForm.prototype = {
             if (inMaintenanceNodes.length > 0) {
                 var inMaintenanceNode = inMaintenanceNodes[0]
                 this.maintenanceForm.objectName.value = inMaintenanceNode.getAttribute("objectName")
+                this.maintenanceForm.info.value = inMaintenanceNode.getAttribute("info")
                 this.maintenanceForm.inMaintenance.checked = true
                 var source = inMaintenanceNode.getAttribute('source')
                 var starting = inMaintenanceNode.getAttribute('starting')

@@ -55,6 +55,11 @@
 
     </script>
     <div class="yui-navset yui-navset-top ri-object-details" style="margin-top:5px">
+        <g:if test="${_errors}">
+           <div class="errors">
+                ${_errors}
+            </div>
+        </g:if>
         <div style="display:block">
             <div>
                 <table width="100%" cellspacing="1" cellpadding="1">

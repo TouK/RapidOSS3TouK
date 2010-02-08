@@ -25,6 +25,11 @@
         gspFolder = "iphone";             
     }
 %>
+<g:if test="${_errors}">
+    <div id="messageArea" class="error">
+            ${_errors}
+    </div>
+</g:if>
 
 <div class="ri-mobile-objectDetails">
     <table class="itable" width="100%" cellspacing="1" cellpadding="1">

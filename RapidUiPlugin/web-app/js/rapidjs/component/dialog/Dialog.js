@@ -223,7 +223,7 @@ YAHOO.rapidjs.component.Dialog.prototype = {
     adjustSize : function(panelWidth, panelHeight, contentHeight) {
         // UNDERLAY/IFRAME SYNC REQUIRED
         var IE_QUIRKS = (YAHOO.env.ua.ie && document.compatMode == "BackCompat");
-        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie == 7 && IE_QUIRKS));
+        var IE_SYNC = (YAHOO.env.ua.ie == 6 || (YAHOO.env.ua.ie >= 7 && IE_QUIRKS));
         var bodyWidth = (panelWidth - 20);
         YAHOO.util.Dom.setStyle(this.panel.body.childNodes[0], 'width', bodyWidth + 'px');
         var headerHeight = this.panel.header.offsetHeight; // Content + Padding + Border

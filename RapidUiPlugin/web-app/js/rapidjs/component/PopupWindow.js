@@ -39,6 +39,7 @@ YAHOO.rapidjs.component.PopupWindow = function(component, config) {
     this.setTitle(this.title);
     this.dialog.events['resize'].subscribe(this.handleWindowResize, this, true);
     this.dialog.body.appendChild(this.component.container);
+    if(YAHOO.env.ua.webkit) YAHOO.util.Dom.addClass(this.dialog.body, 'component');
     this.component.inPopupWindow();
     this.windowResized();
 

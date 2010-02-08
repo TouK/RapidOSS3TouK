@@ -22,3 +22,6 @@
     width: 8px;
     position:absolute;
 }
+.yui-panel-container .component{
+    overflow: visible !important;
+}

@@ -8,51 +8,33 @@
 
 <%@ page import="java.sql.Timestamp; java.text.SimpleDateFormat; com.ifountain.rcmdb.domain.util.DomainClassUtils" %>
 <%
-    def dateProperties = ["lastChangedAt", "consideredDownAt"];
+   def dateProperties = ["lastChangedAt", "consideredDownAt"];
     SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss")
+    
     def name = params.name;
     def componentId = params.componentId
     def domainObject = RsTopologyObject.get(name: name);
 %>
 <g:if test="${domainObject != null}">
     <%
-        String className = domainObject.getClass().getName();
-        def allProperties = domainObject.getPropertiesList();
-        def propertyNames = ["className", "name"];
-        def excludedPropNames=["id":"","rsDatasource":"","className":"","name":""];
-        allProperties.each {
-            def propName = it.name
-            if (!excludedPropNames.containsKey(propName)) {
-                propertyNames.add(propName)
-            }
-        }
-        def relations = DomainClassUtils.getRelations(className);
-        def relationNamesMap=relations;
+       def objectProperties=domainObject.retrieveVisibleProperties();
+       //convert Date Properties
+       dateProperties.each{ propertyName ->
+           if(objectProperties.containsKey(propertyName))
+           {
+               objectProperties[propertyName] = format.format(new Timestamp(objectProperties[propertyName]))
+           }
+       }
 
-        //prepare object properties & relations
-        //the presentation and data prepate are seperate from each other
-        def objectProperties=[:];
-        def objectPropertyHasErrors=[:];
-        def objectRelations=[:];
+       //get _errors from objectProperties
+       def _errors=objectProperties.remove("_errors");
+       //prepare errored properties from federation
+       def objectPropertyHasErrors=objectProperties.remove("_objectPropertyHasErrors");
+       if(objectPropertyHasErrors == null) objectPropertyHasErrors = [:];
 
-        propertyNames.each{ propertyName ->
-            if(!relationNamesMap.containsKey(propertyName))
-            {
-                  def propertyValue = domainObject[propertyName];
-                  if (dateProperties.contains(propertyName))
-                  {
-                        propertyValue = format.format(new Timestamp(propertyValue))
-                  }
-                  objectProperties[propertyName]=propertyValue;
-                  objectPropertyHasErrors[propertyName]=domainObject.hasErrors(propertyName);
-            }
-            else
-            {
-                 def relatedObjects = domainObject.getRelatedModelPropertyValues(propertyName, ["className", "name"]);
-                 def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
-                 objectRelations[propertyName]=sortedRelatedObjects;
-            }
-        }   
+       //sort propertyNames first className, name then all others
+       def propertyNames=["className","name"];
+       propertyNames.addAll(objectProperties.keySet().findAll{it!="className" && it!="name"}.sort());
     %>
     <script type="text/javascript">
          window.expandRelations = function(propertyName, relCount){
@@ -80,9 +62,10 @@
                         <g:each var="propertyName" status="i" in="${propertyNames}">
                             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                                 <td width="0%" style="font-weight:bold">${propertyName}</td>
-                                <g:if test="${!relationNamesMap.containsKey(propertyName)}">
+                                <% def propertyValue=objectProperties[propertyName]; %>
+                                <g:if test="${! (propertyValue instanceof List) }">
                                     <g:if test="${!objectPropertyHasErrors[propertyName]}">
-                                        <td>${objectProperties[propertyName]}&nbsp;</td>
+                                        <td>${propertyValue}&nbsp;</td>
                                     </g:if>
                                     <g:else>
                                         <td class="ri-field-error">InAccessible&nbsp;</td>
@@ -91,9 +74,7 @@
                                 <g:else>
                                     <td width="100%">
                                         <ul style="margin-left: 10px;">
-                                             <%
-                                                def sortedRelatedObjects = objectRelations[propertyName];
-                                            %>
+                                            <% def sortedRelatedObjects = propertyValue; %>
                                             <g:if test="${sortedRelatedObjects.size() > 10}">
                                                 <div>
                                                     <g:each var="rObj" in="${sortedRelatedObjects[0..9]}">

@@ -27,8 +27,8 @@
         <div>
             <ul style="margin-left: 10px;list-style:none">
                 <%
-                    def relatedObjects = object.getRelatedModelPropertyValues(params.relationName, ["name", "className"]);
-                    def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                    objectProperties=object.retrieveVisibleProperties();
+                    def sortedRelatedObjects =objectProperties[params.relationName];
                 %>
                 <g:each var="rObj" in="${sortedRelatedObjects}">
                     <li><rui:link url="mobile/simple/objectDetails.gsp" params="${[name:rObj.name]}">${rObj.className} ${rObj.name}</rui:link></li>

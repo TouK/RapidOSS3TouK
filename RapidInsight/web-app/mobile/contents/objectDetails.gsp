@@ -2,7 +2,6 @@
 <%
     def format = new SimpleDateFormat("d MMM HH:mm:ss");
 
-    def objectProperties=object.retrieveVisibleProperties();
     //convert Date Properties
     CONFIG.INVENTORY_DATE_PROPERTIES.each{ propertyName ->
       if(objectProperties.containsKey(propertyName))
@@ -59,7 +58,12 @@
                                                 <li><rui:link url="mobile/${gspFolder}/objectDetails.gsp" params="${[name:rObj.name]}">${rObj.className} ${rObj.name}</rui:link></li>
                                             </g:each>
                                         </div>
-                                        <div class="ri-objectdetails-expand" id="${propertyName}_expandButton" onclick="window.expandRelations('${propertyName}', ${sortedRelatedObjects.size()});">Expand (${sortedRelatedObjects.size() - 10})</div>
+                                        <g:if test="${gspFolder=='iphone'}">
+                                            <div class="ri-objectdetails-expand" id="${propertyName}_expandButton" onclick="window.expandRelations('${propertyName}', ${sortedRelatedObjects.size()});">Expand (${sortedRelatedObjects.size() - 10})</div>
+                                        </g:if>
+                                        <g:else>
+                                            <rui:link url="mobile/simple/expandedRelations.gsp" params="${[name:name, relationName:propertyName]}">Expand (${sortedRelatedObjects.size() - 10})</rui:link>
+                                        </g:else>
                                     </g:if>
                                     <g:else>
                                         <g:each var="rObj" in="${sortedRelatedObjects}">

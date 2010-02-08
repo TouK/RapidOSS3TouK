@@ -3,8 +3,8 @@
 %>
 <rui:include template="mobile/config.gsp" model="${['CONFIG':CONFIG]}"></rui:include>
 <%
-    def name = params.name
-    def object = RsTopologyObject.get(name: name)    
+    name = params.name
+    object = RsTopologyObject.get(name: name)
 %>
 <html>
 <head>
@@ -32,12 +32,8 @@
         </div>
     </g:if>
     <g:else>
-        <%
-           def objectDetailsProps=[:];
-           objectDetailsProps.putAll(binding.variables);
-           objectDetailsProps.object=object;
-        %>
-        <rui:include template="mobile/contents/objectDetails.gsp" model="${objectDetailsProps}"></rui:include>
+        <%objectProperties=object.retrieveVisibleProperties(); %>
+        <rui:include template="mobile/contents/objectDetails.gsp" model="${binding.variables}"></rui:include>
     </g:else>
 </div>
 <div class="footer">

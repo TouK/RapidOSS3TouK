@@ -8,7 +8,7 @@
     }
     else {
 %>
-Object ${name} does not exist.
+Object ${objectName} does not exist.
 <%
     }
 %>

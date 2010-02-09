@@ -25,6 +25,8 @@ import com.ifountain.rcmdb.util.RapidStringUtilities
 import com.ifountain.compass.CompassConstants
 import org.compass.core.CompassHits
 import com.ifountain.compass.converter.CompassStringConverter
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,6 +42,9 @@ class PropertySummaryMethod extends AbstractRapidDomainReadMethod{
     }
     
     protected Object _invoke(Object clazz, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:clazz.name);
+        statistics.start();
+        
         if(arguments.length != 2) return [:];
         String query = String.valueOf(arguments[0])
         def propertyList = arguments[1]
@@ -75,6 +80,10 @@ class PropertySummaryMethod extends AbstractRapidDomainReadMethod{
                 CompassMethodInvoker.searchEvery(mc, countQuery, [raw:rawDataProcessorClosure])
             }
         }
+
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.PROPERTY_SUMMARY_OPERATION_NAME, statistics);
+
         return summary;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -64,8 +64,8 @@ class GetPropertyValuesAsStringMethod extends AbstractRapidDomainReadMethod {
         clazz.search(query, params);
 
         statistics.stop();
-        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_AS_STRING_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_AS_STRING_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
 
         return [total:total, offset:offset, results:results];
     }

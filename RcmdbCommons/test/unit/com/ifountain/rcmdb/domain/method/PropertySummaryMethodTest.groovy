@@ -19,6 +19,7 @@
 package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,8 +41,15 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value3");
         PropertySummaryMethodDomainObject1.add(prop1:"prop1Value2 prop1Value3 prop1Value4part1 prop1Value4PArt2  prop1Value4PArt3");
 
+
+
+
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
+        OperationStatistics.getInstance().reset();
         Map res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1"]] as Object[])
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.PROPERTY_SUMMARY_OPERATION_NAME);
+        assertEquals(1,stats.global.NumberOfOperations);
+
         assertEquals (1, res.size());
         assertEquals (2, res.prop1.prop1Value1);
         assertEquals (2, res.prop1.prop1Value2);
@@ -69,7 +77,11 @@ class PropertySummaryMethodTest extends RapidCmdbWithCompassTestCase{
         PropertySummaryMethodDomainObject1.add(prop1:"p1val3", prop2:"p2val2", prop3:1l);
 
         PropertySummaryMethod method = new PropertySummaryMethod(PropertySummaryMethodDomainObject1.metaClass);
+        OperationStatistics.getInstance().reset();
         def res = method.invoke(PropertySummaryMethodDomainObject1, ["alias:*", ["prop1", "prop2", "prop3"]] as Object[])
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.PROPERTY_SUMMARY_OPERATION_NAME);
+        assertEquals(1,stats.global.NumberOfOperations);
+
         assertEquals (3, res.size());
         assertEquals (4, res.prop1.p1val1);
         assertEquals (1, res.prop1.p1val2);

@@ -72,8 +72,8 @@ class GetPropertyValuesMethod extends AbstractRapidDomainReadMethod {
         clazz.'searchEvery'(query, options);
 
         statistics.stop();
-        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
         return results; //To change body of implemented methods use File | Settings | File Templates.
     }
 

@@ -1109,7 +1109,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         classes.parent.getPropertyValues("keyProp:x",["name"]);
         classes.parent.getPropertyValues("keyProp:object0",["name"]);
         classes.parent.getPropertyValues("alias:*",["name"]);
-        def getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        def getPropertyValuesSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        def getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME)
+        
+        assertEquals(0,getPropertyValuesSearchStats.global.NumberOfOperations);
 
         assertEquals(3,getPropertyValuesStats.global.NumberOfOperations);
         assertEquals(3,getPropertyValuesStats.ParentModel.NumberOfOperations);
@@ -1123,7 +1126,10 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         classes.parent.searchAsString("keyProp:x");
         classes.parent.searchAsString("keyProp:object0");
         classes.parent.searchAsString("alias:*");
-        def searchAsStringStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        def searchAsStringSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        def searchAsStringStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_AS_STRING_OPERATION_NAME)
+
+        assertEquals(0,searchAsStringSearchStats.global.NumberOfOperations);
 
         assertEquals(3,searchAsStringStats.global.NumberOfOperations);
         assertEquals(3,searchAsStringStats.ParentModel.NumberOfOperations);
@@ -1133,9 +1139,14 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         //Test for propertySummary
         OperationStatistics.getInstance().reset();
-        println classes.parent.propertySummary("alias:*",["keyProp"]);
-        def propertySummaryStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
-        assertEquals(0,propertySummaryStats.global.NumberOfOperations);
+        classes.parent.propertySummary("keyProp:x",["keyProp"]);
+        classes.parent.propertySummary("alias:*",["keyProp"]);
+        classes.parent.propertySummary("alias:*",["keyProp","prop1"]);
+        def propertySummarySearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        def propertySummaryStats=getOperationStatisticsAsMap(OperationStatistics.PROPERTY_SUMMARY_OPERATION_NAME);
+        
+        assertEquals(0,propertySummarySearchStats.global.NumberOfOperations);
+        assertEquals(3,propertySummaryStats.global.NumberOfOperations);
 
     }
     public Map getOperationStatisticsAsMap(operationName)

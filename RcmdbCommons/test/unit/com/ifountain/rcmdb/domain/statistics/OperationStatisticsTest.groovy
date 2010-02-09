@@ -47,7 +47,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         def xmlObj = slurp.parseText(statisticsXml);
         def reports = xmlObj.Report;
         
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         def addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult (addOperationXmlNode, []);
         
@@ -60,7 +60,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         xmlObj = slurp.parseText(statisticsXml);
         reports = xmlObj.Report;
 
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult(addOperationXmlNode, [res]);
         checkModelStatisticsResult(addOperationXmlNode, "Model1", [res]);
@@ -75,7 +75,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         xmlObj = slurp.parseText(statisticsXml);
         reports = xmlObj.Report;
 
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult(addOperationXmlNode, [res, res2, res3]);
         checkModelStatisticsResult(addOperationXmlNode, "Model1", [res, res2]);
@@ -88,7 +88,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         xmlObj = slurp.parseText(statisticsXml);
         reports = xmlObj.Report;
 
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult (addOperationXmlNode, []);
     }
@@ -126,7 +126,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         def xmlObj = slurp.parseText(statisticsXml);
         def reports = xmlObj.Report;
 
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         def addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
 
 
@@ -149,7 +149,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         xmlObj = slurp.parseText(statisticsXml);
         reports = xmlObj.Report;
 
-        assertEquals (14, reports.size());
+        assertEquals (17, reports.size());
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         def modelReportList=[];
         addOperationXmlNode.ModelReport.each { modelReport ->

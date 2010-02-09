@@ -70,7 +70,7 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase {
 
         OperationStatistics.getInstance().reset();
         def res = modelClass.'getPropertyValues'("alias:*", ["prop1", "prop2"]);
-        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME);
         assertEquals(1,stats.global.NumberOfOperations);
         assertEquals(1,stats.Model.NumberOfOperations);
         assertEquals(1,stats.Model_1.NumberOfOperations);

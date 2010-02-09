@@ -43,6 +43,10 @@ class OperationStatistics {
     public static final SEARCH_OPERATION_NAME = "Search";
     public static final SEARCH_TOP_OPERATION_NAME = "SearchTop";
     public static final COUNT_HITS_OPERATION_NAME = "CountHits";
+    public static final GET_PROPERTY_VALUES_OPERATION_NAME ="GetPropertyValues";
+    public static final SEARCH_AS_STRING_OPERATION_NAME ="SearchAsString";
+    public static final PROPERTY_SUMMARY_OPERATION_NAME ="PropertySummary";
+
     private static OperationStatistics operationStatisticsObject;
     private static Object getInstanceLock = new Object();
     Map operationStatistics = [:];
@@ -88,6 +92,9 @@ class OperationStatistics {
         operationStatistics[SEARCH_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_OPERATION_NAME);
         operationStatistics[SEARCH_TOP_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_TOP_OPERATION_NAME);
         operationStatistics[COUNT_HITS_OPERATION_NAME] = new GlobalOperationStatisticResult(name:COUNT_HITS_OPERATION_NAME);
+        operationStatistics[GET_PROPERTY_VALUES_OPERATION_NAME] = new GlobalOperationStatisticResult(name:GET_PROPERTY_VALUES_OPERATION_NAME);
+        operationStatistics[SEARCH_AS_STRING_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_AS_STRING_OPERATION_NAME);
+        operationStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = new GlobalOperationStatisticResult(name:PROPERTY_SUMMARY_OPERATION_NAME);
         modelStatistics[ADD_OPERATION_NAME] = [:];
         modelStatistics[AFTER_INSERT_OPERATION_NAME] = [:];
         modelStatistics[BEFORE_INSERT_OPERATION_NAME] = [:];
@@ -102,6 +109,9 @@ class OperationStatistics {
         modelStatistics[SEARCH_OPERATION_NAME] = [:];
         modelStatistics[SEARCH_TOP_OPERATION_NAME] = [:];
         modelStatistics[COUNT_HITS_OPERATION_NAME] = [:];
+        modelStatistics[GET_PROPERTY_VALUES_OPERATION_NAME] = [:];
+        modelStatistics[SEARCH_AS_STRING_OPERATION_NAME] = [:];
+        modelStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = [:];
     }
     
     public String getGlobalStatistics()

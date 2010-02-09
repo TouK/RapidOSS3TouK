@@ -31,7 +31,7 @@ class SearchAsStringTest extends RapidCmdbWithCompassTestCase{
 
         OperationStatistics.getInstance().reset();
         def searchResults = models.parent.searchAsString("alias:*");
-        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.SEARCH_AS_STRING_OPERATION_NAME);
         assertEquals(1,stats.global.NumberOfOperations);
         assertEquals(1,stats.ParentModel.NumberOfOperations);
         assertEquals(1,stats.ParentModel_1.NumberOfOperations);

@@ -134,7 +134,10 @@ class OperationStatistics {
         GlobalOperationStatisticResult globalResult = operationStatistics[operationType]
         if(globalResult != null)
         {
-            globalResult.addOperationStatisticResult (result);
+            if(!result.isSubStatistics)
+            {
+                globalResult.addOperationStatisticResult (result);
+            }
             def modelStatistic = getModelStatistic(operationType, result.model)
             modelStatistic.addOperationStatisticResult (result);
         }
@@ -176,6 +179,7 @@ class OperationStatisticResult
     long operationDuration = 0;
     long numberOfOperations =1;
     long startingTime = -1;
+    boolean isSubStatistics=false;
     static private double LN_10=Math.log(10);
     
     public void start()
@@ -191,7 +195,7 @@ class OperationStatisticResult
         }
         startingTime = -1;
     }
-    public OperationStatisticResult getCloneWithObjectCount(count)
+    public OperationStatisticResult getSubStatisticsWithObjectCount(count)
     {
         int countSuffix=0;
         if(count >0 && count != null)
@@ -199,6 +203,6 @@ class OperationStatisticResult
             countSuffix=Math.pow(10,Math.floor(Math.log(count)/LN_10).toInteger());
         }
         
-        return new OperationStatisticResult(model:this.model+"_"+countSuffix,operationDuration:this.operationDuration,startingTime:this.startingTime);
+        return new OperationStatisticResult(model:this.model+"_"+countSuffix,operationDuration:this.operationDuration,startingTime:this.startingTime,isSubStatistics:true);
     }
 }

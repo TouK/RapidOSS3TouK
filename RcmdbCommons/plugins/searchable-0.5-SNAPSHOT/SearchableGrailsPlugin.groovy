@@ -74,7 +74,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 }
                 statistics.stop();
                 OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getCloneWithObjectCount(res?.results?.size()));
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.results?.size()));
                 return res;
             }
 
@@ -121,7 +121,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 }
                 statistics.stop();
                 OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getCloneWithObjectCount(res?.size()));
+                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.size()));
                 return res;
             }
 

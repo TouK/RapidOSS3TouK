@@ -92,6 +92,39 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         addOperationXmlNode = reports.findAll {it.@Operation.text() == OperationStatistics.ADD_OPERATION_NAME}[0];
         checkGlobalStatisticsResult (addOperationXmlNode, []);
     }
+    public void testAddOperationStatisticResultDoesNotAddSubStatisticsToGlobalResult()
+    {
+        OperationStatisticResult res = new OperationStatisticResult(model:"Model1", operationDuration:1000);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, res);
+        def searchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(1,searchStats.global.NumberOfOperations);
+        assertEquals(1,searchStats.Model1.NumberOfOperations);
+
+        //Will not add to Global but will add to its model ( will be a sub ) 
+        OperationStatisticResult resWithItemCount=res.getSubStatisticsWithObjectCount(10);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, resWithItemCount);
+        searchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        
+        assertEquals(1,searchStats.global.NumberOfOperations);
+        assertEquals(1,searchStats.Model1_10.NumberOfOperations);
+
+        assertEquals(searchStats.Model1.TotalDuration,searchStats.global.TotalDuration)
+        assertEquals(searchStats.Model1.AvarageDuration,searchStats.global.AvarageDuration)
+    }
+    public static Map getOperationStatisticsAsMap(operationName)
+    {
+        def stats=[:];
+        stats.global=OperationStatistics.getInstance().operationStatistics[operationName].getGeneralReport().clone();
+        def sortedClassBasedEntries=OperationStatistics.getInstance().modelStatistics[operationName].entrySet().sort {it.key};
+        sortedClassBasedEntries.each { entry ->
+            String modelName=entry.key;
+            GlobalOperationStatisticResult modelResult=entry.value;
+            stats[modelName]=modelResult.getGeneralReport().clone();
+        }
+        println "------- Stats For ${operationName} -------"
+        stats.each{ key, val  -> println "${key}: ${val}"}
+        return stats;
+    }
     public void testGetGlobalStatisticsSortsClassBasedStatisticsWithModelName()
     {
 
@@ -132,10 +165,10 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         assertEquals(["Model1","Model1_0","Model1_1","Model1_10","Model2","Model2_0","Model2_1","Model2_10"],modelReportList)
 
     }
-    public void testGetCloneWithObjectCountCreatesANewStatisticResultWithModelNameChanged()
+    public void testgetSubStatisticsWithObjectCountCreatesANewStatisticResultWithModelNameChanged()
     {
           OperationStatisticResult res = new OperationStatisticResult(model:"Model1", operationDuration:1000,startingTime:50);
-          OperationStatisticResult resWithItemCount=res.getCloneWithObjectCount(1);
+          OperationStatisticResult resWithItemCount=res.getSubStatisticsWithObjectCount(1);
 
           assertNotSame(res,resWithItemCount);
           assertEquals(res.operationDuration,resWithItemCount.operationDuration);
@@ -143,19 +176,19 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
           assertEquals("Model1_1",resWithItemCount.model);
 
 
-          OperationStatisticResult resWithItemCount2=res.getCloneWithObjectCount(5);
+          OperationStatisticResult resWithItemCount2=res.getSubStatisticsWithObjectCount(5);
 
           assertNotSame(res,resWithItemCount2);
           assertEquals(res.operationDuration,resWithItemCount2.operationDuration);
           assertEquals(res.startingTime,resWithItemCount.startingTime);
           assertEquals("Model1_1",resWithItemCount2.model);
 
-          assertEquals("Model1_10",res.getCloneWithObjectCount(10).model);
-          assertEquals("Model1_10",res.getCloneWithObjectCount(20).model);
-          assertEquals("Model1_100",res.getCloneWithObjectCount(100).model);
+          assertEquals("Model1_10",res.getSubStatisticsWithObjectCount(10).model);
+          assertEquals("Model1_10",res.getSubStatisticsWithObjectCount(20).model);
+          assertEquals("Model1_100",res.getSubStatisticsWithObjectCount(100).model);
 
-          assertEquals("Model1_0",res.getCloneWithObjectCount(0).model);
-          assertEquals("Model1_0",res.getCloneWithObjectCount(null).model);
+          assertEquals("Model1_0",res.getSubStatisticsWithObjectCount(0).model);
+          assertEquals("Model1_0",res.getSubStatisticsWithObjectCount(null).model);
 
 
 //          1000.times{

@@ -21,6 +21,8 @@ package com.ifountain.rcmdb.domain.method
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import com.ifountain.rcmdb.util.CollectionUtils
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,6 +40,9 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
     }
 
     protected Object _invoke(Object domainObject, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:domainObject.class.name);
+        statistics.start();
+
         String relName = arguments[0]
         Collection propList = arguments[1]
         Map options = arguments[2]
@@ -61,6 +66,10 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
         {
             results = results.subList (0, options.max)
         }
+        statistics.stop();
+
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
         return results;
     }
 

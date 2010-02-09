@@ -10,8 +10,6 @@ import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import application.RapidApplicationOperations
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
-import com.ifountain.rcmdb.domain.statistics.GlobalOperationStatisticResult
-import com.ifountain.rcmdb.domain.statistics.OperationStatisticsTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -1042,7 +1040,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals("object1", objects[2].keyProp)
 
     }
-    public void testOperationStatisticsForSearch()
+    public void testOperationStatisticsForSearchOperations()
     {
         Map classes = initializePluginAndClasses();
         
@@ -1148,6 +1146,62 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals(0,propertySummarySearchStats.global.NumberOfOperations);
         assertEquals(3,propertySummaryStats.global.NumberOfOperations);
 
+
+        //Test for getRelatedModelPropertyValues
+        def addedObject1=classes.child.add([keyProp: "childobject1", prop1: "prop1Value1"]);
+        assertFalse (addedObject1.hasErrors());
+        def addedObject2=classes.child.add([keyProp: "childsobject2", prop1: "prop1Value2"]);
+        assertFalse (addedObject2.hasErrors());
+
+        assertEquals(0, addedObject1.rel1.size());
+        assertEquals(0, addedObject2.rel1.size());
+
+        10.times{
+            def relatedObject1 = classes.related.add([keyProp: "relobject${it}", prop1: "prop1Value${it}"]);
+            assertFalse(relatedObject1.hasErrors());
+            addedObject1.addRelation("rel1": relatedObject1);
+        }
+        assertEquals(10, addedObject1.rel1.size());
+        assertEquals(0, addedObject2.rel1.size());
+
+        OperationStatistics.getInstance().reset();
+        addedObject2.getRelatedModelPropertyValues("rel1",["keyProp","prop1"]);
+        println OperationStatistics.getInstance().getGlobalStatistics();
+        def getRelatedModelPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
+        getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME);
+
+        assertEquals(1,getRelatedModelPropertyValuesStats.global.NumberOfOperations);
+        assertEquals(1,getRelatedModelPropertyValuesStats.ChildModel.NumberOfOperations);
+        assertEquals(1,getRelatedModelPropertyValuesStats.ChildModel_0.NumberOfOperations);
+        assertNull(getRelatedModelPropertyValuesStats.ChildModel_1);
+        
+        assertEquals(2,getPropertyValuesStats.global.NumberOfOperations);
+        assertEquals(2,getPropertyValuesStats["relation.Relation"].NumberOfOperations);
+        assertEquals(2,getPropertyValuesStats["relation.Relation_0"].NumberOfOperations);
+        assertNull(getPropertyValuesStats["relation.Relation_1"]);
+
+
+        OperationStatistics.getInstance().reset();
+        addedObject1.getRelatedModelPropertyValues("rel1",["keyProp","prop1"]);
+        println OperationStatistics.getInstance().getGlobalStatistics();
+        getRelatedModelPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
+        getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME);
+
+        assertEquals(1,getRelatedModelPropertyValuesStats.global.NumberOfOperations);
+        assertEquals(1,getRelatedModelPropertyValuesStats.ChildModel.NumberOfOperations);
+        assertNull(getRelatedModelPropertyValuesStats.ChildModel_0);
+        assertNull(getRelatedModelPropertyValuesStats.ChildModel_1);
+        assertEquals(1,getRelatedModelPropertyValuesStats.ChildModel_10.NumberOfOperations);
+
+        assertEquals(3,getPropertyValuesStats.global.NumberOfOperations);
+        assertEquals(2,getPropertyValuesStats["relation.Relation"].NumberOfOperations);
+        assertEquals(1,getPropertyValuesStats["relation.Relation_0"].NumberOfOperations);
+        assertNull(getPropertyValuesStats["relation.Relation_1"]);
+        assertEquals(1,getPropertyValuesStats["relation.Relation_10"].NumberOfOperations);
+        assertEquals(1,getPropertyValuesStats.RelatedModel.NumberOfOperations);
+        assertNull(getPropertyValuesStats.RelatedModel_0);
+        assertNull(getPropertyValuesStats.RelatedModel_1);
+        assertEquals(1,getPropertyValuesStats.RelatedModel_10.NumberOfOperations);
     }
     public Map getOperationStatisticsAsMap(operationName)
     {

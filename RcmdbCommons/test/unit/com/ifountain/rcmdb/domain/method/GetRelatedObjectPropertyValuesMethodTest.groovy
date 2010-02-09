@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import org.apache.lucene.search.BooleanQuery
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -63,7 +64,15 @@ class GetRelatedObjectPropertyValuesMethodTest extends RapidCmdbWithCompassTestC
 
         println "RELATED MODELS:" + modelInstance1.rel1;
 
+        OperationStatistics.getInstance().reset();
         List results = modelInstance1.getRelatedModelPropertyValues("rel1", ["prop1", "prop3"]);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
+        println stats
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats.ChildModelGetRelatedObjectPropertyValuesMethodTest.NumberOfOperations);
+        assertEquals(1,stats.ChildModelGetRelatedObjectPropertyValuesMethodTest_1.NumberOfOperations);
+
+
         assertEquals(2, results.size());
         def result = results.find {it.prop1 == "instance1Prop1Value"}
         assertEquals(4, result.size())

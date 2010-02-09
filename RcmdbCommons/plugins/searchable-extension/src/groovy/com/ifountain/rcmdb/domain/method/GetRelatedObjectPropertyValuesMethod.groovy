@@ -66,8 +66,8 @@ class GetRelatedObjectPropertyValuesMethod extends AbstractRapidDomainReadMethod
         {
             results = results.subList (0, options.max)
         }
-        statistics.stop();
 
+        statistics.stop();
         OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME, statistics);
         OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
         return results;

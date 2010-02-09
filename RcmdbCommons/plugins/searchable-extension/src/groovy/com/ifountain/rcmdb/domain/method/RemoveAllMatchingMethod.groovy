@@ -20,7 +20,9 @@ package com.ifountain.rcmdb.domain.method
 
 import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.RelationMetaData
-import com.ifountain.rcmdb.domain.cache.IdCache;
+import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics;
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -48,6 +50,9 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod {
 
 
     protected Map _invoke(Object clazz, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:clazz.name);
+        statistics.start();
+
         def query = arguments[0];
 
         clazz.'searchEvery'(query, [raw: {hits, session ->
@@ -69,6 +74,10 @@ class RemoveAllMatchingMethod extends AbstractRapidDomainWriteMethod {
                 RelationUtils.removeExistingRelationsById(id)
             }
         }])
+
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_ALL_OPERATION_NAME, statistics);
+
         return null; //To change body of implemented methods use File | Settings | File Templates.
     }
 

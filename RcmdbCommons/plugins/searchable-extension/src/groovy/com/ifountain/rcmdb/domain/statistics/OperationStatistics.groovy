@@ -47,6 +47,7 @@ class OperationStatistics {
     public static final GET_PROPERTY_VALUES_OPERATION_NAME ="GetPropertyValues";
     public static final SEARCH_AS_STRING_OPERATION_NAME ="SearchAsString";
     public static final PROPERTY_SUMMARY_OPERATION_NAME ="PropertySummary";
+    public static final REMOVE_ALL_OPERATION_NAME ="RemoveAll";
 
     private static OperationStatistics operationStatisticsObject;
     private static Object getInstanceLock = new Object();
@@ -97,6 +98,7 @@ class OperationStatistics {
         operationStatistics[GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME] = new GlobalOperationStatisticResult(name:GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
         operationStatistics[SEARCH_AS_STRING_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_AS_STRING_OPERATION_NAME);
         operationStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = new GlobalOperationStatisticResult(name:PROPERTY_SUMMARY_OPERATION_NAME);
+        operationStatistics[REMOVE_ALL_OPERATION_NAME] = new GlobalOperationStatisticResult(name:REMOVE_ALL_OPERATION_NAME);
         modelStatistics[ADD_OPERATION_NAME] = [:];
         modelStatistics[AFTER_INSERT_OPERATION_NAME] = [:];
         modelStatistics[BEFORE_INSERT_OPERATION_NAME] = [:];
@@ -115,6 +117,7 @@ class OperationStatistics {
         modelStatistics[SEARCH_AS_STRING_OPERATION_NAME] = [:];
         modelStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = [:];
         modelStatistics[GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME] =[:];
+        modelStatistics[REMOVE_ALL_OPERATION_NAME] = [:];
     }
     
     public String getGlobalStatistics()

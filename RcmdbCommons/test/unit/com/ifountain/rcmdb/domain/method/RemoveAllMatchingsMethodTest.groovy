@@ -25,6 +25,7 @@ import com.ifountain.rcmdb.domain.property.RelationUtils
 import org.apache.commons.lang.StringUtils
 import org.apache.commons.io.FileUtils
 import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,7 +85,14 @@ class RemoveAllMatchingsMethodTest  extends RapidCmdbWithCompassTestCase{
         assertTrue (IdCache.get(modelInstance2.id).exist());
         assertTrue (IdCache.get(modelInstance3.id).exist());
 
+        OperationStatistics.getInstance().reset();
         modelClass.'removeAll'("prop1:group1");
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_ALL_OPERATION_NAME);
+        println stats
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats.Model.NumberOfOperations);
+        
+
         assertNull (modelClass.'get'(keyProp:modelInstance1.keyProp));
         assertNull (modelClass.'get'(keyProp:modelInstance2.keyProp));
         assertNotNull (modelClass.'get'(keyProp:modelInstance3.keyProp));

@@ -10,6 +10,7 @@ import org.codehaus.groovy.grails.plugins.support.GrailsPluginUtils
 import org.compass.gps.impl.SingleCompassGps
 import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils
 
 /*
 * Copyright 2007 the original author or authors.
@@ -69,11 +70,16 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
                 statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
-                res?.results?.each{result->
-                    EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
-                }
-                if(res!=null) //when raw process is done res is null
+                Map optionsFromArguments = SearchableMethodUtils.getOptionsArgument(*args, [:]);
+
+                //Do not trigger ONLOAD when raw is enabled
+                //Do not add stats when raw is enabled
+                if( !(optionsFromArguments.containsKey("raw")) )
                 {
+                    res?.results?.each{result->
+                       EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
+                    }
+
                     statistics.stop();
                     OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
                     OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.results?.size()));
@@ -113,17 +119,17 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 OperationStatisticResult statistics = new OperationStatisticResult(model:delegate.name);
                 statistics.start();
                 def res = searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
+                Map optionsFromArguments = SearchableMethodUtils.getOptionsArgument(*args, [:]);
 
-                //For search everies with raw option we should not call onload event since it can return any type of object
-                //However, onload event requires domain object
-                if(args.length != 2 || !(args[1] instanceof Map) || args[1].raw == null)
+                //For search everies with raw option we should not call onload event since it can return any type of object, However, onload event requires domain object
+                //Do not trigger ONLOAD when raw is enabled
+                //Do not add stats when raw is enabled
+                if( !(optionsFromArguments.containsKey("raw")) )
                 {
                     res?.each{result->
                         EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                     }
-                }
-                if(res!=null) //when raw process is done res is null
-                {
+
                     statistics.stop();
                     OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
                     OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.size()));

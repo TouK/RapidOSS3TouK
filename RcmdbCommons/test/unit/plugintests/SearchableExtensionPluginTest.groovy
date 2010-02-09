@@ -10,6 +10,7 @@ import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import application.RapidApplicationOperations
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import relation.Relation
 
 /**
 * Created by IntelliJ IDEA.
@@ -1166,7 +1167,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         OperationStatistics.getInstance().reset();
         addedObject2.getRelatedModelPropertyValues("rel1",["keyProp","prop1"]);
-        println OperationStatistics.getInstance().getGlobalStatistics();
+        //println OperationStatistics.getInstance().getGlobalStatistics();
         def getRelatedModelPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
         getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME);
 
@@ -1183,7 +1184,7 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
 
         OperationStatistics.getInstance().reset();
         addedObject1.getRelatedModelPropertyValues("rel1",["keyProp","prop1"]);
-        println OperationStatistics.getInstance().getGlobalStatistics();
+        //println OperationStatistics.getInstance().getGlobalStatistics();
         getRelatedModelPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);
         getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.GET_PROPERTY_VALUES_OPERATION_NAME);
 
@@ -1202,6 +1203,52 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertNull(getPropertyValuesStats.RelatedModel_0);
         assertNull(getPropertyValuesStats.RelatedModel_1);
         assertEquals(1,getPropertyValuesStats.RelatedModel_10.NumberOfOperations);
+
+
+        assertEquals(10,Relation.count());
+
+        OperationStatistics.getInstance().reset();
+        Relation.searchEvery("alias:*");
+        def relationSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(1,relationSearchStats.global.NumberOfOperations);
+        assertEquals(1,relationSearchStats["relation.Relation"].NumberOfOperations);
+        assertEquals(1,relationSearchStats["relation.Relation_10"].NumberOfOperations);
+
+        OperationStatistics.getInstance().reset();
+        Relation.search("alias:*");
+        relationSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(1,relationSearchStats.global.NumberOfOperations);
+        assertEquals(1,relationSearchStats["relation.Relation"].NumberOfOperations);
+        assertEquals(1,relationSearchStats["relation.Relation_10"].NumberOfOperations);
+
+        //Test searching with raw is excluded
+        OperationStatistics.getInstance().reset();
+        Relation.searchEvery("alias:*", [raw:{hits,  session->
+            hits.iterator().each{ hit->                
+            }
+        }]);
+        relationSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(0,relationSearchStats.global.NumberOfOperations);
+        assertNull(relationSearchStats["relation.Relation"]);
+        assertNull(relationSearchStats["relation.Relation_0"]);
+        assertNull(relationSearchStats["relation.Relation_1"]);
+        assertNull(relationSearchStats["relation.Relation_10"]);
+        
+        //Test searching with raw is excluded
+        OperationStatistics.getInstance().reset();
+
+        Relation.search("alias:*", [raw:{hits,  session->
+            hits.iterator().each{ hit->
+            }
+        }]);
+
+        relationSearchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(0,relationSearchStats.global.NumberOfOperations);
+        assertNull(relationSearchStats["relation.Relation"]);
+        assertNull(relationSearchStats["relation.Relation_0"]);
+        assertNull(relationSearchStats["relation.Relation_1"]);
+        assertNull(relationSearchStats["relation.Relation_10"]);
+
     }
     public Map getOperationStatisticsAsMap(operationName)
     {

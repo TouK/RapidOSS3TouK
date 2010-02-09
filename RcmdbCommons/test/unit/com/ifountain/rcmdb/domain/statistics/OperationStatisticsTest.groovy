@@ -113,14 +113,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
     }
     public static Map getOperationStatisticsAsMap(operationName)
     {
-        def stats=[:];
-        stats.global=OperationStatistics.getInstance().operationStatistics[operationName].getGeneralReport().clone();
-        def sortedClassBasedEntries=OperationStatistics.getInstance().modelStatistics[operationName].entrySet().sort {it.key};
-        sortedClassBasedEntries.each { entry ->
-            String modelName=entry.key;
-            GlobalOperationStatisticResult modelResult=entry.value;
-            stats[modelName]=modelResult.getGeneralReport().clone();
-        }
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(operationName);
         println "------- Stats For ${operationName} -------"
         stats.each{ key, val  -> println "${key}: ${val}"}
         return stats;

@@ -127,6 +127,18 @@ class OperationStatistics {
         }
         return sw.toString();
     }
+    public Map getOperationStatisticsAsMap(operationName)
+    {
+        def stats=[:];
+        stats.global=operationStatistics[operationName].getGeneralReport().clone();
+        def sortedClassBasedEntries=modelStatistics[operationName].entrySet().sort {it.key};
+        sortedClassBasedEntries.each { entry ->
+            String modelName=entry.key;
+            GlobalOperationStatisticResult modelResult=entry.value;
+            stats[modelName]=modelResult.getGeneralReport().clone();
+        }
+        return stats;
+    }
 
     public void addStatisticResult(String operationType, OperationStatisticResult result)
     {

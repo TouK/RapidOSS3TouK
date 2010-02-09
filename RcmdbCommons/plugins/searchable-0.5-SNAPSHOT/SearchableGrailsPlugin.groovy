@@ -72,9 +72,12 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                 res?.results?.each{result->
                     EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                 }
-                statistics.stop();
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.results?.size()));
+                if(res!=null) //when raw process is done res is null
+                {
+                    statistics.stop();
+                    OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
+                    OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.results?.size()));
+                }
                 return res;
             }
 
@@ -119,9 +122,12 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
                         EventTriggeringUtils.getInstance().triggerEvent (result, EventTriggeringUtils.ONLOAD_EVENT);
                     }
                 }
-                statistics.stop();
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
-                OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.size()));
+                if(res!=null) //when raw process is done res is null
+                {
+                    statistics.stop();
+                    OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
+                    OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(res?.size()));
+                }
                 return res;
             }
 

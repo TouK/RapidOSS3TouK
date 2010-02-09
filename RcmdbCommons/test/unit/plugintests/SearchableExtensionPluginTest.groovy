@@ -8,6 +8,10 @@ import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import application.RapidApplicationOperations
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.statistics.GlobalOperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticsTest
 
 /**
 * Created by IntelliJ IDEA.
@@ -1038,7 +1042,109 @@ class SearchableExtensionPluginTest extends RapidCmdbWithCompassTestCase {
         assertEquals("object1", objects[2].keyProp)
 
     }
+    public void testOperationStatisticsForSearch()
+    {
+        Map classes = initializePluginAndClasses();
+        
+        //Test for list with no result
+        OperationStatistics.getInstance().reset();
+        classes.parent.list();
+        def listStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        assertEquals(1,listStats.global.NumberOfOperations);
+        assertEquals(1,listStats.ParentModel.NumberOfOperations);
+        assertEquals(1,listStats.ParentModel_0.NumberOfOperations);
+        assertNull(listStats.ParentModel_1);
 
+
+        10.times{ classes.parent.add(keyProp: "object${it}") };
+
+        //Test for searchEvery with no result, 1 result , 10 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.searchEvery("keyProp:x");
+        classes.parent.searchEvery("keyProp:object0");
+        classes.parent.searchEvery("alias:*");
+        def searchEveryStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+
+        assertEquals(3,searchEveryStats.global.NumberOfOperations);
+        assertEquals(3,searchEveryStats.ParentModel.NumberOfOperations);
+        assertEquals(1,searchEveryStats.ParentModel_0.NumberOfOperations);
+        assertEquals(1,searchEveryStats.ParentModel_1.NumberOfOperations);
+        assertEquals(1,searchEveryStats.ParentModel_10.NumberOfOperations);
+
+        //Test for search with no result, 1 result , 10 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.search("keyProp:x");
+        classes.parent.search("keyProp:object0");
+        classes.parent.search("alias:*");
+        def searchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+
+        assertEquals(3,searchStats.global.NumberOfOperations);
+        assertEquals(3,searchStats.ParentModel.NumberOfOperations);
+        assertEquals(1,searchStats.ParentModel_0.NumberOfOperations);
+        assertEquals(1,searchStats.ParentModel_1.NumberOfOperations);
+        assertEquals(1,searchStats.ParentModel_10.NumberOfOperations);
+
+        //Test for search with 5 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.search("alias:*",[max:5]);
+        searchStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+
+        assertEquals(1,searchStats.global.NumberOfOperations);
+        assertEquals(1,searchStats.ParentModel.NumberOfOperations);
+        assertNull(searchStats.ParentModel_0);
+        assertEquals(1,searchStats.ParentModel_1.NumberOfOperations);
+        assertNull(searchStats.ParentModel_10);
+
+        
+        //Test for list with 10 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.list();
+        listStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        assertEquals(1,listStats.global.NumberOfOperations);
+        assertEquals(1,listStats.ParentModel.NumberOfOperations);
+        assertEquals(1,listStats.ParentModel_10.NumberOfOperations);
+
+        //Test for getPropertyValues with no result, 1 result , 10 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.getPropertyValues("keyProp:x",["name"]);
+        classes.parent.getPropertyValues("keyProp:object0",["name"]);
+        classes.parent.getPropertyValues("alias:*",["name"]);
+        def getPropertyValuesStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+
+        assertEquals(3,getPropertyValuesStats.global.NumberOfOperations);
+        assertEquals(3,getPropertyValuesStats.ParentModel.NumberOfOperations);
+        assertEquals(1,getPropertyValuesStats.ParentModel_0.NumberOfOperations);
+        assertEquals(1,getPropertyValuesStats.ParentModel_1.NumberOfOperations);
+        assertEquals(1,getPropertyValuesStats.ParentModel_10.NumberOfOperations);
+
+
+        //Test for searchAsString with no result, 1 result , 10 results
+        OperationStatistics.getInstance().reset();
+        classes.parent.searchAsString("keyProp:x");
+        classes.parent.searchAsString("keyProp:object0");
+        classes.parent.searchAsString("alias:*");
+        def searchAsStringStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+
+        assertEquals(3,searchAsStringStats.global.NumberOfOperations);
+        assertEquals(3,searchAsStringStats.ParentModel.NumberOfOperations);
+        assertEquals(1,searchAsStringStats.ParentModel_0.NumberOfOperations);
+        assertEquals(1,searchAsStringStats.ParentModel_1.NumberOfOperations);
+        assertEquals(1,searchAsStringStats.ParentModel_10.NumberOfOperations);
+
+        //Test for propertySummary
+        OperationStatistics.getInstance().reset();
+        println classes.parent.propertySummary("alias:*",["keyProp"]);
+        def propertySummaryStats=getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME)
+        assertEquals(0,propertySummaryStats.global.NumberOfOperations);
+
+    }
+    public Map getOperationStatisticsAsMap(operationName)
+    {
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(operationName);
+        println "------- Stats For ${operationName} -------"
+        stats.each{ key, val  -> println "${key}: ${val}"}
+        return stats;
+    }
     private Map initializePluginAndClasses()
     {
         initializePluginAndClasses([:]);

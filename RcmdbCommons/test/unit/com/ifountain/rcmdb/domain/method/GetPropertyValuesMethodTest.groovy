@@ -22,6 +22,7 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.converter.RapidConvertUtils
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,7 +68,14 @@ class GetPropertyValuesMethodTest extends RapidCmdbWithCompassTestCase {
         assertFalse(modelInstance2.hasErrors());
         assertFalse(modelInstance3.hasErrors());
 
+        OperationStatistics.getInstance().reset();
         def res = modelClass.'getPropertyValues'("alias:*", ["prop1", "prop2"]);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats.Model.NumberOfOperations);
+        assertEquals(1,stats.Model_1.NumberOfOperations);
+        
+
         assertEquals(3, res.size());
         assertEquals(4, res[0].size())
         assertEquals(4, res[1].size())

@@ -5,6 +5,8 @@ import org.compass.core.Resource
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.commons.collections.MapUtils
 import com.ifountain.compass.converter.CompassStringConverter
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,6 +22,9 @@ class GetPropertyValuesAsStringMethod extends AbstractRapidDomainReadMethod {
     }
 
     public Object _invoke(Object clazz, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:clazz.name);
+        statistics.start();
+
         def query = arguments[0];
         def params = arguments[1]
         if(params == null)
@@ -57,6 +62,11 @@ class GetPropertyValuesAsStringMethod extends AbstractRapidDomainReadMethod {
             MethodUtils.getCompassHitsSubset(compassHits, params, hitProcessingClosure);
         }
         clazz.search(query, params);
+
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
+
         return [total:total, offset:offset, results:results];
     }
 

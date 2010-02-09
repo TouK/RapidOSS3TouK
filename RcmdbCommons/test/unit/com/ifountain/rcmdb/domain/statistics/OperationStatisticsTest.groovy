@@ -111,7 +111,7 @@ class OperationStatisticsTest extends RapidCmdbTestCase{
         assertEquals(searchStats.Model1.TotalDuration,searchStats.global.TotalDuration)
         assertEquals(searchStats.Model1.AvarageDuration,searchStats.global.AvarageDuration)
     }
-    public static Map getOperationStatisticsAsMap(operationName)
+    public Map getOperationStatisticsAsMap(operationName)
     {
         def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(operationName);
         println "------- Stats For ${operationName} -------"

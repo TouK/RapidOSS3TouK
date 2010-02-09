@@ -5,6 +5,8 @@ import com.ifountain.rcmdb.domain.generation.ModelGenerator
 import com.ifountain.rcmdb.test.util.ModelGenerationTestUtils
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.util.RapidStringUtilities
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 
 /**
@@ -27,7 +29,13 @@ class SearchAsStringTest extends RapidCmdbWithCompassTestCase{
         assertFalse (childModel1.hasErrors());
         assertFalse (childModel2.hasErrors());
 
+        OperationStatistics.getInstance().reset();
         def searchResults = models.parent.searchAsString("alias:*");
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.SEARCH_OPERATION_NAME);
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats.ParentModel.NumberOfOperations);
+        assertEquals(1,stats.ParentModel_1.NumberOfOperations);
+
         assertEquals (4, searchResults.total);
         assertEquals (4, searchResults.results.size());
         assertEquals (0, searchResults.offset);

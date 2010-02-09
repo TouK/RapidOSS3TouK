@@ -22,6 +22,8 @@ import org.compass.core.Resource
 import org.compass.core.CompassHit
 import org.apache.commons.collections.MapUtils
 import com.ifountain.compass.converter.CompassStringConverter
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +41,9 @@ class GetPropertyValuesMethod extends AbstractRapidDomainReadMethod {
     }
 
     protected Object _invoke(Object clazz, Object[] arguments) {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:clazz.name);
+        statistics.start();
+
         String query = arguments[0]
         List propertyList = arguments[1]
         Map options = arguments[2];
@@ -65,6 +70,10 @@ class GetPropertyValuesMethod extends AbstractRapidDomainReadMethod {
         }
         options["raw"] = raw;
         clazz.'searchEvery'(query, options);
+
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.SEARCH_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(results?.size()));
         return results; //To change body of implemented methods use File | Settings | File Templates.
     }
 

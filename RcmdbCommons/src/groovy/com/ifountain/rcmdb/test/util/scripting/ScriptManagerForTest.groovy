@@ -76,6 +76,9 @@ class ScriptManagerForTest {
             throw new Exception("script file ${scriptRealPath} should at least have return statement");
         }
         def scriptClass = scriptClassLoader.parseClass(new File(scriptRealPath));
+        scriptClass.metaClass.IS_STOPPED= { ->
+                return false;                
+        }
         scriptClasses[scriptFilePath] = scriptClass;
         return scriptClass;
     }

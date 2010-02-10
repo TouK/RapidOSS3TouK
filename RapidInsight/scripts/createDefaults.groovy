@@ -58,13 +58,12 @@ scriptsToAdd.add([name:"getDeviceLocations", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getDevicesByLocation", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getClassesForSearch", enabledForAllGroups:true])
 
-
-
 // topology scripts
 scriptsToAdd.add([name:"expandMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapNodeEvents", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
+scriptsToAdd.add([name:"clearHistoricalEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.CRON,enabled:true,cronExpression:'0 0 0 * * ?',logFileOwn:true])
 
 //instrumentation scripts
 scriptsToAdd.add([name:"createInstrumentationParameters"])

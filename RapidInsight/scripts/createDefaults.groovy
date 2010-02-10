@@ -74,7 +74,8 @@ scriptsToAdd.add([name:"memorySummarizer", type:CmdbScript.SCHEDULED, scheduleTy
 scriptsToAdd.add([name:"memoryHistogram", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:300,logFileOwn:true]);
 scriptsToAdd.add([name:"threadLister", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:300,logFileOwn:true]);
 scriptsToAdd.add([name:"memoryDump"])
-
+scriptsToAdd.add([name:"getCompassStatistics"])
+scriptsToAdd.add([name:"resetCompassStatistics"])
 
 scriptsToAdd.each{  scriptParams ->
 

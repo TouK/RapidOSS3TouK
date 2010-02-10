@@ -32,6 +32,9 @@ import com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 import com.ifountain.rcmdb.util.RapidCMDBConstants
 import com.ifountain.rcmdb.domain.statistics.GlobalOperationStatisticResult
 import com.ifountain.rcmdb.domain.statistics.OperationStatistics
+import com.ifountain.rcmdb.domain.DomainLockManager
+import com.ifountain.comp.test.util.logging.TestLogUtils
+import com.ifountain.rcmdb.domain.cache.IdCache
 
 /**
 * Created by IntelliJ IDEA.
@@ -43,6 +46,10 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 class UpdateMethodTest extends RapidCmdbTestCase {
     protected void setUp() {
         super.setUp(); //To change body of overridden methods use File | Settings | File Templates.
+        DomainLockManager.getInstance().initialize (TestLogUtils.log);
+        LockStrategyImpl.setMaxNumberOfRetries(1);
+        IdCache.initialize (10000);
+
         IdGenerator.initialize(new MockIdGeneratorStrategy());
         AddMethodDomainObject1.idCache = [:];
         AddMethodDomainObject1.cacheEntryParams = null;
@@ -67,6 +74,8 @@ class UpdateMethodTest extends RapidCmdbTestCase {
     }
 
     protected void tearDown() {
+        DomainLockManager.destroy();
+        IdCache.clearCache();
         AddMethodDomainObjectWithEvents.eventCalls = [];
         ObjectProcessor.getInstance().deleteObservers();
         MockValidator.closureToBeInvokedInValidate = null;

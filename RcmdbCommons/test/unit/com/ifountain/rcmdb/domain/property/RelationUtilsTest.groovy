@@ -7,6 +7,7 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 import relation.Relation
 import com.ifountain.rcmdb.domain.util.RelationMetaData
 import org.apache.lucene.search.BooleanQuery
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
 * Created by IntelliJ IDEA.
@@ -95,7 +96,13 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         RelationMetaData rel1MetaData = relations["rel1"]
         rel1MetaData.setOtherSideName (null)
         rel1MetaData.setName(null)
+        OperationStatistics.getInstance().reset();
         RelationUtils.addRelatedObjects(fromObj1, rel1MetaData, [toObj1, toObj2], null);
+        
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.ADD_OPERATION_NAME);
+        assertEquals(2,stats.global.NumberOfOperations);
+        assertEquals(2,stats["relation.Relation"].NumberOfOperations);
+        
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (2, rels.size());
         Relation rel1 = rels[0];
@@ -129,12 +136,20 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (3, rels.size());
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj1], null);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(1,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (2, rels.size());
         assertNull (rels.find {it.reverseObjectId == toObj1.id});
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj2, toObj3], null);
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(2,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals ("All specified relations including releation whose source is specified should be deleted since source in removeRelations is specified as null", 0, rels.size());
 
@@ -167,32 +182,54 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         assertEquals (5, rels.size());
 
         //test with nonexisting sources
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj3], "source1");
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(0,stats.global.NumberOfOperations);
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
 
+
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj1], "source2");
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(0,stats.global.NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
 
         //test with not related object
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj4], "source1");
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(0,stats.global.NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj1], "source1");
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(1,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (4, rels.size());
         assertEquals("Since relation object1 is not removed from fromObj2 this will not be deleted", 1, rels.findAll {it.reverseObjectId == toObj1.id}.size());
         assertEquals("Since relation object1 is not removed from fromObj2 this will not be deleted", fromObj2.id, rels.find {it.reverseObjectId == toObj1.id}.objectId);
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj3], "source2");
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(1,stats["relation.Relation"].NumberOfOperations);
+        
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (3, rels.size());
         assertNull (rels.find {it.reverseObjectId == toObj3.id});
 
         //test remove relation added from reverse side
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeRelations(fromObj1, rel1MetaData, [toObj5], "source1");
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(1,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (2, rels.size());
         assertNull (rels.find {it.objectId == toObj5.id});
@@ -218,7 +255,11 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (4, rels.size());
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeExistingRelations (fromObj1, "rel1", "revrel1");
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME);
+        assertEquals(2,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (2, rels.size());
         assertNotNull(rels.find {it.reverseObjectId == toObj1.id && it.objectId == fromObj2.id});
@@ -251,14 +292,56 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (4, rels.size());
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeExistingRelationsById(fromObj1.id);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME)
+        assertEquals(3,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (1, rels.size());
         assertNotNull(rels.find {it.reverseObjectId == toObj1.id && it.objectId == fromObj2.id});
 
+        OperationStatistics.getInstance().reset();
         RelationUtils.removeExistingRelationsById (fromObj2.id);
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME)
+        assertEquals(1,stats["relation.Relation"].NumberOfOperations);
+
         rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (0, rels.size());
+    }
+    public void testRemoveExistingRelationsWithObjectIdWithRelationName()
+    {
+        List loadedClasses = initialize()
+        Class from = loadedClasses[0]
+        Class to = loadedClasses[1]
+        def fromObj1 = from.add([:]);
+        def fromObj2 = from.add([:]);
+        def toObj1 = to.add([:]);
+        def toObj2 = to.add([:]);
+        def toObj3 = to.add([:]);
+        def relations =DomainClassUtils.getRelations(from.name);
+        def rel1MetaData = relations["rel1"]
+        def rel2MetaData = relations["rel2"]
+        RelationUtils.addRelatedObjects(fromObj1, rel1MetaData, [toObj1, toObj2], "source1");
+        RelationUtils.addRelatedObjects(fromObj1, rel2MetaData, [toObj3], "source2");
+        RelationUtils.addRelatedObjects(fromObj2, rel1MetaData, [toObj1], "source1");
+
+        def rels = Relation.list([sort:"reverseObjectId"])
+        assertEquals (4, rels.size());
+
+        println rels;
+
+        OperationStatistics.getInstance().reset();
+        RelationUtils.removeExistingRelationsById(fromObj1.id,"rel1","revrel1");
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.REMOVE_OPERATION_NAME)
+        assertEquals(2,stats["relation.Relation"].NumberOfOperations);
+
+        rels = Relation.list([sort:"reverseObjectId"])
+        assertEquals (2, rels.size());
+
+        println rels;
+        assertNotNull(rels.find {it.objectId == fromObj1.id && it.name=="rel2"});
+        assertNotNull(rels.find {it.reverseObjectId == toObj1.id && it.objectId == fromObj2.id});
     }
     public void testGetRelatedObjectsIdsByObjectId()
     {
@@ -327,14 +410,26 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
         def rels = Relation.list([sort:"reverseObjectId"])
         assertEquals (5, rels.size());
 
+        OperationStatistics.getInstance().reset();
         def relatedObjects = RelationUtils.getRelatedObjects(fromObj1, rel1MetaData);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME)
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats["Model1"].NumberOfOperations);
+        assertEquals(1,stats["Model1_1"].NumberOfOperations);
+        
         assertEquals (3,  relatedObjects.size());
         assertNotNull (relatedObjects.find {it.id == toObj1.id});
         assertNotNull (relatedObjects.find {it.id == toObj2.id});
         assertNotNull (relatedObjects.find {it.id == toObj4.id});
         
         //test by id
+        OperationStatistics.getInstance().reset();
         def relatedObjectsByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel1MetaData);
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME)
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats["Model1"].NumberOfOperations);
+        assertEquals(1,stats["Model1_1"].NumberOfOperations);
+
         assertEquals (3,  relatedObjectsByObjectId.size());
         relatedObjects.size().times{
             assertEquals(relatedObjects[it].id , relatedObjectsByObjectId[it].id)
@@ -436,10 +531,22 @@ class RelationUtilsTest extends RapidCmdbWithCompassTestCase{
 
 
         //with source
+        OperationStatistics.getInstance().reset();
         relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source1");
         assertEquals(toObj1.id, relatedObject.id);
+        def stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME)
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats["Model1"].NumberOfOperations);
+        assertEquals(1,stats["Model1_1"].NumberOfOperations);
+
+        OperationStatistics.getInstance().reset();
         relatedObject = RelationUtils.getRelatedObjects(fromObj1, rel2MetaData, "source2");
         assertNull(relatedObject)
+        
+        stats=OperationStatistics.getInstance().getOperationStatisticsAsMap(OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME)
+        assertEquals(1,stats.global.NumberOfOperations);
+        assertEquals(1,stats["Model1"].NumberOfOperations);
+        assertEquals(1,stats["Model1_0"].NumberOfOperations);
 
         //test by id
         relatedObjectByObjectId = RelationUtils.getRelatedObjectsByObjectId(fromObj1.id, rel2MetaData, "source1");

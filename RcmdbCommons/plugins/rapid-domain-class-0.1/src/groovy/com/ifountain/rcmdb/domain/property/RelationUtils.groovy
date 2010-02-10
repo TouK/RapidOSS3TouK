@@ -27,6 +27,8 @@ import com.ifountain.rcmdb.domain.IdGenerator
 import org.compass.core.CompassHits
 import org.apache.lucene.search.BooleanQuery
 import com.ifountain.rcmdb.util.CollectionUtils
+import com.ifountain.rcmdb.domain.statistics.OperationStatisticResult
+import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 
 /**
 * Created by IntelliJ IDEA.
@@ -44,6 +46,9 @@ class RelationUtils
 
     public static void addRelatedObjects(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:"relation.Relation");
+        statistics.start();
+
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
         def relationObjects = [];
@@ -60,6 +65,13 @@ class RelationUtils
             relationObjects.add(relationObject);
         }
         Relation.index(relationObjects);
+
+        if(relationObjects.size()>0)
+        {
+            statistics.stop();
+            statistics.numberOfOperations += relationObjects.size()-1;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.ADD_OPERATION_NAME, statistics);
+        }
     }
     public static String getSourceString(String source)
     {
@@ -74,6 +86,9 @@ class RelationUtils
     }
     public static void updateSource(Collection relationObjectIdAndSource, String source)
     {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:"relation.Relation");
+        statistics.start();
+
         if(relationObjectIdAndSource.isEmpty()) return;
         StringBuffer bf = new StringBuffer();
         def sourceExpression = getSourceString(source)
@@ -89,11 +104,22 @@ class RelationUtils
             }
         }
         if(!relsToBeIndex.isEmpty())
-        Relation.index(relsToBeIndex);
+        {
+            Relation.index(relsToBeIndex);
+
+            statistics.stop();
+            statistics.numberOfOperations += relsToBeIndex.size()-1;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.UPDATE_OPERATION_NAME, statistics);
+        }
     }
     public static void removeRelations(object, RelationMetaData relation, Collection relatedObjects, String source)
     {
         if(relatedObjects.isEmpty()) return;
+
+        OperationStatisticResult statistics = new OperationStatisticResult(model:"relation.Relation");
+        statistics.start();
+        def deleteCount=0;
+
         def otherSideName = relation.otherSideName == null?NULL_RELATION_NAME:relation.otherSideName;
         def relationName = relation.name == null?NULL_RELATION_NAME:relation.name;
         CollectionUtils.executeForEachBatch(new ArrayList(relatedObjects), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_REMOVE){List relatedObjectToBeProcessed->
@@ -113,6 +139,7 @@ class RelationUtils
                     hits.iterator().each{CompassHit hit->
                         session.delete (hit.getResource());
                     }
+                    deleteCount+=hits.length();
                 }]);
             }
             else
@@ -141,15 +168,22 @@ class RelationUtils
                 if(!relsToBeDeleted.isEmpty())
                 {
                     Relation.unindex(relsToBeDeleted);
+                    deleteCount+=relsToBeDeleted.size();
                 }
                 if(!relsToBeUpdated.isEmpty())
                 {
                     Relation.index(relsToBeUpdated);
+                    deleteCount+=relsToBeUpdated.size();
                 }
             }
         }
 
-
+        if(deleteCount>0)
+        {
+            statistics.stop();
+            statistics.numberOfOperations += deleteCount-1;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
+        }
     }
     public static void removeExistingRelations(object, String relationName, String otherSideName)
     {
@@ -157,15 +191,31 @@ class RelationUtils
     }
     public static void removeExistingRelationsById(objectId)
     {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:"relation.Relation");
+        statistics.start();
+        def deleteCount=0;
+
         def query = "objectId:${objectId} OR reverseObjectId:${objectId}";  
         Relation.searchEvery(query, [raw:{hits, CompassSession session->
             hits.iterator().each{CompassHit hit->
                 session.delete (hit.getResource());
             }
+            deleteCount=hits.length();
         }]);
+
+        if(deleteCount>0)
+        {
+            statistics.stop();
+            statistics.numberOfOperations += deleteCount-1;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
+        }
     }
     public static void removeExistingRelationsById(objectId, String relationName, String otherSideName)
     {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:"relation.Relation");
+        statistics.start();
+        def deleteCount=0;
+
         otherSideName = otherSideName == null?NULL_RELATION_NAME:otherSideName;
         relationName = relationName == null?NULL_RELATION_NAME:relationName;
         def allRelatedObjectIds = [:];
@@ -173,9 +223,17 @@ class RelationUtils
         def query = "(objectId:${objectId} AND name:\"${relationName}\" AND reverseName:\"${otherSideName}\") OR (reverseObjectId:${objectId} AND reverseName:\"${relationName}\" AND name:\"${otherSideName}\")";
         Relation.searchEvery(query, [raw:{hits, CompassSession session->
             hits.iterator().each{CompassHit hit->
-                session.delete (hit.getResource());                
+                session.delete (hit.getResource());
             }
+            deleteCount=hits.length();
         }]);
+
+        if(deleteCount>0)
+        {
+            statistics.stop();
+            statistics.numberOfOperations += deleteCount-1;
+            OperationStatistics.getInstance().addStatisticResult (OperationStatistics.REMOVE_OPERATION_NAME, statistics);
+        }
     }
     public static Map getRelatedObjectsIdsByObjectId(objectId, String relationName, String otherSideName){
         return getRelatedObjectsIdsByObjectId(objectId, relationName, otherSideName, null)
@@ -221,35 +279,50 @@ class RelationUtils
     }
     public static Object getRelatedObjectsByObjectId(objectId, com.ifountain.rcmdb.domain.util.RelationMetaData relationMetaData, String source)
     {
+        OperationStatisticResult statistics = new OperationStatisticResult(model:relationMetaData.getCls().name);
+        statistics.start();
+        def results = [];
+        def foundObjectCount=0;
+
         def allRealtedObjectIds = getRelatedObjectsIdsByObjectId(objectId, relationMetaData.name, relationMetaData.otherSideName, source);
         if(relationMetaData.isOneToOne() || relationMetaData.isManyToOne())
         {
             if(!allRealtedObjectIds.isEmpty())
             {
-                    return CompassMethodInvoker.search(relationMetaData.otherSideCls.metaClass, "id:${allRealtedObjectIds.keySet().iterator().next()}").results[0];
+                results=CompassMethodInvoker.search(relationMetaData.otherSideCls.metaClass, "id:${allRealtedObjectIds.keySet().iterator().next()}").results[0];
+                if(results!=null)
+                {
+                    foundObjectCount=1;
+                }
             }
             else
             {
-                return null;
+                results=null;
             }
         }
         else
         {
             if(allRealtedObjectIds.isEmpty())
             {
-                return [];
+                results=[];
             }
             else
             {
-                def results = [];
+
                 CollectionUtils.executeForEachBatch(new ArrayList(allRealtedObjectIds.keySet()), MAX_NUMBER_OF_OBJECT_TO_BE_PROCESSED_IN_GETRELATIONS){List objectToBeProcessed->
                     StringBuffer query = new StringBuffer("id:");
                     query.append(objectToBeProcessed.join (" OR id:"))
                     results.addAll(CompassMethodInvoker.searchEvery(relationMetaData.otherSideCls.metaClass, query.toString()));
                 }
-                return results;
+                foundObjectCount=results.size();
             }
         }
+
+
+        statistics.stop();
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME, statistics);
+        OperationStatistics.getInstance().addStatisticResult (OperationStatistics.GET_RELATED_OBJECTS_OPERATION_NAME, statistics.getSubStatisticsWithObjectCount(foundObjectCount));        
+        return results;
     }
 
     

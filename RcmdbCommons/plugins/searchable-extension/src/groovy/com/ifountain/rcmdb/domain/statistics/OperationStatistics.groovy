@@ -48,6 +48,7 @@ class OperationStatistics {
     public static final SEARCH_AS_STRING_OPERATION_NAME ="SearchAsString";
     public static final PROPERTY_SUMMARY_OPERATION_NAME ="PropertySummary";
     public static final REMOVE_ALL_OPERATION_NAME ="RemoveAll";
+    public static final GET_RELATED_OBJECTS_OPERATION_NAME ="GetRelatedObjects";
 
     private static OperationStatistics operationStatisticsObject;
     private static Object getInstanceLock = new Object();
@@ -95,29 +96,15 @@ class OperationStatistics {
         operationStatistics[SEARCH_AS_STRING_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_AS_STRING_OPERATION_NAME);
         operationStatistics[SEARCH_TOP_OPERATION_NAME] = new GlobalOperationStatisticResult(name:SEARCH_TOP_OPERATION_NAME);
         operationStatistics[GET_PROPERTY_VALUES_OPERATION_NAME] = new GlobalOperationStatisticResult(name:GET_PROPERTY_VALUES_OPERATION_NAME);
+        operationStatistics[GET_RELATED_OBJECTS_OPERATION_NAME] = new GlobalOperationStatisticResult(name:GET_RELATED_OBJECTS_OPERATION_NAME);
         operationStatistics[GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME] = new GlobalOperationStatisticResult(name:GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME);        
         operationStatistics[COUNT_HITS_OPERATION_NAME] = new GlobalOperationStatisticResult(name:COUNT_HITS_OPERATION_NAME);
         operationStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = new GlobalOperationStatisticResult(name:PROPERTY_SUMMARY_OPERATION_NAME);
         operationStatistics[REMOVE_ALL_OPERATION_NAME] = new GlobalOperationStatisticResult(name:REMOVE_ALL_OPERATION_NAME);
-        modelStatistics[ADD_OPERATION_NAME] = [:];
-        modelStatistics[AFTER_INSERT_OPERATION_NAME] = [:];
-        modelStatistics[BEFORE_INSERT_OPERATION_NAME] = [:];
-        modelStatistics[REMOVE_OPERATION_NAME] = [:];
-        modelStatistics[BEFORE_DELETE_OPERATION_NAME] = [:];
-        modelStatistics[AFTER_DELETE_OPERATION_NAME] = [:];
-        modelStatistics[UPDATE_OPERATION_NAME] = [:];
-        modelStatistics[AFTER_UPDATE_OPERATION_NAME] = [:];
-        modelStatistics[BEFORE_UPDATE_OPERATION_NAME] = [:];
-        modelStatistics[ADD_RELATION_OPERATION_NAME] = [:];
-        modelStatistics[REMOVE_RELATION_OPERATION_NAME] = [:];
-        modelStatistics[SEARCH_OPERATION_NAME] = [:];
-        modelStatistics[SEARCH_AS_STRING_OPERATION_NAME] = [:];
-        modelStatistics[SEARCH_TOP_OPERATION_NAME] = [:];
-        modelStatistics[GET_PROPERTY_VALUES_OPERATION_NAME] = [:];
-        modelStatistics[GET_RELATED_MODEL_PROPERTY_VALUES_OPERATION_NAME] =[:];        
-        modelStatistics[COUNT_HITS_OPERATION_NAME] = [:];
-        modelStatistics[PROPERTY_SUMMARY_OPERATION_NAME] = [:];        
-        modelStatistics[REMOVE_ALL_OPERATION_NAME] = [:];
+        
+        operationStatistics.keySet().each{ key ->
+            modelStatistics[key] = [:];
+        }                
     }
     
     public String getGlobalStatistics()

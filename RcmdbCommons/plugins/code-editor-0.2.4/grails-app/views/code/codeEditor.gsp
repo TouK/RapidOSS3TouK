@@ -50,7 +50,7 @@
                 syntax="groovy"
                 toolbar="search, go_to_line, |, undo, redo, |, help"
                 plugins="fileoperations,autocomplete,action,actiontabs"
-                begin_toolbar="newfile,savefile,deletefile,openfile"
+                begin_toolbar="newfile,savefile,openfile,deletefile"
                 end_toolbar="executeAction"
         >
 

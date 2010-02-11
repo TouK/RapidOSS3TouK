@@ -4,7 +4,7 @@
 #-Duser.language=en
 -classpath/a %EXE4J_EXEDIR%\..\lib\tools.jar
 -Dtools.jar=%EXE4J_EXEDIR%\..\lib\tools.jar
--Xmx512m
+-Xmx1024m
 -XX:MaxPermSize=128m
 -Dserver.port=12222
 -Dgrails.env=production 

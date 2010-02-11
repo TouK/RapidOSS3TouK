@@ -23,7 +23,7 @@ KILL_TIMEOUT=120
 # JAVA_OPTS=" -Dcom.sun.management.jmxremote.ssl=false $JAVA_OPTS"
 # JAVA_OPTS=" -Duser.language=en $JAVA_OPTS"
 
-JAVA_OPTS=" -Xmx512m $JAVA_OPTS"
+JAVA_OPTS=" -Xmx1024m $JAVA_OPTS"
 JAVA_OPTS=" -XX:MaxPermSize=128m $JAVA_OPTS"
 JAVA_OPTS=" -Dserver.port=12222 $JAVA_OPTS"
 JAVA_OPTS=" -Ddisable.auto.recompile=true $JAVA_OPTS"

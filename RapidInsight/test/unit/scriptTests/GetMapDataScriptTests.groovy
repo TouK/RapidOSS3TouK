@@ -237,6 +237,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(node.model,nodeData.model);
         assertEquals(node.className,nodeData.type);
         assertEquals(node.getState().toString(),nodeData.state);
+        assertEquals("${node.className} ${node.displayName}".toString(),nodeData.tooltip)
 
     }
     def getEdgeFrom(edges,edgeName)
@@ -284,7 +285,7 @@ class GetMapDataScriptTests  extends RapidCmdbWithCompassTestCase {
         def nodeList=[];
         def edgeList=[];
 
-        def nodeProps=["id","state","type","displayName","model","gauged"];
+        def nodeProps=["id","state","type","displayName","model","gauged","tooltip"];
 
         resultXml.node.each {    dataRow->
             def nodeData=[:];

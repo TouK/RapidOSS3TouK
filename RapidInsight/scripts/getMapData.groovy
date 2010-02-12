@@ -120,7 +120,15 @@ def buildNodeData(device)
      nodeData["id"]=device.name;
      nodeData["name"]=device.name;
      nodeData["rsClassName"]=device.class.name;
-     nodeData["state"]=device.getState();     
+     nodeData["state"]=device.getState();
+     if(device instanceof RsTopologyObject)
+     {
+        nodeData["tooltip"]="${device.className} ${device.displayName}";
+     }
+     else
+     {
+        nodeData["tooltip"]="${device.class.name} ${device.name}"; 
+     }
      CONFIG.NODE_PROPERTY_MAPPING.each{ dataPropName,modelPropName ->
         nodeData[dataPropName]=device.getProperty(modelPropName);
      }

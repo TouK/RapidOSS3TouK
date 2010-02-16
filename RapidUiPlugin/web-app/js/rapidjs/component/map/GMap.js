@@ -41,6 +41,7 @@ YAHOO.rapidjs.component.GMap = function(container, config) {
     this.iconWidthField = "width"
     this.iconHeightField = "height"
     this.iconSourceField = "src"
+    this.importanceField="importance";
     this.defaultIconWidth = 32
     this.defaultIconHeight = 32
     YAHOO.ext.util.Config.apply(this, config);
@@ -108,7 +109,8 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         if (!this.locations[address]) {
             var tooltip = locationNode.getAttribute(this.tooltipField) || "";
             var marker = locationNode.getAttribute(this.markerField);
-            this.locations[address] = {lat:lat, lng: lng, tooltip:tooltip, marker: marker, node:locationNode};
+            var importance = locationNode.getAttribute(this.importanceField) || 0;
+            this.locations[address] = {lat:lat, lng: lng, tooltip:tooltip, marker: marker, importance:importance, node:locationNode};
         }
     },
 
@@ -141,7 +143,8 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         }
         catch(error){}
         var tooltip = iconNode.getAttribute(this.tooltipField) || "";
-        this.iconConfigs[this.iconConfigs.length] = {lat:lat, lng: lng, tooltip:tooltip, src: src, node:iconNode, width:iconWidth || this.defaultIconWidth, height:iconHeight || this.defaultIconHeight};
+        var importance = iconNode.getAttribute(this.importanceField) || 0;
+        this.iconConfigs[this.iconConfigs.length] = {lat:lat, lng: lng, tooltip:tooltip, src: src, node:iconNode, width:iconWidth || this.defaultIconWidth, height:iconHeight || this.defaultIconHeight, importance:importance};
     },
 
     render: function() {
@@ -186,12 +189,16 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         this.lineConfigs = [];
         this.iconConfigs = [];
     },
+    orderOfZIndex: function(marker,b) {
+        return GOverlay.getZIndex(marker.getPoint().lat()) + marker.configuredImportance*1000000;
+    },
 
     createMarker: function(point, loc) {
         // Do we need to clean up icons created????
         var icon = new GIcon(this.baseMarkerIcon);
-        icon.image = loc.marker;
-        var marker = new GMarker(point, icon);
+        icon.image = loc.marker;        
+        var marker = new GMarker(point, {icon:icon,zIndexProcess:this.orderOfZIndex});
+        marker.configuredImportance=loc.importance;
         var component = this;
         var node = loc.node;
         var mapEvents = this.events;
@@ -211,7 +218,8 @@ YAHOO.extend(YAHOO.rapidjs.component.GMap, YAHOO.rapidjs.component.PollingCompon
         var icon = new GIcon(this.baseIcon);
         icon.image = iconConfig.src;
         icon.iconSize = new GSize(iconConfig.width, iconConfig.height);
-        var marker = new GMarker(point, icon);
+        var marker = new GMarker(point, {icon:icon,zIndexProcess:this.orderOfZIndex});
+        marker.configuredImportance=iconConfig.importance;
         var component = this;
         var node = iconConfig.node;
         var mapEvents = this.events;

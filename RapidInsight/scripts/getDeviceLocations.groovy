@@ -78,7 +78,9 @@ builder.Locations() {
         def marker = getMarker(location);
         def lat = location.get("lat");
         def lng = location.get("lng");
-        builder.Location(address: address, lat: lat, lng: lng, tooltip: tooltip, marker: marker, nodeType: nodeType, name: name);
+        //importance is same of state , critical 5 should be the highest
+        def importance = location.get("state");
+        builder.Location(address: address, lat: lat, lng: lng, tooltip: tooltip, marker: marker, nodeType: nodeType, name: name, importance:importance);
     }
 }
 web.render(contentType: "text/xml", text: sw.toString())

@@ -14,19 +14,45 @@ GMap is a UI component which integrates Google Maps with RapidInsight UI. Curren
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">
 <pre class="code-java">&lt;Locations&gt;
     &lt;Location address='Greater Rochester International Airport' lat='43.1279950' lng='-77.6660980'
-              tooltip='&amp;lt;b&amp;gt;Greater Rochester International Airport (2 devices)&amp;lt;/b&amp;gt;'
-              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_orange.png' NodeType='Container' Name='CorpVPN1'/&gt;
+              tooltip='Greater Rochester International Airport (2 devices)'
+              importance='3' marker='/RapidSuite/images/rapidjs/component/gmap/marker_orange.png' NodeType='Container' Name='CorpVPN1'  /&gt;
 
-</span>    &lt;Location address='Logan International Airport' lat='42.3613980' lng='-71.0135050' tooltip='&amp;lt;b&amp;gt;Logan International Airport (7 devices)&amp;lt;/b&amp;gt;'
-              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
-</span>    &lt;Location address='John F Kennedy International Airport' lat='40.6424805' lng='-73.7880710'
-              tooltip='&amp;lt;b&amp;gt;John F Kennedy International Airport (6 devices)&amp;lt;/b&amp;gt;'
-              marker='http:<span class="code-comment">//www.mapbuilder.net/img/icons/marker_34_red.png' NodeType='Container' Name='CorpVPN1'/&gt;
-</span>    &lt;Line startLat='43.1279950' startLng='-77.6660980' endLat='42.3613980' endLng='-71.0135050' color='#00ff00'/&gt;
+    &lt;Location address='Logan International Airport' lat='42.3613980' lng='-71.0135050' tooltip='Logan International Airport (7 devices)'
+              importance='5' marker='/RapidSuite/images/rapidjs/component/gmap/marker_red.png' NodeType='Container' Name='CorpVPN1' /&gt;
+    &lt;Location address='John F Kennedy International Airport' lat='40.6424805' lng='-73.7880710'
+              tooltip='John F Kennedy International Airport (6 devices)'
+              importance='5' marker='/RapidSuite/images/rapidjs/component/gmap/marker_red.png' NodeType='Container' Name='CorpVPN1' /&gt;
+    &lt;Line startLat='43.1279950' startLng='-77.6660980' endLat='42.3613980' endLng='-71.0135050' color='#00ff00'/&gt;
 
-    &lt;Icon lat='42.1279950' lng='-76.6660980' src='images/rapidjs/component/states/red.png' width='16' height='16'/&gt;
+    &lt;Icon lat='42.1279950' lng='-76.6660980' src='images/rapidjs/component/states/red.png' width='16' height='16' importance='5' /&gt;
 &lt;/Locations&gt;</pre>
 </div></div>
+
+<h5>About Xml Properties</h5>
+
+<h5>Xml Location Properties</h5>
+<b>address</b> : Should be unique, The label per location.<br />
+<b>tooltip</b> : Displayed when a location is clicked.<br />
+<b>lat</b> : Latitude of the location on map.<br />
+<b>lng</b> : Longtitude of the location on map.<br />
+<b>marker</b> : File Location ( http ) of the marker.<br />
+<b>importance</b> : Markers with higher importance value will show on top of others when markers overlap. <br />
+<b>Additional arguments</b> : Name and NodeType are not required by Gmap , but can be used on designer actions. <br />
+
+<h5>Xml Icon Properties</h5>
+<b>lat</b> : Latitude of the location on map.<br />
+<b>lng</b> : Longtitude of the location on map.<br />
+<b>src</b> : File Location ( http ) of the icon image.<br />
+<b>width</b> : Width of the icon image.<br />
+<b>height</b> : Height of the icon image.<br />
+<b>importance</b> : Icons with higher importance value will show on top of others when icons overlap. <br />              
+
+<h5>Xml Line Properties</h5>
+<b>color</b> : Color of the line.<br />
+<b>startLat</b> : Starting Latitude of the line on map.<br />
+<b>startLng</b> : Starting Longtitude of the line on map.<br />
+<b>endLat</b> : Ending Latitude of the line on map.<br />
+<b>endLng</b> : Ending Longtitude of the line on map.<br />
 
 <h4><a name="GMapComponent-AdditionalProperties"></a>Additional Properties</h4>
 

@@ -399,6 +399,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.getFlashObject().loadGraph(nodes, edges);
     },
     loadGraphWithUserLayout : function( nodes, edges) {
+        this.checkMenuItem(this.layoutMenuItems[2]);
         this.getFlashObject().loadUserLayout(nodes, edges);
     },
     loadData : function( data) {

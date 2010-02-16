@@ -91,7 +91,12 @@ deviceSet.each{devName, devConfig->
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
-mapBuilder.graph()
+def graphProps=[:];
+if(params.layout)
+{
+    graphProps.layout=params.layout;
+}
+mapBuilder.graph(graphProps)
 {
     deviceSet.each {devName, devConfig->
         mapBuilder.node( devConfig);

@@ -639,7 +639,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             var nodeString=this.getPropertiesString(tempNodes, nodePropertyList);
 
             this.firstResponse = null;
-            var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
+            var params =  { expandedNodeName : nodeParams.name, nodes :nodeString, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString(),layout:'0'};
             this.url = this.expandURL;
             this.lastLoadMapRequestData = {isMap:false, params:params}
             this.firstLoadMapRequestData = {isMap:false, params:params};

@@ -8,6 +8,8 @@ import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import auth.RsUser
+import datasource.HttpDatasource
+import com.ifountain.comp.test.util.logging.TestLogUtils
 
 /**
 * Created by IntelliJ IDEA.
@@ -25,6 +27,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
      def SearchQueryOperations;
      def RsUserInformation;
      def RsUserInformationOperations;
+     def RsLookup;
      
      def DeletedObjects;
      def redundancyUtility;
@@ -33,6 +36,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         super.setUp();
         def solutionPath = getWorkspacePath() + "/RapidModules/RapidInsight/solutions/ActiveActiveRedundancy"
 
+        RsLookup=gcl.parseClass(new File("${getWorkspacePath()}/RapidModules/RapidInsight/grails-app/domain/RsLookup.groovy"));
         
         RsMessageRule=gcl.parseClass(new File("${solutionPath}/grails-app/domain/message/RsMessageRule.groovy"));
         MapGroup=gcl.parseClass(new File("${solutionPath}/grails-app/domain/ui/map/MapGroup.groovy"));
@@ -48,7 +52,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
 
         redundancyUtility=gcl.parseClass(new File("${solutionPath}/operations/RedundancyUtility.groovy"));
 
-        initialize([RsMessageRule,MapGroup,SearchQuery,RsUser,RsUserInformation,DeletedObjects], []);
+        initialize([RsMessageRule,MapGroup,SearchQuery,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
 
         CompassForTests.addOperationSupport(RsMessageRule, RsMessageRuleOperations);
         CompassForTests.addOperationSupport(MapGroup, MapGroupOperations);
@@ -278,5 +282,122 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
    }
 
 
+   public void testSynchorinzeDeletedObjectsScript_LikeAcceptanceTest()
+   {
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeDeletedObjects");
+        ScriptManagerForTest.addScript("updatedObjects");
 
+        def doRequestCallParams=[:];
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             doRequestCallParams.url=url;
+             doRequestCallParams.params=params;
+             return doRequestResultFromRemoteServer;
+        }
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+        //TestLogUtils.enableLogger();
+
+        //test with no deleted object
+        assertEquals(0,doRequestCallParams.size());
+        def scriptResult=ScriptManagerForTest.runScript("synchronizeDeletedObjects",[:]);
+        println "synchronizeDeletedObjects result"+scriptResult.replaceAll("<br>","\n");
+        assertTrue(scriptResult.indexOf("Error")<0);
+
+        assertEquals(2,doRequestCallParams.size());
+        assertEquals("script/run/updatedObjects",doRequestCallParams.url);
+        assertEquals("rsadmin",doRequestCallParams.params.login);
+        assertEquals("changeme",doRequestCallParams.params.password);
+        assertEquals("xml",doRequestCallParams.params.format);
+        assertEquals("rsUpdatedAt",doRequestCallParams.params.sort);
+        assertEquals("asc",doRequestCallParams.params.order);
+        assertEquals("DeletedObjects",doRequestCallParams.params.searchIn);
+        assertEquals(100,doRequestCallParams.params.max);
+        assertEquals("rsUpdatedAt:[0 TO *] ",doRequestCallParams.params.query);
+        assertEquals(0,doRequestCallParams.params.offset);
+
+        assertEquals(0,RsLookup.count());
+
+        //test with some deleted objects
+
+        //add objects and delete them then get UpdatedObjects xml for DeletedObject in order to mock remote server
+        def searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
+        def rsUserInformation=RsUserInformation.add(userId:5,type:"info1");
+        
+        //remove this objects
+        assertEquals(1,SearchQuery.count());
+        assertEquals(1,RsUserInformation.count());
+        searchQuery.remove();
+        rsUserInformation.remove();
+        assertEquals(0,SearchQuery.count());
+        assertEquals(0,RsUserInformation.count());
+        assertEquals(2,DeletedObjects.count());
+
+        //add object again
+        searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
+        assertFalse(searchQuery.hasErrors());
+        rsUserInformation=RsUserInformation.add(userId:5,type:"info1");
+        assertFalse(rsUserInformation.hasErrors());
+
+        assertEquals(1,SearchQuery.count());
+        assertEquals(1,RsUserInformation.count());
+        assertEquals(2,DeletedObjects.count());
+
+        def lastDeletedObject=DeletedObjects.search("alias:*",[sort:"id",order:"desc"]).results[0];
+
+        def requestParams=[:];
+        requestParams.format="xml";
+        requestParams.sort="rsUpdatedAt";
+        requestParams.order="asc";
+        requestParams.searchIn="DeletedObjects";
+        requestParams.max="100";
+        requestParams.query="alias:*";
+        requestParams.offset="0";
+
+        doRequestResultFromRemoteServer=ScriptManagerForTest.runScript("updatedObjects",[params:requestParams]);
+        println "updatedObjects xml result from remote : ${doRequestResultFromRemoteServer}";
+        DeletedObjects.removeAll();
+        assertEquals(0,DeletedObjects.count());
+
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestCallParams.clear();
+                assertEquals(0,doRequestCallParams.size());
+                scriptResult=ScriptManagerForTest.runScript("synchronizeDeletedObjects",[:]);
+                println "synchronizeDeletedObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+                assertEquals(2,doRequestCallParams.size());
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        assertEquals(0,SearchQuery.count());
+        assertEquals(0,RsUserInformation.count());
+        assertEquals("Delete is remote no DeletedObjects should be added",0,DeletedObjects.count());
+
+        assertEquals(1,RsLookup.count());
+        def lookup=RsLookup.get(name:"DeletedObjects_ross1_UpdatedAt");
+        assertNotNull (lookup);
+        assertEquals(lastDeletedObject.rsUpdatedAt.toString(),lookup.value);
+
+        //calling again will change query
+        doRequestCallParams.clear();
+        assertEquals(0,doRequestCallParams.size());
+        scriptResult=ScriptManagerForTest.runScript("synchronizeDeletedObjects",[:]);
+        println "synchronizeDeletedObjects result"+scriptResult.replaceAll("<br>","\n");
+        assertTrue(scriptResult.indexOf("Error")<0);
+        assertEquals(2,doRequestCallParams.size());
+
+        assertEquals(2,doRequestCallParams.size());
+        assertEquals("script/run/updatedObjects",doRequestCallParams.url);
+        assertEquals("DeletedObjects",doRequestCallParams.params.searchIn);
+        assertEquals("rsUpdatedAt:[${lastDeletedObject.rsUpdatedAt} TO *] ",doRequestCallParams.params.query);
+        assertEquals(0,doRequestCallParams.params.offset);
+   }
 }

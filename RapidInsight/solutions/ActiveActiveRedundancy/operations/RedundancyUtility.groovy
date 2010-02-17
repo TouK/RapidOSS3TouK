@@ -31,8 +31,9 @@ public class RedundancyUtility
 	
 	public static def objectInBeforeInsert(object)
 	{
-		def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
-    	if(isRemoteActivated)
+
+        def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;    	
+        if(isRemoteActivated)
     	{
     		object.setProperty("isLocal",false);
     	}
@@ -50,9 +51,9 @@ public class RedundancyUtility
 		def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
 		if(!isRemoteActivated)
 		{
-			def deletedObjectClass=application.RsApplication.getModelClass("DeletedObjects");
+			def deletedObjectClass=application.RapidApplication.getModelClass("DeletedObjects");
 			def modelName=object.class.name;
-			def searchQuery=application.RsApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject(modelName,object);
+			def searchQuery=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject(modelName,object);
 			deletedObjectClass.add(modelName:modelName,searchQuery:searchQuery);
 			
 		}

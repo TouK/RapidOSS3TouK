@@ -6,7 +6,7 @@ import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 //if this script wanted to be used only : comment in previous line
 //modelName="SmartsNotification"
 
-redundancyUtility=application.RsApplication.getUtility("RedundancyUtility");
+redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 
 modelName=params.modelName;
 withRelations=params.withRelations?true:false;
@@ -141,7 +141,7 @@ def processRequest(ds,requestParams)
                 	}
                 }
                 
-                modelClass=application.RsApplication.getModelClass(props.alias);
+                modelClass=application.RapidApplication.getModelClass(props.alias);
                 //check if a newer object exists with countHits	
                 def objectSearchQuery=redundancyUtility.getKeySearchQueryForObject(props.alias,props);                
                 def newerObjectCount=modelClass.countHits(objectSearchQuery+" AND rsUpdatedAt:[${props.rsUpdatedAt} TO *]");

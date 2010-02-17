@@ -1,6 +1,8 @@
 import script.CmdbScript;
 
 
+// ---------------------------------------
+// CONFIGURATION STARTS
 
 def scriptRunParams=[];
 
@@ -13,8 +15,8 @@ scriptRunParams.add(["modelName":"ui.map.MapGroup","withRelations":"true"])
 scriptRunParams.add(["modelName":"message.RsMessageRule"])
 scriptRunParams.add(["modelName":"auth.RsUserInformation","withRelations":"true"])
 
-//message.RsMessageRule have searchQueryId and userid
-//ChannelUserInformation have userid
+// CONFIGURATION ENDS
+// ---------------------------------------
 
 def OUTPUT=" Model Resutls : ";
 

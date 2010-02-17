@@ -6,7 +6,7 @@ import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 //if this script wanted to be used only : comment in previous line
 //modelName="SmartsNotification"
 
-redundancyUtility=application.RsApplication.getUtility("RedundancyUtility");
+redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 
 modelName="DeletedObjects";
 
@@ -124,7 +124,7 @@ def processRequest(ds,requestParams)
                 def props=[:];
                 props.putAll(xmlObject.attributes());
                 
-                def modelClass=application.RsApplication.getModelClass(props.modelName);
+                def modelClass=application.RapidApplication.getModelClass(props.modelName);
                 //get the object and delete it
                 def object=modelClass.searchEvery(props.searchQuery)[0];
                 if(object)

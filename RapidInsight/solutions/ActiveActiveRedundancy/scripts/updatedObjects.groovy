@@ -8,9 +8,9 @@ import com.ifountain.rcmdb.domain.property.RelationUtils
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 
-redundancyUtility=application.RsApplication.getUtility("RedundancyUtility");
+// ---------------------------------------
+// CONFIGURATION STARTS
 
-withRelations=params.withRelations?true:false;
 
 ID_RELATION_MAPPING=[:];
 ID_RELATION_MAPPING["message.RsMessageRule.userId"]=auth.RsUser;
@@ -19,20 +19,14 @@ ID_RELATION_MAPPING["auth.RsUserInformation.userId"]=auth.RsUser;
 ID_RELATION_MAPPING["auth.ChannelUserInformation.userId"]=auth.RsUser;
 //ID_RELATION_MAPPING["auth.LdapUserInformation.userId"]=auth.RsUser;
 
-//comma seperated property list can be given
-if(params.propertyList != null)
-{
-    def propertyList = [];
-    StringUtils.splitPreserveAllTokens(params.propertyList, ",").each {propName->
-        propertyList.add(propName.trim());
-    }
-    params.propertyList = propertyList;
-    if(!propertyList.contains("id"))
-    {
-        propertyList.add ("id")
-    }
 
-}
+// CONFIGURATION ENDS
+// ---------------------------------------
+
+redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
+withRelations=params.withRelations?true:false;
+
+
 
 SEARCH_ERROR="";
 def searchResults = search(params);
@@ -52,8 +46,6 @@ builder.Objects(total: searchResults.total, offset: searchResults.offset) {
     	{
 	        def domainClass=ApplicationHolder.application.getDomainClass(props.alias);
 	        def relationsMeta=DomainClassUtils.getRelations(domainClass);
-	
-	        
 	        
 	        relationsMeta.each{ relName , metaData ->                	
 	            def relatedObjects=RelationUtils.getRelatedObjectsByObjectId(props.id,metaData)                    

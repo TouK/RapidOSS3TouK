@@ -13,15 +13,15 @@ class MapGroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDo
 	//	changed for isLocal property
 	def beforeInsert()
     {
-		application.RsApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
     }   
 	def beforeUpdate(params)
     {
-		application.RsApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
     }
 	def afterDelete()
     {
-		application.RsApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);
     }
 	//change ended
 	

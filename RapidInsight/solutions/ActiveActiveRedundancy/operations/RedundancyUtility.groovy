@@ -16,7 +16,8 @@ public class RedundancyUtility
 			}
 		}
 		def searchQuery="";
-		searchProps.each{ searchPropName , searchPropVal ->
+		searchProps.keySet().sort().each{ searchPropName ->
+		    def searchPropVal=searchProps[searchPropName]; 
 			if(searchPropVal instanceof String)
 			{
 				searchQuery+="${searchPropName}:${searchPropVal.exactQuery()} ";

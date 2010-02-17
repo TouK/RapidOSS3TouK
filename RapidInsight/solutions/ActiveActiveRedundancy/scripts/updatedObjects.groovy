@@ -56,6 +56,10 @@ builder.Objects(total: searchResults.total, offset: searchResults.offset) {
 	                	relations[relName]=relatedObjects;
 	            	}
 	            }
+	            else if(relatedObjects == null)
+                {
+                   relations[relName]=[];
+                }
 	            else
 	            {
 	            	relations[relName]=[relatedObjects];
@@ -80,9 +84,8 @@ builder.Objects(total: searchResults.total, offset: searchResults.offset) {
         	if(withRelations)
         	{
 	            relations.each{ relName , relatedObjects ->
-	                relatedObjects.each{ relatedObject ->
+	                relatedObjects.each{ relatedObject ->	                    
 	                    def relatedObjectProps=[:];
-	                    //relatedObjectProps.putAll(relatedObject.asMap());
 	                    relatedObjectProps.relationName=relName;
 	                    relatedObjectProps.alias=relatedObject.class.name;
 	                    relatedObjectProps.searchQuery=redundancyUtility.getKeySearchQueryForObject(relatedObject.class.name,relatedObject);

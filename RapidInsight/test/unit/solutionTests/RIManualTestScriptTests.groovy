@@ -43,9 +43,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     def RsGroup;
     def RsService;
     def RsObjectState;
-    def RsInMaintenance;
-    def RsInMaintenanceSchedule;
-    def RsHistoricalInMaintenance;
     def RsEventJournal;
     def RsHistoricalEvent;
     def RsHeartBeat;
@@ -60,7 +57,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
         super.setUp();
         clearMetaClasses()
 
-        ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsInMaintenance", "RsInMaintenanceSchedule","RsHistoricalInMaintenance","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
+        ["RsTopologyObject", "RsCustomer", "RsEvent","RsRiEvent", "RsGroup", "RsService", "RsObjectState","RsEventJournal", "RsHistoricalEvent","RsHeartBeat"].each{ className ->
               setProperty(className,gcl.loadClass(className));
         }
 
@@ -114,7 +111,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
     public void initializeModels(classMap)
     {
-        initialize([CmdbScript, RepositoryConnection, RepositoryDatasource, BaseListeningDatasource, RsTopologyObject, RsCustomer, RsEvent, RsGroup, RsService, RsObjectState, relation.Relation, RsInMaintenance, RsEventJournal, RsHistoricalEvent, RapidApplication], []);
+        initialize([CmdbScript, RepositoryConnection, RepositoryDatasource, BaseListeningDatasource, RsTopologyObject, RsCustomer, RsEvent, RsGroup, RsService, RsObjectState, relation.Relation, RsEventJournal, RsHistoricalEvent, RapidApplication], []);
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
         CompassForTests.addOperationSupport(RsTopologyObject, classMap.RsTopologyObjectOperations);

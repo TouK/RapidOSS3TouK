@@ -65,7 +65,7 @@ scriptsToAdd.add([name:"getMapNodeEvents", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
 scriptsToAdd.add([name:"clearHistoricalEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.CRON,enabled:true,cronExpression:'0 0 0 * * ?',logFileOwn:true])
 
-//instrumentation scripts
+//instrumentation & ROSS management scripts
 scriptsToAdd.add([name:"createInstrumentationParameters"])
 scriptsToAdd.add([name:"enableInstrumentation"])
 scriptsToAdd.add([name:"disableInstrumentation"])
@@ -75,6 +75,7 @@ scriptsToAdd.add([name:"threadLister", type:CmdbScript.SCHEDULED, scheduleType:C
 scriptsToAdd.add([name:"memoryDump"])
 scriptsToAdd.add([name:"getCompassStatistics"])
 scriptsToAdd.add([name:"resetCompassStatistics"])
+scriptsToAdd.add([name:"backup", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.CRON,enabled:false,cronExpression:'0 0 0 * * ?',logFileOwn:true]);
 
 scriptsToAdd.each{  scriptParams ->
 

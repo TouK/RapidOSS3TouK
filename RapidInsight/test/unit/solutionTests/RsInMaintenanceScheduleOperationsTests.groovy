@@ -74,7 +74,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
 
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.RUN_ONCE];
 
-        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props, false);
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
         assertEquals(info, schedule.info)
@@ -99,7 +99,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.DAILY,
                 startWith: 2, repeatEvery: 3, schedStarting: schedStarting, schedEnding: schedEnding];
 
-        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props, false);
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         println schedule.errors
         assertFalse(schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
@@ -139,7 +139,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.WEEKLY,
                 daysOfWeek: "1,3,6", schedStarting: schedStarting, schedEnding: schedEnding];
 
-        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props, false);
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
         assertEquals(info, schedule.info)
@@ -176,7 +176,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.MONTHLY_BY_DATE,
                 startWith: 3, repeatEvery: 2, schedStarting: schedStarting, schedEnding: schedEnding, daysOfMonth: "12,13,14"];
 
-        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props, false);
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
         assertEquals(info, schedule.info)
@@ -216,7 +216,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.MONTHLY_BY_DAY,
                 startWith: 3, repeatEvery: 2, schedStarting: schedStarting, schedEnding: schedEnding, daysOfMonth: "6#1"];
 
-        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props, false);
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
         assertEquals(info, schedule.info)
@@ -345,6 +345,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
 
         def schedule = RsInMaintenanceSchedule.add(props);
         assertFalse(schedule.hasErrors())
+        schedule.unschedule();
 
         Scheduler scheduler = schedule.getScheduler();
         scheduler.scheduleJob(
@@ -363,12 +364,28 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
 
         schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
-
+                
         RsInMaintenanceSchedule.removeExpiredItems();
         
         assertEquals(1, RsInMaintenanceSchedule.count());
     }
+    public void testScheduleAndUnscheduleDoneWhenMaintenanceScheduleAddedOrRemovedByTriggers() {
+        def starting = new Date(System.currentTimeMillis() - 10000L);
+        def ending = new Date(System.currentTimeMillis() + 500);
+        def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, type: RsInMaintenanceSchedule.RUN_ONCE];
 
+        def schedule = RsInMaintenanceSchedule.add(props);
+        assertFalse(schedule.hasErrors())    
+
+        Scheduler scheduler = schedule.getScheduler();
+        assertNotNull(scheduler.getTrigger(schedule.getTriggerName(), null));
+
+        schedule.remove();
+        assertNull(scheduler.getTrigger(schedule.getTriggerName(), null));
+
+        assertEquals(0, RsInMaintenanceSchedule.count());
+
+    }
 }
 
 class MockMaintenanceJob implements StatefulJob {

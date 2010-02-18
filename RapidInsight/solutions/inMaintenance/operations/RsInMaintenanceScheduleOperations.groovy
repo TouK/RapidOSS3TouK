@@ -11,24 +11,30 @@ import org.quartz.CronTrigger;
 public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     public static SCHEDULE_SOURCE = "schedule";
-    public static RsInMaintenanceSchedule addObjectSchedule(Map props) {
-        return addObjectSchedule(props, true);
-    }
-    public static RsInMaintenanceSchedule addObjectSchedule(Map props, boolean createQuartzJob)
+
+    def afterInsert()
     {
-        RsInMaintenanceSchedule schedule = RsInMaintenanceSchedule.add(props);
-        if (!schedule.hasErrors() && createQuartzJob) {
-            try {
-                schedule.scheduleMaintenance()
-            }
-            catch (org.quartz.SchedulerException e) {
-                schedule.remove();
-                throw e;
-            }
+		try {
+            scheduleMaintenance()
         }
+        catch (org.quartz.SchedulerException e) {
+            remove();
+            throw e;
+        }
+    }
+	def afterUpdate(params)
+    {
+
+    }
+	def beforeDelete()
+    {
+         unschedule();
+    }
+    
+    public static RsInMaintenanceSchedule addObjectSchedule(Map props) {
+        RsInMaintenanceSchedule schedule = RsInMaintenanceSchedule.add(props);
         return schedule;
     }
-
     public synchronized void scheduleMaintenance() {
         Class executor = RapidApplication.getUtility('QuartzMaintenanceJob').class;
         JobDetail jobDetail = new JobDetail(getTriggerName(), null, executor);
@@ -106,7 +112,6 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         def schedule = RsInMaintenanceSchedule.get(id: scheduleId);
         if (schedule)
         {
-            schedule.unschedule();
             schedule.remove();
         }
     }

@@ -1,6 +1,20 @@
 import java.util.Date
 
 public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+    def afterInsert()
+    {
+		putEventsInMaintenance (true,objectName);
+    }
+	def afterUpdate(params)
+    {
+		
+    }
+	def afterDelete()
+    {
+        RsHistoricalInMaintenance.add(asMap());
+        putEventsInMaintenance (false,objectName);
+    }
+
     public static boolean isObjectInMaintenance(objectName) {
         return RsInMaintenance.countHits("objectName:${objectName.exactQuery()}") > 0;
     }
@@ -23,19 +37,15 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
         if (endTime != 0 && endTime <= tempProps.starting.getTime()) {
             throw new Exception("ending ${tempProps.ending} time should be greater than starting time ${tempProps.starting}");
         }
-        def eventsAreAlreadyInMaintenance = false;
+
         def maintObj = RsInMaintenance.get(objectName:tempProps.objectName);
         if (maintObj) {
             tempProps.remove("starting");
-            eventsAreAlreadyInMaintenance = true;
             if(!override && (maintObj.ending.getTime() == 0 || (endTime != 0 && endTime <= maintObj.ending.getTime())))return maintObj;
         }
 
         maintObj = RsInMaintenance.add(tempProps);
         if (maintObj.hasErrors()) throw new Exception(maintObj.errors.toString())
-        if(!eventsAreAlreadyInMaintenance){
-            eventsInMaintenance(true, tempProps.objectName);    
-        }
         return maintObj;
     }
 
@@ -52,18 +62,14 @@ public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operat
 
     public static void takeObjectOutOfMaintenance(RsInMaintenance maintObj) {
         maintObj.remove()
-        RsHistoricalInMaintenance.add(maintObj.asMap());
-        eventsInMaintenance(false, maintObj.objectName);
     }
 
-    public static void eventsInMaintenance(boolean maint, String objectName) {
-        def events = RsEvent.searchEvery("elementName:${objectName}")
+    public static void putEventsInMaintenance(boolean maint, String objectName) {
+        def events = RsEvent.searchEvery("elementName:${objectName} AND inMaintenance:${!maint}");
         events.each {event ->
             event.update(inMaintenance: maint);
         }
     }
-
-
 
     public static void removeExpiredItems() {
         def logger = getLogger()

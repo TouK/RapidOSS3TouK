@@ -87,6 +87,8 @@ class RsInMaintenanceOperationsTests extends RapidCmdbWithCompassTestCase {
         assertTrue(eventDuringMaintenance1.inMaintenance)
     }
 
+
+
     public void testTakingObjectOutOfMaintenance() {
         def event11 = RsEvent.add(name: "Event11", elementName: deviceName)
         def event12 = RsEvent.add(name: "Event12", elementName: deviceName)
@@ -242,4 +244,32 @@ class RsInMaintenanceOperationsTests extends RapidCmdbWithCompassTestCase {
         assertEquals(0, RsInMaintenance.count())
     }
 
+    public void testEventsAreInMaintenanceWhenMaintenanceAddedOrRemovedByAfterTriggers() {
+        def event11 = RsEvent.add(name: "Event11", elementName: deviceName)
+        def event12 = RsEvent.add(name: "Event12", elementName: deviceName)
+
+        def props = ["objectName": deviceName, "source": source, "info": info]
+        def maint1 = RsInMaintenance.add(props)
+
+        assertTrue(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
+        assertTrue(RsEvent.get(name: event11.name).inMaintenance)
+        assertTrue(RsEvent.get(name: event12.name).inMaintenance)
+
+        maint1.remove();
+        assertFalse(RsInMaintenance.isObjectInMaintenance(maint1.objectName))
+        assertFalse(RsEvent.get(name: event11.name).inMaintenance)
+        assertFalse(RsEvent.get(name: event12.name).inMaintenance)
+        def historicalMaintenances = RsHistoricalInMaintenance.searchEvery("objectName:${maint1.objectName}");
+        assertEquals(1, historicalMaintenances.size())
+        def allActiveMaintenanceProps = maint1.asMap();
+        def allHistoricalMaintenanceProps = historicalMaintenances[0].asMap();
+        allActiveMaintenanceProps.each {key, value ->
+            if (key != "id" && key != "rsInsertedAt" && key != "rsUpdatedAt") {
+                assertEquals(value, allHistoricalMaintenanceProps[key])
+            }
+        }
+
+        def event13 = RsEvent.add(name: "Event13", elementName: maint1.objectName)
+        assertFalse(event13.inMaintenance)
+    }
 }

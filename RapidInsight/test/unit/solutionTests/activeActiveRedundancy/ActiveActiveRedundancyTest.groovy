@@ -288,7 +288,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         return data;
    }
 
-   public void testSynchorinzeDeletedObjectsScript_RetrievedDeletedObjectDataFromRemoteServerUpdatedObjectsScript()
+   public void testSynchorinzeDeletedObjectsScript_RetrievesDeletedObjectDataFromRemoteServerUpdatedObjectsScript()
    {
         initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeDeletedObjects");
@@ -443,5 +443,45 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         println "synchronizeDeletedObjects result"+scriptResult.replaceAll("<br>","\n");
         assertTrue(scriptResult.indexOf("Error")>=0);
         assertTrue(scriptResult.indexOf("testexception")>=0);
+   }
+
+
+   public void testSynchorinzeObjectsScript_RetrievesObjectDataFromRemoteServerUpdatedObjectsScript()
+   {
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeObjects");
+
+        def doRequestCallParams=[:];
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             doRequestCallParams.url=url;
+             doRequestCallParams.params=params;
+             return doRequestResultFromRemoteServer;
+        }
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+
+
+        //test with no object
+        assertEquals(0,doRequestCallParams.size());
+        def scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQuery","withRelations":"true"]]);
+        println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+        assertTrue(scriptResult.indexOf("Error")<0);
+
+        assertEquals(2,doRequestCallParams.size());
+        assertEquals("script/run/updatedObjects",doRequestCallParams.url);
+        assertEquals("rsadmin",doRequestCallParams.params.login);
+        assertEquals("changeme",doRequestCallParams.params.password);
+        assertEquals("xml",doRequestCallParams.params.format);
+        assertEquals("rsUpdatedAt",doRequestCallParams.params.sort);
+        assertEquals("asc",doRequestCallParams.params.order);
+        assertEquals("search.SearchQuery",doRequestCallParams.params.searchIn);
+        assertEquals(100,doRequestCallParams.params.max);
+        assertEquals("rsUpdatedAt:[0 TO *] AND isLocal:true",doRequestCallParams.params.query);
+        assertEquals(0,doRequestCallParams.params.offset);
+        assertEquals("true",doRequestCallParams.params.withRelations);
+
+        assertEquals(0,RsLookup.count());
    }
 }

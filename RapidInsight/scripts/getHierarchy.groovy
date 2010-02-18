@@ -31,15 +31,20 @@ def summaryMap = RsComputerSystem.propertySummary("alias:*", [CONTAINER_PROPERTY
 def containers = summaryMap[CONTAINER_PROPERTY].keySet();
 def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
+
+def searchParams = [max: "1000",sort:"name",order:"asc"];
+def searchProps = ["name","displayName",CONTAINER_PROPERTY];
+
 builder.Objects() {
     containers.each {containerName ->
         builder.Object(id: containerName, name: containerName, displayName: containerName, nodeType: 'Container') {
-            def results = RsComputerSystem.searchEvery("${CONTAINER_PROPERTY}:${containerName.exactQuery()}");
-            results.each {RsComputerSystem topoObj ->
+            //getPropertyValues is faster than search for limited number of properties
+            def results = RsComputerSystem.getPropertyValues("${CONTAINER_PROPERTY}:${containerName.exactQuery()}",searchProps,searchParams);
+            results.each {topoObj ->
                 builder.Object(id: topoObj.id, name: topoObj.name, displayName: topoObj.displayName, nodeType: 'Object',
                         "${CONTAINER_PROPERTY}": topoObj[CONTAINER_PROPERTY])
             }
         }
     }
 }
-web.render(contentType: 'text/xml', text: sw.toString()); 
+return sw.toString(); 

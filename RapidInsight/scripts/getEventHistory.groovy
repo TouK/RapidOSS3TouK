@@ -42,8 +42,11 @@ else {
     eventQuery="elementName:${name.exactQuery()}";
 }
 
+
+//getPropertyValues is faster than search for limited number of properties
 def searchParams = [max: "1000", sort: "clearedAt", order: "desc"];
-def historicalEvents = RsHistoricalEvent.getPropertyValues(eventQuery, ["name", "elementName", "createdAt", "clearedAt"], searchParams);
+def searchProps  = ["name", "elementName", "createdAt", "clearedAt"];
+def historicalEvents = RsHistoricalEvent.getPropertyValues(eventQuery, searchProps, searchParams);
 def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 builder.data() {

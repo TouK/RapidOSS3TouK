@@ -25,8 +25,8 @@ ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 def datasources=HttpDatasource.searchEvery("name:ross*");
 if(datasources.size()==0)
 {
-	logger.warn("${modelName} : no ross server is defined");
-    return "${modelName}: no ross server is defined";
+	logger.warn("${modelName} : Error : no ross server is defined");
+    return "${modelName}: Error : no ross server is defined";
 }
 
 //For each server , process changed objects of the model

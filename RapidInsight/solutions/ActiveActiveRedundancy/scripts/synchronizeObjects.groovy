@@ -25,8 +25,8 @@ ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 def datasources=HttpDatasource.searchEvery("name:ross*");
 if(datasources.size()==0)
 {
-	logger.warn("${modelName} : no ross server is defined");
-    return "${modelName}: no ross server is defined";
+	logger.warn("${modelName} : Error : no ross server is defined");
+    return "${modelName}: Error : no ross server is defined";
 }
 
 //For each server , process changed objects of the model
@@ -154,7 +154,40 @@ def processRequest(ds,requestParams)
                     logger.debug("object Remote id: ${props.id} will be added.")
 	                props.remove("rsInsertedAt");
 	                props.remove("rsUpdatedAt");
-	                                
+
+                    if(withRelations)
+                    {
+                        //process relations
+                        def relatedObjects=[:];
+
+                        def xmlRelatedObjects=xmlObject.RelatedObject;
+                        xmlRelatedObjects.each{ xmlRelatedObject ->
+                            def relatedProps=xmlRelatedObject.attributes();
+                            def relationName=relatedProps.relationName;
+
+                            def domainClass=org.codehaus.groovy.grails.commons.ApplicationHolder.application.getDomainClass(relatedProps.alias);
+                            def relatedObject=domainClass.clazz.searchEvery(relatedProps.searchQuery)[0];
+                            if(relatedObject)
+                            {
+                                if(!relatedObjects.containsKey(relationName))
+                                {
+                                    relatedObjects[relationName]=[];
+                                }
+                                relatedObjects[relationName].add(relatedObject);
+                            }
+
+                        }
+                        if(relatedObjects.size()>0)
+                        {
+                            relatedObjects.each{ relationName, relatedObjectList ->
+                                logger.debug("Adding relation to object props ${relationName} : ${relatedObjectList} ");
+                                props[relationName]=relatedObjectList;                                                                
+                            }
+//                            logger.debug("Adding relations for ${object} , relatedObjects ${relatedObjects}");
+//                            object.addRelation(relatedObjects);
+                        }
+                    }
+
 	                def object=modelClass.add(props);
 	                if(object.hasErrors())
 	                {
@@ -162,36 +195,7 @@ def processRequest(ds,requestParams)
 	                }
 	                else
 	                {
-	                	logger.debug("object Local id: ${object.id} added successfuly.")
-	                
-	                	if(withRelations)
-			            {
-			            	//process relations
-			            	def relatedObjects=[:];
-			            	
-			            	def xmlRelatedObjects=xmlObject.RelatedObject;
-			            	xmlRelatedObjects.each{ xmlRelatedObject ->
-			                	def relatedProps=xmlRelatedObject.attributes();
-								def relationName=relatedProps.relationName;
-								
-								def domainClass=org.codehaus.groovy.grails.commons.ApplicationHolder.application.getDomainClass(relatedProps.alias);
-			                	def relatedObject=domainClass.clazz.searchEvery(relatedProps.searchQuery)[0];
-			                	if(relatedObject)
-			                	{
-			                		if(!relatedObjects.containsKey(relationName))
-			                		{
-			                			relatedObjects[relationName]=[];
-			                		}
-			                		relatedObjects[relationName].add(relatedObject);
-			                	}
-			                	
-			            	}
-			            	if(relatedObjects.size()>0)
-			            	{
-			            		logger.debug("Adding relations for ${object} , relatedObjects ${relatedObjects}");
-			            		object.addRelation(relatedObjects);
-			            	}
-			            }
+	                	logger.debug("object Local id: ${object.id} added successfuly.");
                		}
                 }
         }

@@ -25,6 +25,8 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
      def MapGroupOperations;
      def SearchQuery;
      def SearchQueryOperations;
+     def SearchQueryGroup;
+     def SearchQueryGroupOperations;
      def RsUserInformation;
      def RsUserInformationOperations;
      def RsLookup;
@@ -42,6 +44,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         RsMessageRule=gcl.parseClass(new File("${solutionPath}/grails-app/domain/message/RsMessageRule.groovy"));
         MapGroup=gcl.parseClass(new File("${solutionPath}/grails-app/domain/ui/map/MapGroup.groovy"));
         SearchQuery=gcl.parseClass(new File("${solutionPath}/plugins/searchable-extension/grails-app/domain/search/SearchQuery.groovy"));
+        SearchQueryGroup=gcl.parseClass(new File("${solutionPath}/plugins/searchable-extension/grails-app/domain/search/SearchQueryGroup.groovy"));
         RsUserInformation=gcl.parseClass(new File("${solutionPath}/plugins/jsecurity-0.2.1/grails-app/domain/auth/RsUserInformation.groovy"));
 
         DeletedObjects=gcl.parseClass(new File("${solutionPath}/grails-app/domain/DeletedObjects.groovy"));
@@ -49,15 +52,17 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         RsMessageRuleOperations=gcl.parseClass(new File("${solutionPath}/operations/message/RsMessageRuleOperations.groovy"));
         MapGroupOperations=gcl.parseClass(new File("${solutionPath}/operations/ui/map/MapGroupOperations.groovy"));
         SearchQueryOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryOperations.groovy"));
+        SearchQueryGroupOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryGroupOperations.groovy"));
         RsUserInformationOperations=gcl.parseClass(new File("${solutionPath}/operations/auth/RsUserInformationOperations.groovy"));
 
         redundancyUtility=gcl.parseClass(new File("${solutionPath}/operations/RedundancyUtility.groovy"));
 
-        initialize([RsMessageRule,MapGroup,SearchQuery,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
+        initialize([RsMessageRule,MapGroup,SearchQuery,SearchQueryGroup,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
 
         CompassForTests.addOperationSupport(RsMessageRule, RsMessageRuleOperations);
         CompassForTests.addOperationSupport(MapGroup, MapGroupOperations);
         CompassForTests.addOperationSupport(SearchQuery, SearchQueryOperations);
+        CompassForTests.addOperationSupport(SearchQueryGroup, SearchQueryGroupOperations);
         CompassForTests.addOperationSupport(RsUserInformation, RsUserInformationOperations);
 
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
@@ -329,8 +334,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
    {
        initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeDeletedObjects");
-        ScriptManagerForTest.addScript("updatedObjects");
-
+        
         def scriptResult=null;
 
         def doRequestCallParams=[:];
@@ -350,37 +354,17 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         def searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
         def rsUserInformation=RsUserInformation.add(userId:5,type:"info1");
 
-        //remove this objects
         assertEquals(1,SearchQuery.count());
         assertEquals(1,RsUserInformation.count());
-        searchQuery.remove();
-        rsUserInformation.remove();
-        assertEquals(0,SearchQuery.count());
-        assertEquals(0,RsUserInformation.count());
-        assertEquals(2,DeletedObjects.count());
+        assertEquals(0,DeletedObjects.count());
 
-        //add object again
-        searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
-        assertFalse(searchQuery.hasErrors());
-        rsUserInformation=RsUserInformation.add(userId:5,type:"info1");
-        assertFalse(rsUserInformation.hasErrors());
+        def lastDeletedObjectUpdatedAt=rsUserInformation.rsUpdatedAt+3600000;
 
-        assertEquals(1,SearchQuery.count());
-        assertEquals(1,RsUserInformation.count());
-        assertEquals(2,DeletedObjects.count());
-
-        def lastDeletedObject=DeletedObjects.search("alias:*",[sort:"id",order:"desc"]).results[0];
-
-        def requestParams=[:];
-        requestParams.format="xml";
-        requestParams.sort="rsUpdatedAt";
-        requestParams.order="asc";
-        requestParams.searchIn="DeletedObjects";
-        requestParams.max="100";
-        requestParams.query="alias:*";
-        requestParams.offset="0";
-
-        doRequestResultFromRemoteServer=ScriptManagerForTest.runScript("updatedObjects",[params:requestParams]);
+        doRequestResultFromRemoteServer="""
+        <Objects total='2' offset='0'>
+          <Object alias='DeletedObjects' id='55553' modelName='search.SearchQuery' rsInsertedAt='${lastDeletedObjectUpdatedAt-1000}' rsUpdatedAt='${lastDeletedObjectUpdatedAt-1000}' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+          <Object alias='DeletedObjects' id='66664' modelName='auth.RsUserInformation' rsInsertedAt='${lastDeletedObjectUpdatedAt}' rsUpdatedAt='${lastDeletedObjectUpdatedAt}' searchQuery='type:"(info1)" userId:5 ' />
+        </Objects>""";
         println "updatedObjects xml result from remote : ${doRequestResultFromRemoteServer}";
         DeletedObjects.removeAll();
         assertEquals(0,DeletedObjects.count());
@@ -408,7 +392,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals(1,RsLookup.count());
         def lookup=RsLookup.get(name:"DeletedObjects_ross1_UpdatedAt");
         assertNotNull (lookup);
-        assertEquals(lastDeletedObject.rsUpdatedAt.toString(),lookup.value);
+        assertEquals(lastDeletedObjectUpdatedAt.toString(),lookup.value);
 
         //calling again will change query
         doRequestCallParams.clear();
@@ -421,12 +405,12 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals(2,doRequestCallParams.size());
         assertEquals("script/run/updatedObjects",doRequestCallParams.url);
         assertEquals("DeletedObjects",doRequestCallParams.params.searchIn);
-        assertEquals("rsUpdatedAt:[${lastDeletedObject.rsUpdatedAt} TO *] ",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${lastDeletedObjectUpdatedAt} TO *] ",doRequestCallParams.params.query);
         assertEquals(0,doRequestCallParams.params.offset);
 
 
    }
-   public void testSynchorinzeDeletedObjectsScript_DoesNotThrowExceptionButLogs()
+   public void testSynchronizeDeletedObjectsScript_DoesNotThrowExceptionButLogs()
    {
         initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeDeletedObjects");
@@ -446,7 +430,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
    }
 
 
-   public void testSynchorinzeObjectsScript_RetrievesObjectDataFromRemoteServerUpdatedObjectsScript()
+   public void testSynchronizeObjectsScript_RetrievesObjectDataFromRemoteServerUpdatedObjectsScript()
    {
         initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeObjects");
@@ -483,5 +467,368 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals("true",doRequestCallParams.params.withRelations);
 
         assertEquals(0,RsLookup.count());
+
+
+        //test with no relations
+        doRequestCallParams.clear(); 
+        assertEquals(0,doRequestCallParams.size());
+        scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQuery"]]);
+        println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+        assertTrue(scriptResult.indexOf("Error")<0);
+
+        assertEquals(2,doRequestCallParams.size());
+        assertEquals("script/run/updatedObjects",doRequestCallParams.url);
+        assertEquals("search.SearchQuery",doRequestCallParams.params.searchIn);
+        assertEquals(null,doRequestCallParams.params.withRelations);
+   }
+
+   public void testSynchonizeObjectsScript_AddsUpdatesObjectsLocallyWhichAreRemotelyUpdated()
+   {
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeObjects");
+
+        def remoteUpdatedAt=Date.now()+3600000;
+        def scriptResult;
+        
+        //new object
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+        def doRequestCallParams=[:];
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             doRequestCallParams.url=url;
+             doRequestCallParams.params=params;
+             return doRequestResultFromRemoteServer;
+        }
+
+
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+        
+        //TestLogUtils.enableLogger ();
+        
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        assertEquals(1,SearchQueryGroup.count());
+        def queryGroup=SearchQueryGroup.list()[0];
+        assertNotNull (queryGroup);
+        assertTrue("object id does not come from xml",queryGroup.id<100);
+        assertEquals(true,queryGroup.expanded);
+        assertEquals(false,queryGroup.isPublic);
+        assertEquals("group1",queryGroup.name);
+        assertEquals("t1",queryGroup.type);
+        assertEquals("user1",queryGroup.username);
+        assertEquals(false,queryGroup.isLocal);
+
+        assertEquals("rsUpdatedAt:[0 TO *] AND isLocal:true",doRequestCallParams.params.query);
+        
+
+        assertEquals(1,RsLookup.count());
+        def lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        assertEquals(remoteUpdatedAt.toString(),lookup.value);
+
+
+
+        //test update
+        remoteUpdatedAt=remoteUpdatedAt-1000;
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='true' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        queryGroup=SearchQueryGroup.list()[0];
+        assertNotNull (queryGroup);
+        assertEquals(false,queryGroup.expanded);
+        assertEquals(true,queryGroup.isPublic);
+        assertEquals(false,queryGroup.isLocal);
+
+        assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
+
+        assertEquals(1,RsLookup.count());
+        lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        assertEquals(remoteUpdatedAt.toString(),lookup.value);
+
+
+
+        //test do not update if update is not newer
+        remoteUpdatedAt=queryGroup.rsUpdatedAt-100000;
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        queryGroup=SearchQueryGroup.list()[0];
+        assertNotNull (queryGroup);        
+        assertEquals(false,queryGroup.expanded);
+        assertEquals(true,queryGroup.isPublic);
+        assertEquals(false,queryGroup.isLocal);
+
+        assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
+
+        assertEquals(1,RsLookup.count());
+        lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        assertEquals(remoteUpdatedAt.toString(),lookup.value);
+        
+   }
+   public void testSynchonizeObjectsScript_AddsRemovesRelationsLocallyWhichAreRemotelyUpdated()
+   {
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeObjects");        
+
+        def scriptResult=null;
+
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             return doRequestResultFromRemoteServer;
+        }
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+
+        //TEST RELATION ADD FOR EXISTING OBJECTS
+        def queryGroup=SearchQueryGroup.add(name:"group1",username:"user1",type:"t1");
+        assertFalse(queryGroup.hasErrors());
+
+        def remoteUpdatedAt=queryGroup.rsUpdatedAt+3600000;
+
+        def searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
+        assertFalse(searchQuery.hasErrors());
+
+        assertEquals(true,queryGroup.isLocal);
+        assertEquals(true,searchQuery.isLocal);
+
+        assertEquals(1,SearchQuery.count());
+        assertEquals(1,SearchQueryGroup.count());
+        queryGroup=SearchQueryGroup.get(id:queryGroup.id);
+        assertEquals(0,queryGroup.queries.size());
+
+
+        //sync SearchQueryGroup , this will only add relation between searchQuery and queryGroups
+        // since searchQuery2 does not exist nothing for that relation and object will be done
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query2)" type:"(t1)" username:"(user1)" ' />
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        
+        assertEquals(1,SearchQuery.count());
+        assertEquals(1,SearchQueryGroup.count());
+
+        //objects still isLocal, they are not updated but addRelation is called.
+        def newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
+        assertEquals(1,newQueryGroup.queries.size());
+        assertEquals(true,newQueryGroup.isLocal);
+
+        def newSearchQuery=SearchQuery.get(id:searchQuery.id);
+        assertEquals(newQueryGroup.id,newSearchQuery.group.id);
+        assertEquals(true,newSearchQuery.isLocal);
+
+        //TEST RELATION ADD FOR EXISTING AND NEW OBJECTS
+        //sync SearchQuery
+        // this will only add relation between searchQuery and queryGroups
+        // this will add searchQuery2 and add relation between searchQuery2 and queryGroups
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='2' offset='0'>
+                  <Object alias='search.SearchQuery' id='77772' isLocal='true' isPublic='false' name='query1' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                    <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
+                  </Object>
+                  <Object alias='search.SearchQuery' id='77774' isLocal='true' isPublic='false' name='query2' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                    <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQuery","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        assertEquals(2,SearchQuery.count());
+        assertEquals(1,SearchQueryGroup.count());
+
+        newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
+        assertEquals(2,newQueryGroup.queries.size());
+        assertEquals(true,newQueryGroup.isLocal);
+
+        newSearchQuery=SearchQuery.get(id:searchQuery.id);
+        assertEquals(newQueryGroup.id,newSearchQuery.group.id);
+        assertEquals(true,newSearchQuery.isLocal);
+
+        def newSearchQuery2=SearchQuery.search("name:query2").results[0];
+        assertEquals(newQueryGroup.id,newSearchQuery2.group.id);
+        assertEquals(false,newSearchQuery2.isLocal);
+
+        //TEST RELATION REMOVAL FROM MANY-TO-MANY
+        //TestLogUtils.enableLogger();
+        //sync SearchQueryGroup with groups  relation with query2 removed
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
+        assertEquals(1,newQueryGroup.queries.size());
+        assertEquals(true,newQueryGroup.isLocal);
+
+        newSearchQuery=SearchQuery.get(id:searchQuery.id);
+        assertEquals(newQueryGroup.id,newSearchQuery.group.id);
+        assertEquals(true,newSearchQuery.isLocal);
+        
+        newSearchQuery2=SearchQuery.search("name:query2").results[0];
+        assertEquals(null,newSearchQuery2.group);
+        assertEquals(false,newSearchQuery2.isLocal);
+   }
+   public void testSynchonizeObjectsScript_ConvertsIdRelatedObjectsToPropertyFromRemote()
+   {
+        def remoteUpdatedAt=Date.now()+3600000;
+
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeObjects");
+
+        def scriptResult=null;
+
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             return doRequestResultFromRemoteServer;
+        }
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+
+        def user=RsUser.add(username:"user1",passwordHash:"");
+        assertFalse(user.errors.toString(),user.hasErrors());
+
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                    <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
+                    <RelatedObject relationName='rsUser' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformation","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        assertEquals(1,RsUserInformation.count());
+        def info=RsUserInformation.list()[0];
+        assertEquals("id related userId should be generated",user.id,info.userId);
+        assertTrue(info.userId<100); //not from xml
+        assertEquals("email0",info.type);
+        
+        assertEquals("also relations should be generated",user.id,info.rsUser.id);
+
+        
+        //remove RsUser and test same info now
+        RsUserInformation.removeAll();
+        RsUser.removeAll();
+        assertEquals(0,RsUser.count());
+        assertEquals(0,RsUserInformation.count());
+
+        ExecutionContextManagerUtils.executeInContext ([:])
+        {
+            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
+            try{
+                doRequestResultFromRemoteServer="""
+                <Objects total='1' offset='0'>
+                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                    <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
+                  </Object>
+                </Objects>""";
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformation","withRelations":"true"]]);
+                println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
+                assertTrue(scriptResult.indexOf("Error")<0);
+            }
+            finally{
+                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
+            }
+        }
+
+        assertEquals(1,RsUserInformation.count());
+
    }
 }

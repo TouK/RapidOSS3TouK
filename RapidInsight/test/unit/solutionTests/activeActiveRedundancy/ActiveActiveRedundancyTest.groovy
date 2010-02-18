@@ -34,6 +34,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
 
      public void setUp() {
         super.setUp();
+        clearMetaClasses();
         def solutionPath = getWorkspacePath() + "/RapidModules/RapidInsight/solutions/ActiveActiveRedundancy"
 
         RsLookup=gcl.parseClass(new File("${getWorkspacePath()}/RapidModules/RapidInsight/grails-app/domain/RsLookup.groovy"));
@@ -64,9 +65,15 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
-           super.tearDown();
+        clearMetaClasses();
+        super.tearDown();
     }
-
+    public static void clearMetaClasses()
+    {
+        ExpandoMetaClass.disableGlobally();
+        GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
+        ExpandoMetaClass.enableGlobally();
+    }
     public void testRedundancyUtility_SetsIsLocalPropertyAccordingToExecutionContext(){
         def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
         assertFalse(rule1.hasErrors());
@@ -281,12 +288,10 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         return data;
    }
 
-
-   public void testSynchorinzeDeletedObjectsScript_LikeAcceptanceTest()
+   public void testSynchorinzeDeletedObjectsScript_RetrievedDeletedObjectDataFromRemoteServerUpdatedObjectsScript()
    {
         initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeDeletedObjects");
-        ScriptManagerForTest.addScript("updatedObjects");
 
         def doRequestCallParams=[:];
         def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
@@ -319,13 +324,32 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals(0,doRequestCallParams.params.offset);
 
         assertEquals(0,RsLookup.count());
+   }
+   public void testSynchorinzeDeletedObjectsScript_DeletesObjectLocallyWhichAreRemotelyDeleted()
+   {
+       initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeDeletedObjects");
+        ScriptManagerForTest.addScript("updatedObjects");
+
+        def scriptResult=null;
+
+        def doRequestCallParams=[:];
+        def doRequestResultFromRemoteServer="""<Objects total='0' offset='0'></Objects>""";
+
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             doRequestCallParams.url=url;
+             doRequestCallParams.params=params;
+             return doRequestResultFromRemoteServer;
+        }
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
 
         //test with some deleted objects
 
         //add objects and delete them then get UpdatedObjects xml for DeletedObject in order to mock remote server
         def searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
         def rsUserInformation=RsUserInformation.add(userId:5,type:"info1");
-        
+
         //remove this objects
         assertEquals(1,SearchQuery.count());
         assertEquals(1,RsUserInformation.count());
@@ -399,5 +423,25 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals("DeletedObjects",doRequestCallParams.params.searchIn);
         assertEquals("rsUpdatedAt:[${lastDeletedObject.rsUpdatedAt} TO *] ",doRequestCallParams.params.query);
         assertEquals(0,doRequestCallParams.params.offset);
+
+
+   }
+   public void testSynchorinzeDeletedObjectsScript_DoesNotThrowExceptionButLogs()
+   {
+        initializeScriptManager();
+        ScriptManagerForTest.addScript("synchronizeDeletedObjects");
+
+        def ds=HttpDatasource.add(name:"ross1");
+        assertFalse(ds.hasErrors());
+
+        //test that exception is not thrown, but rather logged
+        HttpDatasource.metaClass.doRequest= { String url, Map params ->
+             throw new Exception("testexception");
+        }
+
+        def scriptResult=ScriptManagerForTest.runScript("synchronizeDeletedObjects",[:]);
+        println "synchronizeDeletedObjects result"+scriptResult.replaceAll("<br>","\n");
+        assertTrue(scriptResult.indexOf("Error")>=0);
+        assertTrue(scriptResult.indexOf("testexception")>=0);
    }
 }

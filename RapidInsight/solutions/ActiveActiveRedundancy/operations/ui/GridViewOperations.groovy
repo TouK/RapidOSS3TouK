@@ -1,4 +1,4 @@
-package search
+package ui
 /**
  * Created by IntelliJ IDEA.
  * User: admin

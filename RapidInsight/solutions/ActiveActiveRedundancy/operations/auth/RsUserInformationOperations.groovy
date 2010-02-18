@@ -1,4 +1,4 @@
-package search
+package auth
 /**
  * Created by IntelliJ IDEA.
  * User: admin

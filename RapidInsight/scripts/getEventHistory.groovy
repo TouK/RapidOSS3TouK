@@ -47,7 +47,7 @@ def historicalEvents = RsHistoricalEvent.getPropertyValues(eventQuery, ["name", 
 def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 builder.data() {
-    historicalEvents.each {RsHistoricalEvent historicalEvent ->
+    historicalEvents.each {historicalEvent ->
         def start = formatter.format(new Timestamp(historicalEvent.createdAt)) + " GMT";
         def end = formatter.format(new Timestamp(historicalEvent.clearedAt)) + " GMT";
         //if end < start then graph gives error
@@ -59,4 +59,4 @@ builder.data() {
         builder.event(title: title, start: start, end: end, isDuration: "true", historicalEvent.name)
     }
 }
-web.render(contentType: 'text/xml', text: sw.toString())
+return sw.toString();

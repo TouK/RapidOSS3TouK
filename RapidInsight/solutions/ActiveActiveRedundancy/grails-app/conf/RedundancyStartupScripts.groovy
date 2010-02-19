@@ -22,6 +22,6 @@
  * Date: Dec 4, 2008
  * Time: 10:20:39 AM
  */
-class AddonStartupScripts {
+class RedundancyStartupScripts {
     def static scripts = ["createRedundancyDefaults"];
 }

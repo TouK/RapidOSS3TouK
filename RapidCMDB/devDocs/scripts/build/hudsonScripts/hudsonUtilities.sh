@@ -262,7 +262,8 @@ generateTestDomainClasses() {
     generatedModelsDir=RapidSuite/generatedModels
     if [ -d $generatedModelsDir ]
       then
-          mv $generatedModelsDir/grails-app/domain/*.groovy RapidSuite/grails-app/domain
+          echo "Not copying generatedModels"
+          #mv $generatedModelsDir/grails-app/domain/*.groovy RapidSuite/grails-app/domain
       else
           echo "Test models couldnot be generated!!!!"
     fi

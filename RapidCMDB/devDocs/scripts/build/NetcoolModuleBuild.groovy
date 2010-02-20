@@ -77,9 +77,7 @@ class NetcoolModuleBuild extends Build {
         }
         copyDependentJars("$rapidSuiteDir/lib");
 
-        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
-            ant.fileset(file: "${env.rapid_netcool}/applications/RapidInsightForNetcool/grails-app/domain/*.groovy");
-        }
+
         ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_netcool/applications/RapidInsightForNetcool") {
                 ant.exclude(name: "**/netcoolDataGenerator.groovy")

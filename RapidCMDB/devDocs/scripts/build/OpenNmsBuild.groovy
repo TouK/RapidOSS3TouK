@@ -62,9 +62,6 @@ class OpenNmsBuild extends Build{
         ant.copy(todir: "${rapidSuiteDir}/src/groovy") {
             ant.fileset(dir: "$env.rapid_opennms/src/groovy")
         }
-        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
-            ant.fileset(file: "${env.rapid_opennms}/applications/RapidInsight/grails-app/domain/*.groovy");
-        }
         ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_opennms/applications/RapidInsight")
         }

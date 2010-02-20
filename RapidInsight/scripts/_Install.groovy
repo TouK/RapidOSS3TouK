@@ -59,11 +59,6 @@ Ant.move(toDir:"${baseDir}/grails-app/views")
 {
     Ant.fileset(dir:"${baseDir}/plugins/${pluginName}/grails-app/views")
 }
-Ant.mkdir(dir : "${baseDir}/generatedModels/grails-app/domain");
-Ant.copy(toDir:"${baseDir}/generatedModels/grails-app/domain")
-{
-    Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/**");
-}
 Ant.move(toDir:"${baseDir}/grails-app/domain")
 {
     Ant.fileset(file:"${baseDir}/plugins/${pluginName}/grails-app/domain/**");

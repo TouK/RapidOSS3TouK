@@ -49,9 +49,6 @@ class RivermuseBuild extends Build{
                 ant.fileset(dir: "$env.rapid_rivermuse/test")
             }
         }
-        ant.copy(toDir: "${rapidSuiteDir}/generatedModels/grails-app/domain") {
-            ant.fileset(file: "${env.rapid_rivermuse}/applications/RapidInsight/grails-app/domain/*.groovy");
-        }
         ant.copy(todir: rapidSuiteDir) {
             ant.fileset(dir: "$env.rapid_rivermuse/applications/RapidInsight")
         }

@@ -172,7 +172,7 @@ class BootStrap {
     def corrrectModelData()
     {
         log.warn(logPrefix+"Checking Reload Is Done and Correcting Model Data ");
-        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep(ApplicationHolder.application.config.toProperties()["rapidCMDB.temp.dir"]);
     }
 
     def registerDefaultDatasources()

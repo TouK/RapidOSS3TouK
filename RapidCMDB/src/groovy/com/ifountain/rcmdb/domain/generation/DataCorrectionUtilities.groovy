@@ -32,6 +32,7 @@ import org.codehaus.groovy.grails.compiler.injection.ClassInjector
 import org.apache.commons.lang.StringUtils
 import org.codehaus.groovy.control.MultipleCompilationErrorsException
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa sener
@@ -41,6 +42,8 @@ import org.codehaus.groovy.control.MultipleCompilationErrorsException
  */
 class DataCorrectionUtilities
 {
+    static def COPY_GENERATED_MODELS_MARK_FILE_CONTENT="This file is a mark to copyGeneratedModels. It will be removed after dataCorrectionAfterReloadStep is done";
+
     public static void dataCorrectionBeforeReloadStep(String baseDir, String tempBaseDir)
     {
         def oldDomainClasses = [:]
@@ -86,8 +89,16 @@ class DataCorrectionUtilities
                 deleteAllInstances(oldDomainClass.clazz);
             }
         }
-    }
 
+        if (tempModelDirFile.exists()) {
+            def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile(tempBaseDir);
+            copyGeneratedModelsMarkFile.setText(COPY_GENERATED_MODELS_MARK_FILE_CONTENT);
+        }
+    }
+    private static File getCopyGeneratedModelsMarkFile(String tempBaseDir)
+    {
+        return new File("${tempBaseDir}/copyGeneratedModels.mark");
+    }
     private static void createModelActions(String baseDir, List domainClassesWillBeGenerated, Map oldDomainClasses) {
         ModelAction.removeAll();
         PropertyAction.removeAll();
@@ -137,7 +148,7 @@ class DataCorrectionUtilities
         }]);
     }
 
-    public static void dataCorrectionAfterReloadStep()
+    public static void dataCorrectionAfterReloadStep(String tempBaseDir)
     {
         def domainClasses = [:];
         ApplicationHolder.application.getDomainClasses().each {
@@ -239,6 +250,12 @@ class DataCorrectionUtilities
                 }
             }
         }
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile(tempBaseDir);
+        if(copyGeneratedModelsMarkFile.exists())
+        {
+            copyGeneratedModelsMarkFile.delete();
+        }
+
     }
 }
 //for testing

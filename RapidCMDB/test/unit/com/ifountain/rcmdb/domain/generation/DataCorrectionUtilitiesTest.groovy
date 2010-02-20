@@ -46,6 +46,11 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         DataCorrectionUtilitiesClassLoaderFactory.setMockClassLoader(Thread.currentThread().getContextClassLoader());
     }
 
+    private File getCopyGeneratedModelsMarkFile()
+    {
+        return new File("${temp_directory}/copyGeneratedModels.mark");
+    }
+    
     public void testBeforeReloadWithModelDeleteAllInstances()
     {
         String model1Name = "Class1";
@@ -71,6 +76,10 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertNull(oldClass1.'get'(prop1: "obj1"));
         assertTrue(new File(base_directory + "/operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
+        
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+        assertTrue(copyGeneratedModelsMarkFile.exists());
+        assertEquals(DataCorrectionUtilities.COPY_GENERATED_MODELS_MARK_FILE_CONTENT,copyGeneratedModelsMarkFile.getText());
     }
 
     public void testBeforeReloadWithNewModel()
@@ -93,6 +102,10 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         DataCorrectionUtilities.dataCorrectionBeforeReloadStep(base_directory, temp_directory);
         assertTrue(new File(base_directory + "/operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
+
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+        assertTrue(copyGeneratedModelsMarkFile.exists());
+        assertEquals(DataCorrectionUtilities.COPY_GENERATED_MODELS_MARK_FILE_CONTENT,copyGeneratedModelsMarkFile.getText());
 
        
     }
@@ -126,10 +139,11 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
         parentClass1 = loadGrailsDomainClass(modelParent, temp_directory);
         initialize([parentClass1, newChildClass1, ModelAction, PropertyAction], [], true)
-        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep(temp_directory);
 
         def parentClassInstance1AfterReload = parentClass1.'get'(prop1: "parentInstance1");
         assertEquals(parentClassInstance1.id, parentClassInstance1AfterReload.id);
+
     }
 
 
@@ -160,6 +174,10 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertFalse(new File(base_directory + "/grails-app/views/${model1Name.substring(0, 1).toLowerCase() + model1Name.substring(1)}/list.gsp").exists());
         assertFalse(new File(base_directory + "/operations/${model1Name}${ModelUtils.OPERATIONS_CLASS_EXTENSION}.groovy").exists());
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
+
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+        assertFalse(copyGeneratedModelsMarkFile.exists());
+
     }
 
     public void testBeforeReloadWithPropertyAction()
@@ -193,6 +211,11 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertEquals(1, PropertyAction.count());
         assertEquals(PropertyAction.SET_DEFAULT_VALUE, PropertyAction.list()[0].action);
         assertEquals(prop2.name, PropertyAction.list()[0].propName);
+
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+       assertTrue(copyGeneratedModelsMarkFile.exists());
+       assertEquals(DataCorrectionUtilities.COPY_GENERATED_MODELS_MARK_FILE_CONTENT,copyGeneratedModelsMarkFile.getText());
+
     }
 
     public void testAfterReloadWithPropertyAction()
@@ -228,7 +251,12 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         gcl = new GroovyClassLoader(this.class.classLoader);
         def newClass1 = loadGrailsDomainClass(model1Name, temp_directory);
         this.initialize([newClass1, ModelAction, PropertyAction], [], true)
-        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
+
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+        assertTrue(copyGeneratedModelsMarkFile.exists());
+        assertEquals(DataCorrectionUtilities.COPY_GENERATED_MODELS_MARK_FILE_CONTENT,copyGeneratedModelsMarkFile.getText());
+
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep(temp_directory);
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
         assertEquals(0, PropertyAction.count());
         println newClass1.search("prop1:prop1Value1").results.size();
@@ -238,6 +266,8 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         assertEquals(new Long(1), instance.prop2);
         instance = newClass1.'get'(prop1: "prop1Value3");
         assertEquals(new Long(1), instance.prop2);
+
+        assertFalse(copyGeneratedModelsMarkFile.exists());
     }
 
     public void testAfterReloadWithPropertyActionRelatedOfParentModel()
@@ -278,7 +308,12 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         def newParentClass1 = loadGrailsDomainClass(modelParent, temp_directory);
         def newChildClass1 = loadGrailsDomainClass(modelChild1, temp_directory);
         this.initialize([newParentClass1, newChildClass1, ModelAction, PropertyAction], [], true)
-        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
+
+        def copyGeneratedModelsMarkFile=getCopyGeneratedModelsMarkFile();
+        assertTrue(copyGeneratedModelsMarkFile.exists());
+        assertEquals(DataCorrectionUtilities.COPY_GENERATED_MODELS_MARK_FILE_CONTENT,copyGeneratedModelsMarkFile.getText());
+
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep(temp_directory);
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
         assertEquals(0, PropertyAction.count());
         assertEquals(3, newChildClass1.'list'().size());
@@ -291,6 +326,8 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         instance = newChildClass1.'get'(prop1: "prop1Value3");
         assertEquals(new Long(1), instance.prop2);
         assertEquals("prop3Value3", instance.prop3);
+
+        assertFalse(copyGeneratedModelsMarkFile.exists());
     }
 
 
@@ -341,7 +378,7 @@ class DataCorrectionUtilitiesTest extends RapidCmdbWithCompassTestCase
         def newClass1 = loadGrailsDomainClass(modelName1, temp_directory);
         def newClass2 = loadGrailsDomainClass(modelName2, temp_directory);
         this.initialize([newClass1, newClass2, ModelAction, PropertyAction], [], true)
-        DataCorrectionUtilities.dataCorrectionAfterReloadStep();
+        DataCorrectionUtilities.dataCorrectionAfterReloadStep(temp_directory);
         assertTrue(ModelAction.search("alias:*").results.isEmpty());
         assertEquals(0, PropertyAction.count());
         class1Instance1 = newClass1.'get'(prop1: "class1Instance1");

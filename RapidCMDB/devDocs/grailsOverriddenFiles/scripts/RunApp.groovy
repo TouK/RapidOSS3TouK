@@ -162,8 +162,14 @@ def loadOldSourceFileConfiguration()
 target ('default': "Run's a Grails application in Jetty") {
     def oldModelDir = new File("${grailsHome}/RapidSuite/grails-app/domain")
     def tempModelDir = new File("${grailsHome}/RapidSuite/generatedModels/grails-app/domain")
-    if(tempModelDir.exists()){
+    def copyGeneratedModelsMarkFile=new File("${grailsHome}/RapidSuite/generatedModels/copyGeneratedModels.mark");
+    if(tempModelDir.exists() && copyGeneratedModelsMarkFile.exists()){
+        println "Found copyGeneratedModelsMarkFile , copying generatedModels to grails-app/domain."
         FileUtils.copyDirectory(tempModelDir, oldModelDir);
+    }
+    else
+    {
+        println "Not found copyGeneratedModelsMarkFile, No need to copy generatedModels."
     }
     def oldSourceFileConfiguration = loadOldSourceFileConfiguration();
     def newSourceFileConfiguration = getSourceFileList();

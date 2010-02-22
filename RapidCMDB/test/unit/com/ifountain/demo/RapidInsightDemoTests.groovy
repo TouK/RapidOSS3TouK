@@ -39,24 +39,28 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
 
         //since we are logged in we no longer get request with credentials
         def urlsToCheck=[:];
-        urlsToCheck["index/events.gsp"]='<li class="selected"><a href="/RapidSuite/index/events.gsp">';
-        urlsToCheck["index/inventory.gsp"]='<li class="selected"><a href="/RapidSuite/index/inventory.gsp">';
+        urlsToCheck["index/events.gsp"]=[expectedOutput:'<li class="selected"><a href="/RapidSuite/index/events.gsp">'];
+        urlsToCheck["index/inventory.gsp"]=[expectedOutput:'<li class="selected"><a href="/RapidSuite/index/inventory.gsp">'];
         
-        urlsToCheck["getEventDetails.gsp?name=testevent"]='does not exist';
-        urlsToCheck["getObjectDetails.gsp?name=testobject"]='does not exist';
-        urlsToCheck["search?offset=0&sort=id&order=asc&max=100&searchIn=RsEvent"]='<Objects total=';
-        urlsToCheck["search?offset=0&sort=id&order=asc&max=100&searchIn=RsTopologyObject"]='<Objects total=';
+        urlsToCheck["getEventDetails.gsp"]=[expectedOutput:'does not exist',params:[name:"testevent"]];
+        urlsToCheck["getObjectDetails.gsp"]=[expectedOutput:'does not exist',params:[name:"testobject"]];
+        urlsToCheck["search"]=[expectedOutput:'<Objects total=',params:[offset:"0",sort:"id",order:"asc",max:"100",searchIn:"RsEvent"]];
+        urlsToCheck["search"]=[expectedOutput:'<Objects total=',params:[offset:"0",sort:"id",order:"asc",max:"100",searchIn:"RsTopologyObject"]];
         
-        urlsToCheck["smartsAdmin.gsp"]='adminLayout';
-        urlsToCheck["script/list"]='adminLayout';
+        urlsToCheck["smartsAdmin.gsp"]=[expectedOutput:'adminLayout'];
+        urlsToCheck["script/list"]=[expectedOutput:'adminLayout'];
 
-        urlsToCheck.each{ url , keyToCheck ->
-              def urlResponse=getUrlResponse(con,url,[:]);
+        urlsToCheck.each{ url , urlData ->
+              def params=urlData.params;
+              if(params == null ) params = [:];
+              def expectedOutput=urlData.expectedOutput;
+
+              def urlResponse=getUrlResponse(con,url,params);
               //println urlResponse
 
               assertFalse("${url} not signed in",urlResponse.indexOf('auth/signIn')>0);
               assertFalse("${url} have exception",urlResponse.indexOf('Exception')>0);
-              assertTrue("${url} does not contain ${keyToCheck}",urlResponse.indexOf(keyToCheck)>=0);
+              assertTrue("${url} does not contain ${expectedOutput}",urlResponse.indexOf(expectedOutput)>=0);
         }
 
     }
@@ -68,30 +72,12 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
     }
     protected def getUrlResponse(con,url,params)
     {
-        def requestParams=getRequestParamsFromUrl(url);
-        requestParams.putAll(params);
-        
         println '--------------------------------------------------------'
-        println "requesting url ${url} with params ${requestParams}"
-        DoRequestAction action=new DoRequestAction(logger,url,requestParams,DoRequestAction.GET);
+        println "requesting url ${url} with params ${params}"
+        DoRequestAction action=new DoRequestAction(logger,url,params,DoRequestAction.GET);
         action.execute (con);
         return action.getResponse();
     }
-    protected def getRequestParamsFromUrl(url)
-    {
-        def params=[:];
-        def queryParts=url.toString().substringAfter("?").split("&");
-        queryParts.each{ queryPart ->
-            def subParts=queryPart.split("=");
-            if(subParts.size()==2)
-            {
-                params[subParts[0]]=subParts[1];                
-            }
-        }
-
-        return params;
-    }
-
     protected HttpConnectionImpl getConnection()
     {
         HttpConnectionImpl con=new HttpConnectionImpl();

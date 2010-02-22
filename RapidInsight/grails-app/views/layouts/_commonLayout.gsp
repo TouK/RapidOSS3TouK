@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<%@ page import="auth.Role" %><script type="text/javascript">
 //Below template have the code to generate username , user groups and roles in javascript
 
 window.currentUserName="${session.username}";
@@ -30,5 +30,8 @@ window.currentUserHasGroup=function(groupName)
 window.currentUserHasRole=function(roleName)
 {
     return window.currentUserRoles[roleName]?true:false;
+}
+YAHOO.rapidjs.component.search.ViewBuilder.prototype.publicViewCreationAllowed = function(){
+    return window.currentUserHasRole('${Role.ADMINISTRATOR}')
 }
 </script>

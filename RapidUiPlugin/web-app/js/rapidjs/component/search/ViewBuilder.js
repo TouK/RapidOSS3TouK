@@ -54,7 +54,11 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var inputs = nameView.getElementsByTagName("input");
         this.nameInput = inputs[0];
         this.isPublicInput = inputs[1];
-
+        if (!this.publicViewCreationAllowed()) {
+            var tds = nameView.getElementsByTagName('td')
+            YAHOO.util.Dom.setStyle(tds[2], 'display', 'none')
+            YAHOO.util.Dom.setStyle(tds[3], 'display', 'none')
+        }
         var columnView = dh.append(wrp, {tag:'div',
             html:'<table><tbody>' +
                  '<tr><td><div class="rcmdb-searchgrid-view-text">Available Fields:</div></td><td></td><td><div class="rcmdb-searchgrid-view-text">Grid Columns:</div></td><td></td></tr>' +
@@ -582,5 +586,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
             this.downButton.set('disabled', true);
             this.bottomButton.set('disabled', true);
         }
+    },
+    publicViewCreationAllowed: function() {
+        return true;
     }
 });

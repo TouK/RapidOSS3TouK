@@ -35,6 +35,7 @@ import com.ifountain.rcmdb.domain.statistics.OperationStatistics
 import com.ifountain.rcmdb.domain.DomainLockManager
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.rcmdb.domain.cache.IdCache
+import com.ifountain.rcmdb.domain.lock.LockStrategyImpl
 
 /**
 * Created by IntelliJ IDEA.

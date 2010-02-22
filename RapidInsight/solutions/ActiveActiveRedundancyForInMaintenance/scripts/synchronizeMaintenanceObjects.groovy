@@ -12,6 +12,7 @@ scriptRunParams.add(["modelName":"RsInMaintenanceSchedule"])
 // CONFIGURATION ENDS
 // ---------------------------------------
 
+logger.warn("synchronizeMaintenanceObjects starts");
 def OUTPUT=" Model Resutls : ";
 
 scriptRunParams.each{ runParams ->
@@ -21,4 +22,5 @@ scriptRunParams.each{ runParams ->
 	OUTPUT+="<br> ${result}"
 }
 
+logger.warn("synchronizeMaintenanceObjects ends");
 return OUTPUT;

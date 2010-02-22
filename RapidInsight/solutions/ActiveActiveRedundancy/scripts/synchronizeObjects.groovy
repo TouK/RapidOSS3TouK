@@ -11,7 +11,7 @@ redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 modelName=params.modelName;
 withRelations=params.withRelations?true:false;
 
-logger.warn("---------------------------------------------------")
+logger.info("---------------------------------------------------")
 logger.info("Starting Syncronization ${modelName} ******************************")
 OUTPUT=" Starting Syncronization ${modelName} ";
 

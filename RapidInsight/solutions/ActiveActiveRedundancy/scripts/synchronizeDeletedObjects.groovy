@@ -11,13 +11,13 @@ redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 modelName="DeletedObjects";
 
 
-logger.warn("---------------------------------------------------")
+logger.info("---------------------------------------------------")
 logger.info("Starting Syncronization ${modelName} ******************************")
 OUTPUT=" Starting Syncronization ${modelName} ";
 
 objectCountPerRequest=100;
 
-//a main try statement , to put isRemote to current context, will be removed in finally 
+//a main try statement , to put isRemote to current context, will be removed in finally
 try{
 ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 
@@ -30,54 +30,54 @@ if(datasources.size()==0)
 }
 
 //For each server , process changed objects of the model
-datasources.each{ ds ->	
+datasources.each{ ds ->
 	logger.info("Syncronization with ${ds.name} starts *******");
-	
+
 	eventUpdatedAtKey="${modelName}_${ds.name}_UpdatedAt";
 	eventUpdatedAt=0;
-	
+
 	//lookup event
 	def eventLookup=RsLookup.get(name:eventUpdatedAtKey);
 	if(eventLookup!=null)
 	{
 		eventUpdatedAt=eventLookup.value;
 	}
-	
-	
+
+
 	def requestParams=[:];
 	requestParams.login="rsadmin";
-	requestParams.password="changeme";        
+	requestParams.password="changeme";
 	requestParams.format="xml";
 	requestParams.sort="rsUpdatedAt";
 	requestParams.order="asc";
 	requestParams.searchIn=modelName;
 	requestParams.max=objectCountPerRequest;
 	requestParams.query="rsUpdatedAt:[${eventUpdatedAt} TO *] ";
-	
-	
-	
+
+
+
 	try{
 			//first offset is 0 , nextOffset is 100
 			def nextOffset=0;
-			requestParams.offset=nextOffset;		
+			requestParams.offset=nextOffset;
 			nextOffset+=objectCountPerRequest;
-			
-	
-			def totalObjectCount=processRequest(ds,requestParams);		
+
+
+			def totalObjectCount=processRequest(ds,requestParams);
 			logger.info("${totalObjectCount} total objects changed from ${eventUpdatedAt}");
 			def syncFinished=(nextOffset>totalObjectCount);
-			
-			
+
+
 			while(! IS_STOPPED() && !syncFinished)
 			{
 				requestParams.offset=nextOffset;
 				nextOffset+=objectCountPerRequest;
 				processRequest(ds,requestParams);
-				
-				syncFinished=(nextOffset>totalObjectCount);			
+
+				syncFinished=(nextOffset>totalObjectCount);
 			}
-			logger.info("Syncronization with ${ds.name} ends *******");			
-	        
+			logger.info("Syncronization with ${ds.name} ends *******");
+
 	}
 	catch(e)
 	{
@@ -103,27 +103,27 @@ def processRequest(ds,requestParams)
 {
 	    logger.info("Requestinq ${requestParams.searchIn} , query : ${requestParams.query} , offset:${requestParams.offset} , max : ${requestParams.max}");
 	    def searchUrl="script/run/updatedObjects";
-	    
-	    
-		def xmlResult=ds.doRequest(searchUrl,requestParams);		
+
+
+		def xmlResult=ds.doRequest(searchUrl,requestParams);
 		if(xmlResult.indexOf("<Errors>")>=0)
-		{	
+		{
 			logger.warn("${modelName}:  Xml has error : ${xmlResult.toString()}");
 			OUTPUT+= "<br> ${modelName}:  Xml has error : ${xmlResult.toString()}"
 			return 0;
 		}
-	
+
         def xmlRoot=new XmlSlurper().parseText(xmlResult);
         def xmlObjects=xmlRoot.Object;
 
         def totalObjectCount=Long.parseLong(xmlRoot.@total.toString());
         logger.info(" Will process ${xmlObjects.size()} objects after offset ${requestParams.offset}");
-        
-        	
+
+
         xmlObjects.each{ xmlObject ->
                 def props=[:];
                 props.putAll(xmlObject.attributes());
-                
+
                 def modelClass=application.RapidApplication.getModelClass(props.modelName);
                 //get the object and delete it
                 def object=modelClass.searchEvery(props.searchQuery)[0];
@@ -139,20 +139,20 @@ def processRequest(ds,requestParams)
                 		logger.debug("Successfuly deleted object : ${modelClass}, ${props.searchQuery}");
                 	}
                 }
-                
+
         }
-        
-        //save the state     
+
+        //save the state
         if(xmlObjects.size()>0)
         {
-//        	since sorted by rsUpdatedAt looking at the last record updated at is enough			
+//        	since sorted by rsUpdatedAt looking at the last record updated at is enough
         	def eventLastUpdatedAt=xmlObjects[xmlObjects.size()-1].@rsUpdatedAt;
 			logger.info("Saving RsLookup ${[name:eventUpdatedAtKey,value:eventLastUpdatedAt]} ")
         	RsLookup.add([name:eventUpdatedAtKey,value:eventLastUpdatedAt]);
-        	
+
         }
         logger.info(" Processed ${xmlObjects.size()} objects after offset ${requestParams.offset}");
-        
+
         return totalObjectCount;
 }
 

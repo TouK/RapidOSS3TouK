@@ -19,7 +19,9 @@ scriptRunParams.add(["modelName":"auth.RsUserInformation","withRelations":"true"
 // CONFIGURATION ENDS
 // ---------------------------------------
 
-def OUTPUT=" Model Resutls : ";
+
+logger.warn("synchronizeUiObjects starts");
+def OUTPUT=" Model Results : ";
 
 scriptRunParams.each{ runParams ->
 
@@ -27,5 +29,7 @@ scriptRunParams.each{ runParams ->
 	
 	OUTPUT+="<br> ${result}"
 }
+
+logger.warn("synchronizeUiObjects ends");
 
 return OUTPUT;

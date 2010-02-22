@@ -165,7 +165,7 @@ runGrailsTests() {
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
     chmod +x rs.sh
 
-    sed -i "s/-Xmx512m/-Xmx2048m/g" rs.sh
+    sed -i "s/-Xmx1024m/-Xmx2048m/g" rs.sh
     sed -i "s/MaxPermSize=128m/MaxPermSize=256m/g" rs.sh
 
     cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf

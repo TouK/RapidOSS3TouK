@@ -5,6 +5,7 @@ import com.ifountain.core.connection.ConnectionParam
 import connection.HttpConnectionImpl
 import datasource.DoRequestAction
 import org.apache.log4j.Logger
+import com.ifountain.rcmdb.util.RapidStringUtilities
 
 /**
 * Created by IntelliJ IDEA.
@@ -24,6 +25,8 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
     
     public void testDemoRunsNormally()
     {
+        RapidStringUtilities.registerStringUtils();
+        
         def con=getConnection();
 
         def nonLoginResponse=getUrlResponse(con,'',[:]);
@@ -65,11 +68,28 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
     }
     protected def getUrlResponse(con,url,params)
     {
+        def requestParams=getRequestParamsFromUrl(url);
+        requestParams.putAll(params);
+        
         println '--------------------------------------------------------'
-        println "requesting url ${url} with params ${params}"
-        DoRequestAction action=new DoRequestAction(logger,url,params,DoRequestAction.GET);
+        println "requesting url ${url} with params ${requestParams}"
+        DoRequestAction action=new DoRequestAction(logger,url,requestParams,DoRequestAction.GET);
         action.execute (con);
         return action.getResponse();
+    }
+    protected def getRequestParamsFromUrl(url)
+    {
+        def params=[:];
+        def queryParts=url.toString().substringAfter("?").split("&");
+        queryParts.each{ queryPart ->
+            def subParts=queryPart.split("=");
+            if(subParts.size()==2)
+            {
+                params[subParts[0]]=subParts[1];                
+            }
+        }
+
+        return params;
     }
 
     protected HttpConnectionImpl getConnection()

@@ -4,13 +4,13 @@ import datasource.*;
 // ---------------------------------------
 // CONFIGURATION STARTS
 
-def ross_servers=[];
-ross_servers.add([name:"ross_1",baseUrl:"http://192.168.1.107:12222/RapidSuite/"]);
+def redundancy_servers=[];
+redundancy_servers.add([name:"redundancy_1",baseUrl:"http://192.168.1.107:12222/RapidSuite/"]);
 
 // CONFIGURATION ENDS
 // ---------------------------------------
 
-ross_servers.each{ props -> 
+redundancy_servers.each{ props -> 
 	props.minTimeout=60;
 	props.maxTimeout=120;
 	def httpConn = HttpConnection.add(props)

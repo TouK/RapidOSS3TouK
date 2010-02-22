@@ -306,7 +306,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
              doRequestCallParams.params=params;
              return doRequestResultFromRemoteServer;
         }
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
         //TestLogUtils.enableLogger();
 
@@ -345,7 +345,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
              doRequestCallParams.params=params;
              return doRequestResultFromRemoteServer;
         }
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
 
         //test with some deleted objects
@@ -390,7 +390,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals("Delete is remote no DeletedObjects should be added",0,DeletedObjects.count());
 
         assertEquals(1,RsLookup.count());
-        def lookup=RsLookup.get(name:"DeletedObjects_ross1_UpdatedAt");
+        def lookup=RsLookup.get(name:"DeletedObjects_redundancy1_UpdatedAt");
         assertNotNull (lookup);
         assertEquals(lastDeletedObjectUpdatedAt.toString(),lookup.value);
 
@@ -415,7 +415,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         initializeScriptManager();
         ScriptManagerForTest.addScript("synchronizeDeletedObjects");
 
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
 
         //test that exception is not thrown, but rather logged
@@ -443,7 +443,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
              doRequestCallParams.params=params;
              return doRequestResultFromRemoteServer;
         }
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
 
 
@@ -501,7 +501,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         }
 
 
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
         
         //TestLogUtils.enableLogger ();
@@ -539,7 +539,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         
 
         assertEquals(1,RsLookup.count());
-        def lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        def lookup=RsLookup.get(name:"search.SearchQueryGroup_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
 
 
@@ -573,7 +573,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
-        lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        lookup=RsLookup.get(name:"search.SearchQueryGroup_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
 
 
@@ -607,7 +607,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
-        lookup=RsLookup.get(name:"search.SearchQueryGroup_ross1_UpdatedAt");
+        lookup=RsLookup.get(name:"search.SearchQueryGroup_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
         
    }
@@ -623,7 +623,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         HttpDatasource.metaClass.doRequest= { String url, Map params ->
              return doRequestResultFromRemoteServer;
         }
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
 
         //TEST RELATION ADD FOR EXISTING OBJECTS
@@ -768,7 +768,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         HttpDatasource.metaClass.doRequest= { String url, Map params ->
              return doRequestResultFromRemoteServer;
         }
-        def ds=HttpDatasource.add(name:"ross1");
+        def ds=HttpDatasource.add(name:"redundancy1");
         assertFalse(ds.hasErrors());
 
         def user=RsUser.add(username:"user1",passwordHash:"");

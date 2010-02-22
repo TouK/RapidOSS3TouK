@@ -22,11 +22,11 @@ try{
 ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 
 
-def datasources=HttpDatasource.searchEvery("name:ross*");
+def datasources=HttpDatasource.searchEvery("name:redundancy*");
 if(datasources.size()==0)
 {
-	logger.warn("${modelName} : Error : no ross server is defined");
-    return "${modelName}: Error : no ross server is defined";
+	logger.warn("${modelName} : Error : no redundancy server is defined");
+    return "${modelName}: Error : no redundancy server is defined";
 }
 
 //For each server , process changed objects of the model

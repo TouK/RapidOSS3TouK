@@ -25,7 +25,7 @@ def scriptsToAdd=[]
 
                   
 //connector and connection scripts
-scriptsToAdd.add([name:"createROSSConnections",logFileOwn:true])
+scriptsToAdd.add([name:"createRedundancyConnections",logFileOwn:true])
 
 
 //synchronization scripts

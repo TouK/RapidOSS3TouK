@@ -70,6 +70,11 @@ class AllTestTestUtils {
             }
 
         }
+        
+        println "------------------------------------------ Hudson Order"
+        testClassNames.size().times{ println "${it} : ${testClassNames[it]}" };
+        println "------------------------------------------ Hudson Order Ended "
+        
         //run them
         TestSuite suite = new TestSuite();
         testClassNames.each{ className ->

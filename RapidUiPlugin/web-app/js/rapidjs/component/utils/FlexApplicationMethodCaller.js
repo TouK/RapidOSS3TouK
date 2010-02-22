@@ -59,10 +59,12 @@ YAHOO.rapidjs.component.FlexApplicationMethodCaller.prototype =
 							<param name='allowScriptAccess' value='always' /> \
 							<param name='swliveconnect' value='true' /> \
 							<param value='Transparent' name='wmode'/> \
+                            <param value='appId=" + this.flexObjectId+"' name='flashvars'/> \
 							<embed src='"+this.swfUrl+"' id='"+this.flexEmbedId+"' quality='high' \
 								width='100%' height='100%' name='"+this.flexEmbedId+"' align='middle' \
 								play='true'  \
 								loop='false' \
+                                flashvars='appId=" + this.flexObjectId+"' \
 								quality='high' \
 								swliveconnect='true' \
 								wmode = 'Transparent' \

@@ -66,8 +66,6 @@ public class DoRequestAction implements Action {
         }
         else
         {
-            println completeUrl
-            println params
             if(username != null){
                 response =  conn.getHttpConnection().doGetWithBasicAuth(completeUrl, username, password, params);
             }

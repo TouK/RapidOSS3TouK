@@ -221,6 +221,7 @@ class RapidInsightBuild extends Build {
     }
 
     def makeWindowsEnterprise() {
+        copyCommonEnterpriseFiles();
         def versionDate = getVersionWithDate();
         ant.unzip(src: "${env.distribution}/ROSS_Windows$versionDate" + ".zip", dest: env.distribution + "/WEnt");
         ant.delete(file: env.distribution + "/WEnt/RapidServer/licenses/RapidOSSCommunityLicense.txt");
@@ -231,12 +232,19 @@ class RapidInsightBuild extends Build {
     }
 
     def makeUnixEnterprise() {
+        copyCommonEnterpriseFiles();
         def versionDate = getVersionWithDate();
         ant.unzip(src: "${env.distribution}/ROSS_Unix$versionDate" + ".zip", dest: env.distribution + "/UEnt");
         ant.delete(file: env.distribution + "/UEnt/RapidServer/licenses/RapidOSSCommunityLicense.txt");
         ant.copy(file: "$env.rapid_cmdb_cvs/licenses/IFountain End User License Agreement.pdf", toDir: env.distribution + "/UEnt/RapidServer/licenses", overwrite: true);
         ant.zip(destfile: "${env.distribution}/ROSSE_Unix$versionDate" + ".zip") {
             ant.zipfileset(dir: "$env.distribution/UEnt")
+        }
+    }
+
+    def copyCommonEnterpriseFiles() {
+        ant.copy(toDir: "${env.dist_rapid_suite}/web-app/images/rapidjs/component/fusionChart") {
+            ant.fileset(dir: "$env.licensed_artifacts/FusionCharts")
         }
     }
 
@@ -282,9 +290,6 @@ class RapidInsightBuild extends Build {
             ant.fileset(dir: "$env.rapid_ui/web-app") {
                 ant.exclude(name: "**/test/**")
             }
-        }
-        ant.copy(toDir: "${env.dist_rapid_suite}/web-app/images/rapidjs/component/fusionChart") {
-            ant.fileset(dir: "$env.licensed_artifacts/FusionCharts")
         }
         ant.copy(todir: "$env.dist_rapid_suite/grails-app", overwrite: true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app") {

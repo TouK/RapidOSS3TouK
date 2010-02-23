@@ -18,11 +18,8 @@ import org.apache.commons.io.FileUtils
 * Time: 1:58:23 PM
 * To change this template use File | Settings | File Templates.
 */
-class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
-     def RsMessageRule;
-     def RsMessageRuleOperations;
-     def MapGroup;
-     def MapGroupOperations;
+class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase{
+
      def SearchQuery;
      def SearchQueryOperations;
      def SearchQueryGroup;
@@ -50,8 +47,6 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         generateModelFilesForTest();
 
         gcl.addClasspath("${temp_model_directory}/domain/".toString());
-        RsMessageRule=gcl.loadClass("message.RsMessageRuleForRedundancy") ;
-        MapGroup=gcl.loadClass("ui.map.MapGroupForRedundancy") ;
         SearchQuery=gcl.loadClass("search.SearchQueryForRedundancy") ;
         SearchQueryGroup=gcl.loadClass("search.SearchQueryGroupForRedundancy") ;
         RsUserInformation=gcl.loadClass("auth.RsUserInformationForRedundancy") ;
@@ -60,9 +55,6 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         RsLookup=gcl.loadClass("RsLookup");
         DeletedObjects=gcl.loadClass("DeletedObjects");
 
-
-        RsMessageRuleOperations=gcl.parseClass(new File("${solutionPath}/operations/message/RsMessageRuleOperations.groovy"));
-        MapGroupOperations=gcl.parseClass(new File("${solutionPath}/operations/ui/map/MapGroupOperations.groovy"));
         SearchQueryOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryOperations.groovy"));
         SearchQueryGroupOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryGroupOperations.groovy"));
         RsUserInformationOperations=gcl.parseClass(new File("${solutionPath}/operations/auth/RsUserInformationOperations.groovy"));
@@ -70,10 +62,8 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
 
         redundancyUtility=gcl.parseClass(new File("${solutionPath}/operations/RedundancyUtility.groovy"));
 
-        initialize([RsMessageRule,MapGroup,SearchQuery,SearchQueryGroup,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
+        initialize([SearchQuery,SearchQueryGroup,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
 
-        CompassForTests.addOperationSupport(RsMessageRule, RsMessageRuleOperations);
-        CompassForTests.addOperationSupport(MapGroup, MapGroupOperations);
         CompassForTests.addOperationSupport(SearchQuery, SearchQueryOperations);
         CompassForTests.addOperationSupport(SearchQueryGroup, SearchQueryGroupOperations);
         CompassForTests.addOperationSupport(RsUserInformation, RsUserInformationOperations);
@@ -119,12 +109,14 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
             FileUtils.copyFileToDirectory(new File("${getWorkspacePath()}/RapidModules/RcmdbCommons/plugins/jsecurity-0.2.1/grails-app/domain/auth/RsUser.groovy"),new File("${temp_model_directory}/domain/auth"));
 
 
-            convertModelFileFromTempDir("RsMessageRule","${temp_model_directory}/domain/message/");
-            convertModelFileFromTempDir("MapGroup","${temp_model_directory}/domain/ui/map/");
+
             convertModelFileFromTempDir("SearchQuery","${temp_model_directory}/domain/search/");
             convertModelFileFromTempDir("SearchQueryGroup","${temp_model_directory}/domain/search/");
             convertModelFileFromTempDir("RsUserInformation","${temp_model_directory}/domain/auth/");
             convertModelFileFromTempDir("RsUser","${temp_model_directory}/domain/auth/");
+            
+            FileUtils.deleteDirectory(new File("${temp_model_directory}/domain/ui/"));
+            FileUtils.deleteDirectory(new File("${temp_model_directory}/domain/message/"));
 
             markerFile.setText(System.currentTimeMillis().toString());
         }
@@ -136,8 +128,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
          FileUtils.copyDirectory (new File("${solutionPath}/scripts"),new File(temp_scripts_directory));
 
          def scriptFile=new File("${temp_scripts_directory}/updatedObjects.groovy");
-         def scriptText=scriptFile.getText().replaceAll("RsMessageRule","RsMessageRuleForRedundancy");
-         scriptText=scriptText.replaceAll("RsUser;","RsUserForRedundancy;");
+         def scriptText=scriptFile.getText().replaceAll("RsUser;","RsUserForRedundancy;");         
          scriptText=scriptText.replaceAll("RsUserInformation","RsUserInformationForRedundancy");
          scriptFile.setText(scriptText);
 
@@ -184,88 +175,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
         ExpandoMetaClass.enableGlobally();
     }
-    public void testRedundancyUtility_SetsIsLocalPropertyAccordingToExecutionContext(){
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
-        assertFalse(rule1.hasErrors());
-        assertEquals(true,rule1.isLocal);
-
-        ExecutionContextManagerUtils.executeInContext ([:])
-        {
-            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
-            def rule2=null;
-            try{
-
-                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
-                assertFalse(rule2.hasErrors());
-                assertEquals(false,rule2.isLocal);
-
-                rule1.update(enabled:!(rule1.enabled));
-                assertFalse(rule1.hasErrors());
-                assertEquals(false,rule1.isLocal);
-            }
-            finally{
-               ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
-            }
-
-            rule1.update(enabled:!(rule1.enabled));
-            assertFalse(rule1.hasErrors());
-            assertEquals(true,rule1.isLocal);
-
-            rule2.update(enabled:!(rule2.enabled));
-            assertFalse(rule2.hasErrors());
-            assertEquals(true,rule1.isLocal);
-        }
-
-   }
-
-    public void testRedundancyUtility_OnlySavesADeletedObjectOnLocalDelete(){
-
-        ExecutionContextManagerUtils.executeInContext ([:])
-        {
-            def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
-            assertFalse(rule1.hasErrors());
-            rule1.remove();
-
-            assertEquals(0,RsMessageRule.count());
-            assertEquals(1,DeletedObjects.count());
-
-            def deletedObject1=DeletedObjects.list()[0];
-            assertEquals("message.RsMessageRuleForRedundancy",deletedObject1.modelName);
-            assertEquals(redundancyUtility.getKeySearchQueryForObject("message.RsMessageRuleForRedundancy",rule1),deletedObject1.searchQuery);
-            deletedObject1.remove();
-            assertEquals(0,DeletedObjects.count());
-
-            ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
-            def rule2=null;
-            try{
-
-                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
-                assertFalse(rule2.hasErrors());
-                rule2.remove();
-                assertEquals(0,RsMessageRule.count());
-
-                assertEquals(0,DeletedObjects.count());
-            }
-            finally{
-               ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
-            }
-        }
-
-   }
-
-   public void testRedundancyUtility_GetKeySearchQueryForObject()
-   {
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
-        assertFalse(rule1.hasErrors());
-
-        assertEquals("""destinationType:"(email)" searchQueryId:1 userId:2 """,redundancyUtility.getKeySearchQueryForObject("message.RsMessageRuleForRedundancy",rule1));
-
-        def mapGroup1=MapGroup.add(username:"user1",groupName:"group1");
-        assertFalse(mapGroup1.hasErrors());
-
-        assertEquals("""groupName:"(group1)" username:"(user1)" """,redundancyUtility.getKeySearchQueryForObject("ui.map.MapGroupForRedundancy",mapGroup1));
-        
-   }
+   
    void initializeScriptManager()
     {                                    
         println "base path is :" + new File(temp_scripts_directory).getCanonicalPath();

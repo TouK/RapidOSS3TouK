@@ -9,11 +9,10 @@ import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 
 modelName="DeletedObjects";
-
+OUTPUT="";
 
 logger.info("---------------------------------------------------")
-logger.info("Starting Syncronization ${modelName} ******************************")
-OUTPUT=" Starting Syncronization ${modelName} ";
+logInfo("Starting Syncronization ${modelName}");
 
 objectCountPerRequest=100;
 
@@ -81,8 +80,7 @@ datasources.each{ ds ->
 	}
 	catch(e)
 	{
-	        logger.warn("${modelName} : Error while processing xml. Reason ${e}",e);
-	        OUTPUT+="<br> ${modelName} : Error while processing xml. Reason ${e}";
+        logWarn("${modelName} : Error while processing xml. Reason ${e}");	        
 	}
 }
 
@@ -93,8 +91,7 @@ finally
 	ExecutionContextManagerUtils.removeObjectFromCurrentContext("isRemote");
 }
 
-logger.info("${modelName}: completed scynchronization ******************************");
-OUTPUT+= "<br> ${modelName}: completed synchronization <br>"
+logInfo("completed Syncronization ${modelName}");
 return OUTPUT;
 
 
@@ -108,8 +105,7 @@ def processRequest(ds,requestParams)
 		def xmlResult=ds.doRequest(searchUrl,requestParams);
 		if(xmlResult.indexOf("<Errors>")>=0)
 		{
-			logger.warn("${modelName}:  Xml has error : ${xmlResult.toString()}");
-			OUTPUT+= "<br> ${modelName}:  Xml has error : ${xmlResult.toString()}"
+            logWarn("${modelName}:  Xml has error : ${xmlResult.toString()}");
 			return 0;
 		}
 
@@ -158,3 +154,14 @@ def processRequest(ds,requestParams)
 
 
 
+def logWarn(message)
+{
+   logger.warn(message);
+   OUTPUT += "WARN : ${message} <br>";
+}
+
+def logInfo(message)
+{
+   logger.info(message);
+   OUTPUT += "INFO : ${message} <br>";
+}

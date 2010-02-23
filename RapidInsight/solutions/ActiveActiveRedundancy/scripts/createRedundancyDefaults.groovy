@@ -35,6 +35,11 @@ scriptsToAdd.add([name:"synchronizeUiObjects", type:CmdbScript.SCHEDULED, schedu
 scriptsToAdd.add([name:"synchronizeDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:600,logFileOwn:true]);
 scriptsToAdd.add([name:"clearExpiredDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:360000*12,logFileOwn:true]);
 
+//master switching scripts
+scriptsToAdd.add([name:"enableLocalMaster", logFileOwn:true]);
+scriptsToAdd.add([name:"disableLocalMaster", logFileOwn:true]);
+scriptsToAdd.add([name:"redundancyMasterChecker", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
+
 
 scriptsToAdd.each{  scriptParams ->
 

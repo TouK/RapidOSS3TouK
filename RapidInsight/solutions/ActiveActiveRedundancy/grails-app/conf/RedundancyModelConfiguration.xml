@@ -5,7 +5,13 @@
 				<Property Name="modelName" Type="string" IsKey="true"/>
 				<Property Name="searchQuery" Type="string" IsKey="true"/>
 			</Properties>
-		</Model>		
+		</Model>
+        <Model Name="RedundancyLookup">
+            <Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='value' Type='string' />
+            </Properties>
+        </Model>
     </Models>
 	<Relations>
     </Relations>

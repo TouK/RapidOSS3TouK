@@ -11,9 +11,9 @@ redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 modelName=params.modelName;
 withRelations=params.withRelations?true:false;
 
+OUTPUT="";
 logger.info("---------------------------------------------------")
-logger.info("Starting Syncronization ${modelName} ******************************")
-OUTPUT=" Starting Syncronization ${modelName} ";
+logInfo("Starting Syncronization ${modelName}");
 
 objectCountPerRequest=100;
 
@@ -25,8 +25,8 @@ ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 def datasources=HttpDatasource.searchEvery("name:redundancy*");
 if(datasources.size()==0)
 {
-	logger.warn("${modelName} : Error : no redundancy server is defined");
-    return "${modelName}: Error : no redundancy server is defined";
+    logWarn("${modelName} : Error : no redundancy server is defined");    
+    return OUTPUT;
 }
 
 //For each server , process changed objects of the model
@@ -81,8 +81,7 @@ datasources.each{ ds ->
 	}
 	catch(e)
 	{
-	        logger.warn("${modelName} : Error while processing xml. Reason ${e}",e);
-	        OUTPUT+="<br> ${modelName} : Error while processing xml. Reason ${e}";
+        logWarn("${modelName} : Error while processing xml. Reason ${e}");
 	}
 }
 
@@ -93,8 +92,7 @@ finally
 	ExecutionContextManagerUtils.removeObjectFromCurrentContext("isRemote");
 }
 
-logger.info("${modelName}: completed scynchronization ******************************");
-OUTPUT+= "<br> ${modelName}: completed synchronization <br>"
+logInfo("${modelName}: completed synchronization <br>");
 return OUTPUT;
 
 
@@ -111,8 +109,7 @@ def processRequest(ds,requestParams)
 		def xmlResult=ds.doRequest(searchUrl,requestParams);		
 		if(xmlResult.indexOf("<Errors>")>=0)
 		{	
-			logger.warn("${modelName}:  Xml has error : ${xmlResult.toString()}");
-			OUTPUT+= "<br> ${modelName}:  Xml has error : ${xmlResult.toString()}"
+			logWarn("${modelName}:  Xml has error : ${xmlResult.toString()}");			
 			return 0;
 		}
 	
@@ -213,6 +210,20 @@ def processRequest(ds,requestParams)
         
         return totalObjectCount;
 }
+
+
+def logWarn(message)
+{
+   logger.warn(message);
+   OUTPUT += "WARN : ${message} <br>";
+}
+
+def logInfo(message)
+{
+   logger.info(message);
+   OUTPUT += "INFO : ${message} <br>";
+}
+
 
 
 

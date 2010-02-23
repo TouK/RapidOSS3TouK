@@ -57,7 +57,7 @@ class ActiveActiveRedundancyTest extends RapidCmdbWithCompassTestCase{
         RsUserInformation=gcl.loadClass("auth.RsUserInformationForRedundancy") ;
         RsUser=gcl.loadClass("auth.RsUserForRedundancy");
 
-        RsLookup=gcl.parseClass(new File("${getWorkspacePath()}/RapidModules/RapidInsight/grails-app/domain/RsLookup.groovy"));
+        RsLookup=gcl.loadClass("RsLookup");
         DeletedObjects=gcl.loadClass("DeletedObjects");
 
 

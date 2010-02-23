@@ -1,4 +1,4 @@
-<%@ page import="search.SearchQuery; search.SearchQueryGroup; auth.RsUser" %>
+<%@ page import="auth.Role; search.SearchQuery; search.SearchQueryGroup; auth.RsUser" %>
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -46,9 +46,14 @@
             classes = classes.sort {it.fullName};
         }
         def sortedProps = allProps.sort {it.name}
-        def searchQueryGroups = SearchQueryGroup.list().findAll {queryGroup ->
-            queryGroup.username == userName && queryGroup.isPublic == false && (queryGroup.type == queryType || queryGroup.type == "default")
-        };
+        def queryGroupQuery;
+        if (!RsUser.hasRole(userName, Role.ADMINISTRATOR)) {
+            queryGroupQuery = "username:${userName.exactQuery()} AND (type:${queryType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()})"
+        }
+        else {
+            queryGroupQuery = "(username:${userName.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)) AND (type:${queryType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()})"
+        }
+        def searchQueryGroups = SearchQueryGroup.searchEvery(queryGroupQuery)
         def propertyMap = [:]
         def group = params.group ? params.group : mode == 'edit' ? searchQuery.group.name : '';
         def queryName = params.name ? params.name : mode == 'edit' ? searchQuery.name : '';
@@ -57,6 +62,7 @@
         def sortProperty = params.sortProperty ? params.sortProperty : mode == 'edit' ? searchQuery.sortProperty : '';
         def sortOrder = params.sortOrder ? params.sortOrder : mode == 'edit' ? searchQuery.sortOrder : 'asc';
         def searchClass = params.searchClass ? params.searchClass : mode == 'edit' ? searchQuery.searchClass : '';
+        def isPublic = params.isPublic ? params.isPublic : mode == 'edit' ? searchQuery.isPublic : false;
     %>
     <script type="text/javascript">
     window.refreshFilterTree = function(){
@@ -138,6 +144,9 @@
                 </td></tr>
                 <input type="hidden" name="viewName" value="${viewName.encodeAsHTML()}">
             </g:else>
+            <jsec:hasRole name="${Role.ADMINISTRATOR}">
+                <tr><td width="50%"><label>Public:</label></td><td width="50%"><g:checkBox name="isPublic" value="${isPublic}"></g:checkBox></td></tr>
+            </jsec:hasRole>
         </table>
         <input type="hidden" name="id" value="${searchQuery != null ? searchQuery.id : ''}">
     </rui:formRemote>

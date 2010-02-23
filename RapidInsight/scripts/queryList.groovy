@@ -1,4 +1,9 @@
-/* 
+import auth.RsUser
+import groovy.xml.MarkupBuilder
+import search.SearchQuery
+import search.SearchQueryGroup
+
+/*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -22,11 +27,6 @@
  * Date: Nov 12, 2008
  * Time: 10:50:39 AM
  */
-import auth.RsUser
-import groovy.xml.MarkupBuilder
-import search.SearchQuery
-import search.SearchQueryGroup
-
 def filterType = params.type;
 def username=web.session.username;
 
@@ -41,7 +41,7 @@ queryBuilder.Filters
         def userName = group.username;
            queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic, expanded:group.expanded) {
               group.queries.each {SearchQuery query ->
-                  if(query.type == filterType || query.type == ""){
+                  if(query.type == filterType && (query.username == username || query.isPublic)){
                         queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName:query.viewName, group:group.name, searchClass:query.searchClass,
                                 query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)
                   }

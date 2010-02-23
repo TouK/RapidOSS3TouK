@@ -3,14 +3,15 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<rui:searchGrid id="eventsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object"
-        keyAttribute="id" title="Events"
-        pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml" queryEnabled="true" defaultQuery="" timeout="30"
-        defaultSearchClass="RsEvent" searchClassesUrl='../script/run/getClassesForSearch?rootClass=RsEvent'
+<rui:searchGrid id="eventsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object" bringAllProperties="true" 
+        keyAttribute="id"  title="Events" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml"
+        queryEnabled="true" searchInEnabled="true" defaultQuery="" timeout="30" multipleFieldSorting="true"
+        defaultSearchClass="RsEvent" defaultView="default" searchClassesUrl='../script/run/getClassesForSearch?rootClass=RsEvent&format=xml' extraPropertiesToRequest=""
     
         onSaveQueryClicked="${['saveQueryAction']}"
     
 >
+    
     <rui:sgMenuItems>
     <%
 eventDetailsVisible="true"
@@ -56,54 +57,78 @@ releaseOwnershipVisible="true"
         </rui:sgMenuItem>
     
     </rui:sgMenuItems>
+     <rui:sgMultiSelectionMenuItems>
+    
+    </rui:sgMultiSelectionMenuItems>
     <rui:sgImages>
     <%
-image4811Visible="params.data.severity == '5'"
+image0Visible="params.data.severity == '5'"
 %>
 
-        <rui:sgImage visible="${image4811Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:sgImage>
+        <rui:sgImage visible="${image0Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:sgImage>
     <%
-image4813Visible="params.data.severity == '4'"
+image1Visible="params.data.severity == '4'"
 %>
 
-        <rui:sgImage visible="${image4813Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
+        <rui:sgImage visible="${image1Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
     <%
-image4815Visible="params.data.severity == '3'"
+image2Visible="params.data.severity == '3'"
 %>
 
-        <rui:sgImage visible="${image4815Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
+        <rui:sgImage visible="${image2Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
     <%
-image4817Visible="params.data.severity == '2'"
+image3Visible="params.data.severity == '2'"
 %>
 
-        <rui:sgImage visible="${image4817Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
+        <rui:sgImage visible="${image3Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
     <%
-image4819Visible="params.data.severity == '1'"
+image4Visible="params.data.severity == '1'"
 %>
 
-        <rui:sgImage visible="${image4819Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
+        <rui:sgImage visible="${image4Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
     <%
-image4821Visible="params.data.severity == '0'"
+image5Visible="params.data.severity == '0'"
 %>
 
-        <rui:sgImage visible="${image4821Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:sgImage>
+        <rui:sgImage visible="${image5Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:sgImage>
     
     </rui:sgImages>
     <rui:sgColumns>
     
-        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="150"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="150"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="identifier" colLabel="Event" width="150"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="identifier" colLabel="Event" width="150"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="count" colLabel="Count" width="50"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="count" colLabel="Count" width="50"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="source" colLabel="Source" width="100"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="source" colLabel="Source" width="100"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="changedAt" colLabel="Last Change" width="120"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="changedAt" colLabel="Last Change" width="120"   type="text">
+            
+
+        </rui:sgColumn>
     
     </rui:sgColumns>
     <rui:sgRowColors>
@@ -112,7 +137,7 @@ image4821Visible="params.data.severity == '0'"
 </rui:searchGrid>
 
 <rui:treeGrid id="filterTree" url="../script/run/queryList?format=xml&type=event" rootTag="Filters" pollingInterval="0" timeout="30"
-        keyAttribute="id" contentPath="Filter" title="Saved Queries" expanded="false" expandAttribute="expanded"
+        keyAttribute="id" expandAttribute="expanded" contentPath="Filter" title="Saved Queries" expanded="false"
 
         onNodeClicked="${['setQueryAction']}"
     
@@ -126,28 +151,28 @@ image4821Visible="params.data.severity == '0'"
     </rui:tgColumns>    
     <rui:tgMenuItems>
         <%
-deleteQueryVisible="params.data.isPublic != 'true' && params.data.nodeType == 'filter' "
+deleteQueryVisible="params.data.nodeType == 'filter' &&  (window.currentUserHasRole('Administrator')  || params.data.isPublic != 'true')"
 %>
 
         <rui:tgMenuItem id="deleteQuery" label="Delete" visible="${deleteQueryVisible}" action="${['deleteQueryAction']}">
                
         </rui:tgMenuItem>
         <%
-deleteQueryGroupVisible="params.data.isPublic != 'true' && params.data.name != 'My Queries' && params.data.nodeType == 'group'"
+deleteQueryGroupVisible="params.data.nodeType == 'group' && params.data.name != 'My Queries' && (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')"
 %>
 
         <rui:tgMenuItem id="deleteQueryGroup" label="Delete" visible="${deleteQueryGroupVisible}" action="${['deleteQueryGroupAction']}">
                
         </rui:tgMenuItem>
         <%
-queryUpdateVisible="params.data.nodeType == 'filter' && params.data.isPublic != 'true'"
+queryUpdateVisible="params.data.nodeType == 'filter' && (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')"
 %>
 
         <rui:tgMenuItem id="queryUpdate" label="Update" visible="${queryUpdateVisible}" action="${['queryUpdateAction']}">
                
         </rui:tgMenuItem>
         <%
-queryGroupUpdateVisible="params.data.isPublic != 'true' && params.data.name != 'My Queries' && params.data.nodeType == 'group'"
+queryGroupUpdateVisible="params.data.nodeType == 'group' && params.data.name != 'My Queries' && (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')"
 %>
 
         <rui:tgMenuItem id="queryGroupUpdate" label="Update" visible="${queryGroupUpdateVisible}" action="${['queryGroupUpdateAction']}">
@@ -162,34 +187,41 @@ copyQueryVisible="params.data.nodeType == 'filter'"
         </rui:tgMenuItem>
         
     </rui:tgMenuItems>
+     <rui:tgMultiSelectionMenuItems>
+    
+    </rui:tgMultiSelectionMenuItems>
     <rui:tgRootImages>
         <%
-rootImage4839Visible="params.data.nodeType == 'group'"
+rootImage6Visible="params.data.nodeType == 'group'"
 %>
 
-        <rui:tgRootImage visible="${rootImage4839Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage6Visible}" expanded="../images/rapidjs/component/tools/folder_open.gif" collapsed="../images/rapidjs/component/tools/folder.gif"></rui:tgRootImage>
         <%
-rootImage4841Visible="params.data.nodeType == 'filter'"
+rootImage7Visible="params.data.nodeType == 'filter'"
 %>
 
-        <rui:tgRootImage visible="${rootImage4841Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
+        <rui:tgRootImage visible="${rootImage7Visible}" expanded="../images/rapidjs/component/tools/filter.png" collapsed="../images/rapidjs/component/tools/filter.png"></rui:tgRootImage>
         
     </rui:tgRootImages>
 </rui:treeGrid>
 
-<rui:html id="eventDetails" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="objectDetails" iframe="false"  timeout="30"></rui:html>
+<rui:html id="eventDetails" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
 
-<rui:html id="saveQueryForm" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="saveQueryGroupForm" iframe="false"  timeout="30"></rui:html>
+<rui:html id="objectDetails" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
+
+
+<rui:html id="saveQueryForm" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
+
+
+<rui:html id="saveQueryGroupForm" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
 
 <%
-functionActionCondition4861Condition="params.data.nodeType == 'filter'"
+functionActionConditionindex_events_setQueryActionCondition="params.data.nodeType == 'filter'"
 %>
 
-<rui:action id="setQueryAction" type="function" function="setQueryWithView" componentId='eventsGrid' condition="$functionActionCondition4861Condition"
+<rui:action id="setQueryAction" type="function" function="setQueryWithView" componentId="eventsGrid" condition="$functionActionConditionindex_events_setQueryActionCondition"
 
 >
     
@@ -204,10 +236,10 @@ functionActionCondition4861Condition="params.data.nodeType == 'filter'"
 </rui:action>
 
 <%
-functionActionCondition4875Condition=""
+functionActionConditionindex_events_eventDetailsActionCondition=""
 %>
 
-<rui:action id="eventDetailsAction" type="function" function="show" componentId='eventDetails' 
+<rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails" 
 
 >
     
@@ -218,10 +250,10 @@ functionActionCondition4875Condition=""
 </rui:action>
 
 <%
-functionActionCondition4886Condition=""
+functionActionConditionindex_events_objectDetailsActionCondition=""
 %>
 
-<rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
+<rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetails" 
 
 >
     
@@ -232,24 +264,24 @@ functionActionCondition4886Condition=""
 </rui:action>
 
 <%
-functionActionCondition4897Condition=""
+functionActionConditionindex_events_copyQueryActionCondition=""
 %>
 
-<rui:action id="copyQueryAction" type="function" function="show" componentId='saveQueryForm' 
+<rui:action id="copyQueryAction" type="function" function="show" componentId="saveQueryForm" 
 
 >
     
-    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, mode:'create', type:'event', searchComponentType:'grid'})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, isPublic:params.data.isPublic, mode:'create', type:'event', searchComponentType:'grid'})]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     
 </rui:action>
 
 <%
-functionActionCondition4908Condition=""
+functionActionConditionindex_events_saveQueryActionCondition=""
 %>
 
-<rui:action id="saveQueryAction" type="function" function="show" componentId='saveQueryForm' 
+<rui:action id="saveQueryAction" type="function" function="show" componentId="saveQueryForm" 
 
 >
     
@@ -260,10 +292,10 @@ functionActionCondition4908Condition=""
 </rui:action>
 
 <%
-functionActionCondition4918Condition=""
+functionActionConditionindex_events_queryUpdateActionCondition=""
 %>
 
-<rui:action id="queryUpdateAction" type="function" function="show" componentId='saveQueryForm' 
+<rui:action id="queryUpdateAction" type="function" function="show" componentId="saveQueryForm" 
 
 >
     
@@ -274,10 +306,10 @@ functionActionCondition4918Condition=""
 </rui:action>
 
 <%
-functionActionCondition4929Condition=""
+functionActionConditionindex_events_queryGroupUpdateActionCondition=""
 %>
 
-<rui:action id="queryGroupUpdateAction" type="function" function="show" componentId='saveQueryGroupForm' 
+<rui:action id="queryGroupUpdateAction" type="function" function="show" componentId="saveQueryGroupForm" 
 
 >
     
@@ -288,124 +320,124 @@ functionActionCondition4929Condition=""
 </rui:action>
 
 <%
-requestActionCondition4940Condition=""
+mergeActionConditionindex_events_acknowledgeActionCondition=""
 %>
 
-<rui:action id="deleteQueryGroupAction" type="request" url="../searchQueryGroup/delete?format=xml" components="${['filterTree']}" 
+<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}" submitType="GET"  
+
+>
+    <%
+parameterindex_events_acknowledgeAction_nameVisible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameterindex_events_acknowledgeAction_nameVisible}"></rui:requestParam>
+    <%
+parameterindex_events_acknowledgeAction_acknowledgedVisible="'true'"
+%>
+
+    <rui:requestParam key="acknowledged" value="${parameterindex_events_acknowledgeAction_acknowledgedVisible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionConditionindex_events_unacknowledgeActionCondition=""
+%>
+
+<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}" submitType="GET"  
+
+>
+    <%
+parameterindex_events_unacknowledgeAction_nameVisible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameterindex_events_unacknowledgeAction_nameVisible}"></rui:requestParam>
+    <%
+parameterindex_events_unacknowledgeAction_acknowledgedVisible="'false'"
+%>
+
+    <rui:requestParam key="acknowledged" value="${parameterindex_events_unacknowledgeAction_acknowledgedVisible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionConditionindex_events_takeOwnershipActionCondition=""
+%>
+
+<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}" submitType="GET"  
+
+>
+    <%
+parameterindex_events_takeOwnershipAction_nameVisible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameterindex_events_takeOwnershipAction_nameVisible}"></rui:requestParam>
+    <%
+parameterindex_events_takeOwnershipAction_actVisible="'true'"
+%>
+
+    <rui:requestParam key="act" value="${parameterindex_events_takeOwnershipAction_actVisible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+mergeActionConditionindex_events_releaseOwnershipActionCondition=""
+%>
+
+<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}" submitType="GET"  
+
+>
+    <%
+parameterindex_events_releaseOwnershipAction_nameVisible="params.data.name "
+%>
+
+    <rui:requestParam key="name" value="${parameterindex_events_releaseOwnershipAction_nameVisible}"></rui:requestParam>
+    <%
+parameterindex_events_releaseOwnershipAction_actVisible="'false'"
+%>
+
+    <rui:requestParam key="act" value="${parameterindex_events_releaseOwnershipAction_actVisible}"></rui:requestParam>
+    
+</rui:action>
+
+<%
+requestActionConditionindex_events_deleteQueryGroupActionCondition=""
+%>
+
+<rui:action id="deleteQueryGroupAction" type="request" url="../searchQueryGroup/delete?format=xml" components="${['filterTree']}" submitType="GET" 
 
         onSuccess="${['refreshQueriesAction']}"
     
 >
     <%
-parameter4943Visible="params.data.id"
+parameterindex_events_deleteQueryGroupAction_idVisible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4943Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameterindex_events_deleteQueryGroupAction_idVisible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-mergeActionCondition4949Condition=""
+requestActionConditionindex_events_deleteQueryActionCondition=""
 %>
 
-<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}"  
-
->
-    <%
-parameter4952Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter4952Visible}"></rui:requestParam>
-    <%
-parameter4954Visible="'true'"
-%>
-
-    <rui:requestParam key="acknowledged" value="${parameter4954Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition4960Condition=""
-%>
-
-<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}"  
-
->
-    <%
-parameter4963Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter4963Visible}"></rui:requestParam>
-    <%
-parameter4965Visible="'false'"
-%>
-
-    <rui:requestParam key="acknowledged" value="${parameter4965Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition4971Condition=""
-%>
-
-<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}"  
-
->
-    <%
-parameter4974Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter4974Visible}"></rui:requestParam>
-    <%
-parameter4976Visible="'true'"
-%>
-
-    <rui:requestParam key="act" value="${parameter4976Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-mergeActionCondition4982Condition=""
-%>
-
-<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}"  
-
->
-    <%
-parameter4985Visible="params.data.name "
-%>
-
-    <rui:requestParam key="name" value="${parameter4985Visible}"></rui:requestParam>
-    <%
-parameter4987Visible="'false'"
-%>
-
-    <rui:requestParam key="act" value="${parameter4987Visible}"></rui:requestParam>
-    
-</rui:action>
-
-<%
-requestActionCondition4993Condition=""
-%>
-
-<rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" 
+<rui:action id="deleteQueryAction" type="request" url="../searchQuery/delete?format=xml" components="${['filterTree']}" submitType="GET" 
 
         onSuccess="${['refreshQueriesAction']}"
     
 >
     <%
-parameter4996Visible="params.data.id"
+parameterindex_events_deleteQueryAction_idVisible="params.data.id"
 %>
 
-    <rui:requestParam key="id" value="${parameter4996Visible}"></rui:requestParam>
+    <rui:requestParam key="id" value="${parameterindex_events_deleteQueryAction_idVisible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-functionActionCondition5002Condition=""
+functionActionConditionindex_events_refreshQueriesActionCondition=""
 %>
 
-<rui:action id="refreshQueriesAction" type="function" function="poll" componentId='filterTree' 
+<rui:action id="refreshQueriesAction" type="function" function="poll" componentId="filterTree" 
 
 >
     
@@ -423,13 +455,13 @@ functionActionCondition5002Condition=""
 x='85' y='50' 
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryForm" width="385" height="220" resizable="false"
+<rui:popupWindow componentId="saveQueryForm" width="385" height="245" resizable="false"
  
  
   title='Save query'
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="140" resizable="false"
+<rui:popupWindow componentId="saveQueryGroupForm" width="330" height="165" resizable="false"
  
  
   title='Save group'
@@ -448,18 +480,18 @@ x='85' y='50'
         
 
 
-    <rui:innerLayout id="4791">
+<rui:innerLayout id="39">
+    
+    <rui:layoutUnit position='center' gutter='0px' useShim='false' scroll='false' component='eventsGrid'>
         
-            <rui:layoutUnit position='center' gutter='0px' id='5023' isActive='true' scroll='false' useShim='false' component='eventsGrid'>
+    </rui:layoutUnit>
+    
+    <rui:layoutUnit position='left' width='255' gutter='0 5 0 0' resize='true' useShim='false' scroll='false' component='filterTree'>
         
-            </rui:layoutUnit>
-        
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='5026' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='filterTree'>
-        
-            </rui:layoutUnit>
-        
-        </rui:innerLayout>
-        
+    </rui:layoutUnit>
+    
+</rui:innerLayout>
+
 
 
     </rui:layoutUnit>

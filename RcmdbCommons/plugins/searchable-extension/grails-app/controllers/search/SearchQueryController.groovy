@@ -20,6 +20,8 @@ package search
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import grails.converters.XML
+import auth.RsUser
+import auth.Role
 
 class SearchQueryController {
     def index = {redirect(action: list, params: params)}
@@ -27,77 +29,35 @@ class SearchQueryController {
     def list = {
         if (!params.max) params.max = 10
         def searchQueries = SearchQuery.search("alias:*", params).results;
-        withFormat {
-            html searchQueryList: searchQueries
-            xml {render searchQueries as XML}
-        }
-    }
-
-    def show = {
-        def searchQuery = SearchQuery.get([id: params.id])
-
-        if (!searchQuery) {
-            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {errorsToXml(errors)}
-            }
-
-        }
-        else {
-            withFormat {
-                html {render(view: "show", model: [searchQuery: searchQuery])}
-                xml {render searchQuery as XML}
-            }
-        }
+        render searchQueries as XML
     }
 
     def delete = {
         def searchQuery = SearchQuery.get([id: params.id])
         if (searchQuery) {
+            if (searchQuery.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+                addError("searchquery.not.authorized", []);
+                render(text: errorsToXml(this.errors), contentType: "text/xml")
+                return;
+            }
             searchQuery.remove();
-            withFormat {
-                html {
-                    flash.message = "SearchQuery ${params.id} deleted"
-                    redirect(action: list)
-                }
-                xml {render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} deleted"), contentType: "text/xml")}
-            }
+            render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} deleted"), contentType: "text/xml")
         }
         else {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(errors), contentType: "text/xml")
         }
     }
-
-    def edit = {
-        def searchQuery = SearchQuery.get([id: params.id])
-        if (!searchQuery) {
-            addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            flash.errors = errors;
-            redirect(action: list)
-        }
-        else {
-            return [searchQuery: searchQuery]
-        }
-
-    }
-
 
     def update = {
         def searchQuery = SearchQuery.get([id: params.id])
         def groupType = params.type;
         if (searchQuery) {
+            if (searchQuery.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+                addError("searchquery.not.authorized", []);
+                render(text: errorsToXml(this.errors), contentType: "text/xml")
+                return;
+            }
             if (params.group == "" || params.group.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
             {
                 params.group = SearchQueryGroup.MY_QUERIES;
@@ -106,83 +66,59 @@ class SearchQueryController {
             def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
             if (group == null)
             {
-                group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
+                group = SearchQueryGroup.get(name: params.group, type: groupType, username: RsUser.RSADMIN);
+                if (group == null || !group.isPublic) {
+                    group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
+                }
             }
             params["group"] = ["id": group.id];
             params["group.id"] = "${group.id}".toString();
-            searchQuery.update(ControllerUtils.getClassProperties(params, SearchQuery));
+            def queryParams = ControllerUtils.getClassProperties(params, SearchQuery)
+            queryParams["username"] = queryParams.isPublic ? RsUser.RSADMIN : session.username;
+            searchQuery.update(queryParams);
             if (!searchQuery.hasErrors()) {
-                withFormat {
-                    html {
-                        flash.message = "SearchQuery ${params.id} updated"
-                        redirect(action: show, id: searchQuery.id)
-                    }
-                    xml {render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} updated"), contentType: "text/xml")}
-                }
-
+                render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} updated"), contentType: "text/xml")
             }
             else {
-                withFormat {
-                    html {
-                        render(view: 'edit', model: [searchQuery: searchQuery])
-                    }
-                    xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
-                }
+                render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")
             }
         }
         else {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: edit, id: params.id)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(errors), contentType: "text/xml")
         }
     }
 
-    def create = {
-        def searchQuery = new SearchQuery()
-        searchQuery.properties = params
-        return ['searchQuery': searchQuery]
-    }
-
     def save = {
-        params["username"] = session.username
+        if (params.isPublic == 'true' && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+            addError("searchquery.not.authorized", []);
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            return;
+        }
         def groupType = params.type;
         if (params.group == "" || params.group.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
         {
             params.group = SearchQueryGroup.MY_QUERIES;
             groupType = SearchQueryGroup.DEFAULT_TYPE
         }
-        def group = SearchQueryGroup.get(name: params.group, username: session.username, type: groupType);
+        def group = SearchQueryGroup.get(name: params.group, type: groupType, username: session.username);
         if (group == null)
         {
-            group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
+            group = SearchQueryGroup.get(name: params.group, type: groupType, username: RsUser.RSADMIN);
+            if (group == null || !group.isPublic) {
+                group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
+            }
         }
         params["group"] = ["id": group.id];
         params["group.id"] = "${group.id}".toString();
-        def searchQuery = SearchQuery.add(ControllerUtils.getClassProperties(params, SearchQuery))
+        def queryParams = ControllerUtils.getClassProperties(params, SearchQuery)
+        queryParams["username"] = queryParams.isPublic ? RsUser.RSADMIN : session.username;
+        def searchQuery = SearchQuery.add(queryParams)
         if (!searchQuery.hasErrors()) {
-            withFormat {
-                html {
-                    flash.message = "SearchQuery ${searchQuery.id} created"
-                    redirect(action: show, id: searchQuery.id)
-                }
-                xml {render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} created"), contentType: "text/xml")}
-            }
-
+            render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} created"), contentType: "text/xml")
         }
         else {
-            withFormat {
-                html {
-                    render(view: 'create', model: [searchQuery: searchQuery])
-                }
-                xml {render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(searchQuery.errors), contentType: "text/xml")
         }
     }
 }

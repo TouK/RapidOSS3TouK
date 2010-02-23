@@ -19,165 +19,83 @@
 package search
 
 import com.ifountain.rcmdb.domain.util.ControllerUtils
-import grails.converters.XML;
+import grails.converters.XML
+import auth.RsUser
+import auth.Role;
 class SearchQueryGroupController {
     def index = {redirect(action: list, params: params)}
     def allowedMethods = [delete: ['POST', 'GET'], save: ['POST', 'GET'], update: ['POST', 'GET']]
     def list = {
         if (!params.max) params.max = 10
         def searchQueryGroups = SearchQueryGroup.search("alias:*", params).results;
-        withFormat {
-            html searchQueryGroupList: searchQueryGroups
-            xml {render searchQueryGroups as XML}
-        }
+        render searchQueryGroups as XML
     }
-
-    def show = {
-        def searchQueryGroup = SearchQueryGroup.get([id: params.id])
-        if (!searchQueryGroup) {
-            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-
-        }
-        else {
-            withFormat {
-                html {render(view: "show", model: [searchQueryGroup: searchQueryGroup])}
-                xml {render searchQueryGroup as XML}
-            }
-        }
-    }
-
     def delete = {
         def searchQueryGroup = SearchQueryGroup.get([id: params.id])
         if (searchQueryGroup) {
+            if (searchQueryGroup.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+                addError("searchgroup.not.authorized", []);
+                render(text: errorsToXml(this.errors), contentType: "text/xml")
+                return;
+            }
             try {
                 searchQueryGroup.remove()
-                withFormat {
-                    html {
-                        flash.message = "SearchQueryGroup ${params.id} deleted"
-                        redirect(action: list)
-                    }
-                    xml {render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} deleted"), contentType: "text/xml")}
-                }
-
+                render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} deleted"), contentType: "text/xml")
             }
             catch (e) {
                 addError("default.custom.error", [e.getMessage()])
-
-                withFormat {
-                    html {
-                        flash.errors = errors;
-                        redirect(action: show, id: searchQueryGroup.id)
-                    }
-                    xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-                }
-
+                render(text: errorsToXml(errors), contentType: "text/xml")
             }
-
         }
         else {
             addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: list)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(errors), contentType: "text/xml")
         }
     }
-
-    def edit = {
-        def searchQueryGroup = SearchQueryGroup.get([id: params.id])
-
-        if (!searchQueryGroup) {
-            addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
-            flash.errors = errors;
-            redirect(action: list)
-        }
-        else {
-            return [searchQueryGroup: searchQueryGroup]
-        }
-    }
-
-
     def update = {
         def searchQueryGroup = SearchQueryGroup.get([id: params.id])
         if (searchQueryGroup) {
+            if (searchQueryGroup.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+                addError("searchgroup.not.authorized", []);
+                render(text: errorsToXml(this.errors), contentType: "text/xml")
+                return;
+            }
             if (params.name && params.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
                 params.type = SearchQueryGroup.DEFAULT_TYPE;
             }
-            searchQueryGroup.update(ControllerUtils.getClassProperties(params, SearchQueryGroup));
+            def queryGroupParams = ControllerUtils.getClassProperties(params, SearchQueryGroup)
+            queryGroupParams["username"] = queryGroupParams.isPublic ? RsUser.RSADMIN : session.username;
+            searchQueryGroup.update(queryGroupParams);
             if (!searchQueryGroup.hasErrors()) {
-                withFormat {
-                    html {
-                        flash.message = "SearchQueryGroup ${params.id} updated"
-                        redirect(action: show, id: searchQueryGroup.id)
-                    }
-                    xml {render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} updated"), contentType: "text/xml")}
-                }
-
+                render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} updated"), contentType: "text/xml")
             }
             else {
-                withFormat {
-                    html {
-                        render(view: 'edit', model: [searchQueryGroup: searchQueryGroup])
-                    }
-                    xml {render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
-                }
-
+                render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")
             }
         }
         else {
             addError("default.object.not.found", [SearchQueryGroup.class.name, params.id]);
-            withFormat {
-                html {
-                    flash.errors = errors;
-                    redirect(action: edit, id: params.id)
-                }
-                xml {render(text: errorsToXml(errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(errors), contentType: "text/xml")
         }
-    }
-
-    def create = {
-        def searchQueryGroup = new SearchQueryGroup()
-        searchQueryGroup.properties = params
-        return ['searchQueryGroup': searchQueryGroup]
     }
 
     def save = {
-        params["username"] = session.username;
+        if (params.isPublic == 'true' && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+            addError("searchgroup.not.authorized", []);
+            render(text: errorsToXml(this.errors), contentType: "text/xml")
+            return;
+        }
         if (params.name && params.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
             params.type = SearchQueryGroup.DEFAULT_TYPE;
         }
-        def searchQueryGroup = SearchQueryGroup.add(ControllerUtils.getClassProperties(params, SearchQueryGroup))
+        def queryGroupParams = ControllerUtils.getClassProperties(params, SearchQueryGroup)
+        queryGroupParams["username"] = queryGroupParams.isPublic ? RsUser.RSADMIN : session.username;
+        def searchQueryGroup = SearchQueryGroup.add(queryGroupParams)
         if (!searchQueryGroup.hasErrors()) {
-            withFormat {
-                html {
-                    flash.message = "SearchQueryGroup ${searchQueryGroup.id} created"
-                    redirect(action: show, id: searchQueryGroup.id)
-                }
-                xml {render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} created"), contentType: "text/xml")}
-            }
-
+            render(text: ControllerUtils.convertSuccessToXml("SearchQueryGroup ${params.id} created"), contentType: "text/xml")
         }
         else {
-            withFormat {
-                html {
-                    render(view: 'create', model: [searchQueryGroup: searchQueryGroup])
-                }
-                xml {render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")}
-            }
-
+            render(text: errorsToXml(searchQueryGroup.errors), contentType: "text/xml")
         }
     }
 }

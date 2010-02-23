@@ -174,7 +174,7 @@ class GridViewController {
             }
             return;
         }
-        gridView = GridView.add([name: params.name, username: session.username, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic]);
+        gridView = GridView.add([name: params.name, username: params.username, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic]);
         if (!gridView.hasErrors()) {
             gridView.gridColumns.each {
                 it.remove();

@@ -1,4 +1,4 @@
-<%@ page import="search.SearchQueryGroup" %>
+<%@ page import="auth.Role; search.SearchQueryGroup" %>
 <%--
   Created by IntelliJ IDEA.
   User: admin
@@ -31,6 +31,9 @@
     <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshFilterTree">
         <table>
             <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><input type="textbox" name="name" style="width:175px" value="${groupName.encodeAsHTML()}"/></td></tr>
+            <jsec:hasRole name="${Role.ADMINISTRATOR}">
+                <tr><td width="50%"><label>Public:</label></td><td width="50%"><g:checkBox name="isPublic" value="${searchQueryGroup?.isPublic}"></g:checkBox></td></tr>
+            </jsec:hasRole>
             <tr><td width="50%"><label>Expanded:</label></td><td width="50%"><g:checkBox name="expanded" value="${searchQueryGroup?.expanded}"></g:checkBox></td></tr>
         </table>
         <input type="hidden" name="id" value="${mode == 'edit'? searchQueryGroup.id : ''}">

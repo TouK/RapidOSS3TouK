@@ -16,32 +16,32 @@ import search.SearchQuery
 
 DESTINATIONS = RsMessageRule.getDestinations();
 
-def createIdLookup = RsLookup.get(name: "messageGeneratorMaxEventCreateId")
-if (createIdLookup == null)
+def createInsertedAtLookup = RsLookup.get(name: "messageGeneratorMaxEventCreateInsertedAt")
+if (createInsertedAtLookup == null)
 {
-    def maxEventId = 0
-    def maxEvent = RsEvent.search("alias:*", [max: 1, sort: "id", order: "desc"]).results[0]
+    def maxEventInsertedAt = 0
+    def maxEvent = RsEvent.search("alias:*", [max: 1, sort: "rsInsertedAt", order: "desc"]).results[0]
     if (maxEvent != null)
     {
-        maxEventId = Long.valueOf(maxEvent.id) + 1
+        maxEventInsertedAt = Long.valueOf(maxEvent.rsInsertedAt) + 1
     }
-    createIdLookup = RsLookup.add(name: "messageGeneratorMaxEventCreateId", value: maxEventId)
+    createInsertedAtLookup = RsLookup.add(name: "messageGeneratorMaxEventCreateInsertedAt", value: maxEventInsertedAt)
 }
-def maxCreateId = Long.valueOf(createIdLookup.value)
+def maxCreateInsertedAt = Long.valueOf(createInsertedAtLookup.value)
 
 
-def clearIdLookup = RsLookup.get(name: "messageGeneratorMaxEventClearId")
-if (clearIdLookup == null)
+def clearInsertedAtLookup = RsLookup.get(name: "messageGeneratorMaxEventClearInsertedAt")
+if (clearInsertedAtLookup == null)
 {
-    def maxEventId = 0
-    def maxEvent = RsHistoricalEvent.search("alias:*", [max: 1, sort: "id", order: "desc"]).results[0]
+    def maxEventInsertedAt = 0
+    def maxEvent = RsHistoricalEvent.search("alias:*", [max: 1, sort: "rsInsertedAt", order: "desc"]).results[0]
     if (maxEvent != null)
     {
-        maxEventId = Long.valueOf(maxEvent.id) + 1
+        maxEventInsertedAt = Long.valueOf(maxEvent.rsInsertedAt) + 1
     }
-    clearIdLookup = RsLookup.add(name: "messageGeneratorMaxEventClearId", value: maxEventId)
+    clearInsertedAtLookup = RsLookup.add(name: "messageGeneratorMaxEventClearInsertedAt", value: maxEventInsertedAt)
 }
-def maxClearId = Long.valueOf(clearIdLookup.value)
+def maxClearInsertedAt = Long.valueOf(clearInsertedAtLookup.value)
 
 //process delayingMessages which has exceeded delay time
 RsMessage.processDelayedMessages()
@@ -84,14 +84,14 @@ users.each {user ->
                 {
                     logger.debug("Processing RsMessageRule for userId:${userId}, destination is:${destination}");
                     //processing for RsEvent creates
-                    //note that we use maxCreateId for search , and use newMaxCreateId to save the last processed Event
-                    def newMaxCreateId = maxCreateId;
+                    //note that we use maxCreateInsertedAt for search , and use newMaxCreateInsertedAt to save the last processed Event
+                    def newMaxCreateInsertedAt = maxCreateInsertedAt;
                     createRules.each {rule ->
                         def delay = rule.delay
                         def searchQuery = SearchQuery.get(id: rule.searchQueryId)
                         if (searchQuery)
                         {
-                            def createQuery = " (${searchQuery.query}) AND id:[${maxCreateId} TO *]"
+                            def createQuery = " (${searchQuery.query}) AND rsInsertedAt:[${maxCreateInsertedAt} TO *]"
 
 
                             def eventClass=RsEvent;
@@ -101,15 +101,15 @@ users.each {user ->
                             }
                             logger.debug("Seaching ${eventClass.name}, for userid: ${userId}  with createQuery : ${createQuery}")
 
-                            def createdEvents = eventClass.getPropertyValues(createQuery, ["id"], [sort: "id", order: "asc", max: 1000])
+                            def createdEvents = eventClass.getPropertyValues(createQuery, ["id","rsInsertedAt"], [sort: "rsInsertedAt", order: "asc", max: 1000])
                             def date = new Date()
                             def now = date.getTime();
 
                             createdEvents.each {event ->
                                 RsMessage.addEventCreateMessage(event, destinationType, destination, delay);
-                                if (newMaxCreateId < Long.valueOf(event.id) + 1)
+                                if (newMaxCreateInsertedAt < Long.valueOf(event.rsInsertedAt) + 1)
                                 {
-                                    newMaxCreateId = Long.valueOf(event.id) + 1;
+                                    newMaxCreateInsertedAt = Long.valueOf(event.rsInsertedAt) + 1;
                                 }
                             }
                         }
@@ -119,20 +119,20 @@ users.each {user ->
                         }
 
                     }
-                    if (newMaxCreateId > maxCreateId)
+                    if (newMaxCreateInsertedAt > maxCreateInsertedAt)
                     {
-                        createIdLookup.update(value: String.valueOf(newMaxCreateId))
+                        createInsertedAtLookup.update(value: String.valueOf(newMaxCreateInsertedAt))
                     }
 
 
                     //process Event Clears, HistoricalEvent Creates
-                    //note that we use maxClearId for search , and use newMaxClearId to save the last processed Event
-                    def newMaxClearId = maxClearId;
+                    //note that we use maxClearInsertedAt for search , and use newMaxClearInsertedAt to save the last processed Event
+                    def newMaxClearInsertedAt = maxClearInsertedAt;
                     clearRules.each {rule ->
                         def searchQuery = SearchQuery.get(id: rule.searchQueryId)
                         if (searchQuery)
                         {
-                            def clearQuery = " (${searchQuery.query}) AND id:[${maxClearId} TO *]"
+                            def clearQuery = " (${searchQuery.query}) AND rsInsertedAt:[${maxClearInsertedAt} TO *]"
 
                             def eventClass=RsHistoricalEvent;
                             if(searchQuery.searchClass)
@@ -141,15 +141,15 @@ users.each {user ->
                             }
 
                             logger.debug("Searching ${eventClass.name}, for userid: ${userId} with clearQuery : ${clearQuery}")
-                            def clearedEvents = eventClass.getPropertyValues(clearQuery, ["id", "activeId"], [sort: "id", order: "asc", max: 1000])
+                            def clearedEvents = eventClass.getPropertyValues(clearQuery, ["id", "activeId","rsInsertedAt"], [sort: "rsInsertedAt", order: "asc", max: 1000])
                             def date = new Date()
                             def now = date.getTime();
 
                             clearedEvents.each {event ->
                                 RsMessage.addEventClearMessage(event, destinationType, destination)
-                                if (newMaxClearId < Long.valueOf(event.id) + 1)
+                                if (newMaxClearInsertedAt < Long.valueOf(event.rsInsertedAt) + 1)
                                 {
-                                    newMaxClearId = Long.valueOf(event.id) + 1;
+                                    newMaxClearInsertedAt = Long.valueOf(event.rsInsertedAt) + 1;
                                 }
 
                             }
@@ -160,9 +160,9 @@ users.each {user ->
                         }
 
                     }
-                    if (newMaxClearId > maxClearId)
+                    if (newMaxClearInsertedAt > maxClearInsertedAt)
                     {
-                        clearIdLookup.update(value: String.valueOf(newMaxClearId))
+                        clearInsertedAtLookup.update(value: String.valueOf(newMaxClearInsertedAt))
                     }
 
                 }

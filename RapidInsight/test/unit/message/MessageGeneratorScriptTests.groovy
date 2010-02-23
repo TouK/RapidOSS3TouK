@@ -219,7 +219,6 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
         assertFalse(script.hasErrors())
 
-
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 0)
 
@@ -314,8 +313,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(rsRiEventClass.countHits("alias:*"), 2)
 
         //run the script
-        rsLookupClass.add(name:"messageGeneratorMaxEventCreateId",value:0);
-        rsLookupClass.add(name:"messageGeneratorMaxEventClearId",value:0);
+        rsLookupClass.add(name:"messageGeneratorMaxEventCreateInsertedAt",value:0);
+        rsLookupClass.add(name:"messageGeneratorMaxEventClearInsertedAt",value:0);
 
         CmdbScript.runScript(script, [logger:TestLogUtils.log])
         assertEquals(RsMessage.countHits("alias:*"), 2)

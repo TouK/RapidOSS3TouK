@@ -56,6 +56,8 @@
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FABridge.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/pieChart', file:'FlexPieChart.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/flexLineChart', file:'FlexLineChart.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/fusionChart', file:'FusionCharts.js')}"></script>
+<script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/fusionChart', file:'FusionChart.js')}"></script>
 
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/map', file:'GMap.js')}"></script>
 <script type="text/javascript" src="${createLinkTo(dir:'js/rapidjs/component/timeline', file:'Timeline.js')}"></script>

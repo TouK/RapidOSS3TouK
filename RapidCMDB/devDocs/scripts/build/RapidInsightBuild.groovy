@@ -63,48 +63,47 @@ class RapidInsightBuild extends Build {
             ZIP_OPT = Boolean.parseBoolean(options.get("ZIP", "false"));
             TEST_OPT = Boolean.parseBoolean(options.get("TEST", "false"));
             JREDIR_OPT = options.get("JREDIR");
-            if(JREDIR_OPT!=null) env.jreDir = JREDIR_OPT; 
+            if (JREDIR_OPT != null) env.jreDir = JREDIR_OPT;
             TEST = TEST_OPT
         }
     }
 
-    static def getTestOptions(){
-	   Properties options = new Properties();
-	   options.put("RI_UNIX", "false")
-	   options.put("RI_WINDOWS", "true")
-	   options.put("RCMDB_UNIX", "true")
-	   options.put("RCMDB_WINDOWS", "false")
-	   options.put("MODELER", "true")
-	   options.put("OPENNMS", "true")
-	   options.put("JIRA", "true")
-	   options.put("APG", "true")
-	   options.put("NETCOOL", "true")
-	   options.put("SMARTS", "true")
-	   options.put("HYPERIC", "true")
-	   options.put("RIVERMUSE", "true")
-	   options.put("E_WINDOWS", "false")
-	   options.put("E_UNIX", "false")
-	   options.put("ZIP", "false")
-	   options.put("TEST", "true")
-	   return options;
+    static def getTestOptions() {
+        Properties options = new Properties();
+        options.put("RI_UNIX", "false")
+        options.put("RI_WINDOWS", "true")
+        options.put("RCMDB_UNIX", "true")
+        options.put("RCMDB_WINDOWS", "false")
+        options.put("MODELER", "true")
+        options.put("OPENNMS", "true")
+        options.put("JIRA", "true")
+        options.put("APG", "true")
+        options.put("NETCOOL", "true")
+        options.put("SMARTS", "true")
+        options.put("HYPERIC", "true")
+        options.put("RIVERMUSE", "true")
+        options.put("E_WINDOWS", "false")
+        options.put("E_UNIX", "false")
+        options.put("ZIP", "false")
+        options.put("TEST", "true")
+        return options;
     }
 
     static void main(String[] args) {
         long t = System.currentTimeMillis();
         if (args.length > 0) {
-            if(args[0] == "test"){
-               buildOptions = getTestOptions();
+            if (args[0] == "test") {
+                buildOptions = getTestOptions();
             }
-            else{
+            else {
                 buildOptions = Build.getBuildOptions(args[0]);
             }
-
 
         }
         RapidInsightBuild rapidInsightBuilder = new RapidInsightBuild();
         rapidInsightBuilder.setOptions(buildOptions);
         rapidInsightBuilder.build();
-        println "Build finished in ${(System.currentTimeMillis() - t)/1000.0} secs."
+        println "Build finished in ${(System.currentTimeMillis() - t) / 1000.0} secs."
     }
 
     //    def String getExcludedClasses() {
@@ -116,19 +115,19 @@ class RapidInsightBuild extends Build {
 
     def build() {
         def t = System.currentTimeMillis();
-        if(RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
+        if (RI_UNIX_OPT || RI_WINDOWS_OPT) buildUnix();
         if (RI_WINDOWS_OPT) addJreOnTopOfUnixAndZip("ROSS");
         buildIntegrationPlugins();
         if (ENTERPRISE_WINDOWS_OPT) makeWindowsEnterprise();
         if (ENTERPRISE_UNIX_OPT) makeUnixEnterprise();
-        println "ROSS Build Done in ${(System.currentTimeMillis()-t)/1000.0} secs.";
+        println "ROSS Build Done in ${(System.currentTimeMillis() - t) / 1000.0} secs.";
     }
 
     def buildUnix() {
         prepareRCMDB();
-        ant.delete(dir: env.dist_rapid_server+"/jre");
+        ant.delete(dir: env.dist_rapid_server + "/jre");
         // copy xml file for sample data to be imported
-        ant.copy(file: "$env.rapid_insight/sampleRiData.xml", tofile: "$env.dist_rapid_suite/sampleRiData.xml",overwrite:true);
+        ant.copy(file: "$env.rapid_insight/sampleRiData.xml", tofile: "$env.dist_rapid_suite/sampleRiData.xml", overwrite: true);
 
         ant.copy(file: version, tofile: versionInBuild);
         setVersionAndBuildNumber(versionInBuild);
@@ -171,17 +170,17 @@ class RapidInsightBuild extends Build {
             }
         }
         replaceJavascriptAndCss("${env.dist_rapid_suite}/web-app/designer.gsp", "designer_${buildNo}.js", "designer_${buildNo}.css")
-        
+
         ant.move(file: "${env.dist_rapid_server}/licenses/RapidCMDB_license.txt", toFile: "${env.dist_rapid_server}/licenses/RapidOSSCommunityLicense.txt");
         def dbViews = ["databaseConnection", "databaseDatasource", "singleTableDatabaseDatasource"];
         dbViews.each {
             ant.copy(file: "${env.dist_rapid_suite}/web-app/dbDatasources.gsp", toFile: "${env.dist_rapid_suite}/grails-app/views/${it}/list.gsp", overwrite: true);
         }
-        
+
         if (ZIP_OPT) {
             def zipFileName = "${env.distribution}/ROSS_Unix$versionDate" + ".zip"
             ant.zip(destfile: zipFileName) {
-                ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer", excludes:"**/*.vmoptions,**/*.exe,**/*.bat");
+                ant.zipfileset(dir: "$env.distribution/RapidServer", prefix: "RapidServer", excludes: "**/*.vmoptions,**/*.exe,**/*.bat");
             }
         }
     }
@@ -255,7 +254,7 @@ class RapidInsightBuild extends Build {
     }
 
     def createRapidUiPlugin() {
-        ant.copy(todir: "$env.dist_rapid_ui/grails-app",overwrite:true) {
+        ant.copy(todir: "$env.dist_rapid_ui/grails-app", overwrite: true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app") {
                 ant.include(name: "domain/**/*")
                 ant.include(name: "controllers/**/*")
@@ -279,17 +278,20 @@ class RapidInsightBuild extends Build {
         ant.copy(file: "$env.rapid_ui/RapidUiGrailsPlugin.groovy", toDir: "$env.dist_rapid_ui");
         ant.copy(file: "$env.rapid_ui/plugin.xml", toDir: "$env.dist_rapid_ui");
 
-        ant.copy(toDir: "$env.dist_rapid_suite/web-app",overwrite:true) {
+        ant.copy(toDir: "$env.dist_rapid_suite/web-app", overwrite: true) {
             ant.fileset(dir: "$env.rapid_ui/web-app") {
                 ant.exclude(name: "**/test/**")
             }
         }
-        ant.copy(todir: "$env.dist_rapid_suite/grails-app",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/web-app/images/rapidjs/component/fusionChart") {
+            ant.fileset(dir: "$env.licensed_artifacts/FusionCharts")
+        }
+        ant.copy(todir: "$env.dist_rapid_suite/grails-app", overwrite: true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app") {
                 ant.include(name: "views/**/*")
             };
         }
-        ant.copy(toDir: "$env.dist_rapid_suite/grails-app/i18n",overwrite:true) {
+        ant.copy(toDir: "$env.dist_rapid_suite/grails-app/i18n", overwrite: true) {
             ant.fileset(dir: "$env.rapid_ui/grails-app/i18n")
         }
 
@@ -309,57 +311,57 @@ class RapidInsightBuild extends Build {
         ant.copy(file: "$env.rapid_insight/RapidInsightGrailsPlugin.groovy", toDir: "$env.dist_rapid_insight");
         ant.copy(file: "$env.rapid_insight/plugin.xml", toDir: "$env.dist_rapid_insight");
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/conf",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/conf", overwrite: true) {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/conf");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views/layouts",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views/layouts", overwrite: true) {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/views/layouts");
         }
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/scripts",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/scripts", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/scripts/**") {
                 ant.exclude(name: "_Install.groovy")
                 ant.exclude(name: "_Upgrade.groovy")
                 ant.exclude(name: "*Test.groovy")
             }
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/web-app",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/web-app", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/web-app/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/controllers",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/controllers", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/grails-app/controllers/**");
         }
 
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/views", overwrite: true) {
             ant.fileset(dir: "${env.rapid_insight}/grails-app/views")
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/domain",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/domain", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/grails-app/domain/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/templates",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/grails-app/templates", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/grails-app/templates/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/operations",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/operations", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/operations/**");
         }
-        ant.copy(toDir: "${env.dist_rapid_suite}/../solutions",overwrite:true) {
+        ant.copy(toDir: "${env.dist_rapid_suite}/../solutions", overwrite: true) {
             ant.fileset(file: "${env.rapid_insight}/solutions/**");
         }
-        ant.copy(file: "${env.rapid_insight}/rs.exe", toDir: "${env.dist_rapid_suite}",overwrite:true)
-        ant.copy(file: "${env.rapid_insight}/rs_64.exe", toDir: "${env.dist_rapid_suite}",overwrite:true)
-        ant.copy(file: "${env.rapid_insight}/rs_64.vmoptions", toDir: "${env.dist_rapid_suite}",overwrite:true)
+        ant.copy(file: "${env.rapid_insight}/rs.exe", toDir: "${env.dist_rapid_suite}", overwrite: true)
+        ant.copy(file: "${env.rapid_insight}/rs_64.exe", toDir: "${env.dist_rapid_suite}", overwrite: true)
+        ant.copy(file: "${env.rapid_insight}/rs_64.vmoptions", toDir: "${env.dist_rapid_suite}", overwrite: true)
 
         if (TEST) {
             ant.copy(todir: "${env.dist_rapid_suite}/test") {
                 ant.fileset(dir: "$env.rapid_insight/test")
             }
-            ant.copy(todir: "${env.dist_rapid_suite}/grails-app/domain",overwrite:true) {
+            ant.copy(todir: "${env.dist_rapid_suite}/grails-app/domain", overwrite: true) {
                 ant.fileset(dir: "$env.rapid_insight/solutions/inMaintenance/grails-app/domain")
             }
-            ant.copy(todir: "${env.dist_rapid_suite}/grails-app/domain",overwrite:true) {
+            ant.copy(todir: "${env.dist_rapid_suite}/grails-app/domain", overwrite: true) {
                 ant.fileset(dir: "$env.rapid_insight/solutions/heartbeat/grails-app/domain")
             }
-            ant.copy(todir: "${env.dist_rapid_suite}",overwrite:true) {
+            ant.copy(todir: "${env.dist_rapid_suite}", overwrite: true) {
                 ant.fileset(dir: "$env.rapid_insight/solutions/timeSeries")
             }
         }

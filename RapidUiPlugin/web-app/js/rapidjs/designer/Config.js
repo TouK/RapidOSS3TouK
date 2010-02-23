@@ -398,6 +398,25 @@ YAHOO.rapidjs.designer.Config = new function() {
                 }
             }
         },
+        "FusionChart":{
+            "poll":{
+                descr:"Refreshes component's data with its already saved request url and parameters.",
+                args:{}
+            },
+            "refresh":{
+                descr:"Refreshes component's data with the given request parameters.",
+                args:{
+                    "params":"JavaScript object containing request parameter key-value pairs",
+                    "title":"Component's new title"
+                }
+            },
+            "setTitle":{
+                descr:"Changes component's title.",
+                args:{
+                    "title":"Component's new title"
+                }
+            }
+        },
         "FlexLineChart":{
             "poll":{
                 descr:"Refreshes component's data with its already saved request url and parameters.",
@@ -669,6 +688,14 @@ YAHOO.rapidjs.designer.Config = new function() {
                 descr:"Fired when a chart slice is clicked",
                 params:{
                     "params.data":"JavaScript object representing the slice data"
+                }
+            }
+        },
+        "FusionChart":{
+            "itemClicked":{
+                descr:"Fired when a chart set is clicked",
+                params:{
+                    "params.data":"JavaScript object representing the set data"
                 }
             }
         },

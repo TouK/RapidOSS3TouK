@@ -46,6 +46,7 @@ class UiTab extends UiElmnt {
                                                 [designerType: "SearchList", isMultiple: true],
                                                 [designerType: "TreeGrid", isMultiple: true],
                                                 [designerType: "Html", isMultiple: true],
+                                                [designerType: "FusionChart", isMultiple: true],
                                                 [designerType: "FlexPieChart", isMultiple: true],
                                                 [designerType: "FlexLineChart", isMultiple: true],
                                                 [designerType: "PieChart", isMultiple: true],

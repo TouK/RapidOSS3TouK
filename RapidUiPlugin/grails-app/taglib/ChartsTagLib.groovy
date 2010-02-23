@@ -169,6 +169,52 @@ class ChartsTagLib {
         }"""
     }
 
+    static def fFusionChart(attrs, bodyString) {
+        def configStr = getFusionConfig(attrs);
+        def onItemClick = attrs["onItemClicked"];
+        def itemClickJs = "";
+        if (onItemClick != null) {
+            getActionsArray(onItemClick).each {actionName ->
+                itemClickJs += """
+                   fusionChart.events['itemClicked'].subscribe(function(data){
+                       var params = {data:data};
+                       YAHOO.rapidjs.Actions['${actionName}'].execute(params);
+                    }, this, true);
+                """
+            }
+
+        }
+        return """
+           <script type="text/javascript">
+               var chartConfig = ${configStr};
+               var container = YAHOO.ext.DomHelper.append(document.body, {tag:'div'});
+               var fusionChart = new YAHOO.rapidjs.component.FusionChart(container, chartConfig);
+               ${itemClickJs}
+               if(fusionChart.pollingInterval > 0){
+                   YAHOO.util.Event.onDOMReady(function(){
+                        this.poll();
+                   }, fusionChart, true)
+               }
+           </script>
+        """;
+    }
+
+    def fusionChart = {attrs, body ->
+        out << fFusionChart(attrs, "");
+    }
+
+    static def getFusionConfig(attrs) {
+        return """{
+            id:'${attrs["id"]}',
+            url:'${attrs["url"]}',
+            ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
+            ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
+            ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+            type:'${attrs["type"]}'
+        }"""
+    }
+    
+
     static def getActionsArray(actionAttribute) {
         def actions = [];
         if (actionAttribute instanceof List) {

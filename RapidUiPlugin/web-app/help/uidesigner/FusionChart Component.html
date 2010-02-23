@@ -1,0 +1,27 @@
+FusionChart Component is an animated flash charting component which offers many types of 2D/3D charts including line, area, bar, column, pie, doughnut (donut), combination, scatter, bubble, scroll charts etc, which make use of <a href="http://www.fusioncharts.com/flex/" rel="nofollow" target="_blank">Fusion Chart for Flex</a> charting framework. <img src="download/attachments/3903510/ScreenShot006.png" align="absmiddle" border="0" height="593" width="917" /><br/>
+&nbsp;</p>
+
+<p>There are 59 different types of charts. The functional and cosmetic aspects of each chart can be extensively customized using the XML api exposed by FusionCharts. You can get more detailed information of XML api at <a href="http://www.fusioncharts.com/flex/docs/" rel="nofollow" target="_blank">online documentation</a> page of FusionCharts.</p>
+
+<h4><a name="FusionChartComponent-AvailableProperties"></a>Available Properties</h4>
+
+<p><b>name</b>: Name of the component. Default is Timeline.<br/>
+<b>title</b> (Optional): Timeline component title<br/>
+
+<b>type</b> (Required): Type of the chart<br/>
+<b>url</b> (Required): The default URL to be used for requests to the server to retrieve the data.<br/>
+<b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
+<b>timeout</b> (Optional): The time interval in seconds to wait the server request completes successfully before aborting.</p>
+
+<h4><a name="FusionChartComponent-AvailableActions"></a>Available Actions</h4>
+
+<p><b>Clone</b>: Creates a copy of the component with same properties<br/>
+<b>Delete</b>: Deletes the component</p>
+
+<h4><a name="FusionChartComponent-AvailableEvents"></a>Available Events</h4>
+
+<p><b>onItemClick</b>: Event fired when a chart item (slice, bar, column, etc.) is clicked. Available parameters:</p>
+<ul>
+
+	<li>params.data: JavaScript object representing series data.</li>
+</ul>

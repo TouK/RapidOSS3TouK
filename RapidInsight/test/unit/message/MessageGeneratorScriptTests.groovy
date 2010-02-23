@@ -313,8 +313,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(rsRiEventClass.countHits("alias:*"), 2)
 
         //run the script
-        rsLookupClass.add(name:"messageGeneratorMaxEventCreateInsertedAt",value:0);
-        rsLookupClass.add(name:"messageGeneratorMaxEventClearInsertedAt",value:0);
+        rsLookupClass.add(name:"messageGeneratorMaxEventCreateTime",value:0);
+        rsLookupClass.add(name:"messageGeneratorMaxEventClearTime",value:0);
 
         CmdbScript.runScript(script, [logger:TestLogUtils.log])
         assertEquals(RsMessage.countHits("alias:*"), 2)

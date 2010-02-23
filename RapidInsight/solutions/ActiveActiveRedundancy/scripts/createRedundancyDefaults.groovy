@@ -31,14 +31,14 @@ scriptsToAdd.add([name:"createRedundancyConnections",logFileOwn:true])
 //synchronization scripts
 scriptsToAdd.add([name:"updatedObjects", logFileOwn:true]);
 scriptsToAdd.add([name:"synchronizeObjects", logFileOwn:true]);
-scriptsToAdd.add([name:"synchronizeUiObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:300,logFileOwn:true]);
-scriptsToAdd.add([name:"synchronizeDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:600,logFileOwn:true]);
+scriptsToAdd.add([name:"synchronizeUiObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
+scriptsToAdd.add([name:"synchronizeDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:120,logFileOwn:true]);
 scriptsToAdd.add([name:"clearExpiredDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:360000*12,logFileOwn:true]);
 
 //master switching scripts
 scriptsToAdd.add([name:"enableLocalMaster", logFileOwn:true]);
 scriptsToAdd.add([name:"disableLocalMaster", logFileOwn:true]);
-scriptsToAdd.add([name:"redundancyMasterChecker", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
+scriptsToAdd.add([name:"redundancyMasterSwitcher", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 
 
 scriptsToAdd.each{  scriptParams ->

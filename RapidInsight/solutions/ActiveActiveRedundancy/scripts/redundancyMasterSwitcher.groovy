@@ -2,7 +2,7 @@ import datasource.HttpDatasource;
 
 OUTPUT="";
 logger.warn("---------------------------------------------------")
-logWarn("redundancyMasterChecker starts")
+logWarn("redundancyMasterSwitcher starts")
 
 def localIsMasterLookup=RedundancyLookup.get(name:"isMaster");
 localIsMaster=false;
@@ -31,6 +31,10 @@ if(!localIsMaster)
     else
     {
         logWarn("Found Remote master ${remoteMasterDs.name}, Local Server will stay as slave");
+        if(localIsMasterLookup==null)
+        {
+            makeLocalSlave();
+        }
         syncWithRemoteMaster(remoteMasterDs);
     }
 }
@@ -40,7 +44,7 @@ else
 }
 
 
-logWarn("Ended redundancyMasterChecker");
+logWarn("Ended redundancyMasterSwitcher");
 
 return OUTPUT;
 
@@ -49,6 +53,12 @@ def makeLocalMaster()
     logger.warn("Making local server master");
     script.CmdbScript.runScript("enableLocalMaster",[:]);
     logger.warn("Making local server master done");    
+}
+def makeLocalSlave()
+{
+    logger.warn("Making local server slave");
+    script.CmdbScript.runScript("disableLocalMaster",[:]);
+    logger.warn("Making local server slave done");
 }
 def syncWithRemoteMaster(ds)
 {
@@ -61,7 +71,7 @@ def syncWithRemoteMaster(ds)
 	requestParams.sort="rsUpdatedAt";
 	requestParams.order="asc";
 	requestParams.searchIn="RsLookup";
-	requestParams.max="1";
+	requestParams.max="10";
 	requestParams.query="name:messageGenerator*";
 
     def searchUrl="script/run/updatedObjects";
@@ -72,13 +82,13 @@ def syncWithRemoteMaster(ds)
     }
     catch(e)
     {
-        logWarn("Remote server ${ds.name} is not accessible. Reason ${e}");
+        logWarn("Error : Could not Synchronize with Master ${ds.name}: Remote server ${ds.name} is not accessible. Reason ${e}");
         return;
     }
 
     if(xmlResult.indexOf("<Errors>")>=0)
     {
-        logWarn(" Xml Error : Master response From ${ds.name} : ${xmlResult.toString()}");
+        logWarn(" Xml Error : Could not Synchronize with Master ${ds.name}: Master response From ${ds.name} : ${xmlResult.toString()}");
         return;
     }
 
@@ -91,7 +101,7 @@ def syncWithRemoteMaster(ds)
         RsLookup.add(props);
     }
 
-    logger.info("Synchronization with Master ${ds.name} ends");
+    logger.warn("Synchronization with Master ${ds.name} ends");
     
 }
 
@@ -134,7 +144,7 @@ def isRemoteServerMaster(ds)
     }
     catch(e)
     {
-        logWarn("Remote server ${ds.name} is not accessible. Reason ${e}");
+        logWarn("Error: Remote server ${ds.name} is not accessible. Reason ${e}");
         return false;
     }
 

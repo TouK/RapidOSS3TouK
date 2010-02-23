@@ -5,7 +5,7 @@ logger.info("---------------------------------------------------")
 logWarn("disableLocalMaster starts")
 
 logWarn("Saving isMaster : false to RedundancyLookup");
-RsLookup.add(name:"isMaster",value:"false");
+RedundancyLookup.add(name:"isMaster",value:"false");
 
 def scriptsToUpdate=[];
 scriptsToUpdate.add(CmdbScript.get(name:"messageGenerator"));

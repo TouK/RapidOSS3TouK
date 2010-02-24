@@ -51,7 +51,7 @@
                            <g:each in="${queryGroups}" var="group">
                                  <optgroup label="${group.name}">
                                   <g:each in="${group.queries}" var="query">
-                                     <g:if test="${query.type==filterType}">
+                                     <g:if test="${query.type==filterType && (query.username == username || query.isPublic)}">
                                          <g:if test="${rsMessageRule.searchQueryId==query.id}">
                                             <option value="${query.id}" selected="selected">${query.name}</option>
                                          </g:if>

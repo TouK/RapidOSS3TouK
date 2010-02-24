@@ -169,7 +169,7 @@
 			</Properties>
 		</Model>          
     </Models>
-	<Relations>  HostsServices
+	<Relations>
         <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
         <Relation From="RsComputerSystem" To="RsApplication" Name="hostsServices" ReverseName="hostedBy" Type="OneToMany"></Relation>
         <Relation From="RsTopologyObject" To="RsTopologyObject" Name="childObjects" ReverseName="parentObjects" Type="ManyToMany"></Relation>

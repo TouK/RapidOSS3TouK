@@ -19,20 +19,20 @@ builder.MaintenanceData(){
     }
     builder.Schedules(){
         schedules.each{schedule ->
-            def maintStart = schedule.type == RsInMaintenanceSchedule.RUN_ONCE ? formatter1.format(schedule.maintStarting) : formatter2.format(schedule.maintStarting)
-            def maintEnd = schedule.type == RsInMaintenanceSchedule.RUN_ONCE ? formatter1.format(schedule.maintEnding) : formatter2.format(schedule.maintEnding)
-            def schedStart = schedule.type == RsInMaintenanceSchedule.RUN_ONCE ? "" : formatter3.format(schedule.schedStarting)
-            def schedEnd = schedule.type == RsInMaintenanceSchedule.RUN_ONCE ? "" : formatter3.format(schedule.schedEnding)
+            def maintStart = schedule.schedType == RsInMaintenanceSchedule.RUN_ONCE ? formatter1.format(schedule.maintStarting) : formatter2.format(schedule.maintStarting)
+            def maintEnd = schedule.schedType == RsInMaintenanceSchedule.RUN_ONCE ? formatter1.format(schedule.maintEnding) : formatter2.format(schedule.maintEnding)
+            def schedStart = schedule.schedType == RsInMaintenanceSchedule.RUN_ONCE ? "" : formatter3.format(schedule.schedStarting)
+            def schedEnd = schedule.schedType == RsInMaintenanceSchedule.RUN_ONCE ? "" : formatter3.format(schedule.schedEnding)
 
-            builder.Schedule(id:schedule.id, type:getTypeString(schedule.type), maintStarting:maintStart, maintEnding:maintEnd, schedStarting:schedStart, schedEnding:schedEnd, details:getDetails(schedule));
+            builder.Schedule(id:schedule.id, type:getTypeString(schedule.schedType), maintStarting:maintStart, maintEnding:maintEnd, schedStarting:schedStart, schedEnding:schedEnd, details:getDetails(schedule));
         }
     }
 }
 def getDetails(schedule){
-    if(schedule.type == RsInMaintenanceSchedule.MONTHLY_BY_DATE){
+    if(schedule.schedType == RsInMaintenanceSchedule.MONTHLY_BY_DATE){
         return "Days Of Month: ${schedule.daysOfMonth}";
     }
-    else if(schedule.type == RsInMaintenanceSchedule.WEEKLY){
+    else if(schedule.schedType == RsInMaintenanceSchedule.WEEKLY){
         def days = schedule.daysOfWeek.split(",");
         def convertedDays = [];
         days.each{day ->

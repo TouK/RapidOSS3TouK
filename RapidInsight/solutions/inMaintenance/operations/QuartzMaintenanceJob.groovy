@@ -7,7 +7,7 @@ class QuartzMaintenanceJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) {
         Map scheduleProps = (Map) jobExecutionContext.getJobDetail().getJobDataMap().get("scheduleProps")
         Date ending;
-        if (scheduleProps.type == RsInMaintenanceSchedule.RUN_ONCE) {
+        if (scheduleProps.schedType == RsInMaintenanceSchedule.RUN_ONCE) {
             ending = scheduleProps.maintEnding;
         }
         else {

@@ -63,7 +63,7 @@ else if (type == "schedule")
     }
     else {
         def scheduleType = params.scheduleType.toInteger();
-        def props = [type: scheduleType, objectName: params.objectName, info: params.info]
+        def props = [schedType: scheduleType, objectName: params.objectName, info: params.info]
         if (scheduleType == RsInMaintenanceSchedule.RUN_ONCE) {
             props.maintStarting = getDate(params.starting, params.starting_hour.toInteger(), params.starting_minute.toInteger());
             props.maintEnding = getDate(params.ending, params.ending_hour.toInteger(), params.ending_minute.toInteger());
@@ -114,12 +114,17 @@ else if (type == "schedule")
             return sw.toString();
         }
         else {
-            def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
-            if (schedule.hasErrors()) {
-                return web.errorsToXml(schedule.errors)
+            try {
+                def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
+                if (schedule.hasErrors()) {
+                    return web.errorsToXml(schedule.errors)
+                }
+                else {
+                    return ControllerUtils.convertSuccessToXml("shedule for ${params.objectName} created")
+                }
             }
-            else {
-                return ControllerUtils.convertSuccessToXml("shedule for ${params.objectName} created")
+            catch (e) {
+                return web.errorMessagesToXml([e.getMessage()])
             }
         }
     }

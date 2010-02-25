@@ -1,13 +1,13 @@
 import com.ifountain.core.domain.annotations.*;
 
 class RsInMaintenanceSchedule {
-
-    //AUTO_GENERATED_CODE
     public static final long RUN_ONCE = 1;
     public static final long DAILY = 2;
     public static final long WEEKLY = 3;
     public static final long MONTHLY_BY_DATE = 4;
     public static final long MONTHLY_BY_DAY = 5;
+    
+    //AUTO_GENERATED_CODE
     static searchable = {
         except = ["errors", "__operation_class__", "__dynamic_property_storage__"];
 
@@ -17,7 +17,7 @@ class RsInMaintenanceSchedule {
     };
     static datasources = ["RCMDB": ["keys": ["id": ["nameInDs": "id"]]]]
 
-    Long type = 0;
+    Long schedType = 0;
     Long startWith = 0;
     Long repeatEvery = 0;
 
@@ -35,8 +35,6 @@ class RsInMaintenanceSchedule {
     Date schedStarting = new Date(0);
 
     Date schedEnding = new Date(0);
-
-    Boolean active = false;
 
     org.springframework.validation.Errors errors;
 
@@ -58,7 +56,7 @@ class RsInMaintenanceSchedule {
     static constraints = {
         objectName(blank: true, nullable: true)
 
-        type(inList: [RUN_ONCE, DAILY, WEEKLY, MONTHLY_BY_DATE, MONTHLY_BY_DAY])
+        schedType(inList: [RUN_ONCE, DAILY, WEEKLY, MONTHLY_BY_DATE, MONTHLY_BY_DAY])
         startWith(nullable: true)
         repeatEvery(nullable: true)
         info(blank: true, nullable: true)
@@ -67,24 +65,11 @@ class RsInMaintenanceSchedule {
 
         maintStarting(nullable: true)
 
-        maintEnding(nullable: true, validator: {val, obj ->
-            if (val.compareTo(obj.maintStarting) < 0) {
-                return ["default.not.greater.than.or.equalto", obj.maintStarting]
-            }
-        })
+        maintEnding(nullable: true)
 
         schedStarting(nullable: true)
 
-        schedEnding(nullable: true, validator: {val, obj ->
-            if (obj.type != RUN_ONCE && val.compareTo(new Date(System.currentTimeMillis())) <= 0) {
-                return ["default.not.greater.than", "current time"]
-            }
-            if (val.compareTo(obj.schedStarting) < 0) {
-                return ["default.not.greater.than.or.equalto", obj.schedStarting]
-            }
-        })
-
-        active(nullable: true)
+        schedEnding(nullable: true)
 
         errors(nullable: true)
 

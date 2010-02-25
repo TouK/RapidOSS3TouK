@@ -1,33 +1,39 @@
 <Rsmodel>
-	<Models>
-		<Model Name="RsInMaintenance" StorageType="FileAndMemory">
-   			<Properties>
-      			<Property Name="objectName" Type="string" IsKey="true"/>
+    <Models>
+        <Model Name="RsInMaintenance" StorageType="FileAndMemory">
+            <Properties>
+                <Property Name="objectName" Type="string" IsKey="true"/>
                 <Property Name="source" Type="string"/>
                 <Property Name="info" Type="string"/>
                 <Property Name="starting" Type="date"/>
                 <Property Name="ending" Type="date"/>
-   			</Properties>
-		</Model>
-		<Model Name="RsHistoricalInMaintenance" StorageType="File">
-   			<Properties>
-      			<Property Name="objectName" Type="string"/>
+            </Properties>
+        </Model>
+        <Model Name="RsHistoricalInMaintenance" StorageType="File">
+            <Properties>
+                <Property Name="objectName" Type="string"/>
                 <Property Name="source" Type="string"/>
                 <Property Name="info" Type="string"/>
                 <Property Name="starting" Type="date"/>
                 <Property Name="ending" Type="date"/>
-   			</Properties>
-		</Model>
+            </Properties>
+        </Model>
         <Model Name="RsInMaintenanceSchedule" StorageType="FileAndMemory">
-   			<Properties>
-      			<Property Name="objectName" Type="string"/>
+            <Properties>
+                <Property Name="objectName" Type="string"/>
+                <Property Name="schedType" Type="number"/>
                 <Property Name="info" Type="string"/>
-                <Property Name="starting" Type="date"/>
-      			<Property Name="ending" Type="date"/>
-      			<Property Name="active" Type="boolean"/>
-   			</Properties>
-		</Model>
+                <Property Name="maintStarting" Type="date"/>
+                <Property Name="maintEnding" Type="date"/>
+                <Property Name="schedStarting" Type="date"/>
+                <Property Name="schedEnding" Type="date"/>
+                <Property Name="daysOfWeek" Type="string"/>
+                <Property Name="daysOfMonth" Type="string"/>
+                <Property Name="startWith" Type="number"/>
+                <Property Name="repeatEvery" Type="number"/>
+            </Properties>
+        </Model>
     </Models>
-	<Relations>
+    <Relations>
     </Relations>
 </Rsmodel>

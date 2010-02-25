@@ -90,28 +90,28 @@ class SearchQueryController {
     }
 
     def save = {
-        if (params.isPublic == 'true' && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+        def queryParams = ControllerUtils.getClassProperties(params, SearchQuery)
+        if (queryParams.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
             addError("searchquery.not.authorized", []);
             render(text: errorsToXml(this.errors), contentType: "text/xml")
             return;
         }
-        def groupType = params.type;
-        if (params.group == "" || params.group.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
+        def groupType = queryParams.type;
+        def searchGroup = params.group;
+        if (searchGroup == "" || searchGroup.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES))
         {
-            params.group = SearchQueryGroup.MY_QUERIES;
+            searchGroup = SearchQueryGroup.MY_QUERIES;
             groupType = SearchQueryGroup.DEFAULT_TYPE
         }
-        def group = SearchQueryGroup.get(name: params.group, type: groupType, username: session.username);
+        def group = SearchQueryGroup.get(name: searchGroup, type: groupType, username: session.username);
         if (group == null)
         {
-            group = SearchQueryGroup.get(name: params.group, type: groupType, username: RsUser.RSADMIN);
+            group = SearchQueryGroup.get(name: searchGroup, type: groupType, username: RsUser.RSADMIN);
             if (group == null || !group.isPublic) {
-                group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
+                group = SearchQueryGroup.add(name: searchGroup, username: session.username, type: groupType);
             }
         }
-        params["group"] = ["id": group.id];
-        params["group.id"] = "${group.id}".toString();
-        def queryParams = ControllerUtils.getClassProperties(params, SearchQuery)
+        queryParams["group"] = group;
         queryParams["username"] = queryParams.isPublic ? RsUser.RSADMIN : session.username;
         def searchQuery = SearchQuery.add(queryParams)
         if (!searchQuery.hasErrors()) {

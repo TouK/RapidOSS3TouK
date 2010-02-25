@@ -51,15 +51,27 @@ class UiSearchGridColumn extends UiColumn {
         return metaData;
     }
 
+    protected void populateStringAttributes(GPathResult node, UiElmnt parent) {
+        super.populateStringAttributes(node, parent);
+        def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "SearchGridColumnImages"};
+        if (imagesNode."${UIELEMENT_TAG}".size() == 0)
+        {
+            attributesAsString["type"] = "text";
+        }
+        else
+        {
+            attributesAsString["type"] = "image";
+        }
+    }
+
     protected void addChildElements(GPathResult node, UiElmnt parent) {
         super.addChildElements(node, parent);
-        if (node.@type.toString() == "image") {
-            def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "SearchGridColumnImages"};
-            removeUnneccessaryAttributes(imagesNode);
-            imagesNode."${UIELEMENT_TAG}".each {
-                create(it, this);
-            }
+        def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "SearchGridColumnImages"};
+        imagesNode."${UIELEMENT_TAG}".each {
+            create(it, this);
         }
+        removeUnneccessaryAttributes(imagesNode);
+
     }
 
     public List getImages() {

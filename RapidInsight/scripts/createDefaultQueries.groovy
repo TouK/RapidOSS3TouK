@@ -38,5 +38,3 @@ SearchQuery.add(group: defaultEventGroup, name: "Minor Events", query: "severity
 SearchQuery.add(group: defaultEventGroup, name: "Warning Events", query: "severity:2", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event", searchClass:'RsEvent');
 SearchQuery.add(group: defaultEventGroup, name: "Indeterminate Events", query: "severity:1", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event", searchClass:'RsEvent');
 SearchQuery.add(group: defaultEventGroup, name: "Normal Events", query: "severity:0", sortProperty: "changedAt", sortOrder: "desc", username:adminUser, isPublic:true, type:"event", searchClass:'RsEvent');
-
-def defaultMapGroup= MapGroup.add(groupName: "Default", username: adminUser,isPublic:true);

@@ -44,6 +44,7 @@
                 <UiElement label="Unacknowledge" visible="params.data.acknowledged == 'true'" designerType="MenuItem" name="unacknowledge"/>
                 <UiElement label="Take Ownership" visible="true" designerType="MenuItem" name="takeOwnership"/>
                 <UiElement label="Release Ownership" visible="true" designerType="MenuItem" name="releaseOwnership"/>
+                <UiElement label="In Maintenance" visible="true" designerType="MenuItem" name="inMaintenance"/>
               </UiElement>
               <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
             </UiElement>
@@ -204,6 +205,11 @@
               </UiElement>
               <UiElement designerType="RequestParameters">
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
+              </UiElement>
+            </UiElement>
+            <UiElement javascript="window.inMaintenanceForm.show(params.data.elementName)" condition="" designerType="ExecuteJavascriptAction" name="ExecuteJavascriptAction1">
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="eventsGrid" event="inMaintenance" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
           </UiElement>
@@ -891,25 +897,25 @@
               </UiElement>
               <UiElement designerType="SearchGridColumns">
                 <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="621" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="629" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="623" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="631" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="625" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="633" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="627" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="635" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="629" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="637" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="631" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="639" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="633" designer_item_tab="609" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="641" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -929,10 +935,10 @@
                 <UiElement visible="params.data.nodeType == 'map'" expanded="images/rapidjs/component/tools/filter.png" designerType="RootImage" collapsed="images/rapidjs/component/tools/filter.png"/>
               </UiElement>
               <UiElement designerType="TreeGridMenuItems">
-                <UiElement label="Delete" visible="params.data.actionsAllowed == 'true'   &amp;&amp; params.data.nodeType == 'map'" designerType="MenuItem" name="deleteMap"/>
-                <UiElement label="Delete" visible="params.data.actionsAllowed == 'true' &amp;&amp; params.data.name != 'Default' &amp;&amp; params.data.nodeType == 'group'" designerType="MenuItem" name="deleteMapGroup"/>
-                <UiElement label="Update" visible="params.data.actionsAllowed == 'true'   &amp;&amp; params.data.nodeType == 'map'" designerType="MenuItem" name="mapUpdate"/>
-                <UiElement label="Update" visible="params.data.actionsAllowed == 'true' &amp;&amp; params.data.name != 'Default' &amp;&amp; params.data.nodeType == 'group'" designerType="MenuItem" name="mapGroupUpdate"/>
+                <UiElement label="Delete" visible="params.data.nodeType == 'map' &amp;&amp; (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')" designerType="MenuItem" name="deleteMap"/>
+                <UiElement label="Delete" visible="params.data.nodeType == 'group' &amp;&amp; params.data.name != 'My Maps' &amp;&amp; (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')" designerType="MenuItem" name="deleteMapGroup"/>
+                <UiElement label="Update" visible="params.data.nodeType == 'map' &amp;&amp; (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')" designerType="MenuItem" name="mapUpdate"/>
+                <UiElement label="Update" visible="params.data.nodeType == 'group' &amp;&amp; params.data.name != 'My Maps' &amp;&amp; (window.currentUserHasRole('Administrator') || params.data.isPublic != 'true')" designerType="MenuItem" name="mapGroupUpdate"/>
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
@@ -967,8 +973,8 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="objectDetails" designerType="Dialog" width="850" y="85" x="50"/>
             <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
-            <UiElement resizable="false" title="Save Map" height="135" component="saveMapForm" designerType="Dialog" width="385"/>
-            <UiElement resizable="false" title="Save Group" height="110" component="saveMapGroupForm" designerType="Dialog" width="330"/>
+            <UiElement resizable="false" title="Save Map" height="165" component="saveMapForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save Group" height="165" component="saveMapGroupForm" designerType="Dialog" width="330"/>
             <UiElement resizable="false" title="" height="400" component="eventsGrid" designerType="Dialog" width="800"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -1092,25 +1098,25 @@
               </UiElement>
               <UiElement designerType="SearchGridColumns">
                 <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="759" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="768" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="761" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="770" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="763" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="772" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="765" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="774" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="767" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="776" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="769" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="778" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="771" designer_item_tab="747" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="780" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -1253,25 +1259,25 @@
               </UiElement>
               <UiElement designerType="SearchGridColumns">
                 <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="871" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="881" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="873" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="883" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="875" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="885" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="877" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="887" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="879" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="889" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="881" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="891" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
                 <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="883" designer_item_tab="859" designer_name="Images" designerType="SearchGridColumnImages"/>
+                  <UiElement id="893" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>

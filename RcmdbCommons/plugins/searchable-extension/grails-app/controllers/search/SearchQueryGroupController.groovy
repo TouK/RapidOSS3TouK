@@ -80,15 +80,15 @@ class SearchQueryGroupController {
     }
 
     def save = {
-        if (params.isPublic == 'true' && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+        def queryGroupParams = ControllerUtils.getClassProperties(params, SearchQueryGroup)
+        if (queryGroupParams.isPublic && !RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
             addError("searchgroup.not.authorized", []);
             render(text: errorsToXml(this.errors), contentType: "text/xml")
             return;
         }
-        if (params.name && params.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
-            params.type = SearchQueryGroup.DEFAULT_TYPE;
+        if (queryGroupParams.name && queryGroupParams.name.equalsIgnoreCase(SearchQueryGroup.MY_QUERIES)) {
+            queryGroupParams.type = SearchQueryGroup.DEFAULT_TYPE;
         }
-        def queryGroupParams = ControllerUtils.getClassProperties(params, SearchQueryGroup)
         queryGroupParams["username"] = queryGroupParams.isPublic ? RsUser.RSADMIN : session.username;
         def searchQueryGroup = SearchQueryGroup.add(queryGroupParams)
         if (!searchQueryGroup.hasErrors()) {

@@ -32,7 +32,7 @@ class MapGroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDo
         }
         else
         {
-            return MapGroup.searchEvery("username:${username.exactQuery()} AND isPublic:false");
+            return MapGroup.searchEvery("username:${username.exactQuery()}");
         }
     }
 

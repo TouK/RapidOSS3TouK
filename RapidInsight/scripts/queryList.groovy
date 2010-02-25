@@ -33,7 +33,7 @@ def username=web.session.username;
 def writer = new StringWriter();
 def queryBuilder = new MarkupBuilder(writer);
 
-SearchQueryGroup.add(name:SearchQueryGroup.MY_QUERIES, username:username, type:SearchQueryGroup.DEFAULT_TYPE);
+SearchQueryGroup.add(name:SearchQueryGroup.MY_QUERIES, username:username, type:SearchQueryGroup.DEFAULT_TYPE, expanded:true);
 def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${username.exactQuery()}) )");
 queryBuilder.Filters
 {

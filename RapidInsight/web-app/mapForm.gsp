@@ -1,4 +1,4 @@
-<%@ page import="ui.map.TopoMap; ui.map.MapGroup" %>
+<%@ page import="auth.Role; ui.map.TopoMap; ui.map.MapGroup" %>
 <%
     def mode = params.mode;
     def userName = session.username;
@@ -20,15 +20,16 @@
         def mapGroups = MapGroup.getSaveGroupsForUser(userName);
         def groupName = params.groupName ? params.groupName : mode == 'edit' ? topoMap.group.groupName : '';
         def mapName = params.mapName ? params.mapName : mode == 'edit' ? topoMap.mapName : '';
+        def isPublic = params.isPublic ? params.isPublic : mode == 'edit' ? topoMap.isPublic : false;
         def nodes = params.nodes ? params.nodes : ''
-        def nodePropertyList=params.nodePropertyList? params.nodePropertyList:''
-        def mapProperties=params.mapProperties? params.mapProperties:''
-        def mapPropertyList=params.mapPropertyList? params.mapPropertyList:''
+        def nodePropertyList = params.nodePropertyList ? params.nodePropertyList : ''
+        def mapProperties = params.mapProperties ? params.mapProperties : ''
+        def mapPropertyList = params.mapPropertyList ? params.mapPropertyList : ''
 
 
         def layout = params.layout ? params.layout : mode == 'edit' ? topoMap.layout : '0'
 
-        def url = mode == 'edit' ? "topoMap/update?format=xml":"topoMap/save?format=xml"
+        def url = mode == 'edit' ? "topoMap/update?format=xml" : "topoMap/save?format=xml"
     %>
 
     <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshMapTree">
@@ -45,10 +46,13 @@
             </select>
             </td></tr>
             <tr><td width="50%"><label>Map Name:</label></td><td width="50%"><input type="textbox" name="mapName" style="width:175px" value="${mapName.encodeAsHTML()}"/></td></tr>
+            <jsec:hasRole name="${Role.ADMINISTRATOR}">
+                <tr><td width="50%"><label>Public:</label></td><td width="50%"><g:checkBox name="isPublic" value="${isPublic}"></g:checkBox></td></tr>
+            </jsec:hasRole>
         </table>
         <input type="hidden" name="nodes" value="${nodes.encodeAsHTML()}"/>
         <input type="hidden" name="layout" value="${layout.encodeAsHTML()}"/>
-        <input type="hidden" name="id" value="${mode == 'edit'? topoMap.id : ''}"/>
+        <input type="hidden" name="id" value="${mode == 'edit' ? topoMap.id : ''}"/>
         <input type="hidden" name="mapProperties" value="${mapProperties.encodeAsHTML()}"/>
         <input type="hidden" name="mapPropertyList" value="${mapPropertyList.encodeAsHTML()}"/>
         <input type="hidden" name="nodePropertyList" value="${nodePropertyList.encodeAsHTML()}"/>

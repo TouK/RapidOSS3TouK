@@ -33,6 +33,7 @@ class MapGroup {
 
     String groupName ="";
     Boolean isPublic = false;
+    Boolean expanded = false;
 
     Long id ;
 
@@ -54,6 +55,7 @@ class MapGroup {
     static constraints={
     username(blank:false,nullable:false)
     isPublic(nullable:true)
+    expanded(nullable:true)
 
      groupName(blank:false,nullable:false,key:["username"])
 

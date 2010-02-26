@@ -1,7 +1,8 @@
 package com.ifountain.rcmdb.test.util
 
+import com.ifountain.rcmdb.transaction.RapidCmdbTransactionManager
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import application.RapidApplicationOperations
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -31,6 +32,6 @@ class RapidApplicationOperationsMock extends com.ifountain.rcmdb.domain.operatio
     }
 
     public static def executeBatch(Closure closure) {
-        RapidApplicationOperations.executeBatch(closure)
+        RapidCmdbTransactionManager.executeWithGlobalTransaction(closure);
     }
 }

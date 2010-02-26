@@ -4,7 +4,7 @@
       <UiElement designerType="Tabs">
         <UiElement title="Events" contentFile="pageContents/_events.gsp" designerType="Tab" name="events">
           <UiElement designerType="Components">
-            <UiElement title="Events" defaultSearchClass="RsEvent" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsEvent" title="Events" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchGridImages">
                 <UiElement visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png" designerType="Image"/>
                 <UiElement visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png" designerType="Image"/>
@@ -14,26 +14,26 @@
                 <UiElement visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png" designerType="Image"/>
               </UiElement>
               <UiElement designerType="SearchGridColumns">
-                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="16" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="18" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="20" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="22" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="24" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="count" columnIndex="4" colLabel="Count" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="26" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="source" columnIndex="5" colLabel="Source" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="28" designer_item_tab="4" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" width="120" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -50,7 +50,7 @@
             </UiElement>
             <UiElement title="Saved Queries" contentPath="Filter" rootTag="Filters" designerType="TreeGrid" name="filterTree" expandAttribute="expanded" keyAttribute="id" pollingInterval="0" expanded="false" url="script/run/queryList?format=xml&amp;type=event">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" width="248" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -67,23 +67,23 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="saveQueryForm"/>
-            <UiElement title="" designerType="Html" name="saveQueryGroupForm"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="saveQueryForm" designerType="Html"/>
+            <UiElement title="" name="saveQueryGroupForm" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="eventsGrid" designerType="CenterUnit"/>
-            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" width="255" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="245" component="saveQueryForm" designerType="Dialog" width="385"/>
-            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
+            <UiElement resizable="false" title="Save query" height="245" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="eventsGrid" condition="params.data.nodeType == 'filter'" function="setQueryWithView" designerType="FunctionAction" name="setQueryAction">
+            <UiElement condition="params.data.nodeType == 'filter'" component="eventsGrid" function="setQueryWithView" name="setQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query " designerType="FunctionArgument"/>
                 <UiElement value="params.data.viewName" designerType="FunctionArgument"/>
@@ -94,7 +94,7 @@
                 <UiElement type="Component event" component="filterTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -103,7 +103,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
@@ -112,7 +112,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, isPublic:params.data.isPublic, mode:'create', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -121,7 +121,7 @@
                 <UiElement type="Menu" component="filterTree" event="copyQuery" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="saveQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  viewName:YAHOO.rapidjs.Components['eventsGrid'].getCurrentView(), mode:'create', type:'event', searchClass: YAHOO.rapidjs.Components['eventsGrid'].getSearchClass(), searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -130,7 +130,7 @@
                 <UiElement type="Component event" component="eventsGrid" event="saveQueryClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="queryUpdateAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -139,7 +139,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryGroupForm" condition="" function="show" designerType="FunctionAction" name="queryGroupUpdateAction">
+            <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'event', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -148,7 +148,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryGroupUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="filterTree" condition="" function="poll" designerType="FunctionAction" name="refreshQueriesAction">
+            <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -216,7 +216,7 @@
         </UiElement>
         <UiElement title="Event Search" contentFile="pageContents/_eventSearch.gsp" designerType="Tab" name="eventSearch">
           <UiElement designerType="Components">
-            <UiElement title="Event Search" defaultSearchClass="RsEvent" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsEvent" defaultFields="name" contentPath="Object" rootTag="Objects" designerType="SearchList" name="eventList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsEvent" title="Event Search" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsEvent" defaultFields="name" contentPath="Object" rootTag="Objects" name="eventList" designerType="SearchList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchListFields">
                 <UiElement exp="params.data.rsAlias == 'RsRiEvent'" fields="elementName, identifier, owner, acknowledged, severity, source, changedAt" designerType="SearchListField"/>
               </UiElement>
@@ -249,7 +249,7 @@
             </UiElement>
             <UiElement title="Saved Queries" contentPath="Filter" rootTag="Filters" designerType="TreeGrid" name="filterTree" expandAttribute="expanded" keyAttribute="id" pollingInterval="0" expanded="false" url="script/run/queryList?format=xml&amp;type=event">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" width="248" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -266,23 +266,23 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="saveQueryForm"/>
-            <UiElement title="" designerType="Html" name="saveQueryGroupForm"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="saveQueryForm" designerType="Html"/>
+            <UiElement title="" name="saveQueryGroupForm" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="eventList" designerType="CenterUnit"/>
-            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" width="255" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" designerType="Dialog" width="385"/>
-            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
+            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="eventList" condition="params.data.nodeType == 'filter'" function="setQuery" designerType="FunctionAction" name="setQueryAction">
+            <UiElement condition="params.data.nodeType == 'filter'" component="eventList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
@@ -293,7 +293,7 @@
                 <UiElement type="Component event" component="filterTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -302,7 +302,7 @@
                 <UiElement type="Menu" component="eventList" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
@@ -311,7 +311,7 @@
                 <UiElement type="Menu" component="eventList" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -320,7 +320,7 @@
                 <UiElement type="Menu" component="filterTree" event="copyQuery" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="saveQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), searchClass: YAHOO.rapidjs.Components['eventList'].getSearchClass(), mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -329,7 +329,7 @@
                 <UiElement type="Component event" component="eventList" event="saveQueryClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="queryUpdateAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -338,7 +338,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryGroupForm" condition="" function="show" designerType="FunctionAction" name="queryGroupUpdateAction">
+            <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'event', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -347,7 +347,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryGroupUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="sort" designerType="FunctionAction" name="sortAscAction">
+            <UiElement condition="" component="eventList" function="sort" name="sortAscAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
@@ -356,7 +356,7 @@
                 <UiElement type="Menu" component="eventList" event="sortAsc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="sort" designerType="FunctionAction" name="sortDescAction">
+            <UiElement condition="" component="eventList" function="sort" name="sortDescAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
@@ -365,7 +365,7 @@
                 <UiElement type="Menu" component="eventList" event="sortDesc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendExceptQuery" designerType="FunctionAction" name="exceptAction">
+            <UiElement condition="" component="eventList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
@@ -374,7 +374,7 @@
                 <UiElement type="Menu" component="eventList" event="except" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -382,7 +382,7 @@
                 <UiElement type="Menu" component="eventList" event="greaterThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -390,7 +390,7 @@
                 <UiElement type="Menu" component="eventList" event="lessThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanOrEqualToAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
@@ -398,7 +398,7 @@
                 <UiElement type="Menu" component="eventList" event="greaterThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanOrEqualToAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
@@ -406,7 +406,7 @@
                 <UiElement type="Menu" component="eventList" event="lessThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="filterTree" condition="" function="poll" designerType="FunctionAction" name="refreshQueriesAction">
+            <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -469,7 +469,7 @@
         </UiElement>
         <UiElement title="Historical Events" contentFile="pageContents/_historicalEvents.gsp" designerType="Tab" name="historicalEvents">
           <UiElement designerType="Components">
-            <UiElement title="Historical Events" defaultSearchClass="RsHistoricalEvent" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsHistoricalEvent" defaultFields="name" contentPath="Object" rootTag="Objects" designerType="SearchList" name="eventList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsHistoricalEvent" title="Historical Events" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsHistoricalEvent" defaultFields="name" contentPath="Object" rootTag="Objects" name="eventList" designerType="SearchList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchListFields">
                 <UiElement exp="params.data.rsAlias == 'RsRiHistoricalEvent'" fields="elementName, identifier, owner, acknowledged, severity, source,changedAt,count" designerType="SearchListField"/>
               </UiElement>
@@ -500,7 +500,7 @@
             </UiElement>
             <UiElement title="Saved Queries" contentPath="Filter" rootTag="Filters" designerType="TreeGrid" name="filterTree" expandAttribute="expanded" keyAttribute="id" pollingInterval="0" expanded="false" url="script/run/queryList?format=xml&amp;type=historicalEvent">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" width="248" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -517,23 +517,23 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="saveQueryForm"/>
-            <UiElement title="" designerType="Html" name="saveQueryGroupForm"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="saveQueryForm" designerType="Html"/>
+            <UiElement title="" name="saveQueryGroupForm" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="eventList" designerType="CenterUnit"/>
-            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" width="255" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" designerType="Dialog" width="385"/>
-            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
+            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="eventList" condition="params.data.nodeType == 'filter'" function="setQuery" designerType="FunctionAction" name="setQueryAction">
+            <UiElement condition="params.data.nodeType == 'filter'" component="eventList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
@@ -544,7 +544,7 @@
                 <UiElement type="Component event" component="filterTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getHistoricalEventDetails.gsp', {id:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -553,7 +553,7 @@
                 <UiElement type="Menu" component="eventList" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
@@ -563,7 +563,7 @@
                 <UiElement type="Menu" component="eventList" event="propertyBrowse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass:params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -572,7 +572,7 @@
                 <UiElement type="Menu" component="filterTree" event="copyQuery" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="saveQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['eventList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['eventList'].getSortOrder(), searchClass:YAHOO.rapidjs.Components['eventList'].getSearchClass(),  mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -581,7 +581,7 @@
                 <UiElement type="Component event" component="eventList" event="saveQueryClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="queryUpdateAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -590,7 +590,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryGroupForm" condition="" function="show" designerType="FunctionAction" name="queryGroupUpdateAction">
+            <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'historicalEvent', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -599,7 +599,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryGroupUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="sort" designerType="FunctionAction" name="sortAscAction">
+            <UiElement condition="" component="eventList" function="sort" name="sortAscAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
@@ -608,7 +608,7 @@
                 <UiElement type="Menu" component="eventList" event="sortAsc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="sort" designerType="FunctionAction" name="sortDescAction">
+            <UiElement condition="" component="eventList" function="sort" name="sortDescAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
@@ -617,7 +617,7 @@
                 <UiElement type="Menu" component="eventList" event="sortDesc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendExceptQuery" designerType="FunctionAction" name="exceptAction">
+            <UiElement condition="" component="eventList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
@@ -626,7 +626,7 @@
                 <UiElement type="Menu" component="eventList" event="except" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -634,7 +634,7 @@
                 <UiElement type="Menu" component="eventList" event="greaterThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -642,7 +642,7 @@
                 <UiElement type="Menu" component="eventList" event="lessThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanOrEqualToAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
@@ -650,7 +650,7 @@
                 <UiElement type="Menu" component="eventList" event="greaterThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanOrEqualToAction">
+            <UiElement condition="" component="eventList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
@@ -658,7 +658,7 @@
                 <UiElement type="Menu" component="eventList" event="lessThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="filterTree" condition="" function="poll" designerType="FunctionAction" name="refreshQueriesAction">
+            <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -685,7 +685,7 @@
         </UiElement>
         <UiElement title="Inventory" contentFile="pageContents/_inventory.gsp" designerType="Tab" name="inventory">
           <UiElement designerType="Components">
-            <UiElement title="Inventory" defaultSearchClass="RsTopologyObject" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsTopologyObject" defaultFields="className,name, description, displayName, isManaged" contentPath="Object" rootTag="Objects" designerType="SearchList" name="inventoryList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsTopologyObject" title="Inventory" searchClassesUrl="script/run/getClassesForSearch?rootClass=RsTopologyObject" defaultFields="className,name, description, displayName, isManaged" contentPath="Object" rootTag="Objects" name="inventoryList" designerType="SearchList" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchListFields">
                 <UiElement exp="params.data.rsAlias == 'RsComputerSystem'" fields="className, name, vendor, model, managementServer, location, snmpAddress" designerType="SearchListField"/>
                 <UiElement exp="params.data.rsAlias == 'RsLink'" fields="className, name, a_ComputerSystemName, a_Name, z_ComputerSystemName,z_Name" designerType="SearchListField"/>
@@ -708,7 +708,7 @@
             </UiElement>
             <UiElement title="Saved Queries" contentPath="Filter" rootTag="Filters" designerType="TreeGrid" name="filterTree" expandAttribute="expanded" keyAttribute="id" pollingInterval="0" expanded="false" url="script/run/queryList?format=xml&amp;type=topology">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" sortBy="true" width="248" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -725,21 +725,21 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="saveQueryGroupForm"/>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="saveQueryForm"/>
+            <UiElement title="" name="saveQueryGroupForm" designerType="Html"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="saveQueryForm" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="inventoryList" designerType="CenterUnit"/>
-            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="filterTree" resize="true" gutter="0 5 0 0" width="255" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
+            <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" width="330" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="285" component="saveQueryForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save query" height="285" component="saveQueryForm" width="385" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="inventoryList" condition="params.data.nodeType == 'filter'" function="setQuery" designerType="FunctionAction" name="setQueryAction">
+            <UiElement condition="params.data.nodeType == 'filter'" component="inventoryList" function="setQuery" name="setQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.data.query" designerType="FunctionArgument"/>
                 <UiElement value="params.data.sortProperty" designerType="FunctionArgument"/>
@@ -750,7 +750,7 @@
                 <UiElement type="Component event" component="filterTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="appendExceptQuery" designerType="FunctionAction" name="exceptAction">
+            <UiElement condition="" component="inventoryList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
@@ -759,7 +759,7 @@
                 <UiElement type="Menu" component="inventoryList" event="except" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.className + ' ' + params.data.name" designerType="FunctionArgument"/>
@@ -768,7 +768,7 @@
                 <UiElement type="Menu" component="inventoryList" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="copyQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.data.query, searchClass: params.data.searchClass, isPublic:params.data.isPublic, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -777,7 +777,7 @@
                 <UiElement type="Menu" component="filterTree" event="copyQuery" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="saveQueryAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="saveQueryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {query:params.query,  sortProperty: YAHOO.rapidjs.Components['inventoryList'].getSortAttribute(), sortOrder: YAHOO.rapidjs.Components['inventoryList'].getSortOrder(), searchClass: YAHOO.rapidjs.Components['inventoryList'].getSearchClass(), mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -786,7 +786,7 @@
                 <UiElement type="Component event" component="inventoryList" event="saveQueryClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="queryUpdateAction">
+            <UiElement condition="" component="saveQueryForm" function="show" name="queryUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryForm.gsp', {queryId:params.data.id,   mode:'edit', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -795,7 +795,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveQueryGroupForm" condition="" function="show" designerType="FunctionAction" name="queryGroupUpdateAction">
+            <UiElement condition="" component="saveQueryGroupForm" function="show" name="queryGroupUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('queryGroupForm.gsp', {mode:'edit', type:'topology', queryGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -804,7 +804,7 @@
                 <UiElement type="Menu" component="filterTree" event="queryGroupUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="sort" designerType="FunctionAction" name="sortAscAction">
+            <UiElement condition="" component="inventoryList" function="sort" name="sortAscAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key " designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
@@ -813,7 +813,7 @@
                 <UiElement type="Menu" component="inventoryList" event="sortAsc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="sort" designerType="FunctionAction" name="sortDescAction">
+            <UiElement condition="" component="inventoryList" function="sort" name="sortDescAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
@@ -822,7 +822,7 @@
                 <UiElement type="Menu" component="inventoryList" event="sortDesc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanOrEqualToAction">
+            <UiElement condition="" component="inventoryList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
@@ -830,7 +830,7 @@
                 <UiElement type="Menu" component="inventoryList" event="lessThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanOrEqualToAction">
+            <UiElement condition="" component="inventoryList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
@@ -838,7 +838,7 @@
                 <UiElement type="Menu" component="inventoryList" event="greaterThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanAction">
+            <UiElement condition="" component="inventoryList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -846,7 +846,7 @@
                 <UiElement type="Menu" component="inventoryList" event="lessThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="inventoryList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanAction">
+            <UiElement condition="" component="inventoryList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -854,7 +854,7 @@
                 <UiElement type="Menu" component="inventoryList" event="greaterThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="filterTree" condition="" function="poll" designerType="FunctionAction" name="refreshQueriesAction">
+            <UiElement condition="" component="filterTree" function="poll" name="refreshQueriesAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteQueryAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -877,7 +877,7 @@
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement target="self" condition="" url="createURL('redirectToMap.gsp', {name:params.data.name})" designerType="LinkAction" name="showMapAction">
+            <UiElement target="self" condition="" url="createURL('redirectToMap.gsp', {name:params.data.name})" name="showMapAction" designerType="LinkAction">
               <UiElement designerType="ActionTriggers">
                 <UiElement type="Menu" component="inventoryList" event="showMap" designerType="ActionTrigger"/>
               </UiElement>
@@ -886,7 +886,7 @@
         </UiElement>
         <UiElement title="Maps" contentFile="pageContents/_maps.gsp" designerType="Tab" name="maps">
           <UiElement designerType="Components">
-            <UiElement title="Events" defaultSearchClass="RsEvent" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" queryEnabled="false" url="script/run/getMapNodeEvents?format=xml">
+            <UiElement defaultSearchClass="RsEvent" title="Events" contentPath="Object" rootTag="Objects" name="eventsGrid" designerType="SearchGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" queryEnabled="false" url="script/run/getMapNodeEvents?format=xml">
               <UiElement designerType="SearchGridImages">
                 <UiElement visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png" designerType="Image"/>
                 <UiElement visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png" designerType="Image"/>
@@ -896,26 +896,26 @@
                 <UiElement visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png" designerType="Image"/>
               </UiElement>
               <UiElement designerType="SearchGridColumns">
-                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="629" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="631" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="633" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="635" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="637" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="count" columnIndex="4" colLabel="Count" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="639" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="source" columnIndex="5" colLabel="Source" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="641" designer_item_tab="617" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" width="120" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -926,7 +926,7 @@
             </UiElement>
             <UiElement title="Saved Maps" contentPath="Map" rootTag="Maps" designerType="TreeGrid" name="mapTree" keyAttribute="id" pollingInterval="0" expanded="true" url="topoMap/listWithGroups?format=xml">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" width="248" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -942,10 +942,10 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="" designerType="Html" name="saveMapGroupForm"/>
-            <UiElement title="" designerType="Html" name="saveMapForm"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="" name="saveMapGroupForm" designerType="Html"/>
+            <UiElement title="" name="saveMapForm" designerType="Html"/>
             <UiElement title="" designerType="ObjectMap" name="topologyMap" expandURL="script/run/expandMap" pollingInterval="0" nodePropertyList="name,rsClassName" mapPropertyList="mapType" dataURL="script/run/getMapData">
               <UiElement designerType="ObjectMapImageNodeContent">
                 <UiElement height="20" dataKey="type" designerType="ImageObjectMapContent" name="icon" width="20" mapping="'Host':'images/map/server_icon.png', 'Router':'images/map/router_icon.png', 'Switch':'images/map/switch_icon.png'" y="0" x="70"/>
@@ -968,17 +968,17 @@
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="topologyMap" designerType="CenterUnit"/>
-            <UiElement component="mapTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="mapTree" resize="true" gutter="0 5 0 0" width="255" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="objectDetails" designerType="Dialog" width="850" y="85" x="50"/>
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
-            <UiElement resizable="false" title="Save Map" height="165" component="saveMapForm" designerType="Dialog" width="385"/>
-            <UiElement resizable="false" title="Save Group" height="165" component="saveMapGroupForm" designerType="Dialog" width="330"/>
-            <UiElement resizable="false" title="" height="400" component="eventsGrid" designerType="Dialog" width="800"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save Map" height="165" component="saveMapForm" width="385" designerType="Dialog"/>
+            <UiElement resizable="false" title="Save Group" height="165" component="saveMapGroupForm" width="330" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="400" component="eventsGrid" width="800" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.type + ' ' + params.data.displayName" designerType="FunctionArgument"/>
@@ -987,7 +987,7 @@
                 <UiElement type="Menu" component="topologyMap" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventsGrid" condition="" function="setQueryWithView" designerType="FunctionAction" name="showEventsAction">
+            <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="showEventsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="''" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
@@ -999,7 +999,7 @@
                 <UiElement type="Menu" component="topologyMap" event="showEvents" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveMapGroupForm" condition="" function="show" designerType="FunctionAction" name="mapGroupUpdateAction">
+            <UiElement condition="" component="saveMapGroupForm" function="show" name="mapGroupUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapGroupForm.gsp', {mode:'edit', mapGroupId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -1008,7 +1008,7 @@
                 <UiElement type="Menu" component="mapTree" event="mapGroupUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="topologyMap" condition="" function="loadMapForNode" designerType="FunctionAction" name="loadMapForNodeAction">
+            <UiElement condition="" component="topologyMap" function="loadMapForNode" name="loadMapForNodeAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="getURLParams()" designerType="FunctionArgument"/>
                 <UiElement value="getURLParams()" designerType="FunctionArgument"/>
@@ -1017,7 +1017,7 @@
                 <UiElement type="Component event" component="topologyMap" event="mapInitialized" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveMapForm" condition="" function="show" designerType="FunctionAction" name="updateMapAction">
+            <UiElement condition="" component="saveMapForm" function="show" name="updateMapAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapForm.gsp', getMapUpdateParams(params.data.id))" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -1026,7 +1026,7 @@
                 <UiElement type="Menu" component="mapTree" event="mapUpdate" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="saveMapForm" condition="" function="show" designerType="FunctionAction" name="saveMapAction">
+            <UiElement condition="" component="saveMapForm" function="show" name="saveMapAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('mapForm.gsp',getMapSaveParams())" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
@@ -1035,7 +1035,7 @@
                 <UiElement type="Menu" component="topologyMap" event="saveMap" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -1044,7 +1044,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="topologyMap" condition="" function="loadMap" designerType="FunctionAction" name="loadMapAction">
+            <UiElement condition="" component="topologyMap" function="loadMap" name="loadMapAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.response" designerType="FunctionArgument"/>
               </UiElement>
@@ -1052,7 +1052,7 @@
                 <UiElement triggeringAction="requestMapAction" type="Action event" event="success" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="mapTree" condition="" function="poll" designerType="FunctionAction" name="refreshMapsAction">
+            <UiElement condition="" component="mapTree" function="poll" name="refreshMapsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteMapAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -1087,7 +1087,7 @@
         </UiElement>
         <UiElement title="Service View" contentFile="pageContents/_serviceView.gsp" designerType="Tab" name="serviceView">
           <UiElement designerType="Components">
-            <UiElement title="Events" defaultSearchClass="RsEvent" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsEvent" title="Events" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchGridImages">
                 <UiElement visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png" designerType="Image"/>
                 <UiElement visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png" designerType="Image"/>
@@ -1097,26 +1097,26 @@
                 <UiElement visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png" designerType="Image"/>
               </UiElement>
               <UiElement designerType="SearchGridColumns">
-                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="768" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="770" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="772" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="774" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="776" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="count" columnIndex="4" colLabel="Count" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="778" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="source" columnIndex="5" colLabel="Source" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="780" designer_item_tab="756" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" width="120" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -1132,8 +1132,18 @@
             </UiElement>
             <UiElement title="Service View" contentPath="Object" rootTag="Objects" designerType="TreeGrid" name="topologyTree" keyAttribute="id" pollingInterval="60" url="script/run/getHierarchy?format=xml">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="displayName" columnIndex="0" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="248">
+                <UiElement attributeName="displayName" columnIndex="1" colLabel="Name" sortBy="true" designerType="TreeGridColumn" width="310">
                   <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement sortType="int" attributeName="state" columnIndex="2" colLabel="State" designerType="TreeGridColumn" width="65">
+                  <UiElement designerType="TreeGridColumnImages">
+                    <UiElement src="images/rapidjs/component/states/red.png" visible="params.data.state == '5'" designerType="Image" align="center"/>
+                    <UiElement src="images/rapidjs/component/states/orange.png" visible="params.data.state == '4'" designerType="Image" align="center"/>
+                    <UiElement src="images/rapidjs/component/states/yellow.png" visible="params.data.state == '3'" designerType="Image" align="center"/>
+                    <UiElement src="images/rapidjs/component/states/blue.png" visible="params.data.state == '2'" designerType="Image" align="center"/>
+                    <UiElement src="images/rapidjs/component/states/purple.png" visible="params.data.state == '1'" designerType="Image" align="center"/>
+                    <UiElement src="images/rapidjs/component/states/green.png" visible="params.data.state == '0'" designerType="Image" align="center"/>
+                  </UiElement>
                 </UiElement>
               </UiElement>
               <UiElement designerType="TreeGridRootImages"/>
@@ -1142,26 +1152,26 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement pollingInterval="0" title="Summary View" rootTag="chart" url="script/run/getSummaryData?format=xml" designerType="FlexPieChart" name="summaryChart"/>
-            <UiElement pollingInterval="0" title="Event History" url="script/run/getEventHistory?format=xml" designerType="Timeline" name="eventHistory">
-              <UiElement intervalPixels="100" highlight="false" intervalUnit="hour" showText="true" designerType="TimelineBand" width="70"/>
-              <UiElement syncWith="0" designerType="TimelineBand" width="30" trackHeight="0.5" intervalPixels="200" highlight="true" intervalUnit="day" showText="false"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement pollingInterval="0" title="Summary View" rootTag="chart" url="script/run/getSummaryData?format=xml" name="summaryChart" designerType="FlexPieChart"/>
+            <UiElement pollingInterval="0" title="Event History" url="script/run/getEventHistory?format=xml" name="eventHistory" designerType="Timeline">
+              <UiElement intervalPixels="100" highlight="false" showText="true" intervalUnit="hour" width="70" designerType="TimelineBand"/>
+              <UiElement syncWith="0" designerType="TimelineBand" width="30" trackHeight="0.5" intervalPixels="200" highlight="true" showText="false" intervalUnit="day"/>
             </UiElement>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="summaryChart" designerType="CenterUnit"/>
             <UiElement height="300" component="eventsGrid" resize="true" gutter="5 0 0 0" designerType="BottomUnit"/>
-            <UiElement component="topologyTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="255"/>
+            <UiElement component="topologyTree" resize="true" gutter="0 5 0 0" width="400" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement title="Event History" height="450" component="eventHistory" designerType="Dialog" width="730"/>
+            <UiElement title="Event History" height="450" component="eventHistory" width="730" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
@@ -1170,7 +1180,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -1179,7 +1189,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventsGrid" condition="" function="setQueryWithView" designerType="FunctionAction" name="getEventsAction">
+            <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="getEventsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="getEventsQuery(params.data)" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
@@ -1190,7 +1200,7 @@
                 <UiElement type="Component event" component="topologyTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="summaryChart" condition="" function="refresh" designerType="FunctionAction" name="getSummaryAction">
+            <UiElement condition="" component="summaryChart" function="refresh" name="getSummaryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="{nodeType:params.data.nodeType, name:params.data.name}" designerType="FunctionArgument"/>
                 <UiElement value="'Summary View for ' + params.data.displayName" designerType="FunctionArgument"/>
@@ -1199,7 +1209,7 @@
                 <UiElement type="Component event" component="topologyTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventHistory" condition="" function="refresh" designerType="FunctionAction" name="eventHistoryAction">
+            <UiElement condition="" component="eventHistory" function="refresh" name="eventHistoryAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="{nodeType:params.data.nodeType, name:params.data.name}" designerType="FunctionArgument"/>
                 <UiElement value="'Event History of ' + params.data.displayName" designerType="FunctionArgument"/>
@@ -1248,7 +1258,7 @@
         </UiElement>
         <UiElement title="Device View" contentFile="pageContents/_deviceView.gsp" designerType="Tab" name="deviceView">
           <UiElement designerType="Components">
-            <UiElement title="Events" defaultSearchClass="RsEvent" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
+            <UiElement defaultSearchClass="RsEvent" title="Events" contentPath="Object" rootTag="Objects" designerType="SearchGrid" name="eventsGrid" fieldsUrl="script/run/getViewFields?format=xml" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search">
               <UiElement designerType="SearchGridImages">
                 <UiElement visible="params.data.severity == '5'" src="images/rapidjs/component/searchlist/red.png" designerType="Image"/>
                 <UiElement visible="params.data.severity == '4'" src="images/rapidjs/component/searchlist/orange.png" designerType="Image"/>
@@ -1258,26 +1268,26 @@
                 <UiElement visible="params.data.severity == '0'" src="images/rapidjs/component/searchlist/green.png" designerType="Image"/>
               </UiElement>
               <UiElement designerType="SearchGridColumns">
-                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" designerType="SearchGridColumn" width="50">
-                  <UiElement id="881" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="acknowledged" columnIndex="0" colLabel="Ack" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" designerType="SearchGridColumn" width="100">
-                  <UiElement id="883" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="owner" columnIndex="1" colLabel="Owner" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" designerType="SearchGridColumn" width="150">
-                  <UiElement id="885" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="elementName" columnIndex="2" colLabel="Element Name" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" designerType="SearchGridColumn" width="150">
-                  <UiElement id="887" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="identifier" columnIndex="3" colLabel="Event" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="count" columnIndex="4" colLabel="Count" designerType="SearchGridColumn" width="50">
-                  <UiElement id="889" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="count" columnIndex="4" colLabel="Count" width="50" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="source" columnIndex="5" colLabel="Source" designerType="SearchGridColumn" width="100">
-                  <UiElement id="891" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="source" columnIndex="5" colLabel="Source" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" designerType="SearchGridColumn" width="120">
-                  <UiElement id="893" designer_item_tab="869" designer_name="Images" designerType="SearchGridColumnImages"/>
+                <UiElement attributeName="changedAt" columnIndex="6" colLabel="Last Change" width="120" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
               <UiElement designerType="SearchGridRowColors"/>
@@ -1291,20 +1301,20 @@
               </UiElement>
               <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="eventDetails"/>
-            <UiElement title="Device Search" contentPath="Suggestion" suggestionAttribute="name" url="script/run/autocomplete" designerType="Autocomplete" name="searchDevice"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="eventDetails" designerType="Html"/>
+            <UiElement title="Device Search" contentPath="Suggestion" suggestionAttribute="name" url="script/run/autocomplete" name="searchDevice" designerType="Autocomplete"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="objectDetails" designerType="CenterUnit"/>
             <UiElement height="300" component="eventsGrid" resize="true" gutter="5 0 0 0" designerType="BottomUnit"/>
-            <UiElement component="searchDevice" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="280"/>
+            <UiElement component="searchDevice" resize="true" gutter="0 5 0 0" width="280" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="eventDetails" width="850" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="objectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="objectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.elementName})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.elementName" designerType="FunctionArgument"/>
@@ -1313,7 +1323,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventDetails" condition="" function="show" designerType="FunctionAction" name="eventDetailsAction">
+            <UiElement condition="" component="eventDetails" function="show" name="eventDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getEventDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
@@ -1322,7 +1332,7 @@
                 <UiElement type="Menu" component="eventsGrid" event="eventDetails" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="eventsGrid" condition="" function="setQueryWithView" designerType="FunctionAction" name="getEventsAction">
+            <UiElement condition="" component="eventsGrid" function="setQueryWithView" name="getEventsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="'elementName:' + params.query.toExactQuery()" designerType="FunctionArgument"/>
                 <UiElement value="'default'" designerType="FunctionArgument"/>
@@ -1333,7 +1343,7 @@
                 <UiElement type="Component event" component="searchDevice" event="submit" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="autocompleteObjectDetailsAction">
+            <UiElement condition="" component="objectDetails" function="show" name="autocompleteObjectDetailsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('getObjectDetails.gsp', {name:params.query})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.query" designerType="FunctionArgument"/>
@@ -1384,19 +1394,19 @@
           <UiElement designerType="Components">
             <UiElement title="Your Notification List" contentPath="Rule" rootTag="Rules" designerType="TreeGrid" name="ruleTree" keyAttribute="id" pollingInterval="0" expanded="true" url="rsMessageRule/list">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Search Query" designerType="TreeGridColumn" width="250">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Search Query" width="250" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="destinationType" columnIndex="1" colLabel="Destination Type" designerType="TreeGridColumn" width="120">
+                <UiElement attributeName="destinationType" columnIndex="1" colLabel="Destination Type" width="120" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="enabled" columnIndex="2" colLabel="Enabled" designerType="TreeGridColumn" width="65">
+                <UiElement attributeName="enabled" columnIndex="2" colLabel="Enabled" width="65" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement sortType="int" attributeName="delay" columnIndex="3" colLabel="Delay" designerType="TreeGridColumn" width="50">
+                <UiElement sortType="int" attributeName="delay" columnIndex="3" colLabel="Delay" width="50" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="sendClearEventType" columnIndex="4" colLabel="Send Clear Events" designerType="TreeGridColumn" width="120">
+                <UiElement attributeName="sendClearEventType" columnIndex="4" colLabel="Send Clear Events" width="120" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -1410,15 +1420,15 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="Rule Details" designerType="Html" name="ruleContent"/>
+            <UiElement title="Rule Details" name="ruleContent" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="ruleContent" designerType="CenterUnit"/>
-            <UiElement component="ruleTree" resize="false" gutter="0 5 0 0" designerType="LeftUnit" width="600"/>
+            <UiElement component="ruleTree" resize="false" gutter="0 5 0 0" width="600" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs"/>
           <UiElement designerType="Actions">
-            <UiElement component="ruleContent" condition="params.data.nodeType=='rule'" function="show" designerType="FunctionAction" name="ruleUpdateAction">
+            <UiElement condition="params.data.nodeType=='rule'" component="ruleContent" function="show" name="ruleUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('rsMessageRuleForm.gsp',{mode:'edit',ruleId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Rule Details For Search Query: ' + params.data.name" designerType="FunctionArgument"/>
@@ -1427,7 +1437,7 @@
                 <UiElement type="Component event" component="ruleTree" event="nodeClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="ruleContent" condition="" function="show" designerType="FunctionAction" name="ruleContentPoll">
+            <UiElement condition="" component="ruleContent" function="show" name="ruleContentPoll" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="YAHOO.rapidjs.Components['ruleContent'].url" designerType="FunctionArgument"/>
                 <UiElement value="YAHOO.rapidjs.Components['ruleContent'].title" designerType="FunctionArgument"/>
@@ -1436,7 +1446,7 @@
                 <UiElement triggeringAction="ruleDeleteAction" type="Action event" event="success" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="ruleTree" condition="" function="poll" designerType="FunctionAction" name="ruleTreePoll">
+            <UiElement condition="" component="ruleTree" function="poll" name="ruleTreePoll" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="ruleDisableAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -1476,7 +1486,7 @@
       <UiElement designerType="Tabs">
         <UiElement title="Repository Browser" contentFile="pageContents/_browser.gsp" designerType="Tab" name="browser">
           <UiElement designerType="Components">
-            <UiElement searchClassesUrl="rsBrowser/getSearchClasses" defaultFields="id,name" contentPath="Object" showMax="6" keyAttribute="id" pollingInterval="0" queryParameter="query" url="rsBrowser/searchWithQuery?format=xml" title="Objects" defaultSearchClass="connection.Connection" rootTag="Objects" name="objectList" designerType="SearchList">
+            <UiElement defaultFields="id,name" searchClassesUrl="rsBrowser/getSearchClasses" contentPath="Object" showMax="6" keyAttribute="id" pollingInterval="0" queryParameter="query" url="rsBrowser/searchWithQuery?format=xml" title="Objects" defaultSearchClass="connection.Connection" rootTag="Objects" name="objectList" designerType="SearchList">
               <UiElement designerType="SearchListFields"/>
               <UiElement designerType="SearchListImages"/>
               <UiElement designerType="SearchListMenuItems">
@@ -1498,7 +1508,7 @@
             </UiElement>
             <UiElement title="Classes" contentPath="Class" rootTag="Classes" designerType="TreeGrid" name="classTree" keyAttribute="name" pollingInterval="0" url="rsBrowser/classes?format=xml">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Class Name" sortBy="true" designerType="TreeGridColumn" width="300">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Class Name" sortBy="true" width="300" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -1513,23 +1523,23 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="objectDetails"/>
-            <UiElement title="" designerType="Html" name="propsAndOperations"/>
-            <UiElement title="Create" designerType="Html" name="crudForm"/>
-            <UiElement title="" designerType="Html" name="objectOtherDetails"/>
+            <UiElement title="" name="objectDetails" designerType="Html"/>
+            <UiElement title="" name="propsAndOperations" designerType="Html"/>
+            <UiElement title="Create" name="crudForm" designerType="Html"/>
+            <UiElement title="" name="objectOtherDetails" designerType="Html"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="objectList" designerType="CenterUnit"/>
-            <UiElement component="classTree" resize="true" gutter="0 5 0 0" designerType="LeftUnit" width="345"/>
+            <UiElement component="classTree" resize="true" gutter="0 5 0 0" width="345" designerType="LeftUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement title="" height="500" component="objectDetails" designerType="Dialog" width="850"/>
-            <UiElement title="" height="600" component="propsAndOperations" designerType="Dialog" width="550"/>
-            <UiElement resizable="false" title="" height="300" component="crudForm" designerType="Dialog" width="500"/>
-            <UiElement title="" height="500" component="objectOtherDetails" designerType="Dialog" width="850"/>
+            <UiElement title="" height="500" component="objectDetails" width="850" designerType="Dialog"/>
+            <UiElement title="" height="600" component="propsAndOperations" width="550" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="300" component="crudForm" width="500" designerType="Dialog"/>
+            <UiElement title="" height="500" component="objectOtherDetails" width="850" designerType="Dialog"/>
           </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="browseAction">
+            <UiElement condition="" component="objectDetails" function="show" name="browseAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/browserObjectDetails.gsp', {id:params.data.id, domain:params.data.rsAlias})" designerType="FunctionArgument"/>
                 <UiElement value="'Details of ' + params.data.rsAlias + ' ' + params.data.id" designerType="FunctionArgument"/>
@@ -1539,7 +1549,7 @@
                 <UiElement type="Component event" component="objectList" event="rowDoubleClicked" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="propsAndOperations" condition="" function="show" designerType="FunctionAction" name="propsAndOperationsAction">
+            <UiElement condition="" component="propsAndOperations" function="show" name="propsAndOperationsAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/propsAndOperations.gsp', {className:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Properties and Operations of ' + params.data.name" designerType="FunctionArgument"/>
@@ -1548,7 +1558,7 @@
                 <UiElement type="Menu" component="classTree" event="propsAndOperations" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanAction">
+            <UiElement condition="" component="objectList" function="appendToQuery" name="greaterThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{' + params.value.toQuery() + ' TO *}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1556,7 +1566,7 @@
                 <UiElement type="Menu" component="objectList" event="greaterThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanAction">
+            <UiElement condition="" component="objectList" function="appendToQuery" name="lessThanAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':{* TO ' + params.value.toQuery() + '}'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1564,7 +1574,7 @@
                 <UiElement type="Menu" component="objectList" event="lessThan" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="appendToQuery" designerType="FunctionAction" name="lessThanOrEqualToAction">
+            <UiElement condition="" component="objectList" function="appendToQuery" name="lessThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[* TO ' + params.value.toQuery() + ']'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1572,7 +1582,7 @@
                 <UiElement type="Menu" component="objectList" event="lessThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="appendToQuery" designerType="FunctionAction" name="greaterThanOrEqualToAction">
+            <UiElement condition="" component="objectList" function="appendToQuery" name="greaterThanOrEqualToAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key + ':[' + params.value.toQuery() + ' TO *]'" designerType="FunctionArgument"/>
               </UiElement>
@@ -1580,7 +1590,7 @@
                 <UiElement type="Menu" component="objectList" event="greaterThanOrEqualTo" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="appendExceptQuery" designerType="FunctionAction" name="exceptAction">
+            <UiElement condition="" component="objectList" function="appendExceptQuery" name="exceptAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="params.value" designerType="FunctionArgument"/>
@@ -1589,7 +1599,7 @@
                 <UiElement type="Menu" component="objectList" event="except" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="sort" designerType="FunctionAction" name="sortAscAction">
+            <UiElement condition="" component="objectList" function="sort" name="sortAscAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'asc'" designerType="FunctionArgument"/>
@@ -1598,7 +1608,7 @@
                 <UiElement type="Menu" component="objectList" event="sortAsc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="sort" designerType="FunctionAction" name="sortDescAction">
+            <UiElement condition="" component="objectList" function="sort" name="sortDescAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="params.key" designerType="FunctionArgument"/>
                 <UiElement value="'desc'" designerType="FunctionArgument"/>
@@ -1607,7 +1617,7 @@
                 <UiElement type="Menu" component="objectList" event="sortDesc" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="crudForm" condition="" function="show" designerType="FunctionAction" name="createAction">
+            <UiElement condition="" component="crudForm" function="show" name="createAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/create.gsp', {__rsBrowserClassName:params.data.name})" designerType="FunctionArgument"/>
                 <UiElement value="'Create ' + params.data.name" designerType="FunctionArgument"/>
@@ -1616,7 +1626,7 @@
                 <UiElement type="Menu" component="classTree" event="create" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="crudForm" condition="" function="show" designerType="FunctionAction" name="updateAction">
+            <UiElement condition="" component="crudForm" function="show" name="updateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('browserArtifacts/edit.gsp', {__rsBrowserClassName:params.data.rsAlias, id:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Edit ' + params.data.rsAlias" designerType="FunctionArgument"/>
@@ -1625,7 +1635,7 @@
                 <UiElement type="Menu" component="objectList" event="update" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectOtherDetails" condition="" function="show" designerType="FunctionAction" name="browseRrdVariableGraphAction">
+            <UiElement condition="" component="objectOtherDetails" function="show" name="browseRrdVariableGraphAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('showRrdVariableGraph.gsp', {name:params.data.name})  " designerType="FunctionArgument"/>
                 <UiElement value="'Graph of '+params.data.name  " designerType="FunctionArgument"/>
@@ -1634,7 +1644,7 @@
                 <UiElement type="Menu" component="objectList" event="showVariableGraph" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="objectList" condition="" function="poll" designerType="FunctionAction" name="refreshAction">
+            <UiElement condition="" component="objectList" function="poll" name="refreshAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="deleteAction" type="Action event" event="success" designerType="ActionTrigger"/>

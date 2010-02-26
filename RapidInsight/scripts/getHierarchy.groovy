@@ -32,19 +32,41 @@ def containers = summaryMap[CONTAINER_PROPERTY].keySet();
 def sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 
-def searchParams = [max: "1000",sort:"name",order:"asc"];
-def searchProps = ["name","displayName",CONTAINER_PROPERTY];
+def searchParams = [max: "1000"];
+
+def containerData=[:];
+containers.each {containerName ->
+   containerData[containerName]=[:];
+   def parentData=containerData[containerName];
+   def parentState=0;
+
+   parentData.rowData=[id: containerName, name: containerName, displayName: containerName, state:parentState,nodeType: 'Container']
+   parentData.childObjects=[];
+
+   def results = RsComputerSystem.search("${CONTAINER_PROPERTY}:${containerName.exactQuery()}",searchParams).results;
+   results.each {topoObj ->
+       def childData=[:];
+       def childState=topoObj.getState();
+       childData.rowData=[id: topoObj.id, name: topoObj.name, displayName: topoObj.displayName, nodeType: 'Object',
+                        state:childState,"${CONTAINER_PROPERTY}": topoObj[CONTAINER_PROPERTY]];
+       parentData.childObjects.add(childData);
+       if(childState>parentState)
+       {
+           parentState=childState;
+       }
+   }
+   parentData.rowData.state=parentState;
+}
 
 builder.Objects() {
     containers.each {containerName ->
-        builder.Object(id: containerName, name: containerName, displayName: containerName, nodeType: 'Container') {
-            //getPropertyValues is faster than search for limited number of properties
-            def results = RsComputerSystem.getPropertyValues("${CONTAINER_PROPERTY}:${containerName.exactQuery()}",searchProps,searchParams);
-            results.each {topoObj ->
-                builder.Object(id: topoObj.id, name: topoObj.name, displayName: topoObj.displayName, nodeType: 'Object',
-                        "${CONTAINER_PROPERTY}": topoObj[CONTAINER_PROPERTY])
+        def parentData=containerData[containerName];
+        builder.Object(parentData.rowData) {
+            parentData.childObjects.each {childData ->
+                builder.Object(childData.rowData);
             }
         }
     }
 }
+
 return sw.toString(); 

@@ -3,12 +3,13 @@
     <meta name="layout" content="indexLayout" />
 </head>
 <body>
-<rui:searchGrid id="eventsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object"
-        keyAttribute="id" title="Events"
-        pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml" queryEnabled="true" defaultQuery="" timeout="30"
-        defaultSearchClass="RsEvent" searchClassesUrl='../script/run/getClassesForSearch?rootClass=RsEvent'
+<rui:searchGrid id="eventsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object" bringAllProperties="true" 
+        keyAttribute="id"  title="Events" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml"
+        queryEnabled="true" searchInEnabled="true" defaultQuery="" timeout="30" multipleFieldSorting="true"
+        defaultSearchClass="RsEvent" defaultView="default" searchClassesUrl='../script/run/getClassesForSearch?rootClass=RsEvent&format=xml' extraPropertiesToRequest=""
     
 >
+    
     <rui:sgMenuItems>
     <%
 eventDetailsVisible="true"
@@ -54,54 +55,78 @@ releaseOwnershipVisible="true"
         </rui:sgMenuItem>
     
     </rui:sgMenuItems>
+     <rui:sgMultiSelectionMenuItems>
+    
+    </rui:sgMultiSelectionMenuItems>
     <rui:sgImages>
     <%
-image2386Visible="params.data.severity == '5'"
+image253Visible="params.data.severity == '5'"
 %>
 
-        <rui:sgImage visible="${image2386Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:sgImage>
+        <rui:sgImage visible="${image253Visible}" src="../images/rapidjs/component/searchlist/red.png"></rui:sgImage>
     <%
-image2388Visible="params.data.severity == '4'"
+image254Visible="params.data.severity == '4'"
 %>
 
-        <rui:sgImage visible="${image2388Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
+        <rui:sgImage visible="${image254Visible}" src="../images/rapidjs/component/searchlist/orange.png"></rui:sgImage>
     <%
-image2390Visible="params.data.severity == '3'"
+image255Visible="params.data.severity == '3'"
 %>
 
-        <rui:sgImage visible="${image2390Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
+        <rui:sgImage visible="${image255Visible}" src="../images/rapidjs/component/searchlist/yellow.png"></rui:sgImage>
     <%
-image2392Visible="params.data.severity == '2'"
+image256Visible="params.data.severity == '2'"
 %>
 
-        <rui:sgImage visible="${image2392Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
+        <rui:sgImage visible="${image256Visible}" src="../images/rapidjs/component/searchlist/blue.png"></rui:sgImage>
     <%
-image2394Visible="params.data.severity == '1'"
+image257Visible="params.data.severity == '1'"
 %>
 
-        <rui:sgImage visible="${image2394Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
+        <rui:sgImage visible="${image257Visible}" src="../images/rapidjs/component/searchlist/purple.png"></rui:sgImage>
     <%
-image2396Visible="params.data.severity == '0'"
+image258Visible="params.data.severity == '0'"
 %>
 
-        <rui:sgImage visible="${image2396Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:sgImage>
+        <rui:sgImage visible="${image258Visible}" src="../images/rapidjs/component/searchlist/green.png"></rui:sgImage>
     
     </rui:sgImages>
     <rui:sgColumns>
     
-        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="acknowledged" colLabel="Ack" width="50"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="owner" colLabel="Owner" width="100"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="150"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="elementName" colLabel="Element Name" width="150"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="identifier" colLabel="Event" width="150"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="identifier" colLabel="Event" width="150"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="count" colLabel="Count" width="50"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="count" colLabel="Count" width="50"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="source" colLabel="Source" width="100"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="source" colLabel="Source" width="100"   type="text">
+            
+
+        </rui:sgColumn>
     
-        <rui:sgColumn attributeName="changedAt" colLabel="Last Change" width="120"   type="text"></rui:sgColumn>
+        <rui:sgColumn attributeName="changedAt" colLabel="Last Change" width="120"   type="text">
+            
+
+        </rui:sgColumn>
     
     </rui:sgColumns>
     <rui:sgRowColors>
@@ -110,14 +135,52 @@ image2396Visible="params.data.severity == '0'"
 </rui:searchGrid>
 
 <rui:treeGrid id="topologyTree" url="../script/run/getHierarchy?format=xml" rootTag="Objects" pollingInterval="60" timeout="30"
-        keyAttribute="id" contentPath="Object" title="Service View" expanded="false"
+        keyAttribute="id" expandAttribute="" contentPath="Object" title="Service View" expanded="false"
 
         onNodeClicked="${['getEventsAction','getSummaryAction']}"
     
 >
     <rui:tgColumns>
 
-        <rui:tgColumn type="text" attributeName="displayName" colLabel="Name" width="248" sortBy="true" sortOrder="asc" sortType="string">
+        <rui:tgColumn type="text" attributeName="displayName" colLabel="Name" width="310" sortBy="true" sortOrder="asc" sortType="string">
+            
+        </rui:tgColumn>
+
+        <rui:tgColumn type="image" attributeName="state" colLabel="State" width="65"   sortType="int">
+            
+            <rui:tgImages>
+                <%
+image259Visible="params.data.state == '5'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/red.png" visible="${image259Visible}" align="center"></rui:tgImage>
+                <%
+image260Visible="params.data.state == '4'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/orange.png" visible="${image260Visible}" align="center"></rui:tgImage>
+                <%
+image261Visible="params.data.state == '3'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/yellow.png" visible="${image261Visible}" align="center"></rui:tgImage>
+                <%
+image262Visible="params.data.state == '2'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/blue.png" visible="${image262Visible}" align="center"></rui:tgImage>
+                <%
+image263Visible="params.data.state == '1'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/purple.png" visible="${image263Visible}" align="center"></rui:tgImage>
+                <%
+image264Visible="params.data.state == '0'"
+%>
+
+                <rui:tgImage src="../images/rapidjs/component/states/green.png" visible="${image264Visible}" align="center"></rui:tgImage>
+                
+            </rui:tgImages>
             
         </rui:tgColumn>
 
@@ -132,14 +195,19 @@ eventHistoryVisible="true"
         </rui:tgMenuItem>
         
     </rui:tgMenuItems>
+     <rui:tgMultiSelectionMenuItems>
+    
+    </rui:tgMultiSelectionMenuItems>
     <rui:tgRootImages>
         
     </rui:tgRootImages>
 </rui:treeGrid>
 
-<rui:html id="eventDetails" iframe="false"  timeout="30"></rui:html>
 
-<rui:html id="objectDetails" iframe="false"  timeout="30"></rui:html>
+<rui:html id="eventDetails" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
+
+
+<rui:html id="objectDetails" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
 
 
 <rui:flexPieChart id="summaryChart" url="../script/run/getSummaryData?format=xml" rootTag="chart"  timeout="30"
@@ -167,10 +235,10 @@ eventHistoryVisible="true"
 </rui:timeline>
 
 <%
-functionActionCondition2428Condition=""
+functionActionConditionindex_serviceView_objectDetailsActionCondition=""
 %>
 
-<rui:action id="objectDetailsAction" type="function" function="show" componentId='objectDetails' 
+<rui:action id="objectDetailsAction" type="function" function="show" componentId="objectDetails" 
 
 >
     
@@ -181,10 +249,10 @@ functionActionCondition2428Condition=""
 </rui:action>
 
 <%
-functionActionCondition2439Condition=""
+functionActionConditionindex_serviceView_eventDetailsActionCondition=""
 %>
 
-<rui:action id="eventDetailsAction" type="function" function="show" componentId='eventDetails' 
+<rui:action id="eventDetailsAction" type="function" function="show" componentId="eventDetails" 
 
 >
     
@@ -195,10 +263,10 @@ functionActionCondition2439Condition=""
 </rui:action>
 
 <%
-functionActionCondition2450Condition=""
+functionActionConditionindex_serviceView_getEventsActionCondition=""
 %>
 
-<rui:action id="getEventsAction" type="function" function="setQueryWithView" componentId='eventsGrid' 
+<rui:action id="getEventsAction" type="function" function="setQueryWithView" componentId="eventsGrid" 
 
 >
     
@@ -213,10 +281,10 @@ functionActionCondition2450Condition=""
 </rui:action>
 
 <%
-functionActionCondition2464Condition=""
+functionActionConditionindex_serviceView_getSummaryActionCondition=""
 %>
 
-<rui:action id="getSummaryAction" type="function" function="refresh" componentId='summaryChart' 
+<rui:action id="getSummaryAction" type="function" function="refresh" componentId="summaryChart" 
 
 >
     
@@ -227,10 +295,10 @@ functionActionCondition2464Condition=""
 </rui:action>
 
 <%
-functionActionCondition2474Condition=""
+functionActionConditionindex_serviceView_eventHistoryActionCondition=""
 %>
 
-<rui:action id="eventHistoryAction" type="function" function="refresh" componentId='eventHistory' 
+<rui:action id="eventHistoryAction" type="function" function="refresh" componentId="eventHistory" 
 
 >
     
@@ -241,82 +309,82 @@ functionActionCondition2474Condition=""
 </rui:action>
 
 <%
-mergeActionCondition2485Condition=""
+mergeActionConditionindex_serviceView_unacknowledgeActionCondition=""
 %>
 
-<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}"  
+<rui:action id="unacknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}" submitType="GET"  
 
 >
     <%
-parameter2488Visible="params.data.name "
+parameterindex_serviceView_unacknowledgeAction_nameVisible="params.data.name "
 %>
 
-    <rui:requestParam key="name" value="${parameter2488Visible}"></rui:requestParam>
+    <rui:requestParam key="name" value="${parameterindex_serviceView_unacknowledgeAction_nameVisible}"></rui:requestParam>
     <%
-parameter2490Visible="'false'"
+parameterindex_serviceView_unacknowledgeAction_acknowledgedVisible="'false'"
 %>
 
-    <rui:requestParam key="acknowledged" value="${parameter2490Visible}"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="${parameterindex_serviceView_unacknowledgeAction_acknowledgedVisible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-mergeActionCondition2496Condition=""
+mergeActionConditionindex_serviceView_acknowledgeActionCondition=""
 %>
 
-<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}"  
+<rui:action id="acknowledgeAction" type="merge" url="../script/run/acknowledge" components="${['eventsGrid']}" submitType="GET"  
 
 >
     <%
-parameter2499Visible="params.data.name "
+parameterindex_serviceView_acknowledgeAction_nameVisible="params.data.name "
 %>
 
-    <rui:requestParam key="name" value="${parameter2499Visible}"></rui:requestParam>
+    <rui:requestParam key="name" value="${parameterindex_serviceView_acknowledgeAction_nameVisible}"></rui:requestParam>
     <%
-parameter2501Visible="'true'"
+parameterindex_serviceView_acknowledgeAction_acknowledgedVisible="'true'"
 %>
 
-    <rui:requestParam key="acknowledged" value="${parameter2501Visible}"></rui:requestParam>
+    <rui:requestParam key="acknowledged" value="${parameterindex_serviceView_acknowledgeAction_acknowledgedVisible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-mergeActionCondition2507Condition=""
+mergeActionConditionindex_serviceView_releaseOwnershipActionCondition=""
 %>
 
-<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}"  
+<rui:action id="releaseOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}" submitType="GET"  
 
 >
     <%
-parameter2510Visible="params.data.name "
+parameterindex_serviceView_releaseOwnershipAction_nameVisible="params.data.name "
 %>
 
-    <rui:requestParam key="name" value="${parameter2510Visible}"></rui:requestParam>
+    <rui:requestParam key="name" value="${parameterindex_serviceView_releaseOwnershipAction_nameVisible}"></rui:requestParam>
     <%
-parameter2512Visible="'false'"
+parameterindex_serviceView_releaseOwnershipAction_actVisible="'false'"
 %>
 
-    <rui:requestParam key="act" value="${parameter2512Visible}"></rui:requestParam>
+    <rui:requestParam key="act" value="${parameterindex_serviceView_releaseOwnershipAction_actVisible}"></rui:requestParam>
     
 </rui:action>
 
 <%
-mergeActionCondition2518Condition=""
+mergeActionConditionindex_serviceView_takeOwnershipActionCondition=""
 %>
 
-<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}"  
+<rui:action id="takeOwnershipAction" type="merge" url="../script/run/setOwnership" components="${['eventsGrid']}" submitType="GET"  
 
 >
     <%
-parameter2521Visible="params.data.name "
+parameterindex_serviceView_takeOwnershipAction_nameVisible="params.data.name "
 %>
 
-    <rui:requestParam key="name" value="${parameter2521Visible}"></rui:requestParam>
+    <rui:requestParam key="name" value="${parameterindex_serviceView_takeOwnershipAction_nameVisible}"></rui:requestParam>
     <%
-parameter2523Visible="'true'"
+parameterindex_serviceView_takeOwnershipAction_actVisible="'true'"
 %>
 
-    <rui:requestParam key="act" value="${parameter2523Visible}"></rui:requestParam>
+    <rui:requestParam key="act" value="${parameterindex_serviceView_takeOwnershipAction_actVisible}"></rui:requestParam>
     
 </rui:action>
 
@@ -351,22 +419,22 @@ x='85' y='50'
         
 
 
-    <rui:innerLayout id="2366">
+<rui:innerLayout id="288">
+    
+    <rui:layoutUnit position='center' gutter='0px' useShim='false' scroll='false' component='summaryChart'>
         
-            <rui:layoutUnit position='bottom' gutter='5 0 0 0' height='300' id='2541' isActive='true' resize='true' scroll='false' useShim='false' component='eventsGrid'>
+    </rui:layoutUnit>
+    
+    <rui:layoutUnit position='bottom' gutter='5 0 0 0' resize='true' height='300' useShim='false' scroll='false' component='eventsGrid'>
         
-            </rui:layoutUnit>
+    </rui:layoutUnit>
+    
+    <rui:layoutUnit position='left' width='400' gutter='0 5 0 0' resize='true' useShim='false' scroll='false' component='topologyTree'>
         
-            <rui:layoutUnit position='left' gutter='0 5 0 0' id='2544' isActive='true' resize='true' scroll='false' useShim='false' width='255' component='topologyTree'>
-        
-            </rui:layoutUnit>
-        
-            <rui:layoutUnit position='center' gutter='0px' id='2538' isActive='true' scroll='false' useShim='false' component='summaryChart'>
-        
-            </rui:layoutUnit>
-        
-        </rui:innerLayout>
-        
+    </rui:layoutUnit>
+    
+</rui:innerLayout>
+
 
 
     </rui:layoutUnit>

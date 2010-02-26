@@ -12,24 +12,9 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
 {
     public static SCHEDULE_SOURCE = "schedule";
 
-    //	changed for isLocal property
-	def beforeInsert()
-    {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
-    }
-	def beforeUpdate(params)
-    {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
-    }
-	def afterDelete()
-    {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);
-    }
-	//change ended
-    
     def afterInsert()
     {
-		try {
+        try {
             scheduleMaintenance()
         }
         catch (org.quartz.SchedulerException e) {
@@ -37,13 +22,43 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
             throw e;
         }
     }
-	def afterUpdate(params)
+    def afterUpdate(params)
     {
 
     }
-	def beforeDelete()
+    def beforeDelete()
     {
-         unschedule();
+        unschedule();
+    }
+    //	changed for isLocal property
+    def beforeInsert() {
+        validateSchedule();
+        application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
+    }
+    def beforeUpdate() {
+        validateSchedule();
+        application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
+    }
+    def afterDelete()
+    {
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);
+    }
+    //change ended
+
+    def validateSchedule() {
+        if(![RsInMaintenanceSchedule.RUN_ONCE, RsInMaintenanceSchedule.DAILY, RsInMaintenanceSchedule.MONTHLY_BY_DAY,
+             RsInMaintenanceSchedule.WEEKLY, RsInMaintenanceSchedule.MONTHLY_BY_DATE].contains(schedType)){
+            throw new Exception("Invalid schedule type ${schedType}")
+        }
+        if (maintEnding.compareTo(maintStarting) < 0) {
+            throw new Exception("maintEnding property of RsInMaintenanceSchedule with value ${maintEnding} should be greater than or equal to maintStarting with value ${maintStarting}".toString())
+        }
+        if (schedType != RsInMaintenanceSchedule.RUN_ONCE && schedEnding.compareTo(new Date(System.currentTimeMillis())) <= 0) {
+            throw new Exception("schedEnding property of RsInMaintenanceSchedule with value ${schedEnding} should be greater current time".toString())
+        }
+        if (schedEnding.compareTo(schedStarting) < 0) {
+            throw new Exception("schedEnding property of RsInMaintenanceSchedule with value ${schedEnding} should be greater than or equal to schedStarting with value ${schedStarting}".toString())
+        }
     }
 
     public static RsInMaintenanceSchedule addObjectSchedule(Map props) {
@@ -82,7 +97,7 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         return RsInMaintenanceScheduleOperations.getTrigger(props);
     }
     public static Trigger getTrigger(Map props) {
-        def type = props.type;
+        def type = props.schedType;
         if (type == RsInMaintenanceSchedule.RUN_ONCE) {
             return new SimpleTrigger(props.name, null, props.maintStarting, null, 0, 0L)
         }
@@ -138,7 +153,7 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
     public static void removeExpiredItems() {
         def logger = getLogger()
         logger.debug("Removing expired maintenance schedules");
-        def query = "(type:${RsInMaintenanceSchedule.RUN_ONCE} AND maintEnding:{* TO now}) OR (maintEnding:{* TO now} AND NOT type:${RsInMaintenanceSchedule.RUN_ONCE})"
+        def query = "(schedType:${RsInMaintenanceSchedule.RUN_ONCE} AND maintEnding:{* TO now}) OR (maintEnding:{* TO now} AND NOT schedType:${RsInMaintenanceSchedule.RUN_ONCE})"
         def expiredSchedules = RsInMaintenanceSchedule.getPropertyValues(query, ["id"])
         logger.debug("There are ${expiredSchedules.size()} number of expired maintenace schedule");
         expiredSchedules.each {

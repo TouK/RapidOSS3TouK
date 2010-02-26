@@ -1,6 +1,7 @@
 package com.ifountain.rcmdb.test.util
 
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import application.RapidApplicationOperations
 
 /**
 * Created by IntelliJ IDEA.
@@ -9,17 +10,17 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 * Time: 5:46:51 PM
 * To change this template use File | Settings | File Templates.
 */
-class RapidApplicationOperationsMock extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
+class RapidApplicationOperationsMock extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
     public static def getUtility(utilityName)
     {
-       return RapidApplicationTestUtils.loadUtility(utilityName).newInstance();
+        return RapidApplicationTestUtils.loadUtility(utilityName).newInstance();
     }
 
     public static def getModelClass(String modelName)
     {
-        def modelClass=ApplicationHolder.application.getDomainClass(modelName);
-        if(modelClass)
+        def modelClass = ApplicationHolder.application.getDomainClass(modelName);
+        if (modelClass)
         {
             return modelClass.clazz;
         }
@@ -27,5 +28,9 @@ class RapidApplicationOperationsMock extends com.ifountain.rcmdb.domain.operatio
         {
             throw new Exception("Model Class ${modelName} does not exist");
         }
+    }
+
+    public static def executeBatch(Closure closure) {
+        RapidApplicationOperations.executeBatch(closure)
     }
 }

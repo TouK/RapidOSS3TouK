@@ -708,7 +708,7 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
         var nOfChildren = childNodes.length;
         for (var index = 0; index < childNodes.length; index++) {
             var childNode = childNodes[index];
-            if (populateExpandedNodes == true && treeNode.isExpanded == true) {
+            if (populateExpandedNodes == true && (treeNode == this.rootNode || treeNode.isExpanded == true)) {
                 if (childNode.isRemoved == false) {
                     this.expandedNodes.push(childNode);
                     if (childNode.childNodes.length == 0) {

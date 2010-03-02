@@ -78,7 +78,6 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals(MapGroup.MY_MAPS(),myMapsGroupData.name);
         assertEquals("false",myMapsGroupData.isPublic);
         assertEquals("group",myMapsGroupData.nodeType);
-        assertEquals("true",myMapsGroupData.actionsAllowed);
 
         assertEquals(2,myMapsGroupData.maps.size());
 
@@ -89,8 +88,7 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("myMap1",myMap1Data.name);
         assertEquals("false",myMap1Data.isPublic);
         assertEquals("map",myMap1Data.nodeType);
-        assertEquals("true",myMap1Data.actionsAllowed);
-        
+
         def defaultMapGroupData=listData[defaultMapGroup.id.toString()];
         assertNotNull (defaultMapGroupData);
 
@@ -98,7 +96,6 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("Default",defaultMapGroupData.name);
         assertEquals("true",defaultMapGroupData.isPublic);
         assertEquals("group",defaultMapGroupData.nodeType);
-        assertEquals("false",defaultMapGroupData.actionsAllowed);
 
 
         assertEquals(1,defaultMapGroupData.maps.size());
@@ -110,7 +107,6 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
         assertEquals("defaultMap1",defaultMap1Data.name);
         assertEquals("false",defaultMap1Data.isPublic);
         assertEquals("map",defaultMap1Data.nodeType);
-        assertEquals("false",defaultMap1Data.actionsAllowed);
     }
 
     def getListXmlData(xmlData){
@@ -291,46 +287,6 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
             assertEquals(propVal,map[propName].toString());
         }
     }
-
-    public void testUpdateOtherUsersMapGeneratesErrors()
-    {
-        def username="testuser";
-
-        def saveParams=[:];
-        saveParams.mapName="myMap";
-        saveParams.layout="1";
-        saveParams.nodes="nodes";
-        saveParams.nodePropertyList="nodePropertyList";
-        saveParams.mapProperties="mapProperties";
-        saveParams.mapPropertyList="mapPropertyList";
-
-        def mapSaveParams=[:];
-        mapSaveParams.putAll(saveParams);
-        mapSaveParams.username="otheruser";
-
-        def aMap=TopoMap.add(mapSaveParams);
-        assertFalse(aMap.errors.toString(),aMap.hasErrors());
-
-        def updateParams=[:];
-        updateParams.id=aMap.id.toString();
-        updateParams.putAll(saveParams);
-        updateParams.layout="3";
-        updateParams.nodes="nodes2";
-
-
-        def controller=new TopoMapController();
-        controller.session.username=username;
-        controller.params.putAll(updateParams);
-
-        controller.update();
-        
-        def map=TopoMap.list()[0];
-        assertNotNull(map);
-
-        assertEquals(ControllerUtils.convertErrorToXml("TopoMap ${updateParams.mapName} belongs to other user, you can not update it."),controller.response.getContentAsString())
-        
-    }
-
 
     public void testLoadMap()
     {

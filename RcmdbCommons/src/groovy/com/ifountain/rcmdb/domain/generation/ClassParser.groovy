@@ -50,7 +50,7 @@ class ClassParser {
             else if(line.matches(classLinePattern))
             {
                 type = ClassContentLine.CLASS_DECLERATION_LINE;
-                if(line.endsWith("{"))
+                if(line.trim().endsWith("{"))
                 {
                     classLineStarted = false;
                 }
@@ -62,7 +62,7 @@ class ClassParser {
             else if(classLineStarted)
             {
                 type = ClassContentLine.CLASS_DECLERATION_LINE;
-                if(line.endsWith("{"))
+                if(line.trim().endsWith("{"))
                 {
                     classLineStarted = false;
                 }

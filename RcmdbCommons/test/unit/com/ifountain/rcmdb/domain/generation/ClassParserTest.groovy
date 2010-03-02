@@ -42,8 +42,7 @@ class ClassParserTest extends RapidCmdbTestCase{
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
         FileUtils.deleteDirectory (new File(baseDir));
-    }
-
+    }    
     public void testClassParser()
     {
         def classFile = new File("${baseDir}/MyClass.groovy");
@@ -109,7 +108,45 @@ import com.ifountain.Class3;
         def implementedClasses = returnedClassContent.getImplementedClasses();
         assertEquals (0, implementedClasses.size());
     }
+    public void testClassParserWithSpacesAfterClassDeclarionLine()
+    {
+        def classFile = new File("${baseDir}/MyClass.groovy");
+        //Note that there is a space after "RsTopologyObjectOperations {"
+        classFile.setText("""
+class RsApplicationOperations  extends RsTopologyObjectOperations { 
+static def aStaticProp = [:];
+def aStaticOperation()
+{
+return "Hello";
+}
+}""");
 
+        ClassContent returnedClassContent = ClassParser.parseClass (classFile);
+
+        assertEquals(8,returnedClassContent.lines.size());
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[0].type);
+        assertEquals(ClassContentLine.CLASS_DECLERATION_LINE,returnedClassContent.lines[1].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[2].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[3].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[4].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[5].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[6].type);
+        assertEquals(ClassContentLine.LINE,returnedClassContent.lines[7].type);
+
+        ClassContent expectedClassContent = new ClassContent();
+        expectedClassContent.addLine ("", ClassContentLine.LINE);
+        expectedClassContent.addLine ("class RsApplicationOperations  extends RsTopologyObjectOperations { ", ClassContentLine.CLASS_DECLERATION_LINE);
+        expectedClassContent.addLine ("static def aStaticProp = [:];", ClassContentLine.LINE);
+        expectedClassContent.addLine ("def aStaticOperation()", ClassContentLine.LINE);
+        expectedClassContent.addLine ("{", ClassContentLine.LINE);
+        expectedClassContent.addLine ("""return "Hello";""", ClassContentLine.LINE);
+        expectedClassContent.addLine ("}", ClassContentLine.LINE);
+        expectedClassContent.addLine ("}", ClassContentLine.LINE);
+
+        assertEquals (expectedClassContent, returnedClassContent);
+
+    }
+    
     public void testClassParserWithMultipleClassDeclerationLines()
     {
         def classFile = new File("${baseDir}/MyClass.groovy");

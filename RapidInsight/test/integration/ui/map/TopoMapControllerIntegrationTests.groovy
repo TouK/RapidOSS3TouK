@@ -105,7 +105,7 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         assertEquals(defaultMap1.id.toString(),defaultMap1Data.id);
         assertEquals("defaultMap1",defaultMap1Data.name);
-        assertEquals("false",defaultMap1Data.isPublic);
+        assertEquals("true",defaultMap1Data.isPublic);
         assertEquals("map",defaultMap1Data.nodeType);
     }
 

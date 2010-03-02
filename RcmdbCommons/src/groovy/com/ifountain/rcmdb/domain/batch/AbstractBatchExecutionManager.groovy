@@ -19,9 +19,9 @@ public abstract class AbstractBatchExecutionManager implements BatchExecutionCon
     public void batchFinished() {
         BatchExecutionContext batchExecutionContext = batchExecutionContextStorage.get();
         if (batchExecutionContext != null) {
+            batchExecutionContextStorage.set(null);
             batchExecutionContext.batchFinished();
         }
-        batchExecutionContextStorage.set(null);
     }
     public ThreadLocal getBatchExecutionContextStorage(){
         return batchExecutionContextStorage;

@@ -52,7 +52,7 @@ class TopoMapControllerIntegrationTests extends RapidCmdbIntegrationTestCase{
 
         def otherUserGroup=MapGroup.add(groupName:"other",username:"otheruser",isPublic:false);
 
-        def defaultMap1=TopoMap.add(mapName:"defaultMap1",username:adminUser,group:defaultMapGroup,nodePropertyList:"name",nodes:"a",layout:0);
+        def defaultMap1=TopoMap.add(mapName:"defaultMap1",username:adminUser,group:defaultMapGroup,nodePropertyList:"name",nodes:"a",layout:0, isPublic:true);
         assertFalse(defaultMap1.errors.toString(),defaultMap1.hasErrors());
 
         def myMap1=TopoMap.add(mapName:"myMap1",username:username,group:myMapsGroup,nodePropertyList:"name",nodes:"a",layout:0);

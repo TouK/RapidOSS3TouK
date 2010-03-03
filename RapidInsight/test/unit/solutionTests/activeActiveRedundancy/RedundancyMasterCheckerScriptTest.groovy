@@ -82,6 +82,8 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
     }
     public static void clearMetaClasses()
     {
+        ScriptManager.destroyInstance();
+        ScriptScheduler.destroyInstance();
         ExpandoMetaClass.disableGlobally();
         GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
         GroovySystem.metaClassRegistry.removeMetaClass(ScriptManager);

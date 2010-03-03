@@ -101,7 +101,7 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
        ScriptManagerForTest.addScript("enableLocalMaster");
 
        def messageGeneratorScript=CmdbScript.add(name:"messageGenerator",scriptFile:"a",enabled:false);
-       assertFalse(messageGeneratorScript.hasErrors());
+       assertFalse(messageGeneratorScript.errors.toString(),messageGeneratorScript.hasErrors());
        assertFalse(messageGeneratorScript.enabled);
 
        def notificationConnector=NotificationConnector.add(name:"con1",type:"email");
@@ -130,7 +130,7 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
        ScriptManagerForTest.addScript("disableLocalMaster");
 
        def messageGeneratorScript=CmdbScript.add(name:"messageGenerator",scriptFile:"a",enabled:true);
-       assertFalse(messageGeneratorScript.hasErrors());
+       assertFalse(messageGeneratorScript.errors.toString(),messageGeneratorScript.hasErrors());
        assertTrue(messageGeneratorScript.enabled);
 
        def notificationConnector=NotificationConnector.add(name:"con1",type:"email");
@@ -220,7 +220,7 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
         assertFalse(ds.hasErrors());
 
         def messageGeneratorScript=CmdbScript.add(name:"messageGenerator",scriptFile:"a",enabled:true);
-        assertFalse(messageGeneratorScript.hasErrors());
+        assertFalse(messageGeneratorScript.errors.toString(),messageGeneratorScript.hasErrors());
         assertTrue(messageGeneratorScript.enabled);
 
         def scriptResult=ScriptManagerForTest.runScript("redundancyMasterSwitcher",[:]);
@@ -269,7 +269,7 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
         assertFalse(ds.hasErrors());
 
         def messageGeneratorScript=CmdbScript.add(name:"messageGenerator",scriptFile:"a",enabled:false);
-        assertFalse(messageGeneratorScript.hasErrors());
+        assertFalse(messageGeneratorScript.errors.toString(),messageGeneratorScript.hasErrors());
         assertFalse(messageGeneratorScript.enabled);
 
         def scriptResult=ScriptManagerForTest.runScript("redundancyMasterSwitcher",[:]);
@@ -309,7 +309,7 @@ class RedundancyMasterCheckerScriptTest extends RapidCmdbWithCompassTestCase{
         assertFalse(ds.hasErrors());
 
         def messageGeneratorScript=CmdbScript.add(name:"messageGenerator",scriptFile:"a",enabled:false);
-        assertFalse(messageGeneratorScript.hasErrors());
+        assertFalse(messageGeneratorScript.errors.toString(),messageGeneratorScript.hasErrors());
         assertFalse(messageGeneratorScript.enabled);
 
         def scriptResult=ScriptManagerForTest.runScript("redundancyMasterSwitcher",[:]);

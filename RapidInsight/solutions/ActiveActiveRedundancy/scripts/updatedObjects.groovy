@@ -37,7 +37,12 @@ if (searchResults == null) {
 StringWriter sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 def sortOrder = 0;
-builder.Objects(total: searchResults.total, offset: searchResults.offset) {
+def lastRsUpdatedAt=0;
+if(searchResults.results.size()>0)
+{
+    lastRsUpdatedAt=searchResults.results[searchResults.results.size()-1].rsUpdatedAt;
+}
+builder.Objects(total: searchResults.total, offset: searchResults.offset,rsUpdatedAt:lastRsUpdatedAt) {
     searchResults.results.each { objectProps ->
         def props=[:]
         if(params.searchIn=="RealUpdatedObjects")

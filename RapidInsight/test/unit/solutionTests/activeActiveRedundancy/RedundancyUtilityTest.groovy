@@ -71,7 +71,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
         ExpandoMetaClass.enableGlobally();
     }
-    public void testRedundancyUtility_SetsIsLocalPropertyAccordingToExecutionContext(){
+    public void testRedundancyUtility_SavesAndDeletesUpdatedObjectsAccordingToExecutionContext(){
         def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
         assertFalse(rule1.hasErrors());
         assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));

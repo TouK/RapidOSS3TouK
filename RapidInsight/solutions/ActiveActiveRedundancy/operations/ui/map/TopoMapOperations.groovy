@@ -3,13 +3,13 @@ package ui.map
 
 class TopoMapOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
 	//changed for isLocal property
-	def beforeInsert()
+	def afterInsert()
     {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterInsert(this.domainObject);
     }   
-	def beforeUpdate(params)
+	def afterUpdate(params)
     {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
     }
 	def afterDelete()
     {

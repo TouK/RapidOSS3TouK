@@ -1,26 +1,17 @@
 import java.util.Date
 
 public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+
     //	changed for isLocal property
-	def beforeInsert()
-    {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
-    }
-	def beforeUpdate(params)
-    {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
-    }
-	//change ended
-    
     def afterInsert()
     {
 		putEventsInMaintenance (true,objectName);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterInsert(this.domainObject);
     }
 	def afterUpdate(params)
     {
-
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
     }
-     //	changed for isLocal property
 	def afterDelete()
     {
         application.RapidApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);

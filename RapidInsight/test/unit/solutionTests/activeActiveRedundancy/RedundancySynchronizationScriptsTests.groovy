@@ -10,6 +10,11 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import datasource.HttpDatasource
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import org.apache.commons.io.FileUtils
+import search.SearchQuery
+import search.SearchQueryGroup
+import auth.RsUser
+import auth.RsUserInformation
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -20,21 +25,15 @@ import org.apache.commons.io.FileUtils
 */
 class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase{
 
-     def SearchQuery;
+
      def SearchQueryOperations;
-     def SearchQueryGroup;
      def SearchQueryGroupOperations;
-     def RsUser;
-     def RsUserInformation;
      def RsUserInformationOperations;
      def RsLookup;
-
      
      def DeletedObjects;
+     def UpdatedObjects;
      def redundancyUtility;
-
-     def static temp_model_directory = "../testoutput/ActiveActive/grails-app";
-     def static temp_scripts_directory = "../testoutput/ActiveActive/scripts";
 
      def static solutionPath;
 
@@ -44,16 +43,14 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         clearMetaClasses();
         solutionPath = getWorkspacePath() + "/RapidModules/RapidInsight/solutions/ActiveActiveRedundancy"
 
-        generateModelFilesForTest();
 
-        gcl.addClasspath("${temp_model_directory}/domain/".toString());
-        SearchQuery=gcl.loadClass("search.SearchQueryForRedundancy") ;
-        SearchQueryGroup=gcl.loadClass("search.SearchQueryGroupForRedundancy") ;
-        RsUserInformation=gcl.loadClass("auth.RsUserInformationForRedundancy") ;
-        RsUser=gcl.loadClass("auth.RsUserForRedundancy");
+
+        gcl.addClasspath("${solutionPath}/grails-app/domain/".toString());
+
 
         RsLookup=gcl.loadClass("RsLookup");
         DeletedObjects=gcl.loadClass("DeletedObjects");
+        UpdatedObjects=gcl.loadClass("UpdatedObjects");
 
         SearchQueryOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryOperations.groovy"));
         SearchQueryGroupOperations=gcl.parseClass(new File("${solutionPath}/operations/search/SearchQueryGroupOperations.groovy"));
@@ -62,7 +59,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
 
         redundancyUtility=gcl.parseClass(new File("${solutionPath}/operations/RedundancyUtility.groovy"));
 
-        initialize([SearchQuery,SearchQueryGroup,RsUser,RsUserInformation,DeletedObjects,HttpDatasource,RsLookup], []);
+        initialize([SearchQuery,SearchQueryGroup,RsUser,RsUserInformation,DeletedObjects,UpdatedObjects,HttpDatasource,RsLookup], []);
 
         CompassForTests.addOperationSupport(SearchQuery, SearchQueryOperations);
         CompassForTests.addOperationSupport(SearchQueryGroup, SearchQueryGroupOperations);
@@ -71,100 +68,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         RapidApplicationTestUtils.utilityPaths = ["RedundancyUtility": new File("${solutionPath}/operations/RedundancyUtility.groovy")];
     }
-     //Copy the models from solution and replate model names with modelNameForRedundancy
-     //If renaming not done test fail in hudson or when multiple tests runned together.
-     protected void generateModelFilesForTest()
-     {
-        def markerFile=new File("${temp_model_directory}/generatedOnce.mark");
-        def generatedModels=false;
-        if(!markerFile.exists())
-        {
-            generatedModels=true;
-        }
-        else
-        {
-            def lastGenerationTime=Long.parseLong(markerFile.getText().trim());
-            //60 seconds timeout
-            if(System.currentTimeMillis()-lastGenerationTime>60000)
-            {
-               generatedModels=true;
-            }
-            else
-            {
-                println "will not generate models because generation is fresh, not older than 60 seconds";
-            }
-        }
-        if(generatedModels)
-        {
-            println "Will generate models";
 
-            deleteGeneratedModelsDirectory();
-            new File(temp_model_directory).mkdirs();
-
-            generateScriptFilesForTest();
-            
-            FileUtils.copyDirectory (new File("${solutionPath}/grails-app"),new File(temp_model_directory));
-            FileUtils.copyDirectory (new File("${solutionPath}/plugins/jsecurity-0.2.1/grails-app"),new File(temp_model_directory));
-            FileUtils.copyDirectory (new File("${solutionPath}/plugins/searchable-extension/grails-app"),new File(temp_model_directory));
-            FileUtils.copyFileToDirectory(new File("${getWorkspacePath()}/RapidModules/RcmdbCommons/plugins/jsecurity-0.2.1/grails-app/domain/auth/RsUser.groovy"),new File("${temp_model_directory}/domain/auth"));
-
-
-
-            convertModelFileFromTempDir("SearchQuery","${temp_model_directory}/domain/search/");
-            convertModelFileFromTempDir("SearchQueryGroup","${temp_model_directory}/domain/search/");
-            convertModelFileFromTempDir("RsUserInformation","${temp_model_directory}/domain/auth/");
-            convertModelFileFromTempDir("RsUser","${temp_model_directory}/domain/auth/");
-            
-            FileUtils.deleteDirectory(new File("${temp_model_directory}/domain/ui/"));
-            FileUtils.deleteDirectory(new File("${temp_model_directory}/domain/message/"));
-
-            markerFile.setText(System.currentTimeMillis().toString());
-        }
-     }
-     protected void generateScriptFilesForTest()
-     {
-         new File(temp_scripts_directory).mkdirs();
-
-         FileUtils.copyDirectory (new File("${solutionPath}/scripts"),new File(temp_scripts_directory));
-
-         def scriptFile=new File("${temp_scripts_directory}/updatedObjects.groovy");
-         def scriptText=scriptFile.getText().replaceAll("RsUser;","RsUserForRedundancy;");         
-         scriptText=scriptText.replaceAll("RsUserInformation","RsUserInformationForRedundancy");
-         scriptFile.setText(scriptText);
-
-     }
-     protected void deleteGeneratedModelsDirectory()
-     {
-        if (new File(temp_model_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(temp_model_directory));
-            FileUtils.deleteDirectory(new File(temp_scripts_directory));
-        }
-     }
-    private void convertModelFileFromTempDir(String modelName,String directoryPath)
-    {
-        def modelFile=new File(directoryPath+"/${modelName}.groovy");
-        def modelText=modelFile.getText().replace("class "+modelName,"class "+modelName+"ForRedundancy");
-        if(modelName == "SearchQuery")
-        {
-            modelText=modelText.replace("SearchQueryGroup,","SearchQueryGroupForRedundancy,");
-        }
-        else if(modelName=="SearchQueryGroup")
-        {
-            modelText=modelText.replace("SearchQuery,","SearchQueryForRedundancy,");
-        }
-        else if(modelName=="RsUserInformation")
-        {
-            modelText=modelText.replace("type:RsUser","type:RsUserForRedundancy");
-        }
-        else if(modelName=="RsUser")
-        {
-            modelText=modelText.replace("RsUserInformation","RsUserInformationForRedundancy");
-        }
-        def newModelFile=new File(directoryPath+"/${modelName}ForRedundancy.groovy");
-        newModelFile.setText(modelText);
-        FileUtils.deleteQuietly (modelFile);
-    }   
     public void tearDown() {
         clearMetaClasses();
         super.tearDown();
@@ -178,8 +82,8 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
    
    void initializeScriptManager()
     {                                    
-        println "base path is :" + new File(temp_scripts_directory).getCanonicalPath();
-        ScriptManagerForTest.initialize(gcl, temp_scripts_directory);
+
+        ScriptManagerForTest.initialize(gcl, "${solutionPath}/scripts");
     }
     
    public void testUpdatedObjectsScriptReturnsObjectsAndRelationsAndIdRelationsAsXml()
@@ -190,9 +94,9 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         def requestParams=[:];
         requestParams.format="xml";
         requestParams.sort="rsUpdatedAt";
-        requestParams.order="asc";
-        requestParams.searchIn="auth.RsUserInformationForRedundancy";
+        requestParams.order="asc";        
         requestParams.max="2";
+        requestParams.searchIn="RealUpdatedObjects";
         requestParams.query="alias:*";
         requestParams.offset="1";
 
@@ -211,6 +115,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         }
         assertEquals(4,RsUserInformation.count());
 
+
         //TEST WITH RELATIONS OFF
         def scriptResult=ScriptManagerForTest.runScript("updatedObjects",[params:requestParams]);
         def data=getUpdatedObjectScriptResultAsMap(scriptResult);
@@ -227,24 +132,22 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         def info2=RsUserInformation.searchEvery("type:email1")[0];
 
         assertEquals("email1",objects[0].type);
-        assertEquals("auth.RsUserInformationForRedundancy",objects[0].alias);
-        assertEquals("true",objects[0].isLocal);
+        assertEquals("auth.RsUserInformation",objects[0].alias);
         assertEquals(info2.id.toString(),objects[0].id);
         assertEquals(info2.rsInsertedAt.toString(),objects[0].rsInsertedAt);
         assertEquals(info2.rsUpdatedAt.toString(),objects[0].rsUpdatedAt);
         assertEquals(user.id.toString(),objects[0].userId);
 
         assertEquals(1,objects[0].IdRelatedObjects.size());
-        assertEquals("auth.RsUserForRedundancy",objects[0].IdRelatedObjects[0].alias);
-        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUserForRedundancy",user),objects[0].IdRelatedObjects[0].searchQuery);
+        assertEquals("auth.RsUser",objects[0].IdRelatedObjects[0].alias);
+        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUser",user),objects[0].IdRelatedObjects[0].searchQuery);
         assertEquals("userId",objects[0].IdRelatedObjects[0].relationName);
 
         assertEquals(0,objects[0].RelatedObjects.size());
 
         //check another row, witohout IdRelatedObject
         assertEquals("email2_0",objects[1].type);
-        assertEquals("auth.RsUserInformationForRedundancy",objects[1].alias);
-        assertEquals("true",objects[1].isLocal);
+        assertEquals("auth.RsUserInformation",objects[1].alias);
         assertEquals((user.id+5000).toString(),objects[1].userId);
 
         assertEquals(0,objects[1].IdRelatedObjects.size());
@@ -260,21 +163,21 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals("1",data.topRow.offset);
 
         assertEquals("email1",objects[0].type);
-        assertEquals("auth.RsUserInformationForRedundancy",objects[0].alias);
+        assertEquals("auth.RsUserInformation",objects[0].alias);
 
         assertEquals(1,objects[0].IdRelatedObjects.size());
-        assertEquals("auth.RsUserForRedundancy",objects[0].IdRelatedObjects[0].alias);
-        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUserForRedundancy",user),objects[0].IdRelatedObjects[0].searchQuery);
+        assertEquals("auth.RsUser",objects[0].IdRelatedObjects[0].alias);
+        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUser",user),objects[0].IdRelatedObjects[0].searchQuery);
         assertEquals("userId",objects[0].IdRelatedObjects[0].relationName);
 
         assertEquals(1,objects[0].RelatedObjects.size());
-        assertEquals("auth.RsUserForRedundancy",objects[0].RelatedObjects[0].alias);
-        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUserForRedundancy",user),objects[0].IdRelatedObjects[0].searchQuery);
+        assertEquals("auth.RsUser",objects[0].RelatedObjects[0].alias);
+        assertEquals(redundancyUtility.getKeySearchQueryForObject("auth.RsUser",user),objects[0].IdRelatedObjects[0].searchQuery);
         assertEquals("rsUser",objects[0].RelatedObjects[0].relationName);
         
         //check another row, witohout IdRelatedObject ,RelatedObject
         assertEquals("email2_0",objects[1].type);
-        assertEquals("auth.RsUserInformationForRedundancy",objects[1].alias);
+        assertEquals("auth.RsUserInformation",objects[1].alias);
 
         assertEquals(0,objects[1].IdRelatedObjects.size());
         assertEquals(0,objects[1].RelatedObjects.size());
@@ -376,8 +279,8 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
 
         doRequestResultFromRemoteServer="""
         <Objects total='2' offset='0'>
-          <Object alias='DeletedObjects' id='55553' modelName='search.SearchQueryForRedundancy' rsInsertedAt='${lastDeletedObjectUpdatedAt-1000}' rsUpdatedAt='${lastDeletedObjectUpdatedAt-1000}' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
-          <Object alias='DeletedObjects' id='66664' modelName='auth.RsUserInformationForRedundancy' rsInsertedAt='${lastDeletedObjectUpdatedAt}' rsUpdatedAt='${lastDeletedObjectUpdatedAt}' searchQuery='type:"(info1)" userId:5 ' />
+          <Object alias='DeletedObjects' id='55553' modelName='search.SearchQuery' rsInsertedAt='${lastDeletedObjectUpdatedAt-1000}' rsUpdatedAt='${lastDeletedObjectUpdatedAt-1000}' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+          <Object alias='DeletedObjects' id='66664' modelName='auth.RsUserInformation' rsInsertedAt='${lastDeletedObjectUpdatedAt}' rsUpdatedAt='${lastDeletedObjectUpdatedAt}' searchQuery='type:"(info1)" userId:5 ' />
         </Objects>""";
         println "updatedObjects xml result from remote : ${doRequestResultFromRemoteServer}";
         DeletedObjects.removeAll();
@@ -463,7 +366,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
 
         //test with no object
         assertEquals(0,doRequestCallParams.size());
-        def scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryForRedundancy","withRelations":"true"]]);
+        def scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[:]);
         println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
         assertTrue(scriptResult.indexOf("Error")<0);
 
@@ -474,26 +377,15 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals("xml",doRequestCallParams.params.format);
         assertEquals("rsUpdatedAt",doRequestCallParams.params.sort);
         assertEquals("asc",doRequestCallParams.params.order);
-        assertEquals("search.SearchQueryForRedundancy",doRequestCallParams.params.searchIn);
+        assertEquals("RealUpdatedObjects",doRequestCallParams.params.searchIn);
         assertEquals(100,doRequestCallParams.params.max);
-        assertEquals("rsUpdatedAt:[0 TO *] AND isLocal:true",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[0 TO *]",doRequestCallParams.params.query);
         assertEquals(0,doRequestCallParams.params.offset);
         assertEquals("true",doRequestCallParams.params.withRelations);
 
         assertEquals(0,RsLookup.count());
 
 
-        //test with no relations
-        doRequestCallParams.clear(); 
-        assertEquals(0,doRequestCallParams.size());
-        scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryForRedundancy"]]);
-        println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
-        assertTrue(scriptResult.indexOf("Error")<0);
-
-        assertEquals(2,doRequestCallParams.size());
-        assertEquals("script/run/updatedObjects",doRequestCallParams.url);
-        assertEquals("search.SearchQueryForRedundancy",doRequestCallParams.params.searchIn);
-        assertEquals(null,doRequestCallParams.params.withRelations);
    }
 
    public void testSynchonizeObjectsScript_AddsUpdatesObjectsLocallyWhichAreRemotelyUpdated()
@@ -526,10 +418,10 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='search.SearchQueryGroupForRedundancy' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroupForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -547,13 +439,13 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals("group1",queryGroup.name);
         assertEquals("t1",queryGroup.type);
         assertEquals("user1",queryGroup.username);
-        assertEquals(false,queryGroup.isLocal);
+        //assertEquals(false,queryGroup.isLocal);
 
-        assertEquals("rsUpdatedAt:[0 TO *] AND isLocal:true",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[0 TO *]",doRequestCallParams.params.query);
         
 
         assertEquals(1,RsLookup.count());
-        def lookup=RsLookup.get(name:"search.SearchQueryGroupForRedundancy_redundancy1_UpdatedAt");
+        def lookup=RsLookup.get(name:"RealUpdatedObjects_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
 
 
@@ -566,10 +458,10 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='search.SearchQueryGroupForRedundancy' expanded='false' id='66661' isLocal='true' isPublic='true' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='true' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroupForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -582,12 +474,12 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertNotNull (queryGroup);
         assertEquals(false,queryGroup.expanded);
         assertEquals(true,queryGroup.isPublic);
-        assertEquals(false,queryGroup.isLocal);
+        //assertEquals(false,queryGroup.isLocal);
 
-        assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${lookup.value} TO *]",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
-        lookup=RsLookup.get(name:"search.SearchQueryGroupForRedundancy_redundancy1_UpdatedAt");
+        lookup=RsLookup.get(name:"RealUpdatedObjects_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
 
 
@@ -600,10 +492,10 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='search.SearchQueryGroupForRedundancy' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroupForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -616,12 +508,12 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertNotNull (queryGroup);        
         assertEquals(false,queryGroup.expanded);
         assertEquals(true,queryGroup.isPublic);
-        assertEquals(false,queryGroup.isLocal);
+        //assertEquals(false,queryGroup.isLocal);
 
-        assertEquals("rsUpdatedAt:[${lookup.value} TO *] AND isLocal:true",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${lookup.value} TO *]",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
-        lookup=RsLookup.get(name:"search.SearchQueryGroupForRedundancy_redundancy1_UpdatedAt");
+        lookup=RsLookup.get(name:"RealUpdatedObjects_redundancy1_UpdatedAt");
         assertEquals(remoteUpdatedAt.toString(),lookup.value);
         
    }
@@ -649,8 +541,8 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         def searchQuery=SearchQuery.add(name:"query1",username:"user1",type:"t1",query:"asd");
         assertFalse(searchQuery.hasErrors());
 
-        assertEquals(true,queryGroup.isLocal);
-        assertEquals(true,searchQuery.isLocal);
+//        assertEquals(true,queryGroup.isLocal);
+//        assertEquals(true,searchQuery.isLocal);
 
         assertEquals(1,SearchQuery.count());
         assertEquals(1,SearchQueryGroup.count());
@@ -666,12 +558,12 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='search.SearchQueryGroupForRedundancy' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
-                    <RelatedObject relationName='queries' alias='search.SearchQueryForRedundancy' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
-                    <RelatedObject relationName='queries' alias='search.SearchQueryForRedundancy' searchQuery='name:"(query2)" type:"(t1)" username:"(user1)" ' />
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query2)" type:"(t1)" username:"(user1)" ' />
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroupForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -687,11 +579,11 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         //objects still isLocal, they are not updated but addRelation is called.
         def newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
         assertEquals(1,newQueryGroup.queries.size());
-        assertEquals(true,newQueryGroup.isLocal);
+        //assertEquals(true,newQueryGroup.isLocal);
 
         def newSearchQuery=SearchQuery.get(id:searchQuery.id);
         assertEquals(newQueryGroup.id,newSearchQuery.group.id);
-        assertEquals(true,newSearchQuery.isLocal);
+        //assertEquals(true,newSearchQuery.isLocal);
 
         //TEST RELATION ADD FOR EXISTING AND NEW OBJECTS
         //sync SearchQuery
@@ -703,14 +595,14 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='2' offset='0'>
-                  <Object alias='search.SearchQueryForRedundancy' id='77772' isLocal='true' isPublic='false' name='query1' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
-                    <RelatedObject relationName='group' alias='search.SearchQueryGroupForRedundancy' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
+                  <Object alias='search.SearchQuery' id='77772' isLocal='true' isPublic='false' name='query1' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                    <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
-                  <Object alias='search.SearchQueryForRedundancy' id='77774' isLocal='true' isPublic='false' name='query2' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
-                    <RelatedObject relationName='group' alias='search.SearchQueryGroupForRedundancy' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
+                  <Object alias='search.SearchQuery' id='77774' isLocal='true' isPublic='false' name='query2' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                    <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQuery","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -724,15 +616,15 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
 
         newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
         assertEquals(2,newQueryGroup.queries.size());
-        assertEquals(true,newQueryGroup.isLocal);
+        //assertEquals(true,newQueryGroup.isLocal);
 
         newSearchQuery=SearchQuery.get(id:searchQuery.id);
         assertEquals(newQueryGroup.id,newSearchQuery.group.id);
-        assertEquals(true,newSearchQuery.isLocal);
+        //assertEquals(true,newSearchQuery.isLocal);
 
         def newSearchQuery2=SearchQuery.search("name:query2").results[0];
         assertEquals(newQueryGroup.id,newSearchQuery2.group.id);
-        assertEquals(false,newSearchQuery2.isLocal);
+        //assertEquals(false,newSearchQuery2.isLocal);
 
         //TEST RELATION REMOVAL FROM MANY-TO-MANY
         //TestLogUtils.enableLogger();
@@ -743,11 +635,11 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='search.SearchQueryGroupForRedundancy' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
-                    <RelatedObject relationName='queries' alias='search.SearchQueryForRedundancy' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                    <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroupForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"search.SearchQueryGroup","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -758,15 +650,15 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
 
         newQueryGroup=SearchQueryGroup.get(id:queryGroup.id);
         assertEquals(1,newQueryGroup.queries.size());
-        assertEquals(true,newQueryGroup.isLocal);
+        //assertEquals(true,newQueryGroup.isLocal);
 
         newSearchQuery=SearchQuery.get(id:searchQuery.id);
         assertEquals(newQueryGroup.id,newSearchQuery.group.id);
-        assertEquals(true,newSearchQuery.isLocal);
+        //assertEquals(true,newSearchQuery.isLocal);
         
         newSearchQuery2=SearchQuery.search("name:query2").results[0];
         assertEquals(null,newSearchQuery2.group);
-        assertEquals(false,newSearchQuery2.isLocal);
+        //assertEquals(false,newSearchQuery2.isLocal);
    }
    public void testSynchonizeObjectsScript_ConvertsIdRelatedObjectsToPropertyFromRemote()
    {
@@ -794,12 +686,12 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='auth.RsUserInformationForRedundancy' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
-                    <IdRelatedObject relationName='userId' alias='auth.RsUserForRedundancy' searchQuery='username:"(user1)" ' />
-                    <RelatedObject relationName='rsUser' alias='auth.RsUserForRedundancy' searchQuery='username:"(user1)" ' />
+                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                    <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
+                    <RelatedObject relationName='rsUser' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformationForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformation","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }
@@ -829,11 +721,11 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0'>
-                  <Object alias='auth.RsUserInformationForRedundancy' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
-                    <IdRelatedObject relationName='userId' alias='auth.RsUserForRedundancy' searchQuery='username:"(user1)" ' />
+                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                    <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
                   </Object>
                 </Objects>""";
-                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformationForRedundancy","withRelations":"true"]]);
+                scriptResult=ScriptManagerForTest.runScript("synchronizeObjects",[params:["modelName":"auth.RsUserInformation","withRelations":"true"]]);
                 println "synchronizeObjects result"+scriptResult.replaceAll("<br>","\n");
                 assertTrue(scriptResult.indexOf("Error")<0);
             }

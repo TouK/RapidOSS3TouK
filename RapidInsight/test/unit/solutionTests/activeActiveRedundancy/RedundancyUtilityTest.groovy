@@ -10,6 +10,7 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 import datasource.HttpDatasource
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import org.apache.commons.io.FileUtils
+import message.RsMessageRule
 
 /**
 * Created by IntelliJ IDEA.
@@ -19,24 +20,17 @@ import org.apache.commons.io.FileUtils
 * To change this template use File | Settings | File Templates.
 */
 class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
-     def RsMessageRule;
+
      def RsMessageRuleOperations;
-     def MapGroup;
      def MapGroupOperations;
-     def SearchQuery;
      def SearchQueryOperations;
-     def SearchQueryGroup;
      def SearchQueryGroupOperations;
-     def RsUser;
-     def RsUserInformation;
      def RsUserInformationOperations;
-     def RsLookup;
 
 
      def DeletedObjects;
+     def UpdatedObjects;
      def redundancyUtility;
-
-     def static temp_model_directory = "../testoutput/ActiveActive/grails-app";
 
 
      def static solutionPath;
@@ -47,51 +41,26 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         clearMetaClasses();
         solutionPath = getWorkspacePath() + "/RapidModules/RapidInsight/solutions/ActiveActiveRedundancy"
 
-        generateModelFilesForTest();
 
-        gcl.addClasspath("${temp_model_directory}/domain/".toString());
-        RsMessageRule=gcl.loadClass("message.RsMessageRuleForRedundancy") ;
+
+        gcl.addClasspath("${solutionPath}/grails-app/domain/".toString());
+
         DeletedObjects=gcl.loadClass("DeletedObjects");
+        UpdatedObjects=gcl.loadClass("UpdatedObjects");
 
 
         RsMessageRuleOperations=gcl.parseClass(new File("${solutionPath}/operations/message/RsMessageRuleOperations.groovy"));
 
         redundancyUtility=gcl.parseClass(new File("${solutionPath}/operations/RedundancyUtility.groovy"));
 
-        initialize([RsMessageRule,DeletedObjects], []);
+        initialize([RsMessageRule,DeletedObjects,UpdatedObjects], []);
 
         CompassForTests.addOperationSupport(RsMessageRule, RsMessageRuleOperations);
 
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         RapidApplicationTestUtils.utilityPaths = ["RedundancyUtility": new File("${solutionPath}/operations/RedundancyUtility.groovy")];
     }
-     //Copy the models from solution and replate model names with modelNameForRedundancy
-     //If renaming not done test fail in hudson or when multiple tests runned together.
-     protected void generateModelFilesForTest()
-     {
-        println "Will generate models";
-        deleteGeneratedModelsDirectory();
-        new File(temp_model_directory).mkdirs();
-        
-        FileUtils.copyFileToDirectory(new File("${solutionPath}/grails-app/domain/message/RsMessageRule.groovy"),new File("${temp_model_directory}/domain/message"));
-        FileUtils.copyFileToDirectory(new File("${solutionPath}/grails-app/domain/DeletedObjects.groovy"),new File("${temp_model_directory}/domain/"));
-        convertModelFileFromTempDir("RsMessageRule","${temp_model_directory}/domain/message/");
-     }
-     protected void deleteGeneratedModelsDirectory()
-     {
-        if (new File(temp_model_directory).exists())
-        {
-            FileUtils.deleteDirectory(new File(temp_model_directory));
-        }
-     }
-    private void convertModelFileFromTempDir(String modelName,String directoryPath)
-    {
-        def modelFile=new File(directoryPath+"/${modelName}.groovy");
-        def modelText=modelFile.getText().replace("class "+modelName,"class "+modelName+"ForRedundancy");        
-        def newModelFile=new File(directoryPath+"/${modelName}ForRedundancy.groovy");
-        newModelFile.setText(modelText);
-        FileUtils.deleteQuietly (modelFile);
-    }
+
     public void tearDown() {
         clearMetaClasses();
         super.tearDown();
@@ -105,33 +74,38 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
     public void testRedundancyUtility_SetsIsLocalPropertyAccordingToExecutionContext(){
         def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
         assertFalse(rule1.hasErrors());
-        assertEquals(true,rule1.isLocal);
+        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+        
 
         ExecutionContextManagerUtils.executeInContext ([:])
         {
             ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
             def rule2=null;
             try{
-
+                UpdatedObjects.removeAll();
                 rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
                 assertFalse(rule2.hasErrors());
-                assertEquals(false,rule2.isLocal);
+                assertEquals(0,UpdatedObjects.count());
 
                 rule1.update(enabled:!(rule1.enabled));
                 assertFalse(rule1.hasErrors());
-                assertEquals(false,rule1.isLocal);
+                assertEquals(0,UpdatedObjects.count());
+                
             }
             finally{
                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
             }
+            UpdatedObjects.removeAll();
 
             rule1.update(enabled:!(rule1.enabled));
             assertFalse(rule1.hasErrors());
-            assertEquals(true,rule1.isLocal);
+            assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+
+            UpdatedObjects.removeAll();
 
             rule2.update(enabled:!(rule2.enabled));
             assertFalse(rule2.hasErrors());
-            assertEquals(true,rule1.isLocal);
+            assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule2.id}"));
         }
 
    }
@@ -142,14 +116,17 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         {
             def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
             assertFalse(rule1.hasErrors());
+            assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+            
             rule1.remove();
 
             assertEquals(0,RsMessageRule.count());
+            assertEquals(0,UpdatedObjects.count());
             assertEquals(1,DeletedObjects.count());
 
             def deletedObject1=DeletedObjects.list()[0];
-            assertEquals("message.RsMessageRuleForRedundancy",deletedObject1.modelName);
-            assertEquals(redundancyUtility.getKeySearchQueryForObject("message.RsMessageRuleForRedundancy",rule1),deletedObject1.searchQuery);
+            assertEquals("message.RsMessageRule",deletedObject1.modelName);
+            assertEquals(redundancyUtility.getKeySearchQueryForObject("message.RsMessageRule",rule1),deletedObject1.searchQuery);
             deletedObject1.remove();
             assertEquals(0,DeletedObjects.count());
 
@@ -159,9 +136,13 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
 
                 rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
                 assertFalse(rule2.hasErrors());
+                assertEquals(0,UpdatedObjects.count());
+                UpdatedObjects.add(modelName:rule2.class.name,objectId:rule2.id);
+                assertEquals(1,UpdatedObjects.count());
+                                
                 rule2.remove();
                 assertEquals(0,RsMessageRule.count());
-
+                assertEquals(0,UpdatedObjects.count());
                 assertEquals(0,DeletedObjects.count());
             }
             finally{
@@ -176,7 +157,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
         assertFalse(rule1.hasErrors());
 
-        assertEquals("""destinationType:"(email)" searchQueryId:1 userId:2 """,redundancyUtility.getKeySearchQueryForObject("message.RsMessageRuleForRedundancy",rule1));
+        assertEquals("""destinationType:"(email)" searchQueryId:1 userId:2 """,redundancyUtility.getKeySearchQueryForObject("message.RsMessageRule",rule1));
 
    }
    

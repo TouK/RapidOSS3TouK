@@ -15,6 +15,8 @@ scriptRunParams.add(["modelName":"ui.map.MapGroup","withRelations":"true"])
 scriptRunParams.add(["modelName":"ui.ComponentConfig"])
 scriptRunParams.add(["modelName":"message.RsMessageRule"])
 scriptRunParams.add(["modelName":"auth.RsUserInformation","withRelations":"true"])
+scriptRunParams.add(["modelName":"RsInMaintenance"])
+scriptRunParams.add(["modelName":"RsInMaintenanceSchedule"])
 
 // CONFIGURATION ENDS
 // ---------------------------------------

@@ -1,6 +1,12 @@
 <Rsmodel>
 	<Models>
-		<Model Name="DeletedObjects" StorageType="File">
+        <Model Name="UpdatedObjects" StorageType="File">
+			<Properties>
+				<Property Name="modelName" Type="string" IsKey="true"/>
+				<Property Name="objectId" Type="number" IsKey="true"/>
+			</Properties>
+		</Model>
+        <Model Name="DeletedObjects" StorageType="File">
 			<Properties>
 				<Property Name="modelName" Type="string" IsKey="true"/>
 				<Property Name="searchQuery" Type="string" IsKey="true"/>

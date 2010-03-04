@@ -1,15 +1,11 @@
 import datasource.*;
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 
-//modelName should be passed as param to this script
-//other scripts should call this script with CmdbScript.runScript("synchronizeObjects", ["modelName":"SmartsNotification","logger":logger]);
-//if this script wanted to be used only : comment in previous line
-//modelName="SmartsNotification"
 
 redundancyUtility=application.RapidApplication.getUtility("RedundancyUtility");
 
-modelName=params.modelName;
-withRelations=params.withRelations?true:false;
+modelName="RealUpdatedObjects";
+withRelations=true;
 
 OUTPUT="";
 logger.info("---------------------------------------------------")
@@ -25,11 +21,11 @@ ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
 def datasources=HttpDatasource.searchEvery("name:redundancy*");
 if(datasources.size()==0)
 {
-    logWarn("${modelName} : Error : no redundancy server is defined");    
+    logWarn("Error : no redundancy server is defined");
     return OUTPUT;
 }
 
-//For each server , process changed objects of the model
+//For each server , process UpdatedObjects
 datasources.each{ ds ->	
 	logger.info("Syncronization with ${ds.name} starts *******");
 	
@@ -52,10 +48,8 @@ datasources.each{ ds ->
 	requestParams.order="asc";
 	requestParams.searchIn=modelName;
 	requestParams.max=objectCountPerRequest;
-	requestParams.query="rsUpdatedAt:[${eventUpdatedAt} TO *] AND isLocal:true";
-	//requestParams.query="rsUpdatedAt:[${eventUpdatedAt} TO *]";
-	
-	
+	requestParams.query="rsUpdatedAt:[${eventUpdatedAt} TO *]";
+
 	try{
 			//first offset is 0 , nextOffset is 100
 			def nextOffset=0;

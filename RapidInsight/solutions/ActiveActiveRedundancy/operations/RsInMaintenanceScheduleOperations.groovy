@@ -11,7 +11,7 @@ import org.quartz.CronTrigger;
 public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     public static SCHEDULE_SOURCE = "schedule";
-
+    //	changed for isLocal property
     def afterInsert()
     {
         try {
@@ -21,29 +21,29 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
             remove();
             throw e;
         }
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterInsert(this.domainObject);
     }
     def afterUpdate(params)
     {
-
-    }
-    def beforeDelete()
-    {
-        unschedule();
-    }
-    //	changed for isLocal property
-    def beforeInsert() {
-        validateSchedule();
-        application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeInsert(this.domainObject);
-    }
-    def beforeUpdate() {
-        validateSchedule();
-        application.RapidApplication.getUtility("RedundancyUtility").objectInBeforeUpdate(this.domainObject);
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
     }
     def afterDelete()
     {
 		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterDelete(this.domainObject);
     }
     //change ended
+    def beforeDelete()
+    {
+        unschedule();
+    }
+
+    def beforeInsert() {
+        validateSchedule();
+    }
+    def beforeUpdate() {
+        validateSchedule();
+    }
+
 
     def validateSchedule() {
         if(![RsInMaintenanceSchedule.RUN_ONCE, RsInMaintenanceSchedule.DAILY, RsInMaintenanceSchedule.MONTHLY_BY_DAY,

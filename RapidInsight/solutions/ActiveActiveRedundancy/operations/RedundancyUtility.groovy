@@ -30,34 +30,32 @@ public class RedundancyUtility
 		return searchQuery;
 	}
 	
-	public static def objectInBeforeInsert(object)
+	public static def objectInAfterInsert(object)
 	{
 
-        def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;    	
-        if(isRemoteActivated)
+        def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
+        if(!isRemoteActivated)
     	{
-    		object.setProperty("isLocal",false);
-    	}
-    	else
-    	{
-    		object.setProperty("isLocal",true);
+            def updatedObjectsClass=application.RapidApplication.getModelClass("UpdatedObjects");
+            updatedObjectsClass.add(modelName:object.class.name,objectId:object.id);            
     	}
 	}
-	public static def objectInBeforeUpdate(object)
+	public static def objectInAfterUpdate(object)
 	{
-        objectInBeforeInsert(object);
+        objectInAfterInsert(object);
     }
 	public static def objectInAfterDelete(object)
 	{
 		def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
 		if(!isRemoteActivated)
 		{
-			def deletedObjectClass=application.RapidApplication.getModelClass("DeletedObjects");
+			def deletedObjectsClass=application.RapidApplication.getModelClass("DeletedObjects");
 			def modelName=object.class.name;
 			def searchQuery=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject(modelName,object);
-			deletedObjectClass.add(modelName:modelName,searchQuery:searchQuery);
-			
+			deletedObjectsClass.add(modelName:modelName,searchQuery:searchQuery);  			
 		}
+		def updatedObjectsClass=application.RapidApplication.getModelClass("UpdatedObjects");
+		updatedObjectsClass.get([modelName:object.class.name,objectId:object.id])?.remove();
 	}
 	
 	

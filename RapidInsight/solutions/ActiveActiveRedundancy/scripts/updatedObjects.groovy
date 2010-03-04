@@ -38,7 +38,25 @@ StringWriter sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 def sortOrder = 0;
 builder.Objects(total: searchResults.total, offset: searchResults.offset) {
-    searchResults.results.each {props ->
+    searchResults.results.each { objectProps ->
+        def props=[:]
+        if(params.searchIn=="RealUpdatedObjects")
+        {
+           GrailsDomainClass grailsClass = ApplicationHolder.application.getDomainClass(objectProps.modelName);
+           def mc = grailsClass.metaClass;
+           def realObjectQuery="id:${objectProps.objectId}";
+           def realSearchResults=mc.theClass.searchAsString(realObjectQuery).results;
+           if(realSearchResults.size()==1)
+           {
+               props=realSearchResults[0];                
+           }
+        }
+        else
+        {
+            props=objectProps;
+        }
+
+
     	def relations=[:];  
     	def idRelations=[:];
     	//find related objects if relations is requested
@@ -118,26 +136,25 @@ def search(params) {
         params.max = "1000"
     }
     def searchResults;
-    if (params.searchIn != null) {
-        GrailsDomainClass grailsClass = ApplicationHolder.application.getDomainClass(params.searchIn);
-        if (grailsClass == null)
-        {
-        	SEARCH_ERROR="No such model : ${params.searchIn}";            
-            return;
-        }
-        def mc = grailsClass.metaClass;
-        try {
-            searchResults = mc.theClass.searchAsString(query, params)
-        }
-        catch (Throwable e) {
-        	SEARCH_ERROR="invalid.search.query : ${query}, Reason : ${e.getMessage()}";            
-            return;
-        }
+    def searchModelName=params.searchIn;
+    if (searchModelName == "RealUpdatedObjects") {
+        searchModelName="UpdatedObjects";
+    }
+    GrailsDomainClass grailsClass = ApplicationHolder.application.getDomainClass(searchModelName);
+    if (grailsClass == null)
+    {
+        SEARCH_ERROR="No such model : ${searchModelName}";
+        return;
+    }
+    def mc = grailsClass.metaClass;
+    try {
+        searchResults = mc.theClass.searchAsString(query, params)
+    }
+    catch (Throwable e) {
+        SEARCH_ERROR="invalid.search.query : ${query}, Reason : ${e.getMessage()}";
+        return;
+    }
 
-    }
-    else {
-    	SEARCH_ERROR="searchIn parameter is not specified";
-        return;    
-    }
+
     return searchResults;
 }

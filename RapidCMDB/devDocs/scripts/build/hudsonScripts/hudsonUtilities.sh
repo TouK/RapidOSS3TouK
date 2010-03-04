@@ -47,7 +47,9 @@ checkOutTag() {
     rm -rf RapidModules
     rm -rf ThirdParty
     rm -rf LicencedJars
+    rm -rf LicensedArtifacts
     rm -rf Netcool
+    rm -rf Rivermuse
     rm -rf Smarts
     rm -rf Hyperic
     rm -rf Apg

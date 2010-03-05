@@ -338,7 +338,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals(2,doRequestCallParams.size());
         assertEquals("script/run/updatedObjects",doRequestCallParams.url);
         assertEquals("DeletedObjects",doRequestCallParams.params.searchIn);
-        assertEquals("rsUpdatedAt:[${remoteTopUpdatedAt} TO *] ",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${remoteTopUpdatedAt+1} TO *] ",doRequestCallParams.params.query);
         assertEquals(0,doRequestCallParams.params.offset);
    }
    public void testSynchronizeDeletedObjectsScript_DoesNotThrowExceptionButLogs()
@@ -496,7 +496,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals(true,queryGroup.isPublic);
         assertEquals(0,UpdatedObjects.count());
 
-        assertEquals("rsUpdatedAt:[${lookup.value} TO *]",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${Long.parseLong(lookup.value)+1} TO *]",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
         lookup=RsLookup.get(name:"RealUpdatedObjects_redundancy1_UpdatedAt");
@@ -531,7 +531,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
         assertEquals(true,queryGroup.isPublic);
         assertEquals(0,UpdatedObjects.count());
 
-        assertEquals("rsUpdatedAt:[${lookup.value} TO *]",doRequestCallParams.params.query);
+        assertEquals("rsUpdatedAt:[${Long.parseLong(lookup.value)+1} TO *]",doRequestCallParams.params.query);
 
         assertEquals(1,RsLookup.count());
         lookup=RsLookup.get(name:"RealUpdatedObjects_redundancy1_UpdatedAt");

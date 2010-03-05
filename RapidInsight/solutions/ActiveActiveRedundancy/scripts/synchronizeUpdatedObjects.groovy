@@ -29,14 +29,14 @@ if(datasources.size()==0)
 datasources.each{ ds ->	
 	logger.info("Syncronization with ${ds.name} starts *******");
 	
-	eventUpdatedAtKey="${modelName}_${ds.name}_UpdatedAt";
-	eventUpdatedAt=0;
+	modelUpdatedAtKey="${modelName}_${ds.name}_UpdatedAt";
+	modelUpdatedAt=0;
 	
-	//lookup event
-	def eventLookup=RsLookup.get(name:eventUpdatedAtKey);
-	if(eventLookup!=null)
+	//lookup model
+	def modelLookup=RsLookup.get(name:modelUpdatedAtKey);
+	if(modelLookup!=null)
 	{
-		eventUpdatedAt=eventLookup.value;
+		modelUpdatedAt=Long.parseLong(modelLookup.value)+1;
 	}
 	
 	
@@ -48,7 +48,7 @@ datasources.each{ ds ->
 	requestParams.order="asc";
 	requestParams.searchIn=modelName;
 	requestParams.max=objectCountPerRequest;
-	requestParams.query="rsUpdatedAt:[${eventUpdatedAt} TO *]";
+	requestParams.query="rsUpdatedAt:[${modelUpdatedAt} TO *]";
 
 	try{
 			//first offset is 0 , nextOffset is 100
@@ -58,7 +58,7 @@ datasources.each{ ds ->
 			
 	
 			def totalObjectCount=processRequest(ds,requestParams);		
-			logger.info("${totalObjectCount} total objects changed from ${eventUpdatedAt}");
+			logger.info("${totalObjectCount} total objects changed from ${modelUpdatedAt}");
 			def syncFinished=(nextOffset>totalObjectCount);
 			
 			
@@ -195,9 +195,9 @@ def processRequest(ds,requestParams)
         if(xmlObjects.size()>0)
         {
 //        	since sorted by rsUpdatedAt looking at the last record updated at is enough			
-        	def eventLastUpdatedAt=xmlTopRow.rsUpdatedAt;
-			logger.info("Saving RsLookup ${[name:eventUpdatedAtKey,value:eventLastUpdatedAt]} ")
-        	RsLookup.add([name:eventUpdatedAtKey,value:eventLastUpdatedAt]);
+        	def modelLastUpdatedAt=xmlTopRow.rsUpdatedAt;
+			logger.info("Saving RsLookup ${[name:modelUpdatedAtKey,value:modelLastUpdatedAt]} ")
+        	RsLookup.add([name:modelUpdatedAtKey,value:modelLastUpdatedAt]);
         	
         }
         logger.info(" Processed ${xmlObjects.size()} objects after offset ${requestParams.offset}");

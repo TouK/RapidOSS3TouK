@@ -1,4 +1,4 @@
-package solutionTests
+package solutionTests.maintenanceTests
 
 import application.RapidApplication
 import com.ifountain.rcmdb.test.util.CompassForTests

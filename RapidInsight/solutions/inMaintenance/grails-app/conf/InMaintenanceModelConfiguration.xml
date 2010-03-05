@@ -21,6 +21,7 @@
         <Model Name="RsInMaintenanceSchedule" StorageType="FileAndMemory">
             <Properties>
                 <Property Name="objectName" Type="string"/>
+                <Property Name="schedKey" Type="string" IsKey="true"/>
                 <Property Name="schedType" Type="number"/>
                 <Property Name="info" Type="string"/>
                 <Property Name="maintStarting" Type="date"/>

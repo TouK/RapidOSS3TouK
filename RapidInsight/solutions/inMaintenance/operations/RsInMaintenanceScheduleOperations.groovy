@@ -31,6 +31,11 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
         unschedule();
     }
     def beforeInsert() {
+        //generate key if it is not given
+        if(schedKey=="" || schedKey==null)
+        {
+            schedKey="${objectName}${Date.now()}".toString();
+        }
         validateSchedule();
     }
     def beforeUpdate() {

@@ -1,4 +1,4 @@
-package solutionTests
+package solutionTests.maintenanceTests
 
 import application.RapidApplication
 import com.ifountain.rcmdb.test.util.CompassForTests
@@ -13,6 +13,8 @@ import org.quartz.SchedulerException
 import org.quartz.JobDetail
 import org.quartz.StatefulJob
 import org.quartz.JobExecutionContext
+import org.apache.commons.lang.StringUtils
+
 
 /**
 * Created by IntelliJ IDEA.
@@ -67,7 +69,34 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         GroovySystem.metaClassRegistry.removeMetaClass(RsInMaintenanceScheduleOperations)
         ExpandoMetaClass.enableGlobally();
     }
+    public void testAddingScheduleGeneratesScheduleKeyIfNotGiven()
+    {
+        def starting = new Date(System.currentTimeMillis() + 10000L);
+        def ending = new Date(starting.getTime() + 100000L);
 
+        def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, schedType: RsInMaintenanceSchedule.RUN_ONCE];
+
+        //can add same schedule many times, key does not overlap
+        10.times{
+             RsInMaintenanceSchedule.addObjectSchedule(props);
+             Thread.sleep(10);
+        }
+        assertEquals(10,RsInMaintenanceSchedule.count());
+
+        def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
+        assertFalse(schedule.errors.toString(),schedule.hasErrors());
+
+        assertTrue(schedule.schedKey.indexOf(props.objectName)==0);
+        def schedKeyTime=Long.parseLong(StringUtils.substringAfter(schedule.schedKey,props.objectName));
+        assertTrue(schedKeyTime<Date.now());
+
+        //if schedKey given it is not generated
+        props.schedKey="mySchedKey";
+        def schedule2 = RsInMaintenanceSchedule.addObjectSchedule(props);
+        assertFalse(schedule2.hasErrors());
+        assertEquals("mySchedKey",schedule2.schedKey);
+
+    }
     public void testRunOnceSchedule() {
         def starting = new Date(System.currentTimeMillis() + 10000L);
         def ending = new Date(starting.getTime() + 100000L);
@@ -75,7 +104,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, schedType: RsInMaintenanceSchedule.RUN_ONCE];
 
         def schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
-        assertFalse(schedule.hasErrors())
+        assertFalse(schedule.errors.toString(),schedule.hasErrors())
         assertEquals(deviceName, schedule.objectName)
         assertEquals(info, schedule.info)
         assertEquals(starting.getTime(), schedule.maintStarting.getTime())
@@ -361,9 +390,9 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
 
         schedule = RsInMaintenanceSchedule.addObjectSchedule(props);
         assertFalse(schedule.hasErrors())
-                
+
         RsInMaintenanceSchedule.removeExpiredItems();
-        
+
         assertEquals(1, RsInMaintenanceSchedule.count());
     }
     public void testScheduleAndUnscheduleDoneWhenMaintenanceScheduleAddedOrRemovedByTriggers() {
@@ -372,7 +401,7 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def props = [objectName: deviceName, info: info, maintStarting: starting, maintEnding: ending, schedType: RsInMaintenanceSchedule.RUN_ONCE];
 
         def schedule = RsInMaintenanceSchedule.add(props);
-        assertFalse(schedule.hasErrors())    
+        assertFalse(schedule.hasErrors())
 
         Scheduler scheduler = schedule.getScheduler();
         assertNotNull(scheduler.getTrigger(schedule.getTriggerName(), null));

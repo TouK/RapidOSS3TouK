@@ -1,4 +1,4 @@
-package solutionTests
+package solutionTests.maintenanceTests
 
 import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
@@ -11,7 +11,7 @@ import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
 * Time: 1:22:07 PM
 * To change this template use File | Settings | File Templates.
 */
-class PutInMaintenanceScriptTest extends RapidCmdbWithCompassTestCase {
+class PutInMaintenanceScriptTests extends RapidCmdbWithCompassTestCase {
 
     def RsInMaintenance;
     def RsInMaintenanceSchedule;

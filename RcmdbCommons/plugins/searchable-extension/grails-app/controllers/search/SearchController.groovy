@@ -160,7 +160,7 @@ class SearchController {
             GrailsDomainClass grailsClass = grailsApplication.getDomainClass(params.searchIn);
             if (grailsClass == null)
             {
-                addError("invalid.`.searchIn", [params.searchIn]);
+                addError("invalid.search.searchIn", [params.searchIn]);
                 return;
             }
             def mc = grailsClass.metaClass;
@@ -174,13 +174,8 @@ class SearchController {
 
         }
         else {
-            try {
-                searchResults = searchableService.search(query, params);
-            }
-            catch (Throwable e) {
-                addError("invalid.search.query", [query, e.getMessage()]);
-                return;
-            }
+           addError("invalid.search.searchIn", [params.searchIn]);
+           return;
         }
         return searchResults;
     }

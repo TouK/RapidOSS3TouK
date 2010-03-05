@@ -2,7 +2,7 @@ package ui.map
 
 
 class TopoMapOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
-	//changed for isLocal property
+	//	changed for Active-Active Redundancy
 	def afterInsert()
     {
 		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterInsert(this.domainObject);

@@ -7,7 +7,7 @@ package search
  * To change this template use File | Settings | File Templates.
  */
 class SearchQueryGroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation{
-	//	changed for isLocal property
+	//	changed for Active-Active Redundancy
 	def afterInsert()
     {
 		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterInsert(this.domainObject);

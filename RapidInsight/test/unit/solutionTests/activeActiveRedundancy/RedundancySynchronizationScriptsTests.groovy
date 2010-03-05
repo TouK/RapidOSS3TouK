@@ -437,7 +437,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
                 scriptResult=ScriptManagerForTest.runScript("synchronizeUpdatedObjects",[:]);
@@ -478,7 +478,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='true' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isPublic='true' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
                 scriptResult=ScriptManagerForTest.runScript("synchronizeUpdatedObjects",[:]);
@@ -513,7 +513,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='true' id='66661' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                   </Object>
                 </Objects>""";
                 scriptResult=ScriptManagerForTest.runScript("synchronizeUpdatedObjects",[:]);
@@ -584,7 +584,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                     <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
                     <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query2)" type:"(t1)" username:"(user1)" ' />
                   </Object>
@@ -625,10 +625,10 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='2' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQuery' id='77772' isLocal='true' isPublic='false' name='query1' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                  <Object alias='search.SearchQuery' id='77772'  isPublic='false' name='query1' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
                     <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
-                  <Object alias='search.SearchQuery' id='77774' isLocal='true' isPublic='false' name='query2' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
+                  <Object alias='search.SearchQuery' id='77774' isPublic='false' name='query2' query='asd' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' searchClass='' sortOrder='asc' sortProperty='' type='t1' username='user1' viewName='default'>
                     <RelatedObject relationName='group' alias='search.SearchQueryGroup' searchQuery='name:"(group1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
                 </Objects>""";
@@ -668,7 +668,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isLocal='true' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
+                  <Object alias='search.SearchQueryGroup' expanded='false' id='66661' isPublic='false' name='group1' rsInsertedAt='${remoteUpdatedAt}' rsOwner='p' rsUpdatedAt='${remoteUpdatedAt}' type='t1' username='user1'>
                     <RelatedObject relationName='queries' alias='search.SearchQuery' searchQuery='name:"(query1)" type:"(t1)" username:"(user1)" ' />
                   </Object>
                 </Objects>""";
@@ -723,7 +723,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                  <Object alias='auth.RsUserInformation' id='4444441' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
                     <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
                     <RelatedObject relationName='rsUser' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
                   </Object>
@@ -758,7 +758,7 @@ class RedundancySynchronizationScriptsTests extends RapidCmdbWithCompassTestCase
             try{
                 doRequestResultFromRemoteServer="""
                 <Objects total='1' offset='0' rsUpdatedAt='${remoteTopUpdatedAt}'>
-                  <Object alias='auth.RsUserInformation' id='4444441' isLocal='true' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
+                  <Object alias='auth.RsUserInformation' id='4444441' rsInsertedAt='1266499889000' rsOwner='p' rsUpdatedAt='1266499889000' type='email0' userId='5555'>
                     <IdRelatedObject relationName='userId' alias='auth.RsUser' searchQuery='username:"(user1)" ' />
                   </Object>
                 </Objects>""";

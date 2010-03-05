@@ -11,7 +11,7 @@ import org.quartz.CronTrigger;
 public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
     public static SCHEDULE_SOURCE = "schedule";
-    //	changed for isLocal property
+    //	changed for Active-Active Redundancy
     def afterInsert()
     {
         try {

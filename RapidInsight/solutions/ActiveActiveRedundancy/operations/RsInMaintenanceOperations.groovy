@@ -2,7 +2,7 @@ import java.util.Date
 
 public class RsInMaintenanceOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
 
-    //	changed for isLocal property
+    //	changed for Active-Active Redundancy
     def afterInsert()
     {
 		putEventsInMaintenance (true,objectName);

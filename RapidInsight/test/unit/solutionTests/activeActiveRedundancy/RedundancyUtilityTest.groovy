@@ -74,6 +74,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
     public void testRedundancyUtility_SavesAndDeletesUpdatedObjectsAccordingToExecutionContext(){
         def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
         assertFalse(rule1.hasErrors());
+        assertEquals(1,UpdatedObjects.count());
         assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
         
 
@@ -82,15 +83,14 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
             ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
             def rule2=null;
             try{
-                UpdatedObjects.removeAll();
                 rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
                 assertFalse(rule2.hasErrors());
-                assertEquals(0,UpdatedObjects.count());
+                assertEquals("UpdatedObjects not deleted, because other object is updated",1,UpdatedObjects.count());
+                assertEquals("UpdatedObjects not deleted, because other object is updated",1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
 
                 rule1.update(enabled:!(rule1.enabled));
                 assertFalse(rule1.hasErrors());
-                assertEquals(0,UpdatedObjects.count());
-                
+                assertEquals("UpdatedObjects are deleted, because of remote update",0,UpdatedObjects.count());
             }
             finally{
                ExecutionContextManagerUtils.removeObjectFromCurrentContext ("isRemote");
@@ -109,6 +109,28 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
    }
+   public void testRemoveDeletesUpdatedObjectsRecordsAndUpdateDeletesDeletedObjectsRecordForTheSameObject()
+   {
+       def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+       assertFalse(rule1.hasErrors());
+       assertEquals(1,UpdatedObjects.count());
+       assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+
+       //
+       rule1.remove();
+       assertEquals(0,RsMessageRule.count());
+       assertEquals(0,UpdatedObjects.count());
+       def searchQueryForRule2=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject("message.RsMessageRule",rule1);
+       assertEquals(1,DeletedObjects.count());
+       assertEquals(1,DeletedObjects.countHits("modelName:message.RsMessageRule AND searchQuery:${searchQueryForRule2.exactQuery()}"));
+
+
+       def newRule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+       assertFalse(newRule1.id == rule1.id);
+       assertEquals(1,UpdatedObjects.count());
+       assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${newRule1.id}"));
+       assertEquals(0,DeletedObjects.count());
+   }
 
     public void testRedundancyUtility_OnlySavesADeletedObjectOnLocalDelete(){
 
@@ -121,7 +143,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
             rule1.remove();
 
             assertEquals(0,RsMessageRule.count());
-            assertEquals(0,UpdatedObjects.count());
+            assertEquals("Remove should delete updated object",0,UpdatedObjects.count());
             assertEquals(1,DeletedObjects.count());
 
             def deletedObject1=DeletedObjects.list()[0];
@@ -151,6 +173,8 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         }
 
    }
+
+
 
    public void testRedundancyUtility_GetKeySearchQueryForObject()
    {

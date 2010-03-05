@@ -34,11 +34,21 @@ public class RedundancyUtility
 	{
 
         def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
-        if(!isRemoteActivated)
-    	{
-            def updatedObjectsClass=application.RapidApplication.getModelClass("UpdatedObjects");
-            updatedObjectsClass.add(modelName:object.class.name,objectId:object.id);            
+        def modelName=object.class.name;
+        def updatedObjectsClass=application.RapidApplication.getModelClass("UpdatedObjects");
+        
+        if(!isRemoteActivated)   //on local update UpdatedObjects entry is saved
+        {
+            updatedObjectsClass.add(modelName:modelName,objectId:object.id);
     	}
+    	else  //on remote update UpdatedObjects entry is deleted ( if exists )
+        {
+            updatedObjectsClass.get([modelName:modelName,objectId:object.id])?.remove();
+        }
+        //on any update DeletedObjects entry is deleted ( if exists )
+        def deletedObjectsClass=application.RapidApplication.getModelClass("DeletedObjects");
+        def searchQuery=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject(modelName,object);
+        deletedObjectsClass.get([modelName:modelName,searchQuery:searchQuery])?.remove();
 	}
 	public static def objectInAfterUpdate(object)
 	{
@@ -47,13 +57,14 @@ public class RedundancyUtility
 	public static def objectInAfterDelete(object)
 	{
 		def isRemoteActivated=com.ifountain.rcmdb.util.ExecutionContextManagerUtils.getObjectFromCurrentContext("isRemote")!=null;
-		if(!isRemoteActivated)
+		if(!isRemoteActivated)  //on local update DeletedObjects entry is saved
 		{
 			def deletedObjectsClass=application.RapidApplication.getModelClass("DeletedObjects");
 			def modelName=object.class.name;
 			def searchQuery=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject(modelName,object);
 			deletedObjectsClass.add(modelName:modelName,searchQuery:searchQuery);  			
 		}
+		//on delete UpdatedObjects entry is deleted ( if exists )
 		def updatedObjectsClass=application.RapidApplication.getModelClass("UpdatedObjects");
 		updatedObjectsClass.get([modelName:object.class.name,objectId:object.id])?.remove();
 	}

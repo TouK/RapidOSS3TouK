@@ -11,7 +11,7 @@
 <%
     layoutUnitsHavingContentFile.each{layoutUnit->
 %>
-    <div id="${layoutUnit.getContentFileDivId()}">
+    <div id="${layoutUnit.getContentFileDivId()}" style="height:100%">
         <rui:include template="${layoutUnit.contentFile}" model="\${binding.variables}"></rui:include>
     </div>
 <%

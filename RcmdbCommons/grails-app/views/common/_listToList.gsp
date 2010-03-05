@@ -66,9 +66,9 @@
     <table style="border:none;width:auto">
         <tbody>
             <tr>
-                <td><div>${fromListTitle}</div></td>
+                <td><div class="title">${fromListTitle}</div></td>
                 <td></td>
-                <td><div>${toListTitle}</div></td>
+                <td><div class="title">${toListTitle}</div></td>
             </tr>
             <tr>
                 <td>

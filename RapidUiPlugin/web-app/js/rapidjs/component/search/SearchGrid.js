@@ -169,8 +169,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     },
 
     addHeader: function(columnIndex, label) {
+        if(label == '') label = '&nbsp;' 
         var hd = this.htemplate.append(this.hrow, [columnIndex, label]);
-
         var spans = hd.getElementsByTagName('span');
         hd.textNode = spans[1];
         hd.sortDesc = spans[2];

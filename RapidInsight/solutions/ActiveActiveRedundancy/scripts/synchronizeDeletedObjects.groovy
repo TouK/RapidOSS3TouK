@@ -110,6 +110,7 @@ def processRequest(ds,requestParams)
 		}
 
         def xmlRoot=new XmlSlurper().parseText(xmlResult);
+        def xmlTopRow=xmlRoot.attributes();
         def xmlObjects=xmlRoot.Object;
 
         def totalObjectCount=Long.parseLong(xmlRoot.@total.toString());
@@ -142,7 +143,7 @@ def processRequest(ds,requestParams)
         if(xmlObjects.size()>0)
         {
 //        	since sorted by rsUpdatedAt looking at the last record updated at is enough
-        	def eventLastUpdatedAt=xmlObjects[xmlObjects.size()-1].@rsUpdatedAt;
+        	def eventLastUpdatedAt=xmlTopRow.rsUpdatedAt;
 			logger.info("Saving RsLookup ${[name:eventUpdatedAtKey,value:eventLastUpdatedAt]} ")
         	RsLookup.add([name:eventUpdatedAtKey,value:eventLastUpdatedAt]);
 

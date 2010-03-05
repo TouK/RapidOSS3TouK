@@ -38,6 +38,8 @@ StringWriter sw = new StringWriter();
 def builder = new MarkupBuilder(sw);
 def sortOrder = 0;
 def lastRsUpdatedAt=0;
+//since RealUpdatedObjects request searches UpdatesObjects but shows , Real Model Data SearchQuery , MessageRule etc
+// we should save real rsUpdatedAt from the searched objects (UpdatesObjects) 
 if(searchResults.results.size()>0)
 {
     lastRsUpdatedAt=searchResults.results[searchResults.results.size()-1].rsUpdatedAt;

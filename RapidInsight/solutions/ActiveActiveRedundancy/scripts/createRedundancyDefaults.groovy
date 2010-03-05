@@ -30,8 +30,7 @@ scriptsToAdd.add([name:"createRedundancyConnections",logFileOwn:true])
 
 //synchronization scripts
 scriptsToAdd.add([name:"updatedObjects", logFileOwn:true]);
-scriptsToAdd.add([name:"synchronizeObjects", logFileOwn:true]);
-scriptsToAdd.add([name:"synchronizeUiObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
+scriptsToAdd.add([name:"synchronizeUpdatedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 scriptsToAdd.add([name:"synchronizeDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:120,logFileOwn:true]);
 scriptsToAdd.add([name:"clearExpiredDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:360000*12,logFileOwn:true]);
 

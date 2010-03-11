@@ -215,7 +215,7 @@ class LdapConnectionOperations extends ConnectionOperations
     //hardcoded decision for multiple attributes
     protected boolean isSingleAttribute(attr)
     {
-        return multiAttributes.containsKey(attr.getID());
+        return !(multiAttributes.containsKey(attr.getID()));
     }
     */
     

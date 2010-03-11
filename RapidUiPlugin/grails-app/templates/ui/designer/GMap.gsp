@@ -1,4 +1,4 @@
-<rui:gmap id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" googleKey="${uiElement.googleKey}"
+<rui:gmap id="${uiElement.name}" url="../${uiElement.url}" title="${uiElement.title}" googleKey="${uiElement.googleKey}" pollingInterval="${uiElement.pollingInterval}"
         timeout="${uiElement.timeout}" locationTagName="${uiElement.locationTagName}" lineTagName="${uiElement.lineTagName}"
          iconTagName="${uiElement.iconTagName}" lineSize="${uiElement.lineSize}" defaultIconWidth="${uiElement.defaultIconWidth}" defaultIconHeight="${uiElement.defaultIconHeight}"
 <%

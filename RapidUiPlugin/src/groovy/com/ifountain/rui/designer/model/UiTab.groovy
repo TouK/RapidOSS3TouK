@@ -111,6 +111,10 @@ class UiTab extends UiElmnt {
         def actionAddOrder = [];
         def actionsMap = [:]
         actionsNode."${UIELEMENT_TAG}".each {actionNode ->
+            def actionName = actionNode.@name.toString();
+            if(actionsMap.containsKey(actionName)){
+                throw new Exception ("Another instance of UiAction exists with name ${actionName}")
+            }
             actionsMap.put(actionNode.@name.toString(), actionNode);
         }
         def iterationCount = 0

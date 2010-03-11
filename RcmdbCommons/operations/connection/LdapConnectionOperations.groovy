@@ -38,6 +38,7 @@ class LdapConnectionOperations extends ConnectionOperations
 {
     InitialDirContext context;
     static def multiAttributes=["objectClass":true,"anotherProperty":true];
+    def temporaryMultiAttributes=[:];
     
     def checkAuthentication(String authUsername,String authPassword)
     {
@@ -110,7 +111,8 @@ class LdapConnectionOperations extends ConnectionOperations
     def query(searchBase,searchFilter,searchSubDirectories)
     {
         _throwExceptionIfNotConnected();
-
+        temporaryMultiAttributes.clear();
+        
         if( searchFilter==null)
             searchFilter=""
 
@@ -136,6 +138,7 @@ class LdapConnectionOperations extends ConnectionOperations
     public def getEntry(String dn)
     {
         _throwExceptionIfNotConnected();
+        temporaryMultiAttributes.clear();
         try{
             return convertAttributesToProps(context.getAttributes(dn));
         }
@@ -193,10 +196,21 @@ class LdapConnectionOperations extends ConnectionOperations
     }
     protected boolean isSingleAttribute(attr)
     {
-        DirContext metaSchema = attr.getAttributeDefinition();
-        Attributes metaAttrs = metaSchema.getAttributes("",["SINGLE-VALUE"] as String[]);
-        return metaAttrs?.get("SINGLE-VALUE")?.get() == "true";
+        def atrID=attr.getID();
+        if(temporaryMultiAttributes.containsKey(atrID))
+        {
+            return  temporaryMultiAttributes[atrID];
+        }
+        else
+        {
+            DirContext metaSchema = attr.getAttributeDefinition();
+            Attributes metaAttrs = metaSchema.getAttributes("",["SINGLE-VALUE"] as String[]);
+            def propIsSingle=metaAttrs?.get("SINGLE-VALUE")?.get() == "true";
+            temporaryMultiAttributes[atrID]=propIsSingle;
+            return propIsSingle;
+        }
     }
+    
     /*
     //hardcoded decision for multiple attributes
     protected boolean isSingleAttribute(attr)

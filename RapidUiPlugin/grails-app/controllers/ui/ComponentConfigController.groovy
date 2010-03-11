@@ -136,7 +136,7 @@ class ComponentConfigController {
     def get = {
         def configName = params.name;
         def url = params.url;
-        def componentConfig = ComponentConfig.get(name: configName, username: session.username, url:url);
+        def componentConfig = ComponentConfig.get(name: configName, username: session.username, url: url);
         if (componentConfig) {
             render(contentType: "text/xml") {
                 ComponentConfig(name: componentConfig.name, pollingInterval: componentConfig.pollingInterval)
@@ -150,6 +150,17 @@ class ComponentConfigController {
         }
     }
 
+    def getAll = {
+        def url = params.url;
+        def componentConfigs = ComponentConfig.searchEvery("username: ${session.username.exactQuery()} AND url: ${url.exactQuery()}");
+        render(contentType: "text/xml") {
+            ComponentConfigs() {
+                componentConfigs.each {componentConfig ->
+                    ComponentConfig(name: componentConfig.name, pollingInterval: componentConfig.pollingInterval)
+                }
+            }
+        }
+    }
     def addTo = {
         def componentConfig = ComponentConfig.get([id: params.id])
         if (!componentConfig) {

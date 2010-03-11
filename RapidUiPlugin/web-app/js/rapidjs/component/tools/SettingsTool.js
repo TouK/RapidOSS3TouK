@@ -29,9 +29,21 @@ YAHOO.rapidjs.component.tool.SettingsTool = function(container, component, confi
     YAHOO.rapidjs.component.tool.SettingsTool.superclass.constructor.call(this, container, component, this.config);
     this.render();
     this.form.events['submit'].subscribe(this.handleSubmit, this, true);
-    this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this, 30000);
-    var url = getUrlPrefix() + 'componentConfig/get?format=xml';
-    this.requester.doGetRequest(url, {name:this.component.id, url:window.location.pathname})
+    if (YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequested) {
+        var url = getUrlPrefix() + 'componentConfig/get?format=xml';
+        new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this, 30000).doGetRequest(url, {name:this.component.id, url:window.location.pathname})
+    }
+    else {
+        if (!YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequestPrepared) {
+            YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequestPrepared = true;
+            YAHOO.util.Event.onDOMReady(function() {
+                YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequested = true;
+                var url = getUrlPrefix() + 'componentConfig/getAll?format=xml';
+                new YAHOO.rapidjs.Requester(this.allConfigurationReceived, this.processFailure, this, 30000).doGetRequest(url, {url:window.location.pathname})
+            }, this, true)
+        }
+    }
+
 };
 
 YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.component.tool.BasicTool, {
@@ -65,23 +77,42 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.tool.SettingsTool, YAHOO.rapidjs.compo
 
     processSuccess:function(response) {
         if (YAHOO.rapidjs.Connect.checkAuthentication(response)) {
-           var pollingInterval = response.responseXML.getElementsByTagName("ComponentConfig")[0].getAttribute("pollingInterval")
-            var pollingInt = parseInt(pollingInterval);
-            if (YAHOO.lang.isNumber(pollingInt)) {
-                this.component.setPollingInterval(pollingInt);
-                if (pollingInt > 0) {
-                    this.component.pollTask.delay(pollingInt);
+            this.setConfigurationOfComponent(this.component, response.responseXML.getElementsByTagName("ComponentConfig")[0])
+        }
+    },
+
+    setConfigurationOfComponent: function(comp, configNode) {
+        var pollingInterval = configNode.getAttribute("pollingInterval")
+        var pollingInt = parseInt(pollingInterval);
+        if (YAHOO.lang.isNumber(pollingInt)) {
+            comp.setPollingInterval(pollingInt);
+            if (pollingInt > 0) {
+                comp.pollTask.delay(pollingInt);
+            }
+        }
+    },
+
+    allConfigurationReceived: function(response) {
+        if (YAHOO.rapidjs.Connect.checkAuthentication(response)) {
+            var configNodes = response.responseXML.getElementsByTagName("ComponentConfig")
+            for (var i = 0; i < configNodes.length; i++) {
+                var configNode = configNodes[i];
+                var comp = YAHOO.rapidjs.Components[configNode.getAttribute('name')];
+                if (comp) {
+                    this.setConfigurationOfComponent(comp, configNode)
                 }
             }
         }
-
     },
 
     processFailure:function(errors, statusCodes) {
-        if(statusCodes != null)
+        if (statusCodes != null)
         {
             this.component.events["error"].fireDirect(this.component, errors);
             YAHOO.rapidjs.ErrorManager.errorOccurred(this.component, errors);
         }
     }
 });
+
+YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequested = false;
+YAHOO.rapidjs.component.tool.SettingsTool.allComponentSettingsRequestPrepared = false;

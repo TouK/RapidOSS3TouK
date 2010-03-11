@@ -103,7 +103,7 @@ def createUsers()
     results.each{  searchResult ->
         def entryDn=searchResult.nameInNamespace;
 
-        def userName=searchResult.get(userNameAttribute);
+        def userName=searchResult.get(userNameAttribute)[0];
         if (userName != RsUser.RSADMIN)
         {
             logInfo("found user ${userName} : ${entryDn} , with username : ${userName}")
@@ -141,7 +141,7 @@ def createGroups()
     results.each{  searchResult ->
         def entryDn=searchResult.nameInNamespace;
 
-        def groupName=searchResult.get(groupNameAttribute);
+        def groupName=searchResult.get(groupNameAttribute)[0];
 
         def groupUserDns=[];
         def groupUsers=[];

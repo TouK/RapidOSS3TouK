@@ -125,7 +125,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
 
 
 
-        def nodeDn="CN=testNode,${queryparams.searchBase}";
+        def nodeDn="CN=testNode,${queryparams.searchBase}".toString();
         
         //clear
         clearDnWithSubs (oper,nodeDn);
@@ -139,10 +139,10 @@ class LdapConnectionTest extends RapidCoreTestCase{
 
         def addedEntry=oper.getEntry(nodeDn);
         println addedEntry;
-        assertEquals("testNode",addedEntry.name)
-        assertEquals("testNodeDisplay",addedEntry.displayName)
+        assertEquals(["testNode"],addedEntry.name)
+        assertEquals(["testNodeDisplay"],addedEntry.displayName)
         assertEquals(["top","container"],addedEntry.objectClass)
-        assertEquals(nodeDn,addedEntry.distinguishedName)
+        assertEquals([nodeDn],addedEntry.distinguishedName)
         
         //test update
         def updateProps=[:];
@@ -152,10 +152,10 @@ class LdapConnectionTest extends RapidCoreTestCase{
         def updatedEntry=oper.getEntry(nodeDn);
         println updatedEntry;
 
-        assertEquals("testNode",updatedEntry.name)
-        assertEquals("testNodeDisplayUpdated",updatedEntry.displayName)
+        assertEquals(["testNode"],updatedEntry.name)
+        assertEquals(["testNodeDisplayUpdated"],updatedEntry.displayName)
         assertEquals(["top","container"],updatedEntry.objectClass)
-        assertEquals(nodeDn,updatedEntry.distinguishedName)
+        assertEquals([nodeDn],updatedEntry.distinguishedName)
 
 
         //test remove and get nonexisting object 
@@ -187,43 +187,44 @@ class LdapConnectionTest extends RapidCoreTestCase{
         oper.connect();
         assertTrue (oper.isConnected());
 
-        def nodeDn="CN=testNode,${queryparams.searchBase}";
-        def subDn="CN=testsubNode1,${nodeDn}";
+        def nodeDn="CN=testNode,${queryparams.searchBase}".toString();
+        def subDn="CN=testsubNode1,${nodeDn}".toString();
 
         def results=null;
 
         //clear
         clearDnWithSubs (oper,nodeDn);
-        
         oper.addEntry(nodeDn,[objectClass:["top","container"]]);
         oper.addEntry(subDn,[objectClass:["top","container"]]);
 
+
         //search also leafs
-        results=oper.query(nodeDn,"objectClass=*",true);
+
+        results=oper.query(nodeDn,"objectClass=*",true);        
         assertEquals(2,results.size());
         println results;
         
-        def topNode=results.find{it.name=="testNode"};
+        def topNode=results.find{it.name.contains("testNode")};
         assertNotNull(topNode);
         assertEquals(["top","container"],topNode.objectClass);
-        assertEquals(nodeDn,topNode.distinguishedName)
+        assertEquals([nodeDn],topNode.distinguishedName)
 
-        def subNode=results.find{it.name=="testsubNode1"};
+        def subNode=results.find{it.name.contains("testsubNode1")};
         assertNotNull(subNode);
         assertEquals(["top","container"],subNode.objectClass);
-        assertEquals(subDn,subNode.distinguishedName)
+        assertEquals([subDn],subNode.distinguishedName)
 
         //search only root
         results=oper.query(nodeDn,"objectClass=*",false);
         assertEquals(1,results.size());
-        println results;
-        assertEquals(1,results.findAll{it.name="testNode"}.size())
+        println "rootResults"+results;
+        assertEquals(1,results.findAll{it.name.contains("testsubNode1")}.size())
 
         //search also leafs but with query
         results=oper.query(nodeDn,"name=testsubNode1",true);
         assertEquals(1,results.size());
-        println results;
-        assertEquals(1,results.findAll{it.name="testsubNode1"}.size())
+        println "leafResults"+results;
+        assertEquals(1,results.findAll{it.name.contains("testsubNode1")}.size())
 
 
         clearDnWithSubs (oper,nodeDn);
@@ -242,7 +243,7 @@ class LdapConnectionTest extends RapidCoreTestCase{
                 try{
                     oper.removeEntry(result.nameInNamespace);
                 }
-                catch(e){println e}
+                catch(e){println "ToBeIgnored: "+e}
             }
             oper.removeEntry(nodeDn)
         }

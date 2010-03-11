@@ -37,6 +37,7 @@ import javax.naming.directory.BasicAttribute
 class LdapConnectionOperations extends ConnectionOperations
 {
     InitialDirContext context;
+    static def multiAttributes=["objectClass":true,"anotherProperty":true];
     
     def checkAuthentication(String authUsername,String authPassword)
     {
@@ -200,7 +201,6 @@ class LdapConnectionOperations extends ConnectionOperations
     //hardcoded decision for multiple attributes
     protected boolean isSingleAttribute(attr)
     {
-        def multiAttributes=["objectClass":true,"anotherProperty":true];
         return multiAttributes.containsKey(attr.getID());
     }
     */

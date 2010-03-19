@@ -228,6 +228,37 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
 
     }
 
+    def testAddUpdateRemoveGroupHandlesConfigurationSpaceInTriggers()
+    {
+        def user1 = RsUser.add(username: "user1", passwordHash: "abc");
+
+        def groupProps = [name: "group1", segmentFilter: "filter1",users: [user1]];
+
+        assertFalse(UserConfigurationSpace.getInstance().hasGroup("user1","group1"));
+        
+        Group group = Group.add(groupProps);
+        assertFalse(group.hasErrors());
+        assertEquals("group1",group.name)
+
+        assertTrue(UserConfigurationSpace.getInstance().hasGroup("user1","group1"));
+        assertFalse(UserConfigurationSpace.getInstance().hasGroup("user1","group2"));
+
+        group = group.update(name:"group2");
+        assertFalse(group.hasErrors());
+        assertEquals("group2",group.name)
+
+        assertFalse(UserConfigurationSpace.getInstance().hasGroup("user1","group1"));
+        assertTrue(UserConfigurationSpace.getInstance().hasGroup("user1","group2"));
+        
+        group.remove();
+        assertEquals(0,Group.count());
+
+        assertFalse(UserConfigurationSpace.getInstance().hasGroup("user1","group1"));
+        assertFalse(UserConfigurationSpace.getInstance().hasGroup("user1","group2"));
+
+    }
+
+
     public void testAddUsers()
     {
         def groupProps = [name: "gr1", segmentFilter: "filter1", role: userRole];

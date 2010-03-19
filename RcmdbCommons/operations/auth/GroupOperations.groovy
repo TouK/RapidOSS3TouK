@@ -21,19 +21,28 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         }
     }
 
-    def afterDelete() {
-        SegmentQueryHelper.getInstance().removeGroupFilters(name);
-    }
 
     def afterInsert() {
         SegmentQueryHelper.getInstance().calculateGroupFilters(name);
+        UserConfigurationSpace.getInstance().groupAdded(this.domainObject);
     }
 
     def afterUpdate(params) {
         if (params.updatedProps.containsKey("segmentFilter") || params.updatedProps.containsKey("segmentFilterType")) {
             SegmentQueryHelper.getInstance().calculateGroupFilters(name);
         }
+
+        if (params.updatedProps.containsKey("name")) {
+            UserConfigurationSpace.getInstance().groupRemoved(params.updatedProps.name);
+        }
+        UserConfigurationSpace.getInstance().groupAdded(this.domainObject);
     }
+    def afterDelete() {
+        SegmentQueryHelper.getInstance().removeGroupFilters(name);
+        UserConfigurationSpace.getInstance().groupRemoved(name)
+    }
+
+
     public static Group addGroup(params)
     {
         return _addGroup(params, false);
@@ -61,19 +70,11 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         {
             group = Group.add(params);
         }
-        if (!group.hasErrors()) {
-            UserConfigurationSpace.getInstance().groupAdded(group)
-        }
         return group;
     }
 
     public static Group updateGroup(group, params)
     {
-        boolean renamed = false;
-        def oldName = group.name;
-        if (group.name != params.name) {
-            renamed = true;
-        }
         if (params.users != null)
         {
             params.users = getUsersFromRepository(params.users)
@@ -87,19 +88,11 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         }
 
         group.update(params);
-        if (!group.hasErrors()) {
-            if (renamed) {
-                UserConfigurationSpace.getInstance().groupRemoved(oldName)
-            }
-            UserConfigurationSpace.getInstance().groupAdded(group);
-        }
         return group;
     }
 
     public static void removeGroup(Group group) {
-        def groupName = group.name
         group.remove();
-        UserConfigurationSpace.getInstance().groupRemoved(groupName)
     }
     private static List getUsersFromRepository(List users)
     {

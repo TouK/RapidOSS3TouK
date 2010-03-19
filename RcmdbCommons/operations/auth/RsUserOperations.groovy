@@ -19,8 +19,6 @@ import com.ifountain.rcmdb.util.RapidCMDBConstants
 */
 class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
-
-
     public static List getChannelTypes()
     {
         def channelTypes=[];
@@ -73,9 +71,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
     }
 
-   
-
-
+    //Before & After Triggers
     def beforeDelete()
     {
         if (username.equalsIgnoreCase(getCurrentUserName()))
@@ -87,6 +83,24 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
             throw new Exception("Can not delete user ${RsUser.RSADMIN}");
         }
     }
+
+	def afterInsert()
+    {
+        UserConfigurationSpace.getInstance().userAdded(this.domainObject);
+    }
+	def afterUpdate(params)
+    {
+        if (params.updatedProps.containsKey("username")) {
+            UserConfigurationSpace.getInstance().userRemoved(params.updatedProps.username);
+        }
+        UserConfigurationSpace.getInstance().userAdded(this.domainObject);
+    }
+	def afterDelete()
+    {
+        UserConfigurationSpace.getInstance().userRemoved(username);
+    }
+    //Before & After Triggers End
+    
     public static String hashPassword(password)
     {
         return new Sha1Hash(password).toHex();
@@ -97,11 +111,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     }
     public static RsUser updateUser(user, params)
     {
-        boolean renamed = false;
-        def oldName = user.username;
-        if (user.username != params.username) {
-            renamed = true;
-        }
         if (params.password != null)
         {
             params.passwordHash = hashPassword(params.password);
@@ -118,12 +127,6 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
 
         user.update(params);
-        if (!user.hasErrors()) {
-            if (renamed) {
-                UserConfigurationSpace.getInstance().userRemoved(oldName)
-            }
-            UserConfigurationSpace.getInstance().userAdded(user);
-        }
         return user;
     }
     private static void restoreOldData(oldProperties)
@@ -161,15 +164,10 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         {
             rsUser = RsUser.add(params);
         }
-        if (!rsUser.hasErrors()) {
-            UserConfigurationSpace.getInstance().userAdded(rsUser);
-        }
         return rsUser;
     }
-    public static void removeUser(RsUser user) {
-        def userName = user.username;
-        user.remove();
-        UserConfigurationSpace.getInstance().userRemoved(userName);
+    public static void removeUser(RsUser user) {        
+        user.remove();        
     }
 
     private static List getGroupsFromRepository(List groups)

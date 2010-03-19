@@ -152,17 +152,20 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         def role1 = Role.add(name: "role1");
         def group1 = Group.add(name: "group1", role: role1);
 
+
         def userProps = [username: "user1", password: "password", groups: [group1]];
         RsUser user = RsUser.addUser(userProps);
         assertFalse(user.hasErrors());
 
         assertTrue(RsUser.hasAllRoles("user1", ["role1"]))
         assertTrue(RsUser.hasAllGroups("user1", ["group1"]))
+        assertTrue(UserConfigurationSpace.getInstance().hasUser("user1"));
 
         RsUser.removeUser(user);
 
         assertFalse(RsUser.hasAllRoles("user1", ["role1"]))
         assertFalse(RsUser.hasAllGroups("user1", ["group1"]))
+        assertFalse(UserConfigurationSpace.getInstance().hasUser("user1"));
     }
 
     public void testUpdateUser()
@@ -289,6 +292,32 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         }
         assertEquals(1, RsUser.count())
 
+    }
+
+    def testAddUpdateRemoveUserHandlesConfigurationSpaceInTriggers()
+    {
+        def userProps = [username: "user1", passwordHash: "password"];
+
+        assertFalse(UserConfigurationSpace.getInstance().hasUser("user1"));
+        
+        RsUser user = RsUser.add(userProps);
+        assertFalse(user.hasErrors());
+        assertEquals("user1",user.username)
+        
+        assertTrue(UserConfigurationSpace.getInstance().hasUser("user1"));
+
+
+        user = user.update(username:"user2");
+        assertFalse(user.hasErrors());
+        assertEquals("user2",user.username)
+
+        assertFalse(UserConfigurationSpace.getInstance().hasUser("user1"));
+        assertTrue(UserConfigurationSpace.getInstance().hasUser("user2"));
+
+        user.remove();
+        assertEquals(0,RsUser.count());
+
+        assertFalse(UserConfigurationSpace.getInstance().hasUser("user2"));
     }
 
     public void testPasswordMethods()
@@ -615,5 +644,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
         userFromAuth = RsUser.authenticateUser([loginToken: "asdasd"]);
         assertEquals(user.id, userFromAuth.id);
     }
+
+
 
 }

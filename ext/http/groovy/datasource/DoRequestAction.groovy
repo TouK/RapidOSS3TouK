@@ -37,15 +37,17 @@ public class DoRequestAction implements Action {
     private String response = "";
     private String username;
     private String password;
+    private String requestBody;
 
-    public DoRequestAction(Logger logger, String url, Map params, int type) {
+    public DoRequestAction(Logger logger, String url, Map params, int type, String requestBody) {
         this.logger = logger;
         this.url = url;
         this.params = params;
         this.type = type;
+        this.requestBody = requestBody
     }
-    public DoRequestAction(Logger logger, String url, Map params, int type, String username, String password) {
-        this(logger, url, params, type);
+    public DoRequestAction(Logger logger, String url, Map params, int type, String username, String password, String requestBody) {
+        this(logger, url, params, type, requestBody);
         this.username = username;
         this.password = password;
     }
@@ -54,27 +56,38 @@ public class DoRequestAction implements Action {
 
         String completeUrl = HttpActionUtils.getCompleteUrl(conn.getBaseUrl(), this.url);
         logger.debug("Making the request:\n" + completeUrl);
-        if(type == POST)
+        if (type == POST)
         {
-            if(username != null){
-                response =  conn.getHttpConnection().doPostWithBasicAuth(completeUrl, username, password, params);
+            if (username != null) {
+                if (requestBody != null) {
+                    response = conn.getHttpConnection().doPostWithBasicAuth(completeUrl, username, password, requestBody);
+                }
+                else {
+                    response = conn.getHttpConnection().doPostWithBasicAuth(completeUrl, username, password, params);
+                }
+
             }
-            else{
-                response =  conn.getHttpConnection().doPostRequest(completeUrl, params);    
+            else {
+                if (requestBody != null) {
+                    response = conn.getHttpConnection().doPostRequest(completeUrl, requestBody);
+                }
+                else {
+                    response =  conn.getHttpConnection().doPostRequest(completeUrl, params); 
+                }
             }
 
         }
         else
         {
-            if(username != null){
-                response =  conn.getHttpConnection().doGetWithBasicAuth(completeUrl, username, password, params);
+            if (username != null) {
+                response = conn.getHttpConnection().doGetWithBasicAuth(completeUrl, username, password, params);
             }
-            else{
-                response =  conn.getHttpConnection().doGetRequest(completeUrl, params);
+            else {
+                response = conn.getHttpConnection().doGetRequest(completeUrl, params);
             }
         }
 
-        logger.debug("Response received:\n"+completeUrl);
+        logger.debug("Response received:\n" + completeUrl);
     }
 
 

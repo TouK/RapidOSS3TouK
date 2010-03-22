@@ -26,6 +26,8 @@ import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.util.EncodingUtil;
 
 import java.awt.image.BufferedImage;
@@ -44,31 +46,41 @@ public class HttpUtils {
     private static MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
     private HttpClient httpClient = new HttpClient(manager);
     private static int INITIAL_BUFFER_SIZE = 4 * 1024;//4K
-    public void setTimeout(int timeout)
-    {
+
+    public void setTimeout(int timeout) {
         manager.getParams().setConnectionTimeout(timeout);
         manager.getParams().setSoTimeout(timeout);
     }
 
-    public int getTimeout()
-    {
+    public int getTimeout() {
         return manager.getParams().getConnectionTimeout();
     }
 
     //should only be used from tests
-    protected HttpClient getClient()
-    {
+    protected HttpClient getClient() {
         return httpClient;
     }
-    
+
     public String doPostRequest(String urlStr, Map params) throws HttpStatusException, IOException {
         PostMethod post = preparePostMethod(urlStr, params);
+        return getHttpString(post, httpClient);
+    }
+
+    public String doPostRequest(String urlStr, String requestBody) throws HttpStatusException, IOException {
+        PostMethod post = preparePostMethod(urlStr, requestBody);
         return getHttpString(post, httpClient);
     }
 
     public PostMethod preparePostMethod(String urlStr, Map params) {
         PostMethod post = new PostMethod(urlStr);
         post.setRequestBody(getNameValuePairsFromMap(params));
+        post.getParams().setContentCharset("UTF-8");
+        return post;
+    }
+
+    public PostMethod preparePostMethod(String urlStr, String requestBody) {
+        PostMethod post = new PostMethod(urlStr);
+        post.setRequestEntity(new ByteArrayRequestEntity(requestBody.getBytes()));
         post.getParams().setContentCharset("UTF-8");
         return post;
     }
@@ -95,13 +107,19 @@ public class HttpUtils {
         return executeGetMethod(get, httpClient);
     }
 
-     public String doPostWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
+    public String doPostWithBasicAuth(String urlStr, String userName, String password, Map params) throws HttpStatusException, IOException {
         PostMethod post = preparePostForBasicAuth(urlStr, params);
         httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
         httpClient.getParams().setAuthenticationPreemptive(true);
         return executePostMethod(post, httpClient);
     }
 
+    public String doPostWithBasicAuth(String urlStr, String userName, String password, String requestBody) throws HttpStatusException, IOException {
+        PostMethod post = preparePostForBasicAuth(urlStr, requestBody);
+        httpClient.getState().setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, password));
+        httpClient.getParams().setAuthenticationPreemptive(true);
+        return executePostMethod(post, httpClient);
+    }
     public String executeGetMethod(GetMethod get, HttpClient client) throws HttpStatusException, IOException {
         return getHttpString(get, client);
     }
@@ -141,8 +159,13 @@ public class HttpUtils {
         return get;
     }
 
-     public PostMethod preparePostForBasicAuth(String urlString, Map params) {
+    public PostMethod preparePostForBasicAuth(String urlString, Map params) {
         PostMethod post = preparePostMethod(urlString, params);
+        post.setDoAuthentication(true);
+        return post;
+    }
+    public PostMethod preparePostForBasicAuth(String urlString, String requestBody) {
+        PostMethod post = preparePostMethod(urlString, requestBody);
         post.setDoAuthentication(true);
         return post;
     }

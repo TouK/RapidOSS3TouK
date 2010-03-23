@@ -54,7 +54,7 @@ public class HttpAdapter extends BaseAdapter {
     }
 
     public String doRequest(String url, String requestBody) throws Exception {
-        DoRequestAction action = new DoRequestAction(logger, url, params, DoRequestAction.POST, requestBody);
+        DoRequestAction action = new DoRequestAction(logger, url, [:], DoRequestAction.POST, requestBody);
         executeAction(action);
         return action.getResponse();
     }

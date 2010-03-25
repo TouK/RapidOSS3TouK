@@ -18,6 +18,7 @@ import search.SearchQueryGroup
 import com.ifountain.rcmdb.auth.SegmentQueryHelper
 import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.rcmdb.auth.UserConfigurationSpace
+import java.text.SimpleDateFormat
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,16 +36,16 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
-    def EMAIL_TYPE="email";
-    
+    def EMAIL_TYPE = "email";
+
     String scriptName = "messageGenerator"
     void setUp() {
         super.setUp();
         clearMetaClasses();
-        base_directory = getWorkspacePath()+"/RapidModules/RapidInsight";
+        base_directory = getWorkspacePath() + "/RapidModules/RapidInsight";
         initializeScriptManager();
         initializeClasses();
-        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsRiEventClass,rsRiHistoricalEventClass,rsLookupClass, rsEventJournalClass])
+        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsRiEventClass, rsRiHistoricalEventClass, rsLookupClass, rsEventJournalClass])
     }
     void tearDown() {
         SessionManager.destroyInstance();
@@ -66,8 +67,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         rsEventJournalClass = gcl.loadClass("RsEventJournal")
         def rsEventOperationsClass = gcl.loadClass("RsEventOperations")
         def rsRiEventOperationsClass = gcl.loadClass("RsRiEventOperations")
-        initialize([CmdbScript, RsUser, RsUserInformation, ChannelUserInformation, Role, Group, SearchQueryGroup, SearchQuery, RsMessageRule, RsMessage,
-                rsEventClass, rsHistoricalEventClass, rsRiEventClass,rsRiHistoricalEventClass,rsLookupClass, rsEventJournalClass], [], true);
+        initialize([CmdbScript, RsUser, RsUserInformation, ChannelUserInformation, Role, Group, SearchQueryGroup, SearchQuery, RsMessageRule, RsMessage, RsMessageRuleCalendar,
+                rsEventClass, rsHistoricalEventClass, rsRiEventClass, rsRiHistoricalEventClass, rsLookupClass, rsEventJournalClass], [], true);
 
         CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
         CompassForTests.addOperationSupport(RsMessage, RsMessageOperations);
@@ -79,10 +80,10 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         UserConfigurationSpace.getInstance().initialize();
 
-        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = {->
             return [
-                    [name:"email",channelType:"email"]
-                   ];
+                    [name: "email", channelType: "email"]
+            ];
         }
     }
 
@@ -113,7 +114,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     {
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         def destination = "abdurrahim"
-        user.addChannelInformation(type:"email",destination:destination);
+        user.addChannelInformation(type: "email", destination: destination);
         assertFalse(user.hasErrors())
 
         def adminUser = RsUser.RSADMIN;
@@ -145,8 +146,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
 
-        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
-        def adminUser=RsUser.add(username:"adminUser",passwordHash:"aaa");
+        def adminGroup = createGroupWithRole("adminGroup", Role.ADMINISTRATOR);
+        def adminUser = RsUser.add(username: "adminUser", passwordHash: "aaa");
         assertFalse(adminUser.hasErrors());
 
         def adminUserName = RsUser.RSADMIN;
@@ -168,7 +169,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertFalse(script.hasErrors())
 
 
-        
+
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 0)
 
@@ -182,22 +183,22 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorProcessNonChannelDestinationsForAdminButNotForUser()
     {
-        RsMessageRuleOperations.metaClass.'static'.getDestinations = { ->
+        RsMessageRuleOperations.metaClass.'static'.getDestinations = {->
             return [
-                    [name:"email",channelType:"email"],
-                    [name:"destwithnochannel"]
-                   ];
+                    [name: "email", channelType: "email"],
+                    [name: "destwithnochannel"]
+            ];
         }
 
         def destinationType = "destwithnochannel";
 
         def adminUserName = RsUser.RSADMIN;
 
-        def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
-        def adminUser = RsUser.addUser(username: "testadmin", password:"aaa",groups:[adminGroup]);
+        def adminGroup = createGroupWithRole("adminGroup", Role.ADMINISTRATOR);
+        def adminUser = RsUser.addUser(username: "testadmin", password: "aaa", groups: [adminGroup]);
         assertFalse(adminUser.hasErrors());
 
-        def user=RsUser.add(username:"testuser",passwordHash:"bbb");
+        def user = RsUser.add(username: "testuser", passwordHash: "bbb");
         assertFalse(user.hasErrors());
 
 
@@ -207,11 +208,11 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
 
         def rule = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
-        assertFalse(rule.errors.toString(),rule.hasErrors())
+        assertFalse(rule.errors.toString(), rule.hasErrors())
 
 
         def ruleForUser = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
-        assertFalse(ruleForUser.errors.toString(),ruleForUser.hasErrors())
+        assertFalse(ruleForUser.errors.toString(), ruleForUser.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 2)
 
@@ -229,7 +230,6 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 4)
         assertEquals(RsMessage.countHits("destination:admin_destination AND destinationType:${destinationType}"), 4)
-
 
     }
 
@@ -273,7 +273,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"), 4)
     }
 
-    void testEmailGeneraterProcessesOnlyEventsOfTheQuerySearchClass()
+    void testMessageGeneratorProcessesOnlyEventsOfTheQuerySearchClass()
     {
         def destinationType = EMAIL_TYPE
         def destination = "sezgin@gmail.com"
@@ -285,7 +285,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def adminUser = RsUser.RSADMIN;
         def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUser, isPublic: true, type: "event");
 
-        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events",searchClass:"RsRiEvent", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", searchClass: "RsRiEvent", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
         def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
@@ -304,38 +304,38 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(rsRiEventClass.countHits("alias:*"), 0)
 
         //run the script
-        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+        CmdbScript.runScript(script, [logger: TestLogUtils.log])
         assertEquals(RsMessage.countHits("alias:*"), 0)
 
         //add new RsRiEvents
-        def newRsRiEvents = addEvents("newrsrievents", 2,rsRiEventClass)
+        def newRsRiEvents = addEvents("newrsrievents", 2, rsRiEventClass)
         assertEquals(rsEventClass.countHits("alias:\"(RsEvent)\""), 2)
         assertEquals(rsRiEventClass.countHits("alias:*"), 2)
 
         //run the script
-        rsLookupClass.add(name:"messageGeneratorMaxEventCreateTime",value:0);
-        rsLookupClass.add(name:"messageGeneratorMaxEventClearTime",value:0);
+        rsLookupClass.add(name: "messageGeneratorMaxEventCreateTime", value: 0);
+        rsLookupClass.add(name: "messageGeneratorMaxEventClearTime", value: 0);
 
-        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+        CmdbScript.runScript(script, [logger: TestLogUtils.log])
         assertEquals(RsMessage.countHits("alias:*"), 2)
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}*"), 2)
 
 
-        newEvents.each{ event ->
-            assertEquals(0,RsMessage.countHits("eventId:${event.id}"))
+        newEvents.each {event ->
+            assertEquals(0, RsMessage.countHits("eventId:${event.id}"))
         };
-        newRsRiEvents.each{ event ->
-            assertEquals(1,RsMessage.countHits("eventId:${event.id}"))
+        newRsRiEvents.each {event ->
+            assertEquals(1, RsMessage.countHits("eventId:${event.id}"))
         };
 
         //HISTORICAL EVENT TEST
 
         //add create messages here because , clear messages wont be added if create messages does not exist
-        newEvents.each{ event ->
+        newEvents.each {event ->
             RsMessage.addEventCreateMessage(event.asMap(), destinationType, destination, new Long(0));
             event.clear();
         };
-        newRsRiEvents.each{ event ->
+        newRsRiEvents.each {event ->
             event.clear();
         };
         assertEquals(rsHistoricalEventClass.countHits("alias:\"(RsHistoricalEvent)\""), 2)
@@ -345,26 +345,26 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"), 4)
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
 
-        CmdbScript.runScript(script, [logger:TestLogUtils.log])
+        CmdbScript.runScript(script, [logger: TestLogUtils.log])
 
         assertEquals(RsMessage.countHits("alias:*"), 6)
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CLEAR}"), 2)
-        
-        newEvents.each{ event ->
+
+        newEvents.each {event ->
             //create messages added by test
-            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"))
+            assertEquals(1, RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"))
             //clear messages should not exist
-            assertEquals(0,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
+            assertEquals(0, RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
         };
-        newRsRiEvents.each{ event ->
-            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE} "))
-            assertEquals(1,RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
+        newRsRiEvents.each {event ->
+            assertEquals(1, RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CREATE} "))
+            assertEquals(1, RsMessage.countHits("eventId:${event.id} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
         };
 
     }
 
-    void testEmailGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
+    void testMessageGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
     {
         def destinationType = EMAIL_TYPE
         def destination = "sezgin@gmail.com"
@@ -487,7 +487,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def userRole = Role.add(name: Role.USER);
         def userGroup = Group.addGroup(name: "testusergroup", role: userRole, segmentFilter: "severity:2");
         assertFalse(userGroup.hasErrors());
-        def user = RsUser.addUser(username: "testuser", password: "xxx",groups:[userGroup]);
+        def user = RsUser.addUser(username: "testuser", password: "xxx", groups: [userGroup]);
         assertFalse(user.hasErrors());
         assertEquals(user.groups.size(), 1);
 
@@ -562,7 +562,293 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CREATE}"), 4)
     }
 
-    def addEvents(prefix, count,eventClass=rsEventClass)
+    public void testDefaultDestinationType() {
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1")
+        ChannelUserInformation.add(userId: user1.id, type: EMAIL_TYPE, destination: "dest1", rsUser: user1);
+        ChannelUserInformation.add(userId: user1.id, type: "someothertype", destination: "dest2", rsUser: user1, isDefault: true);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: user1.username, type: "event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: user1.username, type: "event");
+        assertFalse(searchQuery.hasErrors())
+
+        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true)
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(RsMessage.countHits("alias:*"), 0)
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+
+        assertEquals(1, RsMessage.countHits("alias:*"))
+        def rsMessage = RsMessage.list()[0];
+        assertEquals("dest2", rsMessage.destination)
+    }
+
+    public void testPublicRuleWithDefaultDestinationType() {
+        def adminGroup = createGroupWithRole("rsadmin", Role.ADMINISTRATOR)
+        def rsAdmin = RsUser.add(username: RsUser.RSADMIN, passwordHash: "rsadmin", groups: [adminGroup])
+        def group1 = createGroupWithRole("group1", Role.USER)
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1", groups: [group1])
+
+        ChannelUserInformation.add(userId: user1.id, type: EMAIL_TYPE, destination: "dest1", rsUser: user1);
+        ChannelUserInformation.add(userId: user1.id, type: "someothertype", destination: "dest2", rsUser: user1, isDefault: true);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: rsAdmin.username, type: "event", isPublic: true);
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: rsAdmin.username, type: "event", isPublic: true);
+        assertFalse(searchQuery.hasErrors())
+
+        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true, groups: "group1", ruleType: "public")
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(RsMessage.countHits("alias:*"), 0)
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+
+        assertEquals(1, RsMessage.countHits("alias:*"))
+        def rsMessage = RsMessage.list()[0];
+        assertEquals("dest2", rsMessage.destination)
+    }
+
+    public void testProcessingPublicRules() {
+        def destinationType = EMAIL_TYPE
+        def adminGroup = createGroupWithRole("rsadmin", Role.ADMINISTRATOR)
+        def rsAdmin = RsUser.add(username: RsUser.RSADMIN, passwordHash: "rsadmin", groups: [adminGroup])
+        def group1 = createGroupWithRole("group1", Role.USER)
+        def group2 = createGroupWithRole("group2", Role.USER)
+        def group3 = createGroupWithRole("group3", Role.USER)
+
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1", groups: [group1])
+        def user2 = RsUser.add(username: "user2", passwordHash: "user2", groups: [group1])
+        def user3 = RsUser.add(username: "user3", passwordHash: "user3", groups: [group2])
+        def user4 = RsUser.add(username: "user4", passwordHash: "user4", groups: [group3])
+
+        ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
+        ChannelUserInformation.add(userId: user2.id, type: destinationType, destination: "dest2", rsUser: user2);
+        ChannelUserInformation.add(userId: user3.id, type: destinationType, destination: "dest3", rsUser: user3);
+        ChannelUserInformation.add(userId: user4.id, type: destinationType, destination: "dest4", rsUser: user4);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(searchQuery.hasErrors())
+
+        def rule = RsMessageRule.add(userId: rsAdmin.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true, groups: "group1,group2", users: "user1,user4", ruleType: "public")
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+
+        assertEquals(4, RsMessage.countHits("alias:*"))
+        RsMessage.searchEvery("alias:*", [sort: "destination", order: "asc"]).eachWithIndex {RsMessage message, i ->
+            assertEquals(destinationType, message.destinationType)
+            assertEquals(RsMessage.EVENT_TYPE_CREATE, message.eventType)
+            assertEquals("dest${i + 1}", message.destination)
+        }
+
+        newEvents.each {
+            it.clear();
+        }
+        assertEquals(rsHistoricalEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+
+        assertEquals(4, RsMessage.countHits("eventType:${RsMessage.EVENT_TYPE_CLEAR}"))
+        RsMessage.searchEvery("eventType:${RsMessage.EVENT_TYPE_CLEAR}", [sort: "destination", order: "asc"]).eachWithIndex {RsMessage message, i ->
+            assertEquals(destinationType, message.destinationType)
+            assertEquals("dest${i + 1}", message.destination)
+        }
+    }
+
+    public void testRuleWithCalendar() {
+        def destinationType = EMAIL_TYPE
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1")
+        ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(searchQuery.hasErrors())
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date(0))
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        def starting = calendar.getTime().getTime();
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        def ending = calendar.getTime().getTime();
+        calendar.setTime(new Date(System.currentTimeMillis()))
+        def currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+        def days = "${(currentDay % 7) + 1}"
+
+        def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: days, username: user1.username, daysString: "Mon");
+        assertFalse(cal.hasErrors())
+        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        cal.update(days: "${cal.days},${currentDay}");
+        newEvents = addEvents("newevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 2)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(1, RsMessage.countHits("alias:*"))
+        RsMessage message = RsMessage.list()[0]
+        assertEquals("dest1", message.destination)
+        assertEquals(newEvents[0].id, message.eventId)
+    }
+
+    public void testCalendarWithExceptionDays(){
+        def destinationType = EMAIL_TYPE
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1")
+        ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(searchQuery.hasErrors())
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date(System.currentTimeMillis()))
+        def currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+
+        SimpleDateFormat format = new SimpleDateFormat(RsMessageRuleCalendar.EXCEPTION_DATE_FORMAT);
+        def exceptions = "12/12/2010,${format.format(calendar.getTime())}"
+
+        calendar.setTime(new Date(0))
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        def starting = calendar.getTime().getTime();
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        def ending = calendar.getTime().getTime();
+
+
+        def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: "${currentDay}", username: user1.username, daysString: "Mon", exceptions:exceptions);
+        assertFalse(cal.hasErrors())
+        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        cal.update(exceptions:"");
+
+        newEvents = addEvents("newevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 2)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(1, RsMessage.countHits("alias:*"))
+        RsMessage message = RsMessage.list()[0]
+        assertEquals("dest1", message.destination)
+        assertEquals(newEvents[0].id, message.eventId)
+    }
+
+    public void testIfCalendarsStartingEndingTimeIntervalDoesNotMatchMessagesAreNotCreated() {
+        def destinationType = EMAIL_TYPE
+        def user1 = RsUser.add(username: "user1", passwordHash: "user1")
+        ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
+
+        def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(defaultEventGroup.hasErrors())
+        def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: RsUser.RSADMIN, isPublic: true, type: "event");
+        assertFalse(searchQuery.hasErrors())
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(new Date(System.currentTimeMillis()))
+        def currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+        
+        calendar.setTime(new Date(0))
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        def starting = calendar.getTime().getTime();
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 1)
+        def ending = calendar.getTime().getTime();
+
+
+        def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: "${currentDay}", username: user1.username, daysString: "Mon");
+        assertFalse(cal.hasErrors())
+        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        assertFalse(rule.hasErrors())
+
+        copyScript(scriptName)
+        def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
+        assertFalse(script.hasErrors())
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        def newEvents = addEvents("testevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 1)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(0, RsMessage.countHits("alias:*"))
+
+        calendar.set(Calendar.HOUR_OF_DAY, 23)
+        calendar.set(Calendar.MINUTE, 59)
+        ending = calendar.getTime().getTime();
+        cal.update(ending:ending);
+
+        newEvents = addEvents("newevents", 1)
+        assertEquals(rsEventClass."countHits"("alias:*"), 2)
+
+        CmdbScript.runScript(script, [:])
+        assertEquals(1, RsMessage.countHits("alias:*"))
+        RsMessage message = RsMessage.list()[0]
+        assertEquals("dest1", message.destination)
+        assertEquals(newEvents[0].id, message.eventId)
+    }
+
+    def addEvents(prefix, count, eventClass = rsEventClass)
     {
         def events = []
         count.times {
@@ -572,7 +858,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         }
         return events;
     }
-    def addHistoricalEvents(prefix, count,eventClass=rsHistoricalEventClass)
+    def addHistoricalEvents(prefix, count, eventClass = rsHistoricalEventClass)
     {
         def events = []
         count.times {
@@ -583,13 +869,13 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         return events;
     }
 
-     private def createGroupWithRole(groupName,roleName)
-     {
-        def role=Role.add(name:roleName);
+    private def createGroupWithRole(groupName, roleName)
+    {
+        def role = Role.add(name: roleName);
         assertFalse(role.hasErrors());
-        def group=Group.add(name:groupName,role:role);
+        def group = Group.add(name: groupName, role: role);
         assertFalse(group.hasErrors());
 
         return group;
-     }
+    }
 }

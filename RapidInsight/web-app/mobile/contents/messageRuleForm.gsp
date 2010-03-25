@@ -4,7 +4,7 @@
 <%@ page import="search.SearchQuery" %>
 
 <%
-    def destinationGroups = RsMessageRule.getDesnitationGroupsForUser(session.username);
+    def destinationGroups = RsMessageRule.getDestinationGroupsForUser(session.username);
     def errorTargetURI = request.uri.toString().substringAfter("RapidSuite");
     def mode = params.mode;
     def rsMessageRule = new RsMessageRule();

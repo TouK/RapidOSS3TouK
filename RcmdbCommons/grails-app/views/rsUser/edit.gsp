@@ -60,7 +60,14 @@
                                     </td>
                                 </tr>
                     </g:each>
-
+                    <tr class="prop">
+                        <td valign="top" class="name">
+                            <label for="defaultDestination">Default Destination:</label>
+                        </td>
+                        <td valign="top">
+                            <g:select class="inputtextfield" optionKey="type" optionValue="type" from="${userChannels}" name="defaultDestination" value="${defaultDestination}" noSelection="['':'']"></g:select>
+                        </td>
+                    </tr>
                     <tr class="prop">
                         <td valign="top" class="name" colspan="2">
                             Groups:

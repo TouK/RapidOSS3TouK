@@ -10,6 +10,13 @@
     background: transparent url( images/rapidjs/sprite-png.png ) no-repeat scroll 0pt -59px;
 }
 
+.r-toolbar-addButton {
+    color: #083772;
+    line-height:14px;
+    font-weight: bold;
+    background: transparent url( images/rapidjs/component/tools/add.png ) no-repeat scroll left;
+}
+
 .r-tree-firstCell {
     cursor: pointer;
 }
@@ -122,7 +129,8 @@
     display: block;
     text-decoration: underline;
 }
-.ri-object-details .errors{
+
+.ri-object-details .errors {
     background: #fff3f3;
     border: 1px solid red;
     color: #cc0000;

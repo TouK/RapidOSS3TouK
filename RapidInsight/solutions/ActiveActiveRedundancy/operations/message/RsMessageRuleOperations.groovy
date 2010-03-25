@@ -82,7 +82,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         return destinationConfig.name;
     }
 
-    @HideProperty public static List getDesnitationGroups()
+    @HideProperty public static List getDestinationGroups()
     {
         return  [
                  [name:"Channel",destinationNames:getChannelDestinationNames()],
@@ -91,9 +91,9 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     }
 
 
-    public static List getDesnitationGroupsForUser(String username)
+    public static List getDestinationGroupsForUser(String username)
     {
-        def groups=getDesnitationGroups();
+        def groups=getDestinationGroups();
 
         def user = auth.RsUser.get(username: username)
         if(user == null)
@@ -182,6 +182,9 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         validateUserDestinationForChannel(user,destination,channelType);
 
         return params;
+    }
+     public static List getCalendars(String username) {
+        return RsMessageRuleCalendar.searchEvery("username:${username.exactQuery()} OR (username:${RsUser.RSADMIN} AND isPublic:true)")
     }
 
 }

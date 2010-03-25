@@ -22,6 +22,8 @@ package message
 import com.ifountain.rcmdb.domain.util.ControllerUtils
 import groovy.xml.MarkupBuilder
 import auth.ChannelUserInformation
+import auth.Role
+import auth.RsUser
 
 
 class RsMessageRuleController {
@@ -32,8 +34,12 @@ class RsMessageRuleController {
     def allowedMethods = [save: 'POST', update: 'POST']
 
     def list = {
-        def userId = auth.RsUser.get(username: session.username)?.id
-        def myRules = message.RsMessageRule.searchEvery("userId:${userId}", [sort: "id", order: "asc"])
+        def userId = RsUser.get(username: session.username)?.id
+        def ruleQuery = "userId:${userId}"
+        if(RsUser.hasRole(session.username, Role.ADMINISTRATOR)){
+            ruleQuery += " OR ruleType:public OR ruleType:system";
+        }
+        def myRules = message.RsMessageRule.searchEvery(ruleQuery, [sort: "id", order: "asc"])
         def ruleGroups = [];
         ruleGroups.add(["id": "enabledRules", "name": "Enabled Rules", 'nodeType': 'group', "rules": []]);
         ruleGroups.add(["id": "disabledRules", "name": "Disabled Rules", 'nodeType': 'group', "rules": []]);
@@ -47,6 +53,7 @@ class RsMessageRuleController {
             ruleProps.enabled = rule.enabled;
             ruleProps.name = searchQuery ? searchQuery.name : rule.searchQueryId;
             ruleProps.destinationType = rule.destinationType;
+            ruleProps.ruleType = rule.ruleType;
             ruleProps.nodeType = 'rule';
 
             if (rule.enabled)

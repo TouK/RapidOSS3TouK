@@ -10,10 +10,12 @@ class ChannelUserInformation extends RsUserInformation {
         except = ["errors"];
     };
     String destination = "";
+    Boolean isDefault= false;
     org.springframework.validation.Errors errors;
 
     static constraints = {
         destination(blank: true, nullable: true)
+        isDefault(nullable: true)
         errors(nullable: true)
     }
     static transients = ["errors"];

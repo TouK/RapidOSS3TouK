@@ -81,7 +81,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.hideMask();
     },
 
-    _show: function(url, title)
+    _show: function(url, title, resetParams)
     {
         if (title != null) {
             this.setTitle(title)
@@ -89,7 +89,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.fireBodyClear();
         if (url)
         {
-            this._setUrlAndParams(url)
+            this._setUrlAndParams(url, resetParams)
         }
         if (this.iframe == true)
         {
@@ -105,7 +105,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
 
     poll: function() {
         if(this.isVisible()){
-            this._show(this.url, this.title);    
+            this._show(this.url, this.title, false);    
         }
     },
 
@@ -133,12 +133,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
         this.show(tmpUrl, title);
     },
 
-    _setUrlAndParams: function(url) {
+    _setUrlAndParams: function(url, resetParams) {
         if (url) {
+            if(resetParams !== false){
+                this.resetUrlParams();    
+            }
             var queryIndex = url.indexOf("?");
             if (queryIndex >= 0)
             {
-                this.resetUrlParams();
                 this.url = url.substring(0, queryIndex);
                 var postData = url.substring(queryIndex + 1, url.length)
                 var keyValuePairs = postData.split("&");

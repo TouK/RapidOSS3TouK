@@ -32,6 +32,7 @@
                             </td>
 
                         </tr>
+                        <g:set var="defaultDestination" value="${''}"></g:set>
                         <tr class="prop">
                             <td valign="top" class="name">Channel Informations:</td>
 
@@ -40,6 +41,9 @@
                                     <g:each var="channelType" in="${RsUser.getChannelTypes()}">
                                         <g:set var="channelInformation" value="${rsUser.retrieveChannelInformation(channelType)}"></g:set>
                                         <g:if test="${channelInformation!=null}">
+                                            <g:if test="${channelInformation.isDefault}">
+                                                <g:set var="defaultDestination" value="${channelInformation.type}"></g:set>
+                                            </g:if>
                                             <li>${channelInformation?.toString()}</li>
                                         </g:if>
                                         <g:else>
@@ -48,7 +52,10 @@
                                     </g:each>
                                 </ul>
                             </td>
-
+                        </tr>
+                         <tr class="prop">
+                            <td valign="top" class="name">Default Destination:</td>
+                            <td valign="top" class="value">${defaultDestination}</td>
                         </tr>
                     </tbody>
                 </table>

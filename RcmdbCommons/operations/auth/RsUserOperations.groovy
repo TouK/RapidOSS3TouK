@@ -9,6 +9,7 @@ import org.jsecurity.crypto.hash.Sha1Hash
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
 import com.ifountain.rcmdb.util.DataStore
 import com.ifountain.rcmdb.util.RapidCMDBConstants
+import com.ifountain.annotations.HideProperty
 
 /**
 * Created by IntelliJ IDEA.
@@ -201,7 +202,8 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
 
     def addChannelInformation(channelParams) {
-        def channelInformation = ChannelUserInformation.add(userId: id, type: channelParams.type, destination: channelParams.destination)
+        def isDefault = channelParams.isDefault != null ? channelParams.isDefault : false;
+        def channelInformation = ChannelUserInformation.add(userId: id, type: channelParams.type, destination: channelParams.destination, isDefault:isDefault)
         if (!channelInformation.hasErrors())
         {
             addRelation(userInformations: channelInformation);
@@ -220,7 +222,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         def oldInformationProperties = [:];
         //save all old destinations
         ChannelUserInformation.searchEvery("userId:${id}").each {userInfo ->
-            oldInformationProperties[userInfo.id] = ControllerUtils.backupOldData(userInfo, ["destination": ""])
+            oldInformationProperties[userInfo.id] = ControllerUtils.backupOldData(userInfo, ["destination": "", "isDefault":""])
         }
 
         def errorOccured = false;
@@ -270,6 +272,10 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
 
     def retrieveLdapInformation() {
         return LdapUserInformation.get(userId: id, type: "ldap");
+    }
+    
+    @HideProperty def getChannelInformations() {
+        return ChannelUserInformation.searchEvery("userId: ${id}");
     }
 
     def addLdapInformation(params) {

@@ -199,7 +199,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
                    ];
         }
         
-        def destinationGroups=RsMessageRule.getDesnitationGroups();
+        def destinationGroups=RsMessageRule.getDestinationGroups();
         assertEquals(2,destinationGroups.size());
         assertEquals("Channel",destinationGroups[0].name);
         assertEquals(RsMessageRule.getChannelDestinationNames(),destinationGroups[0].destinationNames);
@@ -210,7 +210,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
 
         def normalUser=RsUser.add(username:"normaluser",passwordHash:"aaa");
 
-        def groupsForUser=RsMessageRule.getDesnitationGroupsForUser(normalUser.username);
+        def groupsForUser=RsMessageRule.getDestinationGroupsForUser(normalUser.username);
         assertEquals(1,groupsForUser.size());
         assertEquals("Channel",groupsForUser[0].name);
         assertEquals(RsMessageRule.getChannelDestinationNames(),groupsForUser[0].destinationNames);
@@ -219,7 +219,7 @@ class RsMessageRuleOperationsTest extends RapidCmdbWithCompassTestCase {
         def adminGroup=createGroupWithRole("adminGroup",Role.ADMINISTRATOR);
         def adminUser=RsUser.addUser(username:"admin",password:"aaa",groups:[adminGroup]);
 
-        def groupsForAdmin=RsMessageRule.getDesnitationGroupsForUser(adminUser.username);
+        def groupsForAdmin=RsMessageRule.getDestinationGroupsForUser(adminUser.username);
         assertEquals(2,groupsForAdmin.size());
         assertEquals("Channel",groupsForAdmin[0].name);
         assertEquals(RsMessageRule.getChannelDestinationNames(),groupsForAdmin[0].destinationNames);

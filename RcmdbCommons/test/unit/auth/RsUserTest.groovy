@@ -294,7 +294,7 @@ class RsUserTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    def testAddUpdateRemoveUserHandlesConfigurationSpaceInTriggers()
+    public void testAddUpdateRemoveUserHandlesConfigurationSpaceInTriggers()
     {
         def userProps = [username: "user1", passwordHash: "password"];
 

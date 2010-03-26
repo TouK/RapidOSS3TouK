@@ -126,8 +126,10 @@ class UiObjectMap extends UiComponent {
     }
 
     protected void addChildElements(GPathResult node, UiElmnt parent) {
-        node."${UIELEMENT_TAG}"."${UIELEMENT_TAG}".each{
-            create(it, this)
+        node.children().each{
+            it."${UIELEMENT_TAG}".each{child ->
+               create(child, this) 
+            }
         }
         node.children().each{
             removeUnneccessaryAttributes(it)

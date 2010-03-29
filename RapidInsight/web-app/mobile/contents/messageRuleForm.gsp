@@ -4,7 +4,8 @@
 <%@ page import="search.SearchQuery" %>
 
 <%
-    def destinationGroups = RsMessageRule.getDestinationGroupsForUser(session.username);
+    def destinationNames = RsMessageRule.getChannelDestinationNames();
+    def calendars = RsMessageRule.getCalendars(session.username);
     def errorTargetURI = request.uri.toString().substringAfter("RapidSuite");
     def mode = params.mode;
     def rsMessageRule = new RsMessageRule();
@@ -60,17 +61,33 @@
                     <div class="row">
                         <label>Destination Type:</label>
                         <select name="destinationType">
-                            <g:each in="${destinationGroups}" var="group">
-                                <optgroup label="${group.name}">
-                                    <g:each in="${group.destinationNames}" var="destinationName">
-                                        <g:if test="${rsMessageRule.destinationType==destinationName}">
-                                            <option value="${destinationName}" selected="selected">${destinationName}</option>
-                                        </g:if>
-                                        <g:else>
-                                            <option value="${destinationName}">${destinationName}</option>
-                                        </g:else>
-                                    </g:each>
-                                </optgroup>
+                            <g:if test="${rsMessageRule.destinationType == RsMessageRule.DEFAULT_DESTINATION}">
+                                <option value="${RsMessageRule.DEFAULT_DESTINATION}" selected="selected">Default</option>
+                            </g:if>
+                            <g:else>
+                                <option value="${RsMessageRule.DEFAULT_DESTINATION}">Default</option>
+                            </g:else>
+                            <g:each in="${destinationNames}" var="destinationName">
+                                <g:if test="${rsMessageRule.destinationType==destinationName}">
+                                    <option value="${destinationName}" selected="selected">${destinationName}</option>
+                                </g:if>
+                                <g:else>
+                                    <option value="${destinationName}">${destinationName}</option>
+                                </g:else>
+                            </g:each>
+                        </select>
+                    </div>
+                    <div class="row">
+                        <label>Calendar:</label>
+                        <select name="calendarId">
+                            <option value="0" selected="selected">Any time</option>
+                            <g:each in="${calendars}" var="calendar">
+                                <g:if test="${rsMessageRule.calendarId==calendar.id}">
+                                    <option value="${calendar.id}" selected="selected">${calendar.name}</option>
+                                </g:if>
+                                <g:else>
+                                    <option value="${calendar.id}">${calendar.name}</option>
+                                </g:else>
                             </g:each>
                         </select>
                     </div>
@@ -108,20 +125,33 @@
                     </select></div>
                     <div class="row"><label>Destination Type:</label></div>
                     <div class="row"><select name="destinationType">
-                        <g:each in="${destinationGroups}" var="group">
-                            <optgroup label="${group.name}">
-                                <g:each in="${group.destinationNames}" var="destinationName">
-                                    <g:if test="${rsMessageRule.destinationType==destinationName}">
-                                        <option value="${destinationName}" selected="selected">${destinationName}</option>
-                                    </g:if>
-                                    <g:else>
-                                        <option value="${destinationName}">${destinationName}</option>
-                                    </g:else>
-                                </g:each>
-                            </optgroup>
+                        <g:if test="${rsMessageRule.destinationType == RsMessageRule.DEFAULT_DESTINATION}">
+                            <option value="${RsMessageRule.DEFAULT_DESTINATION}" selected="selected">Default</option>
+                        </g:if>
+                        <g:else>
+                            <option value="${RsMessageRule.DEFAULT_DESTINATION}">Default</option>
+                        </g:else>
+                        <g:each in="${destinationNames}" var="destinationName">
+                            <g:if test="${rsMessageRule.destinationType==destinationName}">
+                                <option value="${destinationName}" selected="selected">${destinationName}</option>
+                            </g:if>
+                            <g:else>
+                                <option value="${destinationName}">${destinationName}</option>
+                            </g:else>
                         </g:each>
                     </select></div>
-
+                    <div class="row"><label>Calendar:</label></div>
+                    <div class="row"><select name="calendarId">
+                        <option value="0" selected="selected">Any time</option>
+                        <g:each in="${calendars}" var="calendar">
+                            <g:if test="${rsMessageRule.calendarId==calendar.id}">
+                                <option value="${calendar.id}" selected="selected">${calendar.name}</option>
+                            </g:if>
+                            <g:else>
+                                <option value="${calendar.id}">${calendar.name}</option>
+                            </g:else>
+                        </g:each>
+                    </select></div>
                     <div class="row"><label>Delay:</label></div>
                     <div class="row"><input type="text" id="delay" name="delay" value="${fieldValue(bean: rsMessageRule, field: 'delay')}"/> seconds</div>
 

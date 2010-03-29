@@ -1,4 +1,4 @@
-<%@ page import="com.ifountain.rcmdb.mobile.MobileUtils; search.SearchQuery; message.RsMessageRule; auth.RsUser" %>
+<%@ page import="auth.Role; com.ifountain.rcmdb.mobile.MobileUtils; search.SearchQuery; message.RsMessageRule; auth.RsUser" %>
 <%--
   Created by IntelliJ IDEA.
   User: Sezgin Kucukkaraaslan
@@ -11,7 +11,11 @@
         gspFolder = "iphone";
     }
     def userId = RsUser.get(username: session.username)?.id
-    def myRules = RsMessageRule.getPropertyValues("userId:${userId}", ["searchQueryId", "enabled"], [sort: "id", order: "asc"])
+    def ruleQuery = "userId:${userId}"
+    if (RsUser.hasRole(session.username, Role.ADMINISTRATOR)) {
+        ruleQuery += " OR ruleType:public OR ruleType:system";
+    }
+    def myRules = RsMessageRule.getPropertyValues(ruleQuery, ["searchQueryId", "enabled"], [sort: "id", order: "asc"])
     def enabledRules = [];
     def disabledRules = [];
     myRules.each {rule ->

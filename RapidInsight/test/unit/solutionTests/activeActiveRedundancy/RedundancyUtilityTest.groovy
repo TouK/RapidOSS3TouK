@@ -6,10 +6,6 @@ import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import application.RapidApplication
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.util.ExecutionContextManagerUtils
-import com.ifountain.rcmdb.test.util.scripting.ScriptManagerForTest
-import datasource.HttpDatasource
-import com.ifountain.comp.test.util.logging.TestLogUtils
-import org.apache.commons.io.FileUtils
 import message.RsMessageRule
 
 /**
@@ -68,7 +64,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
     public static void clearMetaClasses()
     {
         ExpandoMetaClass.disableGlobally();
-        GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
+        //GroovySystem.metaClassRegistry.removeMetaClass(HttpDatasource);
         ExpandoMetaClass.enableGlobally();
     }
     public void testRedundancyUtility_SavesAndDeletesUpdatedObjectsAccordingToExecutionContext(){
@@ -107,6 +103,54 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
             assertFalse(rule2.hasErrors());
             assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule2.id}"));
         }
+
+   }
+   public void testRedundancyUtility_UpdatesUpdatedObjectsRecordWhenObjectUpdatedMultipleTimes()
+   {
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2,enabled:false);
+        assertFalse(rule1.hasErrors());
+        assertEquals(1,UpdatedObjects.count());
+        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+        def updatedObjectRecord=UpdatedObjects.list()[0];
+
+        
+        rule1.update(enabled:true);
+        assertFalse(rule1.hasErrors());
+        assertEquals(1,UpdatedObjects.count());
+        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+        def newUpdatedObjectRecord=UpdatedObjects.list()[0];
+
+        assertTrue(newUpdatedObjectRecord.rsUpdatedAt>updatedObjectRecord.rsUpdatedAt);
+        
+   }
+    public void testRedundancyUtility_AddsADeletedObjectRecordWhenKeyPropssAreChanged()
+   {
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+        assertFalse(rule1.hasErrors());
+        assertEquals(0,DeletedObjects.count());
+        assertEquals(1,UpdatedObjects.count());
+        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+        def updatedObjectRecord=UpdatedObjects.list()[0];
+
+        def searchQueryForRule=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject("message.RsMessageRule",rule1);
+        
+        rule1.update(userId:3);
+        assertFalse(rule1.hasErrors());
+
+
+        def searchQueryForNewRule=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject("message.RsMessageRule",rule1);
+        assertTrue(searchQueryForRule.compareTo(searchQueryForNewRule)!=0);
+        
+        assertEquals(1,DeletedObjects.count());
+        assertEquals(1,DeletedObjects.countHits("modelName:message.RsMessageRule AND searchQuery:${searchQueryForRule.exactQuery()}"));
+
+        assertEquals(1,UpdatedObjects.count());
+        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
+        
+        def newUpdatedObjectRecord=UpdatedObjects.list()[0];
+        assertTrue(newUpdatedObjectRecord.rsUpdatedAt>updatedObjectRecord.rsUpdatedAt);
+
+
 
    }
    public void testRemoveDeletesUpdatedObjectsRecordsAndUpdateDeletesDeletedObjectsRecordForTheSameObject()

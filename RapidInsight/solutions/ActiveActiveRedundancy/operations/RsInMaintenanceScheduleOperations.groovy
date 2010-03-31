@@ -25,7 +25,7 @@ public class RsInMaintenanceScheduleOperations extends com.ifountain.rcmdb.domai
     }
     def afterUpdate(params)
     {
-        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject,params);
     }
     def afterDelete()
     {

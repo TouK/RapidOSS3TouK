@@ -21,7 +21,7 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
     }
 	def afterUpdate(params)
     {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject,params);
     }
 	def afterDelete()
     {

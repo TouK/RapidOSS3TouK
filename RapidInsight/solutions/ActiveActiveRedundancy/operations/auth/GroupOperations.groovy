@@ -39,7 +39,7 @@ class GroupOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomai
         }
         UserConfigurationSpace.getInstance().groupAdded(this.domainObject);
 
-        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject,params);
     }
     def afterDelete() {
         SegmentQueryHelper.getInstance().removeGroupFilters(name);

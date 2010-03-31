@@ -97,7 +97,7 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
         }
         UserConfigurationSpace.getInstance().userAdded(this.domainObject);
 
-        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
+        application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject,params);
     }
 	def afterDelete()
     {

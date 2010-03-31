@@ -14,7 +14,7 @@ class SearchQueryOperations extends com.ifountain.rcmdb.domain.operation.Abstrac
     }   
 	def afterUpdate(params)
     {
-		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject);
+		application.RapidApplication.getUtility("RedundancyUtility").objectInAfterUpdate(this.domainObject,params);
     }
 	def afterDelete()
     {

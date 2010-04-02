@@ -21,6 +21,7 @@ YAHOO.rapidjs.component.Html = function(container, config)
 {
     YAHOO.rapidjs.component.Html.superclass.constructor.call(this, container, config);
     this.iframe = config.iframe;
+    this.evaluateScripts = config.evaluateScripts != null ? config.evaluateScripts : true
     this.format = "html";
     this.resetUrlParams();
     this.render();
@@ -71,7 +72,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.Html, YAHOO.rapidjs.component.PollingC
     handleSuccess: function(response, keepExisting, removeAttribute)
     {
         this.fireBodyClear();
-        this.body.update("<div>" + response.responseText + "</div>", true);
+        this.body.update("<div>" + response.responseText + "</div>", this.evaluateScripts);
         this.hideMask();
     },
     fireBodyClear: function() {

@@ -49,6 +49,7 @@ class HtmlTagLib {
             ${attrs["title"] ? "title:'${attrs["title"]}'," : ""}
             ${attrs["pollingInterval"] ? "pollingInterval:${attrs["pollingInterval"]}," : ""}
             ${attrs["timeout"] ? "timeout:${attrs["timeout"]}," : ""}
+            ${attrs["evaluateScripts"] ? "evaluateScripts:${attrs["evaluateScripts"]}," : ""}
             id:'${attrs["id"]}'
         }"""
     }

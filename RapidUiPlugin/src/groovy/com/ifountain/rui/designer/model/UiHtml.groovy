@@ -15,6 +15,7 @@ class UiHtml extends UiComponent {
     Long timeout = 30;
     String url = "";
     Boolean iframe = false;
+    Boolean evaluateScripts = true;
 
     public static Map metaData()
     {
@@ -29,7 +30,8 @@ class UiHtml extends UiComponent {
                         url: [descr: "The default URL to be used for requests to the server to retrieve the data."],
                         pollingInterval:[descr:"Time delay between two server requests."],
                         iframe:[descr:"Parameter to display the content in an iframe or embed it to Html component's body."],
-                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."]
+                        timeout:[descr:"The time interval in seconds to wait the server request completes successfully before aborting."],
+                        evaluateScripts:[descr:"Boolean to evaluate scripts in the html content that the component displays."]
                 ],
                 childrenConfiguration: []
         ];

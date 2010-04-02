@@ -17,10 +17,11 @@
 * USA.
 */
 YAHOO.namespace('rapidjs', 'rapidjs.component', 'rapidjs.component.search');
-YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid) {
+YAHOO.rapidjs.component.search.ViewBuilder = function(searchGrid, viewType) {
     YAHOO.rapidjs.component.search.ViewBuilder.superclass.constructor.call(this, null, {id:searchGrid.id + '_viewBuilder', format:'xml'});
     this.searchGrid = searchGrid;
     this.viewData = null;
+    this.viewType = viewType;
     var config = {
         width:640,
         height:522,
@@ -113,7 +114,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         this.bottomButton = new YAHOO.widget.Button(buttonWrappers[7], {onclick:{fn:this.handleBottom, scope:this},label: 'Bottom', disabled:true});
     },
     getViews: function(callback) {
-        this.doRequest(getUrlPrefix() + 'gridView/list', {}, callback);
+        this.doRequest(getUrlPrefix() + 'gridView/list', {type:this.viewType}, callback);
     },
     hide: function() {
         this.dialog.hide();
@@ -123,6 +124,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var url = getUrlPrefix() + 'gridView/add';
         parameters['name'] = this.nameInput.value;
         parameters['isPublic'] = this.isPublicInput.checked;
+        parameters['type'] = this.viewType;
         var defaultSortColumn = this.defaultSortInput.options[this.defaultSortInput.selectedIndex].value;
         var sortOrder = this.sortOrderInput.options[this.sortOrderInput.selectedIndex].value;
         parameters['defaultSortColumn'] = defaultSortColumn;

@@ -182,6 +182,7 @@ class SearchGridTagLib {
         cArray.add("keyAttribute: '${config["keyAttribute"]}'")
         cArray.add("queryParameter: '${config["queryParameter"]}'")
         cArray.add("defaultSearchClass: '${config["defaultSearchClass"]}'")
+        cArray.add("viewType: '${config["viewType"]}'")
         if (config["defaultView"])
             cArray.add("defaultView:'${config['defaultView']}'")
         if (config["title"])

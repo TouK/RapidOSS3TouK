@@ -35,36 +35,38 @@ class GridView {
     String rsOwner = "p";
 
     String name = "";
+    String type = "";
     String defaultSortColumn = "";
     String sortOrder = "asc";
     String username = "";
     List gridColumns = [];
     Boolean isPublic = false;
 
-    Long rsInsertedAt =0;
+    Long rsInsertedAt = 0;
 
-    Long rsUpdatedAt =0;
+    Long rsUpdatedAt = 0;
 
-    org.springframework.validation.Errors errors ;
-    Object __operation_class__ ;
-    Object __dynamic_property_storage__ ;
+    org.springframework.validation.Errors errors;
+    Object __operation_class__;
+    Object __dynamic_property_storage__;
 
     static constraints = {
-        name(blank: false, nullable: false, key: ["username"], validator:{val, obj ->
-           if(val.toLowerCase().trim() == "default"){
-               return ['default.not.equal.message', val]
-           }
+        name(blank: false, nullable: false, key: ["username", "type"], validator: {val, obj ->
+            if (val.toLowerCase().trim() == "default") {
+                return ['default.not.equal.message', val]
+            }
         })
         username(blank: false, nullable: false)
-        defaultSortColumn(blank:true, nullable: true)
-        sortOrder(inList:["asc","desc"]);
-        isPublic(nullable:false)
-        __operation_class__(nullable:true)
-        __dynamic_property_storage__(nullable:true)
-        errors(nullable:true)
+        type(blank: false, nullable: false)
+        defaultSortColumn(blank: true, nullable: true)
+        sortOrder(inList: ["asc", "desc"]);
+        isPublic(nullable: false)
+        __operation_class__(nullable: true)
+        __dynamic_property_storage__(nullable: true)
+        errors(nullable: true)
     };
     static relations = [
-            gridColumns:[isMany:true, reverseName:"gridView", type:GridColumn]
+            gridColumns: [isMany: true, reverseName: "gridView", type: GridColumn]
     ]
 
     static transients = ["errors", "__operation_class__", "__dynamic_property_storage__"];

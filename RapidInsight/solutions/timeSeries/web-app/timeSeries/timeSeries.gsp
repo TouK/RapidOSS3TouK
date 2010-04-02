@@ -4,7 +4,7 @@
 </head>
 <body>
 <rui:searchGrid id="eventsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object"
-        keyAttribute="id" title="Events"
+        keyAttribute="id" title="Events" viewType="event"
         pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml" queryEnabled="true" defaultQuery="" timeout="30"
         defaultSearchClass="RsEvent" searchClassesUrl='../script/run/getClassesForSearch?rootClass=RsEvent&format=xml'
     

@@ -78,7 +78,7 @@ rootImage320Visible="params.data.nodeType == 'group'"
 <rui:html id="addRuleForm" iframe="false"  timeout="30"  pollingInterval="0" title="Rule Details"></rui:html>
 
 <rui:searchGrid id="calendars" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object" bringAllProperties="true" 
-        keyAttribute="id"  title="Calendars" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml&rootClass=message.RsMessageRuleCalendar"
+        keyAttribute="id"  title="Calendars" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml&rootClass=message.RsMessageRuleCalendar" viewType="rsMessageRuleCalendar"
         queryEnabled="false" searchInEnabled="false" defaultQuery="" timeout="30" multipleFieldSorting="true"
         defaultSearchClass="message.RsMessageRuleCalendar" defaultView="default"  extraPropertiesToRequest=""
     

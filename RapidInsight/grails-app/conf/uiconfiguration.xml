@@ -1422,7 +1422,7 @@
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
             <UiElement title="Rule Details" designerType="Html" name="addRuleForm"/>
-            <UiElement contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search" title="Calendars" defaultSearchClass="message.RsMessageRuleCalendar" rootTag="Objects" designerType="SearchGrid" name="calendars" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessageRuleCalendar" queryEnabled="false">
+            <UiElement contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search" title="Calendars" defaultSearchClass="message.RsMessageRuleCalendar" rootTag="Objects" designerType="SearchGrid" name="calendars" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessageRuleCalendar" queryEnabled="false" viewType="rsMessageRuleCalendar">
               <UiElement designerType="SearchGridImages"/>
               <UiElement designerType="SearchGridColumns">
                 <UiElement attributeName="name" columnIndex="0" colLabel="Name" width="100" designerType="SearchGridColumn">

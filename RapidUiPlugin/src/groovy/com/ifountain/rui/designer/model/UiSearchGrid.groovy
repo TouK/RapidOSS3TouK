@@ -19,6 +19,7 @@ class UiSearchGrid extends UiComponent {
     String fieldsUrl = "script/run/getViewFields?format=xml";
     String queryParameter = "query";
     String defaultSearchClass = "RsEvent"
+    String viewType = "event"
     String searchClassesUrl = "script/run/getClassesForSearch?rootClass=RsEvent&format=xml"
     String extraPropertiesToRequest = ""
     Long pollingInterval = 0;
@@ -51,6 +52,7 @@ class UiSearchGrid extends UiComponent {
                         defaultView: [descr: "The view which will be shown when the search grid is shown."],
                         queryParameter: [descr: "The url parameter to send the query to the server.", validators: [blank: false, nullable: false]],
                         searchInEnabled: [descr: "Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.", validators: [blank: false, nullable: false]],
+                        viewType: [descr: "Property to group views to display different group of views in different grids.", validators: [blank: false, nullable: false]],
                         queryEnabled: [descr: "Parameter to determine whether the quick filtering is enabled or not."],
                         bringAllProperties: [descr: "When set to false SearchGrid requests its data with a parameter (\"propertyList\") to indicate that it needs only a set of properties, to decrease the size of the data coming from server."],
                         extraPropertiesToRequest: [descr: "Comma separated property names which will be added \"propertyList\" URL parameter. Active when bringAllProperties is set to false."],

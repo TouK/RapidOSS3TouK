@@ -15,7 +15,8 @@ SearchGrid is a UI component designed to represent tabular row data. It enables 
 <b>fieldsUrl</b> (Required): The url used for the request to the server to retrieve available properties used in view builder.<br/>
 <b>pollingInterval</b> (Optional): Time delay between two server requests. Default is 0 which means there is no polling.<br/>
 <b>queryParameter</b> (Required): The url parameter to send the query to the server. The value of this property depends on your implementation for the server side code implemented for the "url" property above.<br/>
-<b>searchInEnabled</b> (Required): Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.</p>
+<b>searchInEnabled</b> (Required): Determines if the query should be applied on only defaultSearchClass or should be selected among classes which are brought by searchClassesUrl.<br/>
+<b>viewType</b> (Required): Property to group views to display different group of views in different grids.</p>
 <div class='panelMacro'><table class='infoMacro'><colgroup><col width='24'><col></colgroup><tr><td valign='top'><img src="images/icons/emoticons/information.gif" width="16" height="16" align="absmiddle" alt="" border="0"></td><td> All properties except rootTag, contentPath and keyAttribute are pre-populated when a new SearchGrid component is added to the layout, assuming you will be using SearchController provided with RapidInsight.</td></tr></table></div>
 <p>Below is the sample Ajax response in Xml format to a url call:</p>
 <div class="code panel" style="border-width: 1px;"><div class="codeContent panelContent">

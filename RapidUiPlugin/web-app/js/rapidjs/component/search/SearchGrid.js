@@ -22,6 +22,7 @@ YAHOO.rapidjs.component.search.SearchGrid = function(container, config) {
     this.minColumnWidth = 30;
     this.fieldsUrl = null;
     this.rowColors = null;
+    this.viewType = null;
     this.queryEnabled = true;
     YAHOO.rapidjs.component.search.SearchGrid.superclass.constructor.call(this, container, config);
 };
@@ -159,7 +160,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'contextmenu', this.handleContextMenu, this, true);
         YAHOO.util.Event.addListener(this.scrollPos.dom, 'dblclick', this.handleDoubleClick, this, true);
         this.updateColumns();
-        this.viewBuilder = new YAHOO.rapidjs.component.search.ViewBuilder(this);
+        this.viewBuilder = new YAHOO.rapidjs.component.search.ViewBuilder(this, this.viewType);
         this.viewBuilder.events['success'].subscribe(this.viewBuilderSuccess, this, true);
         this.viewBuilder.events['error'].subscribe(this.viewBuilderError, this, true);
 

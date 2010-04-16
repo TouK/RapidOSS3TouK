@@ -9,12 +9,22 @@
     };
     ListToList.prototype = {
         addToSelect: function() {
-            this.moveAllSelectedFromSelectToSelect(document.getElementById('available' + this.id +'Select'), document.getElementById(this.id + 'Select'))
+            var fromSelect = document.getElementById('available' + this.id +'Select');
+            var toSelect = document.getElementById(this.id + 'Select') 
+            this.moveAllSelectedFromSelectToSelect(fromSelect, toSelect)
             this.updateInput();
+        <g:if test="${showCounts}">
+            this.updateCounts(fromSelect, toSelect);
+        </g:if>
         },
         removeFromSelect: function() {
-            this.moveAllSelectedFromSelectToSelect(document.getElementById(this.id + 'Select'), document.getElementById('available' + this.id+'Select'))
+            var fromSelect = document.getElementById('available' + this.id +'Select');
+            var toSelect = document.getElementById(this.id + 'Select') 
+            this.moveAllSelectedFromSelectToSelect(toSelect, fromSelect)
             this.updateInput();
+        <g:if test="${showCounts}">
+            this.updateCounts(fromSelect, toSelect);
+        </g:if>
         },
         updateInput : function() {
             var select = document.getElementById(this.id + 'Select');
@@ -23,6 +33,12 @@
                 users.push(select.options[index].value);
             }
             document.getElementById(this.inputName).value = users.join(",");
+        },
+        updateCounts : function(fromSelect, toSelect){
+             var fromCount = fromSelect.options.length;
+             var toCount = toSelect.options.length;
+             document.getElementById('${id}fromTitle').innerHTML = '${fromListTitle} (' + fromCount+ ')';
+             document.getElementById('${id}toTitle').innerHTML = '${toListTitle} (' + toCount+ ')';
         },
         collectSelectedFromSelect: function(aSelect){
             var selectedIndices = new Array();
@@ -71,9 +87,13 @@
     <table style="border:none;width:auto">
         <tbody>
             <tr>
-                <td><div class="title">${fromListTitle}</div></td>
+                <%
+                    def fromTitle = showCounts ? "${fromListTitle} (${fromListContent.size()})" : fromListTitle
+                    def toTitle = showCounts ? "${toListTitle} (${toListContent.size()})" : toListTitle
+                %>
+                <td><div class="title" id="${id}fromTitle">${fromTitle}</div></td>
                 <td></td>
-                <td><div class="title">${toListTitle}</div></td>
+                <td><div class="title" id="${id}toTitle">${toTitle}</div></td>
             </tr>
             <tr>
                 <td>

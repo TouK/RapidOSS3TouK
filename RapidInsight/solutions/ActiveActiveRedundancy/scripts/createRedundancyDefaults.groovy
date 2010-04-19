@@ -52,7 +52,7 @@ scriptsToAdd.each{  scriptParams ->
 }
 
 
-def scriptsToRun=[]
+def scriptsToRun=["disableLocalMaster"]
 
 scriptsToRun.each{  scriptName ->
 

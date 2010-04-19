@@ -28,27 +28,45 @@ import search.SearchQueryGroup
  * Time: 10:50:39 AM
  */
 def filterType = params.type;
-def username=web.session.username;
+def username = web.session.username;
 
 def writer = new StringWriter();
-def queryBuilder = new MarkupBuilder(writer);
+def builder = new MarkupBuilder(writer);
 
-SearchQueryGroup.add(name:SearchQueryGroup.MY_QUERIES, username:username, type:SearchQueryGroup.DEFAULT_TYPE, expanded:true);
-def queryGroups = SearchQueryGroup.searchEvery("( type:${filterType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()} ) AND  ( ( username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true) OR (username:${username.exactQuery()}) )");
-queryBuilder.Filters
+SearchQueryGroup.add(name: SearchQueryGroup.MY_QUERIES, username: username, type: SearchQueryGroup.DEFAULT_TYPE, expanded: true);
+def queryGroups = SearchQueryGroup.getVisibleGroups(username, filterType)
+def queryHierarchy = [:]
+queryGroups.each {group ->
+    def currentHierarchyMap = [:]
+    queryHierarchy[group] = currentHierarchyMap;
+    def queries = SearchQuery.getVisibleQueries(group, username, filterType)
+    populateQueryHierarchy(0, currentHierarchyMap, queries);
+}
+
+builder.Filters
 {
-    queryGroups.each {SearchQueryGroup group ->
-        def userName = group.username;
-           queryBuilder.Filter(id: group.id, name: group.name, nodeType: "group",  isPublic:group.isPublic, expanded:group.expanded) {
-              group.queries.each {SearchQuery query ->
-                  if(query.type == filterType && (query.username == username || query.isPublic)){
-                        queryBuilder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName:query.viewName, group:group.name, searchClass:query.searchClass,
-                                query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic:query.isPublic)
-                  }
+    queryHierarchy.each {SearchQueryGroup group, Map subQueries ->
+        builder.Filter(id: group.id, name: group.name, nodeType: "group", isPublic: group.isPublic, expanded: group.expanded) {
+            constructSubqueryXML(builder, subQueries, group.name)
+        }
+    }
+}
 
-              }
-           }
+def populateQueryHierarchy(parentQueryId, hierarchyMap, queries) {
+    def currentLevelQueries = queries.findAll {it.parentQueryId == parentQueryId};
+    currentLevelQueries.each {query ->
+        def currentHierarchyMap = [:]
+        hierarchyMap[query] = currentHierarchyMap;
+        populateQueryHierarchy(query.id, currentHierarchyMap, queries);
+    }
+}
 
+def constructSubqueryXML(builder, subQueries, groupName) {
+    subQueries.each {query, currentSubQueries ->
+        builder.Filter(id: query.id, name: query.name, nodeType: "filter", viewName: query.viewName, group: groupName, searchClass: query.searchClass, expanded:query.expanded,
+                query: query.query, sortProperty: query.sortProperty, sortOrder: query.sortOrder, isPublic: query.isPublic, parentQueryId:query.parentQueryId) {
+            constructSubqueryXML(builder, currentSubQueries, groupName);
+        }
     }
 }
 return writer.toString();

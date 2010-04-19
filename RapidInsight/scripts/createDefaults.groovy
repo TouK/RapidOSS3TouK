@@ -39,6 +39,7 @@ scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
 scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])
 scriptsToAdd.add([name:"queryList", enabledForAllGroups:true])
+scriptsToAdd.add([name:"queryFormHelper", enabledForAllGroups:true])
 scriptsToAdd.add([name:"reloadOperations", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getViewFields", enabledForAllGroups:true])
 

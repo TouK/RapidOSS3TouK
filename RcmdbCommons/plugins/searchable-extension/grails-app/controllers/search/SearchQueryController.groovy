@@ -40,8 +40,14 @@ class SearchQueryController {
                 render(text: errorsToXml(this.errors), contentType: "text/xml")
                 return;
             }
-            searchQuery.remove();
-            render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} deleted"), contentType: "text/xml")
+            try {
+                searchQuery.remove()
+                render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${params.id} deleted"), contentType: "text/xml")
+            }
+            catch (e) {
+                addError("default.custom.error", [e.getMessage()])
+                render(text: errorsToXml(errors), contentType: "text/xml")
+            }
         }
         else {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
@@ -71,12 +77,17 @@ class SearchQueryController {
                     group = SearchQueryGroup.add(name: params.group, username: session.username, type: groupType);
                 }
             }
+            def groupChanged = false;
+            if(group.id != searchQuery.group?.id) groupChanged = true
             params["group"] = ["id": group.id];
             params["group.id"] = "${group.id}".toString();
             def queryParams = ControllerUtils.getClassProperties(params, SearchQuery)
             queryParams["username"] = queryParams.isPublic ? RsUser.RSADMIN : session.username;
             searchQuery.update(queryParams);
             if (!searchQuery.hasErrors()) {
+                if(groupChanged){
+                     updateGroupsOfSubQueries(searchQuery, group)
+                }
                 render(text: ControllerUtils.convertSuccessToXml("SearchQuery ${searchQuery.id} updated"), contentType: "text/xml")
             }
             else {
@@ -86,6 +97,13 @@ class SearchQueryController {
         else {
             addError("default.object.not.found", [SearchQuery.class.name, params.id]);
             render(text: errorsToXml(errors), contentType: "text/xml")
+        }
+    }
+
+    def updateGroupsOfSubQueries(searchQuery, group){
+        SearchQuery.searchEvery("parentQueryId:${searchQuery.id}").each{
+            it.update(group:group)
+            updateGroupsOfSubQueries(it, group);
         }
     }
 

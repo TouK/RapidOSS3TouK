@@ -291,7 +291,7 @@ functionActionConditionindex_eventSearch_copyQueryActionCondition=""
 
 >
     
-    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'event', searchComponentType:'list'})]]></rui:functionArg>
+    <rui:functionArg><![CDATA[createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, parentQueryId:params.data.parentQueryId, expanded:params.data.expanded, mode:'create', type:'event', searchComponentType:'list'})]]></rui:functionArg>
     
     <rui:functionArg>null</rui:functionArg>
     
@@ -565,7 +565,7 @@ functionActionConditionindex_eventSearch_refreshQueriesActionCondition=""
 x='85' y='50' 
 ></rui:popupWindow>
 
-<rui:popupWindow componentId="saveQueryForm" width="385" height="275" resizable="false"
+<rui:popupWindow componentId="saveQueryForm" width="385" height="320" resizable="false"
  
  
   title='Save query'

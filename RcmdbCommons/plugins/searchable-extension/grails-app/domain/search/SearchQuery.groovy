@@ -36,6 +36,7 @@ class SearchQuery {
     Long rsInsertedAt =0;
 
     Long rsUpdatedAt =0;
+    Long parentQueryId = 0;
     String username;
     SearchQueryGroup group;
     String name;
@@ -46,6 +47,7 @@ class SearchQuery {
     String type = "";
     String searchClass = "";
     boolean isPublic = false;
+    Boolean expanded = false;
     String sortOrder = "asc";
     org.springframework.validation.Errors errors;
     Object __operation_class__;
@@ -59,6 +61,7 @@ class SearchQuery {
         viewName(blank: true, nullable: true);
         sortProperty(blank: true, nullable: true);
         searchClass(blank: true, nullable: true);
+        parentQueryId(nullable: true);
         errors(nullable: true)
         __operation_class__(nullable: true)
         __dynamic_property_storage__(nullable: true)

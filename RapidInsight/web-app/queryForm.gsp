@@ -46,40 +46,93 @@
             classes = classes.sort {it.fullName};
         }
         def sortedProps = allProps.sort {it.name}
-        def queryGroupQuery;
-        if (!RsUser.hasRole(userName, Role.ADMINISTRATOR)) {
-            queryGroupQuery = "username:${userName.exactQuery()} AND (type:${queryType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()})"
-        }
-        else {
-            queryGroupQuery = "(username:${userName.exactQuery()} OR (username:${RsUser.RSADMIN.exactQuery()} AND isPublic:true)) AND (type:${queryType.exactQuery()} OR type:${SearchQueryGroup.DEFAULT_TYPE.exactQuery()})"
-        }
-        def searchQueryGroups = SearchQueryGroup.searchEvery(queryGroupQuery)
+        def searchQueryGroups = SearchQueryGroup.getEditableGroups(userName, queryType)
+        def parentQueryCandidates = [];
         def propertyMap = [:]
         def group = params.group ? params.group : mode == 'edit' ? searchQuery.group.name : '';
+        if (group == '' && searchQueryGroups.size() > 0) {
+            parentQueryCandidates = searchQueryGroups[0].queries;
+        }
+        def parentQueryId = params.parentQueryId ? params.parentQueryId : mode == 'edit' ? searchQuery.parentQueryId.toString() : "0";
         def queryName = params.name ? params.name : mode == 'edit' ? searchQuery.name : '';
         def query = params.query ? params.query : mode == 'edit' ? searchQuery.query : '';
         def viewName = params.viewName ? params.viewName : mode == 'edit' ? searchQuery.viewName : '';
         def sortProperty = params.sortProperty ? params.sortProperty : mode == 'edit' ? searchQuery.sortProperty : '';
         def sortOrder = params.sortOrder ? params.sortOrder : mode == 'edit' ? searchQuery.sortOrder : 'asc';
         def searchClass = params.searchClass ? params.searchClass : mode == 'edit' ? searchQuery.searchClass : '';
-        def isPublic = params.isPublic ? params.isPublic : mode == 'edit' ? searchQuery.isPublic : false;
+        def isPublic = params.isPublic ? Boolean.parseBoolean(params.isPublic) : mode == 'edit' ? searchQuery.isPublic : false;
+        def expanded = params.expanded ? Boolean.parseBoolean(params.expanded) : mode == 'edit' ? searchQuery.expanded : false;
     %>
     <script type="text/javascript">
-    window.refreshFilterTree = function(){
-    var filterTree = YAHOO.rapidjs.Components['filterTree'];
-    filterTree.poll();
-    }
+        QueryFormHelper = function(htmlCompId){
+            this.compId = htmlCompId;
+            this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this);
+        };
+        QueryFormHelper.prototype = {
+            getHtmlComp : function(){
+                return YAHOO.rapidjs.Components[this.compId]
+            },
+            refreshFilterTree : function(){
+                var filterTree = YAHOO.rapidjs.Components['filterTree'];
+                filterTree.poll();
+            },
+            queryGroupChanged : function(groupSelectEl){
+               var queryGroup = groupSelectEl.options[groupSelectEl.selectedIndex].text;
+               this.getHtmlComp().showMask();
+               this.requester.doRequest(getUrlPrefix() + 'script/run/queryFormHelper', {name:queryGroup, type:'${queryType}'})
+            },
+            processSuccess: function(response){
+               this.getHtmlComp().hideMask();
+               var parentQuerySelectEl = document.getElementById('parentQuerySelect');
+               var queries = response.responseXML.getElementsByTagName('Query');
+               var currentQueryId = document.getElementById('searchQueryId').value;
+               SelectUtils.clear(parentQuerySelectEl)
+               SelectUtils.addOption(parentQuerySelectEl, '', '0');
+               for(var i=0; i<queries.length; i++){
+                   var queryNode = queries[i];
+                   var queryId = queryNode.getAttribute('id');
+                   if(queryId != currentQueryId){
+                      SelectUtils.addOption(parentQuerySelectEl, queryNode.getAttribute('name'), queryId);
+                   }
+               }
+            },
+            processFailure: function(errors){
+                var htmlComp = this.getHtmlComp()
+                htmlComp.hideMask();
+                htmlComp.events["error"].fireDirect(htmlComp,  errors);
+            }
+        }
+        window.queryFormHelper = new QueryFormHelper('${params.componentId}');
     </script>
-    <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.refreshFilterTree">
+    <rui:formRemote method="POST" action="${url}" componentId="${params.componentId}" onSuccess="window.queryFormHelper.refreshFilterTree">
         <table>
-            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px">
+            <tr><td width="50%"><label>Group Name:</label></td><td width="50%"><select name="group" style="width:175px" onchange="window.queryFormHelper.queryGroupChanged(this)">
                 <g:each var="searchQueryGroup" in="${searchQueryGroups}">
                     <g:if test="${group == searchQueryGroup.name}">
+                        <%
+                             parentQueryCandidates = searchQueryGroup.queries;
+                        %>
                         <option name="${searchQueryGroup.name}" selected="true">${searchQueryGroup.name}</option>
                     </g:if>
                     <g:else>
                         <option name="${searchQueryGroup.name}">${searchQueryGroup.name}</option>
                     </g:else>
+                </g:each>
+            </select></td></tr>
+            <tr><td width="50%"><label>Parent Query:</label></td><td width="50%"><select name="parentQueryId" style="width:175px" id="parentQuerySelect">
+                <option value="0"></option>
+                <%
+                    parentQueryCandidates = SearchQuery.getEditableQueries(parentQueryCandidates, userName, queryType)
+                %>
+                <g:each var="parentQuery" in="${parentQueryCandidates}">
+                    <g:if test="${parentQuery.id.toString() != params.queryId}">
+                        <g:if test="${parentQueryId == parentQuery.id.toString()}">
+                            <option value="${parentQuery.id}" selected="true">${parentQuery.name}</option>
+                        </g:if>
+                        <g:else>
+                            <option value="${parentQuery.id}">${parentQuery.name}</option>
+                        </g:else>
+                    </g:if>
                 </g:each>
             </select></td></tr>
             <tr><td width="50%"><label>Query Name:</label></td><td width="50%">
@@ -144,10 +197,11 @@
                 </td></tr>
                 <input type="hidden" name="viewName" value="${viewName.encodeAsHTML()}">
             </g:else>
+            <tr><td width="50%"><label>Expanded:</label></td><td width="50%"><g:checkBox name="expanded" value="${expanded}"></g:checkBox></td></tr>
             <jsec:hasRole name="${Role.ADMINISTRATOR}">
                 <tr><td width="50%"><label>Public:</label></td><td width="50%"><g:checkBox name="isPublic" value="${isPublic}"></g:checkBox></td></tr>
             </jsec:hasRole>
         </table>
-        <input type="hidden" name="id" value="${searchQuery != null ? searchQuery.id : ''}">
+        <input type="hidden" name="id" value="${searchQuery != null ? searchQuery.id : ''}" id="searchQueryId">
     </rui:formRemote>
 </g:else>

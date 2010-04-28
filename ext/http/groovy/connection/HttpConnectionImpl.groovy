@@ -61,13 +61,6 @@ public class HttpConnectionImpl extends BaseConnection{
 		return httpUtils;
 	}
 
-    protected String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!params.getOtherParams().containsKey(parameterName)){
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return (String) params.getOtherParams().get(parameterName);
-    }
-
     public String getBaseUrl() {
         return baseUrl;
     }

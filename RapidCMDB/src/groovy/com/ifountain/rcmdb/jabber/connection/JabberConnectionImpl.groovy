@@ -14,7 +14,7 @@ import org.jivesoftware.smack.packet.XMPPError
 * Created by IntelliJ IDEA.
 * User: Sezgin Kucukkaraaslan
 * Date: Jun 1, 2009
-* Time: 4:14:56 PM
+* Time: 4:14:56 PM                         
 */
 class JabberConnectionImpl extends BaseConnection implements ConnectionListener, ChatManagerListener, MessageListener {
     Logger logger = Logger.getLogger(JabberConnectionImpl.class);
@@ -44,13 +44,6 @@ class JabberConnectionImpl extends BaseConnection implements ConnectionListener,
         serviceName = checkParam(SERVICENAME);
         username = checkParam(USERNAME)
         password = checkParam(PASSWORD)
-    }
-
-    private Object checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if (!params.getOtherParams().containsKey(parameterName)) {
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return params.getOtherParams().get(parameterName);
     }
 
     protected void connect() {

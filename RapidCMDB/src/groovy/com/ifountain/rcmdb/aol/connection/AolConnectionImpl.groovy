@@ -61,13 +61,6 @@ class AolConnectionImpl extends BaseConnection implements IAolConnection {
         secureSession = SecureSession.getInstance(logger);
     }
 
-    private Object checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if (!params.getOtherParams().containsKey(parameterName)) {
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return params.getOtherParams().get(parameterName);
-    }
-
     protected void connect() {
         synchronized (connectionLock)
         {

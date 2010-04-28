@@ -54,13 +54,6 @@ public class SnmpConnectionImpl extends BaseConnection{
         return true;
     }
 
-    private Object checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!params.getOtherParams().containsKey(parameterName)){
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return params.getOtherParams().get(parameterName);
-    }
-
     public String getHost() {
         return host;
     }

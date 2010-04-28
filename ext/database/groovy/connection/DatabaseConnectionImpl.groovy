@@ -81,13 +81,6 @@ public class DatabaseConnectionImpl extends BaseConnection {
         Class.forName(this.driver);
     }
 
-    private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if (!params.getOtherParams().containsKey(parameterName)) {
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return (String) params.getOtherParams().get(parameterName);
-    }
-
     public boolean checkConnection() {
         if (connection == null) return false;
         DatabaseMetaData metaData = null;

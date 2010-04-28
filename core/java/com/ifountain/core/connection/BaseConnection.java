@@ -1,5 +1,7 @@
 package com.ifountain.core.connection;
 
+import com.ifountain.core.connection.exception.UndefinedConnectionParameterException;
+
 /* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
 * This file is part of RapidCMDB.
@@ -31,26 +33,26 @@ public abstract class BaseConnection implements IConnection {
     protected long minTimeout;
     protected long maxTimeout;
     protected long timeout;
+
     public final void _connect() throws Exception {
         connect();
         isConnected = true;
     }
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return isValid;
     }
-    public void invalidate()
-    {
+
+    public void invalidate() {
         this.isValid = false;
     }
-    public final void _disconnect(){
+
+    public final void _disconnect() {
         disconnect();
         isConnected = false;
     }
 
-    public void init(ConnectionParam param) throws Exception
-    {
+    public void init(ConnectionParam param) throws Exception {
         this.params = param;
         this.minTimeout = params.getMinTimeout();
         this.maxTimeout = params.getMaxTimeout();
@@ -78,26 +80,32 @@ public abstract class BaseConnection implements IConnection {
     }
 
     public void setTimeout(long timeout) {
-        if(timeout < minTimeout)
-        {
+        if (timeout < minTimeout) {
             this.timeout = this.minTimeout;
-        }
-        else if(timeout > maxTimeout)
-        {
+        } else if (timeout > maxTimeout) {
             this.timeout = maxTimeout;
-        }
-        else
-        {
+        } else {
             this.timeout = timeout;
         }
     }
+
     public final boolean isConnected() {
         return isConnected;
     }
+
     public long getTimeout() {
         return timeout;
     }
+
+    protected Object checkParam(String parameterName) throws UndefinedConnectionParameterException {
+        if (!params.getOtherParams().containsKey(parameterName)) {
+            throw new UndefinedConnectionParameterException(parameterName);
+        }
+        return params.getOtherParams().get(parameterName);
+    }
+
     protected abstract void connect() throws Exception;
+
     protected abstract void disconnect();
 
 }

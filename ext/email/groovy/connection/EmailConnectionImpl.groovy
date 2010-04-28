@@ -105,12 +105,6 @@ class EmailConnectionImpl extends BaseConnection{
         
     }
     
-     protected String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if(!params.getOtherParams().containsKey(parameterName)){
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return (String) params.getOtherParams().get(parameterName);
-    }
     public String getProtocol()
     {
         return protocol;

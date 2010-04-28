@@ -152,13 +152,6 @@ class SametimeConnectionImpl extends BaseConnection implements LoginListener, Re
         community = params.getOtherParams().get(COMMUNITY);
     }
 
-    private String checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if (!params.getOtherParams().containsKey(parameterName)) {
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return (String) params.getOtherParams().get(parameterName);
-    }
-
     public void loggedOut(LoginEvent event) {
         loginResult = FAILED;
         String errorMessage = getErrorMessage(event.getReason())

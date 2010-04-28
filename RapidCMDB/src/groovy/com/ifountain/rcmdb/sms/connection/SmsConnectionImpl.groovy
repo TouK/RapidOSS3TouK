@@ -54,12 +54,6 @@ class SmsConnectionImpl extends BaseConnection implements ConnectionObserver {
         port = checkParam(PORT);
     }
 
-    private Object checkParam(String parameterName) throws UndefinedConnectionParameterException {
-        if (!params.getOtherParams().containsKey(parameterName)) {
-            throw new UndefinedConnectionParameterException(parameterName);
-        }
-        return params.getOtherParams().get(parameterName);
-    }
     protected void connect() {
         synchronized (connectionLock) {
             logger.debug(getLogPrefix() + "Connecting to host ${host}.")

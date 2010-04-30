@@ -174,8 +174,6 @@ def processRequest(ds,requestParams)
                                 logger.debug("Adding relation to object props ${relationName} : ${relatedObjectList} ");
                                 props[relationName]=relatedObjectList;                                                                
                             }
-//                            logger.debug("Adding relations for ${object} , relatedObjects ${relatedObjects}");
-//                            object.addRelation(relatedObjects);
                         }
                     }
 

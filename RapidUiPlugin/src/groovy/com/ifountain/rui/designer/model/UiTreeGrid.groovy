@@ -15,7 +15,7 @@ class UiTreeGrid extends UiComponent {
     String rootTag = "";
     String contentPath = "";
     String keyAttribute = "";
-    String expandAttribute = "";
+    String expandAttribute = "expanded";
     Long pollingInterval = 0;
     Long timeout = 30;
     Boolean expanded = false;

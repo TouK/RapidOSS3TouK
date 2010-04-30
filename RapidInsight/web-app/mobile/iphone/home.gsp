@@ -142,7 +142,7 @@
                         break;
                     }
                  }
-                 if(button == 'searchInSelect' && (page.id == 'query' && href && href.indexOf('topology') > -1)){
+                 if(button == 'searchInSelect' && ((page.id == 'query' && href && href.indexOf('topology') > -1) || page.id.indexOf("objectAction") > -1)){
                     isDisplayed = true;
                  }
                  if(button == 'eventsButton' && (page.id == 'journals' && href && href.indexOf('isHistorical=true') < 0)){
@@ -152,6 +152,9 @@
                     isDisplayed = true;
                  }
                  if(button == 'homeButton' && page.id != 'home'){
+                    isDisplayed = true;
+                 }
+                 if((page.id.indexOf("objectAction") > -1 || page.id.indexOf("eventAction") > -1) && (button == 'searchButton' || button == 'queriesButton')){
                     isDisplayed = true;
                  }
                  if(isDisplayed){

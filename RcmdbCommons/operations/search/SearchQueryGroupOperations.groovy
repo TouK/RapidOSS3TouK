@@ -37,10 +37,10 @@ class SearchQueryGroupOperations extends com.ifountain.rcmdb.domain.operation.Ab
 
     public static List getVisibleGroups(String username, String type) {
         def query = getVisibleGroupsQuery(username, type);
-        return SearchQueryGroup.searchEvery(query);
+        return SearchQueryGroup.searchEvery(query, [sort:'name']);
     }
     public static List getEditableGroups(String username, String type) {
         def query = getEditableGroupsQuery(username, type);
-        return SearchQueryGroup.searchEvery(query);
+        return SearchQueryGroup.searchEvery(query, [sort:'name']);
     }
 }

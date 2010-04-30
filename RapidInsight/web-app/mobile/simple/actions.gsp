@@ -33,7 +33,7 @@
 </head>
 <body>
 <div class="toolbar">
-    <img src="${createLinkTo(dir:'images', file:'RapidOSSsmall.png')}"/>
+    <img src="${createLinkTo(dir: 'images', file: 'RapidOSSsmall.png')}"/>
     <div class="toolbarLinks">
         <a href="${createLinkTo(dir: 'mobile/simple', file: 'home.gsp')}">Home</a>|
     <rui:link url="mobile/simple/queries.gsp" params="${[filterType:type, listURI:listURI]}">Queries</rui:link>|
@@ -54,11 +54,18 @@
                             <g:each var="subActionConf" in="${actionConf.actions}">
                                 <g:if test="${!subActionConf.visible || subActionConf.visible(domainObject)}">
                                     <%
-                                        def subScriptParams = subActionConf.parameters ? subActionConf.parameters(domainObject) : [:]
-                                        subScriptParams["scriptName"] = subActionConf.scriptName;
-                                        subScriptParams["redirectUrl"] = rui.createLink(url:"mobile/simple/actions.gsp", params:[type:type, name:params.name]);
+                                        def subUrlParams = subActionConf.parameters ? subActionConf.parameters(domainObject) : [:]
                                     %>
-                                    <li><rui:link url="mobile/scriptExecuter.gsp" params="${subScriptParams}">${subActionConf.title.encodeAsHTML()}</rui:link></li>
+                                    <g:if test="${subActionConf.type == 'gsp'}">
+                                        <li><rui:link url="${subActionConf.url}" params="${subUrlParams}">${subActionConf.title.encodeAsHTML()}</rui:link></li>
+                                    </g:if>
+                                    <g:else>
+                                        <%
+                                            subUrlParams["scriptName"] = subActionConf.scriptName;
+                                            subUrlParams["redirectUrl"] = rui.createLink(url: "mobile/simple/actions.gsp", params: [type: type, name: params.name]);
+                                        %>
+                                        <li><rui:link url="mobile/scriptExecuter.gsp" params="${subUrlParams}">${subActionConf.title.encodeAsHTML()}</rui:link></li>
+                                    </g:else>
                                 </g:if>
                             </g:each>
                         </ul>
@@ -68,11 +75,18 @@
             <g:else>
                 <g:if test="${!actionConf.visible || actionConf.visible(domainObject)}">
                     <%
-                        def scriptParams = actionConf.parameters ? actionConf.parameters(domainObject) : [:]
-                        scriptParams["scriptName"] = actionConf.scriptName;
-                        scriptParams["redirectUrl"] = rui.createLink(url:"mobile/simple/actions.gsp", params:[type:type, name:params.name]);
+                        def urlParams = actionConf.parameters ? actionConf.parameters(domainObject) : [:]
                     %>
-                    <li><rui:link url="mobile/scriptExecuter.gsp" params="${scriptParams}">${actionConf.title.encodeAsHTML()}</rui:link></li>
+                    <g:if test="${actionConf.type == 'gsp'}">
+                        <li><rui:link url="${actionConf.url}" params="${urlParams}">${actionConf.title.encodeAsHTML()}</rui:link></li>
+                    </g:if>
+                    <g:else>
+                        <%
+                            urlParams["scriptName"] = actionConf.scriptName;
+                            urlParams["redirectUrl"] = rui.createLink(url: "mobile/simple/actions.gsp", params: [type: type, name: params.name]);
+                        %>
+                        <li><rui:link url="mobile/scriptExecuter.gsp" params="${urlParams}">${actionConf.title.encodeAsHTML()}</rui:link></li>
+                    </g:else>
                 </g:if>
             </g:else>
         </g:each>

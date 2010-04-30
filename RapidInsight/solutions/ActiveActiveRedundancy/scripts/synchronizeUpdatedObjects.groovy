@@ -180,7 +180,7 @@ def processRequest(ds,requestParams)
 	                def object=modelClass.add(props);
 	                if(object.hasErrors())
 	                {
-	                   logger.warn("could not update ${modelName} with props ${props}. Reason ${object.errors}");
+	                   logger.warn("could not add ${modelName} with props ${props}. Reason ${object.errors}");
 	                }
 	                else
 	                {

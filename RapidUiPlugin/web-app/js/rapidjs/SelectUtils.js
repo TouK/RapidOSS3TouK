@@ -128,7 +128,19 @@ YAHOO.rapidjs.SelectUtils = new function(){
 		}
 		select.selectedIndex = defaultIndex;
 	};
-	this.remove =  function(select, value)
+    this.selectTheText =  function(select, text, defaultIndex)
+	{
+		for(var i = 0 ; i < select.options.length ; i++)
+		{
+			if(select.options[i].text == text)
+			{
+				select.selectedIndex = i;
+				return;
+			}
+		}
+		select.selectedIndex = defaultIndex;
+	};
+    this.remove =  function(select, value)
 	{
 		for(var i = 0 ; i < select.options.length ; i++)
 		{

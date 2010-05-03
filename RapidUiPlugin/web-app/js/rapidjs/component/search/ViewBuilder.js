@@ -121,7 +121,14 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     },
     handleSave: function() {
         var parameters = {};
-        var url = getUrlPrefix() + 'gridView/add';
+        var url;
+        if(this.currentNode){
+            url = getUrlPrefix() + 'gridView/update';
+            parameters["id"] = this.currentNode.getAttribute("id");
+        }
+        else{
+            url = getUrlPrefix() + 'gridView/add';    
+        }
         parameters['name'] = this.nameInput.value;
         parameters['isPublic'] = this.isPublicInput.checked;
         parameters['type'] = this.viewType;
@@ -148,24 +155,24 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     saveSuccess: function(response, containsErrors) {
         this.dialog.hideMask();
         if (!containsErrors) {
-            var currentView = this.nameInput.value;
             this.dialog.hide();
             if (!this.currentNode) {
+                var currentView = this.nameInput.value;
                 this.getViews(this.viewAdded.createDelegate(this, [currentView], true));
             }
             else {
-                this.getViews(this.viewUpdated.createDelegate(this, [currentView], true));
+                var viewId = this.currentNode.getAttribute("id");
+                this.getViews(this.viewUpdated.createDelegate(this, [viewId], true));
             }
         }
     },
-    removeView : function(view) {
-        var viewId = this.viewData.findChildNode('name', view, 'View')[0].getAttribute('id')
+    removeView : function(viewId) {
         var url = getUrlPrefix() + 'gridView/delete';
-        this.doPostRequest(url, {id:encodeURIComponent(viewId)}, this.removeSuccess.createDelegate(this, [view], true))
+        this.doPostRequest(url, {id:encodeURIComponent(viewId)}, this.removeSuccess.createDelegate(this, [viewId], true))
     },
-    removeSuccess : function(response, containsErrors, view) {
+    removeSuccess : function(response, containsErrors, viewId) {
         if (!containsErrors) {
-            this.getViews(this.viewRemoved.createDelegate(this, [view], true));
+            this.getViews(this.viewRemoved.createDelegate(this, [viewId], true));
         }
     },
     loadViews: function(response, containsErrors) {
@@ -177,30 +184,30 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     viewAdded: function(response, containsErrors, view) {
         if (!containsErrors) {
             this._getViewData(response);
-            var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
-            if (viewNode) {
-                this.searchGrid.viewAdded(viewNode);
+            var viewNodes = this.viewData.findChildNode('name', view, 'View');
+            if (viewNodes.length > 0) {
+                this.searchGrid.viewAdded(viewNodes[viewNodes.length -1]);
             }
         }
     },
-    viewUpdated: function(response, containsErrors, view) {
+    viewUpdated: function(response, containsErrors, viewId) {
         if (!containsErrors) {
             this._getViewData(response);
-            var viewNode = this.viewData.findChildNode('name', view, 'View')[0];
+            var viewNode = this.viewData.findChildNode('id', viewId, 'View')[0];
             if (viewNode) {
                 this.searchGrid.viewUpdated(viewNode);
             }
         }
     },
-    viewRemoved : function(response, containsErrors, view) {
+    viewRemoved : function(response, containsErrors, viewId) {
         if (!containsErrors) {
             this._getViewData(response);
-            this.searchGrid.viewRemoved(view);
+            this.searchGrid.viewRemoved(viewId);
         }
     },
     _getViewData: function(response, containsErrors) {
         if (!containsErrors) {
-            var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, ['name']);
+            var data = new YAHOO.rapidjs.data.RapidXmlDocument(response, ['name', 'id']);
             var rootNode = data.getRootNode('Views');
             if (rootNode) {
                 this.viewData = rootNode;
@@ -225,10 +232,10 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         this.disableAll();
         this.columnsConfig = {};
     },
-    show: function(currentView) {
+    show: function(currentViewId) {
         this.clear();
-        if (currentView) {
-            this.currentNode = this.viewData.findChildNode('name', currentView, 'View')[0];
+        if (currentViewId) {
+            this.currentNode = this.viewData.findChildNode('id', currentViewId, 'View')[0];
         }
         else {
             this.currentNode = null;
@@ -261,12 +268,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
     },
     populateFieldsForAdd: function() {
         var viewInput = this.searchGrid.viewInput;
-        var currentView = viewInput.options[viewInput.selectedIndex].value;
-        if (currentView == 'default') {
+        var currentViewId = viewInput.options[viewInput.selectedIndex].value;
+        if (currentViewId == 'default') {
             this.populteFieldsFromDefaultView();
         }
         else {
-            var node = this.viewData.findChildNode('name', currentView, 'View')[0];
+            var node = this.viewData.findChildNode('id', currentViewId, 'View')[0];
             this.populateFieldsForUpdate(node);
             this.nameInput.readOnly = false;
             this.nameInput.value = '';
@@ -299,7 +306,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ViewBuilder, YAHOO.rapidjs.comp
         var viewName = node.getAttribute('name');
         var isPublic = node.getAttribute('isPublic');
         this.nameInput.value = viewName;
-        if (isPublic == "true") {
+        if (isPublic == "true" && this.publicViewCreationAllowed()) {
             this.isPublicInput.checked = true;
         }
         this.nameInput.readOnly = true;

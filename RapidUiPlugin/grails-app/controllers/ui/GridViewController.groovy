@@ -36,7 +36,7 @@ class GridViewController {
     def list = {
         def isAdmin = org.jsecurity.SecurityUtils.subject.hasRole(auth.Role.ADMINISTRATOR)
         def gridViewQuery = "username:${session.username.exactQuery()} OR (username:${auth.RsUser.RSADMIN.exactQuery()} AND isPublic:true)"
-        if(params.type){
+        if (params.type) {
             gridViewQuery = "type:${params.type.exactQuery()} AND (${gridViewQuery})";
         }
         def gridViews = GridView.searchEvery(gridViewQuery, params);
@@ -56,7 +56,7 @@ class GridViewController {
     }
 
     def delete = {
-        def isAdmin =  RsUser.hasRole(session.username, auth.Role.ADMINISTRATOR)
+        def isAdmin = RsUser.hasRole(session.username, auth.Role.ADMINISTRATOR)
         def gridView = GridView.get([id: params.id]);
         if (!isAdmin && gridView.isPublic) {
             addError("gridview.not.authorized", []);
@@ -77,36 +77,66 @@ class GridViewController {
         def isPublic = params.isPublic;
         params.username = isPublic == "true" ? auth.RsUser.RSADMIN : session.username;
         def isAdmin = RsUser.hasRole(session.username, auth.Role.ADMINISTRATOR)
-        def gridView = GridView.get(name: params.name, username: auth.RsUser.RSADMIN, type:params.type);
+        def gridView = GridView.get(name: params.name, username: auth.RsUser.RSADMIN, type: params.type);
         if (!isAdmin && ((gridView && gridView.isPublic) || isPublic == "true")) {
             addError("gridview.not.authorized", []);
             render(text: errorsToXml(errors), contentType: "text/xml")
             return;
         }
-        gridView = GridView.add([name: params.name, username: params.username, type:params.type, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic]);
+        gridView = GridView.add([name: params.name, username: params.username, type: params.type, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic]);
         if (!gridView.hasErrors()) {
-            gridView.gridColumns.each {
-                it.remove();
-            }
-            def columns = [:];
-            def columnString = params["columns"].trim();
-            if (columnString.length() > 0) {
-                def columnsList = columnString.split("::");
-                def columnIndex = 1;
-                columnsList.each {
-                    def props = it.split(";;");
-                    def attributeName = props[0]
-                    def header = props[1]
-                    def width = Long.parseLong(props[2]);
-                    GridColumn.add(gridView: gridView, gridViewId: gridView.id, attributeName: attributeName, header: header, width: width, columnIndex: columnIndex)
-                    columnIndex++;
-                }
-            }
+            addGridColumns(gridView, params)
             render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} created"), contentType: "text/xml")
 
         }
         else {
             render(text: errorsToXml(gridView.errors), contentType: "text/xml")
+        }
+    }
+
+    def update = {
+        def isPublic = params.isPublic;
+        params.username = isPublic == "true" ? auth.RsUser.RSADMIN : session.username;
+        def isAdmin = RsUser.hasRole(session.username, auth.Role.ADMINISTRATOR)
+        def gridView = GridView.get([id: params.id]);
+        if (!isAdmin && gridView.isPublic) {
+            addError("gridview.not.authorized", []);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+            return;
+        }
+        if (gridView) {
+            gridView.update(name: params.name, username: params.username, type: params.type, defaultSortColumn: params.defaultSortColumn, sortOrder: params.sortOrder, isPublic: params.isPublic);
+            if (!gridView.hasErrors()) {
+                addGridColumns(gridView, params)
+                render(text: com.ifountain.rcmdb.domain.util.ControllerUtils.convertSuccessToXml("GridView ${gridView.id} updated"), contentType: "text/xml")
+            }
+            else {
+                render(text: errorsToXml(gridView.errors), contentType: "text/xml")
+            }
+        }
+        else {
+            addError("default.object.not.found", [GridView.class.name, params.id ? params.id : params.name]);
+            render(text: errorsToXml(errors), contentType: "text/xml")
+        }
+    }
+
+    def addGridColumns(gridView, params) {
+        gridView.gridColumns.each {
+            it.remove();
+        }
+        def columns = [:];
+        def columnString = params["columns"].trim();
+        if (columnString.length() > 0) {
+            def columnsList = columnString.split("::");
+            def columnIndex = 1;
+            columnsList.each {
+                def props = it.split(";;");
+                def attributeName = props[0]
+                def header = props[1]
+                def width = Long.parseLong(props[2]);
+                GridColumn.add(gridView: gridView, gridViewId: gridView.id, attributeName: attributeName, header: header, width: width, columnIndex: columnIndex)
+                columnIndex++;
+            }
         }
     }
 

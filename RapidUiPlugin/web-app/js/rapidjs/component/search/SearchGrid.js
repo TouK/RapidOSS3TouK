@@ -455,59 +455,68 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         for (var index = 0; index < viewNodes.length; index++) {
             var viewNode = viewNodes[index];
             var viewName = viewNode.getAttribute('name');
-            SelectUtils.addOption(this.viewInput, viewName, viewName);
+            var viewId = viewNode.getAttribute('id');
+            SelectUtils.addOption(this.viewInput, viewName, viewId);
         }
         this.selectDefaultView();
         this.viewsLoaded = true;
     },
     selectDefaultView: function()
     {
-        var options = this.viewInput.options
-        YAHOO.rapidjs.SelectUtils.selectTheValue(this.viewInput, this.currentView, 0);
+        YAHOO.rapidjs.SelectUtils.selectTheText(this.viewInput, this.currentView, 0);
         this.viewChanged(null, null, null, false);
     },
     handleRemoveView: function() {
-        var currentView = this.viewInput.options[this.viewInput.selectedIndex].value;
+        var selectedOption = this.viewInput.options[this.viewInput.selectedIndex]
+        var currentView = selectedOption.text;
+        var currentViewId = selectedOption.value;
         if (confirm('Remove ' + currentView + '?')) {
-            this.viewBuilder.removeView(currentView);
+            this.viewBuilder.removeView(currentViewId);
         }
     },
     handleEditView: function() {
-        var view = this.viewInput.options[this.viewInput.selectedIndex].value;
-        this.viewBuilder.show(view);
+        var viewId = this.viewInput.options[this.viewInput.selectedIndex].value;
+        this.viewBuilder.show(viewId);
     },
     handleAddView: function() {
         this.viewBuilder.show();
     },
     viewAdded: function(viewNode) {
-        var view = viewNode.getAttribute('name');
+        var viewName = viewNode.getAttribute('name');
+        var viewId = viewNode.getAttribute('id');
         for (var i = 0; i < this.viewInput.options.length; i++)
         {
-            if (this.viewInput.options[i].value.toLowerCase() == view.toLowerCase())
+            if (this.viewInput.options[i].value == viewId)
             {
                 this.viewInput.remove(i);
             }
         }
-        SelectUtils.addOption(this.viewInput, view, view);
-        SelectUtils.selectTheValue(this.viewInput, view, 0);
+        SelectUtils.addOption(this.viewInput, viewName, viewId);
+        SelectUtils.selectTheValue(this.viewInput, viewId, 0);
         this.viewChanged();
     },
     viewUpdated: function(viewNode) {
-        var view = viewNode.getAttribute('name');
-        SelectUtils.selectTheValue(this.viewInput, view, 0);
+        var viewId = viewNode.getAttribute('id');
+        SelectUtils.selectTheValue(this.viewInput, viewId, 0);
         this.viewChanged();
     },
-    viewRemoved : function(view) {
-        SelectUtils.remove(this.viewInput, view);
+    viewRemoved : function(viewId) {
+        SelectUtils.remove(this.viewInput, viewId);
         this.viewChanged();
     },
     handleViewChange: function(e) {
         this.viewChanged();
     },
     viewChanged: function(newQuery, willSaveHistory, extraSearchParams, willPoll) {
-        var view = this.viewInput.options[this.viewInput.selectedIndex].value;
-        var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
-        if (view == 'default' || (viewNode && viewNode.getAttribute("updateAllowed") == "false")) {
+        var viewId = this.viewInput.options[this.viewInput.selectedIndex].value;
+        var viewNode;
+        if(viewId != 'default'){
+           var viewNodes = this.viewBuilder.viewData.findChildNode('id', viewId, 'View');
+           if(viewNodes.length > 0){
+               viewNode = viewNodes[0]
+           }
+        }
+        if (viewId == 'default' || (viewNode && viewNode.getAttribute("updateAllowed") == "false")) {
             this.updateViewButton.disable();
             this.removeViewButton.disable();
         }
@@ -515,7 +524,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
             this.updateViewButton.enable();
             this.removeViewButton.enable();
         }
-        this.activateView(view, newQuery, willSaveHistory, extraSearchParams, willPoll);
+        this.activateView({id:viewId}, newQuery, willSaveHistory, extraSearchParams, willPoll);
     },
     _clearBackgroundImages:function() {
         for (var i = 0; i < this.columns.length; i++) {
@@ -533,10 +542,17 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     activateView : function(view, newQuery, willSaveHistory, extraSearchParams, willPoll) {
         this.showMask();
         this._clearBackgroundImages();
-        var viewNode = this.viewBuilder.viewData.findChildNode('name', view, 'View')[0];
+        var viewNode;
+        if(typeof view == "object"){
+            viewNode = this.viewBuilder.viewData.findChildNode('id', view.id, 'View')[0];
+        }
+        else{
+            var viewNodes =  this.viewBuilder.viewData.findChildNode('name', view, 'View');
+            viewNode = viewNodes[viewNodes.length -1]; 
+        }
         var columns;
         if (viewNode) {
-            this.currentView = view;
+            this.currentView = viewNode.getAttribute("name");
             columns = this.getColumnConfigFromViewNode(viewNode);
         }
         else {
@@ -669,12 +685,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
         if (title) {
             this.setTitle(title);
         }
-        var currentView = this.viewsLoaded ? this.viewInput.options[this.viewInput.selectedIndex].value : 'default';
+        var currentView = this.viewsLoaded ? this.viewInput.options[this.viewInput.selectedIndex].text : 'default';
         if (this.searchClassesLoaded) {
             SelectUtils.selectTheValue(this.classesInput, searchIn, 0);
         }
         if (currentView != view && this.viewsLoaded) {
-            SelectUtils.selectTheValue(this.viewInput, view, 0);
+            SelectUtils.selectTheText(this.viewInput, view, 0);
             this.viewChanged(queryString, true, extraParams);
         }
         else {

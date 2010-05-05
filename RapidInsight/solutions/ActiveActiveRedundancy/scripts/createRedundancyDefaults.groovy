@@ -33,6 +33,7 @@ scriptsToAdd.add([name:"updatedObjects", logFileOwn:true]);
 scriptsToAdd.add([name:"synchronizeUpdatedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 scriptsToAdd.add([name:"synchronizeDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,startDelay:15,logFileOwn:true]);
 scriptsToAdd.add([name:"clearExpiredDeletedObjects", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:3600*12,logFileOwn:true]);
+scriptsToAdd.add([name:"synchronizeAllObjects", logFileOwn:true]);
 
 //master switching scripts
 scriptsToAdd.add([name:"enableLocalMaster", logFileOwn:true]);

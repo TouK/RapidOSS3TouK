@@ -39,7 +39,7 @@ class UploadFileActionTest extends RapidCmdbTestCase {
         conn = new HttpConnectionImpl();
         Map otherParams = [:];
         otherParams.put(HttpConnectionImpl.BASE_URL, baseUrl);
-        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam("ds", HttpConnectionImpl.class.getName(), otherParams);
         conn.init(param);
         httpUtilsMock = new HttpUtilsMock();
         conn.setHttpConnection(httpUtilsMock);

@@ -209,7 +209,7 @@ public class PoolableConnectionFactoryTest extends RapidCoreTestCase
     {
         Map optionalParams = new CaseInsensitiveMap();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
+        ConnectionParam param = new ConnectionParam(connectionName, MockConnectionImpl.class.getName(), optionalParams);
         return param;
     }
 }

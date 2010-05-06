@@ -47,7 +47,7 @@ class SendEmailActionTest extends RapidCoreTestCase{
         Map fromUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(fromUserId)
         Map toUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(toUserId)
         Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams(fromUserId, serverId);
-        def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+        def conParams=new ConnectionParam("dummy","dummy",params);
         conParams.setMinTimeout (20000)
         conParams.setMaxTimeout(100000)
 

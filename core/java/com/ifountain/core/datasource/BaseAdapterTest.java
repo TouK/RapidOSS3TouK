@@ -163,7 +163,7 @@ public class BaseAdapterTest extends RapidCoreTestCase
         MockConnectionImpl.isConnectionException = false;
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
+        ConnectionParam param = new ConnectionParam(connectionName, MockConnectionImpl.class.getName(), optionalParams);
         return param;
     }
 }

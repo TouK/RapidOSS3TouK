@@ -280,7 +280,7 @@ public class BaseAdapterConnectionTest extends RapidCoreTestCase
     {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        param = new ConnectionParam("Database", connName, connClass.getName(), optionalParams);
+        param = new ConnectionParam(connName, connClass.getName(), optionalParams);
         connectionParameterSupplier.setParam(param);
     }
 }

@@ -25,7 +25,7 @@ class ConnectionTestUtils {
         otherParams.put(JabberConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_PASSWORD))
         otherParams.put(JabberConnectionImpl.SERVICENAME, CommonTestUtils.getTestProperty(ConnectionTestConstants.JABBER_SERVICENAME))
 
-        ConnectionParam param = new ConnectionParam("JabberConnection", ConnectionTestConstants.JABBER_TEST_CONNECTION, JabberConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.JABBER_TEST_CONNECTION, JabberConnectionImpl.class.getName(), otherParams);
         param.setMinTimeout(30000);
         param.setMaxTimeout(30000);
         return param;
@@ -37,7 +37,7 @@ class ConnectionTestUtils {
         otherParams.put(SametimeConnectionImpl.USERNAME, CommonTestUtils.getTestProperty(ConnectionTestConstants.SAMETIME_USERNAME))
         otherParams.put(SametimeConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.SAMETIME_PASSWORD))
         otherParams.put(SametimeConnectionImpl.COMMUNITY, CommonTestUtils.getTestProperty(ConnectionTestConstants.SAMETIME_COMMUNITY))
-        ConnectionParam param = new ConnectionParam("SametimeConnection", ConnectionTestConstants.SAMETIME_TEST_CONNECTION, SametimeConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.SAMETIME_TEST_CONNECTION, SametimeConnectionImpl.class.getName(), otherParams);
         param.setMinTimeout(30000);
         param.setMaxTimeout(30000);
         return param;
@@ -50,7 +50,7 @@ class ConnectionTestUtils {
         otherParams.put(SmsConnectionImpl.USERNAME, CommonTestUtils.getTestProperty(ConnectionTestConstants.SMS_USERNAME))
         otherParams.put(SmsConnectionImpl.PASSWORD, CommonTestUtils.getTestProperty(ConnectionTestConstants.SMS_PASSWORD))
 
-        ConnectionParam param = new ConnectionParam("SmsConnection", ConnectionTestConstants.SAMETIME_TEST_CONNECTION, SmsConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.SAMETIME_TEST_CONNECTION, SmsConnectionImpl.class.getName(), otherParams);
         param.setMinTimeout(30000);
         param.setMaxTimeout(30000);
         return param;
@@ -64,7 +64,7 @@ class ConnectionTestUtils {
         otherParams.put(AolConnectionImpl.USERNAME, aolUser.getUsername())
         otherParams.put(AolConnectionImpl.PASSWORD, aolUser.getPassword())
 
-        ConnectionParam param = new ConnectionParam("AolConnection", ConnectionTestConstants.AOL_TEST_CONNECTION, AolConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.AOL_TEST_CONNECTION, AolConnectionImpl.class.getName(), otherParams);
         param.setMinTimeout(30000);
         param.setMaxTimeout(30000);
         return param;
@@ -75,7 +75,7 @@ class ConnectionTestUtils {
 //        otherParams.put(ElasticSearchConnectionImpl.HOST, CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_HOST))
 //        otherParams.put(ElasticSearchConnectionImpl.PORT, Long.parseLong(CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_PORT)))
 //        otherParams.put(ElasticSearchConnectionImpl.CLUSTER, CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_CLUSTER))
-//        ConnectionParam param = new ConnectionParam("EsConnection", ConnectionTestConstants.ES_TEST_CONNECTION, ElasticSearchConnectionImpl.class.getName(), otherParams);
+//        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.ES_TEST_CONNECTION, ElasticSearchConnectionImpl.class.getName(), otherParams);
 //        param.setMinTimeout(30000);
 //        param.setMaxTimeout(30000);
 //        return param;

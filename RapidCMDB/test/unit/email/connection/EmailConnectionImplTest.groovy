@@ -52,7 +52,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
      public void testConnectAndDisconnect()
      {
         Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
-         def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+         def conParams=new ConnectionParam("dummy","dummy",params);
          conParams.setMinTimeout (44000);
 
          EmailConnectionImpl con=new EmailConnectionImpl()
@@ -71,7 +71,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
          assertFalse(con.checkConnection());
          assertFalse(con.isConnected());
 
-         conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+         conParams=new ConnectionParam("dummy","dummy",params);
          conParams.setMinTimeout (44000);
 
          con=new EmailConnectionImpl()
@@ -86,7 +86,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
         Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
         params.Password="xxxxxxxxxxx55555555yyyyyyyyyyyyyyyy"
 
-        def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+        def conParams=new ConnectionParam("dummy","dummy",params);
         conParams.setMinTimeout (30000);
         def con=new EmailConnectionImpl()
         con.init(conParams)
@@ -111,7 +111,7 @@ class EmailConnectionImplTest extends RapidCoreTestCase{
         Map params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
         params.SmtpPort="66"
 
-        def conParams=new ConnectionParam("EmailConnection","dummy","dummy",params);
+        def conParams=new ConnectionParam("dummy","dummy",params);
 
         def con=new EmailConnectionImpl()
         con.init(conParams)

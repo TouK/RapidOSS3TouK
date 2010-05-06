@@ -545,7 +545,7 @@ public class BaseListeningAdapterTest extends RapidCoreTestCase {
     private ConnectionParam createConnectionParam(String connectionName) {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, MockConnectionImpl.class.getName(), optionalParams);
+        ConnectionParam param = new ConnectionParam(connectionName, MockConnectionImpl.class.getName(), optionalParams);
         param.setMaxNumberOfConnectionsInPool(3);
         return param;
     }

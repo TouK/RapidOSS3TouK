@@ -24,7 +24,6 @@ package com.ifountain.core.datasource;
 
 import com.ifountain.comp.test.util.threads.TestAction;
 import com.ifountain.comp.test.util.threads.TestActionExecutorThread;
-import com.ifountain.comp.test.util.logging.TestLogUtils;
 import com.ifountain.core.connection.ConnectionManager;
 import com.ifountain.core.connection.ConnectionParam;
 import com.ifountain.core.connection.IConnection;
@@ -313,7 +312,7 @@ public class BaseListeningAdapterConnectionTest extends RapidCoreTestCase {
     {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        param = new ConnectionParam("Database", connName, connClass.getName(), optionalParams);
+        param = new ConnectionParam(connName, connClass.getName(), optionalParams);
         connectionParameterSupplier.setParam(param);
     }
 }

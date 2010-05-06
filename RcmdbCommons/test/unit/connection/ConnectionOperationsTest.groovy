@@ -41,7 +41,7 @@ class ConnectionOperationsTest extends RapidCmdbTestCase{
     {
         def supplier = new MockConnectionParameterSupplierImpl();
         ConnectionManager.initialize(TestLogUtils.log, supplier, this.class.classLoader, 1000);
-        ConnectionParam param = new ConnectionParam("Mock", "con1", MockConnectionImpl.class.name, [:]);
+        ConnectionParam param = new ConnectionParam("con1", MockConnectionImpl.class.name, [:]);
         supplier.setParam (param);
         CompassForTests.addOperationSupport (Connection, ConnectionOperations);
         Connection conn = new Connection(name:"con1", connectionClass:MockConnectionImpl.class.name);

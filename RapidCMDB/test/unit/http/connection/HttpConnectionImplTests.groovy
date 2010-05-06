@@ -31,7 +31,7 @@ public class HttpConnectionImplTests extends RapidCoreTestCase {
     	HttpConnectionImpl conn = new HttpConnectionImpl();
         Map otherParams = [:];
         otherParams.put(HttpConnectionImpl.BASE_URL, "http://localhost:9999/");
-        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam("ds", HttpConnectionImpl.class.getName(), otherParams);
         try {
             conn.init(param);
         } catch (Throwable e) {
@@ -54,7 +54,7 @@ public class HttpConnectionImplTests extends RapidCoreTestCase {
         HttpConnectionImpl conn = new HttpConnectionImpl();
         Map otherParams = [:];
         otherParams.put(HttpConnectionImpl.BASE_URL, "http://www.google.com");
-        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams);
+        ConnectionParam param = new ConnectionParam("ds", HttpConnectionImpl.class.getName(), otherParams);
         conn.init (param);
 
 

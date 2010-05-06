@@ -326,7 +326,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         final Object checkConnWaitLock = new Object();
         try{
             MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
-            ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+            ConnectionParam connParam = new ConnectionParam("con1" , MockConnection.class.getName(), new HashMap());
             connParam.setMinTimeout(100);
             connParam.setMaxTimeout(250);
             supp.setParam(connParam);
@@ -374,7 +374,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
         final Object checkConnWaitLock = new Object();
         try{
             MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
-            ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+            ConnectionParam connParam = new ConnectionParam("con1" , MockConnection.class.getName(), new HashMap());
             connParam.setMinTimeout(0);
             connParam.setMaxTimeout(0);
             connParam.setConnectionCheckerTimeout(2000);
@@ -421,7 +421,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     public void testTimeoutMechanism() throws Exception
     {
         MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
-        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        ConnectionParam connParam = new ConnectionParam("con1" , MockConnection.class.getName(), new HashMap());
         connParam.setMinTimeout(0);
         connParam.setMaxTimeout(1000000000);
         supp.setParam(connParam);
@@ -445,7 +445,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     public void testIfShouldRecalculateIsFalseTimeoutWillNotChange() throws Exception
     {
         MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
-        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        ConnectionParam connParam = new ConnectionParam("con1" , MockConnection.class.getName(), new HashMap());
         connParam.setMinTimeout(0);
         connParam.setMaxTimeout(1000000000);
         supp.setParam(connParam);
@@ -467,7 +467,7 @@ public class ConncectionPoolTest extends RapidCoreTestCase
     public void testIfObjectIsNotValidPoolWillNotUseThatObjectToCheckConnectionStatus() throws Exception
     {
         MockConnectionParameterSupplierImpl supp = new MockConnectionParameterSupplierImpl();
-        ConnectionParam connParam = new ConnectionParam("Mock", "con1" , MockConnection.class.getName(), new HashMap());
+        ConnectionParam connParam = new ConnectionParam("con1" , MockConnection.class.getName(), new HashMap());
         connParam.setMinTimeout(0);
         connParam.setMaxTimeout(1000000000);
         supp.setParam(connParam);

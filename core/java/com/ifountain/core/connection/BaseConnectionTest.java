@@ -51,7 +51,7 @@ public class BaseConnectionTest extends RapidCoreTestCase {
             }
         };
         assertFalse(conn.isConnected());
-        ConnectionParam param = new ConnectionParam("type", "name", "class", new HashMap());
+        ConnectionParam param = new ConnectionParam("name", "class", new HashMap());
         conn.init(param);
         conn._connect();
         assertTrue(conn.isConnected());
@@ -81,7 +81,7 @@ public class BaseConnectionTest extends RapidCoreTestCase {
             }
         };
         assertFalse(conn.isConnected());
-        ConnectionParam param = new ConnectionParam("type", "name", "class", new HashMap(), 10, 1000, 9000);
+        ConnectionParam param = new ConnectionParam("name", "class", new HashMap(), 10, 1000, 9000);
         conn.init(param);
         assertEquals(param.getMinTimeout(), conn.getTimeout());
         //timeout less than max 

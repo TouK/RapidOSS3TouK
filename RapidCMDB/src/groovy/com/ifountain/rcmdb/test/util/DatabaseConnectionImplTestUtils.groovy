@@ -55,7 +55,7 @@ public class DatabaseConnectionImplTestUtils {
         otherParams.put(DatabaseConnectionImpl.USERNAME, connectionParams.getUsername());
         otherParams.put(DatabaseConnectionImpl.PASSWORD, connectionParams.getPassword());
 
-        ConnectionParam connectionParam=new ConnectionParam("Database", DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
+        ConnectionParam connectionParam=new ConnectionParam(DATABASE_CONN_NAME, DatabaseConnectionImpl.class.getName(), otherParams);
 
         if(type==DatabaseTestConstants.MYSQL)
             connectionParam.setMinTimeout(20000);

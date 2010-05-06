@@ -21,12 +21,10 @@
  */
 package com.ifountain.core.connection;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ConnectionParam
 {
-    private String connectionType;
     private String connectionName;
     private String connectionClass;
     private int maxNumberOfConnectionsInPool;
@@ -35,20 +33,19 @@ public class ConnectionParam
     private long connectionCheckerTimeout = 3600000l;
     private Map<String, Object> otherParams;
     
-    public ConnectionParam(String type, String name, String connClass,
-            Map<String, Object> otherParams)
+    public ConnectionParam(String name, String connClass,
+                           Map<String, Object> otherParams)
     {
-        this(type, name, connClass, otherParams, 1, 1000, 6000);
+        this(name, connClass, otherParams, 1, 1000, 6000);
     }
-    public ConnectionParam(String datasourceType, String datasourceName, String datasourceClass,
-            Map<String, Object> otherParams, int maxNumberOfDatasourceInPool, int minTimeout, int maxTimeout)
+    public ConnectionParam(String connectionName, String connectionClass,
+                           Map<String, Object> otherParams, int maxNumberOfDatasourceInPool, int minTimeout, int maxTimeout)
     {
         this.minTimeout = minTimeout;
         this.maxTimeout = maxTimeout;
         this.maxNumberOfConnectionsInPool = maxNumberOfDatasourceInPool;
-        this.connectionName = datasourceName;
-        this.connectionType = datasourceType;
-        this.connectionClass = datasourceClass;
+        this.connectionName = connectionName;
+        this.connectionClass = connectionClass;
         this.otherParams = otherParams;
     }
 
@@ -85,14 +82,6 @@ public class ConnectionParam
         this.connectionName = name;
     }    
     
-    public String getConnectionType()
-    {
-        return connectionType;
-    }
-    public void setConnectionType(String type)
-    {
-        this.connectionType = type;
-    }
     public String getConnectionClass()
     {
         return connectionClass;
@@ -116,7 +105,7 @@ public class ConnectionParam
         try{
             Map newOtherParams = otherParams.getClass().newInstance();
             newOtherParams.putAll(otherParams);
-            return new ConnectionParam(connectionType, connectionName, connectionClass, newOtherParams, maxNumberOfConnectionsInPool, minTimeout, maxTimeout);
+            return new ConnectionParam(connectionName, connectionClass, newOtherParams, maxNumberOfConnectionsInPool, minTimeout, maxTimeout);
         }
         catch(IllegalAccessException ex)
         {
@@ -131,7 +120,6 @@ public class ConnectionParam
     @Override
     public String toString() {
         return "ConnectionParam{" +
-                "connectionType='" + connectionType + '\'' +
                 ", connectionName='" + connectionName + '\'' +
                 ", connectionClass='" + connectionClass + '\'' +
                 ", maxNumberOfConnectionsInPool=" + maxNumberOfConnectionsInPool +
@@ -148,7 +136,7 @@ public class ConnectionParam
         {
             ConnectionParam other = (ConnectionParam) obj;
             return other.getConnectionName().equals(getConnectionName()) && other.getConnectionClass().equals(getConnectionClass())
-            && other.getConnectionType().equals(getConnectionType()) && other.getOtherParams().equals(getOtherParams());
+            && other.getOtherParams().equals(getOtherParams());
         }
         return super.equals(obj);
     }

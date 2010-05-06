@@ -711,7 +711,7 @@ public class ConnectionManagerTest extends RapidCoreTestCase
     {
         Map<String, Object> optionalParams = new HashMap<String, Object>();
         optionalParams.put("OptParam1", "optvalue1");
-        ConnectionParam param = new ConnectionParam("Database", connectionName, className, optionalParams, 1, 1000, 100000000);
+        ConnectionParam param = new ConnectionParam(connectionName, className, optionalParams, 1, 1000, 100000000);
         return param;
     }
 

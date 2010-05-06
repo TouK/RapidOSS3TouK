@@ -137,7 +137,7 @@ runGrailsTests() {
 #    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/groovy-starter-for-unit-tests.conf  $WORKSPACE/Distribution/RapidServer/conf/groovy-starter.conf
 
 #    cd $WORKSPACE/Distribution/RapidServer/Modeler/
-#    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+#    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/Test.properties .
 #    chmod +x *.sh
 #    rm -rf $WORKSPACE/Distribution/RapidServer/temp
 #    ./rsmodeler.sh -testUnit
@@ -166,7 +166,7 @@ runGrailsTests() {
 #    cd ../RapidSuite
 
     cd $WORKSPACE/Distribution/RapidServer/RapidSuite
-    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+    cp $WORKSPACE/RapidModules/RapidCMDB/devDocs/Test.properties .
     chmod +x rs.sh
 
     sed -i "s/-Xmx1024m/-Xmx2048m/g" rs.sh

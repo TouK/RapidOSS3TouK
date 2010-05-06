@@ -71,7 +71,7 @@ class RapidInsightUiTestBuild extends Build {
                 startRIWindows();
 
             def testClassPaths = ["${env.distribution}/uiTestClasses/testUtils"]
-             ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/RCMDBTest.properties",
+             ant.copy(file: "${env.rapid_cmdb_cvs}/devDocs/Test.properties",
                  todir: "${env.rapid_modules}");
             runTest("${env.distribution}/uiTestClasses/tests", testClassPaths, "${env.rapid_modules}/../TestResults")
         }

@@ -5,6 +5,7 @@ import com.thoughtworks.selenium.DefaultSelenium
 import com.thoughtworks.selenium.SeleneseTestCase
 import com.thoughtworks.selenium.Selenium
 import org.codehaus.groovy.runtime.InvokerHelper
+import com.ifountain.core.test.util.RapidCoreTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -18,7 +19,7 @@ class SeleniumTestCase extends SeleneseTestCase {
     public static DefaultSelenium selenium;
     private static boolean start = true;
     static{
-        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        CommonTestUtils.initializeFromFile(RapidCoreTestCase.TEST_PROPERTIES_FILE);
         registerDynamicMethodsToSelenium();
     }
 
@@ -92,7 +93,7 @@ class SeleniumTestCase extends SeleneseTestCase {
 
     void setUp(String url, String browser) throws Exception {
 
-        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        CommonTestUtils.initializeFromFile(RapidCoreTestCase.TEST_PROPERTIES_FILE);
         if (start) {
             start = false;
             suiteSetUp(url, browser);

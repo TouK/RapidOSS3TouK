@@ -113,7 +113,7 @@ rm -rf data
 #################### running grails tests #####################
 ######################################################
 
-cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+cp ../../../RapidModules/RapidCMDB/devDocs/Test.properties .
 ./rsmodeler.sh -test
 rm -r test/reports/TESTS-TestSuites.xml
 if [ ! -d ../../../TestResults/Modeler ]
@@ -125,7 +125,7 @@ mv test/reports/*.xml ../../../TestResults/Modeler
 
 
 cd ../RapidSuite
-cp ../../../RapidModules/RapidCMDB/devDocs/RCMDBTest.properties .
+cp ../../../RapidModules/RapidCMDB/devDocs/Test.properties .
 chmod +x rs.sh
 ./rs.sh -test
 rm -r test/reports/TESTS-TestSuites.xml

@@ -11,6 +11,7 @@ import com.ifountain.comp.test.util.CommonTestUtils
 import connection.EmailConnectionImpl
 import org.apache.log4j.Level
 import script.CmdbScript
+import com.ifountain.core.test.util.RapidCoreTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -332,7 +333,7 @@ class NotificationConnectorControllerIntegrationTests  extends RapidCmdbIntegrat
 
     private def addConnectorForTestConnection()
     {
-        CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+        CommonTestUtils.initializeFromFile(RapidCoreTestCase.TEST_PROPERTIES_FILE);
         def params = EmailConnectionImplTestUtils.getSmtpConnectionParams("User1");
 
         def connectorSaveParams = [name: "testConnector", smtpHost: params[EmailConnectionImpl.SMTPHOST], smtpPort: params[EmailConnectionImpl.SMTPPORT],

@@ -20,6 +20,7 @@ package com.ifountain.rcmdb.test.util
 
 import com.ifountain.comp.test.util.testcase.RapidTestCase
 import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.core.test.util.RapidCoreTestCase
 
 /**
 * Created by IntelliJ IDEA.
@@ -35,7 +36,7 @@ public class RapidCmdbTestCase extends RapidTestCase{
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
-            CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+            CommonTestUtils.initializeFromFile(RapidCoreTestCase.TEST_PROPERTIES_FILE);
             Locale.setDefault(Locale.ENGLISH);
         }
         defaultBaseDir = System.getProperty("base.dir", ".");       

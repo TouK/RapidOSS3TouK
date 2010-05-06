@@ -162,7 +162,7 @@ if (!new File("${rootDir.getCanonicalPath()}/RapidSuite/plugins/rapid-testing-0.
         ANT.fileset(dir: "${rootDir.getAbsolutePath()}/RapidSuite/plugins/rapid-testing-0.1/web-app/test");
     }
 
-    ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/RCMDBTest.properties", toDir : "${rootDir.getAbsolutePath()}/RapidSuite/");
+    ANT.copy(file : "${workspaceDir}/RapidModules/RapidCMDB/devDocs/Test.properties", toDir : "${rootDir.getAbsolutePath()}/RapidSuite/");
 
 }
 

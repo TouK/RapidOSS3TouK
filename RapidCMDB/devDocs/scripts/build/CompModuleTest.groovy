@@ -38,7 +38,7 @@ class CompModuleTest extends Test{
 		setClasspathForTestExecution();
 		ant.delete(dir : env.comp_testreport);
 		ant.delete(dir : env.comp_testhtml);
-	    ant.copy(file : "$env.dev_docs/RCMDBTest.properties", toDir : env.rapid_modules);
+	    ant.copy(file : "$env.dev_docs/Test.properties", toDir : env.rapid_modules);
 	}
 
 	def setClasspathForTestExecution(){

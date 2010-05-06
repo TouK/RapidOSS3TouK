@@ -32,6 +32,7 @@ import com.ifountain.core.connection.ConnectionManager;
 public class RapidCoreTestCase extends RapidTestCase
 {
     private static boolean isSetupCompleted = false;
+    public static String TEST_PROPERTIES_FILE = "Test.properties";
     
     /**
      * 
@@ -42,7 +43,7 @@ public class RapidCoreTestCase extends RapidTestCase
         if(!isSetupCompleted)
         {
             isSetupCompleted = true;
-            CommonTestUtils.initializeFromFile("RCMDBTest.properties");
+            CommonTestUtils.initializeFromFile(TEST_PROPERTIES_FILE);
             Locale.setDefault(Locale.ENGLISH);
         }
     }

@@ -177,6 +177,71 @@ class LdapConnectionTest extends RapidCoreTestCase{
 
     }
 
+    //For this test following entries should exist , test will add user as member to a group , and then remove by not touching other members
+    // CN=Administrators,CN=Builtin,DC=molkay,DC=selfip,DC=net
+    // CN=berkay,CN=Users,DC=molkay,DC=selfip,DC=net
+    public void testUpdateEntry_AddAttribute_RemoveAttribute()
+    {
+        Map params = LdapConnectionTestUtils.getConnectionParams();
+        Map queryparams = LdapConnectionTestUtils.getQueryParams();
+
+        LdapConnectionOperationsMock oper = new LdapConnectionOperationsMock(params);
+        oper.connect();
+        assertTrue (oper.isConnected());
+
+
+
+        def nodeDn="CN=Administrators,CN=Builtin,${queryparams.searchBase}".toString();
+        def newMemberUserName="berkay";
+        def newMemberUserDn="CN=${newMemberUserName},CN=Users,${queryparams.searchBase}".toString();
+        //test add
+
+        def nodeEntry=oper.getEntry(nodeDn);
+        def oldMembers=nodeEntry.member;
+        println oldMembers;
+        def berkayEntry=oldMembers.find{ it.indexOf(newMemberUserName)>0 };
+        if(berkayEntry != null )
+        {
+            oper.updateEntryRemoveAttributes(nodeDn,[member:[newMemberUserDn]]);
+        }
+
+        nodeEntry=oper.getEntry(nodeDn);
+        oldMembers=nodeEntry.member;
+        println oldMembers;
+        assertNull ("Berkay user should not be in administrators,delete it from administrators manually",oldMembers.find{ it.indexOf("berkay")>0 });
+
+
+        //test updateEntryAddAtrribute
+        //only add berkay to member , previous member entries will remain
+
+        def updateProps=[:];
+        updateProps.member=[newMemberUserDn];
+        oper.updateEntryAddAttributes(nodeDn,updateProps);
+
+        def updatedEntry=oper.getEntry(nodeDn);
+        def newMembersAfterAdd=updatedEntry.member;
+        println newMembersAfterAdd;
+        assertEquals(oldMembers.size()+1,newMembersAfterAdd.size());
+        assertNotNull (newMembersAfterAdd.find{ it.indexOf(newMemberUserName)>0 });
+        oldMembers.each{ oldMamber ->
+            assertNotNull (newMembersAfterAdd.find{ it == oldMamber });
+        }
+
+        //test updateEntryRemoveAttribute
+        //only remove berkay from member , other member entries will remain
+        oper.updateEntryRemoveAttributes(nodeDn,updateProps);
+
+        updatedEntry=oper.getEntry(nodeDn);
+        def newMembersAfterRemove=updatedEntry.member;
+        println newMembersAfterRemove;
+        assertEquals(oldMembers.size(),newMembersAfterRemove.size());
+        assertNull (newMembersAfterRemove.find{ it.indexOf(newMemberUserName)>0 });
+        oldMembers.each{ oldMamber ->
+            assertNotNull (newMembersAfterRemove.find{ it == oldMamber });
+        }
+
+    }
+
     public void testQuery()
     {
         Map params = LdapConnectionTestUtils.getConnectionParams();

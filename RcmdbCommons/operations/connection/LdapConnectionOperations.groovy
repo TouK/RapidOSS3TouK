@@ -162,6 +162,18 @@ class LdapConnectionOperations extends ConnectionOperations
         def attributes=convertPropsToAttributes(props);
         context.modifyAttributes(dn,DirContext.REPLACE_ATTRIBUTE,attributes);
     }
+    public void updateEntryAddAttributes(String dn,props)
+    {
+        _throwExceptionIfNotConnected();
+        def attributes=convertPropsToAttributes(props);
+        context.modifyAttributes(dn,DirContext.ADD_ATTRIBUTE,attributes);
+    }
+     public void updateEntryRemoveAttributes(String dn,props)
+    {
+        _throwExceptionIfNotConnected();
+        def attributes=convertPropsToAttributes(props);
+        context.modifyAttributes(dn,DirContext.REMOVE_ATTRIBUTE,attributes);
+    }
     public void removeEntry(String dn)
     {
         _throwExceptionIfNotConnected();

@@ -37,8 +37,4 @@ class ConnectionTestConstants {
     public static final String AOL_USERNAME = "AolUsername"
     public static final String AOL_PASSWORD = "AolPassword"
 
-    public static final String ES_TEST_CONNECTION = "EsConn"
-    public static final String ES_HOST = "EsHost"
-    public static final String ES_PORT = "EsPort"
-    public static final String ES_CLUSTER = "EsCluster"
 }

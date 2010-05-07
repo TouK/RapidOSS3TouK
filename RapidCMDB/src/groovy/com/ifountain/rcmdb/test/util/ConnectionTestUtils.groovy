@@ -70,17 +70,6 @@ class ConnectionTestUtils {
         return param;
     }
 
-//    public static ConnectionParam getESConnectionParam() {
-//        Map otherParams = new HashMap();
-//        otherParams.put(ElasticSearchConnectionImpl.HOST, CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_HOST))
-//        otherParams.put(ElasticSearchConnectionImpl.PORT, Long.parseLong(CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_PORT)))
-//        otherParams.put(ElasticSearchConnectionImpl.CLUSTER, CommonTestUtils.getTestProperty(ConnectionTestConstants.ES_CLUSTER))
-//        ConnectionParam param = new ConnectionParam(ConnectionTestConstants.ES_TEST_CONNECTION, ElasticSearchConnectionImpl.class.getName(), otherParams);
-//        param.setMinTimeout(30000);
-//        param.setMaxTimeout(30000);
-//        return param;
-//    }
-
     public static AolUser getAolUser()
     {
     	lastAolUser++;

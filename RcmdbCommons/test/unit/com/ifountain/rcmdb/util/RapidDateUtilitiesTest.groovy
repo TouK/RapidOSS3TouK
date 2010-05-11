@@ -62,5 +62,18 @@ class RapidDateUtilitiesTest extends RapidCmdbTestCase{
         catch(IllegalArgumentException ex)
         {
         }
+
+        //try to format 24 hours with 12 hour format should throw exception
+        //first try valid format
+        println Date.toDate("04-May-2010 15:08:06 GMT", "dd-MMM-yyyy HH:mm:ss z");          
+        try{
+            println Date.toDate("04-May-2010 15:08:06 GMT", "dd-MMM-yyyy h:mm:ss z");
+            fail("Should throw exception");
+        }
+        catch(java.text.ParseException ex)
+        {
+        }
+
+
     }
 }

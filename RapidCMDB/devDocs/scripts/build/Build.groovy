@@ -395,7 +395,7 @@ class Build extends Parent {
                 ant.include(name: "test/*")
             }
         }
-        ant.copy(todir: "$env.dist_rapid_suite", file: "${env.dev_docs}/RCMDBTest.properties", overwrite: "true")
+        ant.copy(todir: "$env.dist_rapid_suite", file: "${env.dev_docs}/Test.properties", overwrite: "true")
     }
 
 }

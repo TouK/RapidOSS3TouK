@@ -228,7 +228,7 @@ class GroupTest extends RapidCmdbWithCompassTestCase {
 
     }
 
-    def testAddUpdateRemoveGroupHandlesConfigurationSpaceInTriggers()
+    public void testAddUpdateRemoveGroupHandlesConfigurationSpaceInTriggers()
     {
         def user1 = RsUser.add(username: "user1", passwordHash: "abc");
 

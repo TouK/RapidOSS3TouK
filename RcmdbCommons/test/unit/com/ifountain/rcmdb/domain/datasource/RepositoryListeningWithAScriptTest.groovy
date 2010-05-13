@@ -130,7 +130,7 @@ class RepositoryListeningWithAScriptTest extends RapidCmdbWithCompassTestCase {
     {
         def connectionName = "repoConn"
 
-        DatasourceTestUtils.getParamSupplier().setParam(new ConnectionParam("RepositoryConnection", connectionName, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0));
+        DatasourceTestUtils.getParamSupplier().setParam(new ConnectionParam(connectionName, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0));
 
 
         def conn = RepositoryConnection.add(name: RepositoryConnection.RCMDB_REPOSITORY);

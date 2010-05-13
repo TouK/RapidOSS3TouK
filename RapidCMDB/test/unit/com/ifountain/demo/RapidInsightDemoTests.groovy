@@ -74,7 +74,8 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
     {
         println '--------------------------------------------------------'
         println "requesting url ${url} with params ${params}"
-        DoRequestAction action=new DoRequestAction(logger,url,params,DoRequestAction.GET);
+        String requestBody="";
+        DoRequestAction action=new DoRequestAction(logger,url,params,DoRequestAction.GET,requestBody);
         action.execute (con);
         return action.getResponse();
     }
@@ -84,7 +85,7 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
         Map otherParams = [:];
         otherParams.put(HttpConnectionImpl.BASE_URL, BASE_URL);
 
-        ConnectionParam param = new ConnectionParam("http", "ds", HttpConnectionImpl.class.getName(), otherParams,10,MIN_TIMEOUT,MAX_TIMEOUT);
+        ConnectionParam param = new ConnectionParam("ds", HttpConnectionImpl.class.getName(), otherParams,10,MIN_TIMEOUT,MAX_TIMEOUT);
         con.init(param);
         con.connect();
         return con;

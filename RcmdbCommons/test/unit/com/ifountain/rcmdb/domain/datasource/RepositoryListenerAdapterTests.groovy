@@ -228,7 +228,7 @@ class RepositoryListenerAdapterTests extends RapidCmdbMockTestCase {
 
 
     private ConnectionParam getConnectionParam() {
-        return new ConnectionParam("RepositoryConnection", REPOSITORY_TEST_CONNECTION_NAME, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0);
+        return new ConnectionParam(REPOSITORY_TEST_CONNECTION_NAME, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0);
     }
 
 }

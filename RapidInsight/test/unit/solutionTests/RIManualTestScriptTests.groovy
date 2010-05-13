@@ -229,7 +229,7 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     private ConnectionParam getConnectionParam(connectionName) {
-        return new ConnectionParam("RepositoryConnection", connectionName, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0);
+        return new ConnectionParam(connectionName, RepositoryConnectionImpl.class.getName(), [:], 10, 1000, 0);
     }
 
     public void testCriticalPercentTest()

@@ -74,7 +74,7 @@ class RapidInsightDemoTests extends RapidCoreTestCase {
     {
         println '--------------------------------------------------------'
         println "requesting url ${url} with params ${params}"
-        String requestBody="";
+        String requestBody=null;
         DoRequestAction action=new DoRequestAction(logger,url,params,DoRequestAction.GET,requestBody);
         action.execute (con);
         return action.getResponse();

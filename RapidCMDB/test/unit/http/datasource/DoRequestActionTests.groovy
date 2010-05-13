@@ -38,12 +38,12 @@ public class DoRequestActionTests extends GroovyTestCase {
         conn.init(param);
         HttpUtilsMock httpUtilsMock = new HttpUtilsMock(); 
         conn.setHttpConnection(httpUtilsMock);
-        DoRequestAction action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.GET);
+        DoRequestAction action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.GET, null);
         action.execute(conn);
         assertEquals("<GetRequest></GetRequest>", action.getResponse());
         httpUtilsMock.willThrowException = true;
         conn.setHttpConnection(httpUtilsMock);
-        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.GET);
+        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.GET, null);
         try {
             action.execute(conn);
             fail("should throw exception");
@@ -51,12 +51,12 @@ public class DoRequestActionTests extends GroovyTestCase {
         }
         httpUtilsMock = new HttpUtilsMock();
         conn.setHttpConnection(httpUtilsMock);
-        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.POST);
+        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.POST, null);
         action.execute(conn);
         assertEquals("<PostRequest></PostRequest>", action.getResponse());
         httpUtilsMock.willThrowException = true;
         conn.setHttpConnection(httpUtilsMock);
-        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.POST);
+        action = new DoRequestAction(TestLogUtils.log, "/Datasource/list", [:], DoRequestAction.POST, null);
         try {
             action.execute(conn);
             fail("should throw exception");

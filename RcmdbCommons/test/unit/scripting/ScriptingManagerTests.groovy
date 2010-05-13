@@ -53,6 +53,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
     }
 
     protected void tearDown() {
+        clearMetaClasses();
         super.tearDown();
         TestDatastore.clear();
         manager.destroyInstance();

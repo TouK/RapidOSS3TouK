@@ -55,6 +55,7 @@ class ScriptStateManagerTests extends RapidCmdbTestCase {
     }
 
     protected void tearDown() {
+        clearMetaClasses();
         super.tearDown();
         TestDatastore.clear();
         scriptManager.destroyInstance();

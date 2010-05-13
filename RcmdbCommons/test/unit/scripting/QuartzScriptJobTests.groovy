@@ -28,6 +28,7 @@ class QuartzScriptJobTests extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() {
+        clearMetaClasses();
         super.tearDown();
     }
     

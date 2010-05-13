@@ -23,6 +23,7 @@ class EmailDatasourceOperationsTest extends RapidCmdbWithCompassTestCase{
     }
 
     public void tearDown() throws Exception {
+        clearMetaClasses();
         super.tearDown();
     }
     public void clearMetaClasses()

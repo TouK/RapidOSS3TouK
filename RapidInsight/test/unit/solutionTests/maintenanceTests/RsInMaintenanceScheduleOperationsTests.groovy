@@ -41,6 +41,8 @@ class RsInMaintenanceScheduleOperationsTests extends RapidCmdbWithCompassTestCas
         def solutionPath = getWorkspacePath() + "/RapidModules/RapidInsight/solutions/inMaintenance"
         setProperty("RsInMaintenanceScheduleOperations", gcl.parseClass(new File("${solutionPath}/operations/RsInMaintenanceScheduleOperations.groovy")));
         setProperty("RsInMaintenanceOperations", gcl.parseClass(new File("${solutionPath}/operations/RsInMaintenanceOperations.groovy")));
+        clearMetaClasses();
+        
         CompassForTests.addOperationSupport(RsInMaintenanceSchedule, RsInMaintenanceScheduleOperations)
         CompassForTests.addOperationSupport(RsInMaintenance, RsInMaintenanceOperations)
         CompassForTests.addOperationSupport(RsEvent, RsEventOperations)

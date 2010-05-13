@@ -19,6 +19,7 @@ class EmailAdapterTest extends RapidCoreTestCase{
     }
 
     protected void tearDown() throws Exception {
+        clearMetaClasses();
         super.tearDown();
     }
      public void clearMetaClasses()

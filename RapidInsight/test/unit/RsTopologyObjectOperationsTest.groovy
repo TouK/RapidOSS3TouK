@@ -22,6 +22,7 @@ class RsTopologyObjectOperationsTest extends RapidCmdbWithCompassTestCase {
     }
 
     public void tearDown() {
+        clearMetaClasses();
        super.tearDown();       
     }
     public void clearMetaClasses()

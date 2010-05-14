@@ -89,7 +89,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
                     try {
                         dir.deleteFile(name);
                     } catch (IOException e) {
-                        logAsyncErrorMessage("delete [" + name + "]");
+                        logAsyncErrorMessage("delete [" + name + "]", e);
                     }
                 }
             });
@@ -127,7 +127,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
                     try {
                         dir.renameFile(from, to);
                     } catch (IOException e) {
-                        logAsyncErrorMessage("rename from[" + from + "] to[" + to + "]");
+                        logAsyncErrorMessage("rename from[" + from + "] to[" + to + "]", e);
                     }
                 }
             });
@@ -143,7 +143,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
                     try {
                         dir.touchFile(name);
                     } catch (IOException e) {
-                        logAsyncErrorMessage("touch [" + name + "]");
+                        logAsyncErrorMessage("touch [" + name + "]", e);
                     }
                 }
             });
@@ -188,7 +188,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
                     logAsyncErrorMessage("wait for async tasks to shutdown");
                 }
             } catch (InterruptedException e) {
-                logAsyncErrorMessage("wait for async tasks to shutdown");
+                logAsyncErrorMessage("wait for async tasks to shutdown", e);
             }
         }
         dir.close();
@@ -215,6 +215,9 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
 
     private void logAsyncErrorMessage(String message) {
         log.error("Async wrapper for [" + dir + "] failed to " + message);
+    }
+     private void logAsyncErrorMessage(String message,Throwable e) {
+        log.error("Async wrapper for [" + dir + "] failed to " + message + ". Reason : "+e.getMessage(),e);
     }
 
     public class AsyncMemoryMirrorIndexOutput extends IndexOutput {
@@ -271,7 +274,7 @@ public class MemoryMirrorDirectoryWrapper extends Directory {
                             indexOutput.close();
 
                         } catch (IOException e) {
-                            logAsyncErrorMessage("write [" + name + "]");
+                            logAsyncErrorMessage("write [" + name + "]", e);
                         }
                         synchronized (byteProcessLock)
                         {

@@ -132,11 +132,17 @@ public class CompositeDirectoryWrapperProvider implements DirectoryWrapperProvid
                 log.info(subLogPrefix+"Creating  storageType "+storageType);
                 return new MemoryMirrorDirectoryWrapper(dir, awaitTermination, maxNumberOfUnProcessedBytes, minNumberOfUnProcessedBytes, doCreateExecutorService());
             }
+            else if(storageType.equalsIgnoreCase(FILE_DIR_TYPE))
+            {
+                log.info(subLogPrefix+"Creating  storageType "+storageType);
+                return dir;
+            }
             else
             {
                 log.warn(subLogPrefix+"StorageType is unknown using default- FILE_TYPE (given dir)");
                 return dir;
             }
+            
         } catch (IOException e) {
             throw new SearchEngineException("Failed to wrap directory [" + dir + "] with async memory wrapper", e);
         }

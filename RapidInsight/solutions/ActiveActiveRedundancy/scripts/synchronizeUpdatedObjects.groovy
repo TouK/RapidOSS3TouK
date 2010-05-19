@@ -184,7 +184,7 @@ def processRequest(ds,requestParams)
 	                }
 	                else
 	                {
-	                	logger.debug("object Local id: ${object.id} added successfuly.");
+	                	logger.debug("object Local id: ${object.id} added successfuly. Model ${modelName}, props ${props}");
                		}
                 }
         }

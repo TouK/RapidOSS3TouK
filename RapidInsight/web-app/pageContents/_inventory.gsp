@@ -7,26 +7,7 @@
         }
         return value;
      }
-    filterTree.addToolbarButton({
-        className:'r-filterTree-groupAdd',
-        scope:this,
-        tooltip: 'Add group',
-        click:function() {
-        	var queryGroupForm = YAHOO.rapidjs.Components['saveQueryGroupForm'];
-            queryGroupForm.popupWindow.show();
-            queryGroupForm.show(createURL('queryGroupForm.gsp', {mode:'create', type:'topology'}));
-
-        }
-    });
-    filterTree.addToolbarButton({
-        className:'r-filterTree-queryAdd',
-        scope:this,
-        tooltip: 'Add query',
-        click:function() {
-            var queryForm = YAHOO.rapidjs.Components['saveQueryForm'];
-            queryForm.popupWindow.show();
-            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'topology', searchComponentType:'list'}));
-        }
-    });
     filterTree.poll();
 </script>
+
+<rui:include template="pageContents/renderer/_renderQueryButtons.gsp" model="[componentName:'filterTree', queryType:'topology', searchComponentType:'list']"></rui:include>

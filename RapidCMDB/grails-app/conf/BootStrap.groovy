@@ -211,7 +211,15 @@ class BootStrap {
 
     def destroy = {
         log.warn(logPrefix+"Stopping Server");
-        
+
+        log.warn(logPrefix+"Running saveHistoricalEventCache script");        
+        try {
+                CmdbScript.runScript("saveHistoricalEventCache");
+        }
+        catch (e) {
+            log.warn(logPrefix+"Error running script saveHistoricalEventCache ${e.getMessage()}");
+        }
+
         log.warn(logPrefix+"Destroying ListeningAdapterManager");
         ListeningAdapterManager.destroyInstance();
         

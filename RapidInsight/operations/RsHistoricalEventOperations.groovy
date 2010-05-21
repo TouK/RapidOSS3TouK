@@ -59,25 +59,35 @@ public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.oper
         def tempHistoricalEvents = [];
         synchronized(RsHistoricalEvent){
             def historicalEvents = retrieveHistoricalEventCache();
-            getLogger().info("Will remove and save ${historicalEvents.size()} historical events in cache");
-            tempHistoricalEvents.addAll(historicalEvents);
-            clearHistoricalEventCache();
-            getLogger().info("Cleared HistoricalEventCache");
+            if(historicalEvents.size()>0)
+            {
+                getLogger().info("Will remove and save ${historicalEvents.size()} historical events in cache");
+                tempHistoricalEvents.addAll(historicalEvents);
+                clearHistoricalEventCache();
+                getLogger().info("Cleared HistoricalEventCache");
+            }
         }
-        getLogger().info("Will add ${tempHistoricalEvents.size()} historical events");
-        CollectionUtils.executeForEachBatch(tempHistoricalEvents, 100) {List archivedNotifications ->
-            application.RapidApplication.executeBatch{
-                archivedNotifications.each{props ->
-                    getLogger().debug("Adding historical event with props: ${props}")
-                    def histEvent = props.historicalEventModel.add(props);
-                    if(!histEvent.hasErrors()){
-                        getLogger().debug("Added historical event ${props.historicalEventModel} ${props.name}.");
-                    }
-                    else{
-                        getLogger().warn("Couldn't add historical event. Reason: ${histEvent.errors}")
+        if(tempHistoricalEvents.size()>0)
+        {
+            getLogger().info("Will add ${tempHistoricalEvents.size()} historical events");
+            CollectionUtils.executeForEachBatch(tempHistoricalEvents, 100) {List archivedNotifications ->
+                application.RapidApplication.executeBatch{
+                    archivedNotifications.each{props ->
+                        getLogger().debug("Adding historical event with props: ${props}")
+                        def histEvent = props.historicalEventModel.add(props);
+                        if(!histEvent.hasErrors()){
+                            getLogger().debug("Added historical event ${props.historicalEventModel} ${props.name}.");
+                        }
+                        else{
+                            getLogger().warn("Couldn't add historical event. Reason: ${histEvent.errors}")
+                        }
                     }
                 }
             }
+        }
+        else
+        {
+            getLogger().info("No historical event found in HistoricalEventCache");
         }
     }
 

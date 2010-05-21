@@ -25,6 +25,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
     def RsEvent;
     def RsHistoricalEvent;
     def RsEventOperations;
+    def RsHistoricalEventOperations;
     def RsEventJournal;
     def RsTemplate;
 
@@ -37,7 +38,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
 
 
         
-        ["RsEvent","RsHistoricalEvent","RsEventJournal","RsEventOperations","RsTemplate"].each{ className ->
+        ["RsEvent","RsHistoricalEvent","RsEventJournal","RsEventOperations","RsHistoricalEventOperations","RsTemplate"].each{ className ->
             setProperty(className,gcl.loadClass(className));
         }
         
@@ -46,6 +47,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsMessage,RapidApplication], []);
         CompassForTests.addOperationSupport (RsMessage,RsMessageOperations);
         CompassForTests.addOperationSupport (RsEvent,RsEventOperations);
+        CompassForTests.addOperationSupport (RsHistoricalEvent,RsHistoricalEventOperations);
         RapidApplicationTestUtils.initializeRapidApplicationOperations (RapidApplication);
         RapidApplicationTestUtils.clearProcessors();
         RapidApplication.getUtility("RsTemplate").metaClass.'static'.render={ String templatePath,params ->
@@ -286,6 +288,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         events.each{
             it.clear();
         }
+        RsHistoricalEvent.saveHistoricalEventCache();
 
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsHistoricalEvent.countHits("alias:*"),4)

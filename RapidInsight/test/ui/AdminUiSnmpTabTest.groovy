@@ -156,6 +156,7 @@ class AdminUiSnmpTabTest extends SeleniumTestCase {
         """
         selenium.executeScript(scriptContent);
         checkLookup(lookupName, 30000)
+        selenium.runScript("saveHistoricalEventCache");
         assertTrue(CommonUiTestUtils.search(selenium, "RsRiEvent", "alias:*").size() > 0)
         assertTrue(CommonUiTestUtils.search(selenium, "RsRiHistoricalEvent", "alias:*").size() > 0)
         assertTrue(CommonUiTestUtils.search(selenium, "RsEventJournal", "alias:*").size() > 0)

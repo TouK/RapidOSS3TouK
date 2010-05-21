@@ -56,6 +56,8 @@ assert(event != null)
 RsHeartBeat.recordHeartBeat(SMARTS)
 // Smarts is no longer down
 RsHeartBeat.processHeartBeats()
+RsHistoricalEvent.saveHistoricalEventCache();
+
 assert(RsEvent.count()==1)
 event = RsEvent.get(name:"${DB}_Down")
 assert(event != null)

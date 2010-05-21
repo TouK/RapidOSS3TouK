@@ -314,36 +314,6 @@ class RIManualTestScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
 
-    public void testRsEventOperations()
-    {
-        initialize([CmdbScript, RsEvent, RsRiEvent, RsHistoricalEvent, RsEventJournal, RsTopologyObject, RapidApplication], []);
-        CompassForTests.addOperationSupport(CmdbScript, CmdbScriptOperations);
-        CompassForTests.addOperationSupport(RsEvent, RsEventOperations);
-        CompassForTests.addOperationSupport(RsRiEvent, RsRiEventOperations);
-        CompassForTests.addOperationSupport(RsHistoricalEvent, RsHistoricalEventOperations);
-        CompassForTests.addOperationSupport(RsEventJournal, RsEventJournalOperations);
-        CompassForTests.addOperationSupport(RsTopologyObject, RsTopologyObjectOperations);
-        RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
-        RapidApplicationTestUtils.clearProcessors();
-
-
-
-        copyManualTestScript("operationTests", "rsEventOperationsTestScript");
-
-        def script = CmdbScript.addScript([name: "rsEventOperationsTestScript", scriptFile: "rsEventOperationsTestScript.groovy", type: CmdbScript.ONDEMAND], true)
-        println script.errors
-        assertFalse(script.hasErrors());
-
-        try {
-            def result = CmdbScript.runScript(script, [:]);
-        }
-        catch (e)
-        {
-            fail("Error in script. Reason ${e}");
-
-        }
-    }
-
     public void testHeartBeatTest()
     {
         def classMap = [:];

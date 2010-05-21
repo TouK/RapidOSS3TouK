@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.util.CollectionUtils
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -43,6 +44,58 @@ public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.oper
     {
         def notificationDuration = clearedAt - createdAt;
         return notificationDuration;
+    }
+    //only addToHistoricalEventCache & saveHistoricalEventCache are Thread safe
+    public static def addToHistoricalEventCache(historicalEventModel,props)
+    {
+        synchronized(RsHistoricalEvent){
+            props.historicalEventModel=historicalEventModel;
+            RsHistoricalEvent.retrieveHistoricalEventCache().add(props);
+        }
+    }
+    //only addToHistoricalEventCache & saveHistoricalEventCache are Thread safe
+    public static void saveHistoricalEventCache()
+    {
+        def tempHistoricalEvents = [];
+        synchronized(RsHistoricalEvent){
+            def historicalEvents = retrieveHistoricalEventCache();
+            getLogger().info("Will remove and save ${historicalEvents.size()} historical events in cache");
+            tempHistoricalEvents.addAll(historicalEvents);
+            clearHistoricalEventCache();
+            getLogger().info("Cleared HistoricalEventCache");
+        }
+        getLogger().info("Will add ${tempHistoricalEvents.size()} historical events");
+        CollectionUtils.executeForEachBatch(tempHistoricalEvents, 100) {List archivedNotifications ->
+            application.RapidApplication.executeBatch{
+                archivedNotifications.each{props ->
+                    getLogger().debug("Adding historical event with props: ${props}")
+                    def histEvent = props.historicalEventModel.add(props);
+                    if(!histEvent.hasErrors()){
+                        getLogger().info("Successfully added historical event ${props.historicalEventModel} ${props.name}.");
+                    }
+                    else{
+                        getLogger().warn("Couldn't add historical event. Reason: ${histEvent.errors}")
+                    }
+                }
+            }
+        }
+    }
+
+    //this method is not thread safe , only  addToHistoricalEventCache & saveHistoricalEventCache are Thread safe
+    public static def retrieveHistoricalEventCache()
+    {
+       def historicalEvents=com.ifountain.rcmdb.util.DataStore.get("HistoricalEventCache");
+       if(historicalEvents == null){
+            historicalEvents=clearHistoricalEventCache();
+        }
+       return historicalEvents;
+    }
+    //this method is not thread safe , only  addToHistoricalEventCache & saveHistoricalEventCache are Thread safe
+    public static def clearHistoricalEventCache()
+    {
+       def  historicalEvents=[];
+       com.ifountain.rcmdb.util.DataStore.put("HistoricalEventCache", historicalEvents);
+       return historicalEvents;
     }
 }
     

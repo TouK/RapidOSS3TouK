@@ -36,7 +36,6 @@ scriptsToAdd.add([name:"scriptTestRunner", logFileOwn:true])
 scriptsToAdd.add([name:"getTimeRangeButtonConfiguration", logFileOwn:true, enabledForAllGroups:true])
 scriptsToAdd.add([name:"getTimeRangeData", logFileOwn:true, enabledForAllGroups:true])
 scriptsToAdd.add([name:"acknowledge", enabledForAllGroups:true])
-scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 scriptsToAdd.add([name:"setOwnership", enabledForAllGroups:true])
 scriptsToAdd.add([name:"queryList", enabledForAllGroups:true])
 scriptsToAdd.add([name:"queryFormHelper", enabledForAllGroups:true])
@@ -64,7 +63,11 @@ scriptsToAdd.add([name:"expandMap", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapData", enabledForAllGroups:true])
 scriptsToAdd.add([name:"getMapNodeEvents", enabledForAllGroups:true])
 scriptsToAdd.add([name:"createDefaultQueries"])
+
+//event management scripts
+scriptsToAdd.add([name:"saveHistoricalEventCache", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true]);
 scriptsToAdd.add([name:"clearHistoricalEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.CRON,enabled:true,cronExpression:'0 0 0 * * ?',logFileOwn:true])
+scriptsToAdd.add([name:"clearExpiredEvents", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:60,logFileOwn:true])
 
 //instrumentation & ROSS management scripts
 scriptsToAdd.add([name:"createInstrumentationParameters"])

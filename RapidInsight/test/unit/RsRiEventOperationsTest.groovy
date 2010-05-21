@@ -18,6 +18,7 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
          initialize([RsEvent,RsHistoricalEvent,RsRiEvent,RsRiHistoricalEvent,RsEventJournal,RsTopologyObject,RapidApplication,RsComputerSystem], []);
          CompassForTests.addOperationSupport(RsRiEvent,RsRiEventOperations);
+         CompassForTests.addOperationSupport(RsHistoricalEvent,RsHistoricalEventOperations);
          RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
          RapidApplicationTestUtils.clearProcessors();
 
@@ -123,8 +124,6 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
     }
      public void testNotifyDoesNotSetCreatedAtAndChangedAtIfGiven()
      {
-
-
          def addProps=[name:"ev1",identifier:"ev1",severity:5,createdAt:Date.now()-60000];
          def addedEvent=RsRiEvent.notify(addProps)
          assertEquals(addedEvent.name,addProps.name);
@@ -163,12 +162,12 @@ class RsRiEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
      public void testHistoricalEventModel()
      {
-
-
          def event=RsRiEvent.add(name:"testev");
          assertFalse(event.hasErrors());
          assertEquals(1,RsRiEvent.count());
          event.clear();
+         RsHistoricalEvent.saveHistoricalEventCache();
+
          assertEquals(0,RsRiEvent.count());
          assertEquals(1,RsRiHistoricalEvent.countHits("activeId:${event.id}"));
      }

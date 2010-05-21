@@ -1,5 +1,6 @@
 import application.RapidApplication
 
+
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
 * noted in a separate copyright notice. All rights reserved.
@@ -54,14 +55,15 @@ public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.Abs
 		props.putAll (extraProperties)
 		def now=Date.now();
 		if(!props.clearedAt){
-            props.clearedAt = now    
+            props.clearedAt = now
         }
 		props.activeId = id;
 		if(createJournal)
         {
 		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date(now))
         }
-		def historicalEvent = domainObject.historicalEventModel().'add'(props)
+
+        RsHistoricalEvent.addToHistoricalEventCache(domainObject.historicalEventModel(),props);
 		remove()
 		
 	}

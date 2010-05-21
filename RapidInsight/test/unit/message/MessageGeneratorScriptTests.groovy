@@ -67,6 +67,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         rsEventJournalClass = gcl.loadClass("RsEventJournal")
         def rsEventOperationsClass = gcl.loadClass("RsEventOperations")
         def rsRiEventOperationsClass = gcl.loadClass("RsRiEventOperations")
+        def rsHistoricalEventOperationsClass = gcl.loadClass("RsHistoricalEventOperations")
         initialize([CmdbScript, RsUser, RsUserInformation, ChannelUserInformation, Role, Group, SearchQueryGroup, SearchQuery, RsMessageRule, RsMessage, RsMessageRuleCalendar,
                 rsEventClass, rsHistoricalEventClass, rsRiEventClass, rsRiHistoricalEventClass, rsLookupClass, rsEventJournalClass], [], true);
 
@@ -76,6 +77,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         CompassForTests.addOperationSupport(RsUser, RsUserOperations);
         CompassForTests.addOperationSupport(Group, GroupOperations);
         CompassForTests.addOperationSupport(rsEventClass, rsEventOperationsClass);
+        CompassForTests.addOperationSupport(rsHistoricalEventClass, rsHistoricalEventOperationsClass);
         CompassForTests.addOperationSupport(rsRiEventClass, rsRiEventOperationsClass);
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         UserConfigurationSpace.getInstance().initialize();
@@ -268,6 +270,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         newEvents.each {
             it.clear();
         }
+        rsHistoricalEventClass.saveHistoricalEventCache();
+
         assertEquals(rsHistoricalEventClass."countHits"("alias:*"), 4)
         CmdbScript.runScript(script, [:])
         assertEquals(RsMessage.countHits("alias:*"), 4)
@@ -338,6 +342,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         newRsRiEvents.each {event ->
             event.clear();
         };
+        rsHistoricalEventClass.saveHistoricalEventCache();
+
         assertEquals(rsHistoricalEventClass.countHits("alias:\"(RsHistoricalEvent)\""), 2)
         assertEquals(rsRiHistoricalEventClass.countHits("alias:*"), 2)
 
@@ -434,6 +440,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         newEvents.each {
             it.clear();
         }
+        rsHistoricalEventClass.saveHistoricalEventCache();
+
         assertEquals(rsHistoricalEventClass."countHits"("alias:*"), 8)
 
         CmdbScript.runScript(script, [:])
@@ -523,6 +531,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         newEvents.each {
             it.clear();
         }
+        rsHistoricalEventClass.saveHistoricalEventCache();
+
         assertEquals(rsHistoricalEventClass."countHits"("alias:*"), 4)
 
         CmdbScript.runScript(script, [:])
@@ -674,6 +684,8 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         newEvents.each {
             it.clear();
         }
+        rsHistoricalEventClass.saveHistoricalEventCache();
+
         assertEquals(rsHistoricalEventClass."countHits"("alias:*"), 1)
 
         CmdbScript.runScript(script, [:])

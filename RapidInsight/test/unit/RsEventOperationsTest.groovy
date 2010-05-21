@@ -2,6 +2,9 @@ import com.ifountain.rcmdb.test.util.RapidCmdbWithCompassTestCase
 import com.ifountain.rcmdb.test.util.CompassForTests
 import com.ifountain.rcmdb.test.util.RapidApplicationTestUtils
 import application.RapidApplication
+import com.ifountain.comp.utils.SmartWait
+import com.ifountain.rcmdb.util.ClosureWaitAction
+
 
 
 
@@ -16,19 +19,17 @@ import application.RapidApplication
 class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
      public void setUp() {
         super.setUp();
-
         initialize([RsEvent,RsHistoricalEvent,RsEventJournal,RsTopologyObject,RapidApplication], []);
          CompassForTests.addOperationSupport(RsEvent,RsEventOperations);
+         CompassForTests.addOperationSupport(RsHistoricalEvent,RsHistoricalEventOperations);
          RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
          RapidApplicationTestUtils.clearProcessors();
-
     }
 
     public void tearDown() {
-
         super.tearDown();
     }
-
+    
      public void testNotifyAddsRsEvent()
      {
          assertEquals(0,RsEvent.count());
@@ -50,6 +51,7 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
 
          assertFalse(addedEvent.asMap() == updatedEvent.asMap());
      }
+     
      public void testClear()
      {
          assertEquals(0,RsEvent.count());
@@ -65,11 +67,31 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          
          addedEvent.clear();
 
+         //test event in historical cache
+         assertEquals(0,RsEvent.count());
+         assertEquals(1,RsEventJournal.count());
+         assertEquals(0,RsHistoricalEvent.count());
+         assertEquals(1,RsHistoricalEvent.retrieveHistoricalEventCache().size());
+
+         def journal=RsEventJournal.list()[0];
+
+         def historicalEventInCache=RsHistoricalEvent.retrieveHistoricalEventCache()[0]
+         assertEquals(RsHistoricalEvent,historicalEventInCache.historicalEventModel);
+         assertEquals(eventId,historicalEventInCache.activeId);
+         assertEquals(journal.rsTime.getTime(),historicalEventInCache.clearedAt);
+
+         addProps.each{ propName , propVal ->
+            assertEquals(propVal,historicalEventInCache.get(propName));
+         }
+         
+         //save historical event to Repository and test object in Repository
+         RsHistoricalEvent.saveHistoricalEventCache();
+
          assertEquals(0,RsEvent.count());
          assertEquals(1,RsEventJournal.count());
          assertEquals(1,RsHistoricalEvent.count());
 
-         def journal=RsEventJournal.list()[0];
+
          assertEquals("cleared",journal.eventName);
          assertEquals(eventId,journal.eventId);
          checkTimeDiff (journal.rsTime.getTime());
@@ -91,6 +113,8 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          assertEquals(1,RsEvent.count());
          
          addedEvent.clear(false,[:]);
+         RsHistoricalEvent.saveHistoricalEventCache();
+
          assertEquals(0,RsEvent.count());
          assertEquals(0,RsEventJournal.count());
          assertEquals(1,RsHistoricalEvent.count());
@@ -106,6 +130,8 @@ class RsEventOperationsTest extends RapidCmdbWithCompassTestCase{
          def extraProperties=[elementName:"testel2",severity:2,owner:"testowner",count:3];
 
          addedEvent.clear(true,extraProperties);
+         RsHistoricalEvent.saveHistoricalEventCache();
+
          assertEquals(0,RsEvent.count());
          assertEquals(1,RsEventJournal.count());
          assertEquals(1,RsHistoricalEvent.count());

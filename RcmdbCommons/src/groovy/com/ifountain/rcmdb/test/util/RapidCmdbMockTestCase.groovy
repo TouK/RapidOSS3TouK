@@ -58,6 +58,7 @@ import org.apache.log4j.Logger
 import com.ifountain.rcmdb.domain.cache.IdCache
 import com.ifountain.rcmdb.domain.method.EventTriggeringUtils
 import com.ifountain.rcmdb.domain.ObjectProcessor
+import com.ifountain.rcmdb.util.DataStore
 
 /**
  * Created by IntelliJ IDEA.
@@ -229,6 +230,7 @@ public class RapidCmdbMockTestCase extends RapidCmdbTestCase{
         destroy();
         System.clearProperty("index.dir")
         TestDatastore.clear();
+        DataStore.clear();
         IdCache.clearCache();
         EventTriggeringUtils.destroy();
         ObjectProcessor.destroy();

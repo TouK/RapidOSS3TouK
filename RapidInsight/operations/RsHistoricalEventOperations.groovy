@@ -71,7 +71,7 @@ public class RsHistoricalEventOperations extends com.ifountain.rcmdb.domain.oper
                     getLogger().debug("Adding historical event with props: ${props}")
                     def histEvent = props.historicalEventModel.add(props);
                     if(!histEvent.hasErrors()){
-                        getLogger().info("Successfully added historical event ${props.historicalEventModel} ${props.name}.");
+                        getLogger().debug("Added historical event ${props.historicalEventModel} ${props.name}.");
                     }
                     else{
                         getLogger().warn("Couldn't add historical event. Reason: ${histEvent.errors}")

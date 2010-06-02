@@ -564,9 +564,8 @@ YAHOO.rapidjs.component.treegrid.TreeGridView.prototype = {
                 var subEvaluationResult = true;
                 if (subMenuItemConfig['visible'] != null)
                 {
-                    var data = dataNode.getAttributes();
-                    var label = subMenuItemConfig.label
-                    var subEvaluationResult = eval(subMenuItemConfig['visible']);
+                    var params = {data: dataNode.getAttributes(), label:subMenuItemConfig.label, dataNode:dataNode}
+                    subEvaluationResult = eval(subMenuItemConfig['visible']);
                 }
                 if (!subEvaluationResult)
                     submenuItem.element.style.display = "none";

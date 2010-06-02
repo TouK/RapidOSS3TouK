@@ -49,6 +49,7 @@ function callFunction(functionName, params)
 
 YAHOO.rapidjs.component.TopologyMap = function(container, config){
 	YAHOO.rapidjs.component.TopologyMap.superclass.constructor.call(this,container, config);
+    this.removeInvisibleToolbarMenuItems(config);
     this.addDefaultToolbarMenuItems(config);
     this.addDefaultNodeMenuItems(config);
     this.allNodeMenuIds = [];
@@ -384,6 +385,35 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         layoutMenu.subMenu.itemdata[layoutMenu.subMenu.itemdata.length] = {id:"circularLayout", text:"Circular Layout"};
         layoutMenu.subMenu.itemdata[layoutMenu.subMenu.itemdata.length] = {id:"customLayout", text:"Custom Layout"};
 
+    },
+    removeInvisibleToolbarMenuItems: function(config){
+        if(config.toolbarMenuItems == null) config.toolbarMenuItems = [];
+
+        for(var i=0; i < config.toolbarMenuItems.length; i++)
+        {
+            var menuConfig = config.toolbarMenuItems[i];
+            var subMenuItemsConfig=menuConfig.subMenu.itemdata;
+            var tempSubMenuItemsConfig=[];
+            for(var j=0; j < subMenuItemsConfig.length; j++)
+            {
+                var subMenuItemConfig=subMenuItemsConfig[j];
+                if (subMenuItemConfig['visible'] != null)
+                {
+                    var params = {id:subMenuItemConfig.id, text:subMenuItemConfig.text}
+                    var subEvaluationResult = eval(subMenuItemConfig['visible']);
+                    if(subEvaluationResult)
+                    {
+                       tempSubMenuItemsConfig[tempSubMenuItemsConfig.length]=subMenuItemConfig;
+                    }
+                }
+                else
+                {
+                    tempSubMenuItemsConfig[tempSubMenuItemsConfig.length]=subMenuItemConfig;
+                }
+            }
+
+            menuConfig.subMenu.itemdata=tempSubMenuItemsConfig;
+        }
     },
     getFlashObject: function(){
         return this.flexApplication.getFlexApp();

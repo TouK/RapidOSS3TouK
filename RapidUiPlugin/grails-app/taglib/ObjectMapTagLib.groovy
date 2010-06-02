@@ -232,6 +232,7 @@ class ObjectMapTagLib {
             def tMenuItems = toolbarMenu.MenuItem;
             def tMenuItemsArray = [];
             tMenuItems.each {tMenuItem ->
+                def visible = tMenuItem.@visible.toString().trim();
                 def action = tMenuItem.@action.toString().trim();
                 def id = tMenuItem.@id.toString();
                 if (action.length() > 0) {
@@ -249,6 +250,7 @@ class ObjectMapTagLib {
                 }
                 tMenuItemsArray.add("""{
                     id:'${id}',
+                    ${visible.length() > 0 ? "visible:\"${visible}\"," : ""}
                     text:'${tMenuItem.@label}'
                 }""")
             }

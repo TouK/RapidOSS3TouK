@@ -336,14 +336,14 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         def logger = Logger.getLogger("testlogger");
         logger.setLevel(logLevel);
 
-        def scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        def scriptObject = manager.getScriptObject(scriptName, bindings, logger);
         assertTrue ("Script obejcts should be wrapped to add execution context", scriptObject instanceof ScriptObjectWrapper);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER], logger);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), logLevel);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getName(), "testlogger");
 
         logger.setLevel(Level.INFO);
-        scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        scriptObject = manager.getScriptObject(scriptName, bindings, logger);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), Level.INFO);
 
     }
@@ -368,46 +368,24 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
         def bindings = [:];
         bindings[RapidCMDBConstants.LOGGER]=paramsLogger;
 
-        def scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        def scriptObject = manager.getScriptObject(scriptName, bindings, logger);
         assertTrue ("Script obejcts should be wrapped to add execution context", scriptObject instanceof ScriptObjectWrapper);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER], paramsLogger);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), paramsLoggerLevel);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getName(), "paramsTestLogger");
 
         paramsLogger.setLevel(Level.WARN);
-        scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
+        scriptObject = manager.getScriptObject(scriptName, bindings, logger);
         assertEquals(scriptObject[RapidCMDBConstants.LOGGER].getLevel(), Level.WARN);
     }
-    public void testGetScriptObjectCreatesBindingsAndOperationInstance()
-    {
-        def scriptName = "script1.groovy";
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("return logger");
-        manager.addScript(scriptName)
 
-        def bindings = ["x": "5", "y": 6];
-
-        def logger = Logger.getLogger("testlogger");
-
-        def scriptObject = manager.getScriptObject(scriptName, bindings, logger, null);
-        assertEquals(scriptObject.x, bindings.x);
-        assertEquals(scriptObject.y, bindings.y);
-        assertNull(scriptObject.operationInstance);
-
-        scriptObject = manager.getScriptObject(scriptName, bindings, logger, "scripting.TestScriptOperationClass");
-        assertEquals(scriptObject.x, bindings.x);
-        assertEquals(scriptObject.y, bindings.y);
-        assertNotNull(scriptObject.operationInstance)
-        assertEquals(scriptObject.operationInstance.class, TestScriptOperationClass);
-
-    }
     public void testGetScriptObjectThrowsScriptDoesnotExistsExceptionIfScriptNotAdded()
     {
         def scriptName = "script1.groovy";
         def bindings = [:]
         try
         {
-            manager.getScriptObject(scriptName, bindings, testLogger, null);
+            manager.getScriptObject(scriptName, bindings, testLogger);
             fail("Should throw exception");
         }
         catch (ScriptingException e)
@@ -415,30 +393,7 @@ class ScriptingManagerTests extends RapidCmdbTestCase {
             assertEquals(ScriptingException.scriptDoesnotExist("script1.groovy").getMessage(), e.getMessage());
         }
     }
-    public void testOperationClassInjectedToScript() {
-        def scriptName = "script1.groovy";
-        def scriptFile = new File("$base_directory/$ScriptManager.SCRIPT_DIRECTORY/$scriptName");
-        scriptFile.write("""
-           setProperty("input",[:])
-           input.fromScript="scriptHello";
-           injectedFunction();
-           injectedFunction2("injectedParamHello");
-           return input;
-        """);
-        manager.addScript(scriptName);
-        def result = manager.runScript(scriptName, [:], testLogger, "scripting.TestScriptOperationClass");
 
-        assertEquals(result.fromScript, "scriptHello");
-        assertEquals(result.fromInjectedFunction, "injectedHello");
-        assertEquals(result.fromInjectedFunctionParam, "injectedParamHello");
-
-        result = manager.runScript(scriptName, [:], testLogger, scripting.TestScriptOperationClass);
-
-        assertEquals(result.fromScript, "scriptHello");
-        assertEquals(result.fromInjectedFunction, "injectedHello");
-        assertEquals(result.fromInjectedFunctionParam, "injectedParamHello");
-
-    }
 
     public void testRunScript()
     {
@@ -461,11 +416,10 @@ return name""");
 
         clearMetaClasses();
         def managerParams = [:]
-        ScriptManager.metaClass.runScript = {scriptPath, bindings, scriptLogger, operationClass ->
+        ScriptManager.metaClass.runScript = {scriptPath, bindings, scriptLogger ->
             managerParams.scriptPath = scriptPath
             managerParams.bindings = bindings
             managerParams.scriptLogger = scriptLogger
-            managerParams.operationClass = operationClass;
             return "myrunscript";
         }
         initializeScriptManager();
@@ -477,7 +431,6 @@ return name""");
         assertEquals(managerParams.scriptPath, scriptName);
         assertEquals(managerParams.bindings, bindings);
         assertEquals(managerParams.scriptLogger, testLogger);
-        assertEquals(managerParams.operationClass, null);
 
     }
 

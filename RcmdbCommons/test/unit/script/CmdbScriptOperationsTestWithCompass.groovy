@@ -959,11 +959,10 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         initializeForCmdbScript();
 
         def managerParams = [:]
-        ScriptManager.metaClass.getScriptObject = {scriptPath, bindings, scriptLogger, operationClass ->
+        ScriptManager.metaClass.getScriptObject = {scriptPath, bindings, scriptLogger ->
             managerParams.scriptPath = scriptPath
             managerParams.bindings = bindings
             managerParams.scriptLogger = scriptLogger
-            managerParams.operationClass = operationClass;
 
         }
 
@@ -971,7 +970,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         ScriptManager.getInstance().addScript(simpleScriptFile);
 
-        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, operationClass: "testclass");
+        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
         assertFalse(script.hasErrors())
 
         def params = ["param1": "1", "param2": "a"]
@@ -983,7 +982,6 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         assertEquals(managerParams.scriptPath, script.scriptFile)
         assertEquals(managerParams.scriptLogger, CmdbScript.getScriptLogger(script))
-        assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
         assertEquals(managerParams.bindings.size(), oldParams.size() + 4)
@@ -1035,11 +1033,10 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         initializeForCmdbScript();
 
         def managerParams = [:]
-        ScriptManager.metaClass.runScript = {scriptPath, bindings, scriptLogger, operationClass ->
+        ScriptManager.metaClass.runScript = {scriptPath, bindings, scriptLogger ->
             managerParams.scriptPath = scriptPath
             managerParams.bindings = bindings
             managerParams.scriptLogger = scriptLogger
-            managerParams.operationClass = operationClass;
             return "myrunscript";
         }
 
@@ -1047,7 +1044,7 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
 
         ScriptManager.getInstance().addScript(simpleScriptFile);
 
-        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile, operationClass: "testclass");
+        def script = CmdbScript.add(name: "testscript", type: CmdbScript.ONDEMAND, scriptFile: simpleScriptFile);
         assertFalse(script.hasErrors())
 
         def params = ["param1": "1", "param2": "a"]
@@ -1059,7 +1056,6 @@ class CmdbScriptOperationsTestWithCompass extends RapidCmdbWithCompassTestCase {
         assertEquals(result, "myrunscript")
         assertEquals(managerParams.scriptPath, script.scriptFile)
         assertEquals(managerParams.scriptLogger, CmdbScript.getScriptLogger(script))
-        assertEquals(managerParams.operationClass, script.operationClass)
         assertEquals(managerParams.bindings.staticParam, script.staticParam)
         assertEquals(managerParams.bindings.staticParamMap, CmdbScript.getStaticParamMap(script))
         assertEquals(managerParams.bindings.size(), oldParams.size() + 4)

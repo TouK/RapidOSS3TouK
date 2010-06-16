@@ -145,28 +145,6 @@ public class ScriptManager {
             cls.metaClass.IS_STOPPED= { ->
                 return ScriptStateManager.getInstance().isScriptStopped(delegate);                
             }
-            
-            cls.metaClass.operationInstance=null;
-            cls.metaClass.methodMissing = {String name, args ->
-                  def oprInstance=delegate.getProperty("operationInstance");
-                  if(oprInstance!=null)
-                  {
-                    oprInstance.domainObject=delegate;
-                    try {
-                        return oprInstance.invokeMethod(name, args)
-                    }
-                    catch (MissingMethodException e) {
-                        if (e.getType().name != oprInstance.class.name || e.getMethod() != name)
-                        {
-                            throw e;
-                        }
-                    }
-                     
-                  }
-                  throw new MissingMethodException(name, delegate.metaClass.theClass, args);
-            }
-
-            
             return cls;
         }
         catch (Throwable t)
@@ -186,11 +164,7 @@ public class ScriptManager {
     }
     def runScript(scriptPath, bindings,scriptLogger) throws ScriptingException
     {
-        return runScript(scriptPath,bindings,scriptLogger,null);
-    }
-    def runScript(scriptPath, bindings,scriptLogger,operationClass) throws ScriptingException
-    {
-        def scriptObject = getScriptObject(scriptPath,bindings,scriptLogger,operationClass);        
+        def scriptObject = getScriptObject(scriptPath,bindings,scriptLogger);
         def scriptClass = getScript(scriptPath);
 
         try
@@ -215,7 +189,7 @@ public class ScriptManager {
 
     }
 
-    public def getScriptObject(scriptPath,bindings,scriptLogger,operationClass){
+    public def getScriptObject(scriptPath,bindings,scriptLogger){
 
         def scriptClass = getScript(scriptPath);
         if (scriptClass)
@@ -226,16 +200,6 @@ public class ScriptManager {
                 scriptObject.setProperty(propName, propValue);
             }
 
-
-            if(operationClass!=null && operationClass!="")
-            {
-                if(operationClass instanceof String)
-                {
-                    operationClass=this.classLoader.loadClass(operationClass);
-                }               
-                
-                scriptObject.setProperty ("operationInstance",operationClass.newInstance())
-            }
             return new ScriptObjectWrapper(scriptObject);
         }
         else

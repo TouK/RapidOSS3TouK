@@ -32,7 +32,7 @@ public class ScriptTestUtility
 		}
 		catch(MissingMethodException e)
         {
-            if(ex.getType().name != scriptObject.class.name || ex.getMethod()!="setUp")
+            if(e.getType().name != scriptObject.class.name || e.getMethod()!="setUp")
             {
                 res.exceptions.add(e);
                 logger.warn("${testName} Exception occured while executing setUp ${e}");

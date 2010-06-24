@@ -30,7 +30,7 @@ public class ScriptTestUtility
 		try{
 			scriptObject.setUp();
 		}
-		catch(MissingMethodException ex)
+		catch(MissingMethodException e)
         {
             if(ex.getType().name != scriptObject.class.name || ex.getMethod()!="setUp")
             {

@@ -101,6 +101,55 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         assertFalse(adapter.trapProcessorThread.isAlive());
     }
 
+    public void testCloseWithoutInterruptException() throws Exception {
+        final MockSnmpObserverImplWithoutInterruptException trapProcessor1 = new MockSnmpObserverImplWithoutInterruptException();
+
+        adapter.addObserver(trapProcessor1);
+        adapter.subscribe();
+        assertTrue(adapter.isSubscribed());
+        assertTrue(adapter.trapProcessorThread.isAlive());
+
+        Map trap = new HashMap();
+        trap.put("name", "myTrap");
+        adapter.addTrapToBuffer(trap);
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed());
+        assertFalse(adapter.trapProcessorThread.isAlive());
+
+        CommonTestUtils.waitFor(new WaitAction() {
+            public void check() throws Exception {
+                assertEquals(1, trapProcessor1.traps.size());
+                assertEquals("myTrap", ((Map) trapProcessor1.traps.get(0)).get("name"));
+            }
+        });
+        assertNotNull(trapProcessor1.lastException);
+        assertTrue(trapProcessor1.lastException instanceof InterruptedException);
+
+        //should do resubscribe
+        final MockSnmpObserverImpl trapProcessor2 = new MockSnmpObserverImpl();
+
+        adapter.addObserver(trapProcessor2);
+        adapter.subscribe();
+        assertTrue(adapter.isSubscribed());
+        assertTrue(adapter.trapProcessorThread.isAlive());
+
+        trap = new HashMap();
+        trap.put("name", "myTrap2");
+        adapter.addTrapToBuffer(trap);
+
+        CommonTestUtils.waitFor(new WaitAction() {
+            public void check() throws Exception {
+                assertEquals(1, trapProcessor2.traps.size());
+                assertEquals("myTrap2", ((Map) trapProcessor2.traps.get(0)).get("name"));
+            }
+        });
+
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed());
+        assertFalse(adapter.trapProcessorThread.isAlive());
+
+    }
+
     public void testAdapterSendsTrapsToAllSubscribers() throws Exception {
         final MockSnmpObserverImpl trapProcessor1 = new MockSnmpObserverImpl();
         final MockSnmpObserverImpl trapProcessor2 = new MockSnmpObserverImpl();
@@ -237,6 +286,23 @@ public class SnmpListeningAdapterTest extends RapidCoreTestCase {
         public List traps = new ArrayList();
 
         public void update(Observable o, Object trap) {
+            traps.add(trap);
+        }
+    }
+
+    class MockSnmpObserverImplWithoutInterruptException implements Observer {
+        public List traps = new ArrayList();
+        public Exception lastException=null;
+
+        public void update(Observable o, Object trap) {
+            try{
+              Thread.sleep(2000);
+            }
+            catch(InterruptedException e)
+            {
+                this.lastException=e;
+                System.out.println(e);
+            }
             traps.add(trap);
         }
     }

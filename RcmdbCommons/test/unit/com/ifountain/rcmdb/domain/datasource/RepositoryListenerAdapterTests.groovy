@@ -69,6 +69,52 @@ class RepositoryListenerAdapterTests extends RapidCmdbMockTestCase {
         assertEquals(0, ObjectProcessor.getInstance().countObservers());
     }
 
+    public void testUnsubscribeWithoutInterruptException() throws Exception {
+        MockRepositoryObserverImplWithoutInterruptException observer = new MockRepositoryObserverImplWithoutInterruptException();
+        
+        adapter.subscribe();
+        assertEquals(1, ObjectProcessor.getInstance().countObservers());
+        adapter.addObserver(observer);
+
+        Connection conn = new Connection();
+        Map changeEvent = [:]
+        Map updatedProps = [:]
+        changeEvent.put(ObjectProcessor.EVENT_NAME, EventTriggeringUtils.AFTER_UPDATE_EVENT)
+        changeEvent.put(ObjectProcessor.DOMAIN_OBJECT, conn)
+        changeEvent.put(ObjectProcessor.UPDATED_PROPERTIES, updatedProps)
+        adapter.update(null, changeEvent);
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed());
+        assertFalse(adapter.changeProcessorThread.isAlive());
+        assertEquals(0, ObjectProcessor.getInstance().countObservers());
+
+
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals(1, observer.receivedObjects.size());
+        }))
+        assertNotNull(observer.lastException);
+        assertTrue(observer.lastException instanceof InterruptedException);
+
+
+
+        //should do resubscribe
+        MockRepositoryObserverImpl observer2 = new MockRepositoryObserverImpl();
+        adapter.subscribe();
+        adapter.addObserver(observer2);
+        assertEquals(1, ObjectProcessor.getInstance().countObservers());
+
+        assertEquals(0, observer2.receivedObjects.size());
+        adapter.update(null, changeEvent)
+        CommonTestUtils.waitFor(new ClosureWaitAction({
+            assertEquals(1, observer2.receivedObjects.size());
+        }))
+
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed());
+        assertFalse(adapter.changeProcessorThread.isAlive());
+        assertEquals(0, ObjectProcessor.getInstance().countObservers());
+    }
+
     public void testUpdate() throws Exception {
         MockRepositoryObserverImpl observer = new MockRepositoryObserverImpl();
         adapter.subscribe();
@@ -237,6 +283,23 @@ class MockRepositoryObserverImpl implements Observer {
     public List receivedObjects = new ArrayList();
 
     public void update(Observable o, Object obj) {
+        receivedObjects.add(obj);
+    }
+}
+
+class MockRepositoryObserverImplWithoutInterruptException implements Observer {
+    public List receivedObjects = new ArrayList();
+    public lastException=null;
+
+    public void update(Observable o, Object obj) {
+        try{
+              Thread.sleep(1000);
+        }
+        catch(InterruptedException e)
+        {
+            this.lastException=e;
+            println e;
+        }
         receivedObjects.add(obj);
     }
 }

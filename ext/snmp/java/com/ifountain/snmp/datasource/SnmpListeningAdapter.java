@@ -49,6 +49,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     private Object trapWaitingLock = new Object();
     protected TrapProcessThread trapProcessorThread;
     private int numDispatcherThreads = 2;
+    protected boolean _running=true;
 
 
     public SnmpListeningAdapter(String connectionName, Logger logger) {
@@ -56,7 +57,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     }
 
     public void _subscribe() throws Exception {
-
+        _running=true;
         String host = ((SnmpConnectionImpl) getConnection()).getHost();
         Long port = ((SnmpConnectionImpl) getConnection()).getPort();
         logger.debug(getLogPrefix() + "Starting..");
@@ -97,6 +98,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
 
     public void _unsubscribe() {
         logger.debug(getLogPrefix() + "Closing snmp session");
+        _running=false;
         if (snmp != null) {
             try {
                 snmp.removeCommandResponder(this);
@@ -180,7 +182,7 @@ public class SnmpListeningAdapter extends BaseListeningAdapter implements Comman
     class TrapProcessThread extends Thread {
         public void run() {
             try {
-                while (true) {
+                while (_running) {
                     Map trap = null;
                     synchronized (trapWaitingLock) {
                         if (trapBuffer.isEmpty()) {

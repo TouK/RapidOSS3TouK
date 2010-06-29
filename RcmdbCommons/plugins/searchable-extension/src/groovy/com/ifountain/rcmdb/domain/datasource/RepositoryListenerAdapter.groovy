@@ -17,9 +17,11 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
     protected Object changeWaitingLock = new Object();
     protected ChangeProcessorThread changeProcessorThread;
     protected List changeQueue = Collections.synchronizedList(new ArrayList());
+    protected boolean _running=true;
     private Map subscriptionFilters;
     private Closure filterClosure;
     private Map subscribedClasses = [:]
+
 
     public RepositoryListenerAdapter(String connectionName, Logger logger, Map subsFilters, Closure fClosure) {
         super(connectionName, 0, logger);
@@ -94,10 +96,11 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
     }
     protected void _subscribe() {
         logger.debug(getLogPrefix() + "Subscribing.");
+        _running=true;
         createSubscriptionClassesMap();
         Closure runClosure = {
             try {
-                while (true) {
+                while (_running) {
                     Map changeObject = null;
                     synchronized (changeWaitingLock) {
                         if (changeQueue.isEmpty()) {
@@ -122,6 +125,7 @@ class RepositoryListenerAdapter extends BaseListeningAdapter {
 
     protected void _unsubscribe() {
         logger.debug(getLogPrefix() + "Unsubscribing");
+        _running=false;
         subscribedClasses.clear();
         if (changeProcessorThread != null) {
             if (changeProcessorThread.isAlive()) {

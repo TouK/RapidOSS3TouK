@@ -151,17 +151,21 @@ class SnmpUtilsOperations extends com.ifountain.rcmdb.domain.operation.AbstractD
         List results = new ArrayList();
         while (!rows.isEmpty()) {
             TableEvent event = (TableEvent) rows.removeFirst();
-            if (event.getStatus() != -1) {
-                for (int i = 0; i < event.getColumns().length; i++) {
-                    VariableBinding vb = event.getColumns()[i];
-                    Map vbMap = new HashMap();
-                    String vbOid = vb.getOid().toString();
-                    vbMap.put(RSnmpConstants.OID, vbOid);
-                    vbMap.put(RSnmpConstants.VARBIND_VALUE, vb.getVariable().toString());
-                    vbMap.put("Remainder", new OID(vbOid.substring(tableString.length() -1)).toString());
-                    results.add(vbMap);
+            if (event.getStatus() != -1 ) {
+                def eventColumns=event.getColumns();
+                if(eventColumns!=null) {
+                    for (int i = 0; i < eventColumns.length; i++) {
+                        VariableBinding vb = eventColumns[i];
+                        Map vbMap = new HashMap();
+                        String vbOid = vb.getOid().toString();
+                        vbMap.put(RSnmpConstants.OID, vbOid);
+                        vbMap.put(RSnmpConstants.VARBIND_VALUE, vb.getVariable().toString());
+                        vbMap.put("Remainder", new OID(vbOid.substring(tableString.length() -1)).toString());
+                        results.add(vbMap);
+                    }
                 }
-            } else {
+            }
+            else {
                 return new ArrayList();
             }
         }

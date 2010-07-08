@@ -4,7 +4,7 @@
 %>
 <rui:searchList id="${uiElement.name}" url="../${uiElement.url}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}" keyAttribute="${uiElement.keyAttribute}" bringAllProperties="${uiElement.bringAllProperties}" 
     lineSize="${uiElement.lineSize}" title="${uiElement.title}" queryParameter="${uiElement.queryParameter}" pollingInterval="${uiElement.pollingInterval}" defaultFields='\${[${defaultFieldsString}]}'
-    ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""} defaultQuery="${uiElement.defaultQuery}" extraPropertiesToRequest="${uiElement.extraPropertiesToRequest}" multipleFieldSorting="${uiElement.multipleFieldSorting}"
+    ${uiElement.showMax !=0?"showMax='"+uiElement.showMax+"'":""} defaultQuery="${uiElement.defaultQuery}" extraPropertiesToRequest="${uiElement.extraPropertiesToRequest}" multipleFieldSorting="${uiElement.multipleFieldSorting}"  maxRowsDisplayed="${uiElement.maxRowsDisplayed}"
     defaultSearchClass="${uiElement.defaultSearchClass}" ${uiElement.searchInEnabled?"searchClassesUrl='../"+uiElement.searchClassesUrl+"'":""} timeout="${uiElement.timeout}" searchInEnabled="${uiElement.searchInEnabled}"
     <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->

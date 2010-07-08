@@ -1,6 +1,6 @@
 <rui:searchGrid id="${uiElement.name}" url="../${uiElement.url}" queryParameter="${uiElement.queryParameter}" rootTag="${uiElement.rootTag}" contentPath="${uiElement.contentPath}" bringAllProperties="${uiElement.bringAllProperties}" 
         keyAttribute="${uiElement.keyAttribute}"  title="${uiElement.title}" pollingInterval="${uiElement.pollingInterval}" fieldsUrl="../${uiElement.fieldsUrl}" viewType="${uiElement.viewType}"
-        queryEnabled="${uiElement.queryEnabled}" searchInEnabled="${uiElement.searchInEnabled}" defaultQuery="${uiElement.defaultQuery}" timeout="${uiElement.timeout}" multipleFieldSorting="${uiElement.multipleFieldSorting}"
+        queryEnabled="${uiElement.queryEnabled}" searchInEnabled="${uiElement.searchInEnabled}" defaultQuery="${uiElement.defaultQuery}" timeout="${uiElement.timeout}" multipleFieldSorting="${uiElement.multipleFieldSorting}" maxRowsDisplayed="${uiElement.maxRowsDisplayed}"
         defaultSearchClass="${uiElement.defaultSearchClass}" defaultView="${uiElement.defaultView}" ${uiElement.queryEnabled && uiElement.searchInEnabled?"searchClassesUrl='../"+uiElement.searchClassesUrl+"'":""} extraPropertiesToRequest="${uiElement.extraPropertiesToRequest}"
     <%
     uiElement.getActionTrigers().each{eventName, actionTriggers->

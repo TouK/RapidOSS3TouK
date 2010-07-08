@@ -18,6 +18,7 @@ YAHOO.rapidjs.component.search.TimeSelectorSubComponent = function(searchList) {
     this.timeRangeSelector.events.fieldChanged.subscribe(this.fieldChanged, this, true)
     this.timeRangeSelector.events.buttonClicked.subscribe(this.buttonClicked, this, true)
     this.requester = new YAHOO.rapidjs.Requester(this.processSuccess, this.processFailure, this);
+    this.requester.timeout=searchList.timeout;
     this.buttonConfigRequester = new YAHOO.rapidjs.Requester(this.processButtonConfiguration, this.processFailure, this);
     this.selectedButtonQuery = null;
     this.lastSelectedButtonData = null;

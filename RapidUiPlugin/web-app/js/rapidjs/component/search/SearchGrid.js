@@ -464,7 +464,12 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.SearchGrid, YAHOO.rapidjs.compo
     selectDefaultView: function()
     {
         YAHOO.rapidjs.SelectUtils.selectTheText(this.viewInput, this.currentView, 0);
-        this.viewChanged(null, null, null, false);
+        var willPollForViewChange=false;
+        if(this.currentView != 'default')
+        {
+            willPollForViewChange=true;
+        }
+        this.viewChanged(null, null, null, willPollForViewChange);
     },
     handleRemoveView: function() {
         var selectedOption = this.viewInput.options[this.viewInput.selectedIndex]

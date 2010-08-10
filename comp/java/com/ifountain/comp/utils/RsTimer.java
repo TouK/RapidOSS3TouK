@@ -30,16 +30,18 @@ public class RsTimer {
     public RsTimer() {
         start();
     }
-    public void start(){
-        snapshot = System.currentTimeMillis();
+
+    public void start() {
+        snapshot = System.nanoTime();
     }
 
-    public long stop(){
-        long result = System.currentTimeMillis() - snapshot;
-        snapshot = System.currentTimeMillis();
+    public long stop() {
+        long result = getDuration();
+        snapshot = System.nanoTime();
         return result;
     }
-    public long getDuration(){
-        return System.currentTimeMillis() - snapshot;
+
+    public long getDuration() {
+        return Math.round((System.nanoTime() - snapshot) / 1000000);
     }
 }

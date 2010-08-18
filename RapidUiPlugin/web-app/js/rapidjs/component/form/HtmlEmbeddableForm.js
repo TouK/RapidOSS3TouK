@@ -17,7 +17,7 @@ YAHOO.rapidjs.component.HtmlEmbeddableForm = function(container, config, htmlCom
        }
     }
     YAHOO.rapidjs.component.HtmlEmbeddableForm.superclass.constructor.call(this, container,
-    {id:id,subscribeToHistoryChange:false})
+    {id:id,subscribeToHistoryChange:false,timeout:htmlComponent.timeout})
     this.htmlComp = htmlComponent;
     htmlComponent.events['bodyCleared'].subscribe(this.destroy, this, true);
     this.events['loadstatechanged'].subscribe(this.hideMask, this, true);

@@ -97,8 +97,7 @@ class RsUserController {
     }
 
 
-    def changeProfile = {
-        println "changeProfileParams: " + params
+    def changeProfile = {        
         def rsUser = RsUser.get(username: params.username)
         if (rsUser) {
             def oldUserProperties = null;

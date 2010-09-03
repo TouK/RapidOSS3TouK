@@ -21,6 +21,14 @@
             println "No RsMessageRuleCalendar exists with id ${params.calendarId}"
             return;
         }
+
+        def startingTimeMap=RsMessageRuleCalendar.getHourAndMinuteFromTime(rsMessageRuleCalendar.starting);
+        startingHour=startingTimeMap.hour;
+        startingMinute=startingTimeMap.minute;
+        def endingTimeMap=RsMessageRuleCalendar.getHourAndMinuteFromTime(rsMessageRuleCalendar.ending);
+        endingHour=endingTimeMap.hour;
+        endingMinute=endingTimeMap.minute;
+        
         actionUrl = "rsMessageRuleCalendar/update"
         if (rsMessageRuleCalendar.exceptions != "") exceptionDays = Arrays.asList(rsMessageRuleCalendar.exceptions.split(','))
         if (rsMessageRuleCalendar.days != "") days = Arrays.asList(rsMessageRuleCalendar.days.split(','))

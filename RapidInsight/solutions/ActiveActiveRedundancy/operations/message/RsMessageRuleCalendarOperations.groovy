@@ -84,4 +84,14 @@ class RsMessageRuleCalendarOperations extends AbstractDomainOperation {
         cal.set(Calendar.MINUTE, minute)
         return cal.getTime().getTime();
     }
+    public static Map getHourAndMinuteFromTime(long time){
+        def timeMap=[:];
+
+        Calendar cal=new GregorianCalendar();
+        cal.setTime(new Date(time));
+        timeMap.hour=cal.get(Calendar.HOUR_OF_DAY);
+        timeMap.minute=cal.get(Calendar.MINUTE);
+
+        return timeMap;
+    }
 }

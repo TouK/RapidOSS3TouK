@@ -1,0 +1,183 @@
+<Rsmodel>
+	<Models>
+		<Model Name="RsEvent" StorageType="FileAndMemory">
+			<Properties>
+				<Property Name="name" Type="string" IsKey="true"/>
+				<Property Name="owner" Type="string" />
+				<Property Name="acknowledged" Type="boolean" Default="false"/>
+				<Property Name="inMaintenance" Type="boolean" Default="false"/>
+				<Property Name="severity" Type="number" Default="0"/>
+				<Property Name="source" Type="string" />
+				<Property Name="createdAt" Type="number" />
+				<Property Name="changedAt" Type="number" />
+				<Property Name="clearedAt" Type="number" />
+				<Property Name="rsDatasource" Type="string"/>
+				<Property Name="willExpireAt" Type="number" />
+				<Property Name="state" Type="number" />
+				<Property Name="elementName" Type="string"/>
+				<Property Name="elementDisplayName" Type="string"/>
+				<Property Name="count" Type="number" Default="1" />
+                <Property Name="serviceName" Type="string" />
+            </Properties>
+		</Model>
+		<Model Name="RsRiEvent" Parent="RsEvent" StorageType="FileAndMemory">
+			<Properties>
+				<Property Name="description" Type="string"/>
+				<Property Name="identifier" Type="string"/>
+			</Properties>
+		</Model>
+		<Model Name="RsEventJournal">
+			<Properties>
+				<Property Name='eventId' Type='number' />
+				<Property Name='rsTime' Type='date' />
+				<Property Name='eventName' Type='string' />
+				<Property Name='details' Type='string' />
+			</Properties>
+		</Model>
+		<Model Name="RsHistoricalEvent">
+			<Properties>
+				<Property Name="name" Type="string"/>
+				<Property Name="activeId" Type="number"/>
+				<Property Name="owner" Type="string" />
+				<Property Name="acknowledged" Type="boolean" Default="false" />
+                <Property Name="inMaintenance" Type="boolean" Default="false"/>
+                <Property Name="severity" Type="number" Default="0"/>
+				<Property Name="source" Type="string" />
+				<Property Name="createdAt" Type="number" />
+				<Property Name="changedAt" Type="number" />
+				<Property Name="clearedAt" Type="number" />
+				<Property Name="rsDatasource" Type="string"/>
+				<Property Name="willExpireAt" Type="number" />
+				<Property Name="state" Type="number" />
+				<Property Name="elementName" Type="string"/>
+				<Property Name="elementDisplayName" Type="string"/>
+				<Property Name="count" Type="number" Default="1" />
+                <Property Name="duration" Type="number"/>
+                <Property Name="hour" Type="string"/>
+                <Property Name="day" Type="string"/>
+                <Property Name="month" Type="string"/>
+                <Property Name="year" Type="string"/>
+                <Property Name="minute" Type="string"/>
+			</Properties>
+		</Model>
+		<Model Name="RsRiHistoricalEvent" Parent="RsHistoricalEvent">
+			<Properties>
+				<Property Name="description" Type="string"/>
+				<Property Name="identifier" Type="string"/>
+			</Properties>
+		</Model>
+		<Model Name="RsManagementSystem">
+			<Properties>
+				<Property Name="name" Type="string" IsKey="true" />
+				<Property Name="lastPolledAt" Type="number" />
+			</Properties>
+		</Model>
+		<Model Name="RsTopologyObject">
+			<Properties>
+				<Property Name="name" Type="string" IsKey="true"/>
+				<Property Name="className" Type="string"/>
+				<Property Name="description" Type="string"/>
+				<Property Name="displayName" Type="string"/>
+				<Property Name="isManaged" Type="boolean"/>
+				<Property Name="rsDatasource" Type="string"/>
+                <Property Name="serviceName" Type="string" />
+            </Properties>
+		</Model>
+		<Model Name="RsComputerSystem" Parent="RsTopologyObject">
+			<Properties>
+				<Property Name="location" Type="string"/>
+				<Property Name="geocodes" Type="string"/>
+				<Property Name="model" Type="string"/>
+				<Property Name="osVersion" Type="string"/>
+				<Property Name="primaryOwnerContact" Type="string"/>
+				<Property Name="primaryOwnerName" Type="string"/>
+				<Property Name="readCommunity" Type="string"/>
+				<Property Name="snmpAddress" Type="string"/>
+				<Property Name="systemName" Type="string"/>
+				<Property Name="systemObjectID" Type="string"/>
+				<Property Name="vendor" Type="string"/>
+			</Properties>
+		</Model>
+        <Model Name="RsApplication" Parent="RsTopologyObject">
+			<Properties>
+			</Properties>
+		</Model>
+        <Model Name="RsLink" Parent="RsTopologyObject">
+			<Properties>
+				<Property Name="a_ComputerSystemName" Type="string"/>
+				<Property Name="a_Name" Type="string"/>
+				<Property Name="z_ComputerSystemName" Type="string"/>
+				<Property Name="z_Name" Type="string"/>
+			</Properties>
+		</Model>
+        <Model Name="RsLookup">
+            <Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='value' Type='string' />
+            </Properties>
+        </Model>
+        <Model Name="RsGroup" Parent="RsTopologyObject">
+			<Properties>
+			</Properties>
+		</Model>
+		<Model Name="RsService" Parent="RsGroup">
+			<Properties>
+				<Property Name="observedState" Type="string" />
+				<Property Name="lastChangedAt" Type="number" />
+				<Property Name="interval" Type="number" />
+				<Property Name="consideredDownAt" Type="number" />
+				<Property Name="hasHeartbeat" Type="boolean" />
+			</Properties>
+		</Model>
+		<Model Name="RsCustomer" Parent="RsGroup">
+			<Properties>
+			</Properties>
+		</Model>
+        <Model Name="RsObjectState" StorageType="Memory">
+			<Properties>
+				<Property Name='objectId' Type='number' IsKey="true"/>
+				<Property Name='state' Type='number'/>
+			</Properties>
+		</Model>
+		<Model Name="RsTicket">
+			<Properties>
+				<Property Name="name" Type="string" IsKey="true"/>
+				<Property Name="summary" Type="string" />
+				<Property Name="type" Type="string" />
+				<Property Name="status" Type="string" />
+				<Property Name="assignee" Type="string" />
+				<Property Name="priority" Type="string"/>
+				<Property Name="rsDatasource" Type="string"/>
+            </Properties>
+		</Model>
+        <Model Name="SnmpTrap">
+			<Properties>
+				<Property Name='name' Type='string' IsKey="true"/>
+				<Property Name='trapVersion' Type='string' Default="v1"/>
+				<Property Name='destination' Type='string' />
+				<Property Name='port' Type='number' Default="162"/>
+				<Property Name='community' Type='string' Default="public"/>
+			</Properties>
+		</Model>
+        <Model Name="RsMapConnection">
+			<Properties>
+                <Property Name='name' Type='string' IsKey="true"/>
+                <Property Name='mapType' Type='string' IsKey="true" Default="default"/>
+                <Property Name="displayName" Type="string"/>
+                <Property Name="a_Name" Type="string"/>
+				<Property Name="a_RsClassName" Type="string"/>
+				<Property Name="z_Name" Type="string"/>
+				<Property Name="z_RsClassName" Type="string"/>
+			</Properties>
+		</Model>
+    </Models>
+	<Relations>
+        <Relation From="RsComputerSystem" To="RsLink" Name="connectedVia" ReverseName="connectedSystems" Type="ManyToMany"></Relation>
+        <Relation From="RsComputerSystem" To="RsApplication" Name="hostsServices" ReverseName="hostedBy" Type="OneToMany"></Relation>
+        <Relation From="RsTopologyObject" To="RsTopologyObject" Name="childObjects" ReverseName="parentObjects" Type="ManyToMany"></Relation>
+		<Relation From="RsTicket" To="RsTopologyObject" Name="relatedObjects" ReverseName="relatedTickets" Type="ManyToMany"></Relation>
+		<Relation From="RsTicket" To="RsService" Name="relatedServices" ReverseName="relatedServiceTickets" Type="ManyToMany"></Relation>
+		<Relation From="RsTicket" To="RsEvent" Name="relatedEvents" ReverseName="relatedEventTickets" Type="ManyToMany"></Relation>
+		<Relation From="RsTicket" To="RsTicket" Name="subTickets" ReverseName="parentTicket" Type="OneToMany"></Relation>
+    </Relations>
+</Rsmodel>

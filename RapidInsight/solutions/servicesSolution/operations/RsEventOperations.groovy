@@ -1,0 +1,142 @@
+import application.RapidApplication
+
+
+/*
+* All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
+* noted in a separate copyright notice. All rights reserved.
+* This file is part of RapidCMDB.
+*
+* RapidCMDB is free software; you can redistribute it and/or modify
+* it under the terms version 2 of the GNU General Public License as
+* published by the Free Software Foundation. This program is distributed
+* in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+* even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+* PARTICULAR PURPOSE. See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+* USA.
+*/
+public class RsEventOperations  extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation {
+
+    //changed for services solution, populateServiceName added
+    def populateServiceName()
+	{
+		def device=null;
+		if(elementName)
+		{
+			device=RsComputerSystem.get(name:elementName);
+			if(device)
+			{
+				setProperty("serviceName", device.serviceName);
+			}
+		}
+	}
+
+    //changed for services solution
+    def beforeInsert(){
+        populateServiceName();
+        RapidApplication.getUtility("EventProcessor").eventInBeforeInsert(this.domainObject);
+	}
+	//changed for services solution
+	def beforeUpdate(params)
+    {
+        if(params.updatedProps.containsKey("elementName") )
+	    {
+			populateServiceName();
+	    }
+        RapidApplication.getUtility("EventProcessor").eventInBeforeUpdate(this.domainObject,params);
+    }
+	def afterInsert(){
+        RapidApplication.getUtility("EventProcessor").eventIsAdded(this.domainObject);
+    }
+    def afterUpdate(params){
+        RapidApplication.getUtility("EventProcessor").eventIsUpdated(this.domainObject,params);
+    }
+    def afterDelete()
+    {
+        RapidApplication.getUtility("EventProcessor").eventIsDeleted(this.domainObject);
+    }
+
+
+    static notify(Map eventProps) {
+
+        def event=RsEvent.add(eventProps);
+        return event;
+    }
+
+    public void clear() {
+		clear(true);
+	}
+
+	public void clear(boolean createJournal, Map extraProperties = [:]) {
+		Map props = asMap();
+		props.putAll (extraProperties)
+		def now=Date.now();
+		if(!props.clearedAt){
+            props.clearedAt = now
+        }
+		props.activeId = id;
+		if(createJournal)
+        {
+		    RsEventJournal.add(eventId:id,eventName:"cleared",rsTime:new Date(now))
+        }
+
+        RsHistoricalEvent.addToHistoricalEventCache(domainObject.historicalEventModel(),props);
+		remove()
+
+	}
+	public static Class historicalEventModel()
+    {
+        return RsHistoricalEvent;
+    }
+
+	public void acknowledge(boolean action, userName){
+        def now=Date.now();
+
+        if(acknowledged != action){
+			if(action){
+				RsEventJournal.add(eventId:id, eventName:"acknowledged", rsTime:new Date(now), details:"Acknowledged by ${userName}")
+				update(acknowledged:true,changedAt:now)
+			}
+			else{
+				RsEventJournal.add(eventId:id, eventName:"unacknowledged", rsTime:new Date(now), details:"UnAcknowledged by ${userName}")
+				update(acknowledged:false,changedAt:now)
+			}
+		}
+
+	}
+
+	public void setOwnership(boolean action, userName) {
+        def now=Date.now();
+
+        if(action)        {
+            RsEventJournal.add(eventId:id, eventName:"TakeOwnership", rsTime:new Date(now), details:"TakeOwnership by ${userName}")
+            update(owner:userName,changedAt:now)
+        }
+        else{
+            RsEventJournal.add(eventId:id, eventName:"ReleaseOwnership", rsTime:new Date(now), details:"ReleaseOwnership by ${userName}")
+            update(owner:"",changedAt:now)
+        }
+
+	}
+
+	public void addToJournal(name, details){
+		RsEventJournal.add(eventId:id, eventName:name, rsTime:new Date(), details:details)
+	}
+
+	public void addToJournal(name){
+		RsEventJournal.add(eventId:id, eventName:name, rsTime:new Date())
+	}
+
+	public void addToJournal(Map props){
+		def propsTemp = [:];
+		propsTemp.putAll(props);
+		propsTemp.put("eventId",id);
+		RsEventJournal.add(propsTemp);
+	}
+
+
+}

@@ -24,7 +24,7 @@ public class RsRiEventOperations  extends RsEventOperations {
 	}
 	public static _notify(Class eventModel,Map originalEventProps)
     {
-         _notify(eventModel, originalEventProps, true)
+        return _notify(eventModel, originalEventProps, true)
     }
     public static _notify(Class eventModel,Map originalEventProps, createJournal)
     {

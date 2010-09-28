@@ -34,16 +34,43 @@ def name = params.name;
 def normalSeverityIndex = "0";
 
 def severityMap = ["0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0]
-def severitySummary = null
-if (nodeType == "Container") {
-    severitySummary = RsEvent.propertySummary("${CONTAINER_PROPERTY}:${name.exactQuery()}", ["severity"]);
+def severitySummary = [severity:[:]];
+def severityData=severitySummary.severity;
+
+def devices=[];
+if(nodeType =="Service")
+{
+    devices=RsComputerSystem.searchEvery("serviceName:${name.toQuery()}");
 }
-else if (nodeType == "Service") {
-    severitySummary = RsEvent.propertySummary("serviceName:${name.toQuery()}", ["severity"]);
-} 
-else {
-    severitySummary = RsEvent.propertySummary("elementName:${name.exactQuery()}", ["severity"]);
+else
+{
+    def device=RsComputerSystem.get(name:name);
+    if(device)
+    {
+        devices.add(device);
+    }
 }
+devices.each{  device ->
+       def state=device.getState();
+       def stateKey=state.toString();
+       if(severityData.containsKey(stateKey))
+       {
+         severityData[stateKey]+=1;
+       }
+       else
+       {
+          severityData[stateKey]=1;
+       }
+}
+
+// original code to get summary data from events
+//if (nodeType == "Container") {
+//    severitySummary = RsEvent.propertySummary("${CONTAINER_PROPERTY}:${name.exactQuery()}", ["severity"]);
+//}
+//else {
+//    severitySummary = RsEvent.propertySummary("elementName:${name.exactQuery()}", ["severity"]);
+//}
+
 def isAllZero = true;
 def invalidSeverityCount = 0;
 

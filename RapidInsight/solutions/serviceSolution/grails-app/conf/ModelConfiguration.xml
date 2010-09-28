@@ -58,7 +58,8 @@
                 <Property Name="month" Type="string"/>
                 <Property Name="year" Type="string"/>
                 <Property Name="minute" Type="string"/>
-			</Properties>
+                <Property Name="serviceName" Type="string" />
+            </Properties>
 		</Model>
 		<Model Name="RsRiHistoricalEvent" Parent="RsHistoricalEvent">
 			<Properties>

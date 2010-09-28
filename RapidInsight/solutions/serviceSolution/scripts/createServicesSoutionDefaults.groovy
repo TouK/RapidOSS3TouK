@@ -8,6 +8,7 @@ def scriptsToAdd=[]
 scriptsToAdd.add([name:"addEventRemote",logFileOwn:true])
 scriptsToAdd.add([name:"cleareEventRemote",logFileOwn:true])
 scriptsToAdd.add([name:"createSampleServices", logFileOwn:true])
+scriptsToAdd.add([name:"createSampleEvents", logFileOwn:true])
 
 scriptsToAdd.each{  scriptParams ->
 

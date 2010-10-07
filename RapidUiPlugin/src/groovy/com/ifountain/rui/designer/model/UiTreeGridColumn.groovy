@@ -62,7 +62,10 @@ class UiTreeGridColumn extends UiColumn {
         def imagesNode = node."${UIELEMENT_TAG}".find {it.@"${DESIGNER_TYPE}".text() == "TreeGridColumnImages"};
         if (imagesNode."${UIELEMENT_TAG}".size() == 0)
         {
-            attributesAsString["type"] = "text";
+            if(!attributesAsString["type"])
+            {
+                attributesAsString["type"] = "text";
+            }
         }
         else
         {

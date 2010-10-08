@@ -66,6 +66,14 @@ YAHOO.rapidjs.Requester.prototype = {
             callback(response);
         }
     },
+    handleUpload: function(response){
+        this.processSuccess(response)
+    },
+    handleAbort : function(response){
+        var errors = ['File upload aborted.']
+        YAHOO.rapidjs.ErrorManager.errorOccurred(this.scope, errors);
+        this.failureFunctionToCall(errors, null);
+    },
     handleErrors: function(response)
     {
         var errors = YAHOO.rapidjs.Connect.getErrorMessages(response.responseXML);

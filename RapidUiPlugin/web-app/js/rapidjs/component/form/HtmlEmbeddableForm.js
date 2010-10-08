@@ -74,7 +74,6 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
             }
         }
     },
-
     handleErrors: function(errors)
     {
         this.htmlComp.handleErrors(errors);
@@ -203,6 +202,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
             do {
                 if (aElements[i].type == "file") {
                     bUseFileUpload = true;
+                    callback.upload = this.requester.handleUpload;
+                    callback.abort = this.requester.handleAbort;
                     break;
                 }
             }

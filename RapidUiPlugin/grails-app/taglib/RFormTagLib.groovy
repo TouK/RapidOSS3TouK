@@ -58,6 +58,7 @@ class RFormTagLib {
         def formId=attrs.remove("formId");
         def useDefaultButtons=attrs.remove("useDefaultButtons");
         def submitConfirmation=attrs.remove("submitConfirmation");
+        def submitButtonText=attrs.remove("submitButtonText");
         def configAttrs=[:];
         if(formId)
         {
@@ -76,6 +77,9 @@ class RFormTagLib {
         }
         if(submitConfirmation){
              configAttrs["submitConfirmation"]="\"${submitConfirmation.encodeAsJavaScript()}\"";
+        }
+        if(submitButtonText){
+             configAttrs["submitButtonText"]="'${submitButtonText}'";
         }
 
         def configJs="";

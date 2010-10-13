@@ -9,6 +9,7 @@ YAHOO.rapidjs.component.HtmlEmbeddableForm = function(container, config, htmlCom
     }
     this.useDefaultButtons=true;
     this.submitConfirmation = configClone.submitConfirmation;
+    this.submitButtonText = configClone.submitButtonText || "Save";
     if(configClone["useDefaultButtons"]!=null)
     {
        if(configClone["useDefaultButtons"]==false)
@@ -45,7 +46,7 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.HtmlEmbeddableForm, YAHOO.rapidjs.comp
         {
             var dh = YAHOO.ext.DomHelper;
             var oSpan = dh.append(document.body, {tag:'span', cls:'button-group'});
-            this.saveButton = new YAHOO.widget.Button({label:'Save', onclick:{fn:this.submit, obj:this, scope:this}})
+            this.saveButton = new YAHOO.widget.Button({label:this.submitButtonText, onclick:{fn:this.submit, obj:this, scope:this}})
             this.saveButton.appendTo(oSpan);
             this.saveButton.addClass('default');
             this.cancelButton = new YAHOO.widget.Button({label:'Cancel', onclick:{fn:this.cancel, obj:this, scope:this}})

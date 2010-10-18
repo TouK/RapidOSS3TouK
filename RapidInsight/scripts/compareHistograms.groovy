@@ -30,8 +30,8 @@ paths.size().times{ index ->
         
         def values=[:];
         //values.num=parts[0];
-        values.instances=Integer.parseInt(parts[1]);
-        values.bytes=Integer.parseInt(parts[2]);
+        values.instances=Long.parseLong(parts[1]);
+        values.bytes=Long.parseLong(parts[2]);
         values.className=parts[3];
         if(!values.className)
         {
@@ -92,7 +92,7 @@ allClassNames.keySet().each{ className ->
 }
 
 //sort with the last column
-comparisonData.sort{ it[paths.size()] };
+comparisonData.sort{ it[paths.size()]?it[paths.size()]:0l };
 
 //print data
 def buffer=new StringBuffer()

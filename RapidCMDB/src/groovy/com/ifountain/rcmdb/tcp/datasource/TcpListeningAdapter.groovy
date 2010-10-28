@@ -154,7 +154,7 @@ class TcpListeningAdapter extends BaseListeningAdapter {
 
 }
 
-private class TcpListenerPipelineFactory implements ChannelPipelineFactory {
+class TcpListenerPipelineFactory implements ChannelPipelineFactory {
     private TcpListeningAdapter adapter;
 
     public TcpListenerPipelineFactory(TcpListeningAdapter adapter) {
@@ -179,7 +179,7 @@ private class TcpListenerPipelineFactory implements ChannelPipelineFactory {
     }
 }
 
-private class TcpListenerEntryHandler extends SimpleChannelUpstreamHandler {
+class TcpListenerEntryHandler extends SimpleChannelUpstreamHandler {
     private TcpListeningAdapter adapter;
     public TcpListenerEntryHandler(TcpListeningAdapter adapter) {
         this.adapter = adapter;

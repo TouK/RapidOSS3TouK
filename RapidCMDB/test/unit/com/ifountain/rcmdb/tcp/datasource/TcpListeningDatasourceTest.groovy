@@ -200,7 +200,15 @@ class TcpListeningAdapterTest extends RapidCoreTestCase {
             assertEquals("entry2", observer.entries[1][TcpListeningAdapter.ENTRY])
             assertEquals("entry3", observer.entries[2][TcpListeningAdapter.ENTRY])
         }))
+    }
 
+    public void testCanCloseConnectionEvenIfAClientIsConnected() {
+        adapter.subscribe();
+
+        openConnectionToPort(9999);
+
+        adapter.unsubscribe();
+        assertFalse(adapter.isSubscribed())
     }
 
     private void openConnectionToPort(int portNumber) throws Exception

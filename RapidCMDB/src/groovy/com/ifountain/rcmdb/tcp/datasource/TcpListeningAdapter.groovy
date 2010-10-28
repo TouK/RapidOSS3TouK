@@ -13,6 +13,8 @@ import org.jboss.netty.handler.codec.frame.DelimiterBasedFrameDecoder
 import org.jboss.netty.handler.codec.frame.Delimiters
 import org.jboss.netty.handler.codec.string.StringDecoder
 import org.jboss.netty.handler.codec.string.StringEncoder
+import org.jboss.netty.channel.group.ChannelGroup
+import org.jboss.netty.channel.group.DefaultChannelGroup
 
 /**
 * Created by Sezgin Kucukkaraaslan
@@ -28,6 +30,7 @@ class TcpListeningAdapter extends BaseListeningAdapter {
     protected Thread entryProcessorThread;
     private Channel channel;
     private ChannelFactory factory;
+    private ChannelGroup allChannels;
 
 
     private List entryBuffer = Collections.synchronizedList(new ArrayList());
@@ -67,10 +70,12 @@ class TcpListeningAdapter extends BaseListeningAdapter {
                 logger.info(getLogPrefix() + "Entry processor thread stopped.");
             }
         })
+        allChannels = new DefaultChannelGroup(getConnectionName());
         factory = new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool())
         ServerBootstrap bootstrap = new ServerBootstrap(factory);
         bootstrap.setPipelineFactory(new TcpListenerPipelineFactory(this))
         channel = bootstrap.bind(new InetSocketAddress(host, port.intValue()));
+        allChannels.add(channel)
     }
 
     protected void _unsubscribe() {
@@ -78,7 +83,7 @@ class TcpListeningAdapter extends BaseListeningAdapter {
         if (channel != null) {
             long timeout = ((TcpListeningConnectionImpl) getConnection()).getTimeout()
             try {
-                channel.close().awaitUninterruptibly(timeout);
+                allChannels.close().awaitUninterruptibly(timeout);
             }
             catch (e) {
                 logger.warn(getLogPrefix() + "Could not close channel.", e);
@@ -148,6 +153,10 @@ class TcpListeningAdapter extends BaseListeningAdapter {
         return channel;
     }
 
+    protected ChannelGroup getAllChannels() {
+        return allChannels;
+    }
+
     public String getLogPrefix() {
         return "[TcpListeningAdapter]: ";
     }
@@ -185,8 +194,14 @@ class TcpListenerEntryHandler extends SimpleChannelUpstreamHandler {
         this.adapter = adapter;
     }
     public void messageReceived(ChannelHandlerContext channelHandlerContext, MessageEvent event) {
+        super.messageReceived(channelHandlerContext, event)
         String entry = (String) event.getMessage();
         adapter.addEntryToBuffer(entry);
+    }
+
+    public void channelOpen(ChannelHandlerContext channelHandlerContext, ChannelStateEvent event) {
+        super.channelOpen(channelHandlerContext, event);
+        adapter.getAllChannels().add(event.getChannel());
     }
 
 }

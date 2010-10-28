@@ -426,6 +426,7 @@
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_4_1_b08081811" />
                   <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_12_b10030317" />
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/RapidModules" />
@@ -667,6 +668,7 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/selenium" />
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/jrobin" />
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/joda/joda-time-1.6.jar!/" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/netty" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -681,6 +683,7 @@
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jrobin" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/netty" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/selenium" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/sms" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/snmp" recursive="false" />

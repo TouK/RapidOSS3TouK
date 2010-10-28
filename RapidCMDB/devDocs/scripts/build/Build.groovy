@@ -313,6 +313,7 @@ class Build extends Parent {
             ant.pathelement(location: (String) classpath.getProperty("lucene-queries_jar"));
             ant.pathelement(location: (String) classpath.getProperty("lucene-snowball_jar"));
             ant.pathelement(location: (String) classpath.getProperty("lucene-spellchecker_jar"));
+            ant.pathelement(location: (String) classpath.getProperty("netty-3_2_3_Final_jar"));
 
             //Required for compiling test classes
             ant.pathelement(location: (String) classpath.getProperty("junit_jar"));

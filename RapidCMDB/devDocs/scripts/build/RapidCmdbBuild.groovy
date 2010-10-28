@@ -149,7 +149,8 @@ class RapidCmdbBuild extends Build {
         ant.copy(file: (String) classpath.getProperty("smackx_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("smppapi-0_3_7_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("joscar-0_9_3-patched_jar"), toDir: dirToCopyTo);
-        
+        ant.copy(file: (String) classpath.getProperty("netty-3_2_3_Final_jar"), toDir: dirToCopyTo);
+
         ant.copy(file: "${env.third_party}/lib/jrobin/jrobin-1.5.9.1.jar", toDir: dirToCopyTo);
         ant.copy(file: "${env.third_party}/lib/jrobin/convertor-1.5.9.1.jar", toDir: dirToCopyTo);
         ant.copy(file: "${env.third_party}/lib/jrobin/inspector-1.5.9.1.jar", toDir: dirToCopyTo);

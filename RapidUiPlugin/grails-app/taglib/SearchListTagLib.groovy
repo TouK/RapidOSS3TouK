@@ -120,9 +120,10 @@ class SearchListTagLib {
             """
 
         }
+        def multiplerSelectionMenuEventJs;
         if (multipleSelectionMenuEvents.size() > 0 || multipleSelectionSubMenuEvents.size() > 0) {
             def innerJs = _getMenuEventJs(multipleSelectionMenuEvents, multipleSelectionSubMenuEvents)
-            menuEventsJs = """
+            multiplerSelectionMenuEventJs = """
                ${searchListId}sl.events['multiSelectionMenuClicked'].subscribe(function(xmlDatas, menuId, parentId){
                    var params = {datas:ArrayUtils.collect(xmlDatas, function(item){return item.getAttributes()}), menuId:menuId, parentId:parentId};
                    ${innerJs}
@@ -153,6 +154,7 @@ class SearchListTagLib {
                ${selectionChangedJs}
                ${menuEventsJs ? menuEventsJs : ""}
                ${propMenuEventsJs ? propMenuEventsJs : ""}
+               ${multiplerSelectionMenuEventJs ? multiplerSelectionMenuEventJs : ""}
                if(${searchListId}sl.pollingInterval > 0){
                    YAHOO.util.Event.onDOMReady(function(){
                         this.poll();

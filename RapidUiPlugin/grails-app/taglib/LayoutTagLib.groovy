@@ -10,7 +10,7 @@ import com.ifountain.rui.util.TagLibUtils
 class LayoutTagLib {
     static namespace = "rui"
     static stringUnitProps = [position:"position", body:"body", gutter:"gutter"]
-    static validUnitProps = ["position", "gutter", "width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "scroll", "useShim", "resize"]
+    static validUnitProps = ["position", "gutter", "width", "height", "minWidth", "minHeight", "maxWidth", "maxHeight", "scroll", "useShim", "resize", "collapse"]
     def layout = {attrs, body ->
         def layoutXmlString = TagLibUtils.getConfigAsXml("Layout", attrs, [], body(), true);
         def layoutXml = new XmlSlurper().parseText(layoutXmlString);

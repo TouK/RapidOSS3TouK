@@ -21,6 +21,7 @@ class UiCenterUnit extends UiLayoutUnit {
         def propConfig = [:]
         propConfig.putAll(parentMetaData.propertyConfiguration)
         propConfig.putAll(metaData.propertyConfiguration)
+        propConfig.remove("collapse");
         metaData.propertyConfiguration = propConfig;
         metaData.childrenConfiguration.addAll(parentMetaData.childrenConfiguration);
         return metaData;

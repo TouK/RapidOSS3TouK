@@ -16,6 +16,7 @@ class UiLayoutUnit extends UiElmnt {
     String gutter = "0px";
     Boolean scroll = false;
     Boolean useShim = false;
+    Boolean collapse = false;
     String parentLayoutId;
     String componentId;
 
@@ -27,6 +28,7 @@ class UiLayoutUnit extends UiElmnt {
                         contentFile: [descr: "Content file where the layout content will be retrieved."],
                         gutter: [descr: "The gutter applied to the unit's wrapper, before the content."],
                         scroll: [descr: "Boolean indicating whether the unit's body should have scroll bars if the body content is larger than the display area."],
+                        collapse: [descr: "Boolean indicating whether this unit is collapsible (if true, places an icon in the header)."],
                         useShim: [descr: "This setting will be passed to the DragDrop instances on the resize handles and for the draggable property. This property should be used if you want the resize handles to work over iframe and other elements"]
                 ],
                 childrenConfiguration: [

@@ -22,7 +22,10 @@
        dateProperties.each{ propertyName ->
            if(objectProperties.containsKey(propertyName))
            {
-               objectProperties[propertyName] = format.format(new Timestamp(objectProperties[propertyName]))
+               try{
+                    objectProperties[propertyName] = format.format(new Timestamp(objectProperties[propertyName]))
+               }catch(e){}
+               
            }
        }
 

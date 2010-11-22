@@ -150,6 +150,9 @@
                     </g:each>
                 </select></td></tr>
             </g:if>
+             <g:else>
+            	<input type="hidden" name="searchClass" value="${searchClass}">
+            </g:else>
             <tr><td width="50%"><label>Query:</label></td><td width="50%">
                 <input type="textbox" name="query" style="width:175px" value="${query.encodeAsHTML()}">
             </td></tr>

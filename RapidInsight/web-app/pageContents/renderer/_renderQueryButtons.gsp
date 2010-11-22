@@ -16,7 +16,13 @@
         tooltip: 'Add query',
         click:function() {
             var queryForm = YAHOO.rapidjs.Components['saveQueryForm'];
-            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'${queryType}', searchComponentType:'${searchComponentType}', searchInEnabled:'${searchInEnabled != null ? searchInEnabled:true}'}));
+            var searchClass='';
+            var searchComponent=YAHOO.rapidjs.Components['${searchComponentName}'];
+            if(searchComponent)
+            {
+				searchClass=searchComponent.getSearchClass();
+			}
+            queryForm.show(createURL('queryForm.gsp', {mode:'create', type:'${queryType}', searchComponentType:'${searchComponentType}', searchInEnabled:'${searchInEnabled != null ? searchInEnabled:true}',searchClass:searchClass}));
             queryForm.popupWindow.show();
         }
     });

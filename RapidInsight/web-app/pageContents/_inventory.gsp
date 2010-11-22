@@ -10,4 +10,4 @@
     filterTree.poll();
 </script>
 
-<rui:include template="pageContents/renderer/_renderQueryButtons.gsp" model="[componentName:'filterTree', queryType:'topology', searchComponentType:'list']"></rui:include>
+<rui:include template="pageContents/renderer/_renderQueryButtons.gsp" model="[componentName:'filterTree', queryType:'topology', searchComponentType:'list',searchComponentName:'inventoryList']"></rui:include>

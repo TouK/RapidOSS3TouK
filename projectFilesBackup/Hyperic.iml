@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="true" type="GRAILS_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/conf" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/grails-app/views" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/applications/RapidInsight/operations" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/conf" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/views" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/operations" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="RapidCMDB" />
+    <orderEntry type="module" module-name="comp" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="ext" />
+    <orderEntry type="module" module-name="RcmdbCommons" />
+    <orderEntry type="library" name="GRAILS" level="application" />
+    <orderEntry type="library" name="compass" level="project" />
+    <orderEntry type="module-library">
+      <library name="Grails User Library">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="GRAILS" level="application" />
+    <orderEntry type="module" module-name="RapidInsight" />
+    <orderEntry type="module-library">
+      <library name="hyperic">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntryProperties />
+  </component>
+</module>
+

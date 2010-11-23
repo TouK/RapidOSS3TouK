@@ -1,29 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
+<project relativePaths="true" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
-  </component>
-  <component name="ArtifactManager">
-    <artifact type="exploded-war" name="SmartsBrowser:Web2 exploded">
-      <root id="root">
-        <element id="javaee-facet-resources" facet="SmartsBrowser/web/Web2" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="module-output" name="SmartsBrowser" />
-          </element>
-        </element>
-      </root>
-    </artifact>
-    <artifact type="exploded-war" name="SmartsBrowser:Web exploded">
-      <root id="root">
-        <element id="javaee-facet-resources" facet="SmartsBrowser/web/Web" />
-        <element id="directory" name="WEB-INF">
-          <element id="directory" name="classes">
-            <element id="module-output" name="SmartsBrowser" />
-          </element>
-        </element>
-      </root>
-    </artifact>
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -32,8 +10,13 @@
     <option name="PROJECT_PROFILE" />
     <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
   </component>
+  <component name="CodeStyleSettingsManager">
+    <option name="PER_PROJECT_SETTINGS" />
+    <option name="USE_PER_PROJECT_SETTINGS" value="false" />
+  </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
+    <option name="DEPLOY_AFTER_MAKE" value="0" />
     <resourceExtensions>
       <entry name=".+\.(properties|xml|html|dtd|tld)" />
       <entry name=".+\.(gif|png|jpeg|jpg)" />
@@ -49,10 +32,6 @@
       <entry name="?*.dtd" />
       <entry name="?*.tld" />
     </wildcardResourcePatterns>
-    <annotationProcessing enabled="false" useClasspath="true" />
-  </component>
-  <component name="CopyrightManager" default="">
-    <module2copyright />
   </component>
   <component name="DependenciesAnalyzeManager">
     <option name="myForwardDirection" value="false" />
@@ -74,7 +53,6 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
-  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
@@ -84,7 +62,7 @@
         <modules>
           <module name="RapidServer">
             <files>
-              <file url="file://D:/TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/temp/projects/RapidCMDB/resources/web.xml" />
             </files>
           </module>
           <module name="Opennmstrunk">
@@ -101,9 +79,9 @@
         <modules>
           <module name="RapidServer">
             <files>
-              <file url="file://D:/TEMP/RapidServer/RapidCMDB/web-app/WEB-INF/applicationContext.xml" />
-              <file url="file://D:/TEMP/RapidServer/src/war/WEB-INF/applicationContext.xml" />
-              <file url="file://D:/TEMP/RapidServer/src/war/WEB-INF/test-applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/RapidCMDB/web-app/WEB-INF/applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/src/war/WEB-INF/applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../../TEMP/RapidServer/src/war/WEB-INF/test-applicationContext.xml" />
             </files>
           </module>
           <module name="RcmdbCommons">
@@ -230,7 +208,23 @@
     </autodetection-disabled>
   </component>
   <component name="IdProvider" IDEtalkID="EA28FD7B5140EC52C88BBC670B90414F" />
+  <component name="InspectionProjectProfileManager">
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_LEVEL_SETTINGS" value="false" />
+    <scopes />
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <option name="myName" value="Project Default" />
+        <option name="myLocal" value="false" />
+      </profile>
+    </profiles>
+    <list size="0" />
+  </component>
   <component name="JavacSettings">
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="DEPRECATION" value="true" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
     <option name="MAXIMUM_HEAP_SIZE" value="512" />
   </component>
   <component name="JavadocGenerationManager">
@@ -379,6 +373,7 @@
       </item>
     </group>
   </component>
+  <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Apg/Apg.iml" filepath="$PROJECT_DIR$/../Apg/Apg.iml" />
@@ -402,7 +397,7 @@
       <module fileurl="file://$PROJECT_DIR$/ext/ext.iml" filepath="$PROJECT_DIR$/ext/ext.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/../out" />
   </component>
   <component name="ResourceManagerContainer">
@@ -412,48 +407,26 @@
       </value>
     </option>
   </component>
+  <component name="RmicSettings">
+    <option name="IS_EANABLED" value="false" />
+    <option name="DEBUGGING_INFO" value="true" />
+    <option name="GENERATE_NO_WARNINGS" value="false" />
+    <option name="GENERATE_IIOP_STUBS" value="false" />
+    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
+  </component>
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_4_1_b08081811">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/ROSS_v3_12_b10030317">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
-                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_b08052619" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_3_1_b08060618" />
                   <option value="http://dev.ifountain.org/repos/os/tags/RCMDB_v0_4_1_b08081811" />
-                  <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_12_b10030317" />
                   <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618" />
+                  <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_12_b10030317" />
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/RapidModules" />
@@ -463,15 +436,6 @@
         <entry key="$PROJECT_DIR$/../Smarts">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618">
-                    <value>
-                      <list />
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="http://dev.ifountain.org/repos/os/tags/ROSS_v3_9_b09121618" />
@@ -490,7 +454,6 @@
         </entry>
       </map>
     </option>
-    <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="TL_PLUGIN">
     <option name="myModel">
@@ -709,10 +672,10 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/test" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/commons-transaction-1.2-src/src/test" />
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
@@ -746,10 +709,10 @@
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/src" />
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/load" />
         <root url="file://C:/Documents and Settings/admin/Desktop/compass-2.2.0/src/main/test" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/demo" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/gcj" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/test" />
-        <root url="file://D:/UsedLibraries/Lucene2_4_1/src/java" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/demo" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/gcj" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/test" />
+        <root url="file://$PROJECT_DIR$/../../UsedLibraries/Lucene2_4_1/src/java" />
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/compass" recursive="false" />
@@ -760,8 +723,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>
@@ -799,93 +762,6 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-    </library>
-    <library name="grails-1.0.3">
-      <CLASSES>
-        <root url="jar://C:/grails-1.0.3/dist/grails-cli-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-core-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-crud-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-gorm-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-spring-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-test-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-web-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/dist/grails-webflow-1.0.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ant-junit.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ant-launcher.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ant-nodeps.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ant-trax.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ant.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/antlr-2.7.6.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/bsf-2.3.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/cglib-nodep-2.1_3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-beanutils-1.7.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-cli-1.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-collections-3.2.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-dbcp-1.2.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-el-1.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-fileupload-1.1.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-io-1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-lang-2.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-logging-1.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-pool-1.2.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/commons-validator-1.3.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/dom4j-1.6.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ehcache-1.3.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ejb3-persistence.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/gant-1.1.0_groovy-1.5.2.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/groovy-all-1.5.6.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/hibernate-annotations.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/hibernate-commons-annotations.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/hibernate3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/hsqldb-1.8.0.5.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jasper-compiler-5.5.15.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jasper-compiler-jdt-5.5.15.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jasper-runtime-5.5.15.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jaxen-1.1-beta-11.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jdbc2_0-stdext.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jetty-6.1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jetty-naming-6.1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jetty-plus-6.1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jetty-util-6.1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jline-0.9.91.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jsp-api-2.0.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jstl-2.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jstl-2.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/jta.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/junit-3.8.2.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/log4j-1.2.15.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/ognl-2.6.9.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/oro-2.0.8.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/oscache-2.4.1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/serializer.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/servlet-api-2.5-6.1.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/sitemesh-2.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/spring-2.5.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/spring-binding-2.0-m1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/spring-test.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/spring-webflow-2.0-m1.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/spring-webmvc.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/standard-2.3.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/standard-2.4.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/start.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/svnkit.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/xalan.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/xercesImpl.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/xpp3_min-1.1.3.4.O.jar!/" />
-        <root url="jar://C:/grails-1.0.3/lib/xstream-1.2.1.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/grails-1.0.3/doc/api" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://C:/grails-1.0.3/src/commons" />
-        <root url="file://C:/grails-1.0.3/src/groovy" />
-        <root url="file://C:/grails-1.0.3/src/persistence" />
-        <root url="file://C:/grails-1.0.3/src/scaffolding" />
-        <root url="file://C:/grails-1.0.3/src/tiger" />
-        <root url="file://C:/grails-1.0.3/src/web" />
-        <root url="file://C:/grails-1.0.3/src/java" />
-      </SOURCES>
     </library>
   </component>
 </project>

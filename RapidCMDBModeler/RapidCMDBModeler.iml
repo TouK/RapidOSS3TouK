@@ -9,7 +9,6 @@
       <sourceFolder url="file://$MODULE_DIR$/grails-app/services" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/grails-app/views" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/operations" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
@@ -21,13 +20,13 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="grails-1.0.3" level="project" />
-    <orderEntry type="module" module-name="comp" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="ext" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="library" name="quartz" level="project" />
     <orderEntry type="library" name="jsecurity" level="project" />
     <orderEntry type="library" name="compass" level="project" />
+    <orderEntry type="module" module-name="comp" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="ext" />
   </component>
 </module>
 

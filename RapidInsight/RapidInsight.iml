@@ -40,9 +40,6 @@
     <orderEntry type="library" name="grails-1.0.3" level="application" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="comp" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="ext" />
     <orderEntry type="module" module-name="RcmdbCommons" />
     <orderEntry type="module" module-name="RapidCMDB" />
     <orderEntry type="module" module-name="RapidUiPlugin" />
@@ -59,6 +56,9 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="comp" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="ext" />
     <orderEntry type="library" scope="PROVIDED" name="grails-1.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="ThirdParty" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="compass" level="project" />

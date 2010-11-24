@@ -382,11 +382,13 @@
       <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OpenNms/OpenNms.iml" filepath="$PROJECT_DIR$/../OpenNms/OpenNms.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidInsight/RapidInsight.iml" filepath="$PROJECT_DIR$/RapidInsight/RapidInsight.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" filepath="$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Smarts/Smarts.iml" filepath="$PROJECT_DIR$/../Smarts/Smarts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" filepath="$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" />
@@ -409,6 +411,69 @@
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
+        <entry key="$PROJECT_DIR$/../Apg">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/Apg" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../CommonModules/comp">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/CommonModules/comp" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../CommonModules/core">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/CommonModules/core" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../CommonModules/ext">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/CommonModules/ext" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../Hyperic">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/Hyperic" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../LicencedJars">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/LicencedJars" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../LicensedArtifacts">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/LicensedArtifacts" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../Netcool">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/Netcool" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../OpenNms">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/OpenNms" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
@@ -454,6 +519,13 @@
             </SvnBranchConfiguration>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../Rivermuse">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/Rivermuse" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../Smarts">
           <value>
             <SvnBranchConfiguration>
@@ -472,6 +544,13 @@
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Smarts" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../SmartsBrowser">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/SmartsBrowser" />
             </SvnBranchConfiguration>
           </value>
         </entry>
@@ -658,6 +737,9 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../Apg" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../CommonModules/comp" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../CommonModules/core" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../CommonModules/ext" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../Hyperic" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../LicencedJars" vcs="svn" />
     <mapping directory="$PROJECT_DIR$/../LicensedArtifacts" vcs="svn" />
@@ -754,8 +836,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/jsecurity-0.2.1/lib" recursive="false" />
     </library>
     <library name="quartz">
       <CLASSES>

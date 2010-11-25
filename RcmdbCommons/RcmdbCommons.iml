@@ -75,28 +75,17 @@
       <excludeFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/test" />
       <excludeFolder url="file://$MODULE_DIR$/web-app/plugins" />
     </content>
-    <orderEntry type="library" name="GRAILS" level="application" />
-    <orderEntry type="library" name="GROOVY" level="application" />
     <orderEntry type="library" name="ThirdParty" level="project" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="grails-1.0.3" level="project" />
     <orderEntry type="library" name="compass" level="project" />
-    <orderEntry type="module-library">
-      <library name="Grails User Library">
-        <CLASSES />
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="library" name="LicencedJars" level="project" />
     <orderEntry type="library" name="quartz" level="project" />
     <orderEntry type="library" name="jsecurity" level="project" />
     <orderEntry type="module" module-name="comp" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="module" module-name="ext" />
-    <orderEntry type="module" module-name="RcmdbCommons-grailsPlugins" />
   </component>
 </module>
 

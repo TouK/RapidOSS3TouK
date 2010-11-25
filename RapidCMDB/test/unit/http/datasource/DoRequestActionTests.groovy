@@ -26,7 +26,7 @@ import com.ifountain.comp.test.util.logging.TestLogUtils
 import com.ifountain.core.connection.ConnectionParam
 import connection.HttpConnectionImpl
 import datasource.DoRequestAction
-import org.apache.commons.httpclient.HttpException;
+import org.apache.http.HttpException
 
 public class DoRequestActionTests extends GroovyTestCase {
 

@@ -20,30 +20,35 @@ package http.datasource
 
 import com.ifountain.comp.utils.HttpStatusException
 import com.ifountain.comp.utils.HttpUtils
-import org.apache.commons.httpclient.HttpException
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpException
+import org.apache.http.client.methods.HttpPost;
 
-class HttpUtilsMock extends HttpUtils{
-        public boolean willThrowException = false;
-        public List postMethodsExecuted = [];
-        public String doGetRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException {
-            if(willThrowException){
-                throw new HttpException();
-            }
-            return "<GetRequest></GetRequest>";
-        }
-        
-        public String doPostRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException {
-            if(willThrowException){
-                throw new HttpException();
-            }
-            return "<PostRequest></PostRequest>";
-        }
+class HttpUtilsMock extends HttpUtils {
+  public boolean willThrowException = false;
+  public List postMethodsExecuted = [];
 
-    public String executePostMethod(PostMethod post) {
-        postMethodsExecuted << post;
-        return "<PostRequest></PostRequest>"; 
+  public HttpUtilsMock(int timeout) {
+    super(timeout);
+  }
+
+  public String doGetRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException {
+    if (willThrowException) {
+      throw new HttpException();
     }
+    return "<GetRequest></GetRequest>";
+  }
 
-
+  public String doPostRequest(String urlStr, Map params) throws HttpException, HttpStatusException, IOException {
+    if (willThrowException) {
+      throw new HttpException();
     }
+    return "<PostRequest></PostRequest>";
+  }
+
+  public String executePostMethod(HttpPost post) {
+    postMethodsExecuted << post;
+    return "<PostRequest></PostRequest>";
+  }
+
+
+}

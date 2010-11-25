@@ -22,7 +22,6 @@ import com.ifountain.core.connection.ConnectionParam
 import com.ifountain.core.connection.exception.UndefinedConnectionParameterException
 import com.ifountain.core.test.util.RapidCoreTestCase
 import connection.HttpConnectionImpl
-import org.apache.commons.httpclient.ConnectTimeoutException
 import com.ifountain.comp.utils.HttpUtils;
 
 public class HttpConnectionImplTests extends RapidCoreTestCase {
@@ -73,7 +72,7 @@ public class HttpConnectionImplTests extends RapidCoreTestCase {
         SocketException socketException = new SocketException();
         assertTrue (connection.isConnectionException(socketException));
 
-        ConnectTimeoutException connectTimeoutException = new ConnectTimeoutException();
+        IOException connectTimeoutException = new IOException();
         assertTrue (connection.isConnectionException(connectTimeoutException));
 
         NoRouteToHostException noRouteToHostException = new NoRouteToHostException();

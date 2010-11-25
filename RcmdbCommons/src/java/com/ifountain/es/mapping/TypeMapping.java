@@ -22,16 +22,20 @@ public class TypeMapping {
         this.index = index;
     }
 
-    public void addProperty(TypeProperty prop){
-        
+    public void addProperty(TypeProperty prop) throws MappingException {
+        if(typeProperties.containsKey(prop.getName()))
+        {
+            throw new MappingException("Duplicate property " + prop.getName() + " in  " + getName());
+        }
+        typeProperties.put(prop.getName(), prop);    
     }
 
-    public List<TypeProperty> getTypeProperties(){
-        return null;
+    public Map<String, TypeProperty> getTypeProperties(){
+        return typeProperties;
     }
 
     public TypeProperty getTypeProperty(String propName){
-        return null;
+        return typeProperties.get(propName);
     }
 
     public String getIndex() {

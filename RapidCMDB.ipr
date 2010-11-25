@@ -376,6 +376,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Apg/Apg.iml" filepath="$PROJECT_DIR$/../Apg/Apg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../CommonModules/ESClient/ESClient.iml" filepath="$PROJECT_DIR$/../CommonModules/ESClient/ESClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Hyperic/Hyperic.iml" filepath="$PROJECT_DIR$/../Hyperic/Hyperic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" filepath="$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" />
       <module fileurl="file://$PROJECT_DIR$/../LicensedArtifacts/LicensedArtifacts.iml" filepath="$PROJECT_DIR$/../LicensedArtifacts/LicensedArtifacts.iml" />
@@ -784,6 +785,7 @@
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/httpclient-4.0.3.jar!/" />
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/httpmime-4.0.3.jar!/" />
         <root url="jar://$PROJECT_DIR$/../ThirdParty/lib/commons/apache-mime4j-0.6.jar!/" />
+        <root url="file://$PROJECT_DIR$/../ThirdParty/lib/elasticsearch" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -794,6 +796,7 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/elasticsearch" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/im" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/javamail" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/jdbc" recursive="false" />

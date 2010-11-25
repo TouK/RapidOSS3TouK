@@ -34,7 +34,10 @@ class RapidQueryParserTest extends RapidCmdbTestCase
 
     protected void tearDown() {
         super.tearDown(); //To change body of overridden methods use File | Settings | File Templates.
-        compass.close();
+        if(compass){
+          compass.close();  
+        }
+
     }
 
     public void testFieldQueryWithEmptyString()

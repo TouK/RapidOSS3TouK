@@ -49,4 +49,8 @@ public class TypeMapping {
     public boolean isAllEnabled() {
         return isAllEnabled;
     }
+
+    public void setAllEnabled(boolean allEnabled) {
+        isAllEnabled = allEnabled;
+    }
 }

@@ -24,7 +24,7 @@ public class TypeProperty {
     public TypeProperty(String name, String type)
     {
         this.name = name;
-        this.type = type;
+        this.type = type.toLowerCase();
     }
 
     public String getName() {
@@ -53,5 +53,33 @@ public class TypeProperty {
 
     public boolean isStore() {
         return store;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setAnalyzer(String analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    public void setIncludeInAll(boolean includeInAll) {
+        this.includeInAll = includeInAll;
+    }
+
+    public void setKey(boolean key) {
+        isKey = key;
+    }
+
+    public void setStore(boolean store) {
+        this.store = store;
     }
 }

@@ -24,10 +24,8 @@ public class EsMappingManager {
 
     public void load(){
         typeMappings.clear();
-        List<TypeMapping> mappings = mappingProvider.constructMappings();
-        for(TypeMapping mapping: mappings){
-            typeMappings.put(mapping.getName(), mapping);
-        }
+        Map<String, TypeMapping> mappings = mappingProvider.constructMappings();
+        typeMappings.putAll(mappings);
     }
 
     public void setMappingProvider(EsMappingProvider mappingProvider){

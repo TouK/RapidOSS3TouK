@@ -1,6 +1,6 @@
 package com.ifountain.es.mapping;
 
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -11,6 +11,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface EsMappingProvider {
-    public List<TypeMapping> constructMappings();
+    public Map<String, TypeMapping> constructMappings();
     public void reload();
 }

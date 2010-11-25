@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="GrailsWeb">
+      <configuration>
+        <webroots>
+          <root url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/web-app" relative="/" />
+        </webroots>
+        <sourceRoots />
+      </configuration>
+    </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="Grails" name="Grails" removed="false">
+          <file>file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/web-app/WEB-INF/applicationContext.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/plugins/.svn" />
+    <content url="file://$MODULE_DIR$/plugins/code-editor-0.2.4">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/compress-0.2">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/compress-0.2/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/grails-app/domain" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/log-manager-0.1">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/log-manager-0.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/log-manager-0.1/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/log-manager-0.1/grails-app/services" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/quartz-0.2">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/quartz-0.2/src/java" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/rapid-domain-class-0.1/src/groovy" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/grails-app/taglib" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/plugins/searchable-extension">
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/searchable-extension/grails-app/domain" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="ThirdParty" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="grails-1.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="compass" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="LicencedJars" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="quartz" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="jsecurity" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library name="Grails User Library">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/plugins/compress-0.2/lib" />
+          <root url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/lib" />
+          <root url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/lib" />
+          <root url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/lib" />
+          <root url="file://$MODULE_DIR$/plugins/quartz-0.2/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/plugins/code-editor-0.2.4/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/plugins/compress-0.2/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/plugins/jsecurity-0.2.1/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/plugins/quartz-0.2/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/plugins/searchable-0.5-SNAPSHOT/lib" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>
+

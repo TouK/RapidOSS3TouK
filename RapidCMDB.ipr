@@ -118,6 +118,7 @@
           <module name="Smarts">
             <files>
               <file url="file://$PROJECT_DIR$/Smarts/web-app/WEB-INF/applicationContext.xml" />
+              <file url="file://$PROJECT_DIR$/../Smarts/web-app/WEB-INF/applicationContext.xml" />
             </files>
           </module>
           <module name="Netcool">
@@ -133,6 +134,16 @@
           <module name="RcmdbCommons-grailsPlugins">
             <files>
               <file url="file://$PROJECT_DIR$/RcmdbCommons/plugins/searchable-0.5-SNAPSHOT/web-app/WEB-INF/applicationContext.xml" />
+            </files>
+          </module>
+          <module name="RapidTesting">
+            <files>
+              <file url="file://$PROJECT_DIR$/RapidTesting/web-app/WEB-INF/applicationContext.xml" />
+            </files>
+          </module>
+          <module name="RapidUiPlugin">
+            <files>
+              <file url="file://$PROJECT_DIR$/RapidUiPlugin/web-app/WEB-INF/applicationContext.xml" />
             </files>
           </module>
         </modules>
@@ -376,18 +387,19 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Apg/Apg.iml" filepath="$PROJECT_DIR$/../Apg/Apg.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../CommonModules/ESClient/ESClient.iml" filepath="$PROJECT_DIR$/../CommonModules/ESClient/ESClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Hyperic/Hyperic.iml" filepath="$PROJECT_DIR$/../Hyperic/Hyperic.iml" />
       <module fileurl="file://$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" filepath="$PROJECT_DIR$/../LicencedJars/LicencedJars.iml" />
       <module fileurl="file://$PROJECT_DIR$/../LicensedArtifacts/LicensedArtifacts.iml" filepath="$PROJECT_DIR$/../LicensedArtifacts/LicensedArtifacts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OpenNms/OpenNms.iml" filepath="$PROJECT_DIR$/../OpenNms/OpenNms.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidInsight/RapidInsight.iml" filepath="$PROJECT_DIR$/RapidInsight/RapidInsight.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" filepath="$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Smarts/Smarts.iml" filepath="$PROJECT_DIR$/../Smarts/Smarts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" filepath="$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" />
@@ -543,13 +555,6 @@
                 </list>
               </option>
               <option name="trunkUrl" value="http://dev.ifountain.org/repos/os/Smarts" />
-            </SvnBranchConfiguration>
-          </value>
-        </entry>
-        <entry key="$PROJECT_DIR$/../SmartsBrowser">
-          <value>
-            <SvnBranchConfiguration>
-              <option name="trunkUrl" value="http://www.ifountain.org/repos/os/SmartsBrowser" />
             </SvnBranchConfiguration>
           </value>
         </entry>
@@ -850,8 +855,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/RcmdbCommons/plugins/quartz-0.2/lib" recursive="false" />
+      <jarDirectory url="file://$PROJECT_DIR$/rcmdbcommons/plugins/quartz-0.2/lib" recursive="false" />
     </library>
     <library name="apg">
       <CLASSES>

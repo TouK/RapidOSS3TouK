@@ -14,17 +14,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: mustafa
+ * Created by Sezgin Kucukkaraaslan
  * Date: Nov 25, 2010
  * Time: 11:10:24 AM
- * To change this template use File | Settings | File Templates.
  */
 
 /**
  * Type and default value support will be implemented here
  */
 public class EsRepository {
+    private static EsRepository instance;
+
+    public static EsRepository getInstance() {
+        if (instance == null) {
+            instance = new EsRepository();
+        }
+        return instance;
+    }
+
+    private EsRepository() {
+    }
 
     public IndexResponse index(String type, Map<String, Object> props, Map<String, Object> indexOptions) {
         return null;
@@ -100,7 +109,7 @@ public class EsRepository {
         return 0;
     }
 
-    public RossEsAdapter getAdapter(){
+    public RossEsAdapter getAdapter() {
         return null;
     }
 

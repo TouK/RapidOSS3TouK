@@ -1,6 +1,5 @@
 package com.ifountain.es.datasource
 
-import com.ifountain.elasticsearch.datasource.ElasticSearchAdapterTest
 import com.ifountain.core.test.util.RapidCoreTestCase
 
 /**

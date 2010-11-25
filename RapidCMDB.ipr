@@ -393,13 +393,11 @@
       <module fileurl="file://$PROJECT_DIR$/../Netcool/Netcool.iml" filepath="$PROJECT_DIR$/../Netcool/Netcool.iml" />
       <module fileurl="file://$PROJECT_DIR$/../OpenNms/OpenNms.iml" filepath="$PROJECT_DIR$/../OpenNms/OpenNms.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" filepath="$PROJECT_DIR$/RapidCMDB/RapidCMDB-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" filepath="$PROJECT_DIR$/RapidCMDBModeler/RapidCMDBModeler.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidInsight/RapidInsight.iml" filepath="$PROJECT_DIR$/RapidInsight/RapidInsight.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidTesting/RapidTesting.iml" filepath="$PROJECT_DIR$/RapidTesting/RapidTesting.iml" />
       <module fileurl="file://$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" filepath="$PROJECT_DIR$/RapidUiPlugin/RapidUiPlugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" filepath="$PROJECT_DIR$/RcmdbCommons/RcmdbCommons-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" filepath="$PROJECT_DIR$/../Rivermuse/Rivermuse.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Smarts/Smarts.iml" filepath="$PROJECT_DIR$/../Smarts/Smarts.iml" />
       <module fileurl="file://$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" filepath="$PROJECT_DIR$/../SmartsBrowser/SmartsBrowser.iml" />
@@ -793,12 +791,7 @@
         <root url="file://$PROJECT_DIR$/../ThirdParty/lib/elasticsearch" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java1.4" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/example/mapConnector/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/java" />
-        <root url="file://D:/UsedLibraries/commons-transaction-1.2-src/src/test" />
-      </SOURCES>
+      <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antlr" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/antscp" recursive="false" />
       <jarDirectory url="file://$PROJECT_DIR$/../ThirdParty/lib/elasticsearch" recursive="false" />

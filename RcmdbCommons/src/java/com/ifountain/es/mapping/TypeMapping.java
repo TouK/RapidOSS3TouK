@@ -17,6 +17,10 @@ public class TypeMapping {
     Map<String, TypeProperty> typeProperties = new HashMap<String, TypeProperty>();
     boolean isAllEnabled;
 
+    public TypeMapping(String name, String index) {
+        this.name = name;
+        this.index = index;
+    }
 
     public void addProperty(TypeProperty prop){
         
@@ -28,5 +32,17 @@ public class TypeMapping {
 
     public TypeProperty getTypeProperty(String propName){
         return null;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAllEnabled() {
+        return isAllEnabled;
     }
 }

@@ -1,12 +1,8 @@
 package com.ifountain.es.mapping;
 
-/**
- * Created by IntelliJ IDEA.
- * User: mustafa
- * Date: Nov 25, 2010
- * Time: 10:49:54 AM
- * To change this template use File | Settings | File Templates.
- */
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 public class EsMappingManager {
     EsMappingProvider mappingProvider;
     private static EsMappingManager singletonInstance;
@@ -18,11 +14,20 @@ public class EsMappingManager {
         return singletonInstance;
     }
 
+    Map<String, TypeMapping> typeMappings = new HashMap<String, TypeMapping>();
     private EsMappingManager(){
     }
 
     public TypeMapping getMapping(String type){
-        return mappingProvider.getMapping(type);
+        return typeMappings.get(type);
+    }
+
+    public void load(){
+        typeMappings.clear();
+        List<TypeMapping> mappings = mappingProvider.constructMappings();
+        for(TypeMapping mapping: mappings){
+            typeMappings.put(mapping.getName(), mapping);
+        }
     }
 
     public void setMappingProvider(EsMappingProvider mappingProvider){

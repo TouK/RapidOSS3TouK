@@ -11,6 +11,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface EsMappingProvider {
-    public TypeMapping getMapping(String type);
-    public List<String> getTypeNames();
+    public List<TypeMapping> constructMappings();
+    public void reload();
 }

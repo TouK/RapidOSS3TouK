@@ -18,6 +18,10 @@ class MappingUtils {
   public static Object createDefaultValue(String expectedType, String defaultValueStr) {
     try {
       if (expectedType == TypeProperty.STRING_TYPE) {
+        String trimmedValue = defaultValueStr.trim();
+        if(trimmedValue == ""){
+          return TypeProperty.EMPTY_STRING;  
+        }
         return defaultValueStr;
       }
       else if (expectedType == TypeProperty.INTEGER_TYPE) {

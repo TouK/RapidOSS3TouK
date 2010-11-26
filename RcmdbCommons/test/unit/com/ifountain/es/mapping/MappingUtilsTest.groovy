@@ -15,7 +15,10 @@ class MappingUtilsTest extends RapidCoreTestCase{
   public void testCreateDefaultValue(){
     String type = TypeProperty.STRING_TYPE;
     String defaultValueStr = "str"
-    MappingUtils.createDefaultValue(type, defaultValueStr)
+    assertEquals("str", MappingUtils.createDefaultValue(type, defaultValueStr));
+
+    defaultValueStr = "  "
+    assertEquals(TypeProperty.EMPTY_STRING, MappingUtils.createDefaultValue(type, defaultValueStr));
 
     type = TypeProperty.BOOLEAN_TYPE;
     defaultValueStr = "true"

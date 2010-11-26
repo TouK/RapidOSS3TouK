@@ -18,6 +18,8 @@ public class TypeProperty {
     public static String FLOAT_TYPE = "float";
     public static String DATE_TYPE = "date";
 
+    public static String EMPTY_STRING = "_e";
+
     public static String[] VALID_PROPERTY_TYPES = {STRING_TYPE, INTEGER_TYPE,
             BOOLEAN_TYPE, LONG_TYPE, DOUBLE_TYPE, FLOAT_TYPE, DATE_TYPE};
 
@@ -114,7 +116,7 @@ public class TypeProperty {
 
     private static Object getDefaultValue(String type) {
         if (type.equals(TypeProperty.STRING_TYPE)) {
-            return "";
+            return EMPTY_STRING;
         } else if (type.equals(TypeProperty.INTEGER_TYPE) || type.equals(TypeProperty.LONG_TYPE)) {
             return 0;
         }

@@ -144,6 +144,9 @@ class TypeMappingTypePropertyTest extends RCompTestCase {
     prop = new TypeProperty("prop1", TypeProperty.BOOLEAN_TYPE);
     assertEquals(false, prop.getDefaultValue());
 
+    prop = new TypeProperty("prop1", TypeProperty.STRING_TYPE);
+    assertEquals(TypeProperty.EMPTY_STRING, prop.getDefaultValue());
+
   }
 
   public void testAddPropertyUpdatesKeys() throws Exception {

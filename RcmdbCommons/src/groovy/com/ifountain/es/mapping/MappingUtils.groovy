@@ -46,7 +46,9 @@ class MappingUtils {
   }
 
   public static getAttributeAs(GPathResult xmlNode, String attributeName, Class expectedType){
-    String attributeValue = xmlNode.@"${attributeName}".text();
+    def attribute = xmlNode.@"${attributeName}";
+    if(attribute.isEmpty()) return null;
+    String attributeValue = attribute.text();
     try{
       if(expectedType == Boolean){
         return convertValueToBoolean(attributeValue)

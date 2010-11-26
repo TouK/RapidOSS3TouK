@@ -24,6 +24,12 @@ class MappingProviderException extends MappingException {
   public static MappingException invalidDefaultValueException(String type, String propName, String filePath, Throwable t) {
     return new MappingProviderException("Invalid default value for property ${propName} of type ${type} in ${filePath}. Reason:${t.toString()}", t);
   }
+  public static MappingException invalidXmlAttribute(String attribute, String attributeValue, String filePath) {
+    return new MappingProviderException("Invalid XML property value <${attributeValue}> of XML definition attribute <${attribute}> in <${filePath}>");
+  }
+  public static MappingException missingMandatoryXmlProperty(List attributes, String filePath) {
+    return new MappingProviderException("Missing mandatory XML property <${attributes.join(", ")}> in <${filePath}>");
+  }
 
   public static MappingException duplicateTypeException(String type, Collection filePath){
     return new MappingProviderException("Duplicate entry for type <${type}> exist in files <${filePath.join(", ")}>")

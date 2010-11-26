@@ -12,10 +12,11 @@ import org.apache.commons.io.FileUtils
  */
 class EsXmlMappingProviderTest extends RapidCoreTestCase {
   String testOutputDir = "../testoutput";
+
   public void setUp() {
     super.setUp();
     File testOutputDirectory = new File(testOutputDir);
-    FileUtils.deleteDirectory (testOutputDirectory);
+    FileUtils.deleteDirectory(testOutputDirectory);
     testOutputDirectory.mkdirs();
   }
 
@@ -41,53 +42,53 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile = new File("${testOutputDir}/EsTypeConfiguration.xml");
-    typeMappingConfigFile.setText (xmlContent);
-    
+    typeMappingConfigFile.setText(xmlContent);
+
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     Map<String, TypeMapping> mappings = provider.constructMappings();
-    assertEquals (2, mappings.size());
+    assertEquals(2, mappings.size());
     //check type1
     TypeMapping mapping = mappings["type1"];
-    assertEquals ("index1", mapping.getIndex())
-    assertTrue (mapping.isAllEnabled())
+    assertEquals("index1", mapping.getIndex())
+    assertTrue(mapping.isAllEnabled())
     Map<String, TypeProperty> typeProps = mapping.getTypeProperties();
-    assertEquals (2, typeProps.size());
-    
+    assertEquals(2, typeProps.size());
+
     TypeProperty prop = mapping.getTypeProperty("prop1");
-    assertEquals (TypeProperty.STRING_TYPE, prop.getType());
-    assertEquals (TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
-    assertTrue (prop.isKey());
-    assertFalse (prop.isIncludeInAll());
-    assertTrue (prop.isStore());
+    assertEquals(TypeProperty.STRING_TYPE, prop.getType());
+    assertEquals(TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
+    assertTrue(prop.isKey());
+    assertFalse(prop.isIncludeInAll());
+    assertTrue(prop.isStore());
     assertEquals("abc", prop.getDefaultValue());
 
     prop = mapping.getTypeProperty("prop2");
-    assertEquals (TypeProperty.INTEGER_TYPE, prop.getType());
-    assertEquals (TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
-    assertFalse (prop.isKey());
-    assertTrue (prop.isIncludeInAll());
-    assertFalse (prop.isStore());
+    assertEquals(TypeProperty.INTEGER_TYPE, prop.getType());
+    assertEquals(TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
+    assertFalse(prop.isKey());
+    assertTrue(prop.isIncludeInAll());
+    assertFalse(prop.isStore());
     assertEquals(Integer.name, prop.getDefaultValue().class.getName());
     assertEquals(12, prop.getDefaultValue());
 
     //check type2
     mapping = mappings["type2"];
-    assertEquals ("index2", mapping.getIndex())
-    assertFalse (mapping.isAllEnabled())
+    assertEquals("index2", mapping.getIndex())
+    assertFalse(mapping.isAllEnabled())
     typeProps = mapping.getTypeProperties();
-    assertEquals (1, typeProps.size());
+    assertEquals(1, typeProps.size());
 
     prop = mapping.getTypeProperty("prop1");
-    assertEquals (TypeProperty.DOUBLE_TYPE, prop.getType());
-    assertEquals (TypeProperty.WHITSPACE_ANALYZER, prop.getAnalyzer());
-    assertFalse (prop.isKey());
-    assertFalse (prop.isIncludeInAll());
-    assertTrue (prop.isStore());
+    assertEquals(TypeProperty.DOUBLE_TYPE, prop.getType());
+    assertEquals(TypeProperty.WHITSPACE_ANALYZER, prop.getAnalyzer());
+    assertFalse(prop.isKey());
+    assertFalse(prop.isIncludeInAll());
+    assertTrue(prop.isStore());
     assertEquals(Double.name, prop.getDefaultValue().class.getName());
-    assertEquals((int)15.0, (int)prop.getDefaultValue());
+    assertEquals((int) 15.0, (int) prop.getDefaultValue());
   }
 
-  public void testConstructMappingsWithMultipleConfigFiles(){
+  public void testConstructMappingsWithMultipleConfigFiles() {
     String xmlContent1 = """
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
@@ -120,45 +121,45 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
     File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2EsTypeConfiguration.xml");
     File typeMappingConfigFile3 = new File("${testOutputDir}/Sample3.xml");
-    typeMappingConfigFile1.setText (xmlContent1);
-    typeMappingConfigFile2.setText (xmlContent2);
-    typeMappingConfigFile3.setText (xmlContent3);
+    typeMappingConfigFile1.setText(xmlContent1);
+    typeMappingConfigFile2.setText(xmlContent2);
+    typeMappingConfigFile3.setText(xmlContent3);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     Map<String, TypeMapping> mappings = provider.constructMappings();
-    assertEquals (2, mappings.size());
+    assertEquals(2, mappings.size());
     //check type1
     TypeMapping mapping = mappings["type1"];
-    assertEquals ("index1", mapping.getIndex())
-    assertTrue (mapping.isAllEnabled())
+    assertEquals("index1", mapping.getIndex())
+    assertTrue(mapping.isAllEnabled())
     Map<String, TypeProperty> typeProps = mapping.getTypeProperties();
-    assertEquals (1, typeProps.size());
+    assertEquals(1, typeProps.size());
 
     TypeProperty prop = mapping.getTypeProperty("prop1");
-    assertEquals (TypeProperty.STRING_TYPE, prop.getType());
-    assertEquals (TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
-    assertTrue (prop.isKey());
-    assertFalse (prop.isIncludeInAll());
-    assertTrue (prop.isStore());
+    assertEquals(TypeProperty.STRING_TYPE, prop.getType());
+    assertEquals(TypeProperty.KEYWORD_ANALYZER, prop.getAnalyzer());
+    assertTrue(prop.isKey());
+    assertFalse(prop.isIncludeInAll());
+    assertTrue(prop.isStore());
     assertEquals("abc", prop.getDefaultValue());
     //check type2
     mapping = mappings["type2"];
-    assertEquals ("index2", mapping.getIndex())
-    assertFalse (mapping.isAllEnabled())
+    assertEquals("index2", mapping.getIndex())
+    assertFalse(mapping.isAllEnabled())
     typeProps = mapping.getTypeProperties();
-    assertEquals (1, typeProps.size());
+    assertEquals(1, typeProps.size());
 
     prop = mapping.getTypeProperty("prop1");
-    assertEquals (TypeProperty.DOUBLE_TYPE, prop.getType());
-    assertEquals (TypeProperty.WHITSPACE_ANALYZER, prop.getAnalyzer());
-    assertFalse (prop.isKey());
-    assertFalse (prop.isIncludeInAll());
-    assertTrue (prop.isStore());
+    assertEquals(TypeProperty.DOUBLE_TYPE, prop.getType());
+    assertEquals(TypeProperty.WHITSPACE_ANALYZER, prop.getAnalyzer());
+    assertFalse(prop.isKey());
+    assertFalse(prop.isIncludeInAll());
+    assertTrue(prop.isStore());
     assertEquals(Double.name, prop.getDefaultValue().class.getName());
-    assertEquals((int)15.0, (int)prop.getDefaultValue());
+    assertEquals((int) 15.0, (int) prop.getDefaultValue());
   }
 
-  public void testConstructMappingsThrowsExceptionIfDuplicateTypeExist(){
+  public void testConstructMappingsThrowsExceptionIfDuplicateTypeExist() {
     String xmlContent = """
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
@@ -175,7 +176,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile = new File("${testOutputDir}/EsTypeConfiguration.xml");
-    typeMappingConfigFile.setText (xmlContent);
+    typeMappingConfigFile.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -183,11 +184,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       fail("Should throw exception multiple types exist");
     } catch (MappingException e) {
       MappingException expectedEx = MappingProviderException.duplicateTypeException("type1", [typeMappingConfigFile.path]);
-      assertEquals (expectedEx.toString(), e.toString());
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
 
-  public void testConstructMappingsThrowsExceptionIfDuplicateTypeExistInMultipleFiles(){
+  public void testConstructMappingsThrowsExceptionIfDuplicateTypeExistInMultipleFiles() {
     String xmlContent = """
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
@@ -199,8 +200,8 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
     File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
-    typeMappingConfigFile2.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
+    typeMappingConfigFile2.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -208,11 +209,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       fail("Should throw exception multiple types exist");
     } catch (MappingException e) {
       MappingException expectedEx = MappingProviderException.duplicateTypeException("type1", [typeMappingConfigFile1.path, typeMappingConfigFile2.path]);
-      assertEquals (expectedEx.toString(), e.toString());
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
 
-  public void testConstructMappingsThrowsExceptionIfUnexpectedAttributesExistInTypeDefinition(){
+  public void testConstructMappingsThrowsExceptionIfUnexpectedAttributesExistInTypeDefinition() {
     String xmlContent = """
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true" InvalidAttribute1="abdcd" InvalidAttribute2="abdcd">
@@ -223,19 +224,19 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
       provider.constructMappings()
       fail("Should throw exception since invalid attributes exist");
     } catch (MappingException e) {
-      MappingException expectedEx = MappingProviderException.invalidAttributeInTypeDefinitionException("type1", ["InvalidAttribute1","InvalidAttribute2"].sort(), typeMappingConfigFile1.path);
-      assertEquals (expectedEx.toString(), e.toString());
+      MappingException expectedEx = MappingProviderException.invalidAttributeInTypeDefinitionException("type1", ["InvalidAttribute1", "InvalidAttribute2"].sort(), typeMappingConfigFile1.path);
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
 
-  public void testConstructMappingsThrowsExceptionIfUnexpectedAttributesExistInTypePropertyDefinition(){
+  public void testConstructMappingsThrowsExceptionIfUnexpectedAttributesExistInTypePropertyDefinition() {
     String xmlContent = """
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
@@ -246,19 +247,19 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
       provider.constructMappings()
       fail("Should throw exception since invalid attributes exist in type property");
     } catch (MappingException e) {
-      MappingException expectedEx = MappingProviderException.invalidAttributeInTypePropertyDefinitionException("type1", "prop1", ["InvalidAttribute1","InvalidAttribute2"].sort(), typeMappingConfigFile1.path);
-      assertEquals (expectedEx.toString(), e.toString());
+      MappingException expectedEx = MappingProviderException.invalidAttributeInTypePropertyDefinitionException("type1", "prop1", ["InvalidAttribute1", "InvalidAttribute2"].sort(), typeMappingConfigFile1.path);
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
 
-  public void testConstructMappingsThrowsExceptionIfInvalidTypeNameExist(){
+  public void testConstructMappingsThrowsExceptionIfInvalidTypeNameExist() {
     String invalidTypeName = "Invalid type name type1"
     String xmlContent = """
       <Types>
@@ -270,7 +271,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -279,11 +280,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidTypeNameException(invalidTypeName);
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException(invalidTypeName, typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.toString(), e.toString());
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
 
-  public void testConstructMappingsThrowsExceptionIfInvalidIndexNameExist(){
+  public void testConstructMappingsThrowsExceptionIfInvalidIndexNameExist() {
     String invalidIndexName = "Invalid index name"
     String xmlContent = """
       <Types>
@@ -295,7 +296,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -304,10 +305,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidIndexNameException(invalidIndexName);
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException("type1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.toString(), e.toString());
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
-  public void testConstructMappingsThrowsExceptionIfInvalidPropertyNameExist(){
+
+  public void testConstructMappingsThrowsExceptionIfInvalidPropertyNameExist() {
     String invalidPropertyName = "Invalid property name"
     String xmlContent = """
       <Types>
@@ -319,7 +321,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -328,11 +330,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidPropertyNameException(invalidPropertyName);
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException("type1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.toString(), e.toString());
+      assertEquals(expectedEx.toString(), e.toString());
     }
   }
-  
-  public void testConstructMappingsThrowsExceptionIfInvalidPropertyTypeExist(){
+
+  public void testConstructMappingsThrowsExceptionIfInvalidPropertyTypeExist() {
     String invalidPropertyType = "InvalidType"
     String xmlContent = """
       <Types>
@@ -344,7 +346,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -353,11 +355,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidPropertyTypeException(invalidPropertyType.toLowerCase());
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException("type1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.getMessage(), e.getMessage());
+      assertEquals(expectedEx.getMessage(), e.getMessage());
     }
   }
-  
-  public void testConstructMappingsThrowsExceptionIfInvalidDefaultValueExist(){
+
+  public void testConstructMappingsThrowsExceptionIfInvalidDefaultValueExist() {
     String invalidPropertyType = "InvalidType"
     String xmlContent = """
       <Types>
@@ -369,7 +371,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -378,14 +380,159 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingProviderException.defaultValueException(TypeProperty.INTEGER_TYPE, "abc", null);
       MappingException expectedEx = MappingProviderException.invalidDefaultValueException("type1", "prop1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.getMessage(), e.getMessage());
+      assertEquals(expectedEx.getMessage(), e.getMessage());
     }
   }
 
-  
 
-  public void testAnalyzerValidation()
-  {
+  public void testConstructMappingsThrowsExceptionIfTypeMappingXmlPropertiesAreInvalid() {
+    String xmlContent = """
+      <Types>
+          <Type Name="type1" Index="index1" AllEnabled="abc">
+              <Properties>
+                  <Property Name="prop1" Type="${TypeProperty.INTEGER_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+              </Properties>
+          </Type>
+      </Types>
+    """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    try {
+      provider.constructMappings()
+      fail("Should throw exception since type allenabled is invalid");
+    } catch (MappingException e) {
+      MappingException expectedEx = MappingProviderException.invalidXmlAttribute("AllEnabled", "abc", typeMappingConfigFile1.path);
+      assertEquals(expectedEx.getMessage(), e.getMessage());
+    }
+  }
+
+  public void testConstructMappingsThrowsExceptionIfTypePropertyXmlPropertiesAreInvalid() {
+    String xmlContent = """
+      <Types>
+          <Type Name="type1" Index="index1" AllEnabled="true">
+              <Properties>
+                  <Property Name="prop1" Type="${TypeProperty.INTEGER_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="abc" IncludeInAll="false" Store="true"></Property>
+              </Properties>
+          </Type>
+      </Types>
+    """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    try {
+      provider.constructMappings()
+      fail("Should throw exception since type allenabled is invalid");
+    } catch (MappingException e) {
+      MappingException expectedEx = MappingProviderException.invalidXmlAttribute("IsKey", "abc", typeMappingConfigFile1.path);
+      assertEquals(expectedEx.getMessage(), e.getMessage());
+    }
+  }
+
+  public void testConstructMappingsThrowsExceptionIfMandatoryTypeMappingXmlPropertiesAreMissing() {
+    String xmlContent = """
+        <Types>
+            <Type AllEnabled="true">
+                <Properties>
+                    <Property Name="prop1" Type="${TypeProperty.INTEGER_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="abc" IncludeInAll="false" Store="true"></Property>
+                </Properties>
+            </Type>
+        </Types>
+      """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    try {
+      provider.constructMappings()
+      fail("Should throw exception since index and name are missing");
+    } catch (MappingException e) {
+      MappingException expectedEx = MappingProviderException.missingMandatoryXmlProperty(["Index", "Name"], typeMappingConfigFile1.path);
+      assertEquals(expectedEx.getMessage(), e.getMessage());
+    }
+  }
+
+  public void testConstructMappingsThrowsExceptionIfMandatoryTypePropertyXmlPropertiesAreMissing() {
+    String xmlContent = """
+        <Types>
+            <Type AllEnabled="true" Name="type1" Index="index1">
+                <Properties>
+                    <Property  DefaultValue="abc" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="abc" IncludeInAll="false" Store="true"></Property>
+                </Properties>
+            </Type>
+        </Types>
+      """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    try {
+      provider.constructMappings()
+      fail("Should throw exception since name and type are missing");
+    } catch (MappingException e) {
+      MappingException expectedEx = MappingProviderException.missingMandatoryXmlProperty(["Name", "Type"], typeMappingConfigFile1.path);
+      assertEquals(expectedEx.getMessage(), e.getMessage());
+    }
+  }
+
+  public void testConstructMappingsWillDiscardNotSpecifiedOptionalProps() {
+    String xmlContent = """
+        <Types>
+            <Type Name="type1" Index="index1">
+                <Properties>
+                    <Property  Name="prop1" Type="${TypeProperty.STRING_TYPE}"></Property>
+                </Properties>
+            </Type>
+        </Types>
+      """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+    TypeMapping emptyTypeMapping = new TypeMapping("", "");
+    TypeProperty emptyTypeProperty = new TypeProperty("", TypeProperty.STRING_TYPE);
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    Map<String, TypeMapping> typeMappings = provider.constructMappings();
+    TypeMapping mapping1 = typeMappings["type1"];
+    assertEquals (emptyTypeMapping.isAllEnabled, mapping1.isAllEnabled);
+    TypeProperty prop = mapping1.getTypeProperty("prop1")
+    assertEquals (emptyTypeProperty.isKey(), prop.isKey());
+    assertEquals (emptyTypeProperty.isIncludeInAll(), prop.isIncludeInAll());
+    assertEquals (emptyTypeProperty.isStore(), prop.isStore());
+    assertEquals (emptyTypeProperty.getAnalyzer(), prop.getAnalyzer());
+    assertEquals (emptyTypeProperty.getDefaultValue(), prop.getDefaultValue());
+  }
+
+  public void testConstructMappingsWillOnlyDiscardNotSpecifiedOptionalProps() {
+    String xmlContent = """
+        <Types>
+            <Type Name="type1" Index="index1">
+                <Properties>
+                    <Property  Name="prop1" Type="${TypeProperty.STRING_TYPE}" IsKey="true"></Property>
+                </Properties>
+            </Type>
+        </Types>
+      """
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    typeMappingConfigFile1.setText(xmlContent);
+    TypeMapping emptyTypeMapping = new TypeMapping("", "");
+    TypeProperty emptyTypeProperty = new TypeProperty("", TypeProperty.STRING_TYPE);
+    EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
+    Map<String, TypeMapping> typeMappings = provider.constructMappings();
+    TypeMapping mapping1 = typeMappings["type1"];
+    assertEquals (emptyTypeMapping.isAllEnabled, mapping1.isAllEnabled);
+    TypeProperty prop = mapping1.getTypeProperty("prop1")
+    assertEquals (false, emptyTypeProperty.isKey());
+    assertEquals (true, prop.isKey());
+    assertEquals (emptyTypeProperty.isIncludeInAll(), prop.isIncludeInAll());
+    assertEquals (emptyTypeProperty.isStore(), prop.isStore());
+    assertEquals (emptyTypeProperty.getAnalyzer(), prop.getAnalyzer());
+    assertEquals (emptyTypeProperty.getDefaultValue(), prop.getDefaultValue());
+  }
+
+
+
+  public void testAnalyzerValidation() {
     String invalidPropertyAnalyzer = "InvalidAnalyzer"
     String xmlContent = """
       <Types>
@@ -397,7 +544,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -406,12 +553,11 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidAnalyzerTypeException(invalidPropertyAnalyzer);
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException("type1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.getMessage(), e.getMessage());
+      assertEquals(expectedEx.getMessage(), e.getMessage());
     }
   }
-  
-  public void testAnalyzerValidation1()
-  {
+
+  public void testAnalyzerValidation1() {
     String invalidKeyPropertyAnalyzer = TypeProperty.WHITSPACE_ANALYZER;
     String xmlContent = """
       <Types>
@@ -423,7 +569,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       </Types>
     """
     File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    typeMappingConfigFile1.setText (xmlContent);
+    typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider(testOutputDir);
     try {
@@ -432,7 +578,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
     } catch (MappingException e) {
       MappingException nestedException = MappingException.invalidAnalyzerForKeyProp(invalidKeyPropertyAnalyzer);
       MappingException expectedEx = MappingProviderException.invalidTypePropetiesException("type1", typeMappingConfigFile1.path, nestedException);
-      assertEquals (expectedEx.getMessage(), e.getMessage());
+      assertEquals(expectedEx.getMessage(), e.getMessage());
     }
   }
 

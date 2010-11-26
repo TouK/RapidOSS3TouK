@@ -2,6 +2,8 @@ package com.ifountain.es.mapping;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +17,7 @@ public class TypeMapping {
     String name;
     Map<String, TypeProperty> typeProperties = new HashMap<String, TypeProperty>();
     boolean isAllEnabled = true;
-    private Map<String, TypeProperty> keys = new HashMap<String, TypeProperty>();
+    private Map<String, TypeProperty> keys = new TreeMap<String, TypeProperty>();
 
     public TypeMapping(String name, String index) {
         this.name = name;

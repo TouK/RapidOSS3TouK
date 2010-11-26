@@ -56,6 +56,30 @@ public class EsRepository implements EsMappingListener {
     public IndexResponse index(String type, Map<String, Object> props, Map<String, Object> indexOptions) throws Exception {
         TypeMapping typeMapping = EsMappingManager.getInstance().getMapping(type);
         String index = typeMapping.getIndex();
+        Map<String, Object> properties = preparePropsForIndexing(props, typeMapping, indexOptions);
+        String id = (String) properties.remove("id");
+        if (id != null) {
+            return getAdapter().index(index, type, new XsonSource(properties), id, false);
+        } else {
+            return getAdapter().index(index, type, new XsonSource(properties), true);
+        }
+    }
+
+    public void index(String type, Map<String, Object> props, Map<String, Object> indexOptions, ActionListener<IndexResponse> listener) throws Exception {
+        TypeMapping typeMapping = EsMappingManager.getInstance().getMapping(type);
+        String index = typeMapping.getIndex();
+        Map<String, Object> properties = preparePropsForIndexing(props, typeMapping, indexOptions);
+        String id = (String) properties.remove("id");
+        if (id != null) {
+            getAdapter().index(index, type, new XsonSource(properties), id, false, listener);
+        } else {
+            getAdapter().index(index, type, new XsonSource(properties), true, listener);
+        }
+    }
+
+    private Map<String, Object> preparePropsForIndexing(Map<String, Object> props, TypeMapping typeMapping, Map<String, Object> indexOptions) throws Exception {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        String type = typeMapping.getName();
         Map<String, TypeProperty> keys = typeMapping.getKeys();
         StringBuffer idBuf = new StringBuffer("");
         for (Map.Entry<String, TypeProperty> key : keys.entrySet()) {
@@ -66,7 +90,10 @@ public class EsRepository implements EsMappingListener {
             idBuf.append(String.valueOf(props.get(pName))).append("_");
         }
         String id = idBuf.toString();
-        Map<String, Object> properties = new HashMap<String, Object>();
+        if (id.length() > 0) {
+            id = id.substring(0, id.length() - 1);
+            properties.put("id", id);
+        }
         Map<String, Object> typeDefaultValues = defaultValues.get(type);
         properties.putAll(typeDefaultValues);
         boolean indexAll = indexOptions.containsKey(INDEX_ALL) && (Boolean) indexOptions.get(INDEX_ALL);
@@ -79,17 +106,9 @@ public class EsRepository implements EsMappingListener {
                 properties.put(p.getKey(), propValue);
             }
         }
-        if (id.length() > 0) {
-            id = id.substring(0, id.length() - 1);
-            return getAdapter().index(index, type, new XsonSource(properties), id, false);
-        } else {
-            return getAdapter().index(index, type, new XsonSource(properties), true);
-        }
-
+        return properties;
     }
 
-    public void index(String type, Map<String, Object> props, Map<String, Object> indexOptions, ActionListener<IndexResponse> listener) {
-    }
 
     public IndexResponse update(String type, Map<String, Object> props, Map<String, Object> indexOptions) {
         return null;

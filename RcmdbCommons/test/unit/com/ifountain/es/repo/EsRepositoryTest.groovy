@@ -12,6 +12,9 @@ import org.elasticsearch.action.get.GetResponse
 import com.ifountain.core.test.util.DatasourceTestUtils
 import org.elasticsearch.common.xcontent.XContentFactory
 import org.elasticsearch.common.xcontent.XContentParser
+import com.ifountain.es.ClosureActionListener
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
  * Created by Sezgin Kucukkaraaslan
@@ -194,7 +197,32 @@ class EsRepositoryTest extends RapidCoreTestCase {
 
     assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "whitespaceProp:\"\"").count())
     assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "undefinedProp2:\"\"").count())
+  }
 
+  public void testAsynchIndexing() throws Exception{
+    createIndices([indexWithMultipleKeys])
+
+    def props = [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1];
+    def responses = [];
+    EsRepository.getInstance().index(typeWithMultipleKeys, props, [:], new ClosureActionListener({resp, failure ->
+       if(resp) responses.add(resp);
+    }))
+    CommonTestUtils.waitFor(new ClosureWaitAction({
+      assertEquals(1, responses.size());     
+    }))
+    IndexResponse indexResponse = responses[0];
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse= adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyProp1Value", entry.keyProp1)
+    assertEquals(1, entry.keyProp2)
+    assertTrue(entry.keyProp3)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
   }
 
   private void createIndices(def indices) {

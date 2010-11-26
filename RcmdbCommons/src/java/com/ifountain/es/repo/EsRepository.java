@@ -1,6 +1,7 @@
 package com.ifountain.es.repo;
 
 import com.ifountain.es.datasource.RossEsAdapter;
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -23,7 +24,11 @@ import java.util.Map;
  * Type and default value support will be implemented here
  */
 public class EsRepository {
+    public static final String CONNECTION_NAME = "localEs";
     private static EsRepository instance;
+
+    private RossEsAdapter adapter;
+    private Logger logger;
 
     public static EsRepository getInstance() {
         if (instance == null) {
@@ -33,6 +38,8 @@ public class EsRepository {
     }
 
     private EsRepository() {
+        logger = Logger.getRootLogger();
+        adapter = new RossEsAdapter(CONNECTION_NAME, logger);
     }
 
     public IndexResponse index(String type, Map<String, Object> props, Map<String, Object> indexOptions) {
@@ -110,7 +117,7 @@ public class EsRepository {
     }
 
     public RossEsAdapter getAdapter() {
-        return null;
+        return adapter;
     }
 
 }

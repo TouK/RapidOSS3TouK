@@ -15,7 +15,7 @@ public class TypeMapping {
     String index;
     String name;
     Map<String, TypeProperty> typeProperties = new HashMap<String, TypeProperty>();
-    boolean isAllEnabled;
+    boolean isAllEnabled = true;
 
     public TypeMapping(String name, String index) {
         this.name = name;

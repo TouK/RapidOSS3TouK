@@ -58,7 +58,7 @@ deviceMap.each{deviceName, deviceConfigMap->
     if(deviceConfigMap.expanded == "true")
     {
         deviceConfigMap.expandable = "true"
-        def edges=getEdgesOfDevice(deviceName);
+        def edges=getEdgesOfDevice(deviceConfigMap["domainObject"]);
         deviceEdgeCountMap[deviceName]=edges.size();
         edges.each {edge->
             def otherSide = getOtherSideName(edge, deviceName);
@@ -130,9 +130,9 @@ deviceSet.each{nodeName, nodeData->
 deviceSet.each{devName, devConfig->
 	 if(devConfig.expanded=="false") // for only unexpanded devices
      {
-        devConfig.expandable = isExpandable(devName, edgeMap);
+        devConfig.expandable = isExpandable(devConfig, edgeMap);
      }
-     else //if a node is expanded, but have unexpanded edges then it is expandable 
+     else //if a node is expanded, but have unexpanded edges then it is expandable
      {
     	 def deviceEdgeCount=deviceEdgeCountMap[devName];
     	 def edgesOfNodeOnMap=getEdgesOfNodeFromEdgeMap(devName,edgeMap);
@@ -147,7 +147,6 @@ deviceSet.each{devName, devConfig->
      }
 }
 
-
 def writer = new StringWriter();
 def mapBuilder = new MarkupBuilder(writer);
 
@@ -159,6 +158,7 @@ if(params.layout)
 mapBuilder.graph(graphProps)
 {
     deviceSet.each {devName, devConfig->
+        devConfig.remove("domainObject");
         mapBuilder.node( devConfig);
     }
 
@@ -170,11 +170,55 @@ mapBuilder.graph(graphProps)
 def endTime = System.nanoTime();
 return writer.toString();
 
-
 //utility functions
-def getEdgesOfDevice(deviceName)
+def getEdgesOfDevice(domainObject) {
+  def deviceName = domainObject.name;
+  def edges = [];
+  def edgesFromEdgeModel = getEdgeModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()} ) ${getMapTypeQuery()} ");
+  edges.addAll(edgesFromEdgeModel);
+  def otherObjects = [];
+
+  /*
+  // Sample RsComputerSystem - RsApplication Edge Creation
+  if (domainObject instanceof RsComputerSystem) {
+    otherObjects.addAll(RsApplication.searchEvery("computerSystemName:${domainObject.name.exactQuery()}"));
+  }
+
+  if (domainObject instanceof RsApplication) {
+    otherObjects.addAll(RsComputerSystem.searchEvery("name:${domainObject.computerSystemName.exactQuery()}"));
+  }
+  */
+  otherObjects.each {otherObj ->
+    edges.add(generateEdgeDataBetweenObjects(domainObject, otherObj))
+  }
+  return edges;
+}
+
+def generateEdgeDataBetweenObjects(object1,object2)
 {
-   return getEdgeModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()} ) ${getMapTypeQuery()} ");
+	def sourceObject;
+	def targetObject;
+
+	//edge source-target is in alphabetical order, to prevent duplicate edges
+	if(object1.className.compareTo(object2.className)<0)
+	{
+		sourceObject=object1;
+		targetObject=object2;
+	}
+	else
+	{
+		sourceObject=object2;
+		targetObject=object1;
+	}
+
+
+	//<---> is a unique mark so that getMapData distinguishes that this edge is virtual
+	def edgeName = "${sourceObject.className} ${sourceObject.name}<--->${targetObject.className} ${targetObject.name}".toString()
+    def edge = [name: edgeName, id: edgeName]
+    edge[CONFIG.CONNECTION_SOURCE_PROPERTY] = sourceObject.name
+    edge[CONFIG.CONNECTION_TARGET_PROPERTY] = targetObject.name
+
+    return edge;
 }
 def getMapTypeQuery()
 {
@@ -229,6 +273,7 @@ def buildNodeData(device,expanded,x,y,ownerEdgeId)
      nodeData["rsClassName"]=device.class.name;
      nodeData["name"]=device.name;
      nodeData["ownerEdgeId"]=ownerEdgeId;
+     nodeData["domainObject"] = device;
      return nodeData;
 
 }
@@ -245,45 +290,43 @@ def getOtherSideModel(edge, deviceName)
     }
     else
     {
-        if(edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
+        if(edge[CONFIG.CONNECTION_SOURCE_PROPERTY] != deviceName)
         {
-            otherSideClassName = edge.getProperty(CONFIG.CONNECTION_SOURCE_CLASS_PROPERTY);
+            otherSideClassName = edge[CONFIG.CONNECTION_SOURCE_CLASS_PROPERTY];
         }
-        else if(edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
+        else if(edge[CONFIG.CONNECTION_TARGET_PROPERTY] != deviceName)
         {
-            otherSideClassName = edge.getProperty(CONFIG.CONNECTION_TARGET_CLASS_PROPERTY);
+            otherSideClassName = edge[CONFIG.CONNECTION_TARGET_CLASS_PROPERTY];
         }
     }
 
     return this.class.classLoader.loadClass(otherSideClassName);
 }
 
+
 def getOtherSideName(edge, deviceName)
 {
     def otherSide = null;
-    if(edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
+    if(edge[CONFIG.CONNECTION_SOURCE_PROPERTY] != deviceName)
     {
-        otherSide = edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY);
+        otherSide = edge[CONFIG.CONNECTION_SOURCE_PROPERTY];
     }
-    else if(edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
+    else if(edge[CONFIG.CONNECTION_TARGET_PROPERTY] != deviceName)
     {
-        otherSide = edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY)
+        otherSide = edge[CONFIG.CONNECTION_TARGET_PROPERTY]
     }
 
     return otherSide;
 }
 
-
-
-
-
-
 // if device has a edge with another device that is not in map
 // returns true
-def isExpandable( devName, edgeMap)
+def isExpandable( devConfig, edgeMap)
 {
+    def domainObject = devConfig["domainObject"];
+	def devName=domainObject.name;
     def expandable = "false";
-    def edges = getEdgesOfDevice(devName);
+    def edges = getEdgesOfDevice(domainObject);
     edges.each{edge->
         def otherSide = getOtherSideName(edge, devName);
         if( otherSide != null ){

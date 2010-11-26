@@ -13,16 +13,19 @@ public class TypeProperty {
     public static String LONG_TYPE = "long";
     public static String DOUBLE_TYPE = "double";
     public static String FLOAT_TYPE = "float";
-    public static String DATE_TYPE = "date"; 
+    public static String DATE_TYPE = "date";
+
+    public static String KEYWORD_ANALYZER = "keyword";
+    public static String WHITSPACE_ANALYZER = "whitespace";
     String name;
     String type;
     Object defaultValue;
-    String analyzer;
+    String analyzer = KEYWORD_ANALYZER;
     boolean includeInAll = true;
     boolean isKey = false;
     boolean store = false;
-    public TypeProperty(String name, String type)
-    {
+
+    public TypeProperty(String name, String type) {
         this.name = name;
         this.type = type.toLowerCase();
     }

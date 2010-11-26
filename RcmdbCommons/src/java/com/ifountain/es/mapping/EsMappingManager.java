@@ -1,12 +1,11 @@
 package com.ifountain.es.mapping;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 public class EsMappingManager {
     EsMappingProvider mappingProvider;
     private static EsMappingManager singletonInstance;
+    private List<EsMappingListener> listeners = new ArrayList<EsMappingListener>();
 
     public static EsMappingManager getInstance() {
         if (singletonInstance == null) {
@@ -28,6 +27,9 @@ public class EsMappingManager {
         typeMappings.clear();
         Map<String, TypeMapping> mappings = mappingProvider.constructMappings();
         typeMappings.putAll(mappings);
+        for (EsMappingListener listener : listeners) {
+            listener.mappingChanged();
+        }
     }
 
     public void setMappingProvider(EsMappingProvider mappingProvider) {
@@ -36,6 +38,10 @@ public class EsMappingManager {
 
     public Map<String, TypeMapping> getTypeMappings() {
         return typeMappings;
+    }
+
+    public void addListener(EsMappingListener listener){
+        this.listeners.add(listener);
     }
 
 }

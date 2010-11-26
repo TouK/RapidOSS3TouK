@@ -3,6 +3,7 @@ package com.ifountain.es.test.util;
 import com.ifountain.es.mapping.EsMappingProvider;
 import com.ifountain.es.mapping.TypeMapping;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Map;
  * Time: 9:40:01 AM
  */
 public class MockMappingProvider implements EsMappingProvider {
-    private Map<String, TypeMapping> mappings;
+    private Map<String, TypeMapping> mappings = new HashMap<String, TypeMapping>();
 
     public void setMappings(Map<String, TypeMapping> mappings) {
         this.mappings = mappings;

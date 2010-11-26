@@ -126,11 +126,8 @@ deviceSet.each{nodeName, nodeData->
      }
 }
 
-//changed ended - for collapse
-
 //we should generate isExpandable after all map is generated
 deviceSet.each{devName, devConfig->
-	 //changed for collapse , else case added
 	 if(devConfig.expanded=="false") // for only unexpanded devices
      {
         devConfig.expandable = isExpandable(devName, edgeMap);

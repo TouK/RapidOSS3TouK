@@ -2,6 +2,8 @@ package com.ifountain.es.mapping;
 
 import com.ifountain.core.test.util.RapidCoreTestCase;
 
+import java.sql.Date;
+
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa
@@ -130,5 +132,21 @@ public class TypeMappingAndTypePropertyTest extends RapidCoreTestCase{
         assertTrue(TypeProperty.isNameValid("TypeTest2"));
         assertFalse(TypeProperty.isNameValid("Type Test2"));
         assertFalse(TypeProperty.isNameValid("A Type Test2"));
+    }
+
+    public void testDefaultValueWillBeAssignedAcoordingToType(){
+        TypeProperty prop = new TypeProperty("prop1", TypeProperty.INTEGER_TYPE);
+        assertEquals(0, prop.getDefaultValue());
+        prop = new TypeProperty("prop1", TypeProperty.LONG_TYPE);
+        assertEquals(0, prop.getDefaultValue());
+        prop = new TypeProperty("prop1", TypeProperty.DOUBLE_TYPE);
+        assertEquals(0, (int)((Double)prop.getDefaultValue()).doubleValue());
+        prop = new TypeProperty("prop1", TypeProperty.FLOAT_TYPE);
+        assertEquals(0, (int)((Float)prop.getDefaultValue()).doubleValue());
+        prop = new TypeProperty("prop1", TypeProperty.DATE_TYPE);
+        assertEquals(new Date(0), prop.getDefaultValue());
+        prop = new TypeProperty("prop1", TypeProperty.BOOLEAN_TYPE);
+        assertEquals(false, prop.getDefaultValue());
+        
     }
 }

@@ -28,14 +28,14 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
-                  <Property Name="prop2" Type="int" DefaultValue="12" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="false" IncludeInAll="true" Store="false"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop2" Type="${TypeProperty.INTEGER_TYPE}" DefaultValue="12" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="false" IncludeInAll="true" Store="false"></Property>
               </Properties>
           </Type>
 
           <Type Name="type2" Index="index2" AllEnabled="false">
               <Properties>
-                  <Property Name="prop1" Type="Double" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.DOUBLE_TYPE}" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -92,7 +92,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -102,7 +102,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type2" Index="index2" AllEnabled="false">
               <Properties>
-                  <Property Name="prop1" Type="Double" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.DOUBLE_TYPE}" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -112,7 +112,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type3" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -163,13 +163,13 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
 
           <Type Name="type1" Index="index2" AllEnabled="false">
               <Properties>
-                  <Property Name="prop1" Type="Double" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.DOUBLE_TYPE}" DefaultValue="15" Analyzer="${TypeProperty.WHITSPACE_ANALYZER}"  IsKey="false" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -192,7 +192,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -217,7 +217,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true" InvalidAttribute1="abdcd" InvalidAttribute2="abdcd">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -240,7 +240,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"  InvalidAttribute1="abdcd" InvalidAttribute2="abdcd"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"  InvalidAttribute1="abdcd" InvalidAttribute2="abdcd"></Property>
               </Properties>
           </Type>
       </Types>
@@ -264,7 +264,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="${invalidTypeName}" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -289,7 +289,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="${invalidIndexName}" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -313,7 +313,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="${invalidPropertyName}" Type="String" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="${invalidPropertyName}" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="tokenized"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -363,7 +363,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="int" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.INTEGER_TYPE}" DefaultValue="abc" Analyzer="${TypeProperty.KEYWORD_ANALYZER}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -391,7 +391,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${invalidPropertyAnalyzer}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${invalidPropertyAnalyzer}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>
@@ -417,7 +417,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
       <Types>
           <Type Name="type1" Index="index1" AllEnabled="true">
               <Properties>
-                  <Property Name="prop1" Type="String" DefaultValue="abc" Analyzer="${invalidKeyPropertyAnalyzer}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
+                  <Property Name="prop1" Type="${TypeProperty.STRING_TYPE}" DefaultValue="abc" Analyzer="${invalidKeyPropertyAnalyzer}"  IsKey="true" IncludeInAll="false" Store="true"></Property>
               </Properties>
           </Type>
       </Types>

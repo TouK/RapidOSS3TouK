@@ -48,14 +48,16 @@
     </orderEntry>
     <orderEntry type="library" name="GRAILS" level="application" />
     <orderEntry type="module" module-name="RcmdbCommons" />
+    <orderEntry type="module" module-name="comp" />
+    <orderEntry type="module" module-name="core" />
+    <orderEntry type="module" module-name="ext" />
     <orderEntry type="library" scope="PROVIDED" name="compass" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="jsecurity" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="ThirdParty" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="grails-1.0.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="ThirdParty" level="project" />
-    <orderEntry type="module" module-name="comp" />
-    <orderEntry type="module" module-name="core" />
-    <orderEntry type="module" module-name="ext" />
+    <orderEntry type="library" scope="PROVIDED" name="compass" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="LicencedJars" level="project" />
   </component>
 </module>
 

@@ -17,8 +17,6 @@ class EsMappingManagerTest extends RCompTestCase {
     EsMappingManager.getInstance().load();
     assertTrue(listener.isMappingChanged);
   }
-
-
 }
 
 class MockEsMappingListener implements EsMappingListener {

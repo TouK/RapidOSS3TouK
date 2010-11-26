@@ -46,31 +46,33 @@ nodes.each{nodeParam->
         {
             nodeData.expanded = "true";
         }
-        deviceMap[device.name] = buildNodeData(device,nodeData.expanded,nodeData.x,nodeData.y);
+        deviceMap[device.name] = buildNodeData(device,nodeData.expanded,nodeData.x,nodeData.y,nodeData.ownerEdgeId);
     }
 
 }
 
+def deviceEdgeCountMap=[:];
 def deviceSet = [:]
 deviceMap.each{deviceName, deviceConfigMap->
     deviceSet[deviceName] = deviceConfigMap;
     if(deviceConfigMap.expanded == "true")
     {
         deviceConfigMap.expandable = "true"
-        def links=getLinksofDevice(deviceName);
-        links.each {link->
-            def otherSide = getOtherSideName(link, deviceName);
+        def edges=getEdgesOfDevice(deviceName);
+        deviceEdgeCountMap[deviceName]=edges.size();
+        edges.each {edge->
+            def otherSide = getOtherSideName(edge, deviceName);
 
-            if(otherSide != null && !edgeMap.containsKey(link.name))
+            if(otherSide != null && !edgeMap.containsKey(edge.name))
             {
-                def otherSideModel = getOtherSideModel(link,deviceName);
+                def otherSideModel = getOtherSideModel(edge,deviceName);
 
                 def otherSideDevice = otherSideModel.get(name:otherSide);
                 if(otherSideDevice != null){
-                    edgeMap[link.name] = [ "source" : deviceName, "target" : otherSide,"id":link.name];
+                    edgeMap[edge.name] = [ "source" : deviceName, "target" : otherSide,"id":edge.name];
                     if(!deviceMap.containsKey(otherSide) && !deviceSet.containsKey(otherSide))
                     {
-                        deviceSet[otherSide]= buildNodeData(otherSideDevice,"false","","");
+                        deviceSet[otherSide]= buildNodeData(otherSideDevice,"false","","",edge.name);
                     }
                 }
             }
@@ -79,11 +81,72 @@ deviceMap.each{deviceName, deviceConfigMap->
     }
 }
 
-//we should generate isExpandable after all map is generated for only unexpanded devices
+def collapsedNodeName = params.collapsedNodeName;
+if(collapsedNodeName)
+{
+	def collapsedNodeNames=collapseNode(collapsedNodeName,deviceSet,edgeMap);
+	collapsedNodeNames.each{ nodeName ->
+		def edgesOfNode=getEdgesOfNodeFromEdgeMap(nodeName,edgeMap);
+		//remove all sub collapsed nodes which have no remaining edge
+		if(edgesOfNode.size()==0 && nodeName!=collapsedNodeName)
+		{
+			deviceSet.remove(nodeName);
+		}
+	}
+}
+
+//we should change expanded state of nodes, who have no edges except ownerEdge , this happens when other nodes are collapsed
+deviceSet.each{nodeName, nodeData->
+	if(nodeData.expanded=="true")
+	{
+        def deviceEdgeCount=deviceEdgeCountMap[nodeName];
+		def ownerEdgeId=nodeData.ownerEdgeId;
+        def edgesOfNodeExceptOwnerEdge=getEdgesOfNodeExceptOwnerEdgeFromEdgeMap(nodeName,ownerEdgeId,edgeMap);
+		if(edgesOfNodeExceptOwnerEdge.size()==0 && deviceEdgeCount!=0)
+		{
+			nodeData.expanded = "false";
+		}
+	}
+}
+
+//we should generate collapsible after all map is generated
+deviceSet.each{nodeName, nodeData->
+     if(nodeData.expanded=="true") //if a node is expanded it is collapsible
+     {
+    	 nodeData.collapsible = "true";
+     }
+     else //if a node is not expanded , but have expanded edges except the ownerEdge , then it is also collapsible
+     {
+    	 def ownerEdgeId=nodeData.ownerEdgeId;
+         def edgesOfNodeExceptOwnerEdge=getEdgesOfNodeExceptOwnerEdgeFromEdgeMap(nodeName,ownerEdgeId,edgeMap);
+		 if(edgesOfNodeExceptOwnerEdge.size()>0 )
+		 {
+			 nodeData.collapsible = "true";
+		 }
+     }
+}
+
+//changed ended - for collapse
+
+//we should generate isExpandable after all map is generated
 deviceSet.each{devName, devConfig->
-     if(devConfig.expanded=="false")
+	 //changed for collapse , else case added
+	 if(devConfig.expanded=="false") // for only unexpanded devices
      {
         devConfig.expandable = isExpandable(devName, edgeMap);
+     }
+     else //if a node is expanded, but have unexpanded edges then it is expandable 
+     {
+    	 def deviceEdgeCount=deviceEdgeCountMap[devName];
+    	 def edgesOfNodeOnMap=getEdgesOfNodeFromEdgeMap(devName,edgeMap);
+    	 if(deviceEdgeCount==edgesOfNodeOnMap.size())
+    	 {
+    		 devConfig.expandable="false";
+    	 }
+    	 else
+    	 {
+    		 devConfig.expandable="true";
+    	 }
      }
 }
 
@@ -112,9 +175,9 @@ return writer.toString();
 
 
 //utility functions
-def getLinksofDevice(deviceName)
+def getEdgesOfDevice(deviceName)
 {
-   return getLinkModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()} ) ${getMapTypeQuery()} ");
+   return getEdgeModel().searchEvery("( ${CONFIG.CONNECTION_SOURCE_PROPERTY}:${deviceName.exactQuery()} OR ${CONFIG.CONNECTION_TARGET_PROPERTY}:${deviceName.exactQuery()} ) ${getMapTypeQuery()} ");
 }
 def getMapTypeQuery()
 {
@@ -162,20 +225,21 @@ def extractMapDataFromParameter()
     }
     return mapData;
 }
-def buildNodeData(device,expanded,x,y)
+def buildNodeData(device,expanded,x,y,ownerEdgeId)
 {
-     def nodeData=["expanded":expanded,"expandable":"false","x":x,"y":y]
+     def nodeData=["expanded":expanded,"expandable":"false","x":x,"y":y,"collapsible":"false"]
      nodeData["id"]=device.name;
      nodeData["rsClassName"]=device.class.name;
      nodeData["name"]=device.name;
+     nodeData["ownerEdgeId"]=ownerEdgeId;
      return nodeData;
 
 }
-def getLinkModel()
+def getEdgeModel()
 {
     return this.class.classLoader.loadClass(CONFIG.DEFAULT_CONNECTION_MODEL);
 }
-def getOtherSideModel(link, deviceName)
+def getOtherSideModel(edge, deviceName)
 {
     def otherSideClassName = null;
     if(CONFIG.USE_DEFAULT_NODE_MODEL)
@@ -184,29 +248,29 @@ def getOtherSideModel(link, deviceName)
     }
     else
     {
-        if(link.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
+        if(edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
         {
-            otherSideClassName = link.getProperty(CONFIG.CONNECTION_SOURCE_CLASS_PROPERTY);
+            otherSideClassName = edge.getProperty(CONFIG.CONNECTION_SOURCE_CLASS_PROPERTY);
         }
-        else if(link.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
+        else if(edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
         {
-            otherSideClassName = link.getProperty(CONFIG.CONNECTION_TARGET_CLASS_PROPERTY);
+            otherSideClassName = edge.getProperty(CONFIG.CONNECTION_TARGET_CLASS_PROPERTY);
         }
     }
 
     return this.class.classLoader.loadClass(otherSideClassName);
 }
 
-def getOtherSideName(link, deviceName)
+def getOtherSideName(edge, deviceName)
 {
     def otherSide = null;
-    if(link.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
+    if(edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY) != deviceName)
     {
-        otherSide = link.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY);
+        otherSide = edge.getProperty(CONFIG.CONNECTION_SOURCE_PROPERTY);
     }
-    else if(link.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
+    else if(edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY) != deviceName)
     {
-        otherSide = link.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY)
+        otherSide = edge.getProperty(CONFIG.CONNECTION_TARGET_PROPERTY)
     }
 
     return otherSide;
@@ -217,16 +281,16 @@ def getOtherSideName(link, deviceName)
 
 
 
-// if device has a link with another device that is not in map
+// if device has a edge with another device that is not in map
 // returns true
 def isExpandable( devName, edgeMap)
 {
     def expandable = "false";
-    def links = getLinksofDevice(devName);
-    links.each{link->
-        def otherSide = getOtherSideName(link, devName);
+    def edges = getEdgesOfDevice(devName);
+    edges.each{edge->
+        def otherSide = getOtherSideName(edge, devName);
         if( otherSide != null ){
-            if( !edgeMap.containsKey(link.name) )
+            if( !edgeMap.containsKey(edge.name) )
             {
                 expandable = "true";
                 return;
@@ -234,4 +298,61 @@ def isExpandable( devName, edgeMap)
 		}
     }
     return expandable;
+}
+
+
+def collapseNode(nodeName,deviceSet,edgeMap)
+{
+  def collapsedNodeNames=[nodeName];
+  if(nodeName)
+  {
+      def nodeData=deviceSet[nodeName];
+      //mark the target node expanded false , so that + icon will be visible
+      nodeData.expanded="false";
+      if(nodeData)
+      {
+          def ownerEdgeId=nodeData.ownerEdgeId;
+          def edgesOfNodeExceptOwnerEdge=getEdgesOfNodeExceptOwnerEdgeFromEdgeMap(nodeName,ownerEdgeId,edgeMap);
+          edgesOfNodeExceptOwnerEdge.each{ edgeName , edgeData ->
+              edgeMap.remove(edgeName);
+              def otherNodeName=edgeData.target;
+              if(edgeData.target==nodeName)
+              {
+                  otherNodeName=edgeData.source;
+              }
+              def otherNodeData=deviceSet[otherNodeName];
+              if(otherNodeData)
+              {
+                  //collapse the target node if it is owned by this node
+                  if(otherNodeData.ownerEdgeId==edgeName)
+                  {
+                      collapsedNodeNames.addAll(collapseNode(otherNodeName,deviceSet,edgeMap));
+                  }
+              }
+          }
+      }
+  }
+  return collapsedNodeNames;
+}
+def getEdgesOfNodeFromEdgeMap(nodeName,edgeMap)
+{
+  return edgeMap.findAll{ it.value.source == nodeName || it.value.target == nodeName };
+}
+def getEdgesOfNodeExceptOwnerEdgeFromEdgeMap(nodeName,ownerEdgeId,edgeMap)
+{
+    def edgesOfNode=getEdgesOfNodeFromEdgeMap(nodeName,edgeMap);
+    return edgesOfNode.findAll{it.value.id != ownerEdgeId && !areEdgesDuplicate(edgeMap,ownerEdgeId,it.value.id) };
+}
+def areEdgesDuplicate(edgeMap,edge1Name,edge2Name)
+{
+  def isDuplicate=false;
+  def edge1Data=edgeMap[edge1Name];
+  def edge2Data=edgeMap[edge2Name];
+
+  if(edge1Data!=null && edge2Data!=null)
+  {
+      isDuplicate= isDuplicate || (edge1Data.source == edge2Data.source && edge1Data.target == edge2Data.target ) ;
+      isDuplicate= isDuplicate || (edge1Data.source == edge2Data.target && edge1Data.target == edge2Data.source ) ;
+  }
+  return isDuplicate;
 }

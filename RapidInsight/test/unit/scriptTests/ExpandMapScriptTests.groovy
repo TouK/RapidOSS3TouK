@@ -71,7 +71,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(0,expandData.edges.size());
 
         nodeData=expandData.nodes[source.name];
-        checkNodeData(nodeData,source,"true","true","50","100");
+        checkNodeData(nodeData,source,"true","false","50","100");
 
     }
 
@@ -98,7 +98,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def targetNodeData=expandData.nodes[target.name];
         def edgeData=getEdgeFrom(expandData.edges,link1.name)
 
-        checkNodeData(sourceNodeData,source,"true","true","50","100");
+        checkNodeData(sourceNodeData,source,"true","false","50","100");
         checkNodeData(targetNodeData,target,"false","false","","");
         checkEdgeData(edgeData,source.name,target.name,link1.name);
 
@@ -116,7 +116,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def edgeDuplicateData=getEdgeFrom(duplicateExpandData.edges,link1Duplicate.name)
         edgeData=getEdgeFrom(duplicateExpandData.edges,link1.name)
 
-        checkNodeData(sourceDuplicateNodeData,source,"true","true","50","100");
+        checkNodeData(sourceDuplicateNodeData,source,"true","false","50","100");
         checkNodeData(targetDuplicateNodeData,target,"false","false","","");
         checkEdgeData(edgeDuplicateData,source.name,target.name,link1Duplicate.name);
         checkEdgeData(edgeData,source.name,target.name,link1.name);
@@ -136,7 +136,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         edgeDuplicateData=getEdgeFrom(reverseExpandData.edges,link1Duplicate.name)
         edgeData=getEdgeFrom(reverseExpandData.edges,link1.name)
 
-        checkNodeData(sourceReverseNodeData,source,"true","true","50","100");
+        checkNodeData(sourceReverseNodeData,source,"true","false","50","100");
         checkNodeData(targetReverseNodeData,target,"false","false","","");
         checkEdgeData(edgeReverseData,source.name,target.name,link1Reverse.name);
         checkEdgeData(edgeDuplicateData,source.name,target.name,link1Duplicate.name);
@@ -170,7 +170,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def node2NodeData=expandData.nodes[node2.name];
         def link1Data=getEdgeFrom(expandData.edges,link1.name)
 
-        checkNodeData(node1NodeData,node1,"true","true","","");
+        checkNodeData(node1NodeData,node1,"true","false","","");
         checkNodeData(node2NodeData,node2,"false","true","","");
         checkEdgeData(link1Data,node1.name,node2.name,link1.name);
 
@@ -186,7 +186,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def link1AgainData=getEdgeFrom(expandAgainData.edges,link1.name)
 
 
-        checkNodeData(node1AgainNodeData,node1,"true","true","","");
+        checkNodeData(node1AgainNodeData,node1,"true","false","","");
         checkNodeData(node2AgainNodeData,node2,"false","true","","");
         checkEdgeData(link1AgainData,node1.name,node2.name,link1.name);
 
@@ -205,8 +205,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def link1Data2=getEdgeFrom(expandNode2Data.edges,link1.name)
         def link2Data2=getEdgeFrom(expandNode2Data.edges,link2.name)
 
-        checkNodeData(node1NodeData2,node1,"true","true","","");
-        checkNodeData(node2NodeData2,node2,"true","true","","");
+        checkNodeData(node1NodeData2,node1,"true","false","","");
+        checkNodeData(node2NodeData2,node2,"true","false","","");
         checkNodeData(node3NodeData2,node3,"false","false","","");
         checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
         checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
@@ -244,7 +244,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def link1Data=getEdgeFrom(expandData.edges,link1.name)
         def link2Data=getEdgeFrom(expandData.edges,link3.name)
 
-        checkNodeData(node1NodeData,node1,"true","true","","");
+        checkNodeData(node1NodeData,node1,"true","false","","");
         checkNodeData(node2NodeData,node2,"false","true","","");
         checkNodeData(node3NodeData,node3,"false","true","","");
         checkEdgeData(link1Data,node1.name,node2.name,link1.name);
@@ -268,8 +268,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def link3Data2=getEdgeFrom(expandNode2Data.edges,link3.name)
 
 
-        checkNodeData(node1NodeData2,node1,"true","true","","");
-        checkNodeData(node2NodeData2,node2,"true","true","","");
+        checkNodeData(node1NodeData2,node1,"true","false","","");
+        checkNodeData(node2NodeData2,node2,"true","false","","");
         checkNodeData(node3NodeData2,node3,"false","false","","");
         checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
         checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
@@ -293,9 +293,9 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         def link3Data3=getEdgeFrom(expandNode3Data.edges,link3.name)
 
 
-        checkNodeData(node1NodeData3,node1,"true","true","","");
+        checkNodeData(node1NodeData3,node1,"true","false","","");
         checkNodeData(node2NodeData3,node2,"false","false","","");
-        checkNodeData(node3NodeData3,node3,"true","true","","");
+        checkNodeData(node3NodeData3,node3,"true","false","","");
         checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
         checkEdgeData(link2Data3,node2.name,node3.name,link2.name);
         checkEdgeData(link3Data3,node1.name,node3.name,link3.name);
@@ -349,7 +349,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals("RsEvent",node3NodeData.rsClassName);
 
 
-        checkNodeData(node1NodeData,node1,"true","true","","");
+        checkNodeData(node1NodeData,node1,"true","false","","");
         checkNodeData(node2NodeData,node2,"false","true","","");
         checkNodeData(node3NodeData,node3,"false","true","","");
         checkEdgeData(link1Data,node1.name,node2.name,link1.name);
@@ -378,8 +378,8 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals("RsEvent",node2NodeData.rsClassName);
         assertEquals("RsEvent",node3NodeData.rsClassName);
 
-        checkNodeData(node1NodeData2,node1,"true","true","","");
-        checkNodeData(node2NodeData2,node2,"true","true","","");
+        checkNodeData(node1NodeData2,node1,"true","false","","");
+        checkNodeData(node2NodeData2,node2,"true","false","","");
         checkNodeData(node3NodeData2,node3,"false","false","","");
         checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
         checkEdgeData(link2Data2,node2.name,node3.name,link2.name);
@@ -408,9 +408,9 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals("RsEvent",node2NodeData.rsClassName);
         assertEquals("RsEvent",node3NodeData.rsClassName);
 
-        checkNodeData(node1NodeData3,node1,"true","true","","");
+        checkNodeData(node1NodeData3,node1,"true","false","","");
         checkNodeData(node2NodeData3,node2,"false","false","","");
-        checkNodeData(node3NodeData3,node3,"true","true","","");
+        checkNodeData(node3NodeData3,node3,"true","false","","");
         checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
         checkEdgeData(link2Data3,node2.name,node3.name,link2.name);
         checkEdgeData(link3Data3,node1.name,node3.name,link3.name);
@@ -456,7 +456,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
         def sourceNodeData=expandData.nodes[sourceNode.name];
-        checkNodeData(sourceNodeData,sourceNode,"true","true","","");
+        checkNodeData(sourceNodeData,sourceNode,"true","false","","");
 
 
         targetCount.times{ counter ->
@@ -491,13 +491,13 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
             //check sourceNode data
             sourceNodeData=targetExpandData.nodes[sourceNode.name];
-            checkNodeData(sourceNodeData,sourceNode,"true","true","","");
+            checkNodeData(sourceNodeData,sourceNode,"true","false","","");
 
             //check expanded node
             def expandedNode=targets[targetName];
             def expandedNodeData=targetExpandData.nodes[targetName];
 
-            checkNodeData(expandedNodeData,expandedNode,"true","true","","");
+            checkNodeData(expandedNodeData,expandedNode,"true","false","","");
             def linkData=getEdgeFrom(targetExpandData.edges,"l${counter}");
             checkEdgeData (linkData,sourceNode.name,expandedNode.name,"l${counter}");
 
@@ -565,7 +565,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
              //check sourceNode data
             sourceNodeData=targetExpandData.nodes[sourceNode.name];
-            checkNodeData(sourceNodeData,sourceNode,"true","true","","");
+            checkNodeData(sourceNodeData,sourceNode,"true","false","","");
 
             //check expanded nodes
             expandedTargetNames.each{ targetNameKey, targetNameValue ->
@@ -574,7 +574,7 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
 
 
 
-               checkNodeData(expandedNodeData,expandedNode,"true","true","","");
+               checkNodeData(expandedNodeData,expandedNode,"true","false","","");
                def linkData=getEdgeFrom(targetExpandData.edges,"l${targetNameValue.substringAfter('target')}");
                checkEdgeData (linkData,sourceNode.name,expandedNode.name,"l${targetNameValue.substringAfter('target')}");
 
@@ -605,6 +605,266 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
             }
          }
     }
+    public void testCollapseMapWith1To2Nodes()
+    {
+       /* Map looks like
+                 1
+              2    3
+       */
+        def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
+        assertFalse(node1.hasErrors())
+        def node2=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
+        assertFalse(node2.hasErrors())
+        def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
+        assertFalse(node3.hasErrors())
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
+        assertFalse(link1.hasErrors())
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node1.name,z_ComputerSystemName:node3.name);
+        assertFalse(link2.hasErrors())
+
+        def params=[:];
+        params.nodes="node1,,false,,;"
+        params.expandedNodeName="node1";
+        params.nodePropertyList="name,ownerEdgeId,expanded,x,y"
+        def expandData=getExpandMapData(params);
+        assertEquals(3,expandData.nodes.size());
+        assertEquals(2,expandData.edges.size());
+
+
+        def node1NodeData=expandData.nodes[node1.name];
+        def node2NodeData=expandData.nodes[node2.name];
+        def node3NodeData=expandData.nodes[node3.name];
+        def link1Data=getEdgeFrom(expandData.edges,link1.name)
+        def link2Data=getEdgeFrom(expandData.edges,link2.name)
+
+        checkNodeDataForCollapse(node1NodeData,node1,"true","false","","","","true");
+        checkNodeDataForCollapse(node2NodeData,node2,"false","false","","","l1","false");
+        checkNodeDataForCollapse(node3NodeData,node3,"false","false","","","l2","false");
+        checkEdgeData(link1Data,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data,node1.name,node3.name,link2.name);
+
+
+        //collapse node1 , will remove links and nodes 2&3
+        params.nodes="node1,,true,,;node2,l1,false,,;node3,l2,false,,"
+        params.collapsedNodeName="node1";
+        def collapseNodeData=getExpandMapData(params);
+        assertEquals(1,collapseNodeData.nodes.size());
+        assertEquals(0,collapseNodeData.edges.size());
+
+        node1NodeData=collapseNodeData.nodes[node1.name];
+        checkNodeDataForCollapse(node1NodeData,node1,"false","true","","","","false"); //expanded false , expandable true , collapsible false
+
+        //collapse node2 will change nothing , because it have only one link node2 - node1 , and that link is an owner link , owner links are not removed
+        params.nodes="node1,,true,,;node2,l1,false,,;node3,l2,false,,"
+        params.collapsedNodeName="node2";
+        def collapseNode2Data=getExpandMapData(params);
+        assertEquals(3,collapseNode2Data.nodes.size());
+        assertEquals(2,collapseNode2Data.edges.size());
+        assertEquals(expandData.nodes,collapseNode2Data.nodes);
+        assertEquals(expandData.edges,collapseNode2Data.edges);
+    }
+    public void testCollapseMapWith1To2To2NodesWithSharedNode()
+    {
+       /* Map looks like
+                 1
+              2    3
+            4    5    6
+       */
+        def node1=RsComputerSystem.add(name:"node1",model:"model1",className:"class1");
+        assertFalse(node1.hasErrors())
+        def node2=RsComputerSystem.add(name:"node2",model:"model2",className:"class2");
+        assertFalse(node2.hasErrors())
+        def node3=RsComputerSystem.add(name:"node3",model:"model3",className:"class3");
+        assertFalse(node3.hasErrors())
+        def node4=RsComputerSystem.add(name:"node4",model:"model4",className:"class4");
+        assertFalse(node4.hasErrors())
+        def node5=RsComputerSystem.add(name:"node5",model:"model5",className:"class5");
+        assertFalse(node5.hasErrors())
+        def node6=RsComputerSystem.add(name:"node6",model:"model6",className:"class6");
+        assertFalse(node5.hasErrors())
+        def link1=RsLink.add(name:"l1",a_ComputerSystemName:node1.name,z_ComputerSystemName:node2.name);
+        assertFalse(link1.hasErrors())
+        def link2=RsLink.add(name:"l2",a_ComputerSystemName:node1.name,z_ComputerSystemName:node3.name);
+        assertFalse(link2.hasErrors())
+        def link3=RsLink.add(name:"l3",a_ComputerSystemName:node2.name,z_ComputerSystemName:node4.name);
+        assertFalse(link3.hasErrors())
+        def link4=RsLink.add(name:"l4",a_ComputerSystemName:node2.name,z_ComputerSystemName:node5.name);
+        assertFalse(link4.hasErrors())
+        def link5=RsLink.add(name:"l5",a_ComputerSystemName:node3.name,z_ComputerSystemName:node5.name);
+        assertFalse(link5.hasErrors())
+        def link6=RsLink.add(name:"l6",a_ComputerSystemName:node3.name,z_ComputerSystemName:node6.name);
+        assertFalse(link6.hasErrors())
+
+        def params=[:];
+        params.nodes="node1,,false,,;"
+        params.expandedNodeName="node1";
+        params.nodePropertyList="name,ownerEdgeId,expanded,x,y"
+        def expandData=getExpandMapData(params);
+        assertEquals(3,expandData.nodes.size());
+        assertEquals(2,expandData.edges.size());
+
+
+        def node1NodeData=expandData.nodes[node1.name];
+        def node2NodeData=expandData.nodes[node2.name];
+        def node3NodeData=expandData.nodes[node3.name];
+        def link1Data=getEdgeFrom(expandData.edges,link1.name)
+        def link2Data=getEdgeFrom(expandData.edges,link2.name)
+
+        checkNodeDataForCollapse(node1NodeData,node1,"true","false","","","","true");
+        checkNodeDataForCollapse(node2NodeData,node2,"false","true","","","l1","false");
+        checkNodeDataForCollapse(node3NodeData,node3,"false","true","","","l2","false");
+        checkEdgeData(link1Data,node1.name,node2.name,link1.name);
+        checkEdgeData(link2Data,node1.name,node3.name,link2.name);
+
+
+       //expand node2
+       params.nodes="node1,,true,,;node2,l1,false,,;node3,l2,false,,"
+       params.expandedNodeName="node2";
+       def expandNode2Data=getExpandMapData(params);
+
+       assertEquals(5,expandNode2Data.nodes.size());
+       assertEquals(4,expandNode2Data.edges.size());
+
+
+       def node1NodeData2=expandNode2Data.nodes[node1.name];
+       def node2NodeData2=expandNode2Data.nodes[node2.name];
+       def node3NodeData2=expandNode2Data.nodes[node3.name];
+       def node4NodeData2=expandNode2Data.nodes[node4.name];
+       def node5NodeData2=expandNode2Data.nodes[node5.name];
+       def link1Data2=getEdgeFrom(expandNode2Data.edges,link1.name)
+       def link2Data2=getEdgeFrom(expandNode2Data.edges,link2.name)
+       def link3Data2=getEdgeFrom(expandNode2Data.edges,link3.name)
+       def link4Data2=getEdgeFrom(expandNode2Data.edges,link4.name)
+
+
+       checkNodeDataForCollapse(node1NodeData2,node1,"true","false","","","","true");
+       checkNodeDataForCollapse(node2NodeData2,node2,"true","false","","","l1","true");
+       checkNodeDataForCollapse(node3NodeData2,node3,"false","true","","","l2","false");
+       checkNodeDataForCollapse(node4NodeData2,node4,"false","false","","","l3","false");
+       checkNodeDataForCollapse(node5NodeData2,node5,"false","true","","","l4","false");     //this node is expandable because there is 1 more link to node 3
+       checkEdgeData(link1Data2,node1.name,node2.name,link1.name);
+       checkEdgeData(link2Data2,node1.name,node3.name,link2.name);
+       checkEdgeData(link3Data2,node2.name,node4.name,link3.name);
+       checkEdgeData(link4Data2,node2.name,node5.name,link4.name);
+
+
+      //expand node3
+       params.nodes="node1,,true,,;node2,l1,true,,;node3,l2,false,,;node4,l3,false,,;node5,l4,false,,"
+       params.expandedNodeName="node3";
+       def expandNode3Data=getExpandMapData(params);
+
+       assertEquals(6,expandNode3Data.nodes.size());
+       assertEquals(6,expandNode3Data.edges.size());
+
+
+       def node1NodeData3=expandNode3Data.nodes[node1.name];
+       def node2NodeData3=expandNode3Data.nodes[node2.name];
+       def node3NodeData3=expandNode3Data.nodes[node3.name];
+       def node4NodeData3=expandNode3Data.nodes[node4.name];
+       def node5NodeData3=expandNode3Data.nodes[node5.name];
+       def node6NodeData3=expandNode3Data.nodes[node6.name];
+       def link1Data3=getEdgeFrom(expandNode3Data.edges,link1.name)
+       def link2Data3=getEdgeFrom(expandNode3Data.edges,link2.name)
+       def link3Data3=getEdgeFrom(expandNode3Data.edges,link3.name)
+       def link4Data3=getEdgeFrom(expandNode3Data.edges,link4.name)
+       def link5Data3=getEdgeFrom(expandNode3Data.edges,link5.name)
+       def link6Data3=getEdgeFrom(expandNode3Data.edges,link6.name)
+
+       checkNodeDataForCollapse(node1NodeData3,node1,"true","false","","","","true");
+       checkNodeDataForCollapse(node2NodeData3,node2,"true","false","","","l1","true");
+       checkNodeDataForCollapse(node3NodeData3,node3,"true","false","","","l2","true");
+       checkNodeDataForCollapse(node4NodeData3,node4,"false","false","","","l3","false");
+       checkNodeDataForCollapse(node5NodeData3,node5,"false","false","","","l4","true");    //this node is collapible because there is a link to node 3 which is not ownerLink
+       checkNodeDataForCollapse(node6NodeData3,node6,"false","false","","","l6","false");
+       checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
+       checkEdgeData(link2Data3,node1.name,node3.name,link2.name);
+       checkEdgeData(link3Data3,node2.name,node4.name,link3.name);
+       checkEdgeData(link4Data3,node2.name,node5.name,link4.name);
+       checkEdgeData(link5Data3,node3.name,node5.name,link5.name);
+       checkEdgeData(link6Data3,node3.name,node6.name,link6.name);
+
+        //collapse node5
+        //will remove link l5 between node 5 - node 3
+        //will not remove link l4 because it is the owner link of node 5
+        //node3 will become expandable because one of its links is gone, but it will stay also collapsible because node3-node6 connection still remains
+      
+        params.nodes="node1,,true,,;node2,l1,true,,;node3,l2,true,,;node4,l3,false,,;node5,l4,false,,;node6,l6,false,,"
+        params.collapsedNodeName="node5";
+        def collapseNode5Data=getExpandMapData(params);
+        assertEquals(6,collapseNode5Data.nodes.size());
+        assertEquals(5,collapseNode5Data.edges.size());
+
+         def node1NodeData5=collapseNode5Data.nodes[node1.name];
+         def node2NodeData5=collapseNode5Data.nodes[node2.name];
+         def node3NodeData5=collapseNode5Data.nodes[node3.name];
+         def node4NodeData5=collapseNode5Data.nodes[node4.name];
+         def node5NodeData5=collapseNode5Data.nodes[node5.name];
+         def node6NodeData5=collapseNode5Data.nodes[node6.name];
+         def link1Data5=getEdgeFrom(collapseNode5Data.edges,link1.name)
+         def link2Data5=getEdgeFrom(collapseNode5Data.edges,link2.name)
+         def link3Data5=getEdgeFrom(collapseNode5Data.edges,link3.name)
+         def link4Data5=getEdgeFrom(collapseNode5Data.edges,link4.name)
+         def link6Data5=getEdgeFrom(collapseNode5Data.edges,link6.name)
+
+         checkNodeDataForCollapse(node1NodeData5,node1,"true","false","","","","true");
+         checkNodeDataForCollapse(node2NodeData5,node2,"true","false","","","l1","true");
+         checkNodeDataForCollapse(node3NodeData5,node3,"true","true","","","l2","true"); //node 3 becomes expandable because this is one more link to node5 , node 3 is collapsible because link to node6 still remains
+         checkNodeDataForCollapse(node4NodeData5,node4,"false","false","","","l3","false");
+         checkNodeDataForCollapse(node5NodeData5,node5,"false","true","","","l4","false");    //this node is expandable because there is one more link to node 3
+         checkNodeDataForCollapse(node6NodeData5,node6,"false","false","","","l6","false");
+         checkEdgeData(link1Data5,node1.name,node2.name,link1.name);
+         checkEdgeData(link2Data5,node1.name,node3.name,link2.name);
+         checkEdgeData(link3Data5,node2.name,node4.name,link3.name);
+         checkEdgeData(link4Data5,node2.name,node5.name,link4.name);
+         checkEdgeData(link6Data5,node3.name,node6.name,link6.name);
+
+
+        //collapse node3
+        //will remove link l6 between node3 - node6
+        //will not remove link l2 because it is the owner link of node3
+        params.nodes="node1,,true,,;node2,l1,true,,;node3,l2,true,,;node4,l3,false,,;node5,l4,false,,;node6,l6,false,,"
+        params.collapsedNodeName="node3";
+        def collapseNode3Data=getExpandMapData(params);
+        assertEquals(5,collapseNode3Data.nodes.size());
+        assertEquals(4,collapseNode3Data.edges.size());
+
+         node1NodeData3=collapseNode3Data.nodes[node1.name];
+         node2NodeData3=collapseNode3Data.nodes[node2.name];
+         node3NodeData3=collapseNode3Data.nodes[node3.name];
+         node4NodeData3=collapseNode3Data.nodes[node4.name];
+         node5NodeData3=collapseNode3Data.nodes[node5.name];
+         link1Data3=getEdgeFrom(collapseNode3Data.edges,link1.name)
+         link2Data3=getEdgeFrom(collapseNode3Data.edges,link2.name)
+         link3Data3=getEdgeFrom(collapseNode3Data.edges,link3.name)
+         link4Data3=getEdgeFrom(collapseNode3Data.edges,link4.name)
+
+
+         checkNodeDataForCollapse(node1NodeData3,node1,"true","false","","","","true");
+         checkNodeDataForCollapse(node2NodeData3,node2,"true","false","","","l1","true");
+         checkNodeDataForCollapse(node3NodeData3,node3,"false","true","","","l2","false"); //node 3 becomes expanded false and expandable all links are gone except owner link , it is not collapsible because there is no link except owner link
+         checkNodeDataForCollapse(node4NodeData3,node4,"false","false","","","l3","false");
+         checkNodeDataForCollapse(node5NodeData3,node5,"false","true","","","l4","false");    //this node is expandable because there is one more link to node 3
+         checkEdgeData(link1Data3,node1.name,node2.name,link1.name);
+         checkEdgeData(link2Data3,node1.name,node3.name,link2.name);
+         checkEdgeData(link3Data3,node2.name,node4.name,link3.name);
+         checkEdgeData(link4Data3,node2.name,node5.name,link4.name);
+
+
+        //collapse node1
+        //all nodes & links except node1 will go away
+
+         params.nodes="node1,,true,,;node2,l1,true,,;node3,l2,false,,;node4,l3,false,,;node5,l4,false,,;"
+         params.collapsedNodeName="node1";
+         def collapseNode1Data=getExpandMapData(params);
+         assertEquals(1,collapseNode1Data.nodes.size());
+         assertEquals(0,collapseNode1Data.edges.size());
+
+         def node1NodeData1=collapseNode1Data.nodes[node1.name];
+
+
+         checkNodeDataForCollapse(node1NodeData1,node1,"false","true","","","","false");
+
+    }
     def checkNodeData(nodeData,node,expanded,expandable,x,y)
     {
         assertEquals(node.name,nodeData.id);
@@ -613,6 +873,12 @@ class ExpandMapScriptTests  extends RapidCmdbWithCompassTestCase {
         assertEquals(x,nodeData.x);
         assertEquals(y,nodeData.y);
 
+    }
+    def checkNodeDataForCollapse(nodeData,node,expanded,expandable,x,y,ownerEdgeId,collapsible)
+    {
+        checkNodeData(nodeData,node,expanded,expandable,x,y)
+        assertEquals(ownerEdgeId,nodeData.ownerEdgeId);
+        assertEquals(collapsible,nodeData.collapsible);
     }
     def getEdgeFrom(edges,edgeName)
     {

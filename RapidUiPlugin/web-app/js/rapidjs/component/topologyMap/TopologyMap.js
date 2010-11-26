@@ -68,6 +68,7 @@ YAHOO.rapidjs.component.TopologyMap = function(container, config){
     this.wMode = config.wMode;
     this.dataURL = config.dataURL;
     this.expandURL = config.expandURL;
+    this.defaultNodePropertyList=["ownerEdgeId","expanded","x","y"];
     this.setNodePropertyListString(config.nodePropertyList);
     this.setMapPropertyListString(config.mapPropertyList);
     this.mapProperties=new Object();
@@ -166,6 +167,9 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         config.nodeContent.images[config.nodeContent.images.length] = {id:"expand", clickable:"true", x:20, y:0, dataKey:"canExpand", images:{
             "true":getUrlPrefix()+"images/map/plus.png"
         }}
+        config.nodeContent.images[config.nodeContent.images.length] = {id:"collapse", clickable:"true", x:40, y:0, dataKey:"canCollapse", images:{
+            "true":getUrlPrefix()+"images/map/minus.png"
+        }}
     },
     showNodeMenu: function(x, y, data)
     {
@@ -176,6 +180,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         {
 
             var menuItemConfig = this.nodeMenuItems[i];
+            if(menuItemConfig['id']==this.id+"expand" || menuItemConfig['id']==this.id+"collapse")
+            {
+            	continue;
+            }
             var visible = true;
             if(menuItemConfig['visible'] != null){
                 visible = eval(menuItemConfig['visible']);
@@ -184,9 +192,13 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 visibleMenuItems[visibleMenuItems.length] = menuItemConfig['id'];
             }
         }
-        if(nodeGraphData.expandable == "true" && nodeGraphData.expanded == "false")
+        if(nodeGraphData.expandable == "true")
         {
             visibleMenuItems[visibleMenuItems.length] = this.id+"expand";
+        }
+        if(nodeGraphData.collapsible == "true")
+        {
+            visibleMenuItems[visibleMenuItems.length] = this.id+"collapse";
         }
         if(visibleMenuItems.length > 0)
         {
@@ -222,6 +234,8 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     {
         var showMenu = false;
         var expand = false;
+        var collapse = false;
+
         for(var i in clickedItems)
         {
             var clickedItemId = clickedItems[i];
@@ -233,7 +247,12 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             {
                 expand = true;
             }
+            if(clickedItemId == "collapse")
+            {
+                collapse = true;
+            }
         }
+
         if(showMenu == true)
         {
             this.showNodeMenu(x,y,data);
@@ -241,6 +260,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         else if(expand == true)
         {
             this.expandNode(data.id);
+        }
+        else if(collapse == true)
+        {
+            this.collapseNode(data.id);
         }
         else
         {
@@ -259,6 +282,10 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             if(menuId == "expand" )
             {
                 this.expandNode(data.id);
+            }
+            if(menuId == "collapse" )
+            {
+                this.collapseNode(data.id);
             }
             else
             {
@@ -326,6 +353,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     addDefaultNodeMenuItems: function(config){
         if(config.nodeMenuItems == null) config.nodeMenuItems = [];
         config.nodeMenuItems[config.nodeMenuItems.length] = {id:"expand", text:"Expand"}
+	    config.nodeMenuItems[config.nodeMenuItems.length] = {id:"collapse", text:"Collapse"}
     },
     addDefaultToolbarMenuItems: function(config){
         if(config.toolbarMenuItems == null) config.toolbarMenuItems = [];
@@ -437,7 +465,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
 
     getMapData : function () {
-        var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+        var nodePropertyList=this.getNodePropertyListToSend(this.defaultNodePropertyList);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
         var edges = this.getPropertiesString(this.getEdges(), ["id", "source", "target"]);
         var nodePropertyListString=nodePropertyList.join(',');
@@ -475,7 +503,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
 
         if(this.lastLoadMapRequestData != null)
         {
-                var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+                var nodePropertyList=this.getNodePropertyListToSend(this.defaultNodePropertyList);
                 var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList);
                 var edges = this.getPropertiesString(this.getEdges(), ["id", "source", "target"]);
                 var params = { expandedNodeName : this.lastLoadMapRequestData.params.expandedNodeName, nodes : nodes, edges : edges, nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
@@ -520,7 +548,8 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                     nodeData[attrName] = attributes[attrName];
                 }
 
-                nodeData["canExpand"] = ""+(this.mapNodes[nodeData.id].expandable == "true" && this.mapNodes[nodeData.id].expanded == "false");
+                nodeData["canExpand"] = ""+(this.mapNodes[nodeData.id].expandable == "true" );
+                nodeData["canCollapse"] = ""+(this.mapNodes[nodeData.id].collapsible == "true");
                 nodeData["showMenu"] = "true";
                 nodes.push( nodeData );
             }
@@ -573,7 +602,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
                 }
             }
 
-            
+
 
 
 
@@ -666,7 +695,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
             var tempNodes=new Array();
             tempNodes[0]=nodeParams;
 
-            var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+            var nodePropertyList=this.getNodePropertyListToSend(this.defaultNodePropertyList);
             var nodeString=this.getPropertiesString(tempNodes, nodePropertyList);
 
             this.firstResponse = null;
@@ -704,7 +733,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         }
         return propList.join(",");
     },
-      
+
     getNodePropertyListString: function(){
         return this.nodePropertyListString;
     },
@@ -723,7 +752,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         for(var j=0; j < tempPropertyList.length; j++)
         {
             var propName=tempPropertyList[j];
-            if(propName!="id" && propName!="expanded" && propName!="expandable" && propName!="x" && propName!="y")
+            if(propName!="id" && !ArrayUtils.contains(this.defaultNodePropertyList,propName))
             {
                 this.nodePropertyList.push(propName);
             }
@@ -769,7 +798,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     },
     _expandNode : function( expandedNodeName)
     {
-        var nodePropertyList=this.getNodePropertyListToSend(["expanded","x","y"]);
+        var nodePropertyList=this.getNodePropertyListToSend(this.defaultNodePropertyList);
         var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
         var edges = this.getPropertiesString(this.getEdges(), ["id", "source", "target"]);
         var params = { expandedNodeName : expandedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
@@ -778,10 +807,25 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
         this.doPostRequest(this.url, params);
 
     },
+    collapseNode : function( collapsedNodeName)
+    {
+        this.flexApplication.executeMethod(this, this._collapseNode, [collapsedNodeName],"_collapseNode")
+    },
+    _collapseNode : function( collapsedNodeName)
+    {
+        var nodePropertyList=this.getNodePropertyListToSend(this.defaultNodePropertyList);
+        var nodes = this.getPropertiesString(this.getNodes(), nodePropertyList );
+        var edges = this.getPropertiesString(this.getEdges(), ["id", "source", "target"]);
+        var params = { collapsedNodeName : collapsedNodeName, nodes : nodes, edges : edges , nodePropertyList:nodePropertyList,mapPropertyList:this.mapPropertyList,mapProperties:this.getMapPropertiesString()};
+        this.lastLoadMapRequestData = {isMap:false, params:params}
+        this.url = this.expandURL;
+        this.doPostRequest(this.url, params);
+
+    },
 
     getData : function()
     {
-        this.flexApplication.executeMethod(this, this._getData, [],"_getData")    
+        this.flexApplication.executeMethod(this, this._getData, [],"_getData")
     },
     _getData : function()
     {
@@ -795,7 +839,7 @@ YAHOO.extend(YAHOO.rapidjs.component.TopologyMap, YAHOO.rapidjs.component.Pollin
     poll : function()
     {
         if(this.isVisible()){
-            this.getData();    
+            this.getData();
         }
     }
 

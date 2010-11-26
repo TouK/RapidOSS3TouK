@@ -56,6 +56,16 @@ public class EsRepository implements EsMappingListener {
     public IndexResponse index(String type, Map<String, Object> props, Map<String, Object> indexOptions) throws Exception {
         TypeMapping typeMapping = EsMappingManager.getInstance().getMapping(type);
         String index = typeMapping.getIndex();
+        Map<String, TypeProperty> keys = typeMapping.getKeys();
+        StringBuffer idBuf = new StringBuffer("");
+        for (Map.Entry<String, TypeProperty> key : keys.entrySet()) {
+            String pName = key.getKey();
+            if (!props.containsKey(pName)) {
+                throw new Exception("Key property <" + pName + "> for type <" + type + "> should be provided.");
+            }
+            idBuf.append(String.valueOf(props.get(pName))).append("_");
+        }
+        String id = idBuf.toString();
         Map<String, Object> properties = new HashMap<String, Object>();
         Map<String, Object> typeDefaultValues = defaultValues.get(type);
         properties.putAll(typeDefaultValues);
@@ -68,7 +78,14 @@ public class EsRepository implements EsMappingListener {
                 }
             }
         }
-        return getAdapter().index(index, type, new XsonSource(properties), true);
+        if(id.length() > 0){
+            id = id.substring(0, id.length() -1);
+            return getAdapter().index(index, type, new XsonSource(properties), id, false);
+        }
+        else{
+            return getAdapter().index(index, type, new XsonSource(properties), true);
+        }
+
     }
 
     public void index(String type, Map<String, Object> props, Map<String, Object> indexOptions, ActionListener<IndexResponse> listener) {

@@ -105,6 +105,46 @@ class EsRepositoryTest extends RapidCoreTestCase {
 
   public void testIndexingWithKeyProperties() throws Exception {
     createIndices([indexWithOneKey, indexWithMultipleKeys])
+    try {
+      EsRepository.getInstance().index(typeWithOneKey, [:], [:])
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp> for type <" + typeWithOneKey + "> should be provided.", e.getMessage());
+    }
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithOneKey, [keyProp: "keyPropValue", prop1: "prop1Value", prop2: 1], [:])
+    adapter.refreshIndices(indexWithOneKey);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyPropValue", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyPropValue", entry.keyProp)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+
+    try {
+      EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1:"keyProp1Value", keyProp2:2], [:])
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp3> for type <" + typeWithMultipleKeys + "> should be provided.", e.getMessage());
+    }
+
+    indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2:1, keyProp3:true, prop1: "prop1Value", prop2: 1], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyPropValue", getResponse.id());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals("keyPropValue", entry.keyProp)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+
+
   }
 
   private void createIndices(def indices) {

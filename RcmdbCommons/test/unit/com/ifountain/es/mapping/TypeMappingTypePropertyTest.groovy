@@ -170,4 +170,29 @@ class TypeMappingTypePropertyTest extends RCompTestCase {
     assertTrue(keys.containsKey("prop1"))
     assertTrue(keys.containsKey("prop2"))
   }
+
+  public void testKeysAreSorted() throws Exception{
+    TypeMapping typeMapping = new TypeMapping("type", "index")
+
+    TypeProperty property1 = new TypeProperty("abc", TypeProperty.STRING_TYPE)
+    property1.setKey(true)
+    typeMapping.addProperty(property1);
+
+    TypeProperty property2 = new TypeProperty("aaa", TypeProperty.STRING_TYPE)
+    property2.setKey(true)
+    typeMapping.addProperty(property2);
+
+    TypeProperty property3 = new TypeProperty("cba", TypeProperty.STRING_TYPE)
+    property3.setKey(true)
+    typeMapping.addProperty(property3);
+
+    Map keys = typeMapping.getKeys();
+    LinkedList keySet = new LinkedList();
+    keys.each{key, value ->
+        keySet.add(key);
+    }
+    assertEquals("aaa", keySet[0])
+    assertEquals("abc", keySet[1])
+    assertEquals("cba", keySet[2])
+  }
 }

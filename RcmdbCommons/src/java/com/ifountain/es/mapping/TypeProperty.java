@@ -9,7 +9,7 @@ package com.ifountain.es.mapping;
  */
 public class TypeProperty {
     public static String STRING_TYPE = "string";
-    public static String INTEGER_TYPE = "int";
+    public static String INTEGER_TYPE = "integer";
     public static String BOOLEAN_TYPE = "boolean";
     public static String LONG_TYPE = "long";
     public static String DOUBLE_TYPE = "double";

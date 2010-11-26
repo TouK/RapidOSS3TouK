@@ -101,7 +101,10 @@ class EsRepositoryTest extends RapidCoreTestCase {
     assertEquals(new Float(2.7), entry.floatProp);
     assertFalse(entry.booleanProp);
     assertEquals("undefinedValue", entry.undefinedProp);
+  }
 
+  public void testIndexingWithKeyProperties() throws Exception {
+    createIndices([indexWithOneKey, indexWithMultipleKeys])
   }
 
   private void createIndices(def indices) {
@@ -110,6 +113,12 @@ class EsRepositoryTest extends RapidCoreTestCase {
       ElasticSearchTestUtils.deleteIndex(adapter, index);
       if (index == indexWithAllProperties) {
         mappingConfig[typeWithAllProperties] = getMappingsForIndexWithAllProperties();
+      }
+      else if (index == indexWithOneKey) {
+        mappingConfig[typeWithOneKey] = getMappingsForIndexWithOneKey();
+      }
+      else if (index == indexWithMultipleKeys) {
+        mappingConfig[typeWithMultipleKeys] = getMappingsForIndexWithMultipleKeys();
       }
     }
     mappingProvider.setMappings(mappingConfig);
@@ -151,6 +160,48 @@ class EsRepositoryTest extends RapidCoreTestCase {
     typeMapping.addProperty(booleanProp)
 
     return typeMapping;
+  }
+
+  private TypeMapping getMappingsForIndexWithOneKey() {
+    TypeMapping typeMapping = new TypeMapping(typeWithOneKey, indexWithOneKey)
+    TypeProperty keyProp = new TypeProperty("keyProp", TypeProperty.STRING_TYPE)
+    keyProp.setKey(true);
+    keyProp.setAnalyzer(TypeProperty.KEYWORD_ANALYZER);
+
+    TypeProperty prop1 = new TypeProperty("prop1", TypeProperty.STRING_TYPE)
+    prop1.setAnalyzer(TypeProperty.WHITSPACE_ANALYZER);
+
+    TypeProperty prop2 = new TypeProperty("prop2", TypeProperty.INTEGER_TYPE)
+
+    typeMapping.addProperty(keyProp)
+    typeMapping.addProperty(prop1)
+    typeMapping.addProperty(prop2)
+    return typeMapping;
+  }
+
+  private TypeMapping getMappingsForIndexWithMultipleKeys() {
+    TypeMapping typeMapping = new TypeMapping(typeWithMultipleKeys, indexWithMultipleKeys)
+    TypeProperty keyProp1 = new TypeProperty("keyProp1", TypeProperty.STRING_TYPE)
+    keyProp1.setKey(true);
+    keyProp1.setAnalyzer(TypeProperty.KEYWORD_ANALYZER);
+
+    TypeProperty keyProp2 = new TypeProperty("keyProp2", TypeProperty.INTEGER_TYPE)
+    keyProp2.setKey(true)
+    TypeProperty keyProp3 = new TypeProperty("keyProp3", TypeProperty.BOOLEAN_TYPE)
+    keyProp3.setKey(true);
+
+    TypeProperty prop1 = new TypeProperty("prop1", TypeProperty.STRING_TYPE)
+    prop1.setAnalyzer(TypeProperty.WHITSPACE_ANALYZER);
+
+    TypeProperty prop2 = new TypeProperty("prop2", TypeProperty.INTEGER_TYPE)
+
+    typeMapping.addProperty(keyProp1)
+    typeMapping.addProperty(keyProp2)
+    typeMapping.addProperty(keyProp3)
+    typeMapping.addProperty(prop1)
+    typeMapping.addProperty(prop2)
+    return typeMapping;
+
   }
 
 }

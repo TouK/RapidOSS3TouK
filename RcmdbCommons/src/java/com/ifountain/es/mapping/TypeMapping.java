@@ -1,7 +1,6 @@
 package com.ifountain.es.mapping;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,34 +15,37 @@ public class TypeMapping {
     String name;
     Map<String, TypeProperty> typeProperties = new HashMap<String, TypeProperty>();
     boolean isAllEnabled = true;
+    private Map<String, TypeProperty> keys = new HashMap<String, TypeProperty>();
 
-    public TypeMapping(String name, String index){
+    public TypeMapping(String name, String index) {
         this.name = name;
         this.index = index;
     }
 
-    public void validate()  throws MappingException{
-        if(!isNameValid(name)){
-            throw MappingException.invalidTypeNameException(name);    
+    public void validate() throws MappingException {
+        if (!isNameValid(name)) {
+            throw MappingException.invalidTypeNameException(name);
         }
-        if(!isIndexNameValid(index)){
+        if (!isIndexNameValid(index)) {
             throw MappingException.invalidIndexNameException(index);
         }
     }
 
     public void addProperty(TypeProperty prop) throws MappingException {
-        if(typeProperties.containsKey(prop.getName()))
-        {
+        if (typeProperties.containsKey(prop.getName())) {
             throw new MappingException("Duplicate property " + prop.getName() + " in  " + getName());
         }
-        typeProperties.put(prop.getName(), prop);    
+        typeProperties.put(prop.getName(), prop);
+        if (prop.isKey()) {
+            keys.put(prop.getName(), prop);
+        }
     }
 
-    public Map<String, TypeProperty> getTypeProperties(){
+    public Map<String, TypeProperty> getTypeProperties() {
         return typeProperties;
     }
 
-    public TypeProperty getTypeProperty(String propName){
+    public TypeProperty getTypeProperty(String propName) {
         return typeProperties.get(propName);
     }
 
@@ -63,16 +65,21 @@ public class TypeMapping {
         isAllEnabled = allEnabled;
     }
 
-    public static boolean isNameValid(String typeName){
-        if(typeName.matches(".*\\s.*")){
+    public static boolean isNameValid(String typeName) {
+        if (typeName.matches(".*\\s.*")) {
             return false;
         }
         return true;
     }
-    public static boolean isIndexNameValid(String indexName){
-        if(indexName.matches(".*\\s.*")){
+
+    public static boolean isIndexNameValid(String indexName) {
+        if (indexName.matches(".*\\s.*")) {
             return false;
         }
         return true;
+    }
+
+    public Map<String, TypeProperty> getKeys() {
+        return keys;
     }
 }

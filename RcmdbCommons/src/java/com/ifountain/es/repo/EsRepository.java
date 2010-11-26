@@ -69,20 +69,20 @@ public class EsRepository implements EsMappingListener {
         Map<String, Object> properties = new HashMap<String, Object>();
         Map<String, Object> typeDefaultValues = defaultValues.get(type);
         properties.putAll(typeDefaultValues);
-        if (indexOptions.containsKey(INDEX_ALL) && (Boolean) indexOptions.get(INDEX_ALL)) {
-            properties.putAll(props);
-        } else {
-            for (Map.Entry<String, Object> p : props.entrySet()) {
-                if (typeDefaultValues.containsKey(p.getKey())) {
-                    properties.put(p.getKey(), p.getValue());
+        boolean indexAll = indexOptions.containsKey(INDEX_ALL) && (Boolean) indexOptions.get(INDEX_ALL);
+        for (Map.Entry<String, Object> p : props.entrySet()) {
+            Object propValue = p.getValue();
+            if (propValue != null && (indexAll || typeDefaultValues.containsKey(p.getKey()))) {
+                if (propValue instanceof String && ((String) propValue).trim().equals("")) {
+                    propValue = TypeProperty.EMPTY_STRING;
                 }
+                properties.put(p.getKey(), propValue);
             }
         }
-        if(id.length() > 0){
-            id = id.substring(0, id.length() -1);
+        if (id.length() > 0) {
+            id = id.substring(0, id.length() - 1);
             return getAdapter().index(index, type, new XsonSource(properties), id, false);
-        }
-        else{
+        } else {
             return getAdapter().index(index, type, new XsonSource(properties), true);
         }
 

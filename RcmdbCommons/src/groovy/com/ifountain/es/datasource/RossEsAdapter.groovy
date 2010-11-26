@@ -175,22 +175,22 @@ public class RossEsAdapter extends ElasticSearchAdapter {
     }
 
     private XContentQueryBuilder getFilteredQuery(String[] indices, String[] types, XContentQueryBuilder builder) {
-        def esUtility = application.RapidApplication.getUtility("EsUtility")
-        def allTypes = esUtility.getTypes();
-        
-        def typesToBeFiltered;
-        if(types.length == 0){
-        	typesToBeFiltered = allTypes.keySet();
-        }
-        else{
-        	typesToBeFiltered = types.toList();
-        }
-        List filters = com.ifountain.compass.search.FilterManager.getEsFilters(typesToBeFiltered as String[]);
-        filters.each{filter ->
-        	QueryFilterBuilder filterBuilder = FilterBuilders.queryFilter(QueryBuilders.queryString(filter));
-        	filterBuilder.cache(true);
-        	builder = QueryBuilders.filteredQuery(builder, filterBuilder);
-        }
+//        def esUtility = application.RapidApplication.getUtility("EsUtility")
+//        def allTypes = esUtility.getTypes();
+//
+//        def typesToBeFiltered;
+//        if(types.length == 0){
+//        	typesToBeFiltered = allTypes.keySet();
+//        }
+//        else{
+//        	typesToBeFiltered = types.toList();
+//        }
+//        List filters = com.ifountain.compass.search.FilterManager.getEsFilters(typesToBeFiltered as String[]);
+//        filters.each{filter ->
+//        	QueryFilterBuilder filterBuilder = FilterBuilders.queryFilter(QueryBuilders.queryString(filter));
+//        	filterBuilder.cache(true);
+//        	builder = QueryBuilders.filteredQuery(builder, filterBuilder);
+//        }
         return builder;
     }
 }

@@ -10,6 +10,8 @@ import com.ifountain.es.datasource.RossEsAdapter
 import org.elasticsearch.action.index.IndexResponse
 import org.elasticsearch.action.get.GetResponse
 import com.ifountain.core.test.util.DatasourceTestUtils
+import org.elasticsearch.common.xcontent.XContentFactory
+import org.elasticsearch.common.xcontent.XContentParser
 
 /**
  * Created by Sezgin Kucukkaraaslan
@@ -125,25 +127,73 @@ class EsRepositoryTest extends RapidCoreTestCase {
     assertEquals(1, entry.prop2)
 
     try {
-      EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1:"keyProp1Value", keyProp2:2], [:])
+      EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2], [:])
       fail("should throw exception");
     }
     catch (Exception e) {
       assertEquals("Key property <keyProp3> for type <" + typeWithMultipleKeys + "> should be provided.", e.getMessage());
     }
 
-    indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2:1, keyProp3:true, prop1: "prop1Value", prop2: 1], [:])
+    indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1], [:])
     adapter.refreshIndices(indexWithMultipleKeys);
 
     getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
     assertTrue(getResponse.exists());
-    assertEquals("keyPropValue", getResponse.id());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
 
     entry = getResponse.sourceAsMap();
-    assertEquals("keyPropValue", entry.keyProp)
+    assertEquals("keyProp1Value", entry.keyProp1)
+    assertEquals(1, entry.keyProp2)
+    assertTrue(entry.keyProp3)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+  }
+
+  public void testIndexOverridesTheOldEntryWithTheSameKey() throws Exception {
+    createIndices([indexWithMultipleKeys])
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
     assertEquals("prop1Value", entry.prop1)
     assertEquals(1, entry.prop2)
 
+    indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1UpdatedValue"], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    assertEquals(1, adapter.count(indexResponse.index(), indexResponse.type(), "*:*").count())
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals("prop1UpdatedValue", entry.prop1)
+    assertEquals(0, entry.prop2)
+  }
+
+  public void testIndexWithNullAndEmptyStrings() throws Exception {
+    createIndices([indexWithAllProperties])
+    def props = [keywordProp: null, whitespaceProp: "", intProp: 3, longProp: 5L,
+            undefinedProp1: "undefinedValue", undefinedProp2: "", undefinedProp3: null]
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithAllProperties, props, [indexAll: true])
+    adapter.refreshIndices(indexWithAllProperties);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyword_default_value", entry.keywordProp)
+    assertEquals("", entry.whitespaceProp)
+    assertEquals("undefinedValue", entry.undefinedProp1)
+    assertEquals("", entry.undefinedProp2)
+    assertFalse(entry.containsKey("undefinedProp3"));
+
+    assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "whitespaceProp:\"\"").count())
+    assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "undefinedProp2:\"\"").count())
 
   }
 
@@ -210,8 +260,10 @@ class EsRepositoryTest extends RapidCoreTestCase {
 
     TypeProperty prop1 = new TypeProperty("prop1", TypeProperty.STRING_TYPE)
     prop1.setAnalyzer(TypeProperty.WHITSPACE_ANALYZER);
+    prop1.setDefaultValue("prop1DefaultValue")
 
     TypeProperty prop2 = new TypeProperty("prop2", TypeProperty.INTEGER_TYPE)
+    prop2.setDefaultValue(0);
 
     typeMapping.addProperty(keyProp)
     typeMapping.addProperty(prop1)
@@ -231,9 +283,11 @@ class EsRepositoryTest extends RapidCoreTestCase {
     keyProp3.setKey(true);
 
     TypeProperty prop1 = new TypeProperty("prop1", TypeProperty.STRING_TYPE)
+    prop1.setDefaultValue("prop1DefaultValue")
     prop1.setAnalyzer(TypeProperty.WHITSPACE_ANALYZER);
 
     TypeProperty prop2 = new TypeProperty("prop2", TypeProperty.INTEGER_TYPE)
+    prop2.setDefaultValue(0);
 
     typeMapping.addProperty(keyProp1)
     typeMapping.addProperty(keyProp2)

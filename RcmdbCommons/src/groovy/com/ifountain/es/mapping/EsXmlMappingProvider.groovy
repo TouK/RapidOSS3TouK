@@ -2,8 +2,8 @@ package com.ifountain.es.mapping
 
 import groovy.util.slurpersupport.GPathResult
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.SuffixFileFilter
-import org.apache.commons.io.filefilter.TrueFileFilter
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,25 +13,88 @@ import org.apache.commons.io.filefilter.TrueFileFilter
  * To change this template use File | Settings | File Templates.
  */
 public class EsXmlMappingProvider implements EsMappingProvider {
-  public static Map<String, Boolean> VALID_TYPE_ATTRIBUTES = [Name: true, Index: true, AllEnabled: false];
-  public static Map<String, Boolean> VALID_TYPE_PROPERTY_ATTRIBUTES = [Name: true, IsKey: false, Type: true, DefaultValue: false, Store: false, IncludeInAll: false, Analyzer: false];
+  public final static String WORKING_DIR_TEMP = "temp"
+  public final static List FORBIDDEN_PROPERTY_NAMES = ["id", "_id", "all", "_all", TypeProperty.RS_INSERTED_AT, TypeProperty.RS_UPDATED_AT];
+  public final static Map<String, Boolean> VALID_TYPE_ATTRIBUTES = [Name: true, Index: true, AllEnabled: false];
+  public final static Map<String, Boolean> VALID_TYPE_PROPERTY_ATTRIBUTES = [Name: true, IsKey: false, Type: true, DefaultValue: false, Store: false, IncludeInAll: false, Analyzer: false];
   File baseDir;
+  File workingMappingFileDir;
+  File tempDir;
+  Map<String, Boolean> forbiddenPropertyMap = new HashMap<String, Boolean>();
 
-  public EsXmlMappingProvider(String configurationBaseDirPath) {
+  public EsXmlMappingProvider(String configurationBaseDirPath, String workingMappingFileDirPath) {
     baseDir = new File(configurationBaseDirPath);
+    workingMappingFileDir = new File(workingMappingFileDirPath);
+    workingMappingFileDir.mkdirs();
+    tempDir = new File(workingMappingFileDir, WORKING_DIR_TEMP);
+    if(tempDir.exists()){
+      throw MappingProviderException.cannotCreateProviderWhileTempDirExist(tempDir.path);
+    }
+    FORBIDDEN_PROPERTY_NAMES.each{String propName->
+      forbiddenPropertyMap.put(propName, true);      
+    }
+  }
+
+  public void addInvalidPropName(String invalidPropName){
+    forbiddenPropertyMap.put(invalidPropName, true);    
   }
 
 
-  void reload() {
-    //To change body of implemented methods use File | Settings | File Templates.
+  public Map<String, TypeMapping> reload() {
+    Collection<File> baseDirFileList = getConfigurationFileInDir(baseDir);
+    Map<String, TypeMapping> mappings = constructMappings(baseDirFileList);
+    try{
+      moveFilesToTempDir();
+      baseDirFileList.each{File file->
+        FileUtils.copyFile (file,  new File(workingMappingFileDir, file.getName()));
+      }
+    }
+    catch(MappingException ex){
+      restoreFilesFromTempDir(ex);
+      throw ex;
+    }
+    try{
+      FileUtils.deleteDirectory(tempDir);
+    }
+    catch(Exception e){
+      throw MappingProviderException.cannotDeleteTempDir(tempDir.path, e)
+    }
+
+    return mappings;
+  }
+  
+  private void moveFilesToTempDir(){
+    tempDir.mkdirs();
+    getConfigurationFileInDir(workingMappingFileDir).each{File workingDirFile->
+      FileUtils.copyFileToDirectory (workingDirFile, tempDir);
+      boolean isDeleted = workingDirFile.delete();
+      if(!isDeleted){
+        throw MappingProviderException.cannotDeleteExistingWorkingFile(workingDirFile.path);
+      }
+    }
+  }
+  private void restoreFilesFromTempDir(Exception restoreReason){
+    tempDir.mkdirs();
+    getConfigurationFileInDir(tempDir).each{File tempDirFile->
+      FileUtils.copyFileToDirectory (tempDirFile, workingMappingFileDir);
+      boolean isDeleted = tempDirFile.delete();
+      if(!isDeleted){
+        throw MappingProviderException.cannotRestoreExistingWorkingFile(tempDirFile.path, restoreReason);
+      }
+    }
   }
 
-  private Collection<File> getConfigFileList() {
-    return FileUtils.listFiles(baseDir, new SuffixFileFilter(["EsTypeConfiguration.xml"] as String[]), new TrueFileFilter());
+
+  private Collection<File> getConfigurationFileInDir(File dir) {
+    return FileUtils.listFiles(dir, new SuffixFileFilter(["EsTypeConfiguration.xml"] as String[]), new FalseFileFilter()).sort(){it.name};
   }
 
   public Map<String, TypeMapping> constructMappings() {
-    Collection<File> confFileList = getConfigFileList();
+    Collection<File> confFileList = getConfigurationFileInDir(workingMappingFileDir);
+    return constructMappings(confFileList);
+  }
+  private Map<String, TypeMapping> constructMappings(Collection<File> confFileList) {
+
     Map<String, TypeMapping> allMappings = new HashMap<String, TypeMapping>();
     Map<String, List> typeFileLocations = new HashMap<String, List>();
     confFileList.each {File confFile ->
@@ -107,6 +170,9 @@ public class EsXmlMappingProvider implements EsMappingProvider {
     }
     try {
       String propName = MappingUtils.getAttributeAs(xmlNode, "Name", String);
+      if(forbiddenPropertyMap.containsKey(propName)){
+        throw MappingProviderException.forbiddenPropertyNameIsUsed(typeName, propName, filePath);
+      }
       String propType = MappingUtils.getAttributeAs(xmlNode, "Type", String);
       String defaultValueString = MappingUtils.getAttributeAs(xmlNode, "DefaultValue", String);
       String analyzer = MappingUtils.getAttributeAs(xmlNode, "Analyzer", String);

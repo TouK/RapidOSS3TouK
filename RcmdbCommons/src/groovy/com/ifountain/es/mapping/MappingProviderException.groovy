@@ -47,4 +47,19 @@ class MappingProviderException extends MappingException {
   public static MappingException invalidTypePropetiesException(String type, String filePath, Exception cause){
     return new MappingProviderException("Invalid properties for type <${type}> in file <${filePath}>. Reason: ${cause.toString()}", cause) 
   }
+  public static MappingException cannotDeleteExistingWorkingFile(String filePath){
+    return new MappingProviderException("Cannot delete existing mapping file <${filePath}>.");
+  }
+  public static MappingException cannotDeleteTempDir(String filePath, Exception e){
+    return new MappingProviderException("Cannot delete temp dir <${filePath}>.", e);
+  }
+  public static MappingException cannotRestoreExistingWorkingFile(String filePath, Exception restoreReason){
+    return new MappingProviderException("Cannot delete existing mapping file <${filePath}>. Restore reason: ${restoreReason.toString()}", restoreReason);
+  }
+  public static MappingException cannotCreateProviderWhileTempDirExist(String filePath){
+    return new MappingProviderException("Cannot create provider since temp directory <${filePath}> exist in working directory. Either restore temp dir content to working copy or delete temp dir.", );
+  }
+  public static MappingException forbiddenPropertyNameIsUsed(String type, String propName, String filePath){
+    return new MappingProviderException("Forbidden property name<${propName}> in type <${type}> in file <${filePath}>");
+  }
 }

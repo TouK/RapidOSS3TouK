@@ -145,7 +145,7 @@ public class RossEsAdapter extends ElasticSearchAdapter {
     public DeleteByQueryResponse deleteByQuery(String[] indices, String[] types, String query) throws Exception {
         XContentQueryBuilder builder = QueryBuilders.queryString(query);
         builder = getFilteredQuery(indices, types, builder);
-        return super.deleteByXsonQuery(indices, types, builder, -1);
+        return super.deleteByXsonQuery(indices, types, new XsonSource(builder), -1);
     }
 
     @Override

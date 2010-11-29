@@ -13,8 +13,11 @@ public class EsMappingManager {
         }
         return singletonInstance;
     }
+    public static void destroy() {
+        singletonInstance = null;
+    }
 
-    Map<String, TypeMapping> typeMappings = new HashMap<String, TypeMapping>();
+    private Map<String, TypeMapping> typeMappings;
 
     private EsMappingManager() {
     }
@@ -23,10 +26,18 @@ public class EsMappingManager {
         return typeMappings.get(type);
     }
 
-    public void load() {
-        typeMappings.clear();
-        Map<String, TypeMapping> mappings = mappingProvider.constructMappings();
-        typeMappings.putAll(mappings);
+    public void load() throws MappingException{
+        Map<String, TypeMapping> mappings = getMappingProvider().constructMappings();
+        setTypeMappings(mappings);
+    }
+
+    public void reload() throws MappingException{
+        Map<String, TypeMapping> mappings = getMappingProvider().reload();
+        setTypeMappings(mappings);
+    }
+
+    private void setTypeMappings(Map<String, TypeMapping> newMappings){
+        typeMappings = Collections.unmodifiableMap(newMappings);
         for (EsMappingListener listener : listeners) {
             listener.mappingChanged();
         }
@@ -38,6 +49,13 @@ public class EsMappingManager {
 
     public Map<String, TypeMapping> getTypeMappings() {
         return typeMappings;
+    }
+
+    public EsMappingProvider getMappingProvider()throws MappingException{
+        if(this.mappingProvider == null){
+            throw MappingException.noProviderSpecified();
+        }
+        return this.mappingProvider;    
     }
 
     public void addListener(EsMappingListener listener){

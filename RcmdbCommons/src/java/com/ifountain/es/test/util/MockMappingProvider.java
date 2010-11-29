@@ -1,6 +1,7 @@
 package com.ifountain.es.test.util;
 
 import com.ifountain.es.mapping.EsMappingProvider;
+import com.ifountain.es.mapping.MappingException;
 import com.ifountain.es.mapping.TypeMapping;
 
 import java.util.HashMap;
@@ -13,16 +14,29 @@ import java.util.Map;
  */
 public class MockMappingProvider implements EsMappingProvider {
     private Map<String, TypeMapping> mappings = new HashMap<String, TypeMapping>();
-
+    private Map<String, TypeMapping> reloadMappings = new HashMap<String, TypeMapping>();
+    private MappingException exceptionToBeThrown;
     public void setMappings(Map<String, TypeMapping> mappings) {
         this.mappings = mappings;
     }
 
-    public Map<String, TypeMapping> constructMappings() {
+    public void setReloadMappings(Map<String, TypeMapping> mappings) {
+        this.reloadMappings = mappings;
+    }
+
+    public void setExceptionToBeThrown(MappingException exceptionToBeThrown) {
+        this.exceptionToBeThrown = exceptionToBeThrown;
+    }
+
+    public Map<String, TypeMapping> constructMappings() throws MappingException{
+        if(exceptionToBeThrown != null)
+        throw exceptionToBeThrown;
         return mappings;
     }
 
-    public Map<String, TypeMapping> reload() {
-        return null;
+    public Map<String, TypeMapping> reload() throws MappingException{
+        if(exceptionToBeThrown != null)
+        throw exceptionToBeThrown;
+        return reloadMappings;
     }
 }

@@ -41,4 +41,7 @@ public class MappingException extends Exception {
     public static MappingException invalidAnalyzerForKeyProp(String analyzerName) {
         return new MappingException("Key property cannot have <"+analyzerName+"> analyzer");
     }
+    public static MappingException noProviderSpecified() {
+        return new MappingException("No provider specified in mapping manager");
+    }
 }

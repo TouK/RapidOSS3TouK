@@ -11,6 +11,6 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public interface EsMappingProvider {
-    public Map<String, TypeMapping> constructMappings();
-    public Map<String, TypeMapping> reload();
+    public Map<String, TypeMapping> constructMappings ()throws MappingException;
+    public Map<String, TypeMapping> reload()throws MappingException;
 }

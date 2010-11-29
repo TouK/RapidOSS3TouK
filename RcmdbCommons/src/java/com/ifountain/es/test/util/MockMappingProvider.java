@@ -22,7 +22,7 @@ public class MockMappingProvider implements EsMappingProvider {
         return mappings;
     }
 
-    public void reload() {
-
+    public Map<String, TypeMapping> reload() {
+        return null;
     }
 }

@@ -12,5 +12,5 @@ import java.util.Map;
  */
 public interface EsMappingProvider {
     public Map<String, TypeMapping> constructMappings();
-    public void reload();
+    public Map<String, TypeMapping> reload();
 }

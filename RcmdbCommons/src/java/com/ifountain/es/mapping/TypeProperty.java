@@ -20,6 +20,9 @@ public class TypeProperty {
 
     public static String EMPTY_STRING = "_e";
 
+    public static String RS_INSERTED_AT = "rsInsertedAt";
+    public static String RS_UPDATED_AT = "rsUpdatedAt";
+
     public static String[] VALID_PROPERTY_TYPES = {STRING_TYPE, INTEGER_TYPE,
             BOOLEAN_TYPE, LONG_TYPE, DOUBLE_TYPE, FLOAT_TYPE, DATE_TYPE};
 

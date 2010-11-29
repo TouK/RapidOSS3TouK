@@ -36,8 +36,9 @@ public class EsMappingManager {
         setTypeMappings(mappings);
     }
 
-    private void setTypeMappings(Map<String, TypeMapping> newMappings){
+    private void setTypeMappings(Map<String, TypeMapping> newMappings) throws MappingException {
         typeMappings = Collections.unmodifiableMap(newMappings);
+        addDefaultProperties();
         for (EsMappingListener listener : listeners) {
             listener.mappingChanged();
         }
@@ -57,6 +58,24 @@ public class EsMappingManager {
         }
         return this.mappingProvider;    
     }
+
+    private void addDefaultProperties() throws MappingException {
+
+        for(Map.Entry<String, TypeMapping> entry: typeMappings.entrySet()){
+            TypeMapping mapping = entry.getValue();
+            TypeProperty[] props = createDefaultProperties();
+            for(TypeProperty prop:props){
+                mapping.addProperty(prop);                
+            }
+        }
+    }
+
+    private TypeProperty[] createDefaultProperties(){
+        return new TypeProperty[]{new TypeProperty(TypeProperty.RS_INSERTED_AT, TypeProperty.LONG_TYPE),
+        new TypeProperty(TypeProperty.RS_UPDATED_AT, TypeProperty.LONG_TYPE)
+        };
+    }
+    
 
     public void addListener(EsMappingListener listener){
         this.listeners.add(listener);

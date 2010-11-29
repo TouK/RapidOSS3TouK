@@ -160,6 +160,62 @@ class EsMappingManagerTest extends RCompTestCase {
     EsMappingManager.getInstance().reload();
     assertTrue(listener.isMappingChanged);
   }
+
+  public void testLoadAddsDefaultProperties(){
+    Map<String, TypeMapping> expectedMappings = [type1: new TypeMapping("type1", "index1"), type2: new TypeMapping("type2", "index1")];
+    MockMappingProvider provider = new MockMappingProvider();
+    provider.setMappings(expectedMappings);
+
+    EsMappingManager.getInstance().setMappingProvider(provider);
+    EsMappingManager.getInstance().load();
+
+    Map<String, TypeMapping> mappings = EsMappingManager.getInstance().getTypeMappings();
+    assertEquals (2, mappings.size());
+    mappings.values().each{TypeMapping mapping->
+      Map<String, TypeProperty> typeProps = mapping.getTypeProperties()
+      assertEquals (2, typeProps.size());
+      TypeProperty rsInsertedAtProp = typeProps[TypeProperty.RS_INSERTED_AT]
+      assertEquals (TypeProperty.LONG_TYPE, rsInsertedAtProp.type);
+      assertEquals (false, rsInsertedAtProp.isKey());
+      assertEquals (false, rsInsertedAtProp.isStore());
+      assertEquals (true, rsInsertedAtProp.isIncludeInAll());
+      assertEquals (0, rsInsertedAtProp.defaultValue);
+      TypeProperty rsUpdatedAtProp = typeProps[TypeProperty.RS_UPDATED_AT]
+      assertEquals (TypeProperty.LONG_TYPE, rsUpdatedAtProp.type);
+      assertEquals (false, rsUpdatedAtProp.isKey());
+      assertEquals (false, rsUpdatedAtProp.isStore());
+      assertEquals (true, rsUpdatedAtProp.isIncludeInAll());
+      assertEquals (0, rsUpdatedAtProp.defaultValue);
+    }
+  }
+  
+  public void testReLoadAddsDefaultProperties(){
+    Map<String, TypeMapping> expectedMappings = [type1: new TypeMapping("type1", "index1"), type2: new TypeMapping("type2", "index1")];
+    MockMappingProvider provider = new MockMappingProvider();
+    provider.setReloadMappings(expectedMappings);
+
+    EsMappingManager.getInstance().setMappingProvider(provider);
+    EsMappingManager.getInstance().reload();
+
+    Map<String, TypeMapping> mappings = EsMappingManager.getInstance().getTypeMappings();
+    assertEquals (2, mappings.size());
+    mappings.values().each{TypeMapping mapping->
+      Map<String, TypeProperty> typeProps = mapping.getTypeProperties()
+      assertEquals (2, typeProps.size());
+      TypeProperty rsInsertedAtProp = typeProps[TypeProperty.RS_INSERTED_AT]
+      assertEquals (TypeProperty.LONG_TYPE, rsInsertedAtProp.type);
+      assertEquals (false, rsInsertedAtProp.isKey());
+      assertEquals (false, rsInsertedAtProp.isStore());
+      assertEquals (true, rsInsertedAtProp.isIncludeInAll());
+      assertEquals (0, rsInsertedAtProp.defaultValue);
+      TypeProperty rsUpdatedAtProp = typeProps[TypeProperty.RS_UPDATED_AT]
+      assertEquals (TypeProperty.LONG_TYPE, rsUpdatedAtProp.type);
+      assertEquals (false, rsUpdatedAtProp.isKey());
+      assertEquals (false, rsUpdatedAtProp.isStore());
+      assertEquals (true, rsUpdatedAtProp.isIncludeInAll());
+      assertEquals (0, rsUpdatedAtProp.defaultValue);
+    }
+  }
 }
 
 class MockEsMappingListener implements EsMappingListener {

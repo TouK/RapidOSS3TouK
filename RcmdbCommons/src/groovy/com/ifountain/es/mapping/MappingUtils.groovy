@@ -49,27 +49,5 @@ class MappingUtils {
     throw MappingException.invalidPropertyTypeException(expectedType);
   }
 
-  public static getAttributeAs(GPathResult xmlNode, String attributeName, Class expectedType){
-    def attribute = xmlNode.@"${attributeName}";
-    if(attribute.isEmpty()) return null;
-    String attributeValue = attribute.text();
-    try{
-      if(expectedType == Boolean){
-        return convertValueToBoolean(attributeValue)
-      }
-      else{
-        return attributeValue."to${expectedType.simpleName}"();  
-      }
-    }
-    catch(Exception e){
-      throw new XmlAttributeConversionException(attributeName, attributeValue, expectedType, e);
-    }
-
-  }
-
-  private static boolean convertValueToBoolean(String value){
-    if(value.equalsIgnoreCase("true")) return true;
-    else if(value.equalsIgnoreCase("false")) return false;
-    else throw new Exception("Invalid boolean value ${value}");    
-  }
+  
 }

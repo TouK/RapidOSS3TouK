@@ -44,7 +44,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile = new File("${testOutputDir}/EsTypeConfiguration.xml");
+    File typeMappingConfigFile = new File("${testOutputDir}/${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -121,8 +121,8 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
+    File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     File typeMappingConfigFile3 = new File("${testOutputDir}/Sample3.xml");
     typeMappingConfigFile1.setText(xmlContent1);
     typeMappingConfigFile2.setText(xmlContent2);
@@ -178,7 +178,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile = new File("${testOutputDir}/EsTypeConfiguration.xml");
+    File typeMappingConfigFile = new File("${testOutputDir}/${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -201,8 +201,8 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
-    File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
+    File typeMappingConfigFile2 = new File("${testOutputDir}/Sample2${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
     typeMappingConfigFile2.setText(xmlContent);
 
@@ -226,7 +226,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -249,7 +249,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -273,7 +273,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -298,7 +298,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -323,7 +323,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -348,7 +348,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -373,7 +373,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -398,7 +398,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -421,7 +421,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -444,7 +444,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
             </Type>
         </Types>
       """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -467,7 +467,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
             </Type>
         </Types>
       """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -490,7 +490,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
             </Type>
         </Types>
       """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
     TypeMapping emptyTypeMapping = new TypeMapping("", "");
     TypeProperty emptyTypeProperty = new TypeProperty("", TypeProperty.STRING_TYPE);
@@ -516,7 +516,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
             </Type>
         </Types>
       """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
     TypeMapping emptyTypeMapping = new TypeMapping("", "");
     TypeProperty emptyTypeProperty = new TypeProperty("", TypeProperty.STRING_TYPE);
@@ -546,7 +546,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -571,7 +571,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);
@@ -595,7 +595,7 @@ class EsXmlMappingProviderTest extends RapidCoreTestCase {
           </Type>
       </Types>
     """
-    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1EsTypeConfiguration.xml");
+    File typeMappingConfigFile1 = new File("${testOutputDir}/Sample1${EsXmlMappingProvider.MAPPING_FILE_EXTENSION}");
     typeMappingConfigFile1.setText(xmlContent);
 
     EsXmlMappingProvider provider = new EsXmlMappingProvider("", testOutputDir);

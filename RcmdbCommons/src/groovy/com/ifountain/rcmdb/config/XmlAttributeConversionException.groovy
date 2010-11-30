@@ -1,4 +1,4 @@
-package com.ifountain.es.mapping
+package com.ifountain.rcmdb.config
 
 /**
  * Created by IntelliJ IDEA.

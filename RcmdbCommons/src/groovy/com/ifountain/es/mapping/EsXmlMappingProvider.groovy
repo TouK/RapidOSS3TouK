@@ -5,6 +5,8 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.FalseFileFilter
 import org.apache.commons.io.filefilter.SuffixFileFilter
 import com.ifountain.comp.config.ConfigurationProvider
+import com.ifountain.rcmdb.config.XmlAttributeConversionException
+import com.ifountain.rcmdb.config.XmlProcessingUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,6 +17,7 @@ import com.ifountain.comp.config.ConfigurationProvider
  */
 public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
   public final static String WORKING_DIR_TEMP = "temp"
+  public final static String MAPPING_FILE_EXTENSION = "EsTypeConfiguration.xml"
   public final static List FORBIDDEN_PROPERTY_NAMES = ["id", "_id", "all", "_all", TypeProperty.RS_INSERTED_AT, TypeProperty.RS_UPDATED_AT];
   public final static Map<String, Boolean> VALID_TYPE_ATTRIBUTES = [Name: true, Index: true, AllEnabled: false];
   public final static Map<String, Boolean> VALID_TYPE_PROPERTY_ATTRIBUTES = [Name: true, IsKey: false, Type: true, DefaultValue: false, Store: false, IncludeInAll: false, Analyzer: false];
@@ -35,7 +38,7 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
 
 
   public Collection<File> getConfigurationFileInDir(File dir) {
-    return FileUtils.listFiles(dir, new SuffixFileFilter(["EsTypeConfiguration.xml"] as String[]), new FalseFileFilter()).sort(){it.name};
+    return FileUtils.listFiles(dir, new SuffixFileFilter([MAPPING_FILE_EXTENSION] as String[]), new FalseFileFilter()).sort(){it.name};
   }
   
   public Map<String, TypeMapping> constructBeans(Collection<File> confFileList) {
@@ -73,14 +76,14 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
   }
 
   private TypeMapping convertXmlNodeToTypeMapping(xmlNode, filePath) {
-    List missingMandatoryProps = getMissingMandatoryAttributes(xmlNode, VALID_TYPE_ATTRIBUTES);
+    List missingMandatoryProps = XmlProcessingUtils.getMissingMandatoryAttributes(xmlNode, VALID_TYPE_ATTRIBUTES);
     if (!missingMandatoryProps.isEmpty()) {
       throw MappingProviderException.missingMandatoryXmlProperty(missingMandatoryProps, filePath);
     }
     try {
-      String typeName = MappingUtils.getAttributeAs(xmlNode, "Name", String);
-      String indexName = MappingUtils.getAttributeAs(xmlNode, "Index", String);
-      boolean allEnabled = MappingUtils.getAttributeAs(xmlNode, "AllEnabled", Boolean);
+      String typeName = XmlProcessingUtils.getAttributeAs(xmlNode, "Name", String);
+      String indexName = XmlProcessingUtils.getAttributeAs(xmlNode, "Index", String);
+      boolean allEnabled = XmlProcessingUtils.getAttributeAs(xmlNode, "AllEnabled", Boolean);
 
       TypeMapping mapping = new TypeMapping(typeName, indexName);
       try {
@@ -91,7 +94,7 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
       }
 
 
-      List invalidAttributeNames = getInvalidAttributes(xmlNode, VALID_TYPE_ATTRIBUTES);
+      List invalidAttributeNames = XmlProcessingUtils.getInvalidAttributes(xmlNode, VALID_TYPE_ATTRIBUTES);
       if (!invalidAttributeNames.isEmpty()) {
         throw MappingProviderException.invalidAttributeInTypeDefinitionException(typeName, invalidAttributeNames, filePath);
       }
@@ -109,21 +112,21 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
   }
 
   private TypeProperty convertXmlNodeToTypeProperty(String typeName, xmlNode, filePath) {
-    List missingMandatoryProps = getMissingMandatoryAttributes(xmlNode, VALID_TYPE_PROPERTY_ATTRIBUTES);
+    List missingMandatoryProps = XmlProcessingUtils.getMissingMandatoryAttributes(xmlNode, VALID_TYPE_PROPERTY_ATTRIBUTES);
     if (!missingMandatoryProps.isEmpty()) {
       throw MappingProviderException.missingMandatoryXmlProperty(missingMandatoryProps, filePath);
     }
     try {
-      String propName = MappingUtils.getAttributeAs(xmlNode, "Name", String);
+      String propName = XmlProcessingUtils.getAttributeAs(xmlNode, "Name", String);
       if(forbiddenPropertyMap.containsKey(propName)){
         throw MappingProviderException.forbiddenPropertyNameIsUsed(typeName, propName, filePath);
       }
-      String propType = MappingUtils.getAttributeAs(xmlNode, "Type", String);
-      String defaultValueString = MappingUtils.getAttributeAs(xmlNode, "DefaultValue", String);
-      String analyzer = MappingUtils.getAttributeAs(xmlNode, "Analyzer", String);
-      boolean includedInAll = MappingUtils.getAttributeAs(xmlNode, "IncludeInAll", Boolean);
-      boolean isKey = MappingUtils.getAttributeAs(xmlNode, "IsKey", Boolean);
-      boolean store = MappingUtils.getAttributeAs(xmlNode, "Store", Boolean);
+      String propType = XmlProcessingUtils.getAttributeAs(xmlNode, "Type", String);
+      String defaultValueString = XmlProcessingUtils.getAttributeAs(xmlNode, "DefaultValue", String);
+      String analyzer = XmlProcessingUtils.getAttributeAs(xmlNode, "Analyzer", String);
+      boolean includedInAll = XmlProcessingUtils.getAttributeAs(xmlNode, "IncludeInAll", Boolean);
+      boolean isKey = XmlProcessingUtils.getAttributeAs(xmlNode, "IsKey", Boolean);
+      boolean store = XmlProcessingUtils.getAttributeAs(xmlNode, "Store", Boolean);
 
       TypeProperty prop = new TypeProperty(propName, propType);
       if (analyzer != null)
@@ -141,7 +144,7 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
         throw MappingProviderException.invalidTypePropetiesException(typeName, filePath, e)
       }
 
-      List invalidAttributeNames = getInvalidAttributes(xmlNode, VALID_TYPE_PROPERTY_ATTRIBUTES);
+      List invalidAttributeNames = XmlProcessingUtils.getInvalidAttributes(xmlNode, VALID_TYPE_PROPERTY_ATTRIBUTES);
       if (!invalidAttributeNames.isEmpty()) {
         throw MappingProviderException.invalidAttributeInTypePropertyDefinitionException(typeName, propName, invalidAttributeNames, filePath);
       }
@@ -160,26 +163,4 @@ public class EsXmlMappingProvider extends ConfigurationProvider<TypeMapping> {
       throw MappingProviderException.invalidXmlAttribute(e.attributeName, e.attributeValue, filePath)
     }
   }
-
-  private List getMissingMandatoryAttributes(GPathResult xmlNode, Map<String, Boolean> validAttributeNames) {
-    List missingMandatoryAttributes = new ArrayList();
-    Map xmlNodeAttributes = xmlNode.attributes();
-    validAttributeNames.each {String propName, Boolean isMandatory ->
-      if (isMandatory && !xmlNodeAttributes.containsKey(propName)) {
-        missingMandatoryAttributes.add(propName);
-      }
-    }
-    return missingMandatoryAttributes.sort();
-  }
-
-  private List getInvalidAttributes(GPathResult xmlNode, Map<String, Boolean> validAttributeNames) {
-    List invalidAttributeList = new ArrayList();
-    xmlNode.attributes().each {name, value ->
-      if (!validAttributeNames.containsKey(name)) {
-        invalidAttributeList.add(name);
-      }
-    }
-    return invalidAttributeList.sort();
-  }
-
 }

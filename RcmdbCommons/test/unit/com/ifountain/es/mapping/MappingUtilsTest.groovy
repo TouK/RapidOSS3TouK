@@ -3,6 +3,7 @@ package com.ifountain.es.mapping
 import com.ifountain.core.test.util.RapidCoreTestCase
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import com.ifountain.rcmdb.config.XmlAttributeConversionException
 
 /**
  * Created by IntelliJ IDEA.

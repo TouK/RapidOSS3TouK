@@ -199,12 +199,13 @@ public class EsRepository implements EsMappingListener {
         return null;
     }
 
-    public GetResponse get(String type, Map<String, Object> keys, Map<String, Object> options) {
-        return null;
+    public GetResponse get(String type, Map<String, Object> keys, Map<String, Object> options) throws Exception {
+        MethodProcessor processor = new MethodProcessor(type, keys, options);
+        return adapter.get(processor.getIndex(), type, processor.getId());
     }
 
-    public GetResponse get(String type, Map<String, Object> keys) {
-        return null;
+    public GetResponse get(String type, Map<String, Object> keys) throws Exception {
+        return get(type, keys, new HashMap<String, Object>());
     }
 
     public int count(List<String> types, XContentQueryBuilder queryBuilder) {

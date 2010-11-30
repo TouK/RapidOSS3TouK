@@ -34,6 +34,7 @@ public class EsRepository implements EsMappingListener {
     public static final String CONNECTION_NAME = "localEs";
     public static final String INDEX_ALL = "indexAll";
     public static final String INDEX = "index";
+    public static final String INDICES = "indices";
     public static final String BULK_INDEX_ACTION = "index";
     public static final String BULK_DELETE_ACTION = "delete";
     private static EsRepository instance;
@@ -169,18 +170,28 @@ public class EsRepository implements EsMappingListener {
         return adapter.delete(processor.getIndex(), type, processor.getId());
     }
 
-    public void deleteByQuery(String type, String query, ActionListener<DeleteByQueryResponse> listener) {
+    public void deleteByQuery(List<String> types, String query, Map<String, Object> options, ActionListener<DeleteByQueryResponse> listener) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        adapter.deleteByQuery(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), query, listener);
     }
 
-    public DeleteByQueryResponse deleteByQuery(String type, String query) {
-        return null;
+    public DeleteByQueryResponse deleteByQuery(List<String> types, String query, Map<String, Object> options) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        return adapter.deleteByQuery(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), query);
     }
 
-    public void deleteByQuery(String type, XContentQueryBuilder query, ActionListener<DeleteByQueryResponse> listener) {
+    public void deleteByQuery(List<String> types, XContentQueryBuilder builder, Map<String, Object> options, ActionListener<DeleteByQueryResponse> listener) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        adapter.deleteByQuery(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), builder, listener);
     }
 
-    public DeleteByQueryResponse deleteByQuery(String type, XContentQueryBuilder query) {
-        return null;
+    public DeleteByQueryResponse deleteByQuery(List<String> types, XContentQueryBuilder builder, Map<String, Object> options) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        return adapter.deleteByQuery(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), builder);
     }
 
     public SearchHits search(List<String> types, String query, Map<String, Object> queryOptions) {
@@ -208,12 +219,16 @@ public class EsRepository implements EsMappingListener {
         return get(type, keys, new HashMap<String, Object>());
     }
 
-    public int count(List<String> types, XContentQueryBuilder queryBuilder) {
-        return 0;
+    public long count(List<String> types, XContentQueryBuilder queryBuilder, Map<String, Object> options) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        return adapter.count(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), queryBuilder).count();
     }
 
-    public int count(List<String> types, String query) {
-        return 0;
+    public long count(List<String> types, String query, Map<String, Object> options) throws Exception {
+        QueryMethodProcessor processor = new QueryMethodProcessor(types, options);
+        List<String> indices = processor.getIndices();
+        return adapter.count(indices.toArray(new String[indices.size()]), types.toArray(new String[types.size()]), query).count();
     }
 
     public RossEsAdapter getAdapter() {
@@ -244,6 +259,27 @@ public class EsRepository implements EsMappingListener {
             throw new Exception("Type <" + type + "> does not exist.");
         }
         return typeMapping;
+    }
+
+    private class QueryMethodProcessor {
+        protected List<String> types;
+        protected List<String> indices;
+        protected Map<String, Object> options;
+
+        private QueryMethodProcessor(List<String> types, Map<String, Object> options) throws Exception {
+            this.types = types;
+            this.options = options;
+            List<String> tempIndices = new ArrayList<String>();
+            for (String type : types) {
+                TypeMapping typeMapping = checkType(type);
+                tempIndices.add(typeMapping.getIndex());
+            }
+            indices = options.containsKey(INDICES) ? (List<String>) options.get(INDICES) : tempIndices;
+        }
+
+        public List<String> getIndices() {
+            return indices;
+        }
     }
 
     private class MethodProcessor {

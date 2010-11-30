@@ -95,7 +95,7 @@ class EsIndexManagerTest extends RapidCoreTestCase {
     assertFalse(tMapping1._all.enabled)
     assertEquals(MappingConstants.ROSS_WHITESPACE, tMapping1._all.analyzer)
     def properties = tMapping1.properties;
-    assertEquals(3, properties.size());
+    assertEquals(3+EsMappingManager.createDefaultProperties().size(), properties.size());
 
     def prop1Mapping = properties.prop1;
     assertNotNull(prop1Mapping);
@@ -142,7 +142,7 @@ class EsIndexManagerTest extends RapidCoreTestCase {
     assertNull(tMapping2._all.enabled)
     assertEquals(MappingConstants.ROSS_WHITESPACE, tMapping1._all.analyzer)
     properties = tMapping2.properties;
-    assertEquals(3, properties.size());
+    assertEquals(3+EsMappingManager.createDefaultProperties().size(), properties.size());
 
     def prop2Mapping = properties.prop2;
     assertNotNull(prop2Mapping);
@@ -176,7 +176,7 @@ class EsIndexManagerTest extends RapidCoreTestCase {
     assertNull(tMapping3._all.enabled)
     assertEquals(MappingConstants.ROSS_WHITESPACE, tMapping3._all.analyzer)
     properties = tMapping3.properties;
-    assertEquals(2, properties.size());
+    assertEquals(2+EsMappingManager.createDefaultProperties().size(), properties.size());
 
     def prop7Mapping = properties.prop7;
     assertNotNull(prop7Mapping);

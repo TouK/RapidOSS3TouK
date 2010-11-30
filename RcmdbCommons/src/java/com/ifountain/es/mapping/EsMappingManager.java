@@ -17,7 +17,7 @@ public class EsMappingManager {
         singletonInstance = null;
     }
 
-    private Map<String, TypeMapping> typeMappings;
+    private Map<String, TypeMapping> typeMappings = Collections.unmodifiableMap(new HashMap());
 
     private EsMappingManager() {
     }
@@ -70,7 +70,7 @@ public class EsMappingManager {
         }
     }
 
-    private TypeProperty[] createDefaultProperties(){
+    public static TypeProperty[] createDefaultProperties(){
         return new TypeProperty[]{new TypeProperty(TypeProperty.RS_INSERTED_AT, TypeProperty.LONG_TYPE),
         new TypeProperty(TypeProperty.RS_UPDATED_AT, TypeProperty.LONG_TYPE)
         };

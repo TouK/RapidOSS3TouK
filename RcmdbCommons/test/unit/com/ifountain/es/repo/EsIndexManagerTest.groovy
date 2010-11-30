@@ -17,7 +17,7 @@ import com.ifountain.es.test.util.MockMappingProvider
  * Time: 9:19:31 AM
  */
 class EsIndexManagerTest extends RapidCoreTestCase {
-  protected void setUp() {
+  public void setUp() {
     super.setUp();
     def param = ElasticSearchTestUtils.getESConnectionParam()
     param.setConnectionName(EsRepository.CONNECTION_NAME);

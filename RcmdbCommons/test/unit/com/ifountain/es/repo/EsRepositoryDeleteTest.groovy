@@ -5,13 +5,33 @@ import org.elasticsearch.action.index.IndexResponse
 import com.ifountain.es.test.util.ElasticSearchTestUtils
 import com.ifountain.elasticsearch.util.EsUtils
 import com.ifountain.es.mapping.TypeProperty
+import com.ifountain.es.ClosureActionListener
+import com.ifountain.comp.test.util.CommonTestUtils
+import com.ifountain.rcmdb.test.util.ClosureWaitAction
 
 /**
  * Created by Sezgin Kucukkaraaslan
  * Date: Nov 30, 2010
  * Time: 11:15:10 AM
  */
-class EsRepositoryDeleteTest extends EsRepositoryTestCase{
+class EsRepositoryDeleteTest extends EsRepositoryTestCase {
+
+  public void testDeleteMethodWithId() throws Exception {
+    createIndices([indexWithMultipleKeys])
+
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    EsRepository.getInstance().delete(typeWithMultipleKeys, [id: indexResponse.id()], [:]);
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertFalse(getResponse.exists());
+  }
+
   public void testDeleteMethodWithKeys() throws Exception {
     createIndices([indexWithMultipleKeys])
 
@@ -74,5 +94,27 @@ class EsRepositoryDeleteTest extends EsRepositoryTestCase{
     catch (e) {
       assertEquals("Type <" + nonExistantType + "> does not exist.", e.getMessage());
     }
+  }
+
+  public void testAsynchDelete() throws Exception {
+    createIndices([indexWithMultipleKeys])
+
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    def responses = []
+    EsRepository.getInstance().delete(typeWithMultipleKeys, [id: indexResponse.id()], [:], new ClosureActionListener({resp, f ->
+      if (resp) responses.add(resp);
+    }))
+
+    CommonTestUtils.waitFor(new ClosureWaitAction({
+      assertEquals(1, responses.size())
+    }))
+    adapter.refreshIndices(indexWithMultipleKeys);
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertFalse(getResponse.exists());
   }
 }

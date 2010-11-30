@@ -306,20 +306,4 @@ class EsRepositoryUpdateTest extends EsRepositoryTestCase {
     }))
     assertEquals("Entry with " + TypeProperty.ID + " <key1> does not exist for type <" + typeWithOneKey + ">", failures[0].getMessage())
   }
-
-  public void testDeleteMethodWithId() throws Exception {
-    createIndices([indexWithMultipleKeys])
-
-    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:])
-    adapter.refreshIndices(indexWithMultipleKeys);
-
-    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
-    assertTrue(getResponse.exists());
-
-    EsRepository.getInstance().delete(typeWithMultipleKeys, [id: indexResponse.id()], [:]);
-    adapter.refreshIndices(indexWithMultipleKeys);
-
-    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
-    assertFalse(getResponse.exists());
-  }
 }

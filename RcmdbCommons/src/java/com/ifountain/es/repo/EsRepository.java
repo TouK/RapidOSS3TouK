@@ -1,5 +1,8 @@
 package com.ifountain.es.repo;
 
+import com.ifountain.elasticsearch.datasource.actions.BulkDeleteItem;
+import com.ifountain.elasticsearch.datasource.actions.BulkIndexItem;
+import com.ifountain.elasticsearch.datasource.actions.BulkItem;
 import com.ifountain.elasticsearch.datasource.actions.XsonSource;
 import com.ifountain.es.datasource.RossEsAdapter;
 import com.ifountain.es.mapping.EsMappingListener;
@@ -16,9 +19,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.index.query.xcontent.XContentQueryBuilder;
 import org.elasticsearch.search.SearchHits;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Sezgin Kucukkaraaslan
@@ -33,10 +34,11 @@ public class EsRepository implements EsMappingListener {
     public static final String CONNECTION_NAME = "localEs";
     public static final String INDEX_ALL = "indexAll";
     public static final String INDEX = "index";
+    public static final String BULK_INDEX_ACTION = "index";
+    public static final String BULK_DELETE_ACTION = "delete";
     private static EsRepository instance;
 
     private RossEsAdapter adapter;
-    private Logger logger;
     private Map<String, Map<String, Object>> defaultValues = new HashMap<String, Map<String, Object>>();
 
     public static EsRepository getInstance() {
@@ -47,7 +49,7 @@ public class EsRepository implements EsMappingListener {
     }
 
     private EsRepository() {
-        logger = Logger.getRootLogger();
+        Logger logger = Logger.getRootLogger();
         adapter = new RossEsAdapter(CONNECTION_NAME, logger);
         EsMappingManager.getInstance().addListener(this);
         constructDefaultValues();
@@ -111,11 +113,60 @@ public class EsRepository implements EsMappingListener {
         });
     }
 
-    public void delete(String type, Map<String, Object> keys, ActionListener<DeleteResponse> listener) {
+    public BulkResponse bulk(List<Map<String, Object>> actions) throws Exception {
+        return adapter.bulk(createBulkItems(actions));
     }
 
-    public DeleteResponse delete(String type, Map<String, Object> keys) {
-        return null;
+    public void bulk(List<Map<String, Object>> actions, ActionListener<BulkResponse> listener) throws Exception {
+        adapter.bulk(createBulkItems(actions), listener);
+    }
+
+    private List<BulkItem> createBulkItems(List<Map<String, Object>> bulkActions) throws Exception {
+        List<BulkItem> bulkItems = new ArrayList<BulkItem>();
+        for (Map<String, Object> action : bulkActions) {
+            String actionType = (String) getRequiredBulkActionProperty("action", action);
+            String type = (String) getRequiredBulkActionProperty("type", action);
+            Map<String, Object> properties = (Map<String, Object>) getRequiredBulkActionProperty("properties", action);
+            if (actionType.equals(BULK_INDEX_ACTION)) {
+                IndexMethodPropertyProcessor processor = new IndexMethodPropertyProcessor(type, properties, action);
+                processor.process();
+                BulkIndexItem bulkItem = new BulkIndexItem(processor.getIndex(), type, new XsonSource(processor.getProperties()));
+                String id = processor.getId();
+                if (id != null) {
+                    bulkItem.setId(id);
+                    bulkItem.setIsCreate(false);
+                } else {
+                    bulkItem.setIsCreate(true);
+                }
+                bulkItems.add(bulkItem);
+            } else if (actionType.equals(BULK_DELETE_ACTION)) {
+                MethodProcessor processor = new MethodProcessor(type, properties, action);
+                BulkDeleteItem bulkItem = new BulkDeleteItem(processor.getIndex(), type, processor.getId());
+                bulkItems.add(bulkItem);
+            } else {
+                throw new Exception("Invalid bulk action type <" + actionType + ">");
+            }
+        }
+        return bulkItems;
+    }
+
+    private Object getRequiredBulkActionProperty(String propertyName, Map<String, Object> action) throws Exception {
+        Object pValue = action.remove(propertyName);
+        if (pValue == null) {
+            throw new Exception("Bulk action property <" + propertyName + "> does not exist");
+        }
+        return pValue;
+    }
+
+    public void delete(String type, Map<String, Object> keys, Map<String, Object> options, ActionListener<DeleteResponse> listener) throws Exception {
+        MethodProcessor processor = new MethodProcessor(type, keys, options);
+        adapter.delete(processor.getIndex(), type, processor.getId(), listener);
+
+    }
+
+    public DeleteResponse delete(String type, Map<String, Object> keys, Map<String, Object> options) throws Exception {
+        MethodProcessor processor = new MethodProcessor(type, keys, options);
+        return adapter.delete(processor.getIndex(), type, processor.getId());
     }
 
     public void deleteByQuery(String type, String query, ActionListener<DeleteByQueryResponse> listener) {
@@ -130,13 +181,6 @@ public class EsRepository implements EsMappingListener {
 
     public DeleteByQueryResponse deleteByQuery(String type, XContentQueryBuilder query) {
         return null;
-    }
-
-    public BulkResponse bulk(List<Map<String, Object>> actions, Map<String, Object> bulkOptions) {
-        return null;
-    }
-
-    public void bulk(List<Map<String, Object>> actions, Map<String, Object> bulkOptions, ActionListener<BulkResponse> listener) {
     }
 
     public SearchHits search(List<String> types, String query, Map<String, Object> queryOptions) {
@@ -193,44 +237,50 @@ public class EsRepository implements EsMappingListener {
         }
     }
 
-    private abstract class AbstractPropertyProcessor {
-        protected String type;
-        protected String index;
-        protected String id;
-        protected Map<String, Object> propertiesToProcess;
-        protected Map<String, Object> properties = new HashMap<String, Object>();
-        protected Map<String, Object> options;
-        protected boolean indexAll;
-        protected TypeMapping typeMapping;
+    private TypeMapping checkType(String type) throws Exception {
+        TypeMapping typeMapping = EsMappingManager.getInstance().getMapping(type);
+        if (typeMapping == null) {
+            throw new Exception("Type <" + type + "> does not exist.");
+        }
+        return typeMapping;
+    }
 
-        protected AbstractPropertyProcessor(String type, Map<String, Object> propertiesToProcess, Map<String, Object> options) throws Exception {
+    private class MethodProcessor {
+        protected String type;
+        protected String id;
+        protected TypeMapping typeMapping;
+        protected Map<String, Object> propertiesToProcess;
+        protected String index;
+        protected Map<String, Object> options;
+
+        protected MethodProcessor(String type, Map<String, Object> propertiesToProcess, Map<String, Object> options) throws Exception {
             this.type = type;
             this.propertiesToProcess = propertiesToProcess;
             this.options = options;
-            typeMapping = EsMappingManager.getInstance().getMapping(type);
-            if (typeMapping == null) {
-                throw new Exception("Type <" + type + "> does not exist.");
-            }
-            index = options.containsKey(INDEX) ? (String) options.get(INDEX) : typeMapping.getIndex();
+            typeMapping = checkType(type);
             id = calculateId(typeMapping.getKeys());
-            indexAll = options.containsKey(INDEX_ALL) && (Boolean) options.get(INDEX_ALL);
-        }
-
-        protected abstract void process();
-
-        public String getIndex() {
-            return index;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public Map<String, Object> getProperties() {
-            return properties;
+            index = options.containsKey(INDEX) ? (String) options.get(INDEX) : typeMapping.getIndex();
         }
 
         protected String calculateId(Map<String, TypeProperty> keys) throws Exception {
+            if (isIdRequired()) {
+                String id = (String) propertiesToProcess.remove(TypeProperty.ID);
+                if (keys.size() == 0 && id == null) {
+                    throw new Exception("Property <" + TypeProperty.ID + "> should be provided for type <" + type + ">");
+                } else if (keys.size() > 0 && id == null) {
+                    return _calculateId(keys);
+                }
+                return id;
+            } else {
+                return _calculateId(keys);
+            }
+        }
+
+        protected boolean isIdRequired() {
+            return true;
+        }
+
+        protected String _calculateId(Map<String, TypeProperty> keys) throws Exception {
             StringBuffer idBuf = new StringBuffer("");
             for (Map.Entry<String, TypeProperty> key : keys.entrySet()) {
                 String pName = key.getKey();
@@ -244,6 +294,31 @@ public class EsRepository implements EsMappingListener {
                 return id.substring(0, id.length() - 1);
             }
             return null;
+        }
+
+        public String getIndex() {
+            return index;
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
+
+    private abstract class AbstractMethodPropertyProcessor extends MethodProcessor {
+        protected Map<String, Object> properties = new HashMap<String, Object>();
+        protected boolean indexAll;
+
+
+        protected AbstractMethodPropertyProcessor(String type, Map<String, Object> propertiesToProcess, Map<String, Object> options) throws Exception {
+            super(type, propertiesToProcess, options);
+            indexAll = options.containsKey(INDEX_ALL) && (Boolean) options.get(INDEX_ALL);
+        }
+
+        protected abstract void process();
+
+        public Map<String, Object> getProperties() {
+            return properties;
         }
 
         protected Object processPropValue(Object propValue) {
@@ -261,9 +336,10 @@ public class EsRepository implements EsMappingListener {
         }
     }
 
-    private class IndexMethodPropertyProcessor extends AbstractPropertyProcessor {
+    private class IndexMethodPropertyProcessor extends AbstractMethodPropertyProcessor {
         protected IndexMethodPropertyProcessor(String type, Map<String, Object> propertiesToProcess, Map<String, Object> options) throws Exception {
             super(type, propertiesToProcess, options);
+
         }
 
         @Override
@@ -280,9 +356,14 @@ public class EsRepository implements EsMappingListener {
             properties.put(TypeProperty.RS_INSERTED_AT, now);
             properties.put(TypeProperty.RS_UPDATED_AT, now);
         }
+
+        @Override
+        protected boolean isIdRequired() {
+            return false;
+        }
     }
 
-    private class UpdateMethodPropertyProcessor extends AbstractPropertyProcessor {
+    private class UpdateMethodPropertyProcessor extends AbstractMethodPropertyProcessor {
         private Map<String, Object> oldProperties;
 
         protected UpdateMethodPropertyProcessor(String type, Map<String, Object> propertiesToProcess, Map<String, Object> options) throws Exception {
@@ -305,17 +386,6 @@ public class EsRepository implements EsMappingListener {
                 }
             }
             properties.put(TypeProperty.RS_UPDATED_AT, calculateCurrentTime());
-        }
-
-        @Override
-        protected String calculateId(Map<String, TypeProperty> keys) throws Exception {
-            String id = (String) propertiesToProcess.remove(TypeProperty.ID);
-            if (keys.size() == 0 && id == null) {
-                throw new Exception("Property <" + TypeProperty.ID + "> should be provided for update method for type <" + type + ">");
-            } else if (keys.size() > 0 && id == null) {
-                id = super.calculateId(keys);
-            }
-            return id;
         }
 
         public void setOldProperties(Map<String, Object> oldProperties) {

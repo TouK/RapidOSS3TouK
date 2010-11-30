@@ -14,6 +14,8 @@ import com.ifountain.rcmdb.test.util.ClosureWaitAction
 import org.elasticsearch.action.get.GetResponse
 import org.elasticsearch.action.index.IndexResponse
 import com.ifountain.elasticsearch.util.EsUtils
+import org.elasticsearch.action.bulk.BulkResponse
+import org.elasticsearch.action.bulk.BulkItemResponse
 
 /**
  * Created by Sezgin Kucukkaraaslan
@@ -460,7 +462,7 @@ class EsRepositoryTest extends RapidCoreTestCase {
     GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
     assertTrue(getResponse.exists());
 
-    indexResponse = EsRepository.getInstance().update(typeWithAllProperties, [id:indexResponse.id(), keywordProp: "updatedKeywordProp"], [index: anotherIndex]);
+    indexResponse = EsRepository.getInstance().update(typeWithAllProperties, [id: indexResponse.id(), keywordProp: "updatedKeywordProp"], [index: anotherIndex]);
     adapter.refreshIndices(anotherIndex);
     assertEquals(anotherIndex, indexResponse.index());
 
@@ -530,7 +532,7 @@ class EsRepositoryTest extends RapidCoreTestCase {
       fail("Should throw exception")
     }
     catch (e) {
-      assertEquals("Property <" + TypeProperty.ID + "> should be provided for update method for type <" + typeWithAllProperties + ">", e.getMessage());
+      assertEquals("Property <" + TypeProperty.ID + "> should be provided for type <" + typeWithAllProperties + ">", e.getMessage());
     }
 
     try {
@@ -565,6 +567,419 @@ class EsRepositoryTest extends RapidCoreTestCase {
       assertEquals(1, failures.size());
     }))
     assertEquals("Entry with " + TypeProperty.ID + " <key1> does not exist for type <" + typeWithOneKey + ">", failures[0].getMessage())
+  }
+
+  public void testDeleteMethodWithId() throws Exception {
+    createIndices([indexWithMultipleKeys])
+
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    EsRepository.getInstance().delete(typeWithMultipleKeys, [id: indexResponse.id()], [:]);
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertFalse(getResponse.exists());
+  }
+
+  public void testDeleteMethodWithKeys() throws Exception {
+    createIndices([indexWithMultipleKeys])
+
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:])
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    EsRepository.getInstance().delete(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2, keyProp3: true], [:]);
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertFalse(getResponse.exists());
+  }
+
+  public void testDeleteMethodThrowsExceptionIfIdOrKeysAreNotProvided() throws Exception {
+    createIndices([indexWithAllProperties, indexWithMultipleKeys])
+    try {
+      EsRepository.getInstance().delete(typeWithAllProperties, [:], [:]);
+      fail("should throw exception")
+    }
+    catch (e) {
+      assertEquals("Property <" + TypeProperty.ID + "> should be provided for type <" + typeWithAllProperties + ">", e.getMessage());
+    }
+    try {
+      EsRepository.getInstance().delete(typeWithMultipleKeys, [keyProp1: "keyProp1Value", keyProp2: 2], [:]);
+      fail("should throw exception")
+    }
+    catch (e) {
+      assertEquals("Key property <keyProp3> for type <" + typeWithMultipleKeys + "> should be provided.", e.getMessage())
+    }
+  }
+
+  public void testDeletingWithTheProvidedIndex() throws Exception {
+    createIndices([indexWithAllProperties]);
+    String anotherIndex = "anotherindex";
+    EsUtils.createIndex(adapter, anotherIndex, new HashMap());
+    ElasticSearchTestUtils.clearIndex(adapter, anotherIndex);
+    IndexResponse indexResponse = EsRepository.getInstance().index(typeWithAllProperties, [:], [index: anotherIndex]);
+    adapter.refreshIndices(anotherIndex);
+    assertEquals(anotherIndex, indexResponse.index());
+
+    GetResponse getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertTrue(getResponse.exists());
+
+    EsRepository.getInstance().delete(typeWithAllProperties, [id: indexResponse.id()], [index: anotherIndex]);
+    adapter.refreshIndices(anotherIndex);
+
+    getResponse = adapter.get(indexResponse.index(), indexResponse.type(), indexResponse.id());
+    assertFalse(getResponse.exists());
+  }
+
+  public void testDeleteMethodThrowsExceptionIfTypeDoesNotExist() throws Exception {
+    String nonExistantType = "nonExistantType"
+    try {
+      EsRepository.getInstance().delete(nonExistantType, [:], [:])
+      fail("should throw exception")
+    }
+    catch (e) {
+      assertEquals("Type <" + nonExistantType + "> does not exist.", e.getMessage());
+    }
+  }
+
+  public void testBulkMethodIndexesEntryWithDefaultValues() throws Exception {
+    createIndices([indexWithAllProperties])
+    def bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithAllProperties, properties: [:]]);
+    BulkResponse bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithAllProperties);
+
+    GetResponse getResponse = adapter.get(indexWithAllProperties, typeWithAllProperties, items[0].id());
+    assertTrue(getResponse.exists());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals(9, entry.size());
+    assertEquals("keyword_default_value", entry.keywordProp);
+    assertEquals("whitespace_default_value", entry.whitespaceProp);
+    assertEquals(-1, entry.intProp);
+    assertEquals(1, (Long) entry.longProp);
+    assertEquals(new Double(2.3), entry.doubleProp);
+    assertEquals(new Float(5.0), entry.floatProp);
+    assertTrue(entry.booleanProp);
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+
+    def props = [keywordProp: "keyword", whitespaceProp: "white space", intProp: 3, longProp: 5L,
+            doubleProp: new Double(3.5), floatProp: new Float(2.7), booleanProp: false, undefinedProp: "undefinedValue"]
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithAllProperties, properties: props]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithAllProperties);
+
+    getResponse = adapter.get(indexWithAllProperties, typeWithAllProperties, items[0].id());
+    assertTrue(getResponse.exists());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals(9, entry.size());
+    assertEquals("keyword", entry.keywordProp);
+    assertEquals("white space", entry.whitespaceProp);
+    assertEquals(3, entry.intProp);
+    assertEquals(5, (Long) entry.longProp);
+    assertEquals(new Double(3.5), entry.doubleProp);
+    assertEquals(new Float(2.7), entry.floatProp);
+    assertFalse(entry.booleanProp);
+    assertNull(entry.undefinedProp);
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithAllProperties, properties: props, indexAll: true]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithAllProperties);
+
+    getResponse = adapter.get(indexWithAllProperties, typeWithAllProperties, items[0].id());
+    assertTrue(getResponse.exists());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals(10, entry.size());
+    assertEquals("keyword", entry.keywordProp);
+    assertEquals("white space", entry.whitespaceProp);
+    assertEquals(3, entry.intProp);
+    assertEquals(5, (Long) entry.longProp);
+    assertEquals(new Double(3.5), entry.doubleProp);
+    assertEquals(new Float(2.7), entry.floatProp);
+    assertFalse(entry.booleanProp);
+    assertEquals("undefinedValue", entry.undefinedProp);
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+  }
+
+  public void testBulkWithKeyProperties() throws Exception {
+    createIndices([indexWithOneKey, indexWithMultipleKeys])
+    def bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithOneKey, properties: [:]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp> for type <" + typeWithOneKey + "> should be provided.", e.getMessage());
+    }
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: typeWithOneKey, properties: [:]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp> for type <" + typeWithOneKey + "> should be provided.", e.getMessage());
+    }
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithOneKey, properties: [keyProp: "keyPropValue", prop1: "prop1Value", prop2: 1]]);
+    BulkResponse bulkResponse = EsRepository.getInstance().bulk(bulkActions)
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithOneKey);
+
+    GetResponse getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyPropValue", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyPropValue", entry.keyProp)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: typeWithOneKey, properties: [keyProp: "keyPropValue", prop1: "prop1Value", prop2: 1]]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions)
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithOneKey);
+
+    getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertFalse(getResponse.exists());
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithMultipleKeys, properties: [keyProp1: "keyProp1Value", keyProp2: 2, prop2: 1]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp3> for type <" + typeWithMultipleKeys + "> should be provided.", e.getMessage());
+    }
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: typeWithMultipleKeys, properties: [keyProp1: "keyProp1Value", keyProp2: 2]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception");
+    }
+    catch (Exception e) {
+      assertEquals("Key property <keyProp3> for type <" + typeWithMultipleKeys + "> should be provided.", e.getMessage());
+    }
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithMultipleKeys, properties: [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1]]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals("keyProp1Value", entry.keyProp1)
+    assertEquals(1, entry.keyProp2)
+    assertTrue(entry.keyProp3)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: typeWithMultipleKeys, properties: [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value"]]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertFalse(getResponse.exists());
+  }
+
+  public void testBulkOverridesTheOldEntryWithTheSameKey() throws Exception {
+    createIndices([indexWithMultipleKeys])
+    def bulkActions = [];
+    def props = [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithMultipleKeys, properties: props]);
+    BulkResponse bulkResponse = EsRepository.getInstance().bulk(bulkActions)
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+
+    bulkActions = [];
+    props = [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1UpdatedValue"];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithMultipleKeys, properties: props]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions)
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    assertEquals(1, adapter.count(items[0].index(), items[0].type(), "*:*").count())
+    getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    entry = getResponse.sourceAsMap();
+    assertEquals("prop1UpdatedValue", entry.prop1)
+    assertEquals(0, entry.prop2)
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+  }
+
+  public void testBulkWithNullAndEmptyStrings() throws Exception {
+    createIndices([indexWithAllProperties])
+    def bulkActions = [];
+    def props = [keywordProp: null, whitespaceProp: "", intProp: 3, longProp: 5L,
+            undefinedProp1: "undefinedValue", undefinedProp2: "", undefinedProp3: null]
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithAllProperties, properties: props, indexAll: true]);
+    BulkResponse bulkResponse = EsRepository.getInstance().bulk(bulkActions)
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithAllProperties);
+
+    GetResponse getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyword_default_value", entry.keywordProp)
+    assertEquals("", entry.whitespaceProp)
+    assertEquals("undefinedValue", entry.undefinedProp1)
+    assertEquals("", entry.undefinedProp2)
+    assertFalse(entry.containsKey("undefinedProp3"));
+
+    assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "whitespaceProp:\"\"").count())
+    assertEquals(1, adapter.count(getResponse.index(), getResponse.type(), "undefinedProp2:\"\"").count())
+  }
+
+  public void testAsynchBulk() throws Exception {
+    createIndices([indexWithMultipleKeys])
+    def bulkActions = [];
+    def props = [keyProp1: "keyProp1Value", keyProp2: 1, keyProp3: true, prop1: "prop1Value", prop2: 1];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithMultipleKeys, properties: props, indexAll: true]);
+    def responses = [];
+    EsRepository.getInstance().bulk(bulkActions, new ClosureActionListener({resp, failure ->
+      if (resp) responses.add(resp);
+    }))
+    CommonTestUtils.waitFor(new ClosureWaitAction({
+      assertEquals(1, responses.size());
+    }))
+    BulkResponse bulkResponse = responses[0];
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(indexWithMultipleKeys);
+
+    GetResponse getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    assertEquals("keyProp1Value_1_true", getResponse.id());
+
+    def entry = getResponse.sourceAsMap();
+    assertEquals("keyProp1Value", entry.keyProp1)
+    assertEquals(1, entry.keyProp2)
+    assertTrue(entry.keyProp3)
+    assertEquals("prop1Value", entry.prop1)
+    assertEquals(1, entry.prop2)
+  }
+
+  public void testBulkMethodThrowsExceptionIfTypeDoesNotExist() throws Exception {
+    String nonExistantType = "nonExistantType"
+    def bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: nonExistantType, properties: [:]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception")
+    }
+    catch (e) {
+      assertEquals("Type <" + nonExistantType + "> does not exist.", e.getMessage());
+    }
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: nonExistantType, properties: [:]]);
+    try {
+      EsRepository.getInstance().bulk(bulkActions)
+      fail("should throw exception")
+    }
+    catch (e) {
+      assertEquals("Type <" + nonExistantType + "> does not exist.", e.getMessage());
+    }
+  }
+
+  public void testBulkMethodWritingToTheProvidedIndex() throws Exception {
+    createIndices([indexWithAllProperties]);
+    String anotherIndex = "anotherindex";
+    EsUtils.createIndex(adapter, anotherIndex, new HashMap());
+    ElasticSearchTestUtils.clearIndex(adapter, anotherIndex);
+
+    def bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_INDEX_ACTION, type: typeWithAllProperties, properties: [:], index: anotherIndex]);
+    BulkResponse bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    BulkItemResponse[] items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(anotherIndex);
+    assertEquals(anotherIndex, items[0].index());
+
+    GetResponse getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertTrue(getResponse.exists());
+    def entry = getResponse.sourceAsMap();
+    assertEquals(9, entry.size());
+    assertEquals("keyword_default_value", entry.keywordProp);
+    assertEquals("whitespace_default_value", entry.whitespaceProp);
+    assertEquals(-1, entry.intProp);
+    assertEquals(1, (Long) entry.longProp);
+    assertEquals(new Double(2.3), entry.doubleProp);
+    assertEquals(new Float(5.0), entry.floatProp);
+    assertTrue(entry.booleanProp);
+    assertTrue(entry[TypeProperty.RS_INSERTED_AT] > 0);
+    assertTrue(entry[TypeProperty.RS_UPDATED_AT] > 0);
+    assertEquals(entry[TypeProperty.RS_INSERTED_AT], entry[TypeProperty.RS_UPDATED_AT])
+
+    bulkActions = [];
+    bulkActions.add([action: EsRepository.BULK_DELETE_ACTION, type: typeWithAllProperties, properties: [id: getResponse.id()], index: anotherIndex]);
+    bulkResponse = EsRepository.getInstance().bulk(bulkActions);
+    items = bulkResponse.items();
+    assertEquals(1, items.length)
+    adapter.refreshIndices(anotherIndex);
+    assertEquals(anotherIndex, items[0].index());
+
+    getResponse = adapter.get(items[0].index(), items[0].type(), items[0].id());
+    assertFalse(getResponse.exists());
   }
 
   private void createIndices(def indices) {

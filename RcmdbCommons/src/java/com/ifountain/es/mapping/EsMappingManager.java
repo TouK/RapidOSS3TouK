@@ -1,9 +1,13 @@
 package com.ifountain.es.mapping;
 
+import com.ifountain.comp.config.ConfigurationProvider;
+import com.ifountain.comp.config.ConfigurationProviderException;
+import com.ifountain.comp.config.IConfigurationProvider;
+
 import java.util.*;
 
 public class EsMappingManager {
-    EsMappingProvider mappingProvider;
+    IConfigurationProvider<TypeMapping> mappingProvider;
     private static EsMappingManager singletonInstance;
     private List<EsMappingListener> listeners = new ArrayList<EsMappingListener>();
 
@@ -26,12 +30,12 @@ public class EsMappingManager {
         return typeMappings.get(type);
     }
 
-    public void load() throws MappingException{
-        Map<String, TypeMapping> mappings = getMappingProvider().constructMappings();
+    public void load() throws ConfigurationProviderException {
+        Map<String, TypeMapping> mappings = getMappingProvider().load();
         setTypeMappings(mappings);
     }
 
-    public void reload() throws MappingException{
+    public void reload() throws ConfigurationProviderException{
         Map<String, TypeMapping> mappings = getMappingProvider().reload();
         setTypeMappings(mappings);
     }
@@ -44,7 +48,7 @@ public class EsMappingManager {
         }
     }
 
-    public void setMappingProvider(EsMappingProvider mappingProvider) {
+    public void setMappingProvider(IConfigurationProvider<TypeMapping> mappingProvider) {
         this.mappingProvider = mappingProvider;
     }
 
@@ -52,7 +56,7 @@ public class EsMappingManager {
         return typeMappings;
     }
 
-    public EsMappingProvider getMappingProvider()throws MappingException{
+    public IConfigurationProvider<TypeMapping> getMappingProvider()throws MappingException{
         if(this.mappingProvider == null){
             throw MappingException.noProviderSpecified();
         }

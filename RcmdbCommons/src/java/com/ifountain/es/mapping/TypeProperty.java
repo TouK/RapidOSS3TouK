@@ -1,5 +1,7 @@
 package com.ifountain.es.mapping;
 
+import com.ifountain.comp.config.ConfigurationBean;
+
 import java.util.Date;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Date;
  * Time: 10:51:10 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TypeProperty {
+public class TypeProperty  extends ConfigurationBean {
     public static String STRING_TYPE = "string";
     public static String INTEGER_TYPE = "integer";
     public static String BOOLEAN_TYPE = "boolean";

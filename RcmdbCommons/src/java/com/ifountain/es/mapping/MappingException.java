@@ -1,5 +1,7 @@
 package com.ifountain.es.mapping;
 
+import com.ifountain.comp.config.ConfigurationProviderException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: mustafa
@@ -7,7 +9,7 @@ package com.ifountain.es.mapping;
  * Time: 4:39:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MappingException extends Exception {
+public class MappingException extends ConfigurationProviderException {
     public MappingException() {
     }
 

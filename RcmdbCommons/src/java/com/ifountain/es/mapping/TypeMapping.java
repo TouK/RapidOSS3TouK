@@ -1,5 +1,7 @@
 package com.ifountain.es.mapping;
 
+import com.ifountain.comp.config.ConfigurationBean;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -12,7 +14,7 @@ import java.util.TreeMap;
  * Time: 10:50:59 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TypeMapping {
+public class TypeMapping extends ConfigurationBean{
     String index;
     String name;
     Map<String, TypeProperty> typeProperties = new HashMap<String, TypeProperty>();

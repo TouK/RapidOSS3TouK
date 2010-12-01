@@ -16,7 +16,7 @@ class XmlProcessingUtils {
     String attributeValue = attribute.text();
     try {
       if (expectedType == Boolean) {
-        return convertValueToBoolean(attributeValue)
+        return ConfigConverterUtils.convertValueToBoolean(attributeValue)
       }
       else {
         return attributeValue."to${expectedType.simpleName}"();
@@ -28,11 +28,6 @@ class XmlProcessingUtils {
 
   }
 
-  private static boolean convertValueToBoolean(String value) {
-    if (value.equalsIgnoreCase("true")) return true;
-    else if (value.equalsIgnoreCase("false")) return false;
-    else throw new Exception("Invalid boolean value ${value}");
-  }
 
   public static List getMissingMandatoryAttributes(GPathResult xmlNode, Map<String, Boolean> validAttributeNames) {
     List missingMandatoryAttributes = new ArrayList();

@@ -2,8 +2,8 @@ package com.ifountain.es.mapping
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
-import groovy.util.slurpersupport.Attribute
-import groovy.util.slurpersupport.GPathResult
+
+import com.ifountain.rcmdb.config.ConfigConverterUtils
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +40,7 @@ class MappingUtils {
         return dateFormat.parse(defaultValueStr);
       }
       else if (expectedType == TypeProperty.BOOLEAN_TYPE) {
-        return convertValueToBoolean(defaultValueStr);
+        return ConfigConverterUtils.convertValueToBoolean(defaultValueStr);
       }
     }
     catch (Exception e) {
@@ -49,5 +49,6 @@ class MappingUtils {
     throw MappingException.invalidPropertyTypeException(expectedType);
   }
 
+  
   
 }

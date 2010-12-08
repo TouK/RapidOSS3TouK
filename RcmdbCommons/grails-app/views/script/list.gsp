@@ -12,6 +12,19 @@
 <div class="body">
     <h1>Script List</h1>
     <g:render template="/common/messages" model="[flash:flash]"></g:render>
+
+   <div class="list" style="margin-top:10px;margin-bottom:10px;">
+     <form method="get">
+        	Search : <input type="text" name="query" value="${params.query?params.query:''}" autocomplete="off" />
+        	<g:each var="paramName" in="${params.keySet()}">
+        		<g:if test="${paramName!='query' && paramName!='offset'}">
+        			<input type="hidden" name="${paramName}" value="${params[paramName]}" />
+        		</g:if>
+        	</g:each>
+        	<input type="submit" value="Search"/>
+        </form>
+    </div>
+
     <div class="list">
         <%
             def currentUrl=request.request.uri.toString().replace("/RapidSuite","");
@@ -20,15 +33,15 @@
             {
                 currentUrl=currentUrl.substring(startIndex)
             }
-            
+
         %>
         <table>
             <thead>
                 <tr>
 
-                    <g:sortableColumn property="name" title="Name"/>
-                    <g:sortableColumn property="scriptFile" title="File"/>
-                    <g:sortableColumn property="type" title="Type"/>
+                    <g:sortableColumn property="name" title="Name" params="${[query:params.query]}" />
+                    <g:sortableColumn property="scriptFile" title="File" params="${[query:params.query]}" />
+                    <g:sortableColumn property="type" title="Type" params="${[query:params.query]}" />
                     <th></th>
                     <th></th>
                     <th></th>
@@ -40,7 +53,7 @@
                         <td><g:link action="show" id="${cmdbScript.id}">${cmdbScript.name?.encodeAsHTML()}</g:link></td>
                         <td>${cmdbScript.scriptFile?.encodeAsHTML()}</td>
                         <td>${cmdbScript.type?.encodeAsHTML()}</td>
-                        <td>                            
+                        <td>
                             <g:link action="reload" id="${cmdbScript.name}" targetURI="cmdbScript" params="[id:cmdbScript.name,targetURI:currentUrl]">Reload</g:link>
                         </td>
                         <td>
@@ -53,7 +66,7 @@
                             %>
                         </td>
                         <td>
-                           <g:link action="edit" id="${cmdbScript.id}" class="edit">Edit</g:link> 
+                           <g:link action="edit" id="${cmdbScript.id}" class="edit">Edit</g:link>
                         </td>
                     </tr>
                 </g:each>
@@ -61,7 +74,7 @@
         </table>
     </div>
     <div class="paginateButtons">
-        <g:paginate total="${CmdbScript.count()}"/>
+        <g:paginate total="${CmdbScript.countHits(searchQuery)}" params="${[query:params.query]}" />
     </div>
 </div>
 </body>

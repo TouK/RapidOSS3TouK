@@ -31,7 +31,8 @@ class RsUserController {
     def list = {
         if (!params.max) params.max = 100
         if (!params.sort) params.sort = "username"
-        [userList: RsUser.search("alias:*", params).results]
+        def searchQuery=params.query?params.query:"alias:*";
+        [userList: RsUser.search(searchQuery, params).results,searchQuery:searchQuery]
     }
 
     def show = {

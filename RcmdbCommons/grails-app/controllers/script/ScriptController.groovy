@@ -38,7 +38,8 @@ class ScriptController {
     def list = {
         if (!params.max) params.max = 100
         if (!params.sort) params.sort = "name"
-        [cmdbScriptList: CmdbScript.search("alias:*", params).results]
+        def searchQuery=params.query?params.query:"alias:*";
+        [cmdbScriptList: CmdbScript.search(searchQuery, params).results, searchQuery: searchQuery]
     }
 
 

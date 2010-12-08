@@ -36,8 +36,9 @@ class GroupController {
 
     def list = {
         if (!params.max) params.max = 100
-        if (!params.sort) params.sort = "name"
-        [groupList: Group.search("alias:*", params).results]
+        if (!params.sort) params.sort = "name"                    
+    	def searchQuery=params.query?params.query:"alias:*";
+        [groupList: Group.search(searchQuery, params).results, searchQuery:searchQuery]
     }
 
     def show = {

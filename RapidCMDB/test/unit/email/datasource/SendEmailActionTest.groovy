@@ -30,19 +30,23 @@ class SendEmailActionTest extends RapidCoreTestCase{
     }
     public void testExecuteWithLocal()
     {
-        _testExecute("Local", "User1", "User2", true);
+        _testExecute("Local", "User1", "User2", true, false);
+    }
+   public void testExecuteWithLocalAndCCEmail()
+    {
+        _testExecute("Local", "User1", "User2", true, true);
     }
     public void testExecuteWithYahoo()
     {
-        _testExecute("Yahoo", "Yahoo1", "Yahoo2", false);
+        _testExecute("Yahoo", "Yahoo1", "Yahoo2", false, false);
     }
     public void testExecuteWithGoogle()
     {
-        _testExecute("Google", "Google1", "Google2", false);
+        _testExecute("Google", "Google1", "Google2", false, false);
     }
 
 
-    public void _testExecute(String serverId, String fromUserId, String toUserId, boolean searchTheMessageWithSubject){
+    public void _testExecute(String serverId, String fromUserId, String toUserId, boolean searchTheMessageWithSubject, boolean useCC){
 
         Map fromUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(fromUserId)
         Map toUser = EmailConnectionImplTestUtils.getEmailUserAccountInfo(toUserId)
@@ -63,13 +67,25 @@ class SendEmailActionTest extends RapidCoreTestCase{
 
         String subject = "subject1${System.currentTimeMillis()}${Math.random()}";
         String body = "body1${System.currentTimeMillis()}${Math.random()}";
-        Map sendEmailParams = EmailConnectionImplTestUtils.getSendEmailParams(fromUser.Username, toUser.Username, subject, body);
+        Map sendEmailParams = [:];
+        if(useCC)
+        {
+          sendEmailParams=EmailConnectionImplTestUtils.getSendEmailParamsForCC(fromUser.Username, toUser.Username, subject, body);          
+        }
+        else
+        {
+          sendEmailParams=EmailConnectionImplTestUtils.getSendEmailParams(fromUser.Username, toUser.Username, subject, body);
+        }
         SendEmailAction action=new SendEmailAction(Logger.getRootLogger(),sendEmailParams)
         action.execute(con);
         CommonTestUtils.waitFor (new ClosureWaitAction({
             def messageCountAfterSendingMail = EmailConnectionImplTestUtils.getMessageCount(toUserId, serverId);
             assertEquals ("Message could not be sent successfully", numberOfMessagesBeforeSendingMail+1, messageCountAfterSendingMail);
         }))
+        def numberOfMessagesAfterSendingMail = EmailConnectionImplTestUtils.getMessageCount(toUserId, serverId);
+        println "NUMBER OF MESSAGES AFTER SENDING MAIL:"+numberOfMessagesAfterSendingMail
+        assertEquals(numberOfMessagesBeforeSendingMail+1,numberOfMessagesAfterSendingMail);
+        
         EmailConnectionImplTestUtils.getMessages(toUserId, serverId, {List messages->
             Message lastMessage = messages[messages.size()-1];
             if(searchTheMessageWithSubject)
@@ -78,6 +94,19 @@ class SendEmailActionTest extends RapidCoreTestCase{
             }
             assertEquals (body, lastMessage.getContent().toString().trim());
             assertEquals (new InternetAddress(fromUser.Username, fromUser.Username).toString(), lastMessage.getFrom()[0].toString());
+            def toRecipients=lastMessage.getRecipients(Message.RecipientType.TO);
+            def ccRecipients=lastMessage.getRecipients(Message.RecipientType.CC);
+
+            if(useCC)
+            {
+               assertNull (toRecipients);
+               assertEquals (new InternetAddress(toUser.Username).toString(), ccRecipients[0].toString());
+            }
+            else
+            {
+               assertNull (ccRecipients);
+               assertEquals (new InternetAddress(toUser.Username).toString(), toRecipients[0].toString());
+            }
         });
 
     }
@@ -103,8 +132,23 @@ class SendEmailActionTest extends RapidCoreTestCase{
         {
 
         }
+    }
+    public void testConstructorDoesNotGeneratesExceptionWhenToOrCCIsProvided()
+    {
+        def toParams=["to":"x","from":"x","subject":"x","body":"x"];
+        new SendEmailAction(Logger.getRootLogger(),toParams)
+        def ccParams=["cc":"x","from":"x","subject":"x","body":"x"];
+        new SendEmailAction(Logger.getRootLogger(),ccParams)
+      
+        def params=["from":"x","subject":"x","body":"x"];
+        try{
+           new SendEmailAction(Logger.getRootLogger(),params)
+           fail("Should throw RapidMissingParameterException");
+        }
+        catch(RapidMissingParameterException e)
+        {
 
-
+        }
     }
 
     public void testConstructorGeneratesContentTypeWhenMissing()

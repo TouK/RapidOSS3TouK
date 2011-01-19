@@ -64,6 +64,14 @@ class EmailConnectionImplTestUtils {
         params[SendEmailAction.BODY_PARAM_NAME] = body;
         return params;
     }
+    public static Map getSendEmailParamsForCC(String from, String to, String subject, String body) {
+        def params = [:]
+        params[SendEmailAction.FROM_PARAM_NAME] = from;
+        params[SendEmailAction.CC_PARAM_NAME] = to;
+        params[SendEmailAction.SUBJECT_PARAM_NAME] = subject;
+        params[SendEmailAction.BODY_PARAM_NAME] = body;
+        return params;
+    }
 
     public static void clearMessages(String userId) throws MessagingException
     {

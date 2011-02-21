@@ -37,6 +37,7 @@ class Env {
 	static def dist_rapid_server_lib = "$distribution/RapidServer/lib";
 
     static def rapid_modules = basedir+"/RapidModules"
+    static def common_modules = basedir+"/CommonModules";
     static def rapid_cmdb_cvs = "$rapid_modules/RapidCMDB"
     static def rapid_cmdb_modeler_cvs = "$rapid_modules/RapidCMDBModeler"
     static def rapid_cmdb_commons_cvs = "$rapid_modules/RcmdbCommons"
@@ -45,14 +46,14 @@ class Env {
         static def versionInBuild = "$dist_rapid_suite/RCMDBVersion.txt"
     static def invalidNames = "$rapid_cmdb_commons_cvs/invalidNames.txt"
     static def rapid_comp_build = basedir+"/build/comp"
-    static def rapid_comp_src = "$rapid_modules/comp/java"
-    static def rapid_comp_resources = "$rapid_modules/comp/resources"
+    static def rapid_comp_src = "$common_modules/comp/java"
+    static def rapid_comp_resources = "$common_modules/comp/resources"
 
     static def rapid_core_build = basedir+"/build/core"
-    static def rapid_core_src = "$rapid_modules/core/java"
-    static def rapid_core_resources = "$rapid_modules/core/resources"
+    static def rapid_core_src = "$common_modules/core/java"
+    static def rapid_core_resources = "$common_modules/core/resources"
 
-    static def rapid_ext = "$rapid_modules/ext"
+    static def rapid_ext = "$common_modules/ext"
     static def rapid_ext_build = basedir+"/build/ext"
     static def rapid_smarts_build = basedir+"/build/smarts"
 

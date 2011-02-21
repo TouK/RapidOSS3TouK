@@ -142,7 +142,7 @@ class RapidCmdbBuild extends Build {
         ant.copy(file: (String) classpath.getProperty("commons-configuration-1_2_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: dirToCopyTo);
-        ant.copy(file: (String) classpath.getProperty("commons-httpclient-3_0_1_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("httpclient-4_0_3_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("STComm_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("smack_jar"), toDir: dirToCopyTo);

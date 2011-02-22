@@ -75,6 +75,13 @@ class AddMethod extends AbstractRapidDomainWriteMethod
         def props = arguments[0];
         props.remove(RapidCMDBConstants.ID_PROPERTY_GSTRING);
         props.remove(RapidCMDBConstants.ID_PROPERTY_STRING);
+        def sampleBean = clazz.newInstance();
+        keys.each {keyPropName ->
+              if(!props.containsKey(keyPropName))
+              {
+                 props.put(keyPropName,sampleBean[keyPropName])
+              }
+        }
         IdCacheEntry existingInstanceEntry = clazz.getCacheEntry(props); //
         def instanceOfError = false;
         if (!willReturnErrorIfExist && existingInstanceEntry.exist)
@@ -97,7 +104,7 @@ class AddMethod extends AbstractRapidDomainWriteMethod
             }
         }
 
-        def sampleBean = clazz.newInstance()
+
         triggersMap.domainObject = sampleBean;
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(sampleBean, sampleBean.getClass().getName());
         def relatedInstances = [:];

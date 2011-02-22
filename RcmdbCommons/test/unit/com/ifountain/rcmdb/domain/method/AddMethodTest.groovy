@@ -476,6 +476,29 @@ class AddMethodTest extends RapidCmdbTestCase {
         assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
     }
 
+    public void testIfObjectAlreadyExistsUpdatesObjectsWithDefaultPropAsKeyAndDefaultPropNotGivenInProps()
+    {
+        AddMethodDomainObject1 objectBeforeAdd = new AddMethodDomainObject1(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
+        AddMethod add = new AddMethod(AddMethodDomainObject1.metaClass, AddMethodDomainObject1.class, validator, AddMethodDomainObject1.allFields, [:], ["defaultValueProp"]);
+        def props = [prop1: objectBeforeAdd.prop1, prop2: objectBeforeAdd.prop2, prop3: objectBeforeAdd.prop3];
+        def addedObject = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+        def objectId = addedObject.id;
+        assertEquals(objectBeforeAdd, addedObject);
+        assertNull(AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+
+        AddMethodDomainObject1.query = null;
+        AddMethodDomainObject1.cacheEntryParams = [];
+        AddMethodDomainObject1.searchResult = [total: 1, results: [addedObject]];
+
+        props = [prop1: objectBeforeAdd.prop1, prop2: "newProp2Value"];
+        AddMethodDomainObject1 addedObjectAfterAdd = add.invoke(AddMethodDomainObject1.class, [props] as Object[]);
+
+        assertEquals(props, addedObjectAfterAdd.propertiesToBeUpdated);
+        assertEquals("defaultValueProp:${RapidStringUtilities.exactQuery("defaultValue")}", AddMethodDomainObject1.query);
+        assertEquals(props, AddMethodDomainObject1.cacheEntryParams[0]);
+    }
+
     public void testIfObjectAlreadyExistsUpdatesObjectsWithChildObject()
     {
         ChildAddMethodDomainObject objectBeforeAdd = new ChildAddMethodDomainObject(prop1: "object1Prop1Value", prop2: "object1Prop2Value", prop3: "object1Prop3Value");
@@ -592,6 +615,7 @@ class AddMethodDomainObject1 extends GroovyObjectSupport
     Double doubleProp;
     Boolean booleanProp;
     String nullableProp = "defaultValue";
+    String defaultValueProp ="defaultValue";
     long id;
     Long rsInsertedAt =0;
     Long rsUpdatedAt =0;

@@ -136,6 +136,7 @@ class RapidCmdbBuild extends Build {
 
     def copyDependentJars(dirToCopyTo) {
         ant.copy(file: (String) classpath.getProperty("joda-time-1_6_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("apache-mime4j-0_6_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-transaction-1_2_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-betwixt-0_8_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-digester-1_7_jar"), toDir: dirToCopyTo);
@@ -143,6 +144,9 @@ class RapidCmdbBuild extends Build {
         ant.copy(file: (String) classpath.getProperty("commons-collections-3_2_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("commons-codec-1_3_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("httpclient-4_0_3_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("httpcore-4_1_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("httpcore-nio-4_1_jar"), toDir: dirToCopyTo);
+        ant.copy(file: (String) classpath.getProperty("httpmime-4_0_3_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("SNMP4J_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("STComm_jar"), toDir: dirToCopyTo);
         ant.copy(file: (String) classpath.getProperty("smack_jar"), toDir: dirToCopyTo);

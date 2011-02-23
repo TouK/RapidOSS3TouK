@@ -22,6 +22,42 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 public class RsMessageOperations extends com.ifountain.rcmdb.domain.operation.AbstractDomainOperation
 {
+    public static Long MESSAGE_RETRY_LIMIT=5;
+
+    public void recordSuccess()
+    {
+        def newTryCount=tryCount+1;
+        def updateParams=[state:RsMessage.STATE_SENT,sentAt:Date.now(),tryCount:newTryCount];
+        if(firstSentAt == 0)
+        {
+          updateParams.firstSentAt=updateParams.sentAt;
+        }
+        update(updateParams)
+    }
+    public void recordFailure()
+    {
+        def newTryCount=tryCount+1;
+        def newState=RsMessage.STATE_ERROR;
+        if(newTryCount>=MESSAGE_RETRY_LIMIT)
+        {
+            newState=RsMessage.STATE_ERROR_LIMIT;
+        }
+        def updateParams=[state:newState,sentAt:Date.now(),tryCount:newTryCount];
+        if(firstSentAt == 0)
+        {
+          updateParams.firstSentAt=updateParams.sentAt;
+        }
+        update(updateParams)
+    }
+    public void recordNotExists()
+    {
+       update(state:RsMessage.STATE_NOT_EXISTS);
+    }
+    public void markForResend()
+    {
+       update(state:RsMessage.STATE_READY,tryCount:0);
+    }
+
     public static void processDelayedMessages()
     {
         def now = (new Date()).getTime();

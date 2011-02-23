@@ -217,13 +217,13 @@ class RsMessageRuleCalendarTests extends RapidCmdbWithCompassTestCase {
         RsMessageRuleCalendar cal = RsMessageRuleCalendar.addCalendar(props)
         assertFalse(cal.hasErrors());
 
-        def messageRule = RsMessageRule.add(searchQueryId: 1, userId: 1, destinationType: "email", calendarId: cal.id)
+        def messageRule = RsMessageRule.add(searchQueryId: 1, users: "testuser", destinationType: "email", calendarId: cal.id)
         assertFalse(messageRule.hasErrors())
         assertEquals(cal.id, messageRule.calendarId);
 
         cal.remove();
 
-        messageRule = RsMessageRule.get(searchQueryId: 1, userId: 1, destinationType: "email");
+        messageRule = RsMessageRule.get(searchQueryId: 1, users: "testuser", destinationType: "email", groups:"_");
         assertEquals(0, messageRule.calendarId);
 
     }

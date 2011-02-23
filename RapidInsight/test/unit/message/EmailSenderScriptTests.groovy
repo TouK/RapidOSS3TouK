@@ -130,32 +130,30 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsMessage.countHits("alias:*"),0)
 
-        def events=addEvents("testev1",4)
+        def events=addEvents("testev1",2)
         events.each{ event ->
             RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
-        def historicalEvents=addHistoricalEvents("testhistev1",4)
+        def historicalEvents=addHistoricalEvents("testhistev1",2)
         historicalEvents.each{ event ->
             RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
+        assertEquals(RsHistoricalEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
 
 
-        TestLogUtils.enableLogger (TestLogUtils.log);
-        
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name],logger:TestLogUtils.log])
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),4)
         
 
-        assertEquals(8,sendMessageParams.size());
-        assertEquals(8,renderTemplateParams.size());
+        assertEquals(4,sendMessageParams.size());
+        assertEquals(4,renderTemplateParams.size());
 
         def index=0;
         RsMessage.searchEvery("alias:*",[sort: "id",order:"asc"]).each{ message ->
@@ -197,30 +195,30 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsMessage.countHits("alias:*"),0)
 
-        def events=addEvents("testev1",4)
+        def events=addEvents("testev1",2)
         events.each{ event ->
             RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
-        def historicalEvents=addHistoricalEvents("testhistev1",4)
+        def historicalEvents=addHistoricalEvents("testhistev1",2)
         historicalEvents.each{ event ->
             RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
+        assertEquals(RsHistoricalEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
 
 
 
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),4)
     }
-    void testSenderDoesNotProcessMessagesIfSendGeneratesException()
+    void testSenderMarksMessagesWithErrorIfSendGeneratesExceptionAndDoesNotSendIfErrorLimitIsReached()
     {
         def mockDatasource=[:];
         mockDatasource.connection=[username:"IFountainEmailSender@ifountain.com"];
@@ -236,24 +234,38 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsMessage.countHits("alias:*"),0)
 
-        def events=addEvents("testev1",4)
+        def events=addEvents("testev1",2)
         events.each{ event ->
             RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
-        def historicalEvents=addHistoricalEvents("testhistev1",4)
+        def historicalEvents=addHistoricalEvents("testhistev1",2)
         historicalEvents.each{ event ->
             RsMessage.add(eventId:event.activeId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
+        assertEquals(RsHistoricalEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
+        assertEquals(RsMessage.countHits("tryCount:0"),4)
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_ERROR}"),4)
+        assertEquals(RsMessage.countHits("tryCount:1"),4)
+
+        ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_ERROR}"),4)
+        assertEquals(RsMessage.countHits("tryCount:2"),4)
+
+        4.times{
+            ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
+        }
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_ERROR_LIMIT}"),4)
+        assertEquals(RsMessage.countHits("tryCount:5"),4)
+
 
     }
     void testSenderProcessesMessagesAddedByRsMessageOperations()
@@ -272,18 +284,18 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsMessage.countHits("alias:*"),0)
 
-        def events=addEvents("testev1",4)
+        def events=addEvents("testev1",2)
         events.each{ event ->
             RsMessage.addEventCreateMessage([id:event.id],DESTINATION_TYPE, destination,0)
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
 
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),2)
 
         events.each{
             it.clear();
@@ -291,20 +303,20 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         RsHistoricalEvent.saveHistoricalEventCache();
 
         assertEquals(RsEvent.countHits("alias:*"),0)
-        assertEquals(RsHistoricalEvent.countHits("alias:*"),4)
+        assertEquals(RsHistoricalEvent.countHits("alias:*"),2)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
         RsHistoricalEvent.list().each{ event ->
             RsMessage.addEventClearMessage([activeId:event.activeId],DESTINATION_TYPE, destination)
         }
-        assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
+        assertEquals(RsMessage.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
         
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
-        assertEquals(RsMessage.countHits("alias:*"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
+        assertEquals(RsMessage.countHits("alias:*"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_SENT} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
 
 
     }
@@ -323,12 +335,12 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsEvent.countHits("alias:*"),0)
         assertEquals(RsMessage.countHits("alias:*"),0)
 
-        def events=addEvents("testev1",4)
+        def events=addEvents("testev1",2)
         events.each{ event ->
             RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
 
@@ -337,8 +349,8 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         events.each{ event ->
             RsMessage.add(eventId:event.id,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        assertEquals(RsEvent.countHits("alias:*"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsEvent.countHits("alias:*"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
 
         NotificationConnector.metaClass.'static'.get={ Map props ->
@@ -348,7 +360,7 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertNull(connector);
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),2)
 
     }
     void testSenderChangesMessageStateWhenEventsAreMissing(){
@@ -367,25 +379,25 @@ class EmailSenderScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(RsMessage.countHits("alias:*"),0)
 
 
-        4.times{ eventId ->
+        2.times{ eventId ->
             RsMessage.add(eventId:eventId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY);
         }
-        4.times{ eventId ->
+        2.times{ eventId ->
             RsMessage.add(eventId:eventId,destination:destination,destinationType:DESTINATION_TYPE,eventType:RsMessage.EVENT_TYPE_CLEAR,state:RsMessage.STATE_READY);
         }
 
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
 
         ScriptManagerForTest.runScript("emailSender",[staticParamMap:[connectorName:connectorParams.name]])
 
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY}"),0)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),0)
         assertEquals(RsMessage.countHits("state:${RsMessage.STATE_READY} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),0)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS}"),8)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),4)
-        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS}"),4)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.EVENT_TYPE_CREATE}"),2)
+        assertEquals(RsMessage.countHits("state:${RsMessage.STATE_NOT_EXISTS} AND eventType:${RsMessage.EVENT_TYPE_CLEAR}"),2)
     }
 
 

@@ -9,7 +9,6 @@
 import connector.NotificationConnector;
 import message.RsMessage
 
-
 def templatePath="grails-app/templates/message/smsTemplate.gsp";
 
 def connector=NotificationConnector.get(name:staticParamMap?.connectorName);
@@ -37,15 +36,16 @@ messages.each{ message ->
         logger.debug("Will send message about RsEvent : ${event.name}");
         try{
             def templateParams=[event:event,message:message]
-            def messageContent=application.RapidApplication.getUtility("RsTemplate").render(templatePath,templateParams);
+            def messageContent=application.RapidApplication.getUtility("RsTemplate").render(templatePath,templateParams);            
             ds.sendMessage(message.destination,messageContent)
             logger.debug("Sended message about RsEvent: ${event.name}")
-            message.update(state:RsMessage.STATE_SENT,sendAt:Date.now());
-            logger.debug("Updated state of message as 3,with eventId ${message.eventId}")
+            message.recordSuccess();
+            logger.debug("Updated state of message as SENT,with eventId ${message.eventId}")
         }
         catch(e)
         {
             logger.warn("Error occured while sending message.Reason ${e}");
+            message.recordFailure();
         }
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
@@ -53,7 +53,7 @@ messages.each{ message ->
     }
     else
     {
-        message.update(state:RsMessage.STATE_NOT_EXISTS,sendAt:Date.now());
+        message.recordNotExists();
         logger.warn("RsEvent/RsHistoricalEvent with eventId ${message.eventId} does not exist. Will not send message. Updated state of message as 4");
     }
 

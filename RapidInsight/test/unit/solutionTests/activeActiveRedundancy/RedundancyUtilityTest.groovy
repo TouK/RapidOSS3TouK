@@ -68,7 +68,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
         ExpandoMetaClass.enableGlobally();
     }
     public void testRedundancyUtility_SavesAndDeletesUpdatedObjectsAccordingToExecutionContext(){
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser");
         assertFalse(rule1.hasErrors());
         assertEquals(1,UpdatedObjects.count());
         assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
@@ -79,7 +79,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
             ExecutionContextManagerUtils.addObjectToCurrentContext("isRemote",true);
             def rule2=null;
             try{
-                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
+                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",users:"testuser");
                 assertFalse(rule2.hasErrors());
                 assertEquals("UpdatedObjects not deleted, because other object is updated",1,UpdatedObjects.count());
                 assertEquals("UpdatedObjects not deleted, because other object is updated",1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
@@ -107,7 +107,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
    }
    public void testRedundancyUtility_UpdatesUpdatedObjectsRecordWhenObjectUpdatedMultipleTimes()
    {
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2,enabled:false);
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser",enabled:false);
         assertFalse(rule1.hasErrors());
         assertEquals(1,UpdatedObjects.count());
         assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
@@ -125,7 +125,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
    }
     public void testRedundancyUtility_AddsADeletedObjectRecordWhenKeyPropssAreChanged()
    {
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser");
         assertFalse(rule1.hasErrors());
         assertEquals(0,DeletedObjects.count());
         assertEquals(1,UpdatedObjects.count());
@@ -134,7 +134,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
 
         def searchQueryForRule=application.RapidApplication.getUtility("RedundancyUtility").getKeySearchQueryForObject("message.RsMessageRule",rule1);
         
-        rule1.update(userId:3);
+        rule1.update(users:"testuser2");
         assertFalse(rule1.hasErrors());
 
 
@@ -155,7 +155,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
    }
    public void testRemoveDeletesUpdatedObjectsRecordsAndUpdateDeletesDeletedObjectsRecordForTheSameObject()
    {
-       def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+       def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser");
        assertFalse(rule1.hasErrors());
        assertEquals(1,UpdatedObjects.count());
        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
@@ -169,7 +169,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
        assertEquals(1,DeletedObjects.countHits("modelName:message.RsMessageRule AND searchQuery:${searchQueryForRule2.exactQuery()}"));
 
 
-       def newRule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+       def newRule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser");
        assertFalse(newRule1.id == rule1.id);
        assertEquals(1,UpdatedObjects.count());
        assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${newRule1.id}"));
@@ -180,7 +180,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
 
         ExecutionContextManagerUtils.executeInContext ([:])
         {
-            def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+            def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser");
             assertFalse(rule1.hasErrors());
             assertEquals(1,UpdatedObjects.countHits("modelName:message.RsMessageRule AND objectId:${rule1.id}"));
             
@@ -200,7 +200,7 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
             def rule2=null;
             try{
 
-                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",userId:2);
+                rule2=RsMessageRule.add(searchQueryId:2,destinationType:"email3",users:"testuser");
                 assertFalse(rule2.hasErrors());
                 assertEquals(0,UpdatedObjects.count());
                 UpdatedObjects.add(modelName:rule2.class.name,objectId:rule2.id);
@@ -222,10 +222,10 @@ class RedundancyUtilityTest extends RapidCmdbWithCompassTestCase{
 
    public void testRedundancyUtility_GetKeySearchQueryForObject()
    {
-        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",userId:2);
+        def rule1=RsMessageRule.add(searchQueryId:1,destinationType:"email",users:"testuser",groups:"group1");
         assertFalse(rule1.hasErrors());
 
-        assertEquals("""destinationType:"(email)" searchQueryId:1 userId:2 """,redundancyUtility.getKeySearchQueryForObject("message.RsMessageRule",rule1));
+        assertEquals("""destinationType:"(email)" groups:"(group1)" searchQueryId:1 users:"(testuser)" """,redundancyUtility.getKeySearchQueryForObject("message.RsMessageRule",rule1));
 
    }
    

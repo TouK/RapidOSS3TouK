@@ -9,52 +9,69 @@
     #ruleCalendarExceptionDlg .bd {
         padding:0;
     }
+    .r-toolbar-folderButton {
+      color: #083772;
+      line-height:14px;
+      font-weight: bold;
+      background: transparent url( ../images/rapidjs/component/tools/folder.gif) no-repeat scroll left;
+    }
 </style>
 <script>
 	var ruleTree = YAHOO.rapidjs.Components['ruleTree'];
 	var calendarsGrid = YAHOO.rapidjs.Components['calendars'];
 
     <g:if test="${auth.RsUser.hasRole(session.username, auth.Role.ADMINISTRATOR)}">
-         <g:if test="${RsMessageRule.getDestinationGroups()[1].destinationNames.size() > 0}">
-            var ruleAddButton3 = ruleTree.addToolbarButton({
-                className:'r-toolbar-addButton',
-                scope:this,
-                tooltip: 'Add System Rule',
-                text:'Add System Rule',
-                click:function() {
-                    var addRuleForm = YAHOO.rapidjs.Components['addRuleForm'];
-                    addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'system'}),'Add System Rule');
-                    addRuleForm.popupWindow.show();
-                }
-            });
-            YAHOO.util.Dom.setStyle(ruleAddButton3.inner, 'width', '115px')
-        </g:if>
-        <g:if test="${RsMessageRule.getDestinationGroups()[0].destinationNames.size() > 0}">
-            var ruleAddButton = ruleTree.addToolbarButton({
-                className:'r-toolbar-addButton',
-                scope:this,
-                tooltip: 'Add Rule For ${session.username}',
-                text:'Add Rule For ${session.username}',
-                click:function() {
-                    var addRuleForm = YAHOO.rapidjs.Components['addRuleForm'];
-                    addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'self'}),'Add Rule For ${session.username}');
-                    addRuleForm.popupWindow.show();
-                }
-            });
-            YAHOO.util.Dom.setStyle(ruleAddButton.inner, 'width', '145px')
-            var ruleAddButton2 = ruleTree.addToolbarButton({
-                className:'r-toolbar-addButton',
-                scope:this,
-                tooltip: 'Add Rule For User And Groups',
-                text:'Add Rule For User And Groups',
-                click:function() {
-                    var addRuleForm = YAHOO.rapidjs.Components['addRuleForPeopleForm'];
-                    addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'public'}),'Add Rule For User And Groups');
-                    addRuleForm.popupWindow.show();
-                }
-            });
-            YAHOO.util.Dom.setStyle(ruleAddButton2.inner, 'width', '185px')
-        </g:if>
+          var ruleAddButton3 = ruleTree.addToolbarButton({
+              className:'r-toolbar-addButton',
+              scope:this,
+              tooltip: 'Add System Rule',
+              text:'Add System Rule',
+              click:function() {
+                  var addRuleForm = YAHOO.rapidjs.Components['addRuleForm'];
+                  addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'system'}),'Add System Rule');
+                  addRuleForm.popupWindow.show();
+              }
+          });
+          YAHOO.util.Dom.setStyle(ruleAddButton3.inner, 'width', '120px')
+
+          var ruleAddButton2 = ruleTree.addToolbarButton({
+              className:'r-toolbar-addButton',
+              scope:this,
+              tooltip: 'Add Rule For User And Groups',
+              text:'Add Rule For User And Groups',
+              click:function() {
+                  var addRuleForm = YAHOO.rapidjs.Components['addRuleForPeopleForm'];
+                  addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'public'}),'Add Rule For User And Groups');
+                  addRuleForm.popupWindow.show();
+              }
+          });
+          YAHOO.util.Dom.setStyle(ruleAddButton2.inner, 'width', '190px')
+
+          var ruleAddButton = ruleTree.addToolbarButton({
+              className:'r-toolbar-addButton',
+              scope:this,
+              tooltip: 'Add Rule For ${session.username}',
+              text:'Add Rule For ${session.username}',
+              click:function() {
+                  var addRuleForm = YAHOO.rapidjs.Components['addRuleForm'];
+                  addRuleForm.show(createURL('rsMessageRuleForm.gsp',{mode:'create', ruleType:'self'}),'Add Rule For ${session.username}');
+                  addRuleForm.popupWindow.show();
+              }
+          });
+          YAHOO.util.Dom.setStyle(ruleAddButton.inner, 'width', '140px')
+
+          var queueButton = ruleTree.addToolbarButton({
+              className:'r-toolbar-folderButton',
+              scope:this,
+              tooltip: 'Notification Queue',
+              text:'Notification Queue',
+              click:function() {
+                  var notificationsGrid = YAHOO.rapidjs.Components['notificationsGrid'];
+                  notificationsGrid.popupWindow.show();
+                  notificationsGrid.poll();
+              }
+          });
+          YAHOO.util.Dom.setStyle(queueButton.inner, 'width', '125px')
     </g:if>
     <g:else>
        var ruleAddButton = ruleTree.addToolbarButton({
@@ -155,4 +172,44 @@
     calendarsGrid.poll();
     ruleTree.poll();
 
+</script>
+
+<script>
+	var notificationsGrid = YAHOO.rapidjs.Components['notificationsGrid'];
+    function renderNotificationCellFunction(key, value, data, el){
+        if(key == "insertedAt" || key == 'firstSentAt' || key == 'sentAt' || key == 'rsInsertedAt' || key == 'rsUpdatedAt'){
+            if(value == "0" || value == "")
+            {
+                return "never"
+            }
+            else
+            {
+                try
+                {
+                    var d = new Date();
+                    d.setTime(parseFloat(value))
+                    return d.format("d M H:i:s");
+                }
+                catch(e)
+                {}
+            }
+        }
+        else if(key == "state")
+        {
+            switch(value)
+            {
+                case '0' : return "Delay";
+                case '1' : return "Ready";
+                case '2' : return "Aborted By Delay";
+                case '3' : return "Sent";
+                case '4' : return "Event Missing";
+                case '5' : return "Error";
+                case '6' : return "Error Limit";
+                default  : return "";
+            }
+        }
+        return value;
+     }
+     notificationsGrid.renderCellFunction = renderNotificationCellFunction;
+	 notificationsGrid.poll();
 </script>

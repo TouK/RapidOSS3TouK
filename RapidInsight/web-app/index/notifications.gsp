@@ -4,7 +4,7 @@
 </head>
 <body>
 <rui:treeGrid id="ruleTree" url="../rsMessageRule/list" rootTag="Rules" pollingInterval="0" timeout="30"
-        keyAttribute="id" expandAttribute="" contentPath="Rule" title="Your Notification List" expanded="true"
+        keyAttribute="id" expandAttribute="expanded" contentPath="Rule" title="Your Notification List" expanded="true"
 
 >
     <rui:tgColumns>
@@ -13,23 +13,35 @@
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="ruleType" colLabel="Rule Type" width="100"   sortType="string">
+        <rui:tgColumn type="text" attributeName="ruleType" colLabel="Rule Type" width="60"   sortType="string">
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="destinationType" colLabel="Destination Type" width="120"   sortType="string">
+        <rui:tgColumn type="text" attributeName="destinationType" colLabel="Destination Type" width="100"   sortType="string">
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="enabled" colLabel="Enabled" width="65"   sortType="string">
+        <rui:tgColumn type="text" attributeName="enabled" colLabel="Enabled" width="50"   sortType="string">
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="delay" colLabel="Delay" width="50"   sortType="int">
+        <rui:tgColumn type="text" attributeName="delay" colLabel="Delay" width="45"   sortType="int">
 
         </rui:tgColumn>
 
-        <rui:tgColumn type="text" attributeName="sendClearEventType" colLabel="Send Clear Events" width="120"   sortType="string">
+        <rui:tgColumn type="text" attributeName="sendClearEventType" colLabel="Send Clear Events" width="105"   sortType="string">
+
+        </rui:tgColumn>
+
+        <rui:tgColumn type="text" attributeName="users" colLabel="Users" width="250"   sortType="string">
+
+        </rui:tgColumn>
+
+        <rui:tgColumn type="text" attributeName="groups" colLabel="Groups" width="250"   sortType="string">
+
+        </rui:tgColumn>
+
+        <rui:tgColumn type="text" attributeName="addedByUser" colLabel="Added By" width="100"   sortType="string">
 
         </rui:tgColumn>
 
@@ -79,11 +91,11 @@ rootImage325Visible="params.data.nodeType == 'group'"
 </rui:treeGrid>
 
 
-<rui:html id="addRuleForm" iframe="false"  timeout="30"  pollingInterval="0" title="Rule Details"></rui:html>
+<rui:html id="addRuleForm" iframe="false"  timeout="30"  pollingInterval="0" title="Rule Details" evaluateScripts="true"></rui:html>
 
 <rui:searchGrid id="calendars" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object" bringAllProperties="true"
-        keyAttribute="id"  title="Calendars" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml&rootClass=message.RsMessageRuleCalendar"
-        queryEnabled="false" searchInEnabled="false" defaultQuery="" timeout="30" multipleFieldSorting="true"
+        keyAttribute="id"  title="Calendars" pollingInterval="0" fieldsUrl="../script/run/getViewFields?format=xml&rootClass=message.RsMessageRuleCalendar" viewType="event"
+        queryEnabled="false" searchInEnabled="false" defaultQuery="" timeout="30" multipleFieldSorting="true" maxRowsDisplayed="100"
         defaultSearchClass="message.RsMessageRuleCalendar" defaultView="default"  extraPropertiesToRequest=""
 
 >
@@ -140,10 +152,91 @@ deleteVisible="params.data.isPublic != 'true' || window.currentUserHasRole('Admi
 </rui:searchGrid>
 
 
-<rui:html id="addCalendarForm" iframe="false"  timeout="30"  pollingInterval="0" title=""></rui:html>
+<rui:html id="addCalendarForm" iframe="false"  timeout="30"  pollingInterval="0" title="" evaluateScripts="true"></rui:html>
 
 
-<rui:html id="addRuleForPeopleForm" iframe="false"  timeout="30"  pollingInterval="0" title="Add Rule For User And Groups"></rui:html>
+<rui:html id="addRuleForPeopleForm" iframe="false"  timeout="30"  pollingInterval="0" title="Add Rule For User And Groups" evaluateScripts="true"></rui:html>
+
+<rui:searchGrid id="notificationsGrid" url="../search" queryParameter="query" rootTag="Objects" contentPath="Object" bringAllProperties="true"
+        keyAttribute="id"  title="Notifications" pollingInterval="60" fieldsUrl="../script/run/getViewFields?format=xml&rootClass=message.RsMessage" viewType="event"
+        queryEnabled="true" searchInEnabled="false" defaultQuery="" timeout="30" multipleFieldSorting="true" maxRowsDisplayed="100"
+        defaultSearchClass="message.RsMessage" defaultView="default"  extraPropertiesToRequest=""
+
+>
+
+    <rui:sgMenuItems>
+    <%
+browseVisible="true"
+%>
+
+        <rui:sgMenuItem id="browse" label="Browse" visible="${browseVisible}" action="${['browseNotification']}">
+
+        </rui:sgMenuItem>
+    <%
+markForResendVisible="params.data.state == '6'"
+%>
+
+        <rui:sgMenuItem id="markForResend" label="Mark For Resend" visible="${markForResendVisible}" action="${['markForResendAction']}">
+
+        </rui:sgMenuItem>
+
+    </rui:sgMenuItems>
+     <rui:sgMultiSelectionMenuItems>
+
+    </rui:sgMultiSelectionMenuItems>
+    <rui:sgImages>
+
+    </rui:sgImages>
+    <rui:sgColumns>
+
+        <rui:sgColumn attributeName="destinationType" colLabel="Destination Type" width="90"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="destination" colLabel="Destination" width="250"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="eventType" colLabel="Event Type" width="70"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="state" colLabel="Status" width="60"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="tryCount" colLabel="Try Count" width="60"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="sendAt" colLabel="Last Send At" width="100"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="firstSendAt" colLabel="First Send At" width="100"   type="text">
+
+
+        </rui:sgColumn>
+
+        <rui:sgColumn attributeName="insertedAt" colLabel="Inserted At" width="100" sortBy="true" sortOrder="desc" type="text">
+
+
+        </rui:sgColumn>
+
+    </rui:sgColumns>
+    <rui:sgRowColors>
+
+    </rui:sgRowColors>
+</rui:searchGrid>
+
+
+<rui:html id="notificationDetails" iframe="false"  timeout="30"  pollingInterval="0" title="" evaluateScripts="true"></rui:html>
 
 <%
 requestActionConditionindex_notifications_ruleEnableActionCondition=""
@@ -266,6 +359,35 @@ functionActionConditionindex_notifications_calendarUpdateActionCondition=""
 </rui:action>
 
 <%
+functionActionConditionindex_notifications_browseNotificationCondition=""
+%>
+
+<rui:action id="browseNotification" type="function" function="show" componentId="notificationDetails"
+
+>
+
+    <rui:functionArg><![CDATA[createURL('notificationBrowse.gsp', { messageId:params.data.id})]]></rui:functionArg>
+
+    <rui:functionArg><![CDATA['Details of Message ' + params.data.destinationType+ ' '+ params.data.destination+' '+ params.data.eventType]]></rui:functionArg>
+
+</rui:action>
+
+<%
+mergeActionConditionindex_notifications_markForResendActionCondition=""
+%>
+
+<rui:action id="markForResendAction" type="merge" url="../script/run/markMessageForResend?format=xml" components="${['notificationsGrid']}" submitType="GET"
+
+>
+    <%
+parameterindex_notifications_markForResendAction_messageIdVisible="params.data.id"
+%>
+
+    <rui:requestParam key="messageId" value="${parameterindex_notifications_markForResendAction_messageIdVisible}"></rui:requestParam>
+
+</rui:action>
+
+<%
 functionActionConditionindex_notifications_ruleTreePollCondition=""
 %>
 
@@ -293,6 +415,18 @@ functionActionConditionindex_notifications_ruleTreePollCondition=""
 
 ></rui:popupWindow>
 
+<rui:popupWindow componentId="notificationsGrid" width="900" height="500" resizable="true"
+
+
+  title='Notification Queue'
+></rui:popupWindow>
+
+<rui:popupWindow componentId="notificationDetails" width="600" height="500" resizable="false"
+
+
+
+></rui:popupWindow>
+
 
 
 
@@ -306,16 +440,16 @@ functionActionConditionindex_notifications_ruleTreePollCondition=""
 
 
 
-<rui:innerLayout id="343">
+<rui:innerLayout id="347">
 
-    <rui:layoutUnit position='center' gutter='0px' useShim='false' scroll='false' component='ruleTree'>
-
-    </rui:layoutUnit>
-
-    <rui:layoutUnit position='bottom' gutter='5 0 0 0' resize='true' height='300' useShim='false' scroll='false' component='calendars'>
+    <rui:layoutUnit position='center' gutter='0px' collapse='false' useShim='false' scroll='false' component='ruleTree'>
 
     </rui:layoutUnit>
 
+    <rui:layoutUnit position='bottom' gutter='5 0 0 0' resize='true' height='300' collapse='false' useShim='false' scroll='false' component='calendars'>
+
+    </rui:layoutUnit>
+    
 </rui:innerLayout>
 
 

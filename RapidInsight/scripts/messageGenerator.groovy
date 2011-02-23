@@ -21,10 +21,12 @@ import org.apache.commons.lang.time.DateUtils
 
 DESTINATIONS = RsMessageRule.getDestinations();
 DESTINATION_MAP = [:]
+CHANNEL_MAP = [:]
 DESTINATIONS.each {
     DESTINATION_MAP.put(it.name, it.channelType);
+    CHANNEL_MAP.put(it.channelType, it.name);
 }
-DESTINATION_MAP.put(RsMessageRule.DEFAULT_DESTINATION, RsMessageRule.DEFAULT_DESTINATION)
+
 USER_DESTINATIONS = [:]
 
 def currentTime = System.currentTimeMillis();
@@ -99,11 +101,13 @@ if (eventsWillBeProcessed.size() > 0) {
     def newMaxCreateTime = eventsWillBeProcessed[0].rsInsertedAt;
     createTimeLookup.update(value: String.valueOf(newMaxCreateTime + 1))
     createRules.each {RsMessageRule rule ->
-        def destinationType = rule.destinationType;
-        def channelType = DESTINATION_MAP[destinationType];
+        def ruleDestinationType = rule.destinationType;
         def users = getRuleUsers(rule);
         users.each {RsUser user ->
-            def destination = getUserDestination(user, destinationType, channelType)
+            def destinationData = getUserDestinationData(user, ruleDestinationType)
+            def destination=destinationData.destination;
+            def destinationType=destinationData.destinationType;
+            def channelType=destinationData.channelType;
             if (destination != null) {
                 withSession(user.username) {
                     def delay = rule.delay
@@ -139,11 +143,13 @@ if (historicalEventsWillBeProcessed.size() > 0) {
     def newMaxClearTime = historicalEventsWillBeProcessed[0].rsInsertedAt
     clearTimeLookup.update(value: String.valueOf(newMaxClearTime + 1))
     clearRules.each {RsMessageRule rule ->
-        def destinationType = rule.destinationType;
-        def channelType = DESTINATION_MAP[destinationType];
+        def ruleDestinationType = rule.destinationType;
         def users = getRuleUsers(rule);
         users.each {RsUser user ->
-            def destination = getUserDestination(user, destinationType, channelType)
+            def destinationData = getUserDestinationData(user, ruleDestinationType)
+            def destination=destinationData.destination;
+            def destinationType=destinationData.destinationType;
+            def channelType=destinationData.channelType; 
             if (destination != null) {
                 withSession(user.username) {
                     def searchQuery = SearchQuery.get(id: rule.searchQueryId)
@@ -198,23 +204,32 @@ def getRuleUsers(RsMessageRule rule) {
         users.addAll(usersMap.values());
     }
     else {
-        RsUser user = RsUser.get(id: rule.userId)
+        RsUser user = RsUser.get(username: rule.users)
         if (user) users.add(user);
     }
     return users;
 }
+def getUserDestinationData(RsUser user, ruleDestinationType) {
 
-def getUserDestination(RsUser user, destinationType, channelType) {
     if (!USER_DESTINATIONS.containsKey(user.username)) {
         def userChannelInformations = user.getChannelInformations();
         def channelInfoMap = [:]
         userChannelInformations.each {ChannelUserInformation info ->
-            if (info.isDefault) channelInfoMap.put(RsMessageRule.DEFAULT_DESTINATION, info.destination)
+            if (info.isDefault) channelInfoMap.put(RsMessageRule.DEFAULT_DESTINATION, info.type) //default contains the type of default for the user
             channelInfoMap.put(info.type, info.destination)
         }
         USER_DESTINATIONS.put(user.username, channelInfoMap);
     }
-    def destination = USER_DESTINATIONS[user.username][channelType];
+    def destinationType=ruleDestinationType;
+    def channelType = DESTINATION_MAP[destinationType];
+    if(channelType == RsMessageRule.DEFAULT_DESTINATION) //if type is default then the get the user default channel 
+    {
+    	channelType = USER_DESTINATIONS[user.username][channelType];
+    	destinationType = CHANNEL_MAP[channelType]; //get the destination type for this channel
+    }
+
+	def destination = USER_DESTINATIONS[user.username][channelType];
+
     try {
         RsMessageRule.validateUserDestinationForChannel(user, destination, channelType);
         if (!RsMessageRule.isChannelType(channelType))
@@ -230,7 +245,7 @@ def getUserDestination(RsUser user, destinationType, channelType) {
     {
         logger.warn("Skipping search RsMessageRule for user:${user.username}. Reason ${e.getMessage()}");
     }
-    return destination;
+    return [channelType:channelType,destinationType:destinationType,destination:destination];
 }
 
 def isCalendarMatching(RsMessageRuleCalendar cal) {

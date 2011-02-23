@@ -34,15 +34,23 @@ class RsMessageRuleController {
     def allowedMethods = [save: 'POST', update: 'POST']
 
     def list = {
-        def userId = RsUser.get(username: session.username)?.id
-        def ruleQuery = "userId:${userId}"
+        def ruleQuery = " ( users:${session.username.exactQuery()} AND ruleType:self )"
+        def isAdminUser=false;
         if(RsUser.hasRole(session.username, Role.ADMINISTRATOR)){
+            isAdminUser=true;
             ruleQuery += " OR ruleType:public OR ruleType:system";
         }
         def myRules = message.RsMessageRule.searchEvery(ruleQuery, [sort: "id", order: "asc"])
         def ruleGroups = [];
-        ruleGroups.add(["id": "enabledRules", "name": "Enabled Rules", 'nodeType': 'group', "rules": []]);
-        ruleGroups.add(["id": "disabledRules", "name": "Disabled Rules", 'nodeType': 'group', "rules": []]);
+        ruleGroups.add(["id": "enabledRules", "name": "My Enabled Rules", 'nodeType': 'group', "rules": []]);
+        ruleGroups.add(["id": "disabledRules", "name": "My Disabled Rules", 'nodeType': 'group', "rules": []]);
+        if(isAdminUser){
+            ruleGroups.add(["id": "publicEnabledRules", "name": "Other Users & Groups Enabled Rules", 'nodeType': 'group', "rules": []]);
+            ruleGroups.add(["id": "publicDisabledRules", "name": "Other Users & Groups Disabled Rules", 'nodeType': 'group', "rules": []]);
+
+            ruleGroups.add(["id": "systemEnabledRules", "name": "System Enabled Rules", 'nodeType': 'group', "rules": []]);
+            ruleGroups.add(["id": "systemDisabledRules", "name": "System Disabled Rules", 'nodeType': 'group', "rules": []]);
+        }
         myRules.each {rule ->
 
             def searchQuery = search.SearchQuery.get(id: rule.searchQueryId);
@@ -55,14 +63,42 @@ class RsMessageRuleController {
             ruleProps.destinationType = rule.destinationType;
             ruleProps.ruleType = rule.ruleType;
             ruleProps.nodeType = 'rule';
+            ruleProps.users = rule.users;
+            ruleProps.groups = rule.groups;
+            ruleProps.addedByUser = rule.addedByUser;
 
-            if (rule.enabled)
+            if(rule.ruleType == "self")
             {
-                ruleGroups[0].rules.add(ruleProps);
+		        if (rule.enabled)
+		        {
+		            ruleGroups[0].rules.add(ruleProps);
+		        }
+		        else
+		        {
+		            ruleGroups[1].rules.add(ruleProps);
+		        }
             }
-            else
+            else if(rule.ruleType == "public")
             {
-                ruleGroups[1].rules.add(ruleProps);
+		        if (rule.enabled)
+		        {
+		            ruleGroups[2].rules.add(ruleProps);
+		        }
+		        else
+		        {
+		            ruleGroups[3].rules.add(ruleProps);
+		        }
+            }
+            else if(rule.ruleType == "system")
+            {
+		        if (rule.enabled)
+		        {
+		            ruleGroups[4].rules.add(ruleProps);
+		        }
+		        else
+		        {
+		            ruleGroups[5].rules.add(ruleProps);
+		        }
             }
         }
 
@@ -103,6 +139,10 @@ class RsMessageRuleController {
         if (rsMessageRule) {
             try {
                 def ruleParams = ControllerUtils.getClassProperties(params, RsMessageRule);
+                if(params.ruleType=='self')
+                {
+                    ruleParams.users=session.username;
+                }
                 RsMessageRule.updateMessageRuleForUser(rsMessageRule, ruleParams, session.username)
                 if (!rsMessageRule.hasErrors()) {
                     withFormat {
@@ -163,8 +203,8 @@ class RsMessageRuleController {
     def save = {
         try {
             def ruleParams = ControllerUtils.getClassProperties(params, RsMessageRule);
+            ruleParams.addedByUser=session.username;            
             def rsMessageRule = RsMessageRule.addMessageRuleForUser(ruleParams, session.username)
-
             if (!rsMessageRule.hasErrors()) {
                 withFormat {
                     html {

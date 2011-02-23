@@ -91,14 +91,6 @@ dataComponent.poll();
                     <td valign="top" class="name"><label>Destination Type:</label></td>
                     <td valign="top">
                         <select name="destinationType" class="inputtextfield1">
-                            <g:if test="${ruleType != 'system'}">
-                                <g:if test="${rsMessageRule.destinationType == RsMessageRule.DEFAULT_DESTINATION}">
-                                    <option value="${RsMessageRule.DEFAULT_DESTINATION}" selected="selected">Default</option>
-                                </g:if>
-                                <g:else>
-                                    <option value="${RsMessageRule.DEFAULT_DESTINATION}">Default</option>
-                                </g:else>
-                            </g:if>
                             <g:each in="${destinationNames}" var="destinationName">
                                 <g:if test="${rsMessageRule.destinationType==destinationName}">
                                     <option value="${destinationName}" selected="selected">${destinationName}</option>

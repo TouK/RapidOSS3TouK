@@ -13,7 +13,6 @@ import com.ifountain.rcmdb.domain.util.DomainClassUtils
 
 
 ID_RELATION_MAPPING=[:];
-ID_RELATION_MAPPING["message.RsMessageRule.userId"]=auth.RsUser;
 ID_RELATION_MAPPING["message.RsMessageRule.searchQueryId"]=search.SearchQuery;
 ID_RELATION_MAPPING["message.RsMessageRule.calendarId"]=message.RsMessageRuleCalendar;
 ID_RELATION_MAPPING["search.SearchQuery.parentQueryId"]=search.SearchQuery;

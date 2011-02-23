@@ -1,4 +1,4 @@
-<%@ page import="org.apache.commons.lang.StringUtils; com.ifountain.rcmdb.mobile.MobileUtils; message.RsMessageRule" %>
+`<%@ page import="org.apache.commons.lang.StringUtils; com.ifountain.rcmdb.mobile.MobileUtils; message.RsMessageRule" %>
 <%@ page import="auth.RsUser" %>
 <%@ page import="search.SearchQueryGroup" %>
 <%@ page import="search.SearchQuery" %>
@@ -61,12 +61,6 @@
                     <div class="row">
                         <label>Destination Type:</label>
                         <select name="destinationType">
-                            <g:if test="${rsMessageRule.destinationType == RsMessageRule.DEFAULT_DESTINATION}">
-                                <option value="${RsMessageRule.DEFAULT_DESTINATION}" selected="selected">Default</option>
-                            </g:if>
-                            <g:else>
-                                <option value="${RsMessageRule.DEFAULT_DESTINATION}">Default</option>
-                            </g:else>
                             <g:each in="${destinationNames}" var="destinationName">
                                 <g:if test="${rsMessageRule.destinationType==destinationName}">
                                     <option value="${destinationName}" selected="selected">${destinationName}</option>
@@ -125,12 +119,6 @@
                     </select></div>
                     <div class="row"><label>Destination Type:</label></div>
                     <div class="row"><select name="destinationType">
-                        <g:if test="${rsMessageRule.destinationType == RsMessageRule.DEFAULT_DESTINATION}">
-                            <option value="${RsMessageRule.DEFAULT_DESTINATION}" selected="selected">Default</option>
-                        </g:if>
-                        <g:else>
-                            <option value="${RsMessageRule.DEFAULT_DESTINATION}">Default</option>
-                        </g:else>
                         <g:each in="${destinationNames}" var="destinationName">
                             <g:if test="${rsMessageRule.destinationType==destinationName}">
                                 <option value="${destinationName}" selected="selected">${destinationName}</option>

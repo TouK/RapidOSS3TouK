@@ -1394,22 +1394,31 @@
           <UiElement designerType="Components">
             <UiElement title="Your Notification List" contentPath="Rule" rootTag="Rules" designerType="TreeGrid" name="ruleTree" keyAttribute="id" pollingInterval="0" expanded="true" url="rsMessageRule/list">
               <UiElement designerType="TreeGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Search Query" width="250" designerType="TreeGridColumn">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Search Query" designerType="TreeGridColumn" width="250">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="ruleType" columnIndex="1" colLabel="Rule Type" width="100" designerType="TreeGridColumn">
+                <UiElement attributeName="ruleType" columnIndex="1" colLabel="Rule Type" designerType="TreeGridColumn" width="60">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="destinationType" columnIndex="2" colLabel="Destination Type" width="120" designerType="TreeGridColumn">
+                <UiElement attributeName="destinationType" columnIndex="2" colLabel="Destination Type" designerType="TreeGridColumn" width="100">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="enabled" columnIndex="3" colLabel="Enabled" width="65" designerType="TreeGridColumn">
+                <UiElement attributeName="enabled" columnIndex="3" colLabel="Enabled" designerType="TreeGridColumn" width="50">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement sortType="int" attributeName="delay" columnIndex="4" colLabel="Delay" width="50" designerType="TreeGridColumn">
+                <UiElement sortType="int" attributeName="delay" columnIndex="4" colLabel="Delay" designerType="TreeGridColumn" width="45">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="sendClearEventType" columnIndex="5" colLabel="Send Clear Events" width="120" designerType="TreeGridColumn">
+                <UiElement attributeName="sendClearEventType" columnIndex="5" colLabel="Send Clear Events" designerType="TreeGridColumn" width="105">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="users" columnIndex="6" colLabel="Users" width="250" designerType="TreeGridColumn">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="groups" columnIndex="7" colLabel="Groups" width="250" designerType="TreeGridColumn">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="addedByUser" columnIndex="8" colLabel="Added By" width="100" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -1424,20 +1433,20 @@
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="Rule Details" name="addRuleForm" designerType="Html"/>
-            <UiElement contentPath="Object" keyAttribute="id" searchInEnabled="false" pollingInterval="0" queryParameter="query" url="search" title="Calendars" defaultSearchClass="message.RsMessageRuleCalendar" rootTag="Objects" designerType="SearchGrid" name="calendars" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessageRuleCalendar" queryEnabled="false">
+            <UiElement title="Rule Details" designerType="Html" name="addRuleForm"/>
+            <UiElement contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search" title="Calendars" defaultSearchClass="message.RsMessageRuleCalendar" rootTag="Objects" designerType="SearchGrid" name="calendars" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessageRuleCalendar" queryEnabled="false">
               <UiElement designerType="SearchGridImages"/>
               <UiElement designerType="SearchGridColumns">
-                <UiElement attributeName="name" columnIndex="0" colLabel="Name" designerType="SearchGridColumn" width="100">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" width="100" designerType="SearchGridColumn">
                   <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="daysString" columnIndex="1" colLabel="On" designerType="SearchGridColumn" width="150">
+                <UiElement attributeName="daysString" columnIndex="1" colLabel="On" width="150" designerType="SearchGridColumn">
                   <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="starting" columnIndex="2" colLabel="Start time" designerType="SearchGridColumn" width="100">
+                <UiElement attributeName="starting" columnIndex="2" colLabel="Start time" width="100" designerType="SearchGridColumn">
                   <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="ending" columnIndex="3" colLabel="End time" designerType="SearchGridColumn" width="100">
+                <UiElement attributeName="ending" columnIndex="3" colLabel="End time" width="100" designerType="SearchGridColumn">
                   <UiElement designerType="SearchGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -1448,17 +1457,55 @@
               </UiElement>
               <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="" designerType="Html" name="addCalendarForm"/>
-            <UiElement title="Add Rule For User And Groups" name="addRuleForPeopleForm" designerType="Html"/>
+            <UiElement title="" name="addCalendarForm" designerType="Html"/>
+            <UiElement title="Add Rule For User And Groups" designerType="Html" name="addRuleForPeopleForm"/>
+            <UiElement searchClassesUrl="script/run/getClassesForSearch?rootClass=message.RsMessage&amp;format=xml" contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="60" queryParameter="query" url="search" title="Notifications" defaultSearchClass="message.RsMessage" rootTag="Objects" designerType="SearchGrid" name="notificationsGrid" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessage">
+              <UiElement designerType="SearchGridImages"/>
+              <UiElement designerType="SearchGridColumns">
+                <UiElement attributeName="destinationType" columnIndex="0" colLabel="Destination Type" width="90" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="destination" columnIndex="1" colLabel="Destination" width="250" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="eventType" columnIndex="2" colLabel="Event Type" width="70" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="state" columnIndex="3" colLabel="Status" width="60" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="tryCount" columnIndex="4" colLabel="Try Count" width="60" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="sendAt" columnIndex="5" colLabel="Last Send At" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="firstSendAt" columnIndex="6" colLabel="First Send At" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="insertedAt" colLabel="Inserted At" sortBy="true" sortOrder="desc" width="100" designerType="SearchGridColumn" columnIndex="7">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="SearchGridRowColors"/>
+              <UiElement designerType="SearchGridMenuItems">
+                <UiElement label="Browse" visible="true" designerType="MenuItem" name="browse"/>
+                <UiElement label="Mark For Resend" visible="params.data.state == '6'" designerType="MenuItem" name="markForResend"/>
+              </UiElement>
+              <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
+            </UiElement>
+            <UiElement title="" designerType="Html" name="notificationDetails"/>
           </UiElement>
           <UiElement designerType="Layout">
             <UiElement component="ruleTree" designerType="CenterUnit"/>
             <UiElement height="300" component="calendars" resize="true" gutter="5 0 0 0" designerType="BottomUnit"/>
           </UiElement>
           <UiElement designerType="Dialogs">
-            <UiElement resizable="false" title="" height="250" component="addRuleForm" designerType="Dialog" width="380"/>
-            <UiElement resizable="false" title="" height="300" component="addCalendarForm" designerType="Dialog" width="440"/>
-            <UiElement resizable="false" title="" height="520" component="addRuleForPeopleForm" width="560" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="250" component="addRuleForm" width="380" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="300" component="addCalendarForm" width="440" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="520" component="addRuleForPeopleForm" designerType="Dialog" width="560"/>
+            <UiElement title="Notification Queue" height="500" component="notificationsGrid" designerType="Dialog" width="900"/>
+            <UiElement resizable="false" title="" height="500" component="notificationDetails" designerType="Dialog" width="600"/>
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement condition="" designerType="RequestAction" name="ruleEnableAction" components="ruleTree" submitType="GET" url="rsMessageRule/enableRule" timeout="60">
@@ -1477,7 +1524,7 @@
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement condition="" component="ruleTree" function="poll" name="ruleTreePoll" designerType="FunctionAction">
+            <UiElement component="ruleTree" condition="" function="poll" designerType="FunctionAction" name="ruleTreePoll">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="ruleDisableAction" type="Action event" event="success" designerType="ActionTrigger"/>
@@ -1493,7 +1540,7 @@
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement condition="params.data.ruleType != 'public'" component="addRuleForm" function="show" name="ruleUpdateAction" designerType="FunctionAction">
+            <UiElement component="addRuleForm" condition="params.data.ruleType != 'public'" function="show" designerType="FunctionAction" name="ruleUpdateAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('rsMessageRuleForm.gsp', {mode:'edit', ruleId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Update Rule'" designerType="FunctionArgument"/>
@@ -1502,7 +1549,7 @@
                 <UiElement type="Menu" component="ruleTree" event="update" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement condition="params.data.ruleType == 'public'" component="addRuleForPeopleForm" function="show" name="ruleUpdateAction2" designerType="FunctionAction">
+            <UiElement component="addRuleForPeopleForm" condition="params.data.ruleType == 'public'" function="show" designerType="FunctionAction" name="ruleUpdateAction2">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('rsMessageRuleForm.gsp', {mode:'edit', ruleId:params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Update Rule'" designerType="FunctionArgument"/>
@@ -1519,19 +1566,36 @@
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement component="calendars" condition="" function="poll" designerType="FunctionAction" name="calendarsRefreshAction">
+            <UiElement condition="" component="calendars" function="poll" name="calendarsRefreshAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
                 <UiElement triggeringAction="calendarDeleteAction" type="Action event" event="success" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
-            <UiElement component="addCalendarForm" condition="" function="show" designerType="FunctionAction" name="calendarUpdateAction">
+            <UiElement condition="" component="addCalendarForm" function="show" name="calendarUpdateAction" designerType="FunctionAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
                 <UiElement value="createURL('rsMessageRuleCalendarForm.gsp', {mode:'edit', calendarId: params.data.id})" designerType="FunctionArgument"/>
                 <UiElement value="'Update Calendar'" designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
                 <UiElement type="Menu" component="calendars" event="update" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement component="notificationDetails" condition="" function="show" designerType="FunctionAction" name="browseNotification">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('notificationBrowse.gsp', { messageId:params.data.id})" designerType="FunctionArgument"/>
+                <UiElement value="'Details of Message ' + params.data.destinationType+ ' '+ params.data.destination+' '+ params.data.eventType" designerType="FunctionArgument"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="notificationsGrid" event="browse" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement condition="" designerType="MergeAction" name="markForResendAction" components="notificationsGrid" submitType="GET" url="script/run/markMessageForResend?format=xml" timeout="60">
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="notificationsGrid" event="markForResend" designerType="ActionTrigger"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement value="params.data.id" key="messageId" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
           </UiElement>

@@ -184,4 +184,112 @@ class RsMessageOperationsTest extends RapidCmdbWithCompassTestCase{
 
         assertEquals(historicalEvent.id,historicalEventMessage.retrieveEvent().id);
     }
+
+    public void testRecordSuccess()
+    {
+        initialize([RsMessage], []);
+        CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
+
+        def message=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY,eventId:1,destination:"dest",destinationType:"desttype",tryCount:1);
+        assertFalse(message.hasErrors());
+
+        assertEquals (RsMessage.STATE_READY,message.state);
+        assertEquals (1,message.tryCount);
+        assertEquals (message.sentAt,message.firstSentAt);
+        assertEquals (0,message.sentAt);
+        assertEquals (0,message.firstSentAt);
+
+        def now=Date.now();
+        Thread.sleep(50);
+        message.recordSuccess();
+        
+        assertEquals (RsMessage.STATE_SENT,message.state);
+        assertEquals (2,message.tryCount);
+        assertEquals (message.sentAt,message.firstSentAt);
+        assertTrue (message.sentAt>now);
+        assertTrue (message.firstSentAt>now);
+    }
+
+    public void testRecordFailure()
+    {
+        initialize([RsMessage], []);
+        CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
+
+        def message=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY,eventId:1,destination:"dest",destinationType:"desttype");
+        assertFalse(message.hasErrors());
+
+        assertEquals (RsMessage.STATE_READY,message.state);
+        assertEquals (0,message.tryCount);
+        assertEquals (message.sentAt,message.firstSentAt);
+        assertEquals (0,message.sentAt);
+        assertEquals (0,message.firstSentAt);
+
+        def now=Date.now();
+        Thread.sleep(50);
+        message.recordFailure();
+
+        assertEquals (RsMessage.STATE_ERROR,message.state);
+        assertEquals (1,message.tryCount);
+        assertEquals (message.sentAt,message.firstSentAt);
+        assertTrue (message.sentAt>now);
+        assertTrue (message.firstSentAt>now);
+
+        Thread.sleep(50);
+        message.recordFailure();
+
+        assertEquals (RsMessage.STATE_ERROR,message.state);
+        assertEquals (2,message.tryCount);
+        assertTrue (message.sentAt>message.firstSentAt);  
+
+        2.times{ counter ->
+          message.recordFailure();
+          assertEquals (RsMessage.STATE_ERROR,message.state);
+          assertEquals (3+counter,message.tryCount);
+        }
+
+        message.recordFailure();
+        assertEquals (RsMessage.STATE_ERROR_LIMIT,message.state);
+        assertEquals (5,message.tryCount);
+
+    }
+
+    public void testRecordNotExists()
+    {
+        initialize([RsMessage], []);
+        CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
+
+        def message=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_READY,eventId:1,destination:"dest",destinationType:"desttype");
+        assertFalse(message.hasErrors());
+
+        assertEquals (RsMessage.STATE_READY,message.state);
+        assertEquals (0,message.tryCount);
+        assertEquals (0,message.sentAt);
+        assertEquals (0,message.firstSentAt);
+
+        def now=Date.now();
+        Thread.sleep(50);
+        message.recordNotExists();
+
+        assertEquals (RsMessage.STATE_NOT_EXISTS,message.state);
+        assertEquals (0,message.tryCount);
+        assertEquals (0,message.sentAt);
+        assertEquals (0,message.firstSentAt);
+    }
+
+    public void testMarkForResend()
+    {
+        initialize([RsMessage], []);
+        CompassForTests.addOperationSupport(RsMessage,RsMessageOperations);
+
+        def message=RsMessage.add(eventType:RsMessage.EVENT_TYPE_CREATE,state:RsMessage.STATE_ERROR,tryCount:3,eventId:1,destination:"dest",destinationType:"desttype");
+        assertFalse(message.hasErrors());
+
+        assertEquals (RsMessage.STATE_ERROR,message.state);
+        assertEquals (3,message.tryCount);
+      
+        message.markForResend();
+
+        assertEquals (RsMessage.STATE_READY,message.state);
+        assertEquals (0,message.tryCount);
+    }
 }

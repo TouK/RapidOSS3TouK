@@ -214,7 +214,9 @@ class RsUserOperations extends com.ifountain.rcmdb.domain.operation.AbstractDoma
     def retrieveChannelInformation(channelType) {
         return ChannelUserInformation.get(userId: id, type: channelType);
     }
-
+    def retrieveDefaultChannelInformation() {
+        return ChannelUserInformation.searchEvery("userId:${id} AND isDefault:true")[0];
+    }
 
 
     def addChannelInformationsAndRollBackIfErrorOccurs(channelInformationList)

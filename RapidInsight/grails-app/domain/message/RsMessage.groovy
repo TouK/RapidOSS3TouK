@@ -12,6 +12,8 @@ class RsMessage {
     public static Long STATE_ABORT=2
     public static Long STATE_SENT=3
     public static Long STATE_NOT_EXISTS=4
+    public static Long STATE_ERROR=5
+    public static Long STATE_ERROR_LIMIT=6 
     
     //AUTO_GENERATED_CODE
 
@@ -29,12 +31,15 @@ class RsMessage {
     String eventType ="";
     Long insertedAt =0;
     Long sendAfter =0;
-    Long sendAt =0;
+    Long sentAt =0;
+    Long firstSentAt =0;
     Long state =0;
+    Long tryCount =0;
     Long id ;
     Long version ;
     Long rsInsertedAt =0;
     Long rsUpdatedAt =0;
+
     
     org.springframework.validation.Errors errors ;
 
@@ -58,7 +63,11 @@ class RsMessage {
 
      sendAfter(nullable:true)
 
-     sendAt(nullable:true)
+     sentAt(nullable:true)
+
+     firstSentAt(nullable:true)
+      
+     tryCount(nullable:true)
 
      state(nullable:true)
 

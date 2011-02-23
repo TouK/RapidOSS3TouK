@@ -36,7 +36,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     def base_directory = "";
     def script_manager_directory = "../testoutput/";
     def script_directory;
-    def EMAIL_TYPE = "email";
+    
 
     String scriptName = "messageGenerator"
     void setUp() {
@@ -45,7 +45,6 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         base_directory = getWorkspacePath() + "/RapidModules/RapidInsight";
         initializeScriptManager();
         initializeClasses();
-        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsRiEventClass, rsRiHistoricalEventClass, rsLookupClass, rsEventJournalClass])
     }
     void tearDown() {
         SessionManager.destroyInstance();
@@ -82,12 +81,13 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         RapidApplicationTestUtils.initializeRapidApplicationOperations(RapidApplication);
         UserConfigurationSpace.getInstance().initialize();
 
-        RsMessageRuleOperations.metaClass.'static'.getDestinations = {->
-            return [
-                    [name: "email", channelType: "email"]
-            ];
-        }
+        RsMessageRuleOperations.setConfiguredDestinationNames(["email"]);
+        
+        SegmentQueryHelper.getInstance().initialize([rsEventClass, rsHistoricalEventClass, rsRiEventClass, rsRiHistoricalEventClass, rsLookupClass, rsEventJournalClass])
     }
+
+    
+    
 
     private void initializeScriptManager() {
         ScriptManager manager = ScriptManager.getInstance();
@@ -124,7 +124,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: EMAIL_TYPE, enabled: false, sendClearEventType: true)
+        def rule = RsMessageRule.add(users: user.username, searchQueryId: searchQuery.id, destinationType: "email", enabled: false, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -144,7 +144,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorDoesNotProcessIfUserAndAdminDoesNotHaveDestination()
     {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
 
@@ -156,13 +156,13 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: adminUserName, isPublic: true, type: "event");
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
+        assertFalse(searchQuery.hasErrors())
 
-
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def rule = RsMessageRule.add(users:user.username,searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
 
-        def ruleForAdmin = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
-        assertFalse(ruleForAdmin.hasErrors())
+        def ruleForAdmin = RsMessageRule.add( users:adminUser.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        assertFalse("${ruleForAdmin.errors}",ruleForAdmin.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 2)
 
@@ -209,11 +209,11 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUserName, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: adminUser.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def rule = RsMessageRule.add(users:adminUser.username,searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.errors.toString(), rule.hasErrors())
 
 
-        def ruleForUser = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def ruleForUser = RsMessageRule.add(users:user.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(ruleForUser.errors.toString(), ruleForUser.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 2)
@@ -237,7 +237,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorDoesNotProcessClearEventsForClearDisabledRules()
     {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def destination = "sezgin@gmail.com"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
@@ -249,7 +249,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: false)
+        def rule = RsMessageRule.add(users: user.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: false)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -279,7 +279,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorProcessesOnlyEventsOfTheQuerySearchClass()
     {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def destination = "sezgin@gmail.com"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
@@ -291,7 +291,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", searchClass: "RsRiEvent", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def rule = RsMessageRule.add(users: user.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
 
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
@@ -372,7 +372,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
     void testMessageGeneratorProcessNewEventsAndDoesNotProcessOldEvents()
     {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def destination = "sezgin@gmail.com"
         def user = RsUser.add(username: "sezgin", passwordHash: "sezgin");
         assertFalse(user.hasErrors())
@@ -385,7 +385,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: adminUser, isPublic: true, type: "event");
 
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def rule = RsMessageRule.add(users: user.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -465,7 +465,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         params.eventId = 1
         params.state = RsMessage.STATE_IN_DELAY
         params.destination = "xxx"
-        params.destinationType = EMAIL_TYPE
+        params.destinationType = "email"
         params.eventType = RsMessage.EVENT_TYPE_CREATE
         params.sendAfter = date.getTime() + delay
 
@@ -491,7 +491,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     void testMessageGeneratorUsesWithSessionToApplySegmentation()
     {
         SessionManager.getInstance().addSessionListener(new FilterSessionListener());
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def userRole = Role.add(name: Role.USER);
         def userGroup = Group.addGroup(name: "testusergroup", role: userRole, segmentFilter: "severity:2");
         assertFalse(userGroup.hasErrors());
@@ -508,7 +508,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: user.username, isPublic: false, type: "event");
         assertFalse(searchQuery.hasErrors())
 
-        def rule = RsMessageRule.add(userId: user.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
+        def rule = RsMessageRule.add(users: user.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true)
         assertFalse(rule.hasErrors())
         assertEquals(RsMessageRule.countHits("alias:*"), 1)
 
@@ -573,16 +573,20 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void testDefaultDestinationType() {
+        RsMessageRuleOperations.setConfiguredDestinationNames(["email","jabber"]);
+
         def user1 = RsUser.add(username: "user1", passwordHash: "user1")
-        ChannelUserInformation.add(userId: user1.id, type: EMAIL_TYPE, destination: "dest1", rsUser: user1);
-        ChannelUserInformation.add(userId: user1.id, type: "someothertype", destination: "dest2", rsUser: user1, isDefault: true);
+        ChannelUserInformation.add(userId: user1.id, type: "email", destination: "dest1", rsUser: user1);
+        ChannelUserInformation.add(userId: user1.id, type: "jabber", destination: "dest2", rsUser: user1, isDefault: true);
+
+
 
         def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: user1.username, type: "event");
         assertFalse(defaultEventGroup.hasErrors())
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: user1.username, type: "event");
         assertFalse(searchQuery.hasErrors())
 
-        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true)
+        def rule = RsMessageRule.add(users: user1.username, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true)
         assertFalse(rule.hasErrors())
 
         copyScript(scriptName)
@@ -600,24 +604,27 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(1, RsMessage.countHits("alias:*"))
         def rsMessage = RsMessage.list()[0];
         assertEquals("dest2", rsMessage.destination)
+        assertEquals("jabber", rsMessage.destinationType)
     }
 
     public void testPublicRuleWithDefaultDestinationType() {
+        RsMessageRuleOperations.setConfiguredDestinationNames(["email","jabber"]);
+
         def adminGroup = createGroupWithRole("rsadmin", Role.ADMINISTRATOR)
         def rsAdmin = RsUser.add(username: RsUser.RSADMIN, passwordHash: "rsadmin", groups: [adminGroup])
         def group1 = createGroupWithRole("group1", Role.USER)
         def user1 = RsUser.add(username: "user1", passwordHash: "user1", groups: [group1])
 
-        ChannelUserInformation.add(userId: user1.id, type: EMAIL_TYPE, destination: "dest1", rsUser: user1);
-        ChannelUserInformation.add(userId: user1.id, type: "someothertype", destination: "dest2", rsUser: user1, isDefault: true);
+        ChannelUserInformation.add(userId: user1.id, type: "email", destination: "dest1", rsUser: user1);
+        ChannelUserInformation.add(userId: user1.id, type: "jabber", destination: "dest2", rsUser: user1,isDefault: true);
 
         def defaultEventGroup = SearchQueryGroup.add(name: "MyDefault", username: rsAdmin.username, type: "event", isPublic: true);
         assertFalse(defaultEventGroup.hasErrors())
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: rsAdmin.username, type: "event", isPublic: true);
         assertFalse(searchQuery.hasErrors())
 
-        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true, groups: "group1", ruleType: "public")
-        assertFalse(rule.hasErrors())
+        def rule = RsMessageRule.add(users:user1.username, searchQueryId: searchQuery.id, destinationType: RsMessageRule.DEFAULT_DESTINATION, enabled: true, groups: "group1", ruleType: "public")
+        assertFalse("${rule.errors}",rule.hasErrors())
 
         copyScript(scriptName)
         def script = CmdbScript.addScript(name: scriptName, type: CmdbScript.ONDEMAND, logLevel: Level.DEBUG)
@@ -634,10 +641,11 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         assertEquals(1, RsMessage.countHits("alias:*"))
         def rsMessage = RsMessage.list()[0];
         assertEquals("dest2", rsMessage.destination)
+        assertEquals("jabber", rsMessage.destinationType)
     }
 
     public void testProcessingPublicRules() {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def adminGroup = createGroupWithRole("rsadmin", Role.ADMINISTRATOR)
         def rsAdmin = RsUser.add(username: RsUser.RSADMIN, passwordHash: "rsadmin", groups: [adminGroup])
         def group1 = createGroupWithRole("group1", Role.USER)
@@ -659,7 +667,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
         def searchQuery = SearchQuery.add(group: defaultEventGroup, name: "My All Events", query: "alias:*", sortProperty: "changedAt", sortOrder: "desc", username: RsUser.RSADMIN, isPublic: true, type: "event");
         assertFalse(searchQuery.hasErrors())
 
-        def rule = RsMessageRule.add(userId: rsAdmin.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true, groups: "group1,group2", users: "user1,user4", ruleType: "public")
+        def rule = RsMessageRule.add(users: rsAdmin.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, sendClearEventType: true, groups: "group1,group2", users: "user1,user4", ruleType: "public")
         assertFalse(rule.hasErrors())
 
         copyScript(scriptName)
@@ -698,7 +706,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void testRuleWithCalendar() {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def user1 = RsUser.add(username: "user1", passwordHash: "user1")
         ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
 
@@ -721,7 +729,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: days, username: user1.username, daysString: "Mon");
         assertFalse(cal.hasErrors())
-        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        def rule = RsMessageRule.add(users: user1.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
         assertFalse(rule.hasErrors())
 
         copyScript(scriptName)
@@ -749,7 +757,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void testCalendarWithExceptionDays(){
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def user1 = RsUser.add(username: "user1", passwordHash: "user1")
         ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
 
@@ -776,7 +784,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: "${currentDay}", username: user1.username, daysString: "Mon", exceptions:exceptions);
         assertFalse(cal.hasErrors())
-        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        def rule = RsMessageRule.add(users: user1.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
         assertFalse(rule.hasErrors())
 
         copyScript(scriptName)
@@ -805,7 +813,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
     }
 
     public void testIfCalendarsStartingEndingTimeIntervalDoesNotMatchMessagesAreNotCreated() {
-        def destinationType = EMAIL_TYPE
+        def destinationType = "email"
         def user1 = RsUser.add(username: "user1", passwordHash: "user1")
         ChannelUserInformation.add(userId: user1.id, type: destinationType, destination: "dest1", rsUser: user1);
 
@@ -829,7 +837,7 @@ class MessageGeneratorScriptTests extends RapidCmdbWithCompassTestCase {
 
         def cal = RsMessageRuleCalendar.add(name: "cal", starting: starting, ending: ending, days: "${currentDay}", username: user1.username, daysString: "Mon");
         assertFalse(cal.hasErrors())
-        def rule = RsMessageRule.add(userId: user1.id, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
+        def rule = RsMessageRule.add(users: user1.username, searchQueryId: searchQuery.id, destinationType: destinationType, enabled: true, calendarId: cal.id)
         assertFalse(rule.hasErrors())
 
         copyScript(scriptName)

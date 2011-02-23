@@ -19,6 +19,8 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         //// Match destination type with user channel information type where user destination is stored ////
         def destinationMapping = [];
 
+        destinationMapping.add([name: RsMessageRule.DEFAULT_DESTINATION, channelType: RsMessageRule.DEFAULT_DESTINATION]);
+
         getConfiguredDestinationNames().each {destination ->
             destinationMapping.add([name: destination, channelType: destination]);
         }
@@ -112,7 +114,14 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
 
     public static def getUserDestinationForChannel(RsUser user, String channelType)
     {
-        return user.retrieveChannelInformation(channelType)?.destination;
+        if(channelType == RsMessageRule.DEFAULT_DESTINATION)
+    	{
+    		return user.retrieveDefaultChannelInformation()?.destination;
+    	}
+    	else
+    	{
+    		return user.retrieveChannelInformation(channelType)?.destination;
+    	}
     }
 
     public static RsMessageRule addMessageRuleForUser(params, String username)
@@ -161,8 +170,24 @@ class RsMessageRuleOperations extends com.ifountain.rcmdb.domain.operation.Abstr
         if (user == null)
             throw new Exception("No user defined with username '${username}'");
 
-        params.userId = user.id
-
+        if(params.ruleType=="public")
+        {
+          if(!params.users)
+          {
+            params.users="_";
+          }
+          if(!params.groups)
+          {
+            params.groups="_";
+          }
+        }
+        else
+        {
+           if(!params.containsKey("users"))
+          {
+            params.users = username
+          }
+        }
         def channelType = getDestinationChannelType(params.destinationType)
         def destination = getUserDestinationForChannel(user, channelType);
         validateUserDestinationForChannel(user, destination, channelType);

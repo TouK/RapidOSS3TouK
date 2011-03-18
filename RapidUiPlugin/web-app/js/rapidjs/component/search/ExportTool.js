@@ -38,7 +38,8 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ExportTool, YAHOO.rapidjs.compo
                  '<tr><td><label>Data to export:</label></td><td><select name="exportDataType"><option value="Visible">Visible</option><option value="Matching Query">Matching Query</option></select></td></tr>' +
                  '<tr><td><label>Export type:</label></td><td><select name="exportType"><option value="XML">XML</option><option value="CSV">CSV</option></select></td></tr>' +
                  '<tr><td><label>Max. # of records:</label></td><td><input type="text" name="max"></td></tr>' +
-                 '</tbody></table></form>'});
+                 '</tbody></table></form>'+
+                 '<form id="'+this.component.id+'_exportSubmitForm" method="post" action="'+ getUrlPrefix()+'search/export" style="display:none;"></form>'});
         var selects = this.body.getElementsByTagName('select')
         this.exportDataTypeInput = selects[0]
         this.exportTypeInput = selects[1]
@@ -61,12 +62,15 @@ YAHOO.lang.extend(YAHOO.rapidjs.component.search.ExportTool, YAHOO.rapidjs.compo
                 params['max'] = max;
             }
         }
-        var paramsArray = []
-        paramsArray[paramsArray.length] = 'type=' + exportType
+        var dh = YAHOO.ext.DomHelper;
+        var submitForm=document.getElementById(this.component.id+'_exportSubmitForm');
+        submitForm.innerHTML='';
+        params.type=exportType;
         for(var param in params){
-            paramsArray[paramsArray.length] = param + '=' + params[param]
+            var input=dh.append(submitForm, {tag:'input',type:'hidden',name:param,value:params[param]});
         }
-        window.location = getUrlPrefix()+ "search/export?" + paramsArray.join('&');
+        submitForm.submit();
+        
         this.dialog.hide();
     },
     

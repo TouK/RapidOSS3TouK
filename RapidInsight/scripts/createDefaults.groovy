@@ -44,7 +44,8 @@ scriptsToAdd.add([name:"getViewFields", enabledForAllGroups:true])
 
 scriptsToAdd.add([name: "markModifications", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:true,period:3600*3,logFileOwn:true]);
 scriptsToAdd.add([name: "getModifications", logFileOwn:true]);
-scriptsToAdd.add([name:"markMessageForResend"])
+scriptsToAdd.add([name: "markMessageForResend"])
+scriptsToAdd.add([name: "clearNotificationMessages", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.CRON,enabled:true,cronExpression:'0 30 0 * * ?',logFileOwn:true])
 scriptsToAdd.add([name: "messageGenerator", type:CmdbScript.SCHEDULED, scheduleType:CmdbScript.PERIODIC,enabled:false,period:60,logFileOwn:true]);
 
 scriptsToAdd.add([name: "importSampleRiData"]);

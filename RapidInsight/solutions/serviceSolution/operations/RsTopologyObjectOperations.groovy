@@ -1,5 +1,6 @@
 import application.RapidApplication
 import com.ifountain.rcmdb.domain.util.DomainClassUtils
+import com.ifountain.rcmdb.util.CollectionUtils
 
 /*
 * All content copyright (C) 2004-2008 iFountain, LLC., except as may otherwise be
@@ -43,10 +44,29 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
     {
         RapidApplication.getUtility("ObjectProcessor").objectInBeforeUpdate(this.domainObject,params);
     }
+    //changed for services solution, populateServiceNameOfEvents added 
+    def populateServiceNameOfEvents()
+    {
+        def events=RsEvent.searchEvery("elementName:${name.exactQuery()}");
+        CollectionUtils.executeForEachBatch(events, 100) {List eventsToProcess ->
+            application.RapidApplication.executeBatch{
+                eventsToProcess.each{ event ->
+                    event.update(serviceName:serviceName);
+                }
+            }
+        }
+    }
+    //changed for services solution
 	def afterInsert(){
+        populateServiceNameOfEvents();
         RapidApplication.getUtility("ObjectProcessor").objectIsAdded(this.domainObject);
     }
+    //changed for services solution
     def afterUpdate(params){
+        if(params.updatedProps.containsKey("serviceName") )
+	    {
+			populateServiceNameOfEvents();
+	    }
         RapidApplication.getUtility("ObjectProcessor").objectIsUpdated(this.domainObject,params);
     }
     def afterDelete()
@@ -107,20 +127,22 @@ public class RsTopologyObjectOperations extends com.ifountain.rcmdb.domain.opera
             }
         }
         //changed for Services Solution
-        if(this.domainObject instanceof RsComputerSystem)
+        if(this.domainObject instanceof RsComputerSystem || this.domainObject instanceof RsService)
         {
-            def serviceNames=serviceName.trim().split(",");
+            def serviceNames=serviceName.split(",").collect{it.trim()};
             if(serviceName.trim().size()>0 && serviceNames.size()>0)
             {
-                def serviceNamesQuery=serviceNames.join(" OR ");
+                def serviceNamesQuery=serviceNames.collect{"name:\"${it.toQuery()}\""}.join(" OR ");
                 def relatedObjects = RsService.getPropertyValues(serviceNamesQuery,["className", "name"],[max:100,sort:"name",order:"asc"]);
-                def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
+                def sortedRelatedObjects = relatedObjects.sort {"${serviceName}:${it.className}${it.name}"};
                 mergedProperties.serviceName=sortedRelatedObjects;
             }
         }
-        else if(this.domainObject instanceof RsService)
+      
+        if(this.domainObject instanceof RsService)
         {
             def relatedObjects = RsComputerSystem.getPropertyValues("serviceName:${name.toQuery()}",["className", "name"],[max:100,sort:"name",order:"asc"]);
+            relatedObjects.addAll(RsService.getPropertyValues("serviceName:${name.toQuery()}",["className", "name"],[max:100,sort:"name",order:"asc"]));
             def sortedRelatedObjects = relatedObjects.sort {"${it.className}${it.name}"};
             mergedProperties.devices=sortedRelatedObjects;
         }

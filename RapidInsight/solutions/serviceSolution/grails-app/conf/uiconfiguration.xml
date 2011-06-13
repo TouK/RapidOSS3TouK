@@ -1148,6 +1148,7 @@
               </UiElement>
               <UiElement designerType="TreeGridRootImages"/>
               <UiElement designerType="TreeGridMenuItems">
+                <UiElement label="Browse" visible="true" designerType="MenuItem" name="browse"/>
                 <UiElement label="Get Event History" visible="true" designerType="MenuItem" name="eventHistory"/>
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
@@ -1252,6 +1253,15 @@
               <UiElement designerType="RequestParameters">
                 <UiElement value="params.data.name " key="name" designerType="RequestParameter"/>
                 <UiElement value="'true'" key="act" designerType="RequestParameter"/>
+              </UiElement>
+            </UiElement>
+            <UiElement component="objectDetails" condition="" function="show" designerType="FunctionAction" name="topologyTreeObjectDetailsAction">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('getObjectDetails.gsp', {name:params.data.name})" designerType="FunctionArgument"/>
+                <UiElement value="'Details of ' + params.data.name" designerType="FunctionArgument"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="topologyTree" event="browse" designerType="ActionTrigger"/>
               </UiElement>
             </UiElement>
           </UiElement>

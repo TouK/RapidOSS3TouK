@@ -79,7 +79,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="245" component="saveQueryForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save query" height="290" component="saveQueryForm" designerType="Dialog" width="385"/>
             <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -114,7 +114,7 @@
             </UiElement>
             <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, isPublic:params.data.isPublic, mode:'create', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
+                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, viewName:params.data.viewName, searchClass:params.data.searchClass, isPublic:params.data.isPublic, parentQueryId:params.data.parentQueryId, expanded:params.data.expanded, mode:'create', type:'event', searchComponentType:'grid'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -278,7 +278,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save query" height="320" component="saveQueryForm" designerType="Dialog" width="385"/>
             <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -313,7 +313,7 @@
             </UiElement>
             <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
+                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass: params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, parentQueryId:params.data.parentQueryId, expanded:params.data.expanded, mode:'create', type:'event', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -529,7 +529,7 @@
           <UiElement designerType="Dialogs">
             <UiElement title="" height="500" component="eventDetails" designerType="Dialog" width="850"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="275" component="saveQueryForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save query" height="320" component="saveQueryForm" designerType="Dialog" width="385"/>
             <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
           </UiElement>
           <UiElement designerType="Actions">
@@ -565,7 +565,7 @@
             </UiElement>
             <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass:params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
+                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, group:params.data.group, searchClass:params.data.searchClass, isPublic:params.data.isPublic, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, parentQueryId:params.data.parentQueryId, expanded:params.data.expanded, mode:'create', type:'historicalEvent', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -736,7 +736,7 @@
           <UiElement designerType="Dialogs">
             <UiElement resizable="false" title="Save group" height="165" component="saveQueryGroupForm" designerType="Dialog" width="330"/>
             <UiElement title="" height="700" component="objectDetails" designerType="Dialog" width="850" y="50" x="85"/>
-            <UiElement resizable="false" title="Save query" height="285" component="saveQueryForm" designerType="Dialog" width="385"/>
+            <UiElement resizable="false" title="Save query" height="320" component="saveQueryForm" designerType="Dialog" width="385"/>
           </UiElement>
           <UiElement designerType="Actions">
             <UiElement component="inventoryList" condition="params.data.nodeType == 'filter'" function="setQuery" designerType="FunctionAction" name="setQueryAction">
@@ -770,7 +770,7 @@
             </UiElement>
             <UiElement component="saveQueryForm" condition="" function="show" designerType="FunctionAction" name="copyQueryAction">
               <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, searchClass: params.data.searchClass, isPublic:params.data.isPublic, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
+                <UiElement value="createURL('queryForm.gsp', {query:params.data.query, searchClass: params.data.searchClass, isPublic:params.data.isPublic, group:params.data.group, sortProperty:params.data.sortProperty,sortOrder:params.data.sortOrder, parentQueryId:params.data.parentQueryId, expanded:params.data.expanded, mode:'create', type:'topology', searchComponentType:'list'})" designerType="FunctionArgument"/>
                 <UiElement designerType="FunctionArgument"/>
               </UiElement>
               <UiElement designerType="ActionTriggers">
@@ -1397,16 +1397,28 @@
                 <UiElement attributeName="name" columnIndex="0" colLabel="Search Query" designerType="TreeGridColumn" width="250">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="destinationType" columnIndex="1" colLabel="Destination Type" designerType="TreeGridColumn" width="120">
+                <UiElement attributeName="ruleType" columnIndex="1" colLabel="Rule Type" designerType="TreeGridColumn" width="60">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="enabled" columnIndex="2" colLabel="Enabled" designerType="TreeGridColumn" width="65">
+                <UiElement attributeName="destinationType" columnIndex="2" colLabel="Destination Type" designerType="TreeGridColumn" width="100">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement sortType="int" attributeName="delay" columnIndex="3" colLabel="Delay" designerType="TreeGridColumn" width="50">
+                <UiElement attributeName="enabled" columnIndex="3" colLabel="Enabled" designerType="TreeGridColumn" width="50">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
-                <UiElement attributeName="sendClearEventType" columnIndex="4" colLabel="Send Clear Events" designerType="TreeGridColumn" width="120">
+                <UiElement sortType="int" attributeName="delay" columnIndex="4" colLabel="Delay" designerType="TreeGridColumn" width="45">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="sendClearEventType" columnIndex="5" colLabel="Send Clear Events" designerType="TreeGridColumn" width="105">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="users" columnIndex="6" colLabel="Users" width="250" designerType="TreeGridColumn">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="groups" columnIndex="7" colLabel="Groups" width="250" designerType="TreeGridColumn">
+                  <UiElement designerType="TreeGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="addedByUser" columnIndex="8" colLabel="Added By" width="100" designerType="TreeGridColumn">
                   <UiElement designerType="TreeGridColumnImages"/>
                 </UiElement>
               </UiElement>
@@ -1416,34 +1428,100 @@
               <UiElement designerType="TreeGridMenuItems">
                 <UiElement label="Disable" visible="params.data.enabled=='true' &amp;&amp; params.data.nodeType =='rule'" designerType="MenuItem" name="disable"/>
                 <UiElement label="Enable" visible="params.data.enabled=='false' &amp;&amp; params.data.nodeType =='rule'" designerType="MenuItem" name="enable"/>
+                <UiElement label="Update" visible="true" designerType="MenuItem" name="update"/>
                 <UiElement label="Delete" visible="params.data.nodeType =='rule'" designerType="MenuItem" name="delete"/>
               </UiElement>
               <UiElement designerType="TreeGridMultiSelectionMenuItems"/>
             </UiElement>
-            <UiElement title="Rule Details" designerType="Html" name="ruleContent"/>
+            <UiElement title="Rule Details" designerType="Html" name="addRuleForm"/>
+            <UiElement contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="0" queryParameter="query" url="search" title="Calendars" defaultSearchClass="message.RsMessageRuleCalendar" rootTag="Objects" designerType="SearchGrid" name="calendars" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessageRuleCalendar" queryEnabled="false">
+              <UiElement designerType="SearchGridImages"/>
+              <UiElement designerType="SearchGridColumns">
+                <UiElement attributeName="name" columnIndex="0" colLabel="Name" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="daysString" columnIndex="1" colLabel="On" width="150" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="starting" columnIndex="2" colLabel="Start time" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="ending" columnIndex="3" colLabel="End time" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="SearchGridRowColors"/>
+              <UiElement designerType="SearchGridMenuItems">
+                <UiElement label="Update" visible="params.data.isPublic != 'true' || window.currentUserHasRole('Administrator')" designerType="MenuItem" name="update"/>
+                <UiElement label="Delete" visible="params.data.isPublic != 'true' || window.currentUserHasRole('Administrator')" designerType="MenuItem" name="delete"/>
+              </UiElement>
+              <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
+            </UiElement>
+            <UiElement title="" name="addCalendarForm" designerType="Html"/>
+            <UiElement title="Add Rule For User And Groups" designerType="Html" name="addRuleForPeopleForm"/>
+            <UiElement searchClassesUrl="script/run/getClassesForSearch?rootClass=message.RsMessage&amp;format=xml" contentPath="Object" searchInEnabled="false" keyAttribute="id" pollingInterval="60" queryParameter="query" url="search" title="Notifications" defaultSearchClass="message.RsMessage" rootTag="Objects" designerType="SearchGrid" name="notificationsGrid" fieldsUrl="script/run/getViewFields?format=xml&amp;rootClass=message.RsMessage">
+              <UiElement designerType="SearchGridImages"/>
+              <UiElement designerType="SearchGridColumns">
+                <UiElement attributeName="destinationType" columnIndex="0" colLabel="Destination Type" width="90" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="destination" columnIndex="1" colLabel="Destination" width="250" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="eventType" columnIndex="2" colLabel="Event Type" width="70" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="state" columnIndex="3" colLabel="Status" width="60" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="tryCount" columnIndex="4" colLabel="Try Count" width="60" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="sendAt" columnIndex="5" colLabel="Last Send At" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="firstSendAt" columnIndex="6" colLabel="First Send At" width="100" designerType="SearchGridColumn">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+                <UiElement attributeName="insertedAt" colLabel="Inserted At" sortBy="true" sortOrder="desc" width="100" designerType="SearchGridColumn" columnIndex="7">
+                  <UiElement designerType="SearchGridColumnImages"/>
+                </UiElement>
+              </UiElement>
+              <UiElement designerType="SearchGridRowColors"/>
+              <UiElement designerType="SearchGridMenuItems">
+                <UiElement label="Browse" visible="true" designerType="MenuItem" name="browse"/>
+                <UiElement label="Mark For Resend" visible="params.data.state == '6'" designerType="MenuItem" name="markForResend"/>
+              </UiElement>
+              <UiElement designerType="SearchGridMultiSelectionMenuItems"/>
+            </UiElement>
+            <UiElement title="" designerType="Html" name="notificationDetails"/>
           </UiElement>
           <UiElement designerType="Layout">
-            <UiElement component="ruleContent" designerType="CenterUnit"/>
-            <UiElement component="ruleTree" resize="false" gutter="0 5 0 0" designerType="LeftUnit" width="600"/>
+            <UiElement component="ruleTree" designerType="CenterUnit"/>
+            <UiElement height="300" component="calendars" resize="true" gutter="5 0 0 0" designerType="BottomUnit"/>
           </UiElement>
-          <UiElement designerType="Dialogs"/>
+          <UiElement designerType="Dialogs">
+            <UiElement resizable="false" title="" height="250" component="addRuleForm" width="380" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="300" component="addCalendarForm" width="440" designerType="Dialog"/>
+            <UiElement resizable="false" title="" height="520" component="addRuleForPeopleForm" designerType="Dialog" width="560"/>
+            <UiElement title="Notification Queue" height="500" component="notificationsGrid" designerType="Dialog" width="900"/>
+            <UiElement resizable="false" title="" height="500" component="notificationDetails" designerType="Dialog" width="600"/>
+          </UiElement>
           <UiElement designerType="Actions">
-            <UiElement component="ruleContent" condition="params.data.nodeType=='rule'" function="show" designerType="FunctionAction" name="ruleUpdateAction">
-              <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="createURL('rsMessageRuleForm.gsp',{mode:'edit',ruleId:params.data.id})" designerType="FunctionArgument"/>
-                <UiElement value="'Rule Details For Search Query: ' + params.data.name" designerType="FunctionArgument"/>
-              </UiElement>
+            <UiElement condition="" designerType="RequestAction" name="ruleEnableAction" components="ruleTree" submitType="GET" url="rsMessageRule/enableRule" timeout="60">
               <UiElement designerType="ActionTriggers">
-                <UiElement type="Component event" component="ruleTree" event="nodeClicked" designerType="ActionTrigger"/>
+                <UiElement type="Menu" component="ruleTree" event="enable" designerType="ActionTrigger"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement component="ruleContent" condition="" function="show" designerType="FunctionAction" name="ruleContentPoll">
-              <UiElement designerType="FunctionArguments" designerHidden="true">
-                <UiElement value="YAHOO.rapidjs.Components['ruleContent'].url" designerType="FunctionArgument"/>
-                <UiElement value="YAHOO.rapidjs.Components['ruleContent'].title" designerType="FunctionArgument"/>
-              </UiElement>
+            <UiElement condition="confirm('Are you sure to delete the Rule with Search Query: '+params.data.name)" designerType="RequestAction" name="ruleDeleteAction" components="ruleTree" submitType="GET" url="rsMessageRule/delete" timeout="60">
               <UiElement designerType="ActionTriggers">
-                <UiElement triggeringAction="ruleDeleteAction" type="Action event" event="success" designerType="ActionTrigger"/>
+                <UiElement type="Menu" component="ruleTree" event="delete" designerType="ActionTrigger"/>
+              </UiElement>
+              <UiElement designerType="RequestParameters">
+                <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
             <UiElement component="ruleTree" condition="" function="poll" designerType="FunctionAction" name="ruleTreePoll">
@@ -1462,20 +1540,62 @@
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement condition="" designerType="RequestAction" name="ruleEnableAction" components="ruleContent" submitType="GET" url="rsMessageRule/enableRule" timeout="60">
+            <UiElement component="addRuleForm" condition="params.data.ruleType != 'public'" function="show" designerType="FunctionAction" name="ruleUpdateAction">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('rsMessageRuleForm.gsp', {mode:'edit', ruleId:params.data.id})" designerType="FunctionArgument"/>
+                <UiElement value="'Update Rule'" designerType="FunctionArgument"/>
+              </UiElement>
               <UiElement designerType="ActionTriggers">
-                <UiElement type="Menu" component="ruleTree" event="enable" designerType="ActionTrigger"/>
+                <UiElement type="Menu" component="ruleTree" event="update" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement component="addRuleForPeopleForm" condition="params.data.ruleType == 'public'" function="show" designerType="FunctionAction" name="ruleUpdateAction2">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('rsMessageRuleForm.gsp', {mode:'edit', ruleId:params.data.id})" designerType="FunctionArgument"/>
+                <UiElement value="'Update Rule'" designerType="FunctionArgument"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="ruleTree" event="update" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement condition="confirm('Are you sure?')" designerType="RequestAction" name="calendarDeleteAction" components="calendars" submitType="POST" url="rsMessageRuleCalendar/delete" timeout="60">
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="calendars" event="delete" designerType="ActionTrigger"/>
               </UiElement>
               <UiElement designerType="RequestParameters">
                 <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
-            <UiElement condition="confirm('Are you sure to delete the Rule with Search Query: '+params.data.name)" designerType="RequestAction" name="ruleDeleteAction" components="ruleTree" submitType="GET" url="rsMessageRule/delete" timeout="60">
+            <UiElement condition="" component="calendars" function="poll" name="calendarsRefreshAction" designerType="FunctionAction">
+              <UiElement designerType="FunctionArguments" designerHidden="true"/>
               <UiElement designerType="ActionTriggers">
-                <UiElement type="Menu" component="ruleTree" event="delete" designerType="ActionTrigger"/>
+                <UiElement triggeringAction="calendarDeleteAction" type="Action event" event="success" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement condition="" component="addCalendarForm" function="show" name="calendarUpdateAction" designerType="FunctionAction">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('rsMessageRuleCalendarForm.gsp', {mode:'edit', calendarId: params.data.id})" designerType="FunctionArgument"/>
+                <UiElement value="'Update Calendar'" designerType="FunctionArgument"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="calendars" event="update" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement component="notificationDetails" condition="" function="show" designerType="FunctionAction" name="browseNotification">
+              <UiElement designerType="FunctionArguments" designerHidden="true">
+                <UiElement value="createURL('notificationBrowse.gsp', { messageId:params.data.id})" designerType="FunctionArgument"/>
+                <UiElement value="'Details of Message ' + params.data.destinationType+ ' '+ params.data.destination+' '+ params.data.eventType" designerType="FunctionArgument"/>
+              </UiElement>
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="notificationsGrid" event="browse" designerType="ActionTrigger"/>
+              </UiElement>
+            </UiElement>
+            <UiElement condition="" designerType="MergeAction" name="markForResendAction" components="notificationsGrid" submitType="GET" url="script/run/markMessageForResend?format=xml" timeout="60">
+              <UiElement designerType="ActionTriggers">
+                <UiElement type="Menu" component="notificationsGrid" event="markForResend" designerType="ActionTrigger"/>
               </UiElement>
               <UiElement designerType="RequestParameters">
-                <UiElement value="params.data.id" key="id" designerType="RequestParameter"/>
+                <UiElement value="params.data.id" key="messageId" designerType="RequestParameter"/>
               </UiElement>
             </UiElement>
           </UiElement>

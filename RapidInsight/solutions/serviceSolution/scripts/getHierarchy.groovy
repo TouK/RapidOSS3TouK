@@ -11,6 +11,7 @@ builder = new MarkupBuilder(sw);
 searchParams = [max: "1000",sort:"name",order:"asc"];
 serviceStateMap=[:];
 serviceSubServicesMap=[:];
+serviceAllSubServiceNamesMap=[:];
 
 builder.Objects() {
     RsService.searchEvery("serviceName:\"\" ",searchParams).each { service ->
@@ -23,7 +24,10 @@ return sw.toString();
 def printService(service)
 {
    def state=getServiceState(service);
-   builder.Object(id: service.id, name: service.name, displayName: service.displayName, nodeType: service.className,state:state){
+   def allSubServiceNames=getAllSubServiceNames(service);
+   def deviceQuery=allSubServiceNames.collect{ "serviceName:\"${it.toQuery()}\"" }.join(" OR ");
+   def eventQuery=deviceQuery;
+   builder.Object(id: service.id, name: service.name, displayName: service.displayName, nodeType: service.className,state:state, deviceQuery:deviceQuery, eventQuery:eventQuery){
         getSubServices(service).each{ subService ->
             printService(subService);
         }
@@ -36,7 +40,9 @@ def printService(service)
 def printDevice(device)
 {
    def state=device.getState(); //device state is already saved by StateCalculator
-   builder.Object(id: device.id, name: device.name, displayName: device.displayName, nodeType: device.className,state:state); 
+   def deviceQuery="elementName:${device.name.exactQuery()}";
+   def eventQuery=deviceQuery;
+   builder.Object(id: device.id, name: device.name, displayName: device.displayName, nodeType: device.className,state:state, deviceQuery:deviceQuery, eventQuery:eventQuery); 
 }
 
 def getSubServices(service)
@@ -46,6 +52,18 @@ def getSubServices(service)
          serviceSubServicesMap[service.name]=RsService.searchEvery("serviceName:${service.name.toQuery()}",searchParams);
    }
    return  serviceSubServicesMap[service.name];
+}
+def getAllSubServiceNames(service)
+{
+    if(! serviceAllSubServiceNamesMap.containsKey(service.name))
+   {
+       def serviceNames=[service.name];
+       getSubServices(service).each{ subService ->
+            serviceNames.addAll(getAllSubServiceNames(subService));
+       }
+       serviceAllSubServiceNamesMap[service.name]=serviceNames;
+   }
+   return  serviceAllSubServiceNamesMap[service.name];
 }
 def getServiceState(service)
 {

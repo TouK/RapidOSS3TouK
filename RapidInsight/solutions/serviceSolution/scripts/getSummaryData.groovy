@@ -25,10 +25,6 @@ import groovy.xml.MarkupBuilder
 * USA.
 */
 
-def CONTAINER_PROPERTY = "rsDatasource"
-def nodeType = params.nodeType;
-def name = params.name;
-
 // severity values which are not in severityMap will be put to this index 
 // also when all zero this index will be used
 def normalSeverityIndex = "0";
@@ -37,19 +33,8 @@ def severityMap = ["0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0]
 def severitySummary = [severity:[:]];
 def severityData=severitySummary.severity;
 
-def devices=[];
-if(nodeType =="Service")
-{
-    devices=RsComputerSystem.searchEvery("serviceName:${name.toQuery()}");
-}
-else
-{
-    def device=RsComputerSystem.get(name:name);
-    if(device)
-    {
-        devices.add(device);
-    }
-}
+def devices=RsComputerSystem.searchEvery(params.deviceQuery);
+
 devices.each{  device ->
        def state=device.getState();
        def stateKey=state.toString();
@@ -62,14 +47,6 @@ devices.each{  device ->
           severityData[stateKey]=1;
        }
 }
-
-// original code to get summary data from events
-//if (nodeType == "Container") {
-//    severitySummary = RsEvent.propertySummary("${CONTAINER_PROPERTY}:${name.exactQuery()}", ["severity"]);
-//}
-//else {
-//    severitySummary = RsEvent.propertySummary("elementName:${name.exactQuery()}", ["severity"]);
-//}
 
 def isAllZero = true;
 def invalidSeverityCount = 0;

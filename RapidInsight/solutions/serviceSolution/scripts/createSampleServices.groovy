@@ -1,5 +1,6 @@
-def service1=RsService.add(name:"service1", displayName:"service1", className:"Service");
-def service2=RsService.add(name:"service2", displayName:"service2", className:"Service");
+RsService.add(name:"service1", displayName:"service1", className:"Service");
+RsService.add(name:"service2", displayName:"service2", className:"Service");
+RsService.add(name:"sub_service2", displayName:"sub service2", className:"Service",serviceName:"service2");
 
 //serviceName property will be used for faster calculations via search by serviceName like serviceName:"service1"
 
@@ -13,7 +14,9 @@ RsComputerSystem.add(name:"host1", displayName:"host1", className:"Host", servic
 RsComputerSystem.add(name:"firewall1", displayName:"firewall1", className:"Firewall", serviceName:"service2")
 RsComputerSystem.add(name:"firewall2", displayName:"firewall2", className:"Firewall", serviceName:"service2")
 RsComputerSystem.add(name:"host2", displayName:"host2", className:"Host", serviceName:"service2")
-RsComputerSystem.add(name:"host3", displayName:"host3", className:"Host", serviceName:"service2")
+
+//service2 > sub_service2 devices
+RsComputerSystem.add(name:"host3", displayName:"host3", className:"Host", serviceName:"sub_service2")
 
 
 //service1 & service2 devices both
